@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Super Admin</title>
+    <link rel="stylesheet" href="estiloSuperAdmin/estiloSuperAdmin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+
+  <body>
+    <div class="contenedor-admin">
+      <!-- Botón externo para cuando el menú está oculto -->
+      <button class="boton-menu-externo" id="botonMenuExterno">
+        <span>&#9776;</span>
+      </button>
+
+      <header class="barra-lateral" id="barraLateral">
+        <nav>
+          <div class="contenedor-logo">
+            <div class="logo-titulo-wrapper">
+              <div class="titulo-proyecto">Projet</div>
+              <button class="boton-menu" id="botonMenu">
+                <span>&#9776;</span>
+              </button>
+            </div>
+            <div class="subtitulo-admin">Super Admin</div>
+          </div>
+          <ul class="lista-navegacion">
+            <li>
+              <a href="index.html" class="enlace-menu activo">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-graduate"></i>
+                <span>Estudiantes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/estudiantes/verEstudiantes.html"
+                    >Ver Estudiantes</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Profesores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/profesores/verProfesores.html"
+                    >Ver Profesores</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-tie"></i>
+                <span>Directores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/directores/verDirectores.html"
+                    >Ver Directores</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book"></i>
+                <span>Cursos</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="paginas/cursos/verCursos.html">Ver Cursos</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book-open"></i>
+                <span>Materias</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/materias/verMaterias.html">Ver Materias</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Horarios</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/horarios/verHorarios.html">Ver Horarios</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Notas</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="paginas/notas/verNotas.html">Ver Notas</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-star"></i>
+                <span>Calificaciones</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/calificaciones/verCalificaciones.html"
+                    >Ver Calificaciones</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="paginas/reportes/generarReportes.html"
+                    >Generar Reporte</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="paginas/configuracion.html" class="enlace-menu">
+                <i class="fas fa-cog"></i><span>Configuración</span>
+              </a>
+            </li>
+            <li>
+              <a href="paginas/notificaciones.html" class="enlace-menu">
+                <i class="fas fa-bell"></i>
+                <span>Notificaciones</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="contenido-principal">
+        <!-- Header del Dashboard -->
+        <div class="dashboard-header">
+          <div>
+            <h1>Panel de Control</h1>
+            <p class="dashboard-subtitle">Bienvenido de nuevo, Super Admin</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn-notificaciones">
+              <i class="fas fa-bell"></i>
+              <span class="badge-notif">3</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card stat-card-blue">
+            <div class="stat-icon">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-info">
+              <h3>1,234</h3>
+              <p>Estudiantes</p>
+              <span class="stat-change positive">+12% este mes</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-green">
+            <div class="stat-icon">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-info">
+              <h3>89</h3>
+              <p>Profesores</p>
+              <span class="stat-change positive">+5% este mes</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-orange">
+            <div class="stat-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-info">
+              <h3>45</h3>
+              <p>Cursos Activos</p>
+              <span class="stat-change neutral">Sin cambios</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-purple">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+              <h3>98.5%</h3>
+              <p>Asistencia</p>
+              <span class="stat-change positive">+2.3% este mes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Gráficos y Actividad -->
+        <div class="dashboard-grid">
+          <!-- Gráfico Principal -->
+          <div class="dashboard-card chart-card">
+            <div class="card-header">
+              <h3>Estadísticas del Mes</h3>
+              <select class="chart-filter">
+                <option>Últimos 7 días</option>
+                <option>Últimos 30 días</option>
+                <option>Últimos 3 meses</option>
+              </select>
+            </div>
+            <div class="chart-container">
+              <canvas id="mainChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Actividad Reciente -->
+          <div class="dashboard-card activity-card">
+            <div class="card-header">
+              <h3>Actividad Reciente</h3>
+              <a href="#" class="ver-todo">Ver todo</a>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon activity-icon-blue">
+                  <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-title">Nuevo estudiante registrado</p>
+                  <span class="activity-time">Hace 5 minutos</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon activity-icon-green">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-title">Curso "Matemáticas I" completado</p>
+                  <span class="activity-time">Hace 1 hora</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon activity-icon-orange">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-title">3 tareas pendientes de revisión</p>
+                  <span class="activity-time">Hace 2 horas</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon activity-icon-purple">
+                  <i class="fas fa-calendar"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-title">Nuevo horario publicado</p>
+                  <span class="activity-time">Hace 3 horas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección Inferior: Notificaciones y Tareas -->
+        <div class="dashboard-grid-2">
+          <!-- Notificaciones -->
+          <div class="dashboard-card notifications-card">
+            <div class="card-header">
+              <h3>Notificaciones</h3>
+              <span class="badge-count">3 nuevas</span>
+            </div>
+            <div class="notifications-list">
+              <div class="notification-item unread">
+                <div class="notification-dot"></div>
+                <div class="notification-content">
+                  <p class="notification-title">Reunión de profesores</p>
+                  <p class="notification-text">
+                    Mañana a las 10:00 AM en la sala de conferencias
+                  </p>
+                  <span class="notification-time">Hace 10 minutos</span>
+                </div>
+              </div>
+              <div class="notification-item unread">
+                <div class="notification-dot"></div>
+                <div class="notification-content">
+                  <p class="notification-title">Actualización del sistema</p>
+                  <p class="notification-text">
+                    Nueva versión disponible para instalar
+                  </p>
+                  <span class="notification-time">Hace 1 hora</span>
+                </div>
+              </div>
+              <div class="notification-item">
+                <div class="notification-content">
+                  <p class="notification-title">Reporte mensual generado</p>
+                  <p class="notification-text">
+                    El reporte de octubre está listo para descargar
+                  </p>
+                  <span class="notification-time">Hace 5 horas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tareas Rápidas -->
+          <div class="dashboard-card quick-actions-card">
+            <div class="card-header">
+              <h3>Acciones Rápidas</h3>
+            </div>
+            <div class="quick-actions-grid">
+              <a
+                href="paginas/estudiantes/agregarEstudiantes.html"
+                class="quick-action"
+              >
+                <i class="fas fa-user-plus"></i>
+                <span>Agregar Estudiante</span>
+              </a>
+              <a
+                href="paginas/profesores/agregarProfesores.html"
+                class="quick-action"
+              >
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Agregar Profesor</span>
+              </a>
+              <a href="paginas/cursos/agregarCursos.html" class="quick-action">
+                <i class="fas fa-book"></i>
+                <span>Crear Curso</span>
+              </a>
+              <a
+                href="paginas/reportes/generarReportes.html"
+                class="quick-action"
+              >
+                <i class="fas fa-chart-bar"></i>
+                <span>Generar Reporte</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/menu.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
