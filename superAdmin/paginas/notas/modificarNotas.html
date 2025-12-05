@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modificar Nota - Super Admin</title>
+    <link rel="stylesheet" href="../../estiloSuperAdmin/estiloSuperAdmin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="contenedor-admin">
+      <button class="boton-menu" id="botonMenu">
+        <span>&#9776;</span>
+      </button>
+
+      <header class="barra-lateral" id="barraLateral">
+        <nav>
+          <div class="contenedor-logo">
+            <div class="titulo-proyecto">Projet</div>
+            <div class="subtitulo-admin">Super Admin</div>
+          </div>
+          <ul class="lista-navegacion">
+            <li>
+              <a href="../../index.html" class="enlace-menu">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-graduate"></i>
+                <span>Estudiantes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../estudiantes/verEstudiantes.html"
+                    >Ver Estudiantes</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Profesores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../profesores/verProfesores.html">Ver Profesores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-tie"></i>
+                <span>Directores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../directores/verDirectores.html">Ver Directores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book"></i>
+                <span>Cursos</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="../cursos/verCursos.html">Ver Cursos</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book-open"></i>
+                <span>Materias</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../materias/verMaterias.html">Ver Materias</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Horarios</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../horarios/verHorarios.html">Ver Horarios</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu abierto">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Notas</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="verNotas.html">Ver Notas</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-star"></i>
+                <span>Calificaciones</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../calificaciones/verCalificaciones.html"
+                    >Ver Calificaciones</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../reportes/generarReportes.html">Generar Reporte</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="../configuracion.html" class="enlace-menu">
+                <i class="fas fa-cog"></i><span>Configuración</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="contenido-principal">
+        <div class="page-header">
+          <div>
+            <h1>Modificar Nota</h1>
+            <p style="color: #8f9bba; margin-top: 5px">
+              Actualiza la información de la nota
+            </p>
+          </div>
+          <div class="page-actions">
+            <a href="verNotas.html" class="btn-secondary">
+              <i class="fas fa-arrow-left"></i> Volver
+            </a>
+          </div>
+        </div>
+
+        <div class="form-container">
+          <form id="formularioModificar">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Estudiante <span class="required">*</span></label>
+                <select id="estudiante" required>
+                  <option value="">Seleccionar estudiante</option>
+                  <option value="est1" selected>Juan Pérez García</option>
+                  <option value="est2">María López Sánchez</option>
+                  <option value="est3">Carlos Rodríguez Martín</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Materia <span class="required">*</span></label>
+                <select id="materia" required>
+                  <option value="">Seleccionar materia</option>
+                  <option value="matematicas" selected>Matemáticas</option>
+                  <option value="lengua">Lengua y Literatura</option>
+                  <option value="ingles">Inglés</option>
+                  <option value="ciencias">Ciencias</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label
+                  >Tipo de Evaluación <span class="required">*</span></label
+                >
+                <select id="tipoEvaluacion" required>
+                  <option value="">Seleccionar tipo</option>
+                  <option value="examen" selected>Examen</option>
+                  <option value="trabajo">Trabajo</option>
+                  <option value="practica">Práctica</option>
+                  <option value="proyecto">Proyecto</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Calificación <span class="required">*</span></label>
+                <input
+                  type="number"
+                  id="calificacion"
+                  value="8.5"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Trimestre <span class="required">*</span></label>
+                <select id="trimestre" required>
+                  <option value="">Seleccionar trimestre</option>
+                  <option value="1" selected>Primer Trimestre</option>
+                  <option value="2">Segundo Trimestre</option>
+                  <option value="3">Tercer Trimestre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Fecha <span class="required">*</span></label>
+                <input type="date" id="fecha" value="2024-01-15" required />
+              </div>
+              <div class="form-group full-width">
+                <label>Observaciones</label>
+                <textarea id="observaciones" rows="3">
+Buen desempeño en el examen</textarea
+                >
+              </div>
+              <div class="form-group">
+                <label>Estado <span class="required">*</span></label>
+                <select id="estado" required>
+                  <option value="publicado" selected>Publicado</option>
+                  <option value="borrador">Borrador</option>
+                  <option value="revisado">Revisado</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn-cancel"
+                onclick="window.location.href='verNotas.html'"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+    <!-- Scripts -->
+    <script src="../../js/menu.js"></script>
+    <script src="../../js/main.js"></script>
+
+</body>
+</html>

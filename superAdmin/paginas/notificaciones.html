@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notificaciones - Super Admin</title>
+    <link rel="stylesheet" href="../estiloSuperAdmin/estiloSuperAdmin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="contenedor-admin">
+      <button class="boton-menu" id="botonMenu">
+        <span>&#9776;</span>
+      </button>
+
+      <header class="barra-lateral" id="barraLateral">
+        <nav>
+          <div class="contenedor-logo">
+            <div class="titulo-proyecto">Projet</div>
+            <div class="subtitulo-admin">Super Admin</div>
+          </div>
+          <ul class="lista-navegacion">
+            <li>
+              <a href="../index.html" class="enlace-menu">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-graduate"></i>
+                <span>Estudiantes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="estudiantes/verEstudiantes.html">Ver Estudiantes</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Profesores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="profesores/verProfesores.html">Ver Profesores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-tie"></i>
+                <span>Directores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="directores/verDirectores.html">Ver Directores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book"></i>
+                <span>Cursos</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="cursos/verCursos.html">Ver Cursos</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book-open"></i>
+                <span>Materias</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="materias/verMaterias.html">Ver Materias</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Horarios</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="horarios/verHorarios.html">Ver Horarios</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Notas</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="notas/verNotas.html">Ver Notas</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-star"></i>
+                <span>Calificaciones</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="calificaciones/verCalificaciones.html"
+                    >Ver Calificaciones</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="reportes/generarReportes.html">Generar Reporte</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="configuracion.html" class="enlace-menu">
+                <i class="fas fa-cog"></i><span>Configuración</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="contenido-principal">
+        <div class="page-header">
+          <h1>Notificaciones</h1>
+          <div class="page-actions">
+            <a href="../index.html" class="btn-secondary">Volver</a>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-bell"></i> Crear Notificación</h3>
+          </div>
+          <form id="formularioNotif">
+            <div class="form-group">
+              <label>Título</label>
+              <input
+                id="titulo"
+                type="text"
+                placeholder="Asunto de la notificación"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Mensaje</label>
+              <textarea
+                id="mensaje"
+                rows="3"
+                placeholder="Escribe el mensaje"
+                required
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label>Enviar a</label>
+              <select id="tipoDestinatario">
+                <option value="profesores">Profesores</option>
+                <option value="estudiantes">Estudiantes</option>
+                <option value="ambos">Ambos</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button
+                type="button"
+                id="botonPrevisualizar"
+                class="btn-secondary"
+              >
+                Previsualizar
+              </button>
+              <button type="submit" class="btn-primary">Enviar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="dashboard-card" style="margin-top: 20px">
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="contenedor-admin">
+      <button class="boton-menu" id="botonMenu">
+        <span>&#9776;</span>
+      </button>
+
+      <header class="barra-lateral" id="barraLateral">
+        <nav>
+          <div class="contenedor-logo">
+            <div class="titulo-proyecto">Projet</div>
+            <div class="subtitulo-admin">Super Admin</div>
+          </div>
+          <ul class="lista-navegacion">
+            <li>
+              <a href="../index.html" class="enlace-menu">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-graduate"></i>
+                <span>Estudiantes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="estudiantes/verEstudiantes.html">Ver Estudiantes</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Profesores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="profesores/verProfesores.html">Ver Profesores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-tie"></i>
+                <span>Directores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="directores/verDirectores.html">Ver Directores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book"></i>
+                <span>Cursos</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="cursos/verCursos.html">Ver Cursos</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book-open"></i>
+                <span>Materias</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="materias/verMaterias.html">Ver Materias</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Horarios</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="horarios/verHorarios.html">Ver Horarios</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Notas</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="notas/verNotas.html">Ver Notas</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-star"></i>
+                <span>Calificaciones</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="calificaciones/verCalificaciones.html"
+                    >Ver Calificaciones</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="reportes/generarReportes.html">Generar Reporte</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="configuracion.html" class="enlace-menu">
+                <i class="fas fa-cog"></i><span>Configuración</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="contenido-principal">
+        <div class="page-header">
+          <h1>Notificaciones</h1>
+          <div class="page-actions">
+            <a href="../index.html" class="btn-secondary">Volver</a>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-bell"></i> Crear Notificación</h3>
+          </div>
+          <form id="formularioNotif">
+            <div class="form-group">
+              <label>Título</label>
+              <input
+                id="titulo"
+                type="text"
+                placeholder="Asunto de la notificación"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Mensaje</label>
+              <textarea
+                id="mensaje"
+                rows="3"
+                placeholder="Escribe el mensaje"
+                required
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label>Enviar a</label>
+              <select id="tipoDestinatario">
+                <option value="profesores">Profesores</option>
+                <option value="estudiantes">Estudiantes</option>
+                <option value="ambos">Ambos</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button
+                type="button"
+                id="botonPrevisualizar"
+                class="btn-secondary"
+              >
+                Previsualizar
+              </button>
+              <button type="submit" class="btn-primary">Enviar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="dashboard-card" style="margin-top: 20px">
+          <div class="card-header">
+            <h3>Notificaciones Guardadas</h3>
+          </div>
+          <div id="listaNotificaciones"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ========================================
+         SCRIPTS - ORDEN DE CARGA IMPORTANTE
+         ======================================== -->
+    
+    <!-- Menú lateral - Necesario en TODAS las páginas -->
+    <script src="../js/menu.js"></script>
+    
+    <!-- Notificaciones - Solo necesario en notificaciones.html -->
+    <script src="../js/notifications.js"></script>
+    
+    <!-- Script principal - Siempre al final -->
+    <script src="../js/main.js"></script>
+  </body>
+</html>

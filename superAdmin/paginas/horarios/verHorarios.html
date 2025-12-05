@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ver Horarios - Super Admin</title>
+    <link rel="stylesheet" href="../../estiloSuperAdmin/estiloSuperAdmin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="contenedor-admin">
+      <!-- Botón externo para cuando el menú está oculto -->
+      <button class="boton-menu-externo" id="botonMenuExterno">
+        <span>&#9776;</span>
+      </button>
+
+      <header class="barra-lateral" id="barraLateral">
+        <nav>
+          <div class="contenedor-logo">
+            <div class="logo-titulo-wrapper">
+              <div class="titulo-proyecto">Projet</div>
+              <button class="boton-menu" id="botonMenu">
+                <span>&#9776;</span>
+              </button>
+            </div>
+            <div class="subtitulo-admin">Super Admin</div>
+          </div>
+          <ul class="lista-navegacion">
+            <li>
+              <a href="../../index.html" class="enlace-menu">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-graduate"></i>
+                <span>Estudiantes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../estudiantes/verEstudiantes.html"
+                    >Ver Estudiantes</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Profesores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../profesores/verProfesores.html">Ver Profesores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-tie"></i>
+                <span>Directores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../directores/verDirectores.html">Ver Directores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book"></i>
+                <span>Cursos</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="../cursos/verCursos.html">Ver Cursos</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book-open"></i>
+                <span>Materias</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../materias/verMaterias.html">Ver Materias</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu abierto">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Horarios</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="verHorarios.html" class="activo">Ver Horarios</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Notas</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="../notas/verNotas.html">Ver Notas</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-star"></i>
+                <span>Calificaciones</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../calificaciones/verCalificaciones.html"
+                    >Ver Calificaciones</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../reportes/generarReportes.html">Generar Reporte</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="../configuracion.html" class="enlace-menu">
+                <i class="fas fa-cog"></i><span>Configuración</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="contenido-principal">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1>Horarios</h1>
+            <p style="color: #8f9bba; margin-top: 5px">
+              Gestión de horarios de clases
+            </p>
+          </div>
+          <div class="page-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Buscar horario..." />
+            </div>
+            <a href="configurarHorarios.html" class="btn-primary">
+              <i class="fas fa-cog"></i>
+              Configurar Horario
+            </a>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Curso</th>
+                <th>Día</th>
+                <th>Hora Inicio</th>
+                <th>Hora Fin</th>
+                <th>Materia</th>
+                <th>Profesor</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#H001</td>
+                <td>1º ESO A</td>
+                <td>Lunes</td>
+                <td>08:00</td>
+                <td>09:00</td>
+                <td>Matemáticas</td>
+                <td>Laura Martínez</td>
+                <td>
+                  <div class="action-buttons">
+                    <a
+                      href="verDetallesHorarios.html"
+                      class="btn-icon btn-view"
+                      title="Ver detalles"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a
+                      href="modificarHorarios.html"
+                      class="btn-icon btn-edit"
+                      title="Editar"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button class="btn-icon btn-delete" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#H002</td>
+                <td>1º ESO A</td>
+                <td>Lunes</td>
+                <td>09:00</td>
+                <td>10:00</td>
+                <td>Historia</td>
+                <td>Roberto Sánchez</td>
+                <td>
+                  <div class="action-buttons">
+                    <a
+                      href="verDetallesHorarios.html"
+                      class="btn-icon btn-view"
+                      title="Ver detalles"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a
+                      href="modificarHorarios.html"
+                      class="btn-icon btn-edit"
+                      title="Editar"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button class="btn-icon btn-delete" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <button><i class="fas fa-chevron-left"></i></button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <!-- Scripts -->
+    <script src="../../js/menu.js"></script>
+    <script src="../../js/deleteModal.js"></script>
+    <script src="../../js/main.js"></script>
+
+</body>
+</html>

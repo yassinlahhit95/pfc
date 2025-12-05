@@ -1,0 +1,793 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ver Calificaciones - Super Admin</title>
+    <link rel="stylesheet" href="../../estiloSuperAdmin/estiloSuperAdmin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="contenedor-admin">
+      <!-- Botón externo para cuando el menú está oculto -->
+      <button class="boton-menu-externo" id="botonMenuExterno">
+        <span>&#9776;</span>
+      </button>
+
+      <header class="barra-lateral" id="barraLateral">
+        <nav>
+          <div class="contenedor-logo">
+            <div class="logo-titulo-wrapper">
+              <div class="titulo-proyecto">Projet</div>
+              <button class="boton-menu" id="botonMenu">
+                <span>&#9776;</span>
+              </button>
+            </div>
+            <div class="subtitulo-admin">Super Admin</div>
+          </div>
+          <ul class="lista-navegacion">
+            <li>
+              <a href="../../index.html" class="enlace-menu">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-graduate"></i>
+                <span>Estudiantes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../estudiantes/verEstudiantes.html"
+                    >Ver Estudiantes</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Profesores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../profesores/verProfesores.html">Ver Profesores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-tie"></i>
+                <span>Directores</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../directores/verDirectores.html">Ver Directores</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book"></i>
+                <span>Cursos</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="../cursos/verCursos.html">Ver Cursos</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-book-open"></i>
+                <span>Materias</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../materias/verMaterias.html">Ver Materias</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Horarios</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../horarios/verHorarios.html">Ver Horarios</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Notas</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li><a href="../notas/verNotas.html">Ver Notas</a></li>
+              </ul>
+            </li>
+            <li class="tiene-submenu abierto">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-star"></i>
+                <span>Calificaciones</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="verCalificaciones.html" class="activo"
+                    >Ver Calificaciones</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reportes</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../reportes/generarReportes.html">Generar Reporte</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="../configuracion.html" class="enlace-menu">
+                <i class="fas fa-cog"></i><span>Configuración</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="contenido-principal">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1>Calificaciones por Curso</h1>
+            <p style="color: #8f9bba; margin-top: 5px">
+              Consulta las calificaciones de los estudiantes por curso
+            </p>
+          </div>
+        </div>
+
+        <!-- Filtro por Curso -->
+        <div class="dashboard-card" style="margin-bottom: 25px">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="filtroCurso">
+                <i class="fas fa-filter"></i> Seleccionar Curso
+              </label>
+              <select
+                id="filtroCurso"
+                style="
+                  padding: 12px;
+                  border: 2px solid #e5e7eb;
+                  border-radius: 8px;
+                  font-size: 14px;
+                "
+              >
+                <option value="">Todos los cursos</option>
+                <option value="1eso-a">1º ESO A</option>
+                <option value="2eso-a">2º ESO A</option>
+                <option value="3eso-a" selected>3º ESO A</option>
+                <option value="4eso-a">4º ESO A</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="buscarEstudiante">
+                <i class="fas fa-search"></i> Buscar Estudiante
+              </label>
+              <input
+                type="text"
+                id="buscarEstudiante"
+                placeholder="Nombre del estudiante..."
+                style="
+                  padding: 12px;
+                  border: 2px solid #e5e7eb;
+                  border-radius: 8px;
+                  font-size: 14px;
+                "
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de Estudiantes -->
+        <div id="listaEstudiantes">
+          <!-- Estudiante 1 -->
+          <div
+            class="dashboard-card estudiante-card"
+            style="margin-bottom: 20px"
+          >
+            <!-- Cabecera del Estudiante -->
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                border-bottom: 1px solid #e5e7eb;
+                background: #f9fafb;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 15px">
+                <div
+                  style="
+                    width: 60px;
+                    height: 60px;
+                    background: #667eea;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 24px;
+                    font-weight: bold;
+                  "
+                >
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #1f2937; font-size: 18px">
+                    Juan Pérez García
+                  </h3>
+                  <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px">
+                    <strong>DIE:</strong> 2406286D | <strong>Curso:</strong> 3º
+                    ESO A
+                  </p>
+                </div>
+              </div>
+              <button
+                class="btn-primary"
+                onclick="window.location.href='verDetallesCalificaciones.html'"
+              >
+                <i class="fas fa-eye"></i> Ver Detalles
+              </button>
+            </div>
+
+            <!-- Título de Calificaciones -->
+            <div style="padding: 20px 20px 10px 20px">
+              <h4 style="margin: 0; color: #1f2937; font-size: 16px">
+                Calificaciones
+              </h4>
+            </div>
+
+            <!-- Tabla de Materias -->
+            <div style="padding: 0 20px 20px 20px">
+              <table class="data-table" style="margin: 0">
+                <thead>
+                  <tr>
+                    <th style="text-align: left; color: #3b82f6">MATERIA</th>
+                    <th style="text-align: center; width: 80px">1EV</th>
+                    <th style="text-align: center; width: 80px">R/E</th>
+                    <th style="text-align: center; width: 80px">2EV</th>
+                    <th style="text-align: center; width: 80px">3EV</th>
+                    <th style="text-align: center; width: 80px">FINAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matemáticas</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">8.5</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      8.5
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Lengua y Literatura</td>
+                    <td style="text-align: center; font-weight: 600">7</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">7.5</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      7.5
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Inglés</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center; font-weight: 600">9.5</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      9
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Ciencias Naturales</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td style="text-align: center; font-weight: 600">8.5</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      8
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Historia</td>
+                    <td style="text-align: center; font-weight: 600">7.5</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      7.8
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Educación Física</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      9
+                    </td>
+                  </tr>
+                  <tr style="background: #e0f2fe; font-weight: 700">
+                    <td style="color: #1f2937">PROMEDIO GENERAL</td>
+                    <td colspan="4" style="text-align: center">-</td>
+                    <td
+                      style="
+                        text-align: center;
+                        color: #0369a1;
+                        font-size: 18px;
+                      "
+                    >
+                      8.3
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Estudiante 2 -->
+          <div
+            class="dashboard-card estudiante-card"
+            style="margin-bottom: 20px"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                border-bottom: 1px solid #e5e7eb;
+                background: #f9fafb;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 15px">
+                <div
+                  style="
+                    width: 60px;
+                    height: 60px;
+                    background: #f59e0b;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 24px;
+                    font-weight: bold;
+                  "
+                >
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #1f2937; font-size: 18px">
+                    María López Sánchez
+                  </h3>
+                  <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px">
+                    <strong>DIE:</strong> 2406287E | <strong>Curso:</strong> 3º
+                    ESO A
+                  </p>
+                </div>
+              </div>
+              <button
+                class="btn-primary"
+                onclick="window.location.href='verDetallesCalificaciones.html'"
+              >
+                <i class="fas fa-eye"></i> Ver Detalles
+              </button>
+            </div>
+
+            <div style="padding: 20px 20px 10px 20px">
+              <h4 style="margin: 0; color: #1f2937; font-size: 16px">
+                Calificaciones
+              </h4>
+            </div>
+
+            <div style="padding: 0 20px 20px 20px">
+              <table class="data-table" style="margin: 0">
+                <thead>
+                  <tr>
+                    <th style="text-align: left; color: #3b82f6">MATERIA</th>
+                    <th style="text-align: center; width: 80px">1EV</th>
+                    <th style="text-align: center; width: 80px">R/E</th>
+                    <th style="text-align: center; width: 80px">2EV</th>
+                    <th style="text-align: center; width: 80px">3EV</th>
+                    <th style="text-align: center; width: 80px">FINAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matemáticas</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9.5</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      9.5
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Lengua y Literatura</td>
+                    <td style="text-align: center; font-weight: 600">8.5</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      8.8
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Inglés</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      10
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Ciencias Naturales</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center; font-weight: 600">9.5</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      9
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Historia</td>
+                    <td style="text-align: center; font-weight: 600">8.5</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      8.8
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Educación Física</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td style="text-align: center; font-weight: 600">10</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      10
+                    </td>
+                  </tr>
+                  <tr style="background: #e0f2fe; font-weight: 700">
+                    <td style="color: #1f2937">PROMEDIO GENERAL</td>
+                    <td colspan="4" style="text-align: center">-</td>
+                    <td
+                      style="
+                        text-align: center;
+                        color: #0369a1;
+                        font-size: 18px;
+                      "
+                    >
+                      9.3
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Estudiante 3 -->
+          <div
+            class="dashboard-card estudiante-card"
+            style="margin-bottom: 20px"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                border-bottom: 1px solid #e5e7eb;
+                background: #f9fafb;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 15px">
+                <div
+                  style="
+                    width: 60px;
+                    height: 60px;
+                    background: #10b981;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 24px;
+                    font-weight: bold;
+                  "
+                >
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #1f2937; font-size: 18px">
+                    Carlos Rodríguez Martín
+                  </h3>
+                  <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px">
+                    <strong>DIE:</strong> 2406288F | <strong>Curso:</strong> 3º
+                    ESO A
+                  </p>
+                </div>
+              </div>
+              <button
+                class="btn-primary"
+                onclick="window.location.href='verDetallesCalificaciones.html'"
+              >
+                <i class="fas fa-eye"></i> Ver Detalles
+              </button>
+            </div>
+
+            <div style="padding: 20px 20px 10px 20px">
+              <h4 style="margin: 0; color: #1f2937; font-size: 16px">
+                Calificaciones
+              </h4>
+            </div>
+
+            <div style="padding: 0 20px 20px 20px">
+              <table class="data-table" style="margin: 0">
+                <thead>
+                  <tr>
+                    <th style="text-align: left; color: #3b82f6">MATERIA</th>
+                    <th style="text-align: center; width: 80px">1EV</th>
+                    <th style="text-align: center; width: 80px">R/E</th>
+                    <th style="text-align: center; width: 80px">2EV</th>
+                    <th style="text-align: center; width: 80px">3EV</th>
+                    <th style="text-align: center; width: 80px">FINAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matemáticas</td>
+                    <td style="text-align: center; font-weight: 600">7</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">7.5</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      7.5
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Lengua y Literatura</td>
+                    <td style="text-align: center; font-weight: 600">6.5</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">7</td>
+                    <td style="text-align: center; font-weight: 600">7.5</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      7
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Inglés</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">8.5</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      8.5
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Ciencias Naturales</td>
+                    <td style="text-align: center; font-weight: 600">7.5</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td style="text-align: center; font-weight: 600">8</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      7.8
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Historia</td>
+                    <td style="text-align: center; font-weight: 600">7</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">7</td>
+                    <td style="text-align: center; font-weight: 600">7.5</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      7
+                    </td>
+                  </tr>
+                  <tr style="background: #f9fafb">
+                    <td>Educación Física</td>
+                    <td style="text-align: center; font-weight: 600">8.5</td>
+                    <td style="text-align: center">-</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td style="text-align: center; font-weight: 600">9</td>
+                    <td
+                      style="
+                        text-align: center;
+                        font-weight: 700;
+                        color: #10b981;
+                        font-size: 16px;
+                      "
+                    >
+                      8.8
+                    </td>
+                  </tr>
+                  <tr style="background: #e0f2fe; font-weight: 700">
+                    <td style="color: #1f2937">PROMEDIO GENERAL</td>
+                    <td colspan="4" style="text-align: center">-</td>
+                    <td
+                      style="
+                        text-align: center;
+                        color: #0369a1;
+                        font-size: 18px;
+                      "
+                    >
+                      7.8
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <!-- Scripts -->
+    <script src="../../js/menu.js"></script>
+    <script src="../../js/deleteModal.js"></script>
+    <script src="../../js/main.js"></script>
+
+</body>
+</html>
