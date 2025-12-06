@@ -50,7 +50,7 @@
               </ul>
             </li>
             <li class="tiene-submenu abierto">
-              <a href="#" class="enlace-menu">
+              <a href="#" class="enlace-menu activo">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Profesores</span>
                 <span class="flecha">&#9662;</span>
@@ -105,6 +105,23 @@
                 <li>
                   <a href="../horarios/verHorarios.html">Ver Horarios</a>
                 </li>
+                <li>
+                  <a href="../horarios/generarHorarios.html">Generar Horario</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-check"></i>
+                <span>Asistencia</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../asistencia/gestionAsistencia.html"
+                    >Gestionar Ausencias</a
+                  >
+                </li>
               </ul>
             </li>
             <li class="tiene-submenu">
@@ -149,6 +166,12 @@
               </a>
             </li>
             <li>
+              <a href="../notificaciones.html" class="enlace-menu">
+                <i class="fas fa-bell"></i>
+                <span>Notificaciones</span>
+              </a>
+            </li>
+            <li>
               <a href="#" class="enlace-menu">
                 <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
               </a>
@@ -159,19 +182,19 @@
 
       <main class="contenido-principal">
         <!-- Page Header -->
-        <div class="page-header">
+        <div class="encabezado-pagina">
           <div>
             <h1>Profesores</h1>
             <p style="color: #8f9bba; margin-top: 5px">
               Gestión de profesores del sistema
             </p>
           </div>
-          <div class="page-actions">
-            <div class="search-box">
+          <div class="acciones-pagina">
+            <div class="caja-busqueda">
               <i class="fas fa-search"></i>
               <input type="text" placeholder="Buscar profesor..." />
             </div>
-            <a href="agregarProfesores.html" class="btn-primary">
+            <a href="agregarProfesores.html" class="boton-primario">
               <i class="fas fa-plus"></i>
               Agregar Profesor
             </a>
@@ -179,8 +202,8 @@
         </div>
 
         <!-- Data Table -->
-        <div class="table-container">
-          <table class="data-table">
+        <div class="contenedor-tabla">
+          <table class="tabla-datos">
             <thead>
               <tr>
                 <th>ID</th>
@@ -199,24 +222,26 @@
                 <td>Matemáticas</td>
                 <td>laura.martinez@email.com</td>
                 <td>600 123 456</td>
-                <td><span class="status-badge status-active">Activo</span></td>
                 <td>
-                  <div class="action-buttons">
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
                     <a
                       href="verDetallesProfesores.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
                     >
                       <i class="fas fa-eye"></i>
                     </a>
                     <a
                       href="modificarProfesores.html"
-                      class="btn-icon btn-edit"
+                      class="boton-icono boton-editar"
                       title="Editar"
                     >
                       <i class="fas fa-edit"></i>
                     </a>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -228,24 +253,26 @@
                 <td>Historia</td>
                 <td>roberto.sanchez@email.com</td>
                 <td>600 987 654</td>
-                <td><span class="status-badge status-active">Activo</span></td>
                 <td>
-                  <div class="action-buttons">
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
                     <a
                       href="verDetallesProfesores.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
                     >
                       <i class="fas fa-eye"></i>
                     </a>
                     <a
                       href="modificarProfesores.html"
-                      class="btn-icon btn-edit"
+                      class="boton-icono boton-editar"
                       title="Editar"
                     >
                       <i class="fas fa-edit"></i>
                     </a>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -258,21 +285,23 @@
                 <td>elena.gomez@email.com</td>
                 <td>600 555 444</td>
                 <td>
-                  <span class="status-badge status-pending">Pendiente</span>
+                  <span class="insignia-estado estado-pendiente"
+                    >Pendiente</span
+                  >
                 </td>
                 <td>
-                  <div class="action-buttons">
+                  <div class="botones-accion">
                     <a
                       href="verDetallesProfesores.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
                     >
                       <i class="fas fa-eye"></i>
                     </a>
-                    <button class="btn-icon btn-edit" title="Editar">
+                    <button class="boton-icono boton-editar" title="Editar">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -282,9 +311,9 @@
           </table>
 
           <!-- Pagination -->
-          <div class="pagination">
+          <div class="paginacion">
             <button><i class="fas fa-chevron-left"></i></button>
-            <button class="active">1</button>
+            <button class="activo">1</button>
             <button>2</button>
             <button>3</button>
             <button><i class="fas fa-chevron-right"></i></button>
@@ -296,6 +325,5 @@
     <script src="../../js/menu.js"></script>
     <script src="../../js/deleteModal.js"></script>
     <script src="../../js/main.js"></script>
-
-</body>
+  </body>
 </html>

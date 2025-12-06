@@ -105,6 +105,23 @@
                 <li>
                   <a href="../horarios/verHorarios.html">Ver Horarios</a>
                 </li>
+                <li>
+                  <a href="../horarios/generarHorarios.html">Generar Horario</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-check"></i>
+                <span>Asistencia</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../asistencia/gestionAsistencia.html"
+                    >Gestionar Ausencias</a
+                  >
+                </li>
               </ul>
             </li>
             <li class="tiene-submenu">
@@ -118,7 +135,7 @@
               </ul>
             </li>
             <li class="tiene-submenu abierto">
-              <a href="#" class="enlace-menu">
+              <a href="#" class="enlace-menu activo">
                 <i class="fas fa-star"></i>
                 <span>Calificaciones</span>
                 <span class="flecha">&#9662;</span>
@@ -149,6 +166,12 @@
               </a>
             </li>
             <li>
+              <a href="../notificaciones.html" class="enlace-menu">
+                <i class="fas fa-bell"></i>
+                <span>Notificaciones</span>
+              </a>
+            </li>
+            <li>
               <a href="#" class="enlace-menu">
                 <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
               </a>
@@ -159,7 +182,7 @@
 
       <main class="contenido-principal">
         <!-- Page Header -->
-        <div class="page-header">
+        <div class="encabezado-pagina">
           <div>
             <h1>Calificaciones por Curso</h1>
             <p style="color: #8f9bba; margin-top: 5px">
@@ -169,21 +192,13 @@
         </div>
 
         <!-- Filtro por Curso -->
-        <div class="dashboard-card" style="margin-bottom: 25px">
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="filtroCurso">
+        <div class="tarjeta-panel" style="margin-bottom: 25px">
+          <div class="cuadricula-formulario">
+            <div class="grupo-formulario">
+              <label for="filtroCurso" class="etiqueta-formulario">
                 <i class="fas fa-filter"></i> Seleccionar Curso
               </label>
-              <select
-                id="filtroCurso"
-                style="
-                  padding: 12px;
-                  border: 2px solid #e5e7eb;
-                  border-radius: 8px;
-                  font-size: 14px;
-                "
-              >
+              <select id="filtroCurso" class="control-formulario">
                 <option value="">Todos los cursos</option>
                 <option value="1eso-a">1º ESO A</option>
                 <option value="2eso-a">2º ESO A</option>
@@ -191,20 +206,15 @@
                 <option value="4eso-a">4º ESO A</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="buscarEstudiante">
+            <div class="grupo-formulario">
+              <label for="buscarEstudiante" class="etiqueta-formulario">
                 <i class="fas fa-search"></i> Buscar Estudiante
               </label>
               <input
                 type="text"
                 id="buscarEstudiante"
                 placeholder="Nombre del estudiante..."
-                style="
-                  padding: 12px;
-                  border: 2px solid #e5e7eb;
-                  border-radius: 8px;
-                  font-size: 14px;
-                "
+                class="control-formulario"
               />
             </div>
           </div>
@@ -213,50 +223,23 @@
         <!-- Lista de Estudiantes -->
         <div id="listaEstudiantes">
           <!-- Estudiante 1 -->
-          <div
-            class="dashboard-card estudiante-card"
-            style="margin-bottom: 20px"
-          >
+          <div class="tarjeta-panel" style="margin-bottom: 20px">
             <!-- Cabecera del Estudiante -->
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 20px;
-                border-bottom: 1px solid #e5e7eb;
-                background: #f9fafb;
-              "
-            >
-              <div style="display: flex; align-items: center; gap: 15px">
-                <div
-                  style="
-                    width: 60px;
-                    height: 60px;
-                    background: #667eea;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 24px;
-                    font-weight: bold;
-                  "
-                >
+            <div class="cabecera-estudiante">
+              <div class="info-estudiante">
+                <div class="avatar-estudiante avatar-azul">
                   <i class="fas fa-user"></i>
                 </div>
                 <div>
-                  <h3 style="margin: 0; color: #1f2937; font-size: 18px">
-                    Juan Pérez García
-                  </h3>
-                  <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px">
+                  <h3 class="nombre-estudiante">Juan Pérez García</h3>
+                  <p class="datos-estudiante">
                     <strong>DIE:</strong> 2406286D | <strong>Curso:</strong> 3º
                     ESO A
                   </p>
                 </div>
               </div>
               <button
-                class="btn-primary"
+                class="boton-primario"
                 onclick="window.location.href='verDetallesCalificaciones.html'"
               >
                 <i class="fas fa-eye"></i> Ver Detalles
@@ -264,140 +247,76 @@
             </div>
 
             <!-- Título de Calificaciones -->
-            <div style="padding: 20px 20px 10px 20px">
-              <h4 style="margin: 0; color: #1f2937; font-size: 16px">
-                Calificaciones
-              </h4>
+            <div class="titulo-calificaciones">
+              <h4>Calificaciones</h4>
             </div>
 
             <!-- Tabla de Materias -->
-            <div style="padding: 0 20px 20px 20px">
-              <table class="data-table" style="margin: 0">
+            <div class="contenedor-tabla-calificaciones">
+              <table class="tabla-datos tabla-calificaciones">
                 <thead>
                   <tr>
-                    <th style="text-align: left; color: #3b82f6">MATERIA</th>
-                    <th style="text-align: center; width: 80px">1EV</th>
-                    <th style="text-align: center; width: 80px">R/E</th>
-                    <th style="text-align: center; width: 80px">2EV</th>
-                    <th style="text-align: center; width: 80px">3EV</th>
-                    <th style="text-align: center; width: 80px">FINAL</th>
+                    <th class="encabezado-materia">MATERIA</th>
+                    <th class="columna-nota">1EV</th>
+                    <th class="columna-nota">R/E</th>
+                    <th class="columna-nota">2EV</th>
+                    <th class="columna-nota">3EV</th>
+                    <th class="columna-nota">FINAL</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Matemáticas</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">8.5</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      8.5
-                    </td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">8.5</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota-final">8.5</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Lengua y Literatura</td>
-                    <td style="text-align: center; font-weight: 600">7</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">7.5</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      7.5
-                    </td>
+                    <td class="celda-nota">7</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">7.5</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota-final">7.5</td>
                   </tr>
                   <tr>
                     <td>Inglés</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center; font-weight: 600">9.5</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      9
-                    </td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">9.5</td>
+                    <td class="celda-nota-final">9</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Ciencias Naturales</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td style="text-align: center; font-weight: 600">8.5</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      8
-                    </td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota">8.5</td>
+                    <td class="celda-nota-final">8</td>
                   </tr>
                   <tr>
                     <td>Historia</td>
-                    <td style="text-align: center; font-weight: 600">7.5</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      7.8
-                    </td>
+                    <td class="celda-nota">7.5</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota-final">7.8</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Educación Física</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      9
-                    </td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota-final">9</td>
                   </tr>
-                  <tr style="background: #e0f2fe; font-weight: 700">
+                  <tr class="fila-promedio">
                     <td style="color: #1f2937">PROMEDIO GENERAL</td>
-                    <td colspan="4" style="text-align: center">-</td>
-                    <td
-                      style="
-                        text-align: center;
-                        color: #0369a1;
-                        font-size: 18px;
-                      "
-                    >
-                      8.3
-                    </td>
+                    <td colspan="4" class="celda-nota">-</td>
+                    <td class="celda-promedio">8.3</td>
                   </tr>
                 </tbody>
               </table>
@@ -405,188 +324,97 @@
           </div>
 
           <!-- Estudiante 2 -->
-          <div
-            class="dashboard-card estudiante-card"
-            style="margin-bottom: 20px"
-          >
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 20px;
-                border-bottom: 1px solid #e5e7eb;
-                background: #f9fafb;
-              "
-            >
-              <div style="display: flex; align-items: center; gap: 15px">
-                <div
-                  style="
-                    width: 60px;
-                    height: 60px;
-                    background: #f59e0b;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 24px;
-                    font-weight: bold;
-                  "
-                >
+          <div class="tarjeta-panel" style="margin-bottom: 20px">
+            <div class="cabecera-estudiante">
+              <div class="info-estudiante">
+                <div class="avatar-estudiante avatar-naranja">
                   <i class="fas fa-user"></i>
                 </div>
                 <div>
-                  <h3 style="margin: 0; color: #1f2937; font-size: 18px">
-                    María López Sánchez
-                  </h3>
-                  <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px">
+                  <h3 class="nombre-estudiante">María López Sánchez</h3>
+                  <p class="datos-estudiante">
                     <strong>DIE:</strong> 2406287E | <strong>Curso:</strong> 3º
                     ESO A
                   </p>
                 </div>
               </div>
               <button
-                class="btn-primary"
+                class="boton-primario"
                 onclick="window.location.href='verDetallesCalificaciones.html'"
               >
                 <i class="fas fa-eye"></i> Ver Detalles
               </button>
             </div>
 
-            <div style="padding: 20px 20px 10px 20px">
-              <h4 style="margin: 0; color: #1f2937; font-size: 16px">
-                Calificaciones
-              </h4>
+            <div class="titulo-calificaciones">
+              <h4>Calificaciones</h4>
             </div>
 
-            <div style="padding: 0 20px 20px 20px">
-              <table class="data-table" style="margin: 0">
+            <div class="contenedor-tabla-calificaciones">
+              <table class="tabla-datos tabla-calificaciones">
                 <thead>
                   <tr>
-                    <th style="text-align: left; color: #3b82f6">MATERIA</th>
-                    <th style="text-align: center; width: 80px">1EV</th>
-                    <th style="text-align: center; width: 80px">R/E</th>
-                    <th style="text-align: center; width: 80px">2EV</th>
-                    <th style="text-align: center; width: 80px">3EV</th>
-                    <th style="text-align: center; width: 80px">FINAL</th>
+                    <th class="encabezado-materia">MATERIA</th>
+                    <th class="columna-nota">1EV</th>
+                    <th class="columna-nota">R/E</th>
+                    <th class="columna-nota">2EV</th>
+                    <th class="columna-nota">3EV</th>
+                    <th class="columna-nota">FINAL</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Matemáticas</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9.5</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      9.5
-                    </td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9.5</td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota-final">9.5</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Lengua y Literatura</td>
-                    <td style="text-align: center; font-weight: 600">8.5</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      8.8
-                    </td>
+                    <td class="celda-nota">8.5</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota-final">8.8</td>
                   </tr>
                   <tr>
                     <td>Inglés</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      10
-                    </td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota-final">10</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Ciencias Naturales</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center; font-weight: 600">9.5</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      9
-                    </td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">9.5</td>
+                    <td class="celda-nota-final">9</td>
                   </tr>
                   <tr>
                     <td>Historia</td>
-                    <td style="text-align: center; font-weight: 600">8.5</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      8.8
-                    </td>
+                    <td class="celda-nota">8.5</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota-final">8.8</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Educación Física</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td style="text-align: center; font-weight: 600">10</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      10
-                    </td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota">10</td>
+                    <td class="celda-nota-final">10</td>
                   </tr>
-                  <tr style="background: #e0f2fe; font-weight: 700">
+                  <tr class="fila-promedio">
                     <td style="color: #1f2937">PROMEDIO GENERAL</td>
-                    <td colspan="4" style="text-align: center">-</td>
-                    <td
-                      style="
-                        text-align: center;
-                        color: #0369a1;
-                        font-size: 18px;
-                      "
-                    >
-                      9.3
-                    </td>
+                    <td colspan="4" class="celda-nota">-</td>
+                    <td class="celda-promedio">9.3</td>
                   </tr>
                 </tbody>
               </table>
@@ -594,188 +422,97 @@
           </div>
 
           <!-- Estudiante 3 -->
-          <div
-            class="dashboard-card estudiante-card"
-            style="margin-bottom: 20px"
-          >
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 20px;
-                border-bottom: 1px solid #e5e7eb;
-                background: #f9fafb;
-              "
-            >
-              <div style="display: flex; align-items: center; gap: 15px">
-                <div
-                  style="
-                    width: 60px;
-                    height: 60px;
-                    background: #10b981;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 24px;
-                    font-weight: bold;
-                  "
-                >
+          <div class="tarjeta-panel" style="margin-bottom: 20px">
+            <div class="cabecera-estudiante">
+              <div class="info-estudiante">
+                <div class="avatar-estudiante avatar-verde">
                   <i class="fas fa-user"></i>
                 </div>
                 <div>
-                  <h3 style="margin: 0; color: #1f2937; font-size: 18px">
-                    Carlos Rodríguez Martín
-                  </h3>
-                  <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px">
+                  <h3 class="nombre-estudiante">Carlos Rodríguez Martín</h3>
+                  <p class="datos-estudiante">
                     <strong>DIE:</strong> 2406288F | <strong>Curso:</strong> 3º
                     ESO A
                   </p>
                 </div>
               </div>
               <button
-                class="btn-primary"
+                class="boton-primario"
                 onclick="window.location.href='verDetallesCalificaciones.html'"
               >
                 <i class="fas fa-eye"></i> Ver Detalles
               </button>
             </div>
 
-            <div style="padding: 20px 20px 10px 20px">
-              <h4 style="margin: 0; color: #1f2937; font-size: 16px">
-                Calificaciones
-              </h4>
+            <div class="titulo-calificaciones">
+              <h4>Calificaciones</h4>
             </div>
 
-            <div style="padding: 0 20px 20px 20px">
-              <table class="data-table" style="margin: 0">
+            <div class="contenedor-tabla-calificaciones">
+              <table class="tabla-datos tabla-calificaciones">
                 <thead>
                   <tr>
-                    <th style="text-align: left; color: #3b82f6">MATERIA</th>
-                    <th style="text-align: center; width: 80px">1EV</th>
-                    <th style="text-align: center; width: 80px">R/E</th>
-                    <th style="text-align: center; width: 80px">2EV</th>
-                    <th style="text-align: center; width: 80px">3EV</th>
-                    <th style="text-align: center; width: 80px">FINAL</th>
+                    <th class="encabezado-materia">MATERIA</th>
+                    <th class="columna-nota">1EV</th>
+                    <th class="columna-nota">R/E</th>
+                    <th class="columna-nota">2EV</th>
+                    <th class="columna-nota">3EV</th>
+                    <th class="columna-nota">FINAL</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Matemáticas</td>
-                    <td style="text-align: center; font-weight: 600">7</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">7.5</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      7.5
-                    </td>
+                    <td class="celda-nota">7</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">7.5</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota-final">7.5</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Lengua y Literatura</td>
-                    <td style="text-align: center; font-weight: 600">6.5</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">7</td>
-                    <td style="text-align: center; font-weight: 600">7.5</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      7
-                    </td>
+                    <td class="celda-nota">6.5</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">7</td>
+                    <td class="celda-nota">7.5</td>
+                    <td class="celda-nota-final">7</td>
                   </tr>
                   <tr>
                     <td>Inglés</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">8.5</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      8.5
-                    </td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">8.5</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota-final">8.5</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Ciencias Naturales</td>
-                    <td style="text-align: center; font-weight: 600">7.5</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td style="text-align: center; font-weight: 600">8</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      7.8
-                    </td>
+                    <td class="celda-nota">7.5</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota">8</td>
+                    <td class="celda-nota-final">7.8</td>
                   </tr>
                   <tr>
                     <td>Historia</td>
-                    <td style="text-align: center; font-weight: 600">7</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">7</td>
-                    <td style="text-align: center; font-weight: 600">7.5</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      7
-                    </td>
+                    <td class="celda-nota">7</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">7</td>
+                    <td class="celda-nota">7.5</td>
+                    <td class="celda-nota-final">7</td>
                   </tr>
                   <tr style="background: #f9fafb">
                     <td>Educación Física</td>
-                    <td style="text-align: center; font-weight: 600">8.5</td>
-                    <td style="text-align: center">-</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td style="text-align: center; font-weight: 600">9</td>
-                    <td
-                      style="
-                        text-align: center;
-                        font-weight: 700;
-                        color: #10b981;
-                        font-size: 16px;
-                      "
-                    >
-                      8.8
-                    </td>
+                    <td class="celda-nota">8.5</td>
+                    <td class="celda-nota">-</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota">9</td>
+                    <td class="celda-nota-final">8.8</td>
                   </tr>
-                  <tr style="background: #e0f2fe; font-weight: 700">
+                  <tr class="fila-promedio">
                     <td style="color: #1f2937">PROMEDIO GENERAL</td>
-                    <td colspan="4" style="text-align: center">-</td>
-                    <td
-                      style="
-                        text-align: center;
-                        color: #0369a1;
-                        font-size: 18px;
-                      "
-                    >
-                      7.8
-                    </td>
+                    <td colspan="4" class="celda-nota">-</td>
+                    <td class="celda-promedio">7.8</td>
                   </tr>
                 </tbody>
               </table>
@@ -788,6 +525,5 @@
     <script src="../../js/menu.js"></script>
     <script src="../../js/deleteModal.js"></script>
     <script src="../../js/main.js"></script>
-
-</body>
+  </body>
 </html>

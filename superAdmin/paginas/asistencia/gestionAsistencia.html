@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ver Estudiantes - Super Admin</title>
+    <title>Gestionar Asistencia - Super Admin</title>
     <link rel="stylesheet" href="../../estiloSuperAdmin/estiloSuperAdmin.css" />
     <link
       rel="stylesheet"
@@ -12,11 +12,12 @@
   </head>
   <body>
     <div class="contenedor-admin">
-      <!-- Botón externo para cuando el menú está oculto -->
+      <!-- Botón menú externo -->
       <button class="boton-menu-externo" id="botonMenuExterno">
         <span>&#9776;</span>
       </button>
 
+      <!-- Barra Lateral -->
       <header class="barra-lateral" id="barraLateral">
         <nav>
           <div class="contenedor-logo">
@@ -35,15 +36,15 @@
                 <span>Dashboard</span>
               </a>
             </li>
-            <li class="tiene-submenu abierto">
-              <a href="#" class="enlace-menu activo">
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
                 <i class="fas fa-user-graduate"></i>
                 <span>Estudiantes</span>
                 <span class="flecha">&#9662;</span>
               </a>
               <ul class="submenu">
                 <li>
-                  <a href="verEstudiantes.html" class="activo"
+                  <a href="../estudiantes/verEstudiantes.html"
                     >Ver Estudiantes</a
                   >
                 </li>
@@ -102,23 +103,21 @@
                 <span class="flecha">&#9662;</span>
               </a>
               <ul class="submenu">
-                <li>
-                  <a href="../horarios/verHorarios.html">Ver Horarios</a>
-                </li>
+                <li><a href="../horarios/verHorarios.html">Ver Horarios</a></li>
                 <li>
                   <a href="../horarios/generarHorarios.html">Generar Horario</a>
                 </li>
               </ul>
             </li>
-            <li class="tiene-submenu">
-              <a href="#" class="enlace-menu">
+            <li class="tiene-submenu abierto">
+              <a href="#" class="enlace-menu activo">
                 <i class="fas fa-user-check"></i>
                 <span>Asistencia</span>
                 <span class="flecha">&#9662;</span>
               </a>
               <ul class="submenu">
                 <li>
-                  <a href="../asistencia/gestionAsistencia.html"
+                  <a href="gestionAsistencia.html" class="activo"
                     >Gestionar Ausencias</a
                   >
                 </li>
@@ -180,213 +179,221 @@
         </nav>
       </header>
 
+      <!-- Contenido Principal -->
       <main class="contenido-principal">
-        <!-- Page Header -->
         <div class="encabezado-pagina">
-          <div>
-            <h1>Estudiantes</h1>
-            <p style="color: #8f9bba; margin-top: 5px">
-              Gestión de estudiantes del sistema
-            </p>
-          </div>
+          <h1>Gestionar Asistencia</h1>
           <div class="acciones-pagina">
-            <div class="caja-busqueda">
-              <i class="fas fa-search"></i>
-              <input type="text" placeholder="Buscar estudiante..." />
-            </div>
-            <a href="agregarEstudiantes.html" class="boton-primario">
-              <i class="fas fa-plus"></i>
-              Agregar Estudiante
-            </a>
+            <button class="boton-secundario" onclick="window.history.back()">
+              <i class="fas fa-arrow-left"></i> Volver
+            </button>
           </div>
         </div>
 
-        <!-- Data Table -->
+        <!-- Filtros -->
+        <div class="tarjeta-panel" style="margin-bottom: 30px">
+          <div class="encabezado-tarjeta">
+            <h3>Seleccionar Clase y Fecha</h3>
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 20px;
+              flex-wrap: wrap;
+              align-items: flex-end;
+            "
+          >
+            <div style="flex: 1; min-width: 200px">
+              <label class="etiqueta-formulario">Curso</label>
+              <select class="control-formulario">
+                <option value="">Seleccionar curso...</option>
+                <option value="daw">Desarrollo de Aplicaciones Web</option>
+                <option value="asir">
+                  Admin. Sistemas Informáticos en Red
+                </option>
+                <option value="ga">Gestión Administrativa</option>
+                <option value="3d">Animaciones 3D, Juegos...</option>
+                <option value="smr">Sistemas Microinformáticos y Redes</option>
+                <option value="ayf">Administración y Finanzas</option>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 200px">
+              <label class="etiqueta-formulario">Fecha</label>
+              <input
+                type="date"
+                class="control-formulario"
+                value="2025-12-06"
+              />
+            </div>
+            <button class="boton-primario">
+              <i class="fas fa-search"></i> Cargar Estudiantes
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Estudiantes -->
         <div class="contenedor-tabla">
+          <div class="encabezado-tarjeta">
+            <h3>Listado de Alumnos</h3>
+            <div class="acciones-pagina">
+              <button class="boton-primario">
+                <i class="fas fa-save"></i> Guardar Asistencia
+              </button>
+            </div>
+          </div>
+
           <table class="tabla-datos">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Nombre Completo</th>
-                <th>Email</th>
-                <th>Curso</th>
-                <th>Fecha Ingreso</th>
+                <th>Estudiante</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                <th>Observaciones</th>
               </tr>
             </thead>
             <tbody>
+              <!-- Fila Ejemplo 1 -->
               <tr>
-                <td>#001</td>
-                <td>Juan Pérez García</td>
-                <td>juan.perez@email.com</td>
-                <td>3º ESO A</td>
-                <td>01/09/2023</td>
                 <td>
-                  <span class="insignia-estado estado-activo">Activo</span>
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <div
+                      style="
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        background-color: #e2e8f0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #718096;
+                      "
+                    >
+                      <i class="fas fa-user"></i>
+                    </div>
+                    <span style="font-weight: 500; color: #2d3748"
+                      >Ana García López</span
+                    >
+                  </div>
                 </td>
                 <td>
-                  <div class="botones-accion">
-                    <a
-                      href="verDetallesEstudiantes.html"
-                      class="boton-icono boton-ver"
-                      title="Ver detalles"
+                  <div style="display: flex; gap: 15px">
+                    <label
+                      style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                      "
                     >
-                      <i class="fas fa-eye"></i>
-                    </a>
-                    <a
-                      href="modificarEstudiantes.html"
-                      class="boton-icono boton-editar"
-                      title="Editar"
+                      <input type="radio" name="asistencia_1" checked />
+                      Presente
+                    </label>
+                    <label
+                      style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        color: #e53e3e;
+                      "
                     >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="boton-icono boton-eliminar" title="Eliminar">
-                      <i class="fas fa-trash"></i>
-                    </button>
+                      <input type="radio" name="asistencia_1" /> Ausente
+                    </label>
+                    <label
+                      style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        color: #d69e2e;
+                      "
+                    >
+                      <input type="radio" name="asistencia_1" /> Retraso
+                    </label>
                   </div>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="Añadir comentario..."
+                    class="control-formulario"
+                  />
                 </td>
               </tr>
+              <!-- Fila Ejemplo 2 -->
               <tr>
-                <td>#002</td>
-                <td>María López Sánchez</td>
-                <td>maria.lopez@email.com</td>
-                <td>2º ESO B</td>
-                <td>01/09/2023</td>
                 <td>
-                  <span class="insignia-estado estado-activo">Activo</span>
-                </td>
-                <td>
-                  <div class="botones-accion">
-                    <a
-                      href="verDetallesEstudiantes.html"
-                      class="boton-icono boton-ver"
-                      title="Ver detalles"
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <div
+                      style="
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        background-color: #e2e8f0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #718096;
+                      "
                     >
-                      <i class="fas fa-eye"></i>
-                    </a>
-                    <a
-                      href="modificarEstudiantes.html"
-                      class="boton-icono boton-editar"
-                      title="Editar"
+                      <i class="fas fa-user"></i>
+                    </div>
+                    <span style="font-weight: 500; color: #2d3748"
+                      >Carlos Ruiz Mateo</span
                     >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="boton-icono boton-eliminar" title="Eliminar">
-                      <i class="fas fa-trash"></i>
-                    </button>
                   </div>
                 </td>
-              </tr>
-              <tr>
-                <td>#003</td>
-                <td>Carlos Rodríguez Martín</td>
-                <td>carlos.rodriguez@email.com</td>
-                <td>4º ESO A</td>
-                <td>15/09/2023</td>
                 <td>
-                  <span class="insignia-estado estado-pendiente"
-                    >Pendiente</span
-                  >
-                </td>
-                <td>
-                  <div class="botones-accion">
-                    <a
-                      href="verDetallesEstudiantes.html"
-                      class="boton-icono boton-ver"
-                      title="Ver detalles"
+                  <div style="display: flex; gap: 15px">
+                    <label
+                      style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                      "
                     >
-                      <i class="fas fa-eye"></i>
-                    </a>
-                    <a
-                      href="modificarEstudiantes.html"
-                      class="boton-icono boton-editar"
-                      title="Editar"
+                      <input type="radio" name="asistencia_2" checked />
+                      Presente
+                    </label>
+                    <label
+                      style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        color: #e53e3e;
+                      "
                     >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="boton-icono boton-eliminar" title="Eliminar">
-                      <i class="fas fa-trash"></i>
-                    </button>
+                      <input type="radio" name="asistencia_2" /> Ausente
+                    </label>
+                    <label
+                      style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        color: #d69e2e;
+                      "
+                    >
+                      <input type="radio" name="asistencia_2" /> Retraso
+                    </label>
                   </div>
                 </td>
-              </tr>
-              <tr>
-                <td>#004</td>
-                <td>Ana Fernández Torres</td>
-                <td>ana.fernandez@email.com</td>
-                <td>1º ESO C</td>
-                <td>01/09/2023</td>
                 <td>
-                  <span class="insignia-estado estado-activo">Activo</span>
-                </td>
-                <td>
-                  <div class="botones-accion">
-                    <a
-                      href="verDetallesEstudiantes.html"
-                      class="boton-icono boton-ver"
-                      title="Ver detalles"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </a>
-                    <a
-                      href="modificarEstudiantes.html"
-                      class="boton-icono boton-editar"
-                      title="Editar"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="boton-icono boton-eliminar" title="Eliminar">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>#005</td>
-                <td>Pedro Gómez Ruiz</td>
-                <td>pedro.gomez@email.com</td>
-                <td>3º ESO B</td>
-                <td>10/09/2023</td>
-                <td>
-                  <span class="insignia-estado estado-inactivo">Inactivo</span>
-                </td>
-                <td>
-                  <div class="botones-accion">
-                    <button class="boton-icono boton-ver" title="Ver detalles">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                    <a
-                      href="modificarEstudiantes.html"
-                      class="boton-icono boton-editar"
-                      title="Editar"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="boton-icono boton-eliminar" title="Eliminar">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
+                  <input
+                    type="text"
+                    placeholder="Añadir comentario..."
+                    class="control-formulario"
+                  />
                 </td>
               </tr>
             </tbody>
           </table>
-
-          <!-- Pagination -->
-          <div class="paginacion">
-            <button><i class="fas fa-chevron-left"></i></button>
-            <button class="activo">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>4</button>
-            <button><i class="fas fa-chevron-right"></i></button>
-          </div>
         </div>
       </main>
     </div>
-    <!-- Scripts -->
+
     <script src="../../js/menu.js"></script>
-    <script src="../../js/deleteModal.js"></script>
     <script src="../../js/main.js"></script>
   </body>
 </html>
