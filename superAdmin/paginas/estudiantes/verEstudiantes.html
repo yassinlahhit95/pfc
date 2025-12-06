@@ -192,8 +192,34 @@
           <div class="acciones-pagina">
             <div class="caja-busqueda">
               <i class="fas fa-search"></i>
-              <input type="text" placeholder="Buscar estudiante..." />
+              <input
+                type="text"
+                placeholder="Buscar estudiante..."
+                id="inputBusqueda"
+              />
             </div>
+            <select
+              id="filtroCurso"
+              class="selector-filtro"
+              style="
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                margin-right: 10px;
+              "
+            >
+              <option value="">Todos los cursos</option>
+              <option value="1º DAW">1º DAW</option>
+              <option value="2º DAW">2º DAW</option>
+              <option value="1º ASIR">1º ASIR</option>
+              <option value="2º ASIR">2º ASIR</option>
+              <option value="1º GA">1º GA</option>
+              <option value="2º GA">2º GA</option>
+              <option value="1º SMR">1º SMR</option>
+              <option value="2º SMR">2º SMR</option>
+              <option value="1º AYF">1º AYF</option>
+              <option value="2º AYF">2º AYF</option>
+            </select>
             <a href="agregarEstudiantes.html" class="boton-primario">
               <i class="fas fa-plus"></i>
               Agregar Estudiante
@@ -220,7 +246,7 @@
                 <td>#001</td>
                 <td>Juan Pérez García</td>
                 <td>juan.perez@email.com</td>
-                <td>3º ESO A</td>
+                <td>1º DAW</td>
                 <td>01/09/2023</td>
                 <td>
                   <span class="insignia-estado estado-activo">Activo</span>
@@ -251,7 +277,7 @@
                 <td>#002</td>
                 <td>María López Sánchez</td>
                 <td>maria.lopez@email.com</td>
-                <td>2º ESO B</td>
+                <td>2º DAW</td>
                 <td>01/09/2023</td>
                 <td>
                   <span class="insignia-estado estado-activo">Activo</span>
@@ -282,7 +308,7 @@
                 <td>#003</td>
                 <td>Carlos Rodríguez Martín</td>
                 <td>carlos.rodriguez@email.com</td>
-                <td>4º ESO A</td>
+                <td>1º ASIR</td>
                 <td>15/09/2023</td>
                 <td>
                   <span class="insignia-estado estado-pendiente"
@@ -315,7 +341,7 @@
                 <td>#004</td>
                 <td>Ana Fernández Torres</td>
                 <td>ana.fernandez@email.com</td>
-                <td>1º ESO C</td>
+                <td>2º ASIR</td>
                 <td>01/09/2023</td>
                 <td>
                   <span class="insignia-estado estado-activo">Activo</span>
@@ -346,7 +372,7 @@
                 <td>#005</td>
                 <td>Pedro Gómez Ruiz</td>
                 <td>pedro.gomez@email.com</td>
-                <td>3º ESO B</td>
+                <td>1º GA</td>
                 <td>10/09/2023</td>
                 <td>
                   <span class="insignia-estado estado-inactivo">Inactivo</span>
@@ -371,16 +397,6 @@
               </tr>
             </tbody>
           </table>
-
-          <!-- Pagination -->
-          <div class="paginacion">
-            <button><i class="fas fa-chevron-left"></i></button>
-            <button class="activo">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>4</button>
-            <button><i class="fas fa-chevron-right"></i></button>
-          </div>
         </div>
       </main>
     </div>
@@ -388,5 +404,37 @@
     <script src="../../js/menu.js"></script>
     <script src="../../js/deleteModal.js"></script>
     <script src="../../js/main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const inputBusqueda = document.getElementById("inputBusqueda");
+        const filtroCurso = document.getElementById("filtroCurso");
+        const tablaFilas = document.querySelectorAll(".tabla-datos tbody tr");
+
+        function filtrarEstudiantes() {
+          const texto = inputBusqueda.value.toLowerCase();
+          const cursoSeleccionado = filtroCurso.value.toLowerCase();
+
+          tablaFilas.forEach((fila) => {
+            const nombre = fila.children[1].textContent.toLowerCase();
+            const curso = fila.children[3].textContent.toLowerCase();
+            const email = fila.children[2].textContent.toLowerCase();
+
+            const coincideTexto =
+              nombre.includes(texto) || email.includes(texto);
+            const coincideCurso =
+              cursoSeleccionado === "" || curso === cursoSeleccionado;
+
+            if (coincideTexto && coincideCurso) {
+              fila.style.display = "";
+            } else {
+              fila.style.display = "none";
+            }
+          });
+        }
+
+        inputBusqueda.addEventListener("input", filtrarEstudiantes);
+        filtroCurso.addEventListener("change", filtrarEstudiantes);
+      });
+    </script>
   </body>
 </html>
