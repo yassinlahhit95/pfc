@@ -62,7 +62,7 @@
               </ul>
             </li>
             <li class="tiene-submenu abierto">
-              <a href="#" class="enlace-menu">
+              <a href="#" class="enlace-menu activo">
                 <i class="fas fa-user-tie"></i>
                 <span>Directores</span>
                 <span class="flecha">&#9662;</span>
@@ -104,6 +104,23 @@
               <ul class="submenu">
                 <li>
                   <a href="../horarios/verHorarios.html">Ver Horarios</a>
+                </li>
+                <li>
+                  <a href="../horarios/generarHorarios.html">Generar Horario</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-check"></i>
+                <span>Asistencia</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../asistencia/gestionAsistencia.html"
+                    >Gestionar Ausencias</a
+                  >
                 </li>
               </ul>
             </li>
@@ -149,6 +166,12 @@
               </a>
             </li>
             <li>
+              <a href="../notificaciones.html" class="enlace-menu">
+                <i class="fas fa-bell"></i>
+                <span>Notificaciones</span>
+              </a>
+            </li>
+            <li>
               <a href="#" class="enlace-menu">
                 <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
               </a>
@@ -159,19 +182,19 @@
 
       <main class="contenido-principal">
         <!-- Page Header -->
-        <div class="page-header">
+        <div class="encabezado-pagina">
           <div>
             <h1>Directores</h1>
             <p style="color: #8f9bba; margin-top: 5px">
               Gestión de directores del sistema
             </p>
           </div>
-          <div class="page-actions">
-            <div class="search-box">
+          <div class="acciones-pagina">
+            <div class="caja-busqueda">
               <i class="fas fa-search"></i>
               <input type="text" placeholder="Buscar director..." />
             </div>
-            <a href="agregarDirectores.html" class="btn-primary">
+            <a href="agregarDirectores.html" class="boton-primario">
               <i class="fas fa-plus"></i>
               Agregar Director
             </a>
@@ -179,8 +202,8 @@
         </div>
 
         <!-- Data Table -->
-        <div class="table-container">
-          <table class="data-table">
+        <div class="contenedor-tabla">
+          <table class="tabla-datos">
             <thead>
               <tr>
                 <th>ID</th>
@@ -199,24 +222,26 @@
                 <td>Ciencias</td>
                 <td>carlos.ruiz@email.com</td>
                 <td>600 111 222</td>
-                <td><span class="status-badge status-active">Activo</span></td>
                 <td>
-                  <div class="action-buttons">
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
                     <a
                       href="verDetallesDirectores.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
                     >
                       <i class="fas fa-eye"></i>
                     </a>
                     <a
                       href="modificarDirectores.html"
-                      class="btn-icon btn-edit"
+                      class="boton-icono boton-editar"
                       title="Editar"
                     >
                       <i class="fas fa-edit"></i>
                     </a>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -228,24 +253,26 @@
                 <td>Humanidades</td>
                 <td>ana.lopez@email.com</td>
                 <td>600 333 444</td>
-                <td><span class="status-badge status-active">Activo</span></td>
                 <td>
-                  <div class="action-buttons">
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
                     <a
                       href="verDetallesDirectores.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
                     >
                       <i class="fas fa-eye"></i>
                     </a>
                     <a
                       href="modificarDirectores.html"
-                      class="btn-icon btn-edit"
+                      class="boton-icono boton-editar"
                       title="Editar"
                     >
                       <i class="fas fa-edit"></i>
                     </a>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -255,9 +282,9 @@
           </table>
 
           <!-- Pagination -->
-          <div class="pagination">
+          <div class="paginacion">
             <button><i class="fas fa-chevron-left"></i></button>
-            <button class="active">1</button>
+            <button class="activo">1</button>
             <button>2</button>
             <button><i class="fas fa-chevron-right"></i></button>
           </div>
@@ -268,6 +295,5 @@
     <script src="../../js/menu.js"></script>
     <script src="../../js/deleteModal.js"></script>
     <script src="../../js/main.js"></script>
-
-</body>
+  </body>
 </html>

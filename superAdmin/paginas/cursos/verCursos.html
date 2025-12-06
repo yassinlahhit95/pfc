@@ -74,7 +74,7 @@
               </ul>
             </li>
             <li class="tiene-submenu abierto">
-              <a href="#" class="enlace-menu">
+              <a href="#" class="enlace-menu activo">
                 <i class="fas fa-book"></i>
                 <span>Cursos</span>
                 <span class="flecha">&#9662;</span>
@@ -102,8 +102,23 @@
                 <span class="flecha">&#9662;</span>
               </a>
               <ul class="submenu">
+                <li><a href="../horarios/verHorarios.html">Ver Horarios</a></li>
                 <li>
-                  <a href="../horarios/verHorarios.html">Ver Horarios</a>
+                  <a href="../horarios/generarHorarios.html">Generar Horario</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-check"></i>
+                <span>Asistencia</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="../asistencia/gestionAsistencia.html"
+                    >Gestionar Ausencias</a
+                  >
                 </li>
               </ul>
             </li>
@@ -149,6 +164,12 @@
               </a>
             </li>
             <li>
+              <a href="../notificaciones.html" class="enlace-menu">
+                <i class="fas fa-bell"></i>
+                <span>Notificaciones</span>
+              </a>
+            </li>
+            <li>
               <a href="#" class="enlace-menu">
                 <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
               </a>
@@ -159,19 +180,19 @@
 
       <main class="contenido-principal">
         <!-- Page Header -->
-        <div class="page-header">
+        <div class="encabezado-pagina">
           <div>
             <h1>Cursos</h1>
             <p style="color: #8f9bba; margin-top: 5px">
               Gestión de cursos académicos
             </p>
           </div>
-          <div class="page-actions">
-            <div class="search-box">
+          <div class="acciones-pagina">
+            <div class="caja-busqueda">
               <i class="fas fa-search"></i>
               <input type="text" placeholder="Buscar curso..." />
             </div>
-            <a href="agregarCursos.html" class="btn-primary">
+            <a href="agregarCursos.html" class="boton-primario">
               <i class="fas fa-plus"></i>
               Agregar Curso
             </a>
@@ -179,8 +200,8 @@
         </div>
 
         <!-- Data Table -->
-        <div class="table-container">
-          <table class="data-table">
+        <div class="contenedor-tabla">
+          <table class="tabla-datos">
             <thead>
               <tr>
                 <th>ID</th>
@@ -193,59 +214,378 @@
               </tr>
             </thead>
             <tbody>
+              <!-- Curso: Desarrollo de Aplicaciones Web (DAW) -->
+              <tr class="encabezado-grupo-curso">
+                <td colspan="7">Desarrollo de Aplicaciones Web (DAW)</td>
+              </tr>
               <tr>
-                <td>#C001</td>
-                <td>1º ESO A</td>
-                <td>Secundaria</td>
+                <td>#DAW1</td>
+                <td>1º DAW</td>
+                <td>Grado Superior</td>
                 <td>Juan Pérez</td>
-                <td>A-101</td>
-                <td><span class="status-badge status-active">Activo</span></td>
+                <td>A-201</td>
                 <td>
-                  <div class="action-buttons">
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
                     <a
                       href="verDetallesCursos.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </a>
+                      ><i class="fas fa-eye"></i
+                    ></a>
                     <a
                       href="modificarCursos.html"
-                      class="btn-icon btn-edit"
+                      class="boton-icono boton-editar"
                       title="Editar"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td>#C002</td>
-                <td>2º ESO B</td>
-                <td>Secundaria</td>
-                <td>María López</td>
-                <td>A-102</td>
-                <td><span class="status-badge status-active">Activo</span></td>
+                <td>#DAW2</td>
+                <td>2º DAW</td>
+                <td>Grado Superior</td>
+                <td>Juan Pérez</td>
+                <td>A-202</td>
                 <td>
-                  <div class="action-buttons">
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
                     <a
                       href="verDetallesCursos.html"
-                      class="btn-icon btn-view"
+                      class="boton-icono boton-ver"
                       title="Ver detalles"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </a>
+                      ><i class="fas fa-eye"></i
+                    ></a>
                     <a
                       href="modificarCursos.html"
-                      class="btn-icon btn-edit"
+                      class="boton-icono boton-editar"
                       title="Editar"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <button class="btn-icon btn-delete" title="Eliminar">
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Curso: ASIR -->
+              <tr class="encabezado-grupo-curso">
+                <td colspan="7">Admin. Sistemas Informáticos en Red (ASIR)</td>
+              </tr>
+              <tr>
+                <td>#ASIR1</td>
+                <td>1º ASIR</td>
+                <td>Grado Superior</td>
+                <td>María López</td>
+                <td>A-203</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#ASIR2</td>
+                <td>2º ASIR</td>
+                <td>Grado Superior</td>
+                <td>María López</td>
+                <td>A-204</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Curso: Gestión Administrativa -->
+              <tr class="encabezado-grupo-curso">
+                <td colspan="7">Gestión Administrativa (GA)</td>
+              </tr>
+              <tr>
+                <td>#GA1</td>
+                <td>1º GA</td>
+                <td>Grado Medio</td>
+                <td>Carlos Ruiz</td>
+                <td>B-101</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#GA2</td>
+                <td>2º GA</td>
+                <td>Grado Medio</td>
+                <td>Carlos Ruiz</td>
+                <td>B-102</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Curso: 3D y Juegos -->
+              <tr class="encabezado-grupo-curso">
+                <td colspan="7">Animaciones 3D, Juegos y Entornos (3D)</td>
+              </tr>
+              <tr>
+                <td>#3D1</td>
+                <td>1º 3D y Juegos</td>
+                <td>Grado Superior</td>
+                <td>Laura Gómez</td>
+                <td>C-301</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#3D2</td>
+                <td>2º 3D y Juegos</td>
+                <td>Grado Superior</td>
+                <td>Laura Gómez</td>
+                <td>C-302</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Curso: SMR -->
+              <tr class="encabezado-grupo-curso">
+                <td colspan="7">Sistemas Microinformáticos y Redes (SMR)</td>
+              </tr>
+              <tr>
+                <td>#SMR1</td>
+                <td>1º SMR</td>
+                <td>Grado Medio</td>
+                <td>Pedro Sánchez</td>
+                <td>B-103</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#SMR2</td>
+                <td>2º SMR</td>
+                <td>Grado Medio</td>
+                <td>Pedro Sánchez</td>
+                <td>B-104</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Curso: AYF -->
+              <tr class="encabezado-grupo-curso">
+                <td colspan="7">Administración y Finanzas (AYF)</td>
+              </tr>
+              <tr>
+                <td>#AYF1</td>
+                <td>1º AYF</td>
+                <td>Grado Superior</td>
+                <td>Ana Martínez</td>
+                <td>B-201</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#AYF2</td>
+                <td>2º AYF</td>
+                <td>Grado Superior</td>
+                <td>Ana Martínez</td>
+                <td>B-202</td>
+                <td>
+                  <span class="insignia-estado estado-activo">Activo</span>
+                </td>
+                <td>
+                  <div class="botones-accion">
+                    <a
+                      href="verDetallesCursos.html"
+                      class="boton-icono boton-ver"
+                      title="Ver detalles"
+                      ><i class="fas fa-eye"></i
+                    ></a>
+                    <a
+                      href="modificarCursos.html"
+                      class="boton-icono boton-editar"
+                      title="Editar"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                    <button class="boton-icono boton-eliminar" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -253,21 +593,22 @@
               </tr>
             </tbody>
           </table>
-
-          <!-- Pagination -->
-          <div class="pagination">
-            <button><i class="fas fa-chevron-left"></i></button>
-            <button class="active">1</button>
+          <div class="paginacion">
+            <button>&laquo;</button>
+            <button class="activo">1</button>
             <button>2</button>
-            <button><i class="fas fa-chevron-right"></i></button>
+            <button>3</button>
+            <button>&raquo;</button>
           </div>
         </div>
       </main>
     </div>
+
     <!-- Scripts -->
     <script src="../../js/menu.js"></script>
-    <script src="../../js/deleteModal.js"></script>
     <script src="../../js/main.js"></script>
-
-</body>
+    <script>
+      // ... same scripts if any
+    </script>
+  </body>
 </html>

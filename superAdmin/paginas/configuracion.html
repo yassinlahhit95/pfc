@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel Super Admin</title>
+    <title>Configuración - Super Admin</title>
     <link rel="stylesheet" href="../estiloSuperAdmin/estiloSuperAdmin.css" />
     <link
       rel="stylesheet"
@@ -12,14 +12,19 @@
   </head>
   <body>
     <div class="contenedor-admin">
-      <button class="boton-menu" id="botonMenu">
+      <button class="boton-menu-externo" id="botonMenuExterno">
         <span>&#9776;</span>
       </button>
 
       <header class="barra-lateral" id="barraLateral">
         <nav>
           <div class="contenedor-logo">
-            <div class="titulo-proyecto">Projet</div>
+            <div class="logo-titulo-wrapper">
+              <div class="titulo-proyecto">Projet</div>
+              <button class="boton-menu" id="botonMenu">
+                <span>&#9776;</span>
+              </button>
+            </div>
             <div class="subtitulo-admin">Super Admin</div>
           </div>
           <ul class="lista-navegacion">
@@ -97,6 +102,23 @@
                 <li>
                   <a href="horarios/verHorarios.html">Ver Horarios</a>
                 </li>
+                <li>
+                  <a href="horarios/generarHorarios.html">Generar Horario</a>
+                </li>
+              </ul>
+            </li>
+            <li class="tiene-submenu">
+              <a href="#" class="enlace-menu">
+                <i class="fas fa-user-check"></i>
+                <span>Asistencia</span>
+                <span class="flecha">&#9662;</span>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a href="asistencia/gestionAsistencia.html"
+                    >Gestionar Ausencias</a
+                  >
+                </li>
               </ul>
             </li>
             <li class="tiene-submenu">
@@ -141,6 +163,12 @@
               </a>
             </li>
             <li>
+              <a href="notificaciones.html" class="enlace-menu">
+                <i class="fas fa-bell"></i>
+                <span>Notificaciones</span>
+              </a>
+            </li>
+            <li>
               <a href="#" class="enlace-menu">
                 <i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
               </a>
@@ -150,98 +178,146 @@
       </header>
 
       <main class="contenido-principal">
-        <div class="page-header">
+        <div class="encabezado-pagina">
           <div>
             <h1>Configuración</h1>
             <p style="color: #8f9bba; margin-top: 5px">
               Ajustes generales del sistema y perfil
             </p>
           </div>
-          <div class="page-actions">
-            <a href="../index.html" class="btn-secondary"
+          <div class="acciones-pagina">
+            <a href="../index.html" class="boton-secundario"
               ><i class="fas fa-arrow-left"></i> Volver</a
             >
           </div>
         </div>
 
         <!-- General -->
-        <div class="dashboard-card" style="margin-bottom: 20px">
-          <div class="card-header">
+        <div class="tarjeta-panel" style="margin-bottom: 20px">
+          <div class="encabezado-tarjeta">
             <h3><i class="fas fa-sliders-h"></i> General</h3>
           </div>
           <form>
-            <div class="form-group">
-              <label>Nombre del Instituto</label>
-              <input type="text" value="Instituto Projet" />
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">Nombre del Instituto</label>
+              <input
+                type="text"
+                value="Instituto Projet"
+                class="control-formulario"
+              />
             </div>
-            <div class="form-group">
-              <label>Año Académico Actual</label>
-              <select>
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">Año Académico Actual</label>
+              <select class="control-formulario">
                 <option value="2023-2024" selected>2023-2024</option>
                 <option value="2024-2025">2024-2025</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Idioma del Sistema</label>
-              <select>
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">Idioma del Sistema</label>
+              <select class="control-formulario">
                 <option value="es" selected>Español</option>
                 <option value="en">English</option>
                 <option value="ca">Català</option>
               </select>
             </div>
-            <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <button type="submit" class="boton-primario">
+              Guardar Cambios
+            </button>
           </form>
         </div>
 
         <!-- Seguridad -->
-        <div class="dashboard-card" style="margin-bottom: 20px">
-          <div class="card-header">
+        <div class="tarjeta-panel" style="margin-bottom: 20px">
+          <div class="encabezado-tarjeta">
             <h3><i class="fas fa-shield-alt"></i> Seguridad</h3>
           </div>
           <form>
-            <div class="form-group">
-              <label>Contraseña Actual</label>
-              <input type="password" placeholder="********" />
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">Contraseña Actual</label>
+              <input
+                type="password"
+                placeholder="********"
+                class="control-formulario"
+              />
             </div>
-            <div class="form-group">
-              <label>Nueva Contraseña</label>
-              <input type="password" placeholder="********" />
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">Nueva Contraseña</label>
+              <input
+                type="password"
+                placeholder="********"
+                class="control-formulario"
+              />
             </div>
-            <div class="form-group">
-              <label>Confirmar Nueva Contraseña</label>
-              <input type="password" placeholder="********" />
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario"
+                >Confirmar Nueva Contraseña</label
+              >
+              <input
+                type="password"
+                placeholder="********"
+                class="control-formulario"
+              />
             </div>
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="boton-primario">
               Actualizar Contraseña
             </button>
           </form>
         </div>
 
         <!-- Notificaciones -->
-        <div class="dashboard-card">
-          <div class="card-header">
+        <div class="tarjeta-panel">
+          <div class="encabezado-tarjeta">
             <h3><i class="fas fa-bell"></i> Notificaciones</h3>
           </div>
           <form>
-            <div class="form-group">
-              <label>
+            <div class="grupo-formulario">
+              <label
+                class="etiqueta-formulario"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  cursor: pointer;
+                "
+              >
                 <input type="checkbox" checked />
                 Notificar nuevos registros
               </label>
             </div>
-            <div class="form-group">
-              <label>
+            <div class="grupo-formulario">
+              <label
+                class="etiqueta-formulario"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  cursor: pointer;
+                "
+              >
                 <input type="checkbox" checked />
                 Alertas de sistema
               </label>
             </div>
-            <div class="form-group">
-              <label>
+            <div class="grupo-formulario">
+              <label
+                class="etiqueta-formulario"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  cursor: pointer;
+                "
+              >
                 <input type="checkbox" />
                 Reportes semanales por email
               </label>
             </div>
-            <button type="submit" class="btn-primary" style="margin-top: 15px">
+            <button
+              type="submit"
+              class="boton-primario"
+              style="margin-top: 15px"
+            >
               Guardar Preferencias
             </button>
           </form>
