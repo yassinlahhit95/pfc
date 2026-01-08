@@ -1,4 +1,4 @@
-/* ========================================
+﻿/* ========================================
    RESET Y ESTILOS GLOBALES
    ======================================== */
 * {
@@ -11,7 +11,6 @@ body {
   background-color: #ffffff;
   color: #2d3748;
 }
-
 /* ========================================
    LAYOUT PRINCIPAL
    ======================================== */
@@ -19,7 +18,6 @@ body {
   display: flex;
   min-height: 100vh;
 }
-
 /* Barra Lateral */
 .barra-lateral {
   width: 260px;
@@ -33,11 +31,9 @@ body {
   overflow-x: hidden;
   z-index: 999;
 }
-
 .barra-lateral.oculto {
   transform: translateX(-100%);
 }
-
 .contenedor-logo {
   padding: 30px 25px;
   background: #ffffff;
@@ -45,7 +41,6 @@ body {
   top: 0;
   z-index: 20;
 }
-
 .logo-titulo-wrapper {
   display: flex;
   align-items: center;
@@ -53,7 +48,6 @@ body {
   margin-bottom: 8px;
   position: relative;
 }
-
 .titulo-proyecto {
   font-size: 24px;
   font-weight: 800;
@@ -66,7 +60,6 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
 .titulo-proyecto::before {
   content: "\f19d";
   font-family: "Font Awesome 6 Free";
@@ -78,7 +71,6 @@ body {
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
 }
-
 .subtitulo-admin {
   font-size: 11px;
   font-weight: 700;
@@ -90,8 +82,7 @@ body {
   position: relative;
   top: -2px;
 }
-
-/* Navegación */
+/* NavegaciÃ³n */
 .lista-navegacion {
   list-style: none;
   padding: 0 10px;
@@ -99,7 +90,6 @@ body {
 .lista-navegacion li {
   margin-bottom: 5px;
 }
-
 .enlace-menu {
   display: flex;
   align-items: center;
@@ -110,13 +100,11 @@ body {
   border-radius: 8px;
   transition: 0.3s;
 }
-
 .enlace-menu i {
   color: #422afb;
   font-size: 18px;
   width: 20px;
 }
-
 .enlace-menu:hover,
 .enlace-menu.activo {
   background-color: #f7fafc;
@@ -125,7 +113,6 @@ body {
 .enlace-menu.activo {
   font-weight: 600;
 }
-
 .boton-menu {
   color: #94a3b8;
   border: none;
@@ -144,8 +131,7 @@ body {
   color: var(--secondary);
   transform: scale(1.05);
 }
-
-/* Submenú */
+/* SubmenÃº */
 .submenu {
   max-height: 0;
   overflow: hidden;
@@ -155,7 +141,6 @@ body {
   list-style: none;
   margin-top: 5px;
 }
-
 .submenu li a {
   display: flex;
   align-items: center;
@@ -166,7 +151,6 @@ body {
   text-decoration: none;
   transition: color 0.3s;
 }
-
 .submenu li a:hover,
 .submenu li a.activo {
   color: #2d3748;
@@ -185,7 +169,6 @@ body {
 .tiene-submenu.abierto .flecha {
   transform: rotate(180deg);
 }
-
 /* Scrollbar Sidebar */
 .barra-lateral::-webkit-scrollbar {
   width: 6px;
@@ -200,7 +183,6 @@ body {
 .barra-lateral::-webkit-scrollbar-thumb:hover {
   background: #422afb;
 }
-
 /* Contenido Principal */
 .contenido-principal {
   margin-left: 260px;
@@ -213,8 +195,7 @@ body {
   margin-left: 0;
   padding-left: 80px;
 }
-
-/* Botón Flotante Mobile */
+/* BotÃ³n Flotante Mobile */
 .boton-menu-externo {
   position: fixed;
   top: 20px;
@@ -247,7 +228,6 @@ body {
   opacity: 1;
   pointer-events: auto;
 }
-
 /* ========================================
    COMPONENTES UI GLOBALES
    ======================================== */
@@ -306,7 +286,6 @@ body {
 .boton-cancelar:hover {
   background-color: #d1d5db;
 }
-
 /* Icon Buttons en Tablas */
 .boton-icono {
   width: 35px;
@@ -344,7 +323,6 @@ body {
   background-color: #6366f1;
   color: white;
 }
-
 /* Inputs & Busqueda */
 .caja-busqueda {
   display: flex;
@@ -366,7 +344,6 @@ body {
 .caja-busqueda i {
   color: #8f9bba;
 }
-
 input[type="color"] {
   border: 1px solid #e2e8f0;
   width: 50px;
@@ -374,7 +351,6 @@ input[type="color"] {
   cursor: pointer;
   border-radius: 8px;
 }
-
 /* Cards & Contenedores */
 .tarjeta-panel,
 .tarjeta-estadistica,
@@ -391,14 +367,25 @@ input[type="color"] {
   padding: 30px;
   max-width: 500px;
 }
+.encabezado-tarjeta {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.encabezado-tarjeta h3 {
+  font-size: 18px;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .contenedor-selector-color {
   margin-top: 20px;
   display: flex;
   gap: 15px;
 }
-
 /* ========================================
-   DASHBOARD & ESTADÍSTICAS
+   DASHBOARD & ESTADÃSTICAS
    ======================================== */
 .encabezado-panel {
   display: flex;
@@ -415,7 +402,6 @@ input[type="color"] {
   color: #8f9bba;
   font-size: 14px;
 }
-
 .acciones-encabezado {
   display: flex;
   gap: 15px;
@@ -445,7 +431,6 @@ input[type="color"] {
   border-radius: 10px;
   font-weight: bold;
 }
-
 /* Stats Grid */
 .cuadricula-estadisticas {
   display: flex;
@@ -465,7 +450,6 @@ input[type="color"] {
   transform: translateY(-5px);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
-
 .icono-estadistica {
   width: 60px;
   height: 60px;
@@ -489,7 +473,6 @@ input[type="color"] {
 .tarjeta-estadistica-violeta .icono-estadistica {
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
 }
-
 .info-estadistica {
   flex: 1;
 }
@@ -504,7 +487,6 @@ input[type="color"] {
   font-size: 14px;
   margin-bottom: 8px;
 }
-
 .cambio-estadistica {
   font-size: 12px;
   font-weight: 600;
@@ -520,7 +502,6 @@ input[type="color"] {
   background-color: #e5e7eb;
   color: #6b7280;
 }
-
 .ver-todo {
   color: #422afb;
   font-size: 14px;
@@ -530,7 +511,6 @@ input[type="color"] {
 .ver-todo:hover {
   text-decoration: underline;
 }
-
 .cuadricula-secundaria {
   display: flex;
   flex-wrap: wrap;
@@ -541,7 +521,6 @@ input[type="color"] {
   flex: 1 1 300px;
   margin-bottom: 0;
 }
-
 /* Notificaciones y Acciones */
 .lista-notificaciones {
   display: flex;
@@ -597,7 +576,6 @@ input[type="color"] {
   border-radius: 12px;
   font-weight: 600;
 }
-
 .cuadricula-acciones-rapidas {
   display: flex;
   flex-wrap: wrap;
@@ -631,7 +609,6 @@ input[type="color"] {
   font-weight: 500;
   text-align: center;
 }
-
 /* ========================================
    TABLAS Y DATOS
    ======================================== */
@@ -656,7 +633,6 @@ input[type="color"] {
   overflow-x: auto;
   padding: 25px;
 }
-
 .tabla-datos {
   width: 100%;
   border-collapse: separate;
@@ -698,7 +674,6 @@ input[type="color"] {
 .tabla-datos tbody tr:hover {
   background-color: #f7fafc;
 }
-
 .insignia-estado {
   padding: 5px 12px;
   border-radius: 12px;
@@ -722,7 +697,6 @@ input[type="color"] {
   display: flex;
   gap: 8px;
 }
-
 /* ========================================
    FORMULARIOS
    ======================================== */
@@ -743,7 +717,6 @@ input[type="color"] {
 .grupo-formulario.ancho-completo {
   flex: 1 1 100%;
 }
-
 .grupo-formulario label,
 .etiqueta-formulario,
 .grupo-formulario-modal label {
@@ -760,7 +733,6 @@ input[type="color"] {
 .grupo-formulario label .requerido {
   color: #dc2626;
 }
-
 .grupo-formulario input,
 .grupo-formulario select,
 .grupo-formulario textarea,
@@ -778,7 +750,6 @@ input[type="color"] {
 .grupo-formulario-modal input {
   border-width: 2px;
 }
-
 .grupo-formulario input:focus,
 .grupo-formulario select:focus,
 .grupo-formulario textarea:focus,
@@ -808,7 +779,6 @@ input[type="color"] {
   margin-top: 30px;
   justify-content: flex-end;
 }
-
 #listaDestinatarios div label {
   cursor: pointer;
 }
@@ -818,7 +788,6 @@ input[type="color"] {
   align-items: center;
   justify-content: space-between;
 }
-
 /* ========================================
    MODALES
    ======================================== */
@@ -845,7 +814,6 @@ input[type="color"] {
   width: 90%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
-
 .encabezado-modal {
   display: flex;
   align-items: center;
@@ -889,7 +857,6 @@ input[type="color"] {
   color: #3b82f6;
   font-weight: 600;
 }
-
 .pie-modal {
   display: flex;
   gap: 10px;
@@ -921,9 +888,8 @@ input[type="color"] {
 .error-modal.activo {
   display: block;
 }
-
 /* ========================================
-   PÁGINAS ESPECÍFICAS
+   PÃGINAS ESPECÃFICAS
    ======================================== */
 /* Ver Materias */
 .cuadricula-clases {
@@ -972,14 +938,12 @@ input[type="color"] {
   color: #718096;
   font-size: 14px;
 }
-
 .seccion-archivos {
   display: none;
 }
 .seccion-archivos.visible {
   display: block;
 }
-
 .elemento-archivo {
   display: flex;
   align-items: center;
@@ -1033,7 +997,6 @@ input[type="color"] {
 .boton-eliminar-simple:hover {
   opacity: 1;
 }
-
 /* Generar Horarios */
 .cuadricula-horario {
   display: grid;
@@ -1073,7 +1036,6 @@ input[type="color"] {
   font-size: 12px;
   margin-bottom: 4px;
 }
-
 /* Ver Cursos & Calificaciones */
 .encabezado-grupo-curso td {
   background-color: #f1f5f9;
@@ -1167,9 +1129,8 @@ input[type="color"] {
   color: #0369a1;
   font-size: 18px;
 }
-
 /* ========================================
-   MEDIA QUERIES COMPARTIDOS
+   MEDIA QUERIES
    ======================================== */
 @media (max-width: 1200px) {
   .tarjeta-grafico,
@@ -1183,7 +1144,6 @@ input[type="color"] {
     flex: 1 1 100%;
   }
 }
-
 @media (max-width: 768px) {
   .barra-lateral {
     transform: translateX(-100%);
@@ -1199,7 +1159,6 @@ input[type="color"] {
     opacity: 1 !important;
     pointer-events: auto !important;
   }
-
   .encabezado-panel,
   .encabezado-pagina,
   .acciones-formulario {
@@ -1215,7 +1174,6 @@ input[type="color"] {
   .boton-cancelar {
     width: 100%;
   }
-
   .caja-busqueda {
     width: 100%;
     min-width: 0;
@@ -1230,13 +1188,11 @@ input[type="color"] {
   .tabla-datos td {
     padding: 10px 8px;
   }
-
   .grupo-formulario,
   .tarjeta-estadistica,
   .accion-rapida {
     flex: 1 1 100%;
   }
-
   #listaNotificaciones .elemento-notificacion {
     flex-direction: column;
     align-items: flex-start;

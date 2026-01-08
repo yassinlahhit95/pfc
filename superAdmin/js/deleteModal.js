@@ -12,27 +12,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Crear el modal si no existe
   function createDeleteModal() {
-    if (document.getElementById('deleteModal')) return;
+    if (document.getElementById('modalEliminar')) return;
 
     const modalHTML = `
-      <div id="deleteModal" class="modal-overlay">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-icon">
+      <div id="modalEliminar" class="superposicion-modal">
+        <div class="contenido-modal">
+          <div class="encabezado-modal">
+            <div class="icono-modal">
               <i class="fas fa-exclamation-triangle"></i>
             </div>
             <h2>Confirmar Eliminación</h2>
           </div>
-          <div class="modal-body">
+          <div class="cuerpo-modal">
             <p>¿Estás seguro de que deseas eliminar este registro?</p>
-            <div class="modal-info">
+            <div class="info-modal">
               <strong>Registro a eliminar:</strong>
               <span id="modalItemName"></span>
             </div>
             <p style="color: #dc2626; font-weight: 600;">
               Esta acción no se puede deshacer.
             </p>
-            <div class="modal-form-group">
+            <div class="grupo-formulario-modal">
               <label for="deleteCode">
                 Para confirmar, introduce el código del registro:
                 <span style="color: #dc2626;">*</span>
@@ -43,16 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 placeholder="Ejemplo: #001"
                 autocomplete="off"
               />
-              <div id="deleteCodeError" class="modal-error">
+              <div id="deleteCodeError" class="error-modal">
                 El código no coincide. Por favor, verifica e intenta nuevamente.
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="modal-btn modal-btn-cancel" id="modalCancelBtn">
+          <div class="pie-modal">
+            <button type="button" class="boton-modal boton-modal-cancelar" id="modalCancelBtn">
               Cancelar
             </button>
-            <button type="button" class="modal-btn modal-btn-delete" id="modalDeleteBtn">
+            <button type="button" class="boton-modal boton-modal-eliminar" id="modalDeleteBtn">
               <i class="fas fa-trash"></i> Eliminar
             </button>
           </div>
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
     // Event listeners del modal
-    const modal = document.getElementById('deleteModal');
+    const modal = document.getElementById('modalEliminar');
     const cancelBtn = document.getElementById('modalCancelBtn');
     const deleteBtn = document.getElementById('modalDeleteBtn');
     const codeInput = document.getElementById('deleteCode');
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Limpiar error al escribir
     codeInput.addEventListener('input', () => {
       codeInput.classList.remove('error');
-      errorMsg.classList.remove('active');
+      errorMsg.classList.remove('activo');
     });
 
     // Confirmar eliminación
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         // Código incorrecto
         codeInput.classList.add('error');
-        errorMsg.classList.add('active');
+        errorMsg.classList.add('activo');
         codeInput.focus();
       }
     });
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
       callback: callback
     };
 
-    const modal = document.getElementById('deleteModal');
+    const modal = document.getElementById('modalEliminar');
     const nameElement = document.getElementById('modalItemName');
     const codeInput = document.getElementById('deleteCode');
     const errorMsg = document.getElementById('deleteCodeError');
@@ -129,9 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
     nameElement.textContent = itemName;
     codeInput.value = '';
     codeInput.classList.remove('error');
-    errorMsg.classList.remove('active');
+    errorMsg.classList.remove('activo');
 
-    modal.classList.add('active');
+    modal.classList.add('activo');
     
     // Focus en el input después de la animación
     setTimeout(() => codeInput.focus(), 300);
@@ -139,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cerrar modal
   function closeDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.classList.remove('active');
+    const modal = document.getElementById('modalEliminar');
+    modal.classList.remove('activo');
     deleteModalData = { itemId: null, itemName: null, itemCode: null, callback: null };
   }
 

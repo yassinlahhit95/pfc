@@ -1,0 +1,27 @@
+📝 الـ Prompt (النص التوجيهي) باللغة العربية
+"أريد تطوير نظام عمل بدون إنترنت (Offline Mode) لمشروعي المبني بـ PHP Native MVC. المطلوب هو:
+
+التخزين المحلي: استخدام LocalStorage لحفظ بيانات الطلاب والكورسات في المتصفح، لضمان بقائها حتى بعد إغلاق الحاسوب.
+
+إدارة الإضافة أوفلاين: عند إضافة طالب جديد والإنترنت مقطوع، يتم تخزين البيانات في مصفوفة (Array) داخل LocalStorage.
+
+المزامنة عبر AJAX: بمجرد عودة الإنترنت، يجب إرسال البيانات المخزنة تلقائياً إلى ملف الـ Controller باستخدام تقنية AJAX (jQuery) عبر طلبات POST عادية، لكي يستقبلها PHP كمتغيرات $_POST.
+
+تحديث البيانات: عند توفر الإنترنت، يجب تحديث نسخة الـ LocalStorage بآخر البيانات من قاعدة البيانات MySQL لضمان دقة المعلومات عند الانقطاع.
+
+ملاحظة: أريد كوداً بسيطاً مناسباً للمبتدئين، مع الحفاظ على هيكلية MVC الحالية."
+
+📝 El Prompt en Español (لغة مشروعك البرمجية)
+"Deseo desarrollar un sistema de funcionamiento Offline para mi proyecto PHP Native MVC. Los requerimientos son:
+
+Almacenamiento Local: Usar LocalStorage para guardar los datos de estudiantes y cursos en el navegador, asegurando que persistan incluso tras apagar el ordenador.
+
+Gestión de Inserción Offline: Al agregar un nuevo estudiante sin conexión a Internet, los datos deben guardarse en un array dentro de LocalStorage.
+
+Sincronización vía AJAX: Una vez recuperada la conexión, el sistema debe enviar automáticamente los datos pendientes al controlador usando AJAX (jQuery) mediante peticiones POST estándar, para que PHP los reciba como variables $_POST.
+
+Actualización de Cache: Cuando haya internet, se debe actualizar el LocalStorage con los últimos datos de la base de datos MySQL para garantizar información precisa durante desconexiones futuras.
+
+Nota: El código debe ser sencillo y apto para principiantes, respetando la estructura MVC actual del proyecto."
+
+****************************************************
