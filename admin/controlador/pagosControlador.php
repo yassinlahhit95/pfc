@@ -7,78 +7,67 @@ $objetoConexion = new Conexion();
 $conexionBD = $objetoConexion->conectar();
 $modeloPago = new pago($conexionBD);
 
-if (isset($_POST['accion'])) {
+if (isset($_POST['guardarPago'])) {
     $accion = $_POST['accion'];
+    $idPago = $_POST['idPago'] ?? null;
     
-    unset($_SESSION['errores'], $_SESSION['datos_viejos']);
+    unset($_SESSION['errores'], $_SESSION['datos_pagos']);
 
-    if ($accion == 'insertar' || $accion == 'actualizar') {
-        $errores = [];
-        
-        $idEstudiante = $_POST['idEstudiante'] ?? '';
-        $concepto = trim($_POST['concepto']);
-        $monto = trim($_POST['monto']);
-        $tipoPago = $_POST['tipoPago'];
-        $estadoPago = $_POST['estadoPago'];
-        $fechaInput = trim($_POST['fechaPago']); // DD-MM-YYYY
+    $errores = [];
+    
+    $idEstudiante = $_POST['idEstudiante'] ?? '';
+    $concepto = trim($_POST['concepto'] ?? '');
+    $monto = trim($_POST['monto'] ?? '');
+    $tipoPago = $_POST['tipoPago'] ?? '';
+    $estadoPago = $_POST['estadoPago'] ?? '';
+    $fechaPago = $_POST['fechaPago'] ?? '';
 
-        // --- VALIDACIONES ---
-        if (empty($idEstudiante)) { $errores['idEstudiante'] = "Debe seleccionar un alumno."; }
-        
-        if (empty($concepto)) {
-            $errores['concepto'] = "El concepto es obligatorio.";
-        }
+    // --- VALIDACIONES ---
+    if (empty($idEstudiante)) { $errores['idEstudiante'] = "Debe seleccionar un alumno."; }
+    if (empty($concepto)) { $errores['concepto'] = "El concepto es obligatorio."; }
+    if (empty($monto)) { $errores['monto'] = "El monto es obligatorio."; }
+    if (empty($tipoPago)) { $errores['tipoPago'] = "El tipo de pago es obligatorio."; }
+    if (empty($estadoPago)) { $errores['estadoPago'] = "El estado de pago es obligatorio."; }
+    if (empty($fechaPago)) { $errores['fechaPago'] = "La fecha es obligatoria."; }
 
-        if (empty($monto)) {
-            $errores['monto'] = "El monto es obligatorio.";
-        } else if (!is_numeric($monto)) {
-            $errores['monto'] = "El monto debe ser un número.";
-        }
-
-        if (!empty($fechaInput) && !preg_match("/^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/", $fechaInput)) {
-            $errores['fechaPago'] = "Formato de fecha inválido (DD-MM-YYYY).";
-        }
-
-        if (count($errores) > 0) {
-            $_SESSION['errores'] = $errores;
-            $_SESSION['datos_viejos'] = $_POST;
-            $url = ($accion == 'insertar') ? "agregarPagos.php" : "modificarPagos.php?id=" . $_POST['idPago'];
-            header("Location: ../vistas/pagos/" . $url);
-            exit;
-        }
-
-        // Convertir fecha para BD si existe
-        $fechaBD = null;
-        if (!empty($fechaInput)) {
-            $partes = explode("-", $fechaInput);
-            $fechaBD = $partes[2] . "-" . $partes[1] . "-" . $partes[0];
-        }
-
-        $datos = [
-            'idEstudiante' => $idEstudiante,
-            'concepto' => $concepto,
-            'monto' => $monto,
-            'tipoPago' => $tipoPago,
-            'estadoPago' => $estadoPago,
-            'fechaPago' => $fechaBD
-        ];
-
-        if ($accion == 'insertar') {
-            if ($modeloPago->insertarPagoModelo($datos)) {
-                $_SESSION['exito'] = "Pago registrado correctamente.";
-            }
-        }
-        header("Location: ../vistas/pagos/verPagosGeneral.php");
+    if (count($errores) > 0) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_pagos'] = $_POST;
+        $url = ($accion == 'insertar') ? "agregarPagos.php" : "modificarPagos.php?id=" . $idPago;
+        header("Location: ../vistas/pagos/" . $url);
         exit;
     }
 
-    if ($accion == 'eliminar') {
-        $id = $_POST['idPago'];
-        if ($modeloPago->eliminarPagoModelo($id)) {
-            $_SESSION['exito'] = "Registro de pago eliminado.";
+    $datos = [
+        'idEstudiante' => $idEstudiante,
+        'concepto' => $concepto,
+        'monto' => $monto,
+        'tipoPago' => $tipoPago,
+        'estadoPago' => $estadoPago,
+        'fechaPago' => $fechaPago
+    ];
+
+    if ($accion == 'insertar') {
+        if ($modeloPago->insertarPagoModelo($datos)) {
+            $_SESSION['exito'] = "Pago registrado correctamente.";
         }
-        header("Location: ../vistas/pagos/verPagosGeneral.php");
-        exit;
+    } else if ($accion == 'actualizar') {
+        $datos['idPago'] = $idPago;
+        if ($modeloPago->actualizarPagoModelo($datos)) {
+            $_SESSION['exito'] = "Pago actualizado correctamente.";
+        }
     }
+    
+    header("Location: ../vistas/pagos/verPagosGeneral.php");
+    exit;
+}
+
+if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
+    $id = $_POST['idPago'];
+    if ($modeloPago->eliminarPagoModelo($id)) {
+        $_SESSION['exito'] = "Registro de pago eliminado.";
+    }
+    header("Location: ../vistas/pagos/verPagosGeneral.php");
+    exit;
 }
 ?>

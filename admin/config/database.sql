@@ -1,6 +1,6 @@
 -- ========================================================
 -- Archivo SQL Completo para la Base de Datos "pfc"
--- INCLUYE: Alumnos, Profesores, Cursos, Pagos, Anuncios, Inventario y Reclamaciones
+-- INCLUYE: Alumnos, Profesores, Cursos, Pagos, Anuncios, Inventario, Reclamaciones, Ciclos, Módulos y Retos
 -- ========================================================
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -67,7 +67,21 @@ CREATE TABLE IF NOT EXISTS `aulas` (
 INSERT INTO `aulas` (`idAula`, `nombreAula`) VALUES (1, 'Aula 101'), (2, 'Aula 202'), (3, 'Laboratorio 1');
 
 -- --------------------------------------------------------
--- 5. TABLA DE CURSOS
+-- 5. TABLA DE CICLOS
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ciclos` (
+  `idCiclo` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreCiclo` varchar(150) COLLATE utf8mb4_spanish_ci NOT NULL,
+  `descripcionCiclo` text COLLATE utf8mb4_spanish_ci,
+  PRIMARY KEY (`idCiclo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `descripcionCiclo`) VALUES 
+(1, 'Desarrollo de Aplicaciones Web', 'Ciclo formativo de grado superior'),
+(2, 'Sistemas Microinformáticos y Redes', 'Ciclo formativo de grado medio');
+
+-- --------------------------------------------------------
+-- 6. TABLA DE CURSOS
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cursos` (
   `idCurso` int(11) NOT NULL AUTO_INCREMENT,
@@ -77,19 +91,56 @@ CREATE TABLE IF NOT EXISTS `cursos` (
   `idProfesor` int(11) DEFAULT NULL,
   `idAula` int(11) DEFAULT NULL,
   `idEstado` int(11) DEFAULT 1,
+  `idCiclo` int(11) DEFAULT NULL,
   PRIMARY KEY (`idCurso`),
   CONSTRAINT `cursos_fk_nivel` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`),
   CONSTRAINT `cursos_fk_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`),
   CONSTRAINT `cursos_fk_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`idAula`),
-  CONSTRAINT `cursos_fk_estado` FOREIGN KEY (`idEstado`) REFERENCES `estados` (`idEstado`)
+  CONSTRAINT `cursos_fk_estado` FOREIGN KEY (`idEstado`) REFERENCES `estados` (`idEstado`),
+  CONSTRAINT `cursos_fk_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
-INSERT INTO `cursos` (`idCurso`, `nombreCurso`, `idNivel`, `idProfesor`, `idAula`, `idEstado`) VALUES 
-(1, 'DAW 1º', 2, 1, 1, 1),
-(2, 'SMR 1º', 1, 2, 2, 1);
+INSERT INTO `cursos` (`idCurso`, `nombreCurso`, `idNivel`, `idProfesor`, `idAula`, `idEstado`, `idCiclo`) VALUES 
+(1, 'DAW 1º', 2, 1, 1, 1, 1),
+(2, 'SMR 1º', 1, 2, 2, 1, 2);
 
 -- --------------------------------------------------------
--- 6. TABLA DE ESTUDIANTES
+-- 7. TABLA DE MODULOS
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `modulos` (
+  `idModulo` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreModulo` varchar(150) COLLATE utf8mb4_spanish_ci NOT NULL,
+  `horasMaximas` int(11) DEFAULT 100,
+  `idCiclo` int(11) NOT NULL,
+  PRIMARY KEY (`idModulo`),
+  CONSTRAINT `modulos_fk_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+-- --------------------------------------------------------
+-- 8. TABLA DE RETOS
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `retos` (
+  `idReto` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreReto` varchar(150) COLLATE utf8mb4_spanish_ci NOT NULL,
+  `fechaInicio` date NOT NULL,
+  `fechaFin` date NOT NULL,
+  `horasReto` int(11) NOT NULL,
+  PRIMARY KEY (`idReto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+-- --------------------------------------------------------
+-- 9. TABLA DE RELACIÓN MÓDULOS-RETOS
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `modulo_reto` (
+  `idModulo` int(11) NOT NULL,
+  `idReto` int(11) NOT NULL,
+  PRIMARY KEY (`idModulo`, `idReto`),
+  CONSTRAINT `modulo_reto_fk_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `modulo_reto_fk_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+-- --------------------------------------------------------
+-- 10. TABLA DE ESTUDIANTES
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `estudiantes` (
   `idEstudiante` int(11) NOT NULL AUTO_INCREMENT,
@@ -116,7 +167,20 @@ INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`
 (2, 'Roberto Solís', 'rober.solis@email.com', '87654321B', 1, 1);
 
 -- --------------------------------------------------------
--- 7. TABLA DE PAGOS
+-- 11. TABLA DE CALIFICACIONES DE RETOS
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `calificaciones_retos` (
+  `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
+  `idEstudiante` int(11) NOT NULL,
+  `idReto` int(11) NOT NULL,
+  `nota` decimal(4,2) NOT NULL,
+  PRIMARY KEY (`idCalificacion`),
+  CONSTRAINT `calificaciones_fk_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `calificaciones_fk_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+-- --------------------------------------------------------
+-- 12. TABLA DE PAGOS
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `pagos` (
   `idPago` int(11) NOT NULL AUTO_INCREMENT,
@@ -133,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `pagos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
--- 8. TABLA DE ANUNCIOS
+-- 13. TABLA DE ANUNCIOS
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `anuncios` (
   `idAnuncio` int(11) NOT NULL AUTO_INCREMENT,
@@ -148,7 +212,7 @@ INSERT INTO `anuncios` (`titulo`, `mensaje`, `fechaExpiracion`) VALUES
 ('Sistema Actualizado', 'Bienvenido al panel. Ahora puedes gestionar reclamaciones e inventario.', '2026-12-31');
 
 -- --------------------------------------------------------
--- 9. TABLA DE DISPOSITIVOS (INVENTARIO)
+-- 14. TABLA DE DISPOSITIVOS (INVENTARIO)
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `dispositivos` (
   `idDispositivo` int(11) NOT NULL AUTO_INCREMENT,
@@ -163,7 +227,7 @@ INSERT INTO `dispositivos` (`nombreDispositivo`, `numeroSerie`) VALUES
 ('Laptop Dell Vostro', 'DELL-456');
 
 -- --------------------------------------------------------
--- 10. TABLA DE PRÉSTAMOS
+-- 15. TABLA DE PRÉSTAMOS
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `prestamos` (
   `idPrestamo` int(11) NOT NULL AUTO_INCREMENT,
@@ -177,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `prestamos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
--- 11. TABLA DE RECLAMACIONES
+-- 16. TABLA DE RECLAMACIONES
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `reclamaciones` (
   `idReclamacion` int(11) NOT NULL AUTO_INCREMENT,
@@ -198,7 +262,7 @@ INSERT INTO `reclamaciones` (`idEstudiante`, `idProfesor`, `asunto`, `descripcio
 (1, 1, 'Falta de material', 'El alumno no trajo el libro de texto por tercera vez.', 'leve', '2026-04-13', 'pendiente');
 
 -- --------------------------------------------------------
--- 12. TABLA DE DIRECTORES
+-- 17. TABLA DE DIRECTORES
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `directores` (
   `idDirector` int(11) NOT NULL AUTO_INCREMENT,

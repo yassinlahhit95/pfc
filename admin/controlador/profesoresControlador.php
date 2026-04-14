@@ -7,77 +7,65 @@ $con = new Conexion();
 $conexion = $con->conectar();
 $modelo = new profesor($conexion);
 
-if (isset($_POST['accion'])) {
+if (isset($_POST['guardarProfesor'])) {
     $accion = $_POST['accion'];
     
-    // Limpiar errores anteriores
-    unset($_SESSION['error_nombre']);
-    unset($_SESSION['error_email']);
-    unset($_SESSION['error_dni']);
+    unset($_SESSION['errores']);
     unset($_SESSION['datos_profesor']);
 
-    if ($accion == 'insertar' || $accion == 'actualizar') {
-        
-        $nombre = trim($_POST['nombreProfesor']);
-        $email = trim($_POST['emailProfesor']);
-        $dni = trim($_POST['dniProfesor']);
-        $telefono = trim($_POST['telefonoProfesor']);
-        $direccion = trim($_POST['direccionProfesor']);
+    $nombre = trim($_POST['nombreProfesor']);
+    $email = trim($_POST['emailProfesor']);
+    $dni = trim($_POST['dniProfesor']);
+    $telefono = trim($_POST['telefonoProfesor']);
+    $direccion = trim($_POST['direccionProfesor']);
+    $especialidad = trim($_POST['especialidad'] ?? '');
+    $idEstado = $_POST['idEstado'] ?? 1;
 
-        $error = false;
+    $errores = [];
 
-        // Validaciones básicas
-        if ($nombre == "") {
-            $_SESSION['error_nombre'] = "Escribe el nombre del profesor";
-            $error = true;
-        }
-        if ($email == "") {
-            $_SESSION['error_email'] = "Escribe el correo";
-            $error = true;
-        }
-        if ($dni == "") {
-            $_SESSION['error_dni'] = "Escribe el DNI";
-            $error = true;
-        }
+    if (empty($nombre)) $errores['nombreProfesor'] = "El nombre es obligatorio";
+    if (empty($email)) $errores['emailProfesor'] = "El email es obligatorio";
+    if (empty($dni)) $errores['dniProfesor'] = "El DNI es obligatorio";
+    if (empty($telefono)) $errores['telefonoProfesor'] = "El teléfono es obligatorio";
+    if (empty($direccion)) $errores['direccionProfesor'] = "La dirección es obligatoria";
+    if (empty($especialidad)) $errores['especialidad'] = "La especialidad es obligatoria";
 
-        if ($error == true) {
-            $_SESSION['datos_profesor'] = $_POST;
-            if ($accion == 'insertar') {
-                header("Location: ../vistas/profesores/agregarProfesores.php");
-            } else {
-                header("Location: ../vistas/profesores/modificarProfesores.php?id=" . $_POST['idProfesor']);
-            }
-            exit;
-        }
-
-        $datos = [
-            'nombre' => $nombre,
-            'email' => $email,
-            'dni' => $dni,
-            'telefono' => $telefono,
-            'direccion' => $direccion,
-            'idEstado' => 1
-        ];
-
-        if ($accion == 'insertar') {
-            $modelo->insertarProfesorModelo($datos);
-            $_SESSION['exito'] = "Profesor guardado";
-        } else {
-            $datos['id'] = $_POST['idProfesor'];
-            $modelo->actualizarProfesorModelo($datos);
-            $_SESSION['exito'] = "Profesor actualizado";
-        }
-
-        header("Location: ../vistas/profesores/verProfesores.php");
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_profesor'] = $_POST;
+        $url = ($accion == 'insertar') ? "agregarProfesores.php" : "modificarProfesores.php?id=" . $_POST['idProfesor'];
+        header("Location: ../vistas/profesores/" . $url);
         exit;
     }
 
-    if ($accion == 'eliminar') {
-        $id = $_POST['idProfesor'];
-        $modelo->eliminarProfesorModelo($id);
-        $_SESSION['exito'] = "Profesor eliminado";
-        header("Location: ../vistas/profesores/verProfesores.php");
-        exit;
+    $datos = [
+        'nombreProfesor' => $nombre,
+        'emailProfesor' => $email,
+        'telefonoProfesor' => $telefono,
+        'dniProfesor' => $dni,
+        'especialidad' => $especialidad,
+        'direccionProfesor' => $direccion,
+        'idEstado' => $idEstado
+    ];
+
+    if ($accion == 'insertar') {
+        $modelo->insertarProfesoresModelo($datos);
+        $_SESSION['exito'] = "Profesor registrado";
+    } else {
+        $datos['idProfesor'] = $_POST['idProfesor'];
+        $modelo->actualizarProfesoresModelo($datos);
+        $_SESSION['exito'] = "Profesor actualizado";
     }
+
+    header("Location: ../vistas/profesores/verProfesores.php");
+    exit;
+}
+
+if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
+    $id = $_POST['idProfesor'];
+    $modelo->eliminarProfesoresModelo($id);
+    $_SESSION['exito'] = "Profesor eliminado";
+    header("Location: ../vistas/profesores/verProfesores.php");
+    exit;
 }
 ?>

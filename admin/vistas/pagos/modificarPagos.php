@@ -17,6 +17,17 @@ $datosPago = $pagoObj->obtenerPagoPorId($idPago);
 
 $estudianteObj = new estudiante($db);
 $datosEstudiante = $estudianteObj->obtenerEstudiantePorIdModelo($datosPago['idEstudiante']);
+
+$errores = $_SESSION['errores'] ?? [];
+$datos_sesion = $_SESSION['datos_pagos'] ?? [];
+unset($_SESSION['errores'], $_SESSION['datos_pagos']);
+
+// Usar datos de sesión si existen (por error de validación), sino usar datos de la BD
+$concepto = $datos_sesion['concepto'] ?? $datosPago['concepto'];
+$monto = $datos_sesion['monto'] ?? $datosPago['monto'];
+$tipoPago = $datos_sesion['tipoPago'] ?? $datosPago['tipoPago'];
+$estadoPago = $datos_sesion['estadoPago'] ?? $datosPago['estadoPago'];
+$fechaPago = $datos_sesion['fechaPago'] ?? $datosPago['fechaPago'];
 ?>
 
 <div class="encabezado-pagina">
@@ -28,6 +39,7 @@ $datosEstudiante = $estudianteObj->obtenerEstudiantePorIdModelo($datosPago['idEs
     <form action="controlador/pagosControlador.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="accion" value="actualizar">
         <input type="hidden" name="idPago" value="<?php echo $idPago; ?>">
+        <input type="hidden" name="idEstudiante" value="<?php echo $datosPago['idEstudiante']; ?>">
 
         <div class="cuadricula-formulario">
             <div class="grupo-formulario ancho-completo">
@@ -37,35 +49,50 @@ $datosEstudiante = $estudianteObj->obtenerEstudiantePorIdModelo($datosPago['idEs
 
             <div class="grupo-formulario ancho-completo">
                 <label>Concepto</label>
-                <input type="text" name="concepto" required value="<?php echo htmlspecialchars($datosPago['concepto']); ?>">
+                <input type="text" name="concepto" value="<?php echo htmlspecialchars($concepto); ?>">
+                <?php if (isset($errores['concepto'])): ?>
+                    <p style="color: red;"><?php echo $errores['concepto']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
                 <label>Monto (€)</label>
-                <input type="number" step="0.01" name="monto" required value="<?php echo $datosPago['monto']; ?>">
+                <input type="number" step="0.01" name="monto" value="<?php echo htmlspecialchars($monto); ?>">
+                <?php if (isset($errores['monto'])): ?>
+                    <p style="color: red;"><?php echo $errores['monto']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
                 <label>Tipo de Pago</label>
                 <select name="tipoPago">
-                    <option value="mensual" <?php if($datosPago['tipoPago'] == 'mensual') echo 'selected'; ?>>Mensual</option>
-                    <option value="trimestral" <?php if($datosPago['tipoPago'] == 'trimestral') echo 'selected'; ?>>Trimestral</option>
-                    <option value="semestral" <?php if($datosPago['tipoPago'] == 'semestral') echo 'selected'; ?>>Semestral</option>
-                    <option value="unico" <?php if($datosPago['tipoPago'] == 'unico') echo 'selected'; ?>>Pago Único</option>
+                    <option value="mensual" <?php if($tipoPago == 'mensual') echo 'selected'; ?>>Mensual</option>
+                    <option value="trimestral" <?php if($tipoPago == 'trimestral') echo 'selected'; ?>>Trimestral</option>
+                    <option value="semestral" <?php if($tipoPago == 'semestral') echo 'selected'; ?>>Semestral</option>
+                    <option value="unico" <?php if($tipoPago == 'unico') echo 'selected'; ?>>Pago Único</option>
                 </select>
+                <?php if (isset($errores['tipoPago'])): ?>
+                    <p style="color: red;"><?php echo $errores['tipoPago']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
                 <label>Estado</label>
                 <select name="estadoPago">
-                    <option value="pendiente" <?php if($datosPago['estadoPago'] == 'pendiente') echo 'selected'; ?>>Pendiente</option>
-                    <option value="pagado" <?php if($datosPago['estadoPago'] == 'pagado') echo 'selected'; ?>>Pagado</option>
+                    <option value="pendiente" <?php if($estadoPago == 'pendiente') echo 'selected'; ?>>Pendiente</option>
+                    <option value="pagado" <?php if($estadoPago == 'pagado') echo 'selected'; ?>>Pagado</option>
                 </select>
+                <?php if (isset($errores['estadoPago'])): ?>
+                    <p style="color: red;"><?php echo $errores['estadoPago']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
                 <label>Fecha de Pago</label>
-                <input type="date" name="fechaPago" value="<?php echo $datosPago['fechaPago']; ?>">
+                <input type="date" name="fechaPago" value="<?php echo htmlspecialchars($fechaPago); ?>">
+                <?php if (isset($errores['fechaPago'])): ?>
+                    <p style="color: red;"><?php echo $errores['fechaPago']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="grupo-formulario ancho-completo">
@@ -77,7 +104,7 @@ $datosEstudiante = $estudianteObj->obtenerEstudiantePorIdModelo($datosPago['idEs
 
         <div class="acciones-formulario">
             <a href="vistas/pagos/verPagosGeneral.php" class="boton-cancelar">Cancelar</a>
-            <button type="submit" class="boton-primario">Guardar Cambios</button>
+            <button type="submit" name="guardarPago" class="boton-primario">Guardar Cambios</button>
         </div>
     </form>
 </div>

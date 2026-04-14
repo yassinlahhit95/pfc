@@ -68,4 +68,28 @@ class panelDeControl
         $fila = $resultado->fetch_assoc();
         return $fila['total'];
     }
+
+    public function contadorCiclos()
+    {
+        $sql = "SELECT COUNT(idCiclo) AS total FROM ciclos";
+        $resultado = $this->conexion->query($sql);
+        $fila = $resultado->fetch_assoc();
+        return $fila['total'];
+    }
+
+    public function contadorModulos()
+    {
+        $sql = "SELECT COUNT(idModulo) AS total FROM modulos";
+        $resultado = $this->conexion->query($sql);
+        $fila = $resultado->fetch_assoc();
+        return $fila['total'];
+    }
+
+    public function contadorRetos()
+    {
+        $sql = "SELECT COUNT(idReto) AS total FROM retos";
+        $resultado = $this->conexion->query($sql);
+        $fila = $resultado->fetch_assoc();
+        return $fila['total'];
+    }
 }

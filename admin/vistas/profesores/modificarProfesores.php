@@ -17,10 +17,10 @@ if (!$datosProfesorBD) {
 
 // Lógica de errores y persistencia
 $errores = $_SESSION['errores'] ?? [];
-$datosViejos = $_SESSION['datos_viejos'] ?? [];
-unset($_SESSION['errores'], $_SESSION['datos_viejos']);
+$datos = $_SESSION['datos_profesor'] ?? [];
+unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
-$titulo_pagina = "Modificar Profesor - Super Admin";
+$titulo_pagina = "Modificar Profesor";
 $seccion = 'profesores';
 include_once "../comunes/nav.php";
 ?>
@@ -37,57 +37,73 @@ include_once "../comunes/nav.php";
 
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Nombre Completo</label>
+                <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" 
-                       class="<?php echo isset($errores['nombreProfesor']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['nombreProfesor'] ?? $datosProfesorBD['nombreProfesor']); ?>">
-                <?php if (isset($errores['nombreProfesor'])) echo "<p class='error-campo'>{$errores['nombreProfesor']}</p>"; ?>
+                       value="<?php echo htmlspecialchars($datos['nombreProfesor'] ?? $datosProfesorBD['nombreProfesor']); ?>">
+                <?php if (isset($errores['nombreProfesor'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['nombreProfesor']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Correo Electrónico</label>
-                <input type="text" name="emailProfesor" 
-                       class="<?php echo isset($errores['emailProfesor']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['emailProfesor'] ?? $datosProfesorBD['emailProfesor']); ?>">
-                <?php if (isset($errores['emailProfesor'])) echo "<p class='error-campo'>{$errores['emailProfesor']}</p>"; ?>
+                <label>Email *</label>
+                <input type="email" name="emailProfesor" 
+                       value="<?php echo htmlspecialchars($datos['emailProfesor'] ?? $datosProfesorBD['emailProfesor']); ?>">
+                <?php if (isset($errores['emailProfesor'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['emailProfesor']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Teléfono</label>
-                <input type="text" name="telefonoProfesor" 
-                       class="<?php echo isset($errores['telefonoProfesor']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['telefonoProfesor'] ?? $datosProfesorBD['telefonoProfesor']); ?>">
-                <?php if (isset($errores['telefonoProfesor'])) echo "<p class='error-campo'>{$errores['telefonoProfesor']}</p>"; ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>DNI</label>
+                <label>DNI *</label>
                 <input type="text" name="dniProfesor" 
-                       class="<?php echo isset($errores['dniProfesor']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['dniProfesor'] ?? $datosProfesorBD['dniProfesor']); ?>">
-                <?php if (isset($errores['dniProfesor'])) echo "<p class='error-campo'>{$errores['dniProfesor']}</p>"; ?>
+                       value="<?php echo htmlspecialchars($datos['dniProfesor'] ?? $datosProfesorBD['dniProfesor']); ?>">
+                <?php if (isset($errores['dniProfesor'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['dniProfesor']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Estado</label>
+                <label>Teléfono *</label>
+                <input type="text" name="telefonoProfesor" 
+                       value="<?php echo htmlspecialchars($datos['telefonoProfesor'] ?? $datosProfesorBD['telefonoProfesor']); ?>">
+                <?php if (isset($errores['telefonoProfesor'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['telefonoProfesor']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Especialidad *</label>
+                <input type="text" name="especialidad" 
+                       value="<?php echo htmlspecialchars($datos['especialidad'] ?? $datosProfesorBD['especialidad']); ?>">
+                <?php if (isset($errores['especialidad'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['especialidad']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Dirección *</label>
+                <input type="text" name="direccionProfesor" 
+                       value="<?php echo htmlspecialchars($datos['direccionProfesor'] ?? $datosProfesorBD['direccionProfesor']); ?>">
+                <?php if (isset($errores['direccionProfesor'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['direccionProfesor']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Estado *</label>
                 <select name="idEstado">
                     <?php 
-                    $estadoActual = $datosViejos['idEstado'] ?? $datosProfesorBD['idEstado'];
+                    $estadoActual = $datos['idEstado'] ?? $datosProfesorBD['idEstado'];
                     ?>
                     <option value="1" <?php echo $estadoActual == 1 ? 'selected' : ''; ?>>Activo</option>
                     <option value="2" <?php echo $estadoActual == 2 ? 'selected' : ''; ?>>Inactivo</option>
                 </select>
             </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Dirección</label>
-                <input type="text" name="direccionProfesor" 
-                       value="<?php echo htmlspecialchars($datosViejos['direccionProfesor'] ?? $datosProfesorBD['direccionProfesor']); ?>">
-            </div>
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" class="boton-azul">Guardar Cambios</button>
+            <button type="submit" name="guardarProfesor" class="boton-azul">Guardar Cambios</button>
         </div>
     </form>
 </div>

@@ -17,10 +17,10 @@ if (!$datosDirectorBD) {
 
 // Lógica de errores y persistencia
 $errores = $_SESSION['errores'] ?? [];
-$datosViejos = $_SESSION['datos_viejos'] ?? [];
-unset($_SESSION['errores'], $_SESSION['datos_viejos']);
+$datos = $_SESSION['datos_director'] ?? [];
+unset($_SESSION['errores'], $_SESSION['datos_director']);
 
-$titulo_pagina = "Modificar Director - Super Admin";
+$titulo_pagina = "Modificar Director";
 $seccion = 'directores';
 include_once "../comunes/nav.php";
 ?>
@@ -37,58 +37,91 @@ include_once "../comunes/nav.php";
 
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Nombre Completo</label>
+                <label>Nombre Completo *</label>
                 <input type="text" name="nombreDirector" 
-                       class="<?php echo isset($errores['nombreDirector']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['nombreDirector'] ?? $datosDirectorBD['nombreDirector']); ?>">
-                <?php if (isset($errores['nombreDirector'])) echo "<p class='error-campo'>{$errores['nombreDirector']}</p>"; ?>
+                       value="<?php echo htmlspecialchars($datos['nombreDirector'] ?? $datosDirectorBD['nombreDirector']); ?>">
+                <?php if (isset($errores['nombreDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['nombreDirector']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Email</label>
-                <input type="text" name="emailDirector" 
-                       class="<?php echo isset($errores['emailDirector']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['emailDirector'] ?? $datosDirectorBD['emailDirector']); ?>">
-                <?php if (isset($errores['emailDirector'])) echo "<p class='error-campo'>{$errores['emailDirector']}</p>"; ?>
+                <label>Email *</label>
+                <input type="email" name="emailDirector" 
+                       value="<?php echo htmlspecialchars($datos['emailDirector'] ?? $datosDirectorBD['emailDirector']); ?>">
+                <?php if (isset($errores['emailDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['emailDirector']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Teléfono</label>
-                <input type="text" name="telefonoDirector" 
-                       value="<?php echo htmlspecialchars($datosViejos['telefonoDirector'] ?? $datosDirectorBD['telefonoDirector']); ?>">
-            </div>
-
-            <div class="campo-formulario">
-                <label>DNI</label>
+                <label>DNI *</label>
                 <input type="text" name="dniDirector" 
-                       class="<?php echo isset($errores['dniDirector']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['dniDirector'] ?? $datosDirectorBD['dniDirector']); ?>">
-                <?php if (isset($errores['dniDirector'])) echo "<p class='error-campo'>{$errores['dniDirector']}</p>"; ?>
+                       value="<?php echo htmlspecialchars($datos['dniDirector'] ?? $datosDirectorBD['dniDirector']); ?>">
+                <?php if (isset($errores['dniDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['dniDirector']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Ciudad</label>
-                <input type="text" name="ciudadDirector" 
-                       value="<?php echo htmlspecialchars($datosViejos['ciudadDirector'] ?? $datosDirectorBD['ciudadDirector']); ?>">
+                <label>Teléfono *</label>
+                <input type="text" name="telefonoDirector" 
+                       value="<?php echo htmlspecialchars($datos['telefonoDirector'] ?? $datosDirectorBD['telefonoDirector']); ?>">
+                <?php if (isset($errores['telefonoDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['telefonoDirector']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Código Postal</label>
-                <input type="text" name="codigoPostalDirector" 
-                       class="<?php echo isset($errores['codigoPostalDirector']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['codigoPostalDirector'] ?? $datosDirectorBD['codigoPostalDirector']); ?>">
-                <?php if (isset($errores['codigoPostalDirector'])) echo "<p class='error-campo'>{$errores['codigoPostalDirector']}</p>"; ?>
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Dirección</label>
+                <label>Dirección *</label>
                 <input type="text" name="direccionDirector" 
-                       value="<?php echo htmlspecialchars($datosViejos['direccionDirector'] ?? $datosDirectorBD['direccionDirector']); ?>">
+                       value="<?php echo htmlspecialchars($datos['direccionDirector'] ?? $datosDirectorBD['direccionDirector']); ?>">
+                <?php if (isset($errores['direccionDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['direccionDirector']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Ciudad *</label>
+                <input type="text" name="ciudadDirector" 
+                       value="<?php echo htmlspecialchars($datos['ciudadDirector'] ?? $datosDirectorBD['ciudadDirector']); ?>">
+                <?php if (isset($errores['ciudadDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['ciudadDirector']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Código Postal *</label>
+                <input type="text" name="codigoPostalDirector" 
+                       value="<?php echo htmlspecialchars($datos['codigoPostalDirector'] ?? $datosDirectorBD['codigoPostalDirector']); ?>">
+                <?php if (isset($errores['codigoPostalDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['codigoPostalDirector']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Fecha Alta *</label>
+                <input type="date" name="fechaAltaDirector" 
+                       value="<?php echo htmlspecialchars($datos['fechaAltaDirector'] ?? $datosDirectorBD['fechaAltaDirector']); ?>">
+                <?php if (isset($errores['fechaAltaDirector'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['fechaAltaDirector']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Estado *</label>
+                <select name="idEstado">
+                    <?php 
+                    $estadoActual = $datos['idEstado'] ?? $datosDirectorBD['idEstado'];
+                    ?>
+                    <option value="1" <?php echo $estadoActual == 1 ? 'selected' : ''; ?>>Activo</option>
+                    <option value="2" <?php echo $estadoActual == 2 ? 'selected' : ''; ?>>Inactivo</option>
+                </select>
             </div>
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" class="boton-azul">Guardar Cambios</button>
+            <button type="submit" name="guardarDirector" class="boton-azul">Guardar Cambios</button>
         </div>
     </form>
 </div>
