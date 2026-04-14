@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal</title>
+	<link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <style>
+	*{
+		margin:0;
+		padding:0;
+	}
+	.navbar{
+		display: flex;
+		align-items:center;
+		justify-content:space-between;
+		background-color:lightblue;
+		padding:30px;
+
+	}
+	.nav-logo{
+		text-decoration:none;
+	}
+	.nav-menu{
+		display:flex;
+		gap:40px;
+		align-items:center;
+	}
+	.nav-item{
+		text-decoration:none;
+		list-style:none;
+	}
+	
+	a{
+		text-decoration:none;
+	}
+	
+	.hamburger{
+		display:none;
+	}
+	.bar{
+		display:block;
+		width: 25px;
+		height: 3px;
+		background-color:red;
+		margin: 5px auto;
+	}
+	
+	.nav-link{
+		color : red;
+		font-weight:bold;
+	}
+	.nav-link:hover{
+		color : green;
+		font-weight:bold;
+		transition:1s;
+		text-decoration:underline; 
+	}
+	
+	.cuatroCajas{
+		display:flex;
+		align-items:center;
+		justify-content: center; /* باش يجو المربعات فوسط الشاشة */
+		gap:40px;
+		flex-direction:row;
+		flex-wrap:wrap;
+		padding: 50px 20px; /* زدنا شوية الجناب باش ميبقاوش لاصقين فالتيليفون */
+	}
+	
+	
+	.cuatroCajas-item{
+		display:flex;
+		flex-direction:column;
+		width:300px;
+		height:200px;
+		box-shadow:0px 0px 4px 0px lightblue;
+		justify-content:center;
+		align-items: center;
+		padding:10px;
+	}
+	
+	.cuatroCajas-item i{
+		font-size:5rem;
+	}
+	
+	/* المربع الأول */
+.cuatroCajas-item:nth-child(1) i {
+    color: #FF5733; /* برتقالي */
+}
+
+/* المربع الثاني */
+.cuatroCajas-item:nth-child(2) i {
+    color: #33FF57; /* أخضر */
+}
+
+/* المربع الثالث */
+.cuatroCajas-item:nth-child(3) i {
+    color: #3357FF; /* أزرق */
+}
+
+/* المربع الرابع */
+.cuatroCajas-item:nth-child(4) i {
+    color: #F333FF; /* بنفسجي */
+}
+	
+	@media only screen and (max-width:768px){
+		.nav-menu{
+			flex-direction:column;
+			position:fixed;
+			left:-100%;
+			width:100%;
+			background-color:yellow;
+			top: 85px;
+			transition:0.3s;
+		}
+		.hamburger{
+			display:block;
+		}
+		.nav-menu.active {
+			left: 0;
+		}
+		.hamburger.active .bar:nth-child(2) {
+			opacity: 0; /* الخط الوسطاني كيختفي */
+		}
+
+		.hamburger.active .bar:nth-child(1) {
+			transform: translateY(8px) rotate(45deg); /* الخط الفوقاني كيميل */
+		}
+
+		.hamburger.active .bar:nth-child(3) {
+			transform: translateY(-8px) rotate(-45deg); /* الخط التحتاني كيميل بالعكس */
+		}
+		
+	}
+	
+	</style>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+		<a href="index.html" class="nav-logo">Logo</a>
+
+		<ul class="nav-menu">
+			<li class="nav-item"><a href="#" class="nav-link">Inicio</a></li>
+			<li class="nav-item"><a href="#" class="nav-link">Producto</a></li>
+			<li class="nav-item"><a href="#" class="nav-link">Precio</a></li>
+			<li class="nav-item"><a href="#" class="nav-link">Contacto</a></li>
+		</ul>
+		
+		<div class="hamburger">
+			<span class="bar"></span>
+			<span class="bar"></span>
+			<span class="bar"></span>
+		</div>
+	</nav>
+</header>
+<main>
+<article>
+	<section class="cuatroCajas">
+		<div class="cuatroCajas-item">
+			<i class="lni lni-layers"></i>
+			<h1>Diseño limpio</h1>
+			<p>Lorem ipsum dolor sitam etco snsetetur sadipscing elitr pero en diámetro nonumy.</p>
+		</div>
+		<div class="cuatroCajas-item">
+			<i class="lni lni-layout"></i>
+			<h1>Fácil de usar</h1>
+			<p>Lorem ipsum dolor sitam etco snsetetur sadipscing elitr pero en diámetro nonumy.</p>
+
+		</div>
+		<div class="cuatroCajas-item">
+			<i class="lni lni-bolt"></i>
+			<h1>Flexible</h1>
+			<p>Lorem ipsum dolor sitam etco snsetetur sadipscing elitr pero en diámetro nonumy.</p>
+			
+		</div>
+		<div class="cuatroCajas-item">
+			<i class="lni lni-protection"></i>
+			<h1>barato</h1>
+			<p>Lorem ipsum dolor sitam etco snsetetur sadipscing elitr pero en diámetro nonumy.</p>
+			
+			
+		</div>
+	</section>
+</article>
+<main>
+
+<script>
+	const hamburger = document.querySelector(".hamburger");
+	const navMenu = document.querySelector(".nav-menu");
+	const navLink = document.querySelectorAll(".nav-link");
+	
+hamburger.addEventListener("click", function() {
+    hamburger.classList.toggle("active");
+    navMenu.classList.toggle("active");
+});
+
+navLink.forEach(n => n.addEventListener("click",function(){
+	hamburger.classList.remove("active");
+	navMenu.classList.remove("active");
+}))
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+# TFG - PROYECTO DE DESARROLLO DE VIDEOJUEGOS EDUCATIVOS
+
+## 1. Definición del Proyecto
+
+Esta aplicación web se trata de un sistema de blog hecho con Angular como frontend y en el backend una API RESTFUL dinámica desarrollada en PHP nativo utilizando una base de datos MySQL.
+
+### 1.1 Tipos de Empresas / Sectores Productivos
+
+Este producto de software se adapta a cualquier tipo de empresa o particular que precise de una web de presentación con un blog integrado, también es aplicable a un portal de noticias.
+
+A su vez también tiene como objetivo otros desarrolladores debido a que el backend de la aplicación web tiene una API RESTFUL dinámico, ya que las APIS son aplicaciones creadas para programadores, pues carecen de interfaz frontend y se utilizan para obtener información en formato XML o JSON principalmente (como en este caso) e interactuar con la API.
+
+### 1.2 Descripción del problema
+
+Esta aplicación web busca cubrir la gran demanda que tiene las aplicaciones de tipo SPA, las cuales ofrecen una experiencia de usuario muy buena y superior a las webs típicas monolíticas, las cuales al cambiar de ruta recarga su web, cosa que no ocurre con las SPA las cuales nunca recargan la página, son reactivas, instantáneas y nunca recargan la página por más que cambies de ruta o interactúes con la página, ofreciendo una mayor velocidad de carga y una mejor experiencia de usuario.
+
+### 1.3 Objetivos. Especificación de Requisitos
+
+Esta aplicación tiene el objetivo de ser una web SPA con un sistema de Blog utilizando MySQL como base de datos, API RESTFUL dinámica con PHP y consumiendo dicha API y mostrando el frontend con Angular.
+
+En cambio desde el lado del usuario tiene dos objetivos principales:
+
+- Desde el lado usuario invitado (El cual es el usuario promedio de está aplicación): navegar por la aplicación web y visualizar los artículos del blog.
+
+## 1.1 CONTEXTO
+
+Este proyecto se enmarca dentro del área de la educación asistida por
+ordenador, rama de la informática que tiene por objeto tratar de aprovechar las
+ventajas que ofrece la tecnología para mejorar los procesos educativos. Entre estas
+ventajas destaca la capacidad de transmitir contenidos y valores presentados de una
+forma atractiva a los menores, mediante los cuales se pueden adquirir habilidades
+relacionadas con este contexto digital, como es la destreza o la coordinación.
+Dentro de esta área en los últimos años está cobrando cada vez mayor
+importancia el denominado game based learning o aprendizaje soportado mediante
+videojuegos. Esto consiste en la aplicación de las nuevas tecnologías como base para
+mejorar el aprendizaje y rendimiento de niños que tan fuertemente atraídos se sienten
+por la era digital. Este aprendizaje basado en el juego persigue profundizar en el
+aprendizaje a través de experiencias lúdicas y a la vez motivadoras. [1]
+Los motivos por los que este método de aprendizaje está cobrando popularidad
+son que los educadores están descubriendo la eficacia de los videojuegos con la
+finalidad de aumentar la motivación y el interés del estudiante en la materia en
+cuestión [2,3], y esto ha sido demostrado en numerosas áreas educativas, como la
+medicina, las ciencias, el entrenamiento militar o la formación en situaciones de
+emergencia. [4]
+Sin embargo, el diseño y desarrollo de videojuegos no es para nada sencillo. La
+combinación entre la educación y el entretenimiento mediante el uso de estas
+tecnologías supone altos costes. Es por ello que surge la necesidad de herramientas o
+modelos que faciliten el desarrollo y la personalización de los juegos para procesos
+formales de aprendizaje. La creación de métodos y aplicaciones de autoría para el
+desarrollo de los juegos pueden fomentar a la reutilización de componentes de juegos,
+que subsanen en gran medida los altos costos que supone el desarrollo en esta área.
+12
+## 1.2 MOTIVACIÓN
+
+El autor del artículo Seeking Reusability of Computer Games Designs for
+Informal Learning [5], propone un modelo de diseño de videojuegos educativos que
+considera distintas perspectivas y componentes que pueden ser tratadas de forma
+independiente y luego ensambladas y combinadas entre si, de tal forma que se
+simplifiquen las tareas de diseño y se facilite la reutilización de las distintas partes,
+reduciendo de esa manera los costes asociados a dicha tarea.
+Una de esas perspectivas es el escenario, que proporciona los medios para
+representar los elementos que compondrán el juego en sí. La definición del escenario
+queda determinada por un conjunto de escenas que están interconectadas entre sí.
+Estas conexiones surgen a través de enlaces y cada escena representa una situación o
+ambiente diferente. El diseñador del escenario puede definir una entidad de la escena
+por cada área de la escena que ofrece la posibilidad de interactuar con estos
+elementos, representando visualmente o por medio de sonidos el estado de cada
+objeto.
+La realización de este proyecto surge de la necesidad de proveer un software
+que permita la descripción de la composición de escenas de videojuegos educativos de
+forma sencilla y adecuada para el personal docente, sin tener necesariamente un perfil
+técnico. De esta forma debe ofrecer un proceso metódico y sencillo para la creación de
+los escenarios definidos anteriormente, siendo en todo momento intuitivo y con
+capacidad para generar descripciones que puedan ser luego entendidas y procesables
+por otra aplicación, encargada de generar el escenario virtual donde tendrá lugar el
+juego.
+La aplicación desarrollada permite al educador o educadores que hacen uso de
+ella realizar, de una manera intuitiva y sencilla, escenarios para dicho videojuego. De
+esta forma el instructor, mediante la herramienta, tiene total capacidad para
+desarrollar el escenario en el que se desarrollará la acción, siendo el mismo el principal
+conductor de las ideas que desea implementar. De esta forma puede plasmar en el
+escenario los elementos de tal forma que le permita recrear situaciones con el fin de
+satisfacer diversos aspectos educativos orientados al alumno.
+## 1.3 OBJETIVOS DEL PROYECTO
+### 1.3.1 OBJETIVO PRINCIPAL
+El objetivo principal del proyecto es proporcionar una herramienta de autoría
+para la creación de escenarios de videojuegos, capaz de generar un documento XML
+que contenga toda la información necesaria para que, mediante el uso de otra
+aplicación externa y el motor de desarrollo Unity 3D, se pueda generar el escenario
+del videojuego.
+### 1.3.2 OBJETIVOS SECUNDARIOS
+Además, la aplicación debe presentar una interfaz sencilla, y el uso de la misma
+ha de ser intuitivo, con el fin de que el proceso de creación pueda ser completado
+correctamente de la manera más sencilla posible sin requerir del usuario un perfil
+técnico o una extensa formación en la herramienta.
