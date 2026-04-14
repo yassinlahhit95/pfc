@@ -15,9 +15,9 @@ $listaAulas = $modeloAula->listarAulasModelo();
 
 // Captura de errores y persistencia
 $errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_viejos'] ?? [];
+$datos = $_SESSION['datos_aulas'] ?? [];
 $mensajeExito = $_SESSION['exito'] ?? '';
-unset($_SESSION['errores'], $_SESSION['datos_viejos'], $_SESSION['exito']);
+unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -43,13 +43,14 @@ unset($_SESSION['errores'], $_SESSION['datos_viejos'], $_SESSION['exito']);
             <div class="campo-formulario margen-abajo">
                 <label>Nombre del Aula</label>
                 <input type="text" name="nombreAula" 
-                       class="<?php echo isset($errores['nombreAula']) ? 'input-error' : ''; ?>"
                        value="<?php echo htmlspecialchars($datos['nombreAula'] ?? ''); ?>" 
                        placeholder="Ej: Aula 101">
-                <?php if (isset($errores['nombreAula'])) echo "<p class='error-campo'>{$errores['nombreAula']}</p>"; ?>
+                <?php if (isset($errores['nombreAula'])) { ?>
+                    <p style="color: red;"><?php echo $errores['nombreAula']; ?></p>
+                <?php } ?>
             </div>
 
-            <button type="submit" class="boton-azul ancho-total">Guardar Aula</button>
+            <button type="submit" name="guardarAula" class="boton-azul ancho-total">Guardar Aula</button>
         </form>
     </div>
 

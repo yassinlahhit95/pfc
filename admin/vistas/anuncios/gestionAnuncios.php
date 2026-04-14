@@ -14,8 +14,9 @@ $modeloAnuncios = new anuncio($conexionBD);
 $listaAnuncios = $modeloAnuncios->listarAnunciosModelo();
 
 $exito = $_SESSION['exito'] ?? '';
-$error_titulo = $_SESSION['error_nombre'] ?? '';
-unset($_SESSION['exito'], $_SESSION['error_nombre']);
+$errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_anuncios'] ?? [];
+unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -38,21 +39,29 @@ unset($_SESSION['exito'], $_SESSION['error_nombre']);
             
             <div class="campo-formulario margen-abajo">
                 <label>Título</label>
-                <input type="text" name="titulo" placeholder="Ej: Próximos Exámenes">
-                <?php if ($error_titulo != "") { echo "<p class='error-campo'>$error_titulo</p>"; } ?>
+                <input type="text" name="titulo" placeholder="Ej: Próximos Exámenes" value="<?php echo htmlspecialchars($datos['titulo'] ?? ''); ?>">
+                <?php if (isset($errores['titulo'])): ?>
+                    <p style="color: red;"><?php echo $errores['titulo']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario margen-abajo">
                 <label>Mensaje</label>
-                <textarea name="mensaje" rows="4"></textarea>
+                <textarea name="mensaje" rows="4"><?php echo htmlspecialchars($datos['mensaje'] ?? ''); ?></textarea>
+                <?php if (isset($errores['mensaje'])): ?>
+                    <p style="color: red;"><?php echo $errores['mensaje']; ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario margen-abajo">
                 <label>Fecha Expiración</label>
-                <input type="date" name="fecha_expiracion" value="<?php echo date('Y-m-d'); ?>">
+                <input type="date" name="fecha_expiracion" value="<?php echo htmlspecialchars($datos['fecha_expiracion'] ?? date('Y-m-d')); ?>">
+                <?php if (isset($errores['fecha_expiracion'])): ?>
+                    <p style="color: red;"><?php echo $errores['fecha_expiracion']; ?></p>
+                <?php endif; ?>
             </div>
 
-            <button type="submit" class="boton-azul ancho-total">Publicar</button>
+            <button type="submit" name="guardarAnuncio" class="boton-azul ancho-total">Publicar</button>
         </form>
     </div>
 

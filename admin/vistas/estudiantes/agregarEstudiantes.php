@@ -12,14 +12,12 @@ $conexion = $con->conectar();
 $modeloCursos = new curso($conexion);
 $listaCursos = $modeloCursos->listarCursosModelo();
 
-// Recoger datos si hubo un error anterior
-$datos = $_SESSION['datos'] ?? [];
-$error_nombre = $_SESSION['error_nombre'] ?? "";
-$error_email = $_SESSION['error_email'] ?? "";
-$error_dni = $_SESSION['error_dni'] ?? "";
+// Recoger datos y errores
+$datos = $_SESSION['datos_estudiante'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 
-// Limpiar la sesión para que no salgan errores la próxima vez
-unset($_SESSION['datos'], $_SESSION['error_nombre'], $_SESSION['error_email'], $_SESSION['error_dni']);
+// Limpiar la sesión
+unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -32,52 +30,121 @@ unset($_SESSION['datos'], $_SESSION['error_nombre'], $_SESSION['error_email'], $
         <input type="hidden" name="accion" value="insertar">
 
         <div class="formulario-cuadricula">
-            <!-- Nombre -->
             <div class="campo-formulario">
-                <label>Nombre Completo</label>
-                <input type="text" name="nombreEstudiante" value="<?php echo $datos['nombreEstudiante'] ?? ''; ?>">
-                <?php if ($error_nombre != "") { ?>
-                    <p class="error-campo"><?php echo $error_nombre; ?></p>
-                <?php } ?>
+                <label>Nombre Completo *</label>
+                <input type="text" name="nombreEstudiante" value="<?php echo htmlspecialchars($datos['nombreEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['nombreEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['nombreEstudiante']; ?></p>
+                <?php endif; ?>
             </div>
 
-            <!-- Email -->
             <div class="campo-formulario">
-                <label>Email</label>
-                <input type="text" name="emailEstudiante" value="<?php echo $datos['emailEstudiante'] ?? ''; ?>">
-                <?php if ($error_email != "") { ?>
-                    <p class="error-campo"><?php echo $error_email; ?></p>
-                <?php } ?>
+                <label>Email *</label>
+                <input type="email" name="emailEstudiante" value="<?php echo htmlspecialchars($datos['emailEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['emailEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['emailEstudiante']; ?></p>
+                <?php endif; ?>
             </div>
 
-            <!-- DNI -->
             <div class="campo-formulario">
-                <label>DNI</label>
-                <input type="text" name="dniEstudiante" value="<?php echo $datos['dniEstudiante'] ?? ''; ?>">
-                <?php if ($error_dni != "") { ?>
-                    <p class="error-campo"><?php echo $error_dni; ?></p>
-                <?php } ?>
+                <label>DNI *</label>
+                <input type="text" name="dniEstudiante" value="<?php echo htmlspecialchars($datos['dniEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['dniEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['dniEstudiante']; ?></p>
+                <?php endif; ?>
             </div>
 
-            <!-- Fecha -->
             <div class="campo-formulario">
-                <label>Fecha Nacimiento (DD-MM-YYYY)</label>
-                <input type="text" name="fechaNacimientoEstudiante" value="<?php echo $datos['fechaNacimientoEstudiante'] ?? ''; ?>">
+                <label>Teléfono *</label>
+                <input type="text" name="telefonoEstudiante" value="<?php echo htmlspecialchars($datos['telefonoEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['telefonoEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['telefonoEstudiante']; ?></p>
+                <?php endif; ?>
             </div>
 
-            <!-- Curso -->
             <div class="campo-formulario">
-                <label>Curso</label>
+                <label>Fecha Nacimiento *</label>
+                <input type="date" name="fechaNacimientoEstudiante" value="<?php echo htmlspecialchars($datos['fechaNacimientoEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['fechaNacimientoEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['fechaNacimientoEstudiante']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Fecha Alta *</label>
+                <input type="date" name="fechaAltaEstudiante" value="<?php echo htmlspecialchars($datos['fechaAltaEstudiante'] ?? date('Y-m-d')); ?>">
+                <?php if (isset($errores['fechaAltaEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['fechaAltaEstudiante']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Dirección *</label>
+                <input type="text" name="direccionEstudiante" value="<?php echo htmlspecialchars($datos['direccionEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['direccionEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['direccionEstudiante']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Ciudad *</label>
+                <input type="text" name="ciudadEstudiante" value="<?php echo htmlspecialchars($datos['ciudadEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['ciudadEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['ciudadEstudiante']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Código Postal *</label>
+                <input type="text" name="codigoPostalEstudiante" value="<?php echo htmlspecialchars($datos['codigoPostalEstudiante'] ?? ''); ?>">
+                <?php if (isset($errores['codigoPostalEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['codigoPostalEstudiante']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Nivel *</label>
+                <input type="text" name="nivelEstudiante" value="<?php echo htmlspecialchars($datos['nivelEstudiante'] ?? ''); ?>" placeholder="Ej: 1º Bachillerato">
+                <?php if (isset($errores['nivelEstudiante'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['nivelEstudiante']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Curso *</label>
                 <select name="idCurso">
+                    <option value="">-- Seleccionar --</option>
                     <?php foreach ($listaCursos as $c) { ?>
-                        <option value="<?php echo $c['idCurso']; ?>"><?php echo $c['nombreCurso']; ?></option>
+                        <option value="<?php echo $c['idCurso']; ?>" <?php echo (isset($datos['idCurso']) && $datos['idCurso'] == $c['idCurso']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($c['nombreCurso']); ?>
+                        </option>
                     <?php } ?>
                 </select>
+                <?php if (isset($errores['idCurso'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idCurso']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Estado *</label>
+                <select name="idEstado">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="1" <?php echo (isset($datos['idEstado']) && $datos['idEstado'] == 1) ? 'selected' : ''; ?>>Activo</option>
+                    <option value="2" <?php echo (isset($datos['idEstado']) && $datos['idEstado'] == 2) ? 'selected' : ''; ?>>Inactivo</option>
+                </select>
+                <?php if (isset($errores['idEstado'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idEstado']; ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="campo-formulario campo-ancho-total">
+                <label>Observaciones</label>
+                <textarea name="observacionesEstudiante" rows="3"><?php echo htmlspecialchars($datos['observacionesEstudiante'] ?? ''); ?></textarea>
             </div>
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" class="boton-azul">Guardar Estudiante</button>
+            <button type="submit" name="guardarEstudiante" class="boton-azul">Guardar Estudiante</button>
         </div>
     </form>
 </div>

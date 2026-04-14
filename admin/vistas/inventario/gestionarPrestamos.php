@@ -22,9 +22,9 @@ $listaCursos = $modeloCurso->listarCursosModelo();
 
 // Capturar errores y datos de sesión
 $errores = $_SESSION['errores'] ?? [];
-$datosViejos = $_SESSION['datos_viejos'] ?? [];
+$datos = $_SESSION['datos_inventario'] ?? [];
 $mensajeExito = $_SESSION['exito'] ?? '';
-unset($_SESSION['errores'], $_SESSION['datos_viejos'], $_SESSION['exito']);
+unset($_SESSION['errores'], $_SESSION['datos_inventario'], $_SESSION['exito']);
 
 // Listas para las tablas
 $listaPrestamosActivos = $modeloInventario->listarPrestamosActivos();
@@ -54,16 +54,16 @@ $historialPrestamos = $modeloInventario->listarHistorialPrestamosModelo();
             
             <div class="campo-formulario margen-abajo">
                 <label>Recurso</label>
-                <select name="idArticulo" class="<?php echo isset($errores['idArticulo']) ? 'input-error' : ''; ?>">
+                <select name="idArticulo">
                     <option value="">-- Seleccione --</option>
                     <?php foreach ($listaArticulos as $art) { 
                         if ($art['cantidadDisponible'] > 0) {
-                            $selected = ($datosViejos['idArticulo'] ?? '') == $art['idArticulo'] ? 'selected' : '';
+                            $selected = ($datos['idArticulo'] ?? '') == $art['idArticulo'] ? 'selected' : '';
                             echo "<option value='{$art['idArticulo']}' {$selected}>{$art['nombreArticulo']}</option>";
                         }
                     } ?>
                 </select>
-                <?php if (isset($errores['idArticulo'])) echo "<p class='error-campo'>{$errores['idArticulo']}</p>"; ?>
+                <?php if (isset($errores['idArticulo'])) echo "<p style='color: red;'>{$errores['idArticulo']}</p>"; ?>
             </div>
 
             <div class="campo-formulario margen-abajo">
@@ -76,26 +76,25 @@ $historialPrestamos = $modeloInventario->listarHistorialPrestamosModelo();
 
             <div class="campo-formulario margen-abajo">
                 <label>Estudiante</label>
-                <select name="idEstudiante" id="selectorEstudiante" class="<?php echo isset($errores['idEstudiante']) ? 'input-error' : ''; ?>">
+                <select name="idEstudiante" id="selectorEstudiante">
                     <option value="">-- Seleccione --</option>
                     <?php foreach ($listaEstudiantes as $est) {
-                        $selected = ($datosViejos['idEstudiante'] ?? '') == $est['idEstudiante'] ? 'selected' : '';
+                        $selected = ($datos['idEstudiante'] ?? '') == $est['idEstudiante'] ? 'selected' : '';
                         echo "<option value='{$est['idEstudiante']}' data-curso='{$est['idCurso']}' {$selected}>{$est['nombreEstudiante']}</option>";
                     } ?>
                 </select>
-                <?php if (isset($errores['idEstudiante'])) echo "<p class='error-campo'>{$errores['idEstudiante']}</p>"; ?>
+                <?php if (isset($errores['idEstudiante'])) echo "<p style='color: red;'>{$errores['idEstudiante']}</p>"; ?>
             </div>
 
             <div class="campo-formulario margen-abajo">
                 <label>Fecha Préstamo (DD-MM-YYYY)</label>
                 <input type="text" name="fechaPrestamo" 
                        placeholder="Ej: 14-04-2026"
-                       class="<?php echo isset($errores['fechaPrestamo']) ? 'input-error' : ''; ?>"
-                       value="<?php echo htmlspecialchars($datosViejos['fechaPrestamo'] ?? date('d-m-Y')); ?>">
-                <?php if (isset($errores['fechaPrestamo'])) echo "<p class='error-campo'>{$errores['fechaPrestamo']}</p>"; ?>
+                       value="<?php echo htmlspecialchars($datos['fechaPrestamo'] ?? date('d-m-Y')); ?>">
+                <?php if (isset($errores['fechaPrestamo'])) echo "<p style='color: red;'>{$errores['fechaPrestamo']}</p>"; ?>
             </div>
 
-            <button type="submit" class="boton-azul ancho-total">Registrar Préstamo</button>
+            <button type="submit" name="guardarPrestamo" class="boton-azul ancho-total">Registrar Préstamo</button>
         </form>
     </div>
 
@@ -107,19 +106,23 @@ $historialPrestamos = $modeloInventario->listarHistorialPrestamosModelo();
                 <table class="tabla-datos">
                     <thead><tr><th>Equipo</th><th>Alumno</th><th>Fecha</th><th>Acción</th></tr></thead>
                     <tbody>
-                        <?php foreach ($listaPrestamosActivos as $p) { ?>
-                        <tr>
-                            <td><?php echo $p['nombreArticulo']; ?></td>
-                            <td><?php echo $p['nombreEstudiante']; ?></td>
-                            <td><?php echo $p['fechaPrestamo']; ?></td>
-                            <td>
-                                <form method="POST" action="controlador/inventarioControlador.php" class="d-inline">
-                                    <input type="hidden" name="accion" value="devolver">
-                                    <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                    <button type="submit" class="boton-gris">Devolver</button>
-                                </form>
-                            </td>
-                        </tr>
+                        <?php if (empty($listaPrestamosActivos)) { ?>
+                            <tr><td colspan="4" class="sin-datos">No hay préstamos activos</td></tr>
+                        <?php } else { ?>
+                            <?php foreach ($listaPrestamosActivos as $p) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($p['nombreArticulo']); ?></td>
+                                <td><?php echo htmlspecialchars($p['nombreEstudiante']); ?></td>
+                                <td><?php echo htmlspecialchars($p['fechaPrestamo']); ?></td>
+                                <td>
+                                    <form method="POST" action="controlador/inventarioControlador.php" class="d-inline">
+                                        <input type="hidden" name="accion" value="devolver">
+                                        <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
+                                        <button type="submit" class="boton-gris">Devolver</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php } ?>
                         <?php } ?>
                     </tbody>
                 </table>

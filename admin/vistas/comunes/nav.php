@@ -22,6 +22,9 @@ $totalProfesores = $panelControl->contadorProfesores();
 $totalDirectores = $panelControl->contadorDirectores();
 $totalCursos = $panelControl->contadorCursos();
 $totalAulas = $panelControl->contadorAulas();
+$totalCiclos = $panelControl->contadorCiclos();
+$totalModulos = $panelControl->contadorModulos();
+$totalRetos = $panelControl->contadorRetos();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -79,6 +82,24 @@ $totalAulas = $panelControl->contadorAulas();
                     <i class="fas fa-door-open"></i> 
                     <span>Aulas</span> 
                     <span class="etiqueta-contador"><?php echo $totalAulas; ?></span>
+                </a>
+
+                <a href="vistas/ciclos/verCiclos.php" class="enlace-menu <?php echo ($seccion == 'ciclos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-sync"></i> 
+                    <span>Ciclos</span> 
+                    <span class="etiqueta-contador"><?php echo $totalCiclos; ?></span>
+                </a>
+
+                <a href="vistas/modulos/verModulos.php" class="enlace-menu <?php echo ($seccion == 'modulos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-cubes"></i> 
+                    <span>Módulos</span> 
+                    <span class="etiqueta-contador"><?php echo $totalModulos; ?></span>
+                </a>
+
+                <a href="vistas/retos/verRetos.php" class="enlace-menu <?php echo ($seccion == 'retos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-tasks"></i> 
+                    <span>Retos</span> 
+                    <span class="etiqueta-contador"><?php echo $totalRetos; ?></span>
                 </a>
             </div>
 

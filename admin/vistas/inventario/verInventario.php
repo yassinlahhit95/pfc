@@ -14,9 +14,9 @@ $listaArticulos = $modeloInventario->listarArticulosModelo();
 
 // Capturar errores y datos viejos de la sesión
 $errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_viejos'] ?? [];
+$datos = $_SESSION['datos_inventario'] ?? [];
 $mensajeExito = $_SESSION['exito'] ?? '';
-unset($_SESSION['errores'], $_SESSION['datos_viejos'], $_SESSION['exito']);
+unset($_SESSION['errores'], $_SESSION['datos_inventario'], $_SESSION['exito']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -48,11 +48,10 @@ unset($_SESSION['errores'], $_SESSION['datos_viejos'], $_SESSION['exito']);
             <div class="campo-formulario margen-abajo">
                 <label>Nombre del Recurso</label>
                 <input type="text" name="nombreArticulo" 
-                       class="<?php echo isset($errores['nombreArticulo']) ? 'input-error' : ''; ?>"
                        value="<?php echo htmlspecialchars($datos['nombreArticulo'] ?? ''); ?>" 
                        placeholder="Ej: Proyector">
                 <?php if (isset($errores['nombreArticulo'])) { ?>
-                    <p class="error-campo"><?php echo $errores['nombreArticulo']; ?></p>
+                    <p style="color: red;"><?php echo $errores['nombreArticulo']; ?></p>
                 <?php } ?>
             </div>
 
@@ -60,14 +59,13 @@ unset($_SESSION['errores'], $_SESSION['datos_viejos'], $_SESSION['exito']);
             <div class="campo-formulario margen-abajo">
                 <label>Cantidad Inicial</label>
                 <input type="text" name="cantidadTotal" 
-                       class="<?php echo isset($errores['cantidadTotal']) ? 'input-error' : ''; ?>"
                        value="<?php echo htmlspecialchars($datos['cantidadTotal'] ?? '1'); ?>">
                 <?php if (isset($errores['cantidadTotal'])) { ?>
-                    <p class="error-campo"><?php echo $errores['cantidadTotal']; ?></p>
+                    <p style="color: red;"><?php echo $errores['cantidadTotal']; ?></p>
                 <?php } ?>
             </div>
 
-            <button type="submit" class="boton-azul ancho-total">Guardar en Inventario</button>
+            <button type="submit" name="guardarArticulo" class="boton-azul ancho-total">Guardar en Inventario</button>
         </form>
     </div>
 

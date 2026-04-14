@@ -32,22 +32,22 @@ class curso {
     }
 
     // Insert using Prepared Statements
-    public function insertarCursosModelo($datos) {
-        $sql = "INSERT INTO cursos (nombreCurso, descripcionCurso, idNivel, idProfesor, idAula, idEstado) VALUES (?, ?, ?, ?, ?, ?)";
+    public function insertarCursoModelo($datos) {
+        $sql = "INSERT INTO cursos (nombreCurso, descripcionCurso, idNivel, idProfesor, idAula, idEstado, idCiclo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("ssiiii", $datos['nombreCurso'], $datos['descripcionCurso'], $datos['idNivel'], $datos['idProfesor'], $datos['idAula'], $datos['idEstado']);
+        $stmt->bind_param("ssiiiii", $datos['nombreCurso'], $datos['descripcionCurso'], $datos['idNivel'], $datos['idProfesor'], $datos['idAula'], $datos['idEstado'], $datos['idCiclo']);
         return $stmt->execute();
     }
 
     // Update using Prepared Statements
-    public function actualizarCursosModelo($datos) {
-        $sql = "UPDATE cursos SET nombreCurso = ?, descripcionCurso = ?, idNivel = ?, idProfesor = ?, idAula = ?, idEstado = ? WHERE idCurso = ?";
+    public function actualizarCursoModelo($datos) {
+        $sql = "UPDATE cursos SET nombreCurso = ?, descripcionCurso = ?, idNivel = ?, idProfesor = ?, idAula = ?, idEstado = ?, idCiclo = ? WHERE idCurso = ?";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("ssiiiii", $datos['nombreCurso'], $datos['descripcionCurso'], $datos['idNivel'], $datos['idProfesor'], $datos['idAula'], $datos['idEstado'], $datos['idCurso']);
+        $stmt->bind_param("ssiiiiii", $datos['nombreCurso'], $datos['descripcionCurso'], $datos['idNivel'], $datos['idProfesor'], $datos['idAula'], $datos['idEstado'], $datos['idCiclo'], $datos['idCurso']);
         return $stmt->execute();
     }
 
-    public function eliminarCursosModelo($id) {
+    public function eliminarCursoModelo($id) {
         $sql = "DELETE FROM cursos WHERE idCurso = ?";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bind_param('i', $id);

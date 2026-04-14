@@ -7,88 +7,83 @@ $con = new Conexion();
 $conexion = $con->conectar();
 $modelo = new estudiante($conexion);
 
-if (isset($_POST['accion'])) {
+if (isset($_POST['guardarEstudiante'])) {
     $accion = $_POST['accion'];
     
-    // Limpiar errores anteriores
-    unset($_SESSION['error_nombre']);
-    unset($_SESSION['error_email']);
-    unset($_SESSION['error_dni']);
-    unset($_SESSION['datos']);
+    unset($_SESSION['errores']);
+    unset($_SESSION['datos_estudiante']);
 
-    if ($accion == 'insertar' || $accion == 'actualizar') {
-        
-        // 1. Recoger datos y quitar espacios con trim
-        $nombre = trim($_POST['nombreEstudiante']);
-        $email = trim($_POST['emailEstudiante']);
-        $dni = trim($_POST['dniEstudiante']);
-        $telefono = trim($_POST['telefonoEstudiante']);
-        $direccion = trim($_POST['direccionEstudiante']);
-        $fecha = trim($_POST['fechaNacimientoEstudiante']);
-        $curso = $_POST['idCurso'];
-        $estado = $_POST['idEstado'];
+    $nombre = trim($_POST['nombreEstudiante']);
+    $email = trim($_POST['emailEstudiante']);
+    $dni = trim($_POST['dniEstudiante']);
+    $telefono = trim($_POST['telefonoEstudiante']);
+    $fechaNacimiento = $_POST['fechaNacimientoEstudiante'];
+    $fechaAlta = $_POST['fechaAltaEstudiante'];
+    $direccion = trim($_POST['direccionEstudiante']);
+    $ciudad = trim($_POST['ciudadEstudiante']);
+    $codigoPostal = trim($_POST['codigoPostalEstudiante']);
+    $nivel = trim($_POST['nivelEstudiante']);
+    $idCurso = $_POST['idCurso'];
+    $idEstado = $_POST['idEstado'];
+    $observaciones = trim($_POST['observacionesEstudiante']);
 
-        $hayError = false;
+    $errores = [];
 
-        // 2. Validaciones muy simples (Nivel Principiante)
-        if ($nombre == "") {
-            $_SESSION['error_nombre'] = "Debes escribir el nombre";
-            $hayError = true;
-        }
+    if (empty($nombre)) $errores['nombreEstudiante'] = "El nombre es obligatorio";
+    if (empty($email)) $errores['emailEstudiante'] = "El email es obligatorio";
+    if (empty($dni)) $errores['dniEstudiante'] = "El DNI es obligatorio";
+    if (empty($telefono)) $errores['telefonoEstudiante'] = "El teléfono es obligatorio";
+    if (empty($fechaNacimiento)) $errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria";
+    if (empty($fechaAlta)) $errores['fechaAltaEstudiante'] = "La fecha de alta es obligatoria";
+    if (empty($direccion)) $errores['direccionEstudiante'] = "La dirección es obligatoria";
+    if (empty($ciudad)) $errores['ciudadEstudiante'] = "La ciudad es obligatoria";
+    if (empty($codigoPostal)) $errores['codigoPostalEstudiante'] = "El código postal es obligatorio";
+    if (empty($nivel)) $errores['nivelEstudiante'] = "El nivel es obligatorio";
+    if (empty($idCurso)) $errores['idCurso'] = "El curso es obligatorio";
+    if (empty($idEstado)) $errores['idEstado'] = "El estado es obligatorio";
 
-        if ($email == "") {
-            $_SESSION['error_email'] = "Debes escribir el email";
-            $hayError = true;
-        }
-
-        if ($dni == "") {
-            $_SESSION['error_dni'] = "Debes escribir el DNI";
-            $hayError = true;
-        }
-
-        // 3. Si hay errores, volver al formulario
-        if ($hayError == true) {
-            $_SESSION['datos'] = $_POST; // Guardar lo que escribió
-            if ($accion == 'insertar') {
-                header("Location: ../vistas/estudiantes/agregarEstudiantes.php");
-            } else {
-                header("Location: ../vistas/estudiantes/modificarEstudiantes.php?id=" . $_POST['idEstudiante']);
-            }
-            exit;
-        }
-
-        // 4. Preparar datos para el modelo
-        $datos = [
-            'nombre' => $nombre,
-            'email' => $email,
-            'dni' => $dni,
-            'telefono' => $telefono,
-            'direccion' => $direccion,
-            'fechaNac' => $fecha,
-            'idCurso' => $curso,
-            'idEstado' => $estado
-        ];
-
-        // 5. Guardar
-        if ($accion == 'insertar') {
-            $modelo->insertarEstudianteModelo($datos);
-            $_SESSION['exito'] = "Estudiante guardado";
-        } else {
-            $datos['id'] = $_POST['idEstudiante'];
-            $modelo->actualizarEstudianteModelo($datos);
-            $_SESSION['exito'] = "Estudiante actualizado";
-        }
-
-        header("Location: ../vistas/estudiantes/verEstudiantes.php");
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_estudiante'] = $_POST;
+        $url = ($accion == 'insertar') ? "agregarEstudiantes.php" : "modificarEstudiantes.php?id=" . $_POST['idEstudiante'];
+        header("Location: ../vistas/estudiantes/" . $url);
         exit;
     }
 
-    if ($accion == 'eliminar') {
-        $id = $_POST['idEstudiante'];
-        $modelo->eliminarEstudianteModelo($id);
-        $_SESSION['exito'] = "Estudiante borrado";
-        header("Location: ../vistas/estudiantes/verEstudiantes.php");
-        exit;
+    $datos = [
+        'nombreEstudiante' => $nombre,
+        'emailEstudiante' => $email,
+        'telefonoEstudiante' => $telefono,
+        'fechaNacimientoEstudiante' => $fechaNacimiento,
+        'dniEstudiante' => $dni,
+        'fechaAltaEstudiante' => $fechaAlta,
+        'direccionEstudiante' => $direccion,
+        'ciudadEstudiante' => $ciudad,
+        'codigoPostalEstudiante' => $codigoPostal,
+        'nivelEstudiante' => $nivel,
+        'observacionesEstudiante' => $observaciones,
+        'idCurso' => $idCurso,
+        'idEstado' => $idEstado
+    ];
+
+    if ($accion == 'insertar') {
+        $modelo->insertarEstudianteModelo($datos);
+        $_SESSION['exito'] = "Estudiante registrado";
+    } else {
+        $datos['idEstudiante'] = $_POST['idEstudiante'];
+        $modelo->actualizarEstudianteModelo($datos);
+        $_SESSION['exito'] = "Estudiante actualizado";
     }
+
+    header("Location: ../vistas/estudiantes/verEstudiantes.php");
+    exit;
+}
+
+if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
+    $id = $_POST['idEstudiante'];
+    $modelo->eliminarEstudianteModelo($id);
+    $_SESSION['exito'] = "Estudiante borrado";
+    header("Location: ../vistas/estudiantes/verEstudiantes.php");
+    exit;
 }
 ?>
