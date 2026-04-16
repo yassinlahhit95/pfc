@@ -12,11 +12,11 @@ unset($_SESSION['datos_profesor'], $_SESSION['errores']);
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nuevo Profesor</h1>
-    <a href="vistas/profesores/verProfesores.php" class="boton-gris">Volver</a>
+    <a href="vistas/profesores/verProfesores.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controlador/profesoresControlador.php" method="POST">
+    <form action="../../controladores/profesores/insertar.php" method="POST">
         <input type="hidden" name="accion" value="insertar">
 
         <div class="formulario-cuadricula">
@@ -70,7 +70,7 @@ unset($_SESSION['datos_profesor'], $_SESSION['errores']);
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarProfesor" class="boton-azul">Guardar Profesor</button>
+            <button type="submit" name="guardarProfesor" class="boton-primario">Guardar Profesor</button>
         </div>
     </form>
 </div>

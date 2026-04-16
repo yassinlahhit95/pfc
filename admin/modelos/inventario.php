@@ -1,81 +1,82 @@
 <?php
-require_once "conexion.php";
+require_once("conectar.php");
 
 class inventario {
-    protected $conexion;
-
-    public function __construct($conexion) {
-        $this->conexion = $conexion;
-    }
-
     public function listarArticulosModelo() {
-        $sql = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, estadoDispositivo as estado 
+        $bd = getConnection();
+        $sql = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, estadoDispositivo as estado, numeroSerie 
                 FROM dispositivos ORDER BY nombreDispositivo ASC";
-        $resultado = $this->conexion->query($sql);
-        $articulos = [];
-        if ($resultado) {
+        $datos = [];
+        if ($resultado = $bd->query($sql)) {
             while ($fila = $resultado->fetch_assoc()) {
                 $fila['cantidadTotal'] = 1;
                 $fila['cantidadDisponible'] = ($fila['estado'] == 'disponible') ? 1 : 0;
-                $articulos[] = $fila;
+                $datos[] = $fila;
             }
         }
-        return $articulos;
+        $bd->close();
+        return $datos;
     }
 
-    // Listar préstamos que están en uso actualmente
+    public function insertarArticuloModelo($nombre, $nSerie) {
+        $bd = getConnection();
+        $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) VALUES (?, ?, 'disponible')";
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("ss", $nombre, $nSerie);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
+    }
+
+    public function eliminarArticuloModelo($id) {
+        $bd = getConnection();
+        $sql = "DELETE FROM dispositivos WHERE idDispositivo = ?";
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
+    }
+
     public function listarPrestamosActivos() {
-        $sql = "SELECT * FROM prestamos WHERE estadoPrestamo = 'en curso' OR estadoPrestamo = 'activo'";
-        $resultado = $this->conexion->query($sql);
-        $prestamos = [];
-        if ($resultado) {
+        $bd = getConnection();
+        $sql = "SELECT p.*, d.nombreDispositivo as nombreArticulo, e.nombreEstudiante 
+                FROM prestamos p 
+                JOIN dispositivos d ON p.numeroSerie = d.numeroSerie 
+                JOIN estudiantes e ON p.idEstudiante = e.idEstudiante 
+                WHERE p.estadoPrestamo = 'en curso' OR p.estadoPrestamo = 'activo'";
+        $datos = [];
+        if ($resultado = $bd->query($sql)) {
             while ($fila = $resultado->fetch_assoc()) {
-                $nSerie = $fila['numeroSerie'];
-                $sqlDev = "SELECT nombreDispositivo FROM dispositivos WHERE numeroSerie = '$nSerie' LIMIT 1";
-                $resDev = $this->conexion->query($sqlDev);
-                $dispositivo = $resDev->fetch_assoc();
-                $fila['nombreArticulo'] = $dispositivo['nombreDispositivo'] ?? 'Desconocido';
-
-                $idEst = $fila['idEstudiante'];
-                $sqlEst = "SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = '$idEst' LIMIT 1";
-                $resEst = $this->conexion->query($sqlEst);
-                $estudiante = $resEst->fetch_assoc();
-                $fila['nombreEstudiante'] = $estudiante['nombreEstudiante'] ?? 'Alumno';
-
-                $prestamos[] = $fila;
+                $datos[] = $fila;
             }
         }
-        return $prestamos;
+        $bd->close();
+        return $datos;
     }
 
-    // NUEVO: Listar historial de préstamos (los ya devueltos)
     public function listarHistorialPrestamosModelo() {
-        $sql = "SELECT * FROM prestamos WHERE estadoPrestamo = 'devuelto' ORDER BY fechaDevolucion DESC";
-        $resultado = $this->conexion->query($sql);
-        $historial = [];
-        if ($resultado) {
+        $bd = getConnection();
+        $sql = "SELECT p.*, d.nombreDispositivo as nombreArticulo, e.nombreEstudiante 
+                FROM prestamos p 
+                JOIN dispositivos d ON p.numeroSerie = d.numeroSerie 
+                JOIN estudiantes e ON p.idEstudiante = e.idEstudiante 
+                WHERE p.estadoPrestamo = 'devuelto' 
+                ORDER BY p.fechaDevolucion DESC";
+        $datos = [];
+        if ($resultado = $bd->query($sql)) {
             while ($fila = $resultado->fetch_assoc()) {
-                $nSerie = $fila['numeroSerie'];
-                $sqlDev = "SELECT nombreDispositivo FROM dispositivos WHERE numeroSerie = '$nSerie' LIMIT 1";
-                $resDev = $this->conexion->query($sqlDev);
-                $dispositivo = $resDev->fetch_assoc();
-                $fila['nombreArticulo'] = $dispositivo['nombreDispositivo'] ?? 'Equipo';
-
-                $idEst = $fila['idEstudiante'];
-                $sqlEst = "SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = '$idEst' LIMIT 1";
-                $resEst = $this->conexion->query($sqlEst);
-                $estudiante = $resEst->fetch_assoc();
-                $fila['nombreEstudiante'] = $estudiante['nombreEstudiante'] ?? 'Alumno';
-
-                $historial[] = $fila;
+                $datos[] = $fila;
             }
         }
-        return $historial;
+        $bd->close();
+        return $datos;
     }
 
     public function realizarPrestamoModelo($idArticulo, $idEstudiante, $fecha) {
+        $bd = getConnection();
         $sqlInfo = "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = ?";
-        $stmtInfo = $this->conexion->prepare($sqlInfo);
+        $stmtInfo = $bd->prepare($sqlInfo);
         $stmtInfo->bind_param("i", $idArticulo);
         $stmtInfo->execute();
         $resultado = $stmtInfo->get_result();
@@ -83,21 +84,23 @@ class inventario {
         $nSerie = $dispositivo['numeroSerie'];
 
         $sqlPres = "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')";
-        $stmtPres = $this->conexion->prepare($sqlPres);
+        $stmtPres = $bd->prepare($sqlPres);
         $stmtPres->bind_param("iss", $idEstudiante, $nSerie, $fecha);
         $exitoPres = $stmtPres->execute();
 
         $sqlAct = "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?";
-        $stmtAct = $this->conexion->prepare($sqlAct);
+        $stmtAct = $bd->prepare($sqlAct);
         $stmtAct->bind_param("i", $idArticulo);
         $exitoAct = $stmtAct->execute();
 
+        $bd->close();
         return ($exitoPres && $exitoAct);
     }
 
     public function devolverPrestamoModelo($idPrestamo) {
+        $bd = getConnection();
         $sqlInfo = "SELECT numeroSerie FROM prestamos WHERE idPrestamo = ?";
-        $stmtInfo = $this->conexion->prepare($sqlInfo);
+        $stmtInfo = $bd->prepare($sqlInfo);
         $stmtInfo->bind_param("i", $idPrestamo);
         $stmtInfo->execute();
         $res = $stmtInfo->get_result();
@@ -105,30 +108,17 @@ class inventario {
         $nSerie = $prestamo['numeroSerie'];
 
         $sqlPres = "UPDATE prestamos SET estadoPrestamo = 'devuelto', fechaDevolucion = CURDATE() WHERE idPrestamo = ?";
-        $stmtPres = $this->conexion->prepare($sqlPres);
+        $stmtPres = $bd->prepare($sqlPres);
         $stmtPres->bind_param("i", $idPrestamo);
         $exitoPres = $stmtPres->execute();
 
         $sqlAct = "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = ?";
-        $stmtAct = $this->conexion->prepare($sqlAct);
+        $stmtAct = $bd->prepare($sqlAct);
         $stmtAct->bind_param("s", $nSerie);
         $exitoAct = $stmtAct->execute();
 
+        $bd->close();
         return ($exitoPres && $exitoAct);
-    }
-
-    public function insertarArticuloModelo($datos) {
-        $sql = "INSERT INTO dispositivos (nombreDispositivo, estadoDispositivo) VALUES (?, 'disponible')";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('s', $datos['nombreArticulo']);
-        return $stmt->execute();
-    }
-
-    public function eliminarArticuloModelo($id) {
-        $sql = "DELETE FROM dispositivos WHERE idDispositivo = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('i', $id);
-        return $stmt->execute();
     }
 }
 ?>

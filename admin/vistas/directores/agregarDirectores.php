@@ -12,11 +12,11 @@ unset($_SESSION['datos_director'], $_SESSION['errores']);
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nuevo Director</h1>
-    <a href="vistas/directores/verDirectores.php" class="boton-gris">Volver</a>
+    <a href="vistas/directores/verDirectores.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controlador/directoresControlador.php" method="POST">
+    <form action="../../controladores/directores/insertar.php" method="POST">
         <input type="hidden" name="accion" value="insertar">
 
         <div class="formulario-cuadricula">
@@ -86,7 +86,7 @@ unset($_SESSION['datos_director'], $_SESSION['errores']);
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarDirector" class="boton-azul">Guardar Director</button>
+            <button type="submit" name="guardarDirector" class="boton-primario">Guardar Director</button>
         </div>
     </form>
 </div>

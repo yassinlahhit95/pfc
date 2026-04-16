@@ -6,10 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/modulos.php";
 
-$conexionObj = new Conexion();
-$conexion = $conexionObj->conectar();
-
-$moduloObj = new modulo($conexion);
+$moduloObj = new modulo();
 $listaModulos = $moduloObj->listarModulosModelo();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -33,6 +30,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="mensaje-exito">
     <i class="fas fa-check-circle"></i>
     <p><?php echo htmlspecialchars($exito); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($error): ?>
+<div class="mensaje-error">
+    <i class="fas fa-exclamation-circle"></i>
+    <p><?php echo htmlspecialchars($error); ?></p>
 </div>
 <?php endif; ?>
 
@@ -65,10 +69,9 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form method="POST" action="controlador/modulosControlador.php" 
+                            <form method="POST" action="controladores/modulos/borrar.php" 
                                   class="form-eliminar d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este módulo?');">
-                                <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="idModulo" value="<?php echo $m['idModulo']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                     <i class="fas fa-trash"></i>

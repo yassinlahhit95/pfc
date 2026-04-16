@@ -6,10 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/ciclos.php";
 
-$conexionObj = new Conexion();
-$conexion = $conexionObj->conectar();
-
-$cicloObj = new ciclo($conexion);
+$cicloObj = new ciclo();
 $listaCiclos = $cicloObj->listarCiclosModelo();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -42,31 +39,51 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <tr>
                 <th>ID</th>
                 <th>Nombre Ciclo</th>
-                <th>Descripción</th>
+                <th>Nivel</th>
+                <th>Tutor(es)</th>
+                <th>Aula(s)</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($listaCiclos)): ?>
             <tr>
-                <td colspan="4" class="sin-datos">No hay ciclos registrados</td>
+                <td colspan="7" class="sin-datos">No hay ciclos registrados</td>
             </tr>
             <?php else: ?>
-                <?php foreach ($listaCiclos as $c) { ?>
+                <?php foreach ($listaCiclos as $c) { 
+                    $estado = $c['idEstado'] == 1 ? 'Activo' : 'Inactivo';
+                    $claseEstado = $c['idEstado'] == 1 ? 'estado-activo' : 'estado-inactivo';
+                    
+                    // Procesar nombres de profesores
+                    $nombresProfesores = array_column($c['profesores'] ?? [], 'nombreProfesor');
+                    $textoProfesores = !empty($nombresProfesores) ? implode(', ', $nombresProfesores) : 'Sin asignar';
+                    
+                    // Procesar nombres de aulas
+                    $nombresAulas = array_column($c['aulas'] ?? [], 'nombreAula');
+                    $textoAulas = !empty($nombresAulas) ? implode(', ', $nombresAulas) : 'Sin asignar';
+                ?>
                 <tr>
                     <td><?php echo $c['idCiclo']; ?></td>
-                    <td><?php echo htmlspecialchars($c['nombreCiclo']); ?></td>
-                    <td><?php echo htmlspecialchars($c['descripcionCiclo']); ?></td>
+                    <td><strong><?php echo htmlspecialchars($c['nombreCiclo']); ?></strong></td>
+                    <td><?php echo htmlspecialchars($c['nombreNivel'] ?? 'N/A'); ?></td>
+                    <td class="texto-pequeno"><?php echo htmlspecialchars($textoProfesores); ?></td>
+                    <td class="texto-pequeno"><?php echo htmlspecialchars($textoAulas); ?></td>
+                    <td>
+                        <span class="insignia-estado <?php echo $claseEstado; ?>">
+                            <?php echo $estado; ?>
+                        </span>
+                    </td>
                     <td>
                         <div class="botones-accion">
                             <a href="vistas/ciclos/modificarCiclos.php?id=<?php echo $c['idCiclo']; ?>" 
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form method="POST" action="controlador/ciclosControlador.php" 
+                            <form method="POST" action="controladores/ciclos/borrar.php" 
                                   class="form-eliminar d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este ciclo? Se borrarán sus módulos y retos asociados.');">
-                                <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="idCiclo" value="<?php echo $c['idCiclo']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                     <i class="fas fa-trash"></i>

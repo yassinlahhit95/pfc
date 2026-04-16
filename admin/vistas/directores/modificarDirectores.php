@@ -1,13 +1,9 @@
 <?php
 session_start();
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/directores.php";
 
 $id = $_GET['id'] ?? 0;
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-
-$modeloDirector = new director($conexionBD);
+$modeloDirector = new director();
 $datosDirectorBD = $modeloDirector->obtenerDirectorPorIdModelo($id);
 
 if (!$datosDirectorBD) {
@@ -27,11 +23,11 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Modificar Director: <?php echo htmlspecialchars($datosDirectorBD['nombreDirector']); ?></h1>
-    <a href="vistas/directores/verDirectores.php" class="boton-gris">Cancelar</a>
+    <a href="vistas/directores/verDirectores.php" class="boton-secundario">Cancelar</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controlador/directoresControlador.php" method="POST">
+    <form action="../../controladores/directores/actualizar.php" method="POST">
         <input type="hidden" name="accion" value="actualizar">
         <input type="hidden" name="idDirector" value="<?php echo $id; ?>">
 
@@ -121,7 +117,7 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarDirector" class="boton-azul">Guardar Cambios</button>
+            <button type="submit" name="guardarDirector" class="boton-primario">Guardar Cambios</button>
         </div>
     </form>
 </div>

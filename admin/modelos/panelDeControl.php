@@ -1,14 +1,17 @@
 <?php
-
-require_once "conexion.php";
+require_once "conectar.php";
 
 class panelDeControl
 {
-    protected $conexion;
+    private $conexion;
 
-    public function __construct($conexion)
+    public function __construct()
     {
-        $this->conexion = $conexion;
+        $this->conexion = getConnection();
+    }
+
+    public function __get($propiedad) {
+        if (property_exists($this, $propiedad)) { return $this->$propiedad; }
     }
 
     public function contadorEstudiantes()
@@ -35,7 +38,6 @@ class panelDeControl
         return $fila['total'];
     }
 
-    // New: Sum of all 'pagado' amounts
     public function totalRecaudado()
     {
         $sql = "SELECT SUM(monto) AS total FROM pagos WHERE estadoPago = 'pagado'";
@@ -44,18 +46,9 @@ class panelDeControl
         return $fila['total'] ?? 0;
     }
 
-    // New: Count of 'pendiente' payments
     public function pagosPendientesContador()
     {
         $sql = "SELECT COUNT(idPago) AS total FROM pagos WHERE estadoPago = 'pendiente'";
-        $resultado = $this->conexion->query($sql);
-        $fila = $resultado->fetch_assoc();
-        return $fila['total'];
-    }
-
-    public function contadorCursos()
-    {
-        $sql = "SELECT COUNT(idCurso) AS total FROM cursos";
         $resultado = $this->conexion->query($sql);
         $fila = $resultado->fetch_assoc();
         return $fila['total'];

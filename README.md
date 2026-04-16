@@ -1,25 +1,16 @@
 # PFC - Sistema de Gestión Académica
 
 ## Descripción del Proyecto
-Sistema de gestión académica desarrollado en PHP Native MVC con funcionalidad offline. El proyecto permite gestionar estudiantes, profesores y cursos con capacidad de funcionamiento sin conexión a internet.
+Sistema de gestión académica desarrollado en PHP Native MVC. El proyecto permite gestionar estudiantes, profesores y cursos.
 
-## Características Principales
-
-### Funcionalidad Offline
-- **Almacenamiento Local**: Uso de LocalStorage para guardar datos de estudiantes y cursos en el navegador
-- **Gestión de Inserción Offline**: Cuando se añade un nuevo estudiante sin conexión, los datos se almacenan en un array dentro de LocalStorage
-- **Sincronización Automática**: Una vez recuperada la conexión, los datos pendientes se envían automáticamente al controlador mediante AJAX (jQuery) usando peticiones POST estándar
-- **Actualización de Cache**: Cuando hay conexión, se actualiza el LocalStorage con los últimos datos de la base de datos MySQL
-
-### Estructura del Proyecto
+## Estructura del Proyecto
 ```
 pfc/
-├── superAdmin/          # Panel de administración principal
+├── admin/          # Panel de administración principal
 │   ├── index.php        # Página principal
-│   ├── controlador/     # Controladores MVC
-│   ├── modelo/          # Modelos MVC
+│   ├── controladores/     # Controladores MVC
+│   ├── modelos/          # Modelos MVC
 │   ├── vistas/          # Vistas MVC
-│   ├── js/              # JavaScript
 │   ├── estiloAdmin/ # CSS
 │   └── imagenesSuperAdmin/ # Imágenes
 ├── profesores/          # Panel de profesores
@@ -32,7 +23,6 @@ pfc/
 ## Requisitos del Sistema
 - PHP 7.4 o superior
 - MySQL/MariaDB
-- Navegador web moderno con soporte para LocalStorage
 - Servidor web (Apache/Nginx)
 
 ## Instalación
@@ -53,37 +43,27 @@ pfc/
 ## Uso
 
 ### Panel de Administración
-- Acceso: `superAdmin/index.php`
+- Acceso: `admin/index.php`
 - Gestión completa de usuarios, estudiantes y cursos
-- Funcionalidad offline disponible
-
-### Funcionalidad Offline
-El sistema detecta automáticamente el estado de conexión:
-- **Sin conexión**: Los datos se almacenan localmente
-- **Con conexión**: Los datos se sincronizan automáticamente
 
 ## Estructura MVC
 
 ### Modelos
-- `superAdmin/modelo/` - Modelos de datos
+- `admin/modelos/` - Modelos de datos
 - Responsables de la interacción con la base de datos
 
 ### Vistas
-- `superAdmin/vistas/` - Plantillas HTML
-- `superAdmin/estiloAdmin/` - Estilos CSS
-- `superAdmin/js/` - Funcionalidades JavaScript
+- `admin/vistas/` - Plantillas HTML
+- `admin/estiloAdmin/` - Estilos CSS
 
 ### Controladores
-- `superAdmin/controlador/` - Lógica de negocio
+- `admin/controladores/` - Lógica de negocio
 - Procesan las peticiones y coordinan modelos y vistas
 
 ## Características Técnicas
 
 - **PHP Native**: Sin frameworks externos
 - **MVC Architecture**: Separación clara de responsabilidades
-- **Offline First**: Diseño centrado en funcionamiento sin conexión
-- **AJAX Synchronization**: Sincronización asíncrona de datos
-- **LocalStorage**: Almacenamiento persistente en el navegador
 
 ## Desarrollo
 
@@ -91,7 +71,6 @@ El sistema detecta automáticamente el estado de conexión:
 - **Controladores**: Gestionan la lógica de negocio
 - **Modelos**: Manejan la persistencia de datos
 - **Vistas**: Presentan la interfaz de usuario
-- **JavaScript**: Implementan funcionalidad offline
 
 ### Funcionalidades Clave
 - Gestión de estudiantes
@@ -99,6 +78,24 @@ El sistema detecta automáticamente el estado de conexión:
 - Gestión de cursos
 - Sistema de notificaciones
 - Navegación dinámica
+
+## Estándares de Codificación
+
+Para mantener la consistencia y seguridad del proyecto, se deben seguir los siguientes estándares:
+
+### Validación de Datos Numéricos
+En los controladores, los campos numéricos (IDs, horas, montos, etc.) deben validarse manualmente sin utilizar `filter_var` o `filter_input`. El método estándar es:
+```php
+if (!is_numeric($valor) || !ctype_digit($valor) || !preg_match('/^[0-9]+$/', $valor)) {
+    // Error de validación
+}
+```
+*Nota: Para montos decimales, la regex debe ajustarse (ej: `/^[0-9]+(\.[0-9]{1,2})?$/`).*
+
+### Seguridad y Escapado
+- **Prohibido el uso de `htmlentities`**: No se debe utilizar `htmlentities` en ninguna parte del proyecto.
+- **Uso de `htmlspecialchars`**: Para la salida de datos en las vistas (evitar XSS), se debe utilizar preferiblemente `htmlspecialchars`.
+- **Inputs Numéricos**: Se prefiere el uso de `type="text"` en lugar de `type="number"` en los formularios HTML, delegando la validación estricta al controlador.
 
 ## Licencia
 Este proyecto está bajo licencia MIT - ver el archivo LICENSE para más detalles.

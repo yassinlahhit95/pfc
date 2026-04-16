@@ -1,16 +1,11 @@
 <?php
-require_once "conexion.php";
+require_once("conectar.php");
 
 class aula {
-    protected $conexion;
-
-    public function __construct($conexion) {
-        $this->conexion = $conexion;
-    }
-
     public function listarAulasModelo() {
+        $bd = getConnection();
         $sql = "SELECT * FROM aulas ORDER BY nombreAula ASC";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $bd->query($sql);
         $aulas = [];
         
         if ($resultado) {
@@ -18,29 +13,39 @@ class aula {
                 $aulas[] = $fila;
             }
         }
+        $bd->close();
         return $aulas;
     }
 
-    public function insertarAulasModelo($datos) {
+    public function insertarAulasModelo($nombre) {
+        $bd = getConnection();
+        
         $sql = "INSERT INTO aulas (nombreAula) VALUES (?)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('s', $datos['nombreAula']);
-        return $stmt->execute();
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param('s', $nombre);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
     public function eliminarAulasModelo($id) {
+        $bd = getConnection();
+        
         $sql = "DELETE FROM aulas WHERE idAula = ?";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $bd->prepare($sql);
         $stmt->bind_param('i', $id);
-        return $stmt->execute();
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
-    // Métodos simples para rellenar desplegables (ComboBox)
     public function listarEstadosModelo() {
+        $bd = getConnection();
         $sql = "SELECT * FROM estados ORDER BY nombreEstado ASC";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $bd->query($sql);
         $estados = [];
         while($fila = $resultado->fetch_assoc()) { $estados[] = $fila; }
+        $bd->close();
         return $estados;
     }
 }

@@ -4,19 +4,16 @@ $titulo_pagina = "Gestión de Anuncios";
 $seccion = 'anuncios';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/anuncios.php";
 
-$con = new Conexion();
-$conexionBD = $con->conectar();
-$modeloAnuncios = new anuncio($conexionBD);
-
+$modeloAnuncios = new anuncio();
 $listaAnuncios = $modeloAnuncios->listarAnunciosModelo();
 
 $exito = $_SESSION['exito'] ?? '';
+$error = $_SESSION['error'] ?? '';
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_anuncios'] ?? [];
-unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
+unset($_SESSION['exito'], $_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -29,13 +26,15 @@ unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
 <?php if ($exito != "") { ?>
     <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
 <?php } ?>
+<?php if ($error != "") { ?>
+    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+<?php } ?>
 
 <div class="disposicion-flexible separacion-grande">
     <!-- Formulario -->
     <div class="tarjeta-blanca ancho-fijo-300">
         <div class="titulo-tarjeta"><h3>Nuevo Anuncio</h3></div>
-        <form method="POST" action="controlador/anunciosControlador.php">
-            <input type="hidden" name="accion" value="insertar">
+        <form method="POST" action="../../controladores/anuncios/insertar.php">
             
             <div class="campo-formulario margen-abajo">
                 <label>Título</label>
@@ -61,7 +60,7 @@ unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
                 <?php endif; ?>
             </div>
 
-            <button type="submit" name="guardarAnuncio" class="boton-azul ancho-total">Publicar</button>
+            <button type="submit" name="guardarAnuncio" class="boton-primario ancho-total">Publicar</button>
         </form>
     </div>
 
@@ -96,13 +95,11 @@ unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
                                 </span>
                             </td>
                             <td>
-                                <form method="POST" action="controlador/anunciosControlador.php" class="d-inline">
-                                    <input type="hidden" name="accion" value="eliminar">
-                                    <input type="hidden" name="id" value="<?php echo $a['idAnuncio']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" onclick="return confirm('¿Borrar?');">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <a href="../../controladores/anuncios/borrar.php?id=<?php echo $a['idAnuncio']; ?>" 
+                                   class="boton-icono boton-eliminar" 
+                                   onclick="return confirm('¿Borrar este anuncio?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
                         <?php } ?>

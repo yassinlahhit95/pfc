@@ -6,10 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/profesores.php";
 
-$conexionObj = new Conexion();
-$conexion = $conexionObj->conectar();
-
-$profs = new profesor($conexion);
+$profs = new profesor();
 $listaProfesores = $profs->listarProfesoresModelo();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -91,7 +88,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form method="POST" action="controlador/profesoresControlador.php" 
+                            <form method="POST" action="controladores/profesores/borrar.php" 
                                   class="form-eliminar d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este profesor?');">
                                 <input type="hidden" name="accion" value="eliminar">

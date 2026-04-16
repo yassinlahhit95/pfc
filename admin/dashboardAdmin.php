@@ -1,13 +1,10 @@
 <?php
 session_start();
+require_once "modelos/conectar.php";
 require_once "modelos/panelDeControl.php";
-require_once "modelos/conexion.php";
 require_once "modelos/anuncios.php";
 
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-
-$panelControl = new panelDeControl($conexionBD);
+$panelControl = new panelDeControl();
 $cantidadEstudiantes = $panelControl->contadorEstudiantes();
 $cantidadProfesores = $panelControl->contadorProfesores();
 $cantidadDirectores = $panelControl->contadorDirectores();
@@ -15,7 +12,7 @@ $dineroRecaudado = $panelControl->totalRecaudado();
 $pagosPendientes = $panelControl->pagosPendientesContador();
 
 // Paginación para los Anuncios
-$objetoAnuncio = new anuncio($conexionBD);
+$objetoAnuncio = new anuncio();
 $anunciosPorPagina = 5;
 $paginaActual = isset($_GET['p_anuncios']) ? (int)$_GET['p_anuncios'] : 1;
 if ($paginaActual < 1) { $paginaActual = 1; }

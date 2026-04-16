@@ -1,14 +1,11 @@
 <?php
 session_start();
-require_once "../../modelos/conexion.php";
+require_once "../../modelos/conectar.php";
 require_once "../../modelos/estudiantes.php";
-require_once "../../modelos/cursos.php";
+require_once "../../modelos/ciclos.php";
 
 $id = $_GET['id'] ?? 0;
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-
-$modeloEstudiante = new estudiante($conexionBD);
+$modeloEstudiante = new estudiante();
 $datosEstudianteBD = $modeloEstudiante->obtenerEstudiantePorIdModelo($id);
 
 if (!$datosEstudianteBD) {
@@ -16,8 +13,8 @@ if (!$datosEstudianteBD) {
     exit;
 }
 
-$modeloCurso = new curso($conexionBD);
-$listaCursos = $modeloCurso->listarCursosModelo();
+$modeloCiclo = new ciclo();
+$listaCiclos = $modeloCiclo->listarCiclosModelo();
 
 // Recoger datos y errores
 $datos = $_SESSION['datos_estudiante'] ?? $datosEstudianteBD;
@@ -33,12 +30,11 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Modificar Estudiante: <?php echo htmlspecialchars($datosEstudianteBD['nombreEstudiante']); ?></h1>
-    <a href="vistas/estudiantes/verEstudiantes.php" class="boton-gris">Cancelar</a>
+    <a href="vistas/estudiantes/verEstudiantes.php" class="boton-secundario">Cancelar</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controlador/estudiantesControlador.php" method="POST">
-        <input type="hidden" name="accion" value="actualizar">
+    <form action="controladores/estudiantes/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
 
         <div class="formulario-cuadricula">
@@ -115,23 +111,15 @@ include_once "../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Nivel *</label>
-                <input type="text" name="nivelEstudiante" value="<?php echo htmlspecialchars($datos['nivelEstudiante']); ?>">
-                <?php if (isset($errores['nivelEstudiante'])): ?>
-                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['nivelEstudiante']; ?></p>
-                <?php endif; ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Curso *</label>
-                <select name="idCurso">
-                    <?php foreach ($listaCursos as $c) { 
-                        $selected = ($datos['idCurso'] == $c['idCurso']) ? 'selected' : '';
-                        echo "<option value='{$c['idCurso']}' {$selected}>" . htmlspecialchars($c['nombreCurso']) . "</option>";
+                <label>Ciclo Formativo *</label>
+                <select name="idCiclo">
+                    <?php foreach ($listaCiclos as $c) { 
+                        $selected = ($datos['idCiclo'] == $c['idCiclo']) ? 'selected' : '';
+                        echo "<option value='{$c['idCiclo']}' {$selected}>" . htmlspecialchars($c['nombreCiclo']) . "</option>";
                     } ?>
                 </select>
-                <?php if (isset($errores['idCurso'])): ?>
-                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idCurso']; ?></p>
+                <?php if (isset($errores['idCiclo'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idCiclo']; ?></p>
                 <?php endif; ?>
             </div>
 
@@ -153,7 +141,7 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarEstudiante" class="boton-azul">Guardar Cambios</button>
+            <button type="submit" name="guardarEstudiante" class="boton-primario">Guardar Cambios</button>
         </div>
     </form>
 </div>

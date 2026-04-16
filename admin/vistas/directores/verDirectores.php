@@ -6,11 +6,8 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/directores.php";
 
-$conexionObj = new Conexion();
-$conexion = $conexionObj->conectar();
-
-$directorObj = new director($conexion);
-$listaDirectores = $directorObj->listarDirectoresModelo();
+$dirs = new director();
+$listaDirectores = $dirs->listarDirectoresModelo();
 
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
@@ -91,10 +88,9 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form method="POST" action="controlador/directoresControlador.php" 
+                            <form method="POST" action="../../controladores/directores/borrar.php" 
                                   class="form-eliminar d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este director?');">
-                                <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="idDirector" value="<?php echo $d['idDirector']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                     <i class="fas fa-trash"></i>

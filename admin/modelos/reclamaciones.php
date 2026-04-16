@@ -1,56 +1,53 @@
 <?php
-require_once "conexion.php";
+require_once("conectar.php");
 
 class reclamacion {
-    protected $conexion;
-
-    public function __construct($conexion) {
-        $this->conexion = $conexion;
-    }
-
-    // Listar todas las reclamaciones con nombres de alumno y profesor
     public function listarReclamacionesModelo() {
+        $bd = getConnection();
         $sql = "SELECT r.*, 
                 (SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = r.idEstudiante) as nombreEstudiante,
                 (SELECT nombreProfesor FROM profesores WHERE idProfesor = r.idProfesor) as nombreProfesor 
                 FROM reclamaciones r 
                 ORDER BY r.idReclamacion DESC";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $bd->query($sql);
         $reclamaciones = [];
         if ($resultado) {
             while ($fila = $resultado->fetch_assoc()) {
                 $reclamaciones[] = $fila;
             }
         }
+        $bd->close();
         return $reclamaciones;
     }
 
     public function cambiarEstadoModelo($id, $nuevoEstado) {
+        $bd = getConnection();
         $sql = "UPDATE reclamaciones SET estadoReclamacion = ? WHERE idReclamacion = ?";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $bd->prepare($sql);
         $stmt->bind_param("si", $nuevoEstado, $id);
-        return $stmt->execute();
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
-    public function insertarReclamacionModelo($datos) {
+    public function insertarReclamacionModelo($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha) {
+        $bd = getConnection();
         $sql = "INSERT INTO reclamaciones (idEstudiante, idProfesor, asunto, descripcion, gravedad, fecha) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("iissss", 
-            $datos['idEstudiante'], 
-            $datos['idProfesor'], 
-            $datos['asunto'], 
-            $datos['descripcion'], 
-            $datos['gravedad'], 
-            $datos['fecha']
-        );
-        return $stmt->execute();
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("iissss", $idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
     public function eliminarReclamacionModelo($id) {
+        $bd = getConnection();
         $sql = "DELETE FROM reclamaciones WHERE idReclamacion = ?";
-        $stmt = $this->conexion->prepare($sql);
+        $stmt = $bd->prepare($sql);
         $stmt->bind_param("i", $id);
-        return $stmt->execute();
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 }
 ?>
