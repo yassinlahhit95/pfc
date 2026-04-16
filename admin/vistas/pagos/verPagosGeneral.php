@@ -4,18 +4,14 @@ $titulo_pagina = "Gestión de Pagos";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/pagos.php";
 
-$con = new Conexion();
-$conexionBD = $con->conectar();
-$modeloPagos = new pago($conexionBD);
-
-// Llamamos al método correcto del modelo
+$modeloPagos = new pago();
 $listaPagos = $modeloPagos->listarTodosLosPagosModelo();
 
 $exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['exito']);
+$error = $_SESSION['error'] ?? '';
+unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -23,13 +19,16 @@ unset($_SESSION['exito']);
         <h1>Gestión de Pagos</h1>
         <p class="texto-atenuado">Listado general de cobros y recibos</p>
     </div>
-    <a href="vistas/pagos/agregarPagos.php" class="boton-azul">
+    <a href="vistas/pagos/agregarPagos.php" class="boton-primario">
         <i class="fas fa-plus"></i> Registrar Nuevo Pago
     </a>
 </div>
 
 <?php if ($exito != "") { ?>
     <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+<?php } ?>
+<?php if ($error != "") { ?>
+    <div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -63,13 +62,17 @@ unset($_SESSION['exito']);
                         </td>
                         <td><?php echo $p['fechaPago']; ?></td>
                         <td>
-                            <form method="POST" action="controlador/pagosControlador.php" class="d-inline" onsubmit="return confirm('¿Borrar este pago?');">
-                                <input type="hidden" name="accion" value="eliminar">
-                                <input type="hidden" name="idPago" value="<?php echo $p['idPago']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <div class="botones-accion">
+                                <a href="vistas/pagos/modificarPagos.php?id=<?php echo $p['idPago']; ?>" class="boton-icono boton-editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="POST" action="controladores/pagos/borrar.php" class="d-inline" onsubmit="return confirm('¿Borrar este pago?');">
+                                    <input type="hidden" name="idPago" value="<?php echo $p['idPago']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

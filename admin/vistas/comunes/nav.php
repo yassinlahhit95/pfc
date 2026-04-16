@@ -2,25 +2,22 @@
 // --- TRUCO SENCILLO PARA RUTAS (Para principiantes) ---
 // Intentamos cargar los archivos desde la ruta de las vistas o desde la ruta del dashboard
 
-if (file_exists("../../modelos/conexion.php")) {
+if (file_exists("../../modelos/conectar.php")) {
     // Si estamos en una subcarpeta (ej: vistas/estudiantes/)
-    require_once "../../modelos/conexion.php";
+    require_once "../../modelos/conectar.php";
     require_once "../../modelos/panelDeControl.php";
 } else {
     // Si estamos en la carpeta principal (ej: dashboardAdmin.php)
-    require_once "modelos/conexion.php";
+    require_once "modelos/conectar.php";
     require_once "modelos/panelDeControl.php";
 }
 
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-$panelControl = new panelDeControl($conexionBD);
+$panelControl = new panelDeControl();
 
 // Obtener contadores para el menú lateral
 $totalEstudiantes = $panelControl->contadorEstudiantes();
 $totalProfesores = $panelControl->contadorProfesores();
 $totalDirectores = $panelControl->contadorDirectores();
-$totalCursos = $panelControl->contadorCursos();
 $totalAulas = $panelControl->contadorAulas();
 $totalCiclos = $panelControl->contadorCiclos();
 $totalModulos = $panelControl->contadorModulos();
@@ -70,12 +67,6 @@ $totalRetos = $panelControl->contadorRetos();
                     <i class="fas fa-user-tie"></i> 
                     <span>Directores</span> 
                     <span class="etiqueta-contador"><?php echo $totalDirectores; ?></span>
-                </a>
-
-                <a href="vistas/cursos/verCursos.php" class="enlace-menu <?php echo ($seccion == 'cursos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-book"></i> 
-                    <span>Cursos</span> 
-                    <span class="etiqueta-contador"><?php echo $totalCursos; ?></span>
                 </a>
 
                 <a href="vistas/aulas/verAulas.php" class="enlace-menu <?php echo ($seccion == 'aulas' ? 'activo' : ''); ?>">

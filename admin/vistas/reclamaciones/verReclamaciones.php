@@ -4,12 +4,9 @@ $titulo_pagina = "Reclamaciones - Super Admin";
 $seccion = 'reclamaciones';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/reclamaciones.php";
 
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-$modeloReclamacion = new reclamacion($conexionBD);
+$modeloReclamacion = new reclamacion();
 
 $listaReclamaciones = $modeloReclamacion->listarReclamacionesModelo();
 
@@ -23,15 +20,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
         <h1>Reclamaciones e Incidencias</h1>
         <p class="texto-atenuado">Seguimiento de reportes de profesores y alumnos</p>
     </div>
-    <div class="acciones-pagina">
-        <a href="vistas/reclamaciones/agregarReclamacion.php" class="boton-azul">
-            <i class="fas fa-plus"></i> Nueva Reclamación
-        </a>
-    </div>
 </div>
 
 <?php if ($mensajeExito) { ?>
     <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $mensajeExito; ?></div>
+<?php } ?>
+<?php if ($mensajeError) { ?>
+    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $mensajeError; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -65,8 +60,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             <?php echo nl2br(htmlspecialchars($reclamacion['descripcion'])); ?>
                         </td>
                         <td>
-                            <form action="controlador/reclamacionesControlador.php" method="POST" class="disposicion-flexible direccion-columna separacion-pequena">
-                                <input type="hidden" name="accion" value="cambiar_estado">
+                            <form action="controladores/reclamaciones/actualizar.php" method="POST" class="disposicion-flexible direccion-columna separacion-pequena">
                                 <input type="hidden" name="idReclamacion" value="<?php echo $reclamacion['idReclamacion']; ?>">
                                 
                                 <label class="disposicion-flexible alinear-centro separacion-pequena cursor-pointer color-warning texto-pequeno texto-negrita">
@@ -83,8 +77,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             </form>
                         </td>
                         <td>
-                            <form method="POST" action="controlador/reclamacionesControlador.php" class="d-inline" onsubmit="return confirm('¿Eliminar reporte?');">
-                                <input type="hidden" name="accion" value="eliminar">
+                            <form method="POST" action="controladores/reclamaciones/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar reporte?');">
                                 <input type="hidden" name="idReclamacion" value="<?php echo $reclamacion['idReclamacion']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                     <i class="fas fa-trash"></i>

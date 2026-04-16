@@ -4,12 +4,10 @@ $titulo_pagina = "Registrar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
+require_once "../../modelos/conectar.php";
 require_once "../../modelos/estudiantes.php";
 
-$con = new Conexion();
-$db = $con->conectar();
-$estudianteObj = new estudiante($db);
+$estudianteObj = new estudiante();
 $listaEstudiantes = $estudianteObj->listarEstudiantesModelo();
 
 $errores = $_SESSION['errores'] ?? [];
@@ -22,13 +20,11 @@ unset($_SESSION['errores'], $_SESSION['datos_pagos']);
     <p class="subtitulo-encabezado">Seleccione un estudiante y detalle el cobro</p>
 </div>
 
-<div class="contenedor-formulario">
-    <form action="controlador/pagosControlador.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="accion" value="insertar">
-
+<div class="tarjeta-blanca">
+    <form action="controladores/pagos/insertar.php" method="POST" enctype="multipart/form-data">
         <div class="cuadricula-formulario">
             <div class="grupo-formulario ancho-completo">
-                <label>Estudiante</label>
+                <label>Estudiante *</label>
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un Estudiante --</option>
                     <?php 
@@ -41,28 +37,28 @@ unset($_SESSION['errores'], $_SESSION['datos_pagos']);
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idEstudiante'])): ?>
-                    <p style="color: red;"><?php echo $errores['idEstudiante']; ?></p>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idEstudiante']; ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="grupo-formulario ancho-completo">
-                <label>Concepto</label>
+                <label>Concepto *</label>
                 <input type="text" name="concepto" placeholder="Ej: Mensualidad Abril 2026" value="<?php echo htmlspecialchars($datos['concepto'] ?? ''); ?>">
                 <?php if (isset($errores['concepto'])): ?>
-                    <p style="color: red;"><?php echo $errores['concepto']; ?></p>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['concepto']; ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
-                <label>Monto (€)</label>
-                <input type="number" step="0.01" name="monto" value="<?php echo htmlspecialchars($datos['monto'] ?? '0.00'); ?>">
+                <label>Monto (€) *</label>
+                <input type="text" name="monto" value="<?php echo htmlspecialchars($datos['monto'] ?? '0.00'); ?>">
                 <?php if (isset($errores['monto'])): ?>
-                    <p style="color: red;"><?php echo $errores['monto']; ?></p>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['monto']; ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
-                <label>Tipo de Pago</label>
+                <label>Tipo de Pago *</label>
                 <select name="tipoPago">
                     <option value="mensual" <?php echo ($datos['tipoPago'] ?? '') == 'mensual' ? 'selected' : ''; ?>>Mensual</option>
                     <option value="trimestral" <?php echo ($datos['tipoPago'] ?? '') == 'trimestral' ? 'selected' : ''; ?>>Trimestral</option>
@@ -70,26 +66,26 @@ unset($_SESSION['errores'], $_SESSION['datos_pagos']);
                     <option value="unico" <?php echo ($datos['tipoPago'] ?? '') == 'unico' ? 'selected' : ''; ?>>Pago Único</option>
                 </select>
                 <?php if (isset($errores['tipoPago'])): ?>
-                    <p style="color: red;"><?php echo $errores['tipoPago']; ?></p>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['tipoPago']; ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
-                <label>Estado</label>
+                <label>Estado *</label>
                 <select name="estadoPago">
                     <option value="pendiente" <?php echo ($datos['estadoPago'] ?? '') == 'pendiente' ? 'selected' : ''; ?>>Pendiente</option>
                     <option value="pagado" <?php echo ($datos['estadoPago'] ?? '') == 'pagado' ? 'selected' : ''; ?>>Pagado</option>
                 </select>
                 <?php if (isset($errores['estadoPago'])): ?>
-                    <p style="color: red;"><?php echo $errores['estadoPago']; ?></p>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['estadoPago']; ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="grupo-formulario">
-                <label>Fecha de Pago</label>
+                <label>Fecha de Pago *</label>
                 <input type="date" name="fechaPago" value="<?php echo htmlspecialchars($datos['fechaPago'] ?? date('Y-m-d')); ?>">
                 <?php if (isset($errores['fechaPago'])): ?>
-                    <p style="color: red;"><?php echo $errores['fechaPago']; ?></p>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['fechaPago']; ?></p>
                 <?php endif; ?>
             </div>
 

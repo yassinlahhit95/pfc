@@ -4,20 +4,17 @@ $titulo_pagina = "Gestión de Aulas - Super Admin";
 $seccion = 'aulas';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/aulas.php";
 
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-
-$modeloAula = new aula($conexionBD);
+$modeloAula = new aula();
 $listaAulas = $modeloAula->listarAulasModelo();
 
 // Captura de errores y persistencia
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_aulas'] ?? [];
 $mensajeExito = $_SESSION['exito'] ?? '';
-unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito']);
+$mensajeError = $_SESSION['error'] ?? '';
+unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -30,6 +27,9 @@ unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito']);
 <?php if ($mensajeExito) { ?>
     <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $mensajeExito; ?></div>
 <?php } ?>
+<?php if ($mensajeError) { ?>
+    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $mensajeError; ?></div>
+<?php } ?>
 
 <div class="disposicion-flexible separacion-grande">
     <!-- Formulario para agregar aula -->
@@ -37,7 +37,7 @@ unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito']);
         <div class="titulo-tarjeta">
             <h3><i class="fas fa-plus"></i> Nueva Aula</h3>
         </div>
-        <form method="POST" action="controlador/aulasControlador.php">
+        <form method="POST" action="controladores/aulas/insertar.php">
             <input type="hidden" name="accion" value="insertar">
             
             <div class="campo-formulario margen-abajo">
@@ -50,7 +50,7 @@ unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito']);
                 <?php } ?>
             </div>
 
-            <button type="submit" name="guardarAula" class="boton-azul ancho-total">Guardar Aula</button>
+            <button type="submit" name="guardarAula" class="boton-primario ancho-total">Guardar Aula</button>
         </form>
     </div>
 
@@ -77,7 +77,7 @@ unset($_SESSION['errores'], $_SESSION['datos_aulas'], $_SESSION['exito']);
                             <td><?php echo $aula['idAula']; ?></td>
                             <td><strong><?php echo htmlspecialchars($aula['nombreAula']); ?></strong></td>
                             <td>
-                                <form method="POST" action="controlador/aulasControlador.php" class="d-inline" onsubmit="return confirm('¿Eliminar aula?');">
+                                <form method="POST" action="controladores/aulas/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar aula?');">
                                     <input type="hidden" name="accion" value="eliminar">
                                     <input type="hidden" name="idAula" value="<?php echo $aula['idAula']; ?>">
                                     <button type="submit" class="boton-icono boton-eliminar">

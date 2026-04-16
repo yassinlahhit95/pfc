@@ -4,18 +4,14 @@ $titulo_pagina = "Modificar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/pagos.php";
 require_once "../../modelos/estudiantes.php";
 
 $idPago = $_GET['id'];
-$con = new Conexion();
-$db = $con->conectar();
+$pagoObj = new pago();
+$datosPago = $pagoObj->obtenerPagoPorIdModelo($idPago);
 
-$pagoObj = new pago($db);
-$datosPago = $pagoObj->obtenerPagoPorId($idPago);
-
-$estudianteObj = new estudiante($db);
+$estudianteObj = new estudiante();
 $datosEstudiante = $estudianteObj->obtenerEstudiantePorIdModelo($datosPago['idEstudiante']);
 
 $errores = $_SESSION['errores'] ?? [];
@@ -32,19 +28,18 @@ $fechaPago = $datos_sesion['fechaPago'] ?? $datosPago['fechaPago'];
 
 <div class="encabezado-pagina">
     <h1>Modificar Pago</h1>
-    <p class="subtitulo-encabezado">Editando pago de: <?php echo htmlspecialchars($datosEstudiante['nombreEstudiante']); ?></p>
+    <p class="subtitulo-encabezado">Editando pago de: <?php echo htmlspecialchars($datosEstudiante['nombreEstudiante'] ?? ''); ?></p>
 </div>
 
-<div class="contenedor-formulario">
-    <form action="controlador/pagosControlador.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="accion" value="actualizar">
+<div class="tarjeta-blanca">
+    <form action="../../controladores/pagos/actualizar.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="idPago" value="<?php echo $idPago; ?>">
         <input type="hidden" name="idEstudiante" value="<?php echo $datosPago['idEstudiante']; ?>">
 
         <div class="cuadricula-formulario">
             <div class="grupo-formulario ancho-completo">
                 <label>Estudiante (No editable)</label>
-                <input type="text" value="<?php echo htmlspecialchars($datosEstudiante['nombreEstudiante']); ?>" disabled>
+                <input type="text" value="<?php echo htmlspecialchars($datosEstudiante['nombreEstudiante'] ?? ''); ?>" disabled>
             </div>
 
             <div class="grupo-formulario ancho-completo">
@@ -57,7 +52,7 @@ $fechaPago = $datos_sesion['fechaPago'] ?? $datosPago['fechaPago'];
 
             <div class="grupo-formulario">
                 <label>Monto (€)</label>
-                <input type="number" step="0.01" name="monto" value="<?php echo htmlspecialchars($monto); ?>">
+                <input type="text" name="monto" value="<?php echo htmlspecialchars($monto); ?>">
                 <?php if (isset($errores['monto'])): ?>
                     <p style="color: red;"><?php echo $errores['monto']; ?></p>
                 <?php endif; ?>
@@ -96,15 +91,15 @@ $fechaPago = $datos_sesion['fechaPago'] ?? $datosPago['fechaPago'];
             </div>
 
             <div class="grupo-formulario ancho-completo">
-                <label>Comprobante Actual: <?php echo $datosPago['comprobante'] ? $datosPago['comprobante'] : 'Ninguno'; ?></label>
+                <label>Comprobante Actual: <?php echo $datosPago['comprobante'] ? htmlspecialchars($datosPago['comprobante']) : 'Ninguno'; ?></label>
                 <input type="file" name="comprobante" accept="image/*,.pdf">
                 <p class="text-xs text-muted mt-5">Deje vacío para mantener el archivo actual.</p>
             </div>
         </div>
 
         <div class="acciones-formulario">
-            <a href="vistas/pagos/verPagosGeneral.php" class="boton-cancelar">Cancelar</a>
-            <button type="submit" name="guardarPago" class="boton-primario">Guardar Cambios</button>
+            <a href="verPagosGeneral.php" class="boton-cancelar">Cancelar</a>
+            <button type="submit" name="actualizarPago" class="boton-primario">Guardar Cambios</button>
         </div>
     </form>
 </div>

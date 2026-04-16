@@ -13,9 +13,7 @@ if (!$id) {
     exit;
 }
 
-$conexionObj = new Conexion();
-$conexion = $conexionObj->conectar();
-$retoObj = new reto($conexion);
+$retoObj = new reto();
 $retoActual = $retoObj->obtenerRetoPorIdModelo($id);
 
 if (!$retoActual) {
@@ -23,7 +21,7 @@ if (!$retoActual) {
     exit;
 }
 
-$estudianteObj = new estudiante($conexion);
+$estudianteObj = new estudiante();
 $listaEstudiantes = $estudianteObj->listarEstudiantesModelo();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -50,8 +48,7 @@ unset($_SESSION['exito']);
 <?php endif; ?>
 
 <div class="contenedor-tabla">
-    <form action="controlador/retosControlador.php" method="POST">
-        <input type="hidden" name="accion" value="calificar">
+    <form action="controladores/retos/calificar.php" method="POST">
         <input type="hidden" name="idReto" value="<?php echo $retoActual['idReto']; ?>">
         
         <table class="tabla-datos">
@@ -77,7 +74,7 @@ unset($_SESSION['exito']);
                         <td><?php echo htmlspecialchars($e['dniEstudiante']); ?></td>
                         <td><?php echo htmlspecialchars($e['nombreCurso'] ?? 'Sin curso'); ?></td>
                         <td>
-                            <input type="number" name="notas[<?php echo $e['idEstudiante']; ?>]" 
+                            <input type="text" name="notas[<?php echo $e['idEstudiante']; ?>]" 
                                    step="0.1" min="0" max="10" 
                                    value="<?php echo $notaActual; ?>"
                                    style="padding: 5px; width: 80px; border-radius: 4px; border: 1px solid #ddd;">

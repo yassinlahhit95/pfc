@@ -1,80 +1,66 @@
 <?php
-/**
- * Professor Model
- */
-require_once "conexion.php";
+require_once("conectar.php");
 
 class profesor {
-    protected $conexion;
-
-    public function __construct($conexion) {
-        $this->conexion = $conexion;
-    }
-
-    // List professors using subquery
     public function listarProfesoresModelo() {
-        $sql = "SELECT p.*, 
-                (SELECT nombreEstado FROM estados WHERE idEstado = p.idEstado) as nombreEstado
+        $bd = getConnection();
+        $sql = "SELECT p.*, e.nombreEstado 
                 FROM profesores p 
+                LEFT JOIN estados e ON p.idEstado = e.idEstado 
                 ORDER BY p.idProfesor ASC";
-        
-        $resultado = $this->conexion->query($sql);
-        $profesores = [];
-        if ($resultado) {
+        $datos = [];
+        if ($resultado = $bd->query($sql)) {
             while ($fila = $resultado->fetch_assoc()) {
-                $profesores[] = $fila;
+                $datos[] = $fila;
             }
         }
-        return $profesores;
+        $bd->close();
+        return $datos;
     }
 
-    // Insert using Prepared Statements
-    public function insertarProfesoresModelo($datos) {
+    public function insertarProfesoresModelo($nombre, $email, $telefono, $dni, $especialidad, $direccion, $estado = 1) {
+        $bd = getConnection();
         $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, especialidad, direccionProfesor, idEstado) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("ssssssi", 
-            $datos['nombreProfesor'], 
-            $datos['emailProfesor'], 
-            $datos['telefonoProfesor'], 
-            $datos['dniProfesor'], 
-            $datos['especialidad'], 
-            $datos['direccionProfesor'], 
-            $datos['idEstado']
-        );
-        return $stmt->execute();
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("ssssssi", $nombre, $email, $telefono, $dni, $especialidad, $direccion, $estado);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
-    // Update using Prepared Statements
-    public function actualizarProfesoresModelo($datos) {
+    public function actualizarProfesoresModelo($id, $nombre, $email, $telefono, $dni, $especialidad, $direccion, $estado) {
+        $bd = getConnection();
         $sql = "UPDATE profesores SET nombreProfesor = ?, emailProfesor = ?, telefonoProfesor = ?, dniProfesor = ?, especialidad = ?, direccionProfesor = ?, idEstado = ? WHERE idProfesor = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("ssssssii", 
-            $datos['nombreProfesor'], 
-            $datos['emailProfesor'], 
-            $datos['telefonoProfesor'], 
-            $datos['dniProfesor'], 
-            $datos['especialidad'], 
-            $datos['direccionProfesor'], 
-            $datos['idEstado'], 
-            $datos['idProfesor']
-        );
-        return $stmt->execute();
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("ssssssii", $nombre, $email, $telefono, $dni, $especialidad, $direccion, $estado, $id);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
     public function eliminarProfesoresModelo($id) {
+        $bd = getConnection();
         $sql = "DELETE FROM profesores WHERE idProfesor = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('i', $id);
-        return $stmt->execute();
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
     public function obtenerProfesorPorIdModelo($id) {
-        $sql = "SELECT * FROM profesores WHERE idProfesor = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('i', $id);
+        $bd = getConnection();
+        $sql = "SELECT p.*, e.nombreEstado 
+                FROM profesores p 
+                LEFT JOIN estados e ON p.idEstado = e.idEstado 
+                WHERE p.idProfesor = ?";
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
         $resultado = $stmt->get_result();
-        return $resultado->fetch_assoc();
+        $datos = $resultado->fetch_assoc();
+        $bd->close();
+        return $datos;
     }
 }
 ?>

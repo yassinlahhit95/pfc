@@ -1,13 +1,9 @@
 <?php
 session_start();
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/profesores.php";
 
 $id = $_GET['id'] ?? 0;
-$objetoConexion = new Conexion();
-$conexionBD = $objetoConexion->conectar();
-
-$modeloProfesor = new profesor($conexionBD);
+$modeloProfesor = new profesor();
 $datosProfesorBD = $modeloProfesor->obtenerProfesorPorIdModelo($id);
 
 if (!$datosProfesorBD) {
@@ -27,11 +23,11 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Modificar Profesor: <?php echo htmlspecialchars($datosProfesorBD['nombreProfesor']); ?></h1>
-    <a href="vistas/profesores/verProfesores.php" class="boton-gris">Cancelar</a>
+    <a href="vistas/profesores/verProfesores.php" class="boton-secundario">Cancelar</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controlador/profesoresControlador.php" method="POST">
+    <form action="../../controladores/profesores/actualizar.php" method="POST">
         <input type="hidden" name="accion" value="actualizar">
         <input type="hidden" name="idProfesor" value="<?php echo $id; ?>">
 
@@ -103,7 +99,7 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarProfesor" class="boton-azul">Guardar Cambios</button>
+            <button type="submit" name="guardarProfesor" class="boton-primario">Guardar Cambios</button>
         </div>
     </form>
 </div>

@@ -4,14 +4,11 @@ $titulo_pagina = "Detalles Profesor - Super Admin";
 $seccion = 'profesores';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/profesores.php";
 
 $id = $_GET['id'] ?? 0;
-$conexionObj = new Conexion();
-$db = $conexionObj->conectar();
 
-$profesorObj = new profesor($db);
+$profesorObj = new profesor();
 $profesor = $profesorObj->obtenerProfesorPorIdModelo($id);
 
 if (!$profesor) {
@@ -71,7 +68,7 @@ if (!$profesor) {
         <div class="grupo-formulario">
             <label>Especialidad</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($profesor['especialidadProfesor'] ?? 'No especificada'); ?>
+                <?php echo htmlspecialchars($profesor['especialidad'] ?? 'No especificada'); ?>
             </p>
         </div>
         <div class="grupo-formulario">

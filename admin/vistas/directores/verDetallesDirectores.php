@@ -4,14 +4,11 @@ $titulo_pagina = "Detalles Director - Super Admin";
 $seccion = 'directores';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/directores.php";
 
 $id = $_GET['id'] ?? 0;
-$conexionObj = new Conexion();
-$db = $conexionObj->conectar();
 
-$directorObj = new director($db);
+$directorObj = new director();
 $director = $directorObj->obtenerDirectorPorIdModelo($id);
 
 if (!$director) {

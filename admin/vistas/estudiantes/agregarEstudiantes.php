@@ -4,13 +4,11 @@ $titulo_pagina = "Nuevo Estudiante";
 $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
-require_once "../../modelos/cursos.php";
+require_once "../../modelos/conectar.php";
+require_once "../../modelos/ciclos.php";
 
-$con = new Conexion();
-$conexion = $con->conectar();
-$modeloCursos = new curso($conexion);
-$listaCursos = $modeloCursos->listarCursosModelo();
+$modeloCiclo = new ciclo();
+$listaCiclos = $modeloCiclo->listarCiclosModelo();
 
 // Recoger datos y errores
 $datos = $_SESSION['datos_estudiante'] ?? [];
@@ -22,13 +20,11 @@ unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nuevo Estudiante</h1>
-    <a href="vistas/estudiantes/verEstudiantes.php" class="boton-gris">Volver</a>
+    <a href="vistas/estudiantes/verEstudiantes.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controlador/estudiantesControlador.php" method="POST">
-        <input type="hidden" name="accion" value="insertar">
-
+    <form action="controladores/estudiantes/insertar.php" method="POST">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
@@ -103,25 +99,17 @@ unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
             </div>
 
             <div class="campo-formulario">
-                <label>Nivel *</label>
-                <input type="text" name="nivelEstudiante" value="<?php echo htmlspecialchars($datos['nivelEstudiante'] ?? ''); ?>" placeholder="Ej: 1º Bachillerato">
-                <?php if (isset($errores['nivelEstudiante'])): ?>
-                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['nivelEstudiante']; ?></p>
-                <?php endif; ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Curso *</label>
-                <select name="idCurso">
-                    <option value="">-- Seleccionar --</option>
-                    <?php foreach ($listaCursos as $c) { ?>
-                        <option value="<?php echo $c['idCurso']; ?>" <?php echo (isset($datos['idCurso']) && $datos['idCurso'] == $c['idCurso']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($c['nombreCurso']); ?>
+                <label>Ciclo Formativo *</label>
+                <select name="idCiclo">
+                    <option value="">-- Seleccionar Ciclo --</option>
+                    <?php foreach ($listaCiclos as $c) { ?>
+                        <option value="<?php echo $c['idCiclo']; ?>" <?php echo (isset($datos['idCiclo']) && $datos['idCiclo'] == $c['idCiclo']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($c['nombreCiclo']); ?>
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idCurso'])): ?>
-                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idCurso']; ?></p>
+                <?php if (isset($errores['idCiclo'])): ?>
+                    <p style="color: red; font-size: 13px; margin-top: 5px;"><?php echo $errores['idCiclo']; ?></p>
                 <?php endif; ?>
             </div>
 
@@ -144,7 +132,7 @@ unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarEstudiante" class="boton-azul">Guardar Estudiante</button>
+            <button type="submit" name="guardarEstudiante" class="boton-primario">Guardar Estudiante</button>
         </div>
     </form>
 </div>

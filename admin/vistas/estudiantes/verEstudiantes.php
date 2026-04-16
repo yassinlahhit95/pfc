@@ -4,17 +4,13 @@ $titulo_pagina = "Ver Estudiantes - Super Admin";
 $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conexion.php";
 require_once "../../modelos/estudiantes.php";
-require_once "../../modelos/cursos.php";
+require_once "../../modelos/ciclos.php";
 
-$conexionObj = new Conexion();
-$conexion = $conexionObj->conectar();
+$cicloObj = new ciclo();
+$listaCiclos = $cicloObj->listarCiclosModelo();
 
-$cursoObj = new curso($conexion);
-$listaCursos = $cursoObj->listarCursosModelo();
-
-$estudiante = new estudiante($conexion);
+$estudiante = new estudiante();
 $listaEstudiantes = $estudiante->listarEstudiantesModelo();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -33,11 +29,11 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <input type="text" placeholder="Buscar estudiante..." id="inputBusqueda" />
         </div>
 
-        <select id="filtroCurso" class="selector-filtro">
-            <option value="">Todos los cursos</option>
-            <?php foreach ($listaCursos as $c) { ?>
-                <option value="<?php echo htmlspecialchars($c['nombreCurso']); ?>">
-                    <?php echo htmlspecialchars($c['nombreCurso']); ?>
+        <select id="filtroCiclo" class="selector-filtro">
+            <option value="">Todos los ciclos</option>
+            <?php foreach ($listaCiclos as $c) { ?>
+                <option value="<?php echo htmlspecialchars($c['nombreCiclo']); ?>">
+                    <?php echo htmlspecialchars($c['nombreCiclo']); ?>
                 </option>
             <?php } ?>
         </select>
@@ -69,7 +65,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <th>ID</th>
                 <th>Nombre Completo</th>
                 <th>Email</th>
-                <th>Curso</th>
+                <th>Ciclo</th>
                 <th>Teléfono</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -82,14 +78,14 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </tr>
             <?php else: ?>
                 <?php foreach ($listaEstudiantes as $alumno) { 
-                    $estado = $alumno['nombreEstado'];
-                    $estiloEstado = $estado === 'activo' ? 'estado-activo' : 'estado-inactivo';
+                    $estado = ($alumno['idEstado'] == 1) ? 'activo' : 'inactivo';
+                    $estiloEstado = $alumno['idEstado'] == 1 ? 'estado-activo' : 'estado-inactivo';
                 ?>
-                <tr data-curso="<?php echo htmlspecialchars($alumno['nombreCurso']); ?>">
+                <tr data-ciclo="<?php echo htmlspecialchars($alumno['nombreCiclo'] ?? ''); ?>">
                     <td><?php echo $alumno['idEstudiante']; ?></td>
                     <td><?php echo htmlspecialchars($alumno['nombreEstudiante']); ?></td>
                     <td><?php echo htmlspecialchars($alumno['emailEstudiante']); ?></td>
-                    <td><?php echo htmlspecialchars($alumno['nombreCurso']); ?></td>
+                    <td><?php echo htmlspecialchars($alumno['nombreCiclo'] ?? 'Sin ciclo'); ?></td>
                     <td><?php echo htmlspecialchars($alumno['telefonoEstudiante'] ?? '-'); ?></td>
                     <td>
                         <span class="insignia-estado <?php echo $estiloEstado; ?>">
@@ -106,10 +102,9 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form method="POST" action="controlador/estudiantesControlador.php" 
+                            <form method="POST" action="controladores/estudiantes/borrar.php" 
                                   class="form-eliminar d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
-                                <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="idEstudiante" value="<?php echo $alumno['idEstudiante']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                     <i class="fas fa-trash"></i>
@@ -127,27 +122,27 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     var inputBusqueda = document.getElementById("inputBusqueda");
-    var filtroCurso = document.getElementById("filtroCurso");
-    var tablaFilas = document.querySelectorAll(".tabla-datos tbody tr");
+    var filtroCiclo = document.getElementById("filtroCiclo");
+    var tablaFilas = document.querySelectorAll("#tablaEstudiantes tbody tr");
 
     function filtrarEstudiantes() {
         var textoBusqueda = inputBusqueda.value.toLowerCase();
-        var cursoSeleccionado = filtroCurso.value.toLowerCase();
+        var cicloSeleccionado = filtroCiclo.value.toLowerCase();
 
         tablaFilas.forEach(function(fila) {
             var nombre = fila.children[1].textContent.toLowerCase();
             var email = fila.children[2].textContent.toLowerCase();
-            var curso = fila.getAttribute('data-curso').toLowerCase();
+            var ciclo = fila.getAttribute('data-ciclo') ? fila.getAttribute('data-ciclo').toLowerCase() : "";
 
             var coincideTexto = nombre.indexOf(textoBusqueda) !== -1 || email.indexOf(textoBusqueda) !== -1;
-            var coincideCurso = cursoSeleccionado === "" || curso === cursoSeleccionado;
+            var coincideCiclo = cicloSeleccionado === "" || ciclo === cicloSeleccionado;
 
-            fila.style.display = (coincideTexto && coincideCurso) ? "" : "none";
+            fila.style.display = (coincideTexto && coincideCiclo) ? "" : "none";
         });
     }
 
     inputBusqueda.addEventListener("input", filtrarEstudiantes);
-    filtroCurso.addEventListener("change", filtrarEstudiantes);
+    filtroCiclo.addEventListener("change", filtrarEstudiantes);
 });
 </script>
 

@@ -1,92 +1,66 @@
 <?php
-/**
- * Director Model
- */
-require_once "conexion.php";
+require_once("conectar.php");
 
 class director {
-    protected $conexion;
-
-    public function __construct($conexion) {
-        $this->conexion = $conexion;
-    }
-
-    // List all directors using subquery for state
     public function listarDirectoresModelo() {
-        $sql = "SELECT d.*, 
-                (SELECT nombreEstado FROM estados WHERE idEstado = d.idEstado) as nombreEstado
+        $bd = getConnection();
+        $sql = "SELECT d.*, e.nombreEstado 
                 FROM directores d 
+                LEFT JOIN estados e ON d.idEstado = e.idEstado 
                 ORDER BY d.idDirector ASC";
-        
-        $resultado = $this->conexion->query($sql);
-        $directores = [];
-        if ($resultado) {
+        $datos = [];
+        if ($resultado = $bd->query($sql)) {
             while ($fila = $resultado->fetch_assoc()) {
-                $directores[] = $fila;
+                $datos[] = $fila;
             }
         }
-        return $directores;
+        $bd->close();
+        return $datos;
     }
 
-    // Insert using Prepared Statements (No concatenation)
-    public function insertarDirectoresModelo($datos) {
-        $sql = "INSERT INTO directores (nombreDirector, emailDirector, ciudadDirector, 
-                                       codigoPostalDirector, direccionDirector, telefonoDirector, 
-                                       dniDirector, fechaAltaDirector, idEstado)
-                VALUES (?,?,?,?,?,?,?,?,?)";
-        
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('sssissssi',
-            $datos['nombreDirector'],
-            $datos['emailDirector'],
-            $datos['ciudadDirector'],
-            $datos['codigoPostalDirector'],
-            $datos['direccionDirector'],
-            $datos['telefonoDirector'],
-            $datos['dniDirector'],
-            $datos['fechaAltaDirector'],
-            $datos['idEstado']
-        );
-        return $stmt->execute();
+    public function insertarDirectoresModelo($nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado = 1) {
+        $bd = getConnection();
+        $sql = "INSERT INTO directores (nombreDirector, emailDirector, ciudadDirector, codigoPostalDirector, direccionDirector, telefonoDirector, dniDirector, fechaAltaDirector, idEstado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("sssissssi", $nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
-    // Update using Prepared Statements
-    public function actualizarDirectoresModelo($datos) {
-        $sql = "UPDATE directores SET nombreDirector = ?, emailDirector = ?, ciudadDirector = ?, 
-                                      codigoPostalDirector = ?, direccionDirector = ?, telefonoDirector = ?, 
-                                      dniDirector = ?, fechaAltaDirector = ?, idEstado = ?
-                WHERE idDirector = ?";
-        
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('sssissssii',
-            $datos['nombreDirector'],
-            $datos['emailDirector'],
-            $datos['ciudadDirector'],
-            $datos['codigoPostalDirector'],
-            $datos['direccionDirector'],
-            $datos['telefonoDirector'],
-            $datos['dniDirector'],
-            $datos['fechaAltaDirector'],
-            $datos['idEstado'],
-            $datos['idDirector']
-        );
-        return $stmt->execute();
+    public function actualizarDirectoresModelo($id, $nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado) {
+        $bd = getConnection();
+        $sql = "UPDATE directores SET nombreDirector = ?, emailDirector = ?, ciudadDirector = ?, codigoPostalDirector = ?, direccionDirector = ?, telefonoDirector = ?, dniDirector = ?, fechaAltaDirector = ?, idEstado = ? WHERE idDirector = ?";
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("sssissssii", $nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado, $id);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
     public function eliminarDirectoresModelo($id) {
+        $bd = getConnection();
         $sql = "DELETE FROM directores WHERE idDirector = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('i', $id);
-        return $stmt->execute();
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $resultado = $stmt->execute();
+        $bd->close();
+        return $resultado;
     }
 
     public function obtenerDirectorPorIdModelo($id) {
-        $sql = "SELECT * FROM directores WHERE idDirector = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('i', $id);
+        $bd = getConnection();
+        $sql = "SELECT d.*, e.nombreEstado 
+                FROM directores d 
+                LEFT JOIN estados e ON d.idEstado = e.idEstado 
+                WHERE d.idDirector = ?";
+        $stmt = $bd->prepare($sql);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
         $resultado = $stmt->get_result();
-        return $resultado->fetch_assoc();
+        $datos = $resultado->fetch_assoc();
+        $bd->close();
+        return $datos;
     }
 }
 ?>
