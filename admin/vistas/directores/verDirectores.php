@@ -6,8 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/directores.php";
 
-$dirs = new director();
-$listaDirectores = $dirs->listarDirectoresModelo();
+$listaDirectores = listarDirectores();
 
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
@@ -30,19 +29,19 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($error): ?>
+<?php if ($error) { ?>
 <div class="mensaje-error">
     <i class="fas fa-exclamation-circle"></i>
-    <p><?php echo htmlspecialchars($error); ?></p>
+    <p><?php echo $error; ?></p>
 </div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($exito): ?>
+<?php if ($exito) { ?>
 <div class="mensaje-exito">
     <i class="fas fa-check-circle"></i>
-    <p><?php echo htmlspecialchars($exito); ?></p>
+    <p><?php echo $exito; ?></p>
 </div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="contenedor-tabla">
     <table class="tabla-datos" id="tablaDirectores">
@@ -58,21 +57,21 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($listaDirectores)): ?>
+            <?php if (empty($listaDirectores)) { ?>
             <tr>
                 <td colspan="7" class="sin-datos">No hay directores registrados</td>
             </tr>
-            <?php else: ?>
+            <?php } else { ?>
                 <?php foreach ($listaDirectores as $d) { 
                     $estado = $d['nombreEstado'];
                     $estiloEstado = $estado === 'activo' ? 'estado-activo' : 'estado-inactivo';
                 ?>
                 <tr>
                     <td><?php echo $d['idDirector']; ?></td>
-                    <td><?php echo htmlspecialchars($d['nombreDirector']); ?></td>
-                    <td><?php echo htmlspecialchars($d['emailDirector']); ?></td>
-                    <td><?php echo htmlspecialchars($d['telefonoDirector'] ?? '-'); ?></td>
-                    <td><?php echo htmlspecialchars($d['fechaAltaDirector']); ?></td>
+                    <td><?php echo $d['nombreDirector']; ?></td>
+                    <td><?php echo $d['emailDirector']; ?></td>
+                    <td><?php echo $d['telefonoDirector'] ?? '-'; ?></td>
+                    <td><?php echo $d['fechaAltaDirector']; ?></td>
                     <td>
                         <span class="insignia-estado <?php echo $estiloEstado; ?>">
                             <?php echo ucfirst($estado); ?>
@@ -100,7 +99,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     </td>
                 </tr>
                 <?php } ?>
-            <?php endif; ?>
+            <?php } ?>
         </tbody>
     </table>
 </div>

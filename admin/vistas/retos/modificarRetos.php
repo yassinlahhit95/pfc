@@ -7,24 +7,26 @@ include_once "../comunes/nav.php";
 require_once "../../modelos/retos.php";
 require_once "../../modelos/modulos.php";
 
-$id = $_GET['id'] ?? null;
-if (!$id) {
+// Usamos el nombre descriptivo de la variable y del parametro GET
+$idDelReto = $_GET['idReto'] ?? null;
+
+if (!$idDelReto) {
     header("Location: verRetos.php");
     exit;
 }
 
-$retoObj = new reto();
-$retoActual = $retoObj->obtenerRetoPorIdModelo($id);
+$retoActual = obtenerRetoPorId($idDelReto);
 
 if (!$retoActual) {
     header("Location: verRetos.php");
     exit;
 }
 
-$moduloObj = new modulo();
-$listaModulos = $moduloObj->listarModulosModelo();
-$modulosDeReto = $retoObj->obtenerModulosDeReto($id);
-$idsDeReto = array_column($modulosDeReto, 'idModulo');
+
+$modulosDelRetoActual = obtenerModulosDeReto($idDelReto);
+$idsModulosSeleccionados = array_column($modulosDelRetoActual, 'idModulo');
+
+$listaDeModulos = listarModulos();
 
 $errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['errores']);
@@ -33,7 +35,7 @@ unset($_SESSION['errores']);
 <div class="encabezado-pagina">
     <div>
         <h1>Modificar Reto</h1>
-        <p class="subtitulo-encabezado">Actualizando la configuración de: <strong><?php echo htmlspecialchars($retoActual['nombreReto']); ?></strong></p>
+        <p class="subtitulo-encabezado">Editando: <strong><?php echo $retoActual['nombreReto']; ?></strong></p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/retos/verRetos.php" class="boton-secundario">
@@ -43,9 +45,6 @@ unset($_SESSION['errores']);
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3><i class="fas fa-edit color-primary mr-10"></i> Edición del Reto</h3>
-    </div>
     <form action="controladores/retos/actualizar.php" method="POST">
         <input type="hidden" name="idReto" value="<?php echo $retoActual['idReto']; ?>">
         
@@ -53,68 +52,45 @@ unset($_SESSION['errores']);
             <div class="campo-formulario campo-ancho-total">
                 <label for="nombreReto">Nombre del Reto *</label>
                 <input type="text" id="nombreReto" name="nombreReto" 
-                       placeholder="Ej: Desarrollo de una API REST"
-                       value="<?php echo htmlspecialchars($retoActual['nombreReto']); ?>"
-                       class="<?php echo isset($errores['nombreReto']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['nombreReto'])): ?>
-                    <span class="error-campo"><?php echo $errores['nombreReto']; ?></span>
-                <?php endif; ?>
+                       placeholder="Ej: Reto Sostenibilidad"
+                       value="<?php echo $retoActual['nombreReto']; ?>"
+                       class="<?php if (isset($errores['nombre'])) { echo 'input-error'; } else { echo ''; } ?>">
             </div>
 
             <div class="campo-formulario">
                 <label for="fechaInicio">Fecha de Inicio *</label>
-                <input type="date" id="fechaInicio" name="fechaInicio" 
-                       value="<?php echo htmlspecialchars($retoActual['fechaInicio']); ?>"
-                       class="<?php echo isset($errores['fechaInicio']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['fechaInicio'])): ?>
-                    <span class="error-campo"><?php echo $errores['fechaInicio']; ?></span>
-                <?php endif; ?>
+                <input type="date" id="fechaInicio" name="fechaInicio" value="<?php echo $retoActual['fechaInicio']; ?>">
             </div>
 
             <div class="campo-formulario">
-                <label for="fechaFin">Fecha de Finalización *</label>
-                <input type="date" id="fechaFin" name="fechaFin" 
-                       value="<?php echo htmlspecialchars($retoActual['fechaFin']); ?>"
-                       class="<?php echo isset($errores['fechaFin']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['fechaFin'])): ?>
-                    <span class="error-campo"><?php echo $errores['fechaFin']; ?></span>
-                <?php endif; ?>
+                <label for="fechaFin">Fecha de Fin *</label>
+                <input type="date" id="fechaFin" name="fechaFin" value="<?php echo $retoActual['fechaFin']; ?>">
             </div>
 
             <div class="campo-formulario">
-                <label for="horasReto">Carga Horaria (Horas) *</label>
-                <input type="text" id="horasReto" name="horasReto" 
-                       placeholder="Ej: 20"
-                       value="<?php echo htmlspecialchars($retoActual['horasReto']); ?>"
-                       class="<?php echo isset($errores['horasReto']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['horasReto'])): ?>
-                    <span class="error-campo"><?php echo $errores['horasReto']; ?></span>
-                <?php endif; ?>
+                <label for="horasReto">Horas Estimadas *</label>
+                <input type="text" id="horasReto" name="horasReto" value="<?php echo $retoActual['horasReto']; ?>">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label>Módulos Asociados * <span class="texto-atenuado">(Selecciona al menos uno)</span></label>
-                <div class="tarjeta-blanca sin-margen" style="background: #f8fafc; border: 1px solid #e2e8f0; max-height: 250px; overflow-y: auto; padding: 15px;">
-                    <?php if (empty($listaModulos)): ?>
-                        <p class="sin-datos">No hay módulos disponibles.</p>
-                    <?php else: ?>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px;">
-                            <?php foreach ($listaModulos as $m) { ?>
-                                <label class="disposicion-flexible alinear-centro separacion-pequena cursor-pointer" style="padding: 8px; border-radius: 6px; background: white; border: 1px solid #edf2f7;">
-                                    <input type="checkbox" name="modulos[]" value="<?php echo $m['idModulo']; ?>" 
-                                        <?php echo (in_array($m['idModulo'], $idsDeReto)) ? 'checked' : ''; ?>>
-                                    <span class="texto-pequeno">
-                                        <strong><?php echo htmlspecialchars($m['nombreModulo']); ?></strong><br>
-                                        <small class="texto-atenuado"><?php echo htmlspecialchars($m['nombreCiclo']); ?></small>
-                                    </span>
-                                </label>
-                            <?php } ?>
-                        </div>
-                    <?php endif; ?>
+                <label>Módulos Asociados * <span class="texto-atenuado">(Selecciona uno o más)</span></label>
+                <div class="tarjeta-gris-suave scroll-vertical">
+                    <div class="formulario-cuadricula">
+                        <?php foreach($listaDeModulos as $modulo) { 
+                            $marcado = in_array($modulo['idModulo'], $idsModulosSeleccionados) ? 'checked' : '';
+                        ?>
+                            <label class="item-seleccionable tarjeta-blanca sin-margen p-0">
+                                <div class="disposicion-flexible alinear-centro separacion-pequena p-10">
+                                    <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>" <?php echo $marcado; ?>>
+                                    <div>
+                                        <p class="texto-pequeno sin-margen texto-negrita"><?php echo $modulo['nombreModulo']; ?></p>
+                                        <p class="texto-pequeno texto-atenuado sin-margen"><?php echo $modulo['nombreCiclo']; ?></p>
+                                    </div>
+                                </div>
+                            </label>
+                        <?php } ?>
+                    </div>
                 </div>
-                <?php if (isset($errores['modulos'])): ?>
-                    <span class="error-campo"><?php echo $errores['modulos']; ?></span>
-                <?php endif; ?>
             </div>
         </div>
 

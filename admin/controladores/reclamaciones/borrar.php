@@ -5,9 +5,8 @@ require_once "../../modelos/reclamaciones.php";
 if (isset($_POST['idReclamacion'])) {
     $id = $_POST['idReclamacion'];
     
-    if (is_numeric($id) && ctype_digit($id) && preg_match('/^[0-9]+$/', $id)) {
-        $modeloReclamacion = new reclamacion();
-        if ($modeloReclamacion->eliminarReclamacionModelo($id)) {
+    if (!empty($id)) {
+        if (eliminarReclamacion($id)) {
             $_SESSION['exito'] = "Reclamación eliminada.";
         } else {
             $_SESSION['error'] = "Error al eliminar la reclamación.";

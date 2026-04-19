@@ -4,34 +4,33 @@ require_once "../../modelos/retos.php";
 
 if (isset($_POST['idReto'])) {
     $idReto = $_POST['idReto'];
-    $notas = $_POST['notas'] ?? []; // Array [idEstudiante => nota]
-    $modeloReto = new reto();
-    
-    $errores_notas = [];
-    foreach ($notas as $idEstudiante => $nota) {
-        $nota = trim($nota);
-        if ($nota !== "") {
-            // Check if numeric and matches float/int pattern
-            if (!is_numeric($nota) || !preg_match('/^[0-9]+(\.[0-9]+)?$/', $nota)) {
-                $errores_notas[] = "La nota para el estudiante $idEstudiante no es válida";
-                continue;
-            }
-            
-            $nota_val = floatval($nota);
-            if ($nota_val < 0 || $nota_val > 10) {
-                $errores_notas[] = "La nota para el estudiante $idEstudiante debe estar entre 0 y 10";
-                continue;
-            }
+    $calificaciones = isset($_POST['notas']) ? $_POST['notas'] : [];
 
-            $modeloReto->calificarRetoEstudiante($idEstudiante, $idReto, $nota_val);
+    if (!ctype_digit($idReto)) {
+        $_SESSION['error'] = "ID de reto no válido.";
+        header("Location: ../../vistas/retos/verRetos.php");
+        exit;
+    }
+
+    $errorEncontrado = false;
+    foreach ($calificaciones as $idEstudiante => $nota) {
+        // Validación simple: Si la nota supera 10, la bajamos a 10
+        if ($nota > 10) {
+            $nota = 10;
+        }
+
+        if (!calificarReto($idEstudiante, $idReto, $nota)) {
+            $errorEncontrado = true;
         }
     }
-    
-    if (!empty($errores_notas)) {
-        $_SESSION['errores_notas'] = $errores_notas;
+
+    if ($errorEncontrado) {
+        $_SESSION['error'] = "Hubo errores al guardar algunas calificaciones.";
+    } else {
+        $_SESSION['exito'] = "Calificaciones guardadas con éxito.";
     }
-    $_SESSION['exito'] = "Calificaciones procesadas correctamente";
-    header("Location: ../../vistas/retos/calificarReto.php?id=" . $idReto);
+
+    header("Location: ../../vistas/retos/calificarReto.php?id=$idReto");
     exit;
 }
 

@@ -1,89 +1,72 @@
 <?php
 require_once("conectar.php");
 
-class modulo {
-    public function listarModulosModelo() {
-        $bd = getConnection();
-        $sql = "SELECT m.*, (SELECT nombreCiclo FROM ciclos WHERE idCiclo = m.idCiclo) as nombreCiclo FROM modulos m ORDER BY m.idModulo ASC";
-        $datos = [];
-        if ($resultado = $bd->query($sql)) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $datos[] = $fila;
-            }
-        }
-        $bd->close();
-        return $datos;
+function listarModulos() {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "SELECT *, (SELECT nombreCiclo FROM ciclos WHERE ciclos.idCiclo = modulos.idCiclo) as nombreCiclo 
+            FROM modulos 
+            ORDER BY idModulo ASC";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    $listaDeModulos = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $listaDeModulos[] = $fila;
     }
+    mysqli_close($conexion);
+    return $listaDeModulos;
+}
 
-    public function listarModulosPorCicloModelo($idCiclo) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM modulos WHERE idCiclo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $idCiclo);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $modulos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $modulos[] = $fila;
-        }
-        $bd->close();
-        return $modulos;
+function listarModulosPorCiclo($idDelCiclo) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "SELECT * FROM modulos WHERE idCiclo = $idDelCiclo";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    $listaDeModulos = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $listaDeModulos[] = $fila;
     }
+    mysqli_close($conexion);
+    return $listaDeModulos;
+}
 
-    public function insertarModuloModelo($nombre, $idCiclo, $horas) {
-        $bd = getConnection();
-        $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas) VALUES (?, ?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("sii", $nombre, $idCiclo, $horas);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function insertarModulo($nombre, $idDelCiclo, $horas) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas) VALUES ('$nombre', $idDelCiclo, $horas)";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function actualizarModuloModelo($id, $nombre, $idCiclo, $horas) {
-        $bd = getConnection();
-        $sql = "UPDATE modulos SET nombreModulo = ?, idCiclo = ?, horasMaximas = ? WHERE idModulo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("siii", $nombre, $idCiclo, $horas, $id);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function actualizarModulo($idDelModulo, $nombre, $idDelCiclo, $horas) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "UPDATE modulos SET nombreModulo = '$nombre', idCiclo = $idDelCiclo, horasMaximas = $horas WHERE idModulo = $idDelModulo";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function eliminarModuloModelo($id) {
-        $bd = getConnection();
-        $sql = "DELETE FROM modulos WHERE idModulo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function eliminarModulo($idDelModulo) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "DELETE FROM modulos WHERE idModulo = $idDelModulo";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function obtenerModuloPorIdModelo($id) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM modulos WHERE idModulo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $result = $resultado->fetch_assoc();
-        $bd->close();
-        return $result;
-    }
+function obtenerModuloPorId($idDelModulo) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "SELECT * FROM modulos WHERE idModulo = $idDelModulo";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    $modulo = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $modulo;
+}
 
-    public function obtenerHorasTotalesRetosModulo($idModulo) {
-        $bd = getConnection();
-        $sql = "SELECT SUM(r.horasReto) as total FROM retos r 
-                JOIN modulo_reto mr ON r.idReto = mr.idReto 
-                WHERE mr.idModulo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('i', $idModulo);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $fila = $resultado->fetch_assoc();
-        $bd->close();
-        return $fila['total'] ?? 0;
-    }
+function obtenerHorasTotalesRetosModulo($idDelModulo) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "SELECT (SELECT SUM(horasReto) FROM retos WHERE idReto IN (SELECT idReto FROM modulo_reto WHERE idModulo = $idDelModulo)) as total";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    
+    return $fila['total'] ?? 0;
 }
 ?>

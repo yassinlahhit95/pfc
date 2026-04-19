@@ -7,19 +7,22 @@ if (isset($_POST['registrarPrestamo'])) {
     $idEstudiante = $_POST['idEstudiante'] ?? '';
     $fecha = $_POST['fechaPrestamo'] ?? date('Y-m-d');
 
-    if (empty($idArticulo) || empty($idEstudiante)) {
-        $_SESSION['error'] = "Debe seleccionar un dispositivo y un estudiante";
-    } elseif (!is_numeric($idArticulo) || !ctype_digit($idArticulo) || !preg_match('/^[0-9]+$/', $idArticulo)) {
-        $_SESSION['error'] = "ID de artículo no válido";
-    } elseif (!is_numeric($idEstudiante) || !ctype_digit($idEstudiante) || !preg_match('/^[0-9]+$/', $idEstudiante)) {
-        $_SESSION['error'] = "ID de estudiante no válido";
+    $errores = [];
+    if (empty($idArticulo)) $errores['idArticulo'] = "Seleccione un recurso.";
+    if (empty($idEstudiante)) $errores['idEstudiante'] = "Seleccione un estudiante.";
+    if (empty($fecha)) $errores['fechaPrestamo'] = "La fecha es obligatoria.";
+
+    if (count($errores) > 0) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_inventario'] = $_POST;
+        header("Location: ../../vistas/inventario/gestionarPrestamos.php");
+        exit;
+    }
+
+    if (realizarPrestamo($idArticulo, $idEstudiante, $fecha)) {
+        $_SESSION['exito'] = "Préstamo registrado";
     } else {
-        $modelo = new inventario();
-        if ($modelo->realizarPrestamoModelo($idArticulo, $idEstudiante, $fecha)) {
-            $_SESSION['exito'] = "Préstamo registrado";
-        } else {
-            $_SESSION['error'] = "Error al registrar el préstamo";
-        }
+        $_SESSION['error'] = "Error al registrar el préstamo";
     }
 }
 

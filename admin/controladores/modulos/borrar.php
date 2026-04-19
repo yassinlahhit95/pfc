@@ -3,17 +3,18 @@ session_start();
 require_once "../../modelos/modulos.php";
 
 if (isset($_POST['idModulo'])) {
-    $id = $_POST['idModulo'];
+    $idDelModulo = $_POST['idModulo'];
     
-    if (is_numeric($id) && ctype_digit($id) && preg_match('/^[0-9]+$/', $id)) {
-        $modelo = new modulo();
-        if ($modelo->eliminarModuloModelo($id)) {
-            $_SESSION['exito'] = "Módulo borrado correctamente";
-        } else {
-            $_SESSION['error'] = "Error al borrar el módulo";
-        }
+    if (empty($idDelModulo) || !ctype_digit($idDelModulo)) {
+        $_SESSION['error'] = "ID de módulo no válido.";
+        header("Location: ../../vistas/modulos/verModulos.php");
+        exit;
+    }
+
+    if (eliminarModulo($idDelModulo)) {
+        $_SESSION['mensaje'] = "Módulo eliminado con éxito.";
     } else {
-        $_SESSION['error'] = "ID de módulo no válido";
+        $_SESSION['error'] = "No se ha podido eliminar el módulo.";
     }
 }
 

@@ -3,58 +3,47 @@ session_start();
 require_once "../../modelos/ciclos.php";
 
 if (isset($_POST['guardarCiclo'])) {
-    
-    unset($_SESSION['errores']);
-    unset($_SESSION['datos_ciclo']);
-
+    // Normalización
     $nombre = trim($_POST['nombreCiclo'] ?? '');
-    $idNivel = $_POST['idNivel'] ?? '';
-    $idEstado = $_POST['idEstado'] ?? '';
     $descripcion = trim($_POST['descripcionCiclo'] ?? '');
-    $profesores = $_POST['profesores'] ?? [];
-    $aulas = $_POST['aulas'] ?? [];
-    
-    $errores = [];
+    $idNivel = $_POST['idNivel'] ?? '';
+    $idEstado = $_POST['idEstado'] ?? 1;
+    $listaProfesores = $_POST['profesores'] ?? [];
+    $listaAulas = $_POST['aulas'] ?? [];
 
-    if (empty($nombre)) $errores['nombreCiclo'] = "El nombre del ciclo es obligatorio";
-    
-    if (empty($idNivel)) {
-        $errores['idNivel'] = "El nivel educativo es obligatorio";
-    } elseif (!is_numeric($idNivel) || !preg_match('/^[0-9]+$/', $idNivel) || !ctype_digit($idNivel)) {
-        $errores['idNivel'] = "El nivel educativo debe ser un número entero válido";
-    }
+    // Guardamos datos para no perder el formulario
+    $_SESSION['datos_ciclo'] = $_POST;
 
-    if (empty($idEstado)) {
-        $errores['idEstado'] = "El estado es obligatorio";
-    } elseif (!is_numeric($idEstado) || !preg_match('/^[0-9]+$/', $idEstado) || !ctype_digit($idEstado)) {
-        $errores['idEstado'] = "El estado debe ser un número entero válido";
-    }
-
-    if (empty($descripcion)) $errores['descripcionCiclo'] = "La descripción es obligatoria";
-    
-    if (empty($profesores)) {
-        $errores['profesores'] = "Debes seleccionar al menos un profesor";
-    }
-    
-    if (empty($aulas)) {
-        $errores['aulas'] = "Debes seleccionar al menos un aula";
-    }
-
-    if (!empty($errores)) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_ciclo'] = $_POST;
+    // Validación básica
+    if (empty($nombre)) {
+        $_SESSION['error'] = "El nombre del ciclo es obligatorio.";
         header("Location: ../../vistas/ciclos/agregarCiclos.php");
         exit;
     }
 
-    $modelo = new ciclo();
-    if ($modelo->insertarCicloModelo($nombre, $descripcion, $idNivel, $idEstado, $profesores, $aulas)) {
-        $_SESSION['exito'] = "Ciclo creado correctamente";
-    } else {
-        $_SESSION['error'] = "Error al crear el ciclo";
+    if (empty($descripcion)) {
+        $_SESSION['error'] = "La descripción es obligatoria.";
+        header("Location: ../../vistas/ciclos/agregarCiclos.php");
+        exit;
     }
 
-    header("Location: ../../vistas/ciclos/verCiclos.php");
+    if (comprobarNombreRepetido($nombre)) {
+        $_SESSION['error'] = "Ese nombre de ciclo ya está registrado.";
+        header("Location: ../../vistas/ciclos/agregarCiclos.php");
+        exit;
+    }
+
+    if (insertarNuevoCiclo($nombre, $descripcion, $idNivel, $idEstado, $listaProfesores, $listaAulas)) {
+        unset($_SESSION['datos_ciclo']);
+        $_SESSION['exito'] = "Ciclo creado con éxito.";
+        header("Location: ../../vistas/ciclos/verCiclos.php");
+    } else {
+        $_SESSION['error'] = "Error al guardar el ciclo en la base de datos.";
+        header("Location: ../../vistas/ciclos/agregarCiclos.php");
+    }
     exit;
 }
+
+header("Location: ../../vistas/ciclos/verCiclos.php");
+exit;
 ?>

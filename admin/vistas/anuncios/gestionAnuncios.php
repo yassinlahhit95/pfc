@@ -5,108 +5,131 @@ $seccion = 'anuncios';
 include_once "../comunes/nav.php";
 
 require_once "../../modelos/anuncios.php";
-
-$modeloAnuncios = new anuncio();
-$listaAnuncios = $modeloAnuncios->listarAnunciosModelo();
+$listaAnuncios = listarTodosLosAnuncios();
 
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
 $errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_anuncios'] ?? [];
-unset($_SESSION['exito'], $_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncios']);
+$datos = $_SESSION['datos_anuncio'] ?? [];
+unset($_SESSION['exito'], $_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
+
+// Variables simples
+$titulo = $datos['titulo'] ?? '';
+$mensaje = $datos['mensaje'] ?? '';
+$fechaExp = $datos['fecha_expiracion'] ?? date('Y-m-d', strtotime('+7 days'));
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <div>
-        <h1>Tablón de Anuncios</h1>
-        <p class="texto-atenuado">Comunicados del centro educativo</p>
+        <h1>Anuncios</h1>
+        <p class="subtitulo-encabezado">Comunicados oficiales para la comunidad educativa</p>
     </div>
 </div>
 
-<?php if ($exito != "") { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+<?php if ($exito) { ?>
+<div class="mensaje-exito">
+    <i class="fas fa-check-circle"></i>
+    <p><?php echo $exito; ?></p>
+</div>
 <?php } ?>
-<?php if ($error != "") { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+
+<?php if ($error) { ?>
+<div class="mensaje-error">
+    <i class="fas fa-times-circle"></i>
+    <p><?php echo $error; ?></p>
+</div>
 <?php } ?>
 
-<div class="disposicion-flexible separacion-grande">
-    <!-- Formulario -->
-    <div class="tarjeta-blanca ancho-fijo-300">
-        <div class="titulo-tarjeta"><h3>Nuevo Anuncio</h3></div>
-        <form method="POST" action="../../controladores/anuncios/insertar.php">
-            
-            <div class="campo-formulario margen-abajo">
-                <label>Título</label>
-                <input type="text" name="titulo" placeholder="Ej: Próximos Exámenes" value="<?php echo htmlspecialchars($datos['titulo'] ?? ''); ?>">
-                <?php if (isset($errores['titulo'])): ?>
-                    <p style="color: red;"><?php echo $errores['titulo']; ?></p>
-                <?php endif; ?>
-            </div>
-
-            <div class="campo-formulario margen-abajo">
-                <label>Mensaje</label>
-                <textarea name="mensaje" rows="4"><?php echo htmlspecialchars($datos['mensaje'] ?? ''); ?></textarea>
-                <?php if (isset($errores['mensaje'])): ?>
-                    <p style="color: red;"><?php echo $errores['mensaje']; ?></p>
-                <?php endif; ?>
-            </div>
-
-            <div class="campo-formulario margen-abajo">
-                <label>Fecha Expiración</label>
-                <input type="date" name="fecha_expiracion" value="<?php echo htmlspecialchars($datos['fecha_expiracion'] ?? date('Y-m-d')); ?>">
-                <?php if (isset($errores['fecha_expiracion'])): ?>
-                    <p style="color: red;"><?php echo $errores['fecha_expiracion']; ?></p>
-                <?php endif; ?>
-            </div>
-
-            <button type="submit" name="guardarAnuncio" class="boton-primario ancho-total">Publicar</button>
-        </form>
+<!-- Formulario en una fila superior -->
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-bullhorn"></i> Nuevo Anuncio</h3>
     </div>
-
-    <!-- Lista -->
-    <div class="tarjeta-blanca flexible-rellenar">
-        <div class="titulo-tarjeta"><h3>Historial</h3></div>
-        <div class="contenedor-tabla">
-            <table class="tabla-datos">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($listaAnuncios)) { ?>
-                        <tr><td colspan="3" class="sin-datos">No hay anuncios</td></tr>
-                    <?php } else { ?>
-                        <?php foreach ($listaAnuncios as $a) { 
-                            $hoy = date('Y-m-d');
-                            $esActivo = ($a['fechaExpiracion'] >= $hoy);
-                        ?>
-                        <tr>
-                            <td>
-                                <strong><?php echo htmlspecialchars($a['titulo']); ?></strong><br>
-                                <small class="texto-atenuado">Expira: <?php echo $a['fechaExpiracion']; ?></small>
-                            </td>
-                            <td>
-                                <span class="estado-bolita <?php echo $esActivo ? 'activo-verde' : 'inactivo-rojo'; ?>">
-                                    <?php echo $esActivo ? 'Activo' : 'Expirado'; ?>
-                                </span>
-                            </td>
-                            <td>
-                                <a href="../../controladores/anuncios/borrar.php?id=<?php echo $a['idAnuncio']; ?>" 
-                                   class="boton-icono boton-eliminar" 
-                                   onclick="return confirm('¿Borrar este anuncio?');">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <?php } ?>
-                    <?php } ?>
-                </tbody>
-            </table>
+    <form method="POST" action="controladores/anuncios/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
+        <div class="campo-formulario" style="flex: 2;">
+            <label>Título *</label>
+            <input type="text" name="titulo" value="<?php echo $titulo; ?>" placeholder="Ej: Inicio de clases">
+            <?php if (isset($errores['titulo'])) { ?>
+                <p class="error-campo"><?php echo $errores['titulo']; ?></p>
+            <?php } ?>
         </div>
+
+        <div class="campo-formulario" style="flex: 3;">
+            <label>Mensaje *</label>
+            <input type="text" name="mensaje" value="<?php echo $mensaje; ?>" placeholder="Contenido corto...">
+            <?php if (isset($errores['mensaje'])) { ?>
+                <p class="error-campo"><?php echo $errores['mensaje']; ?></p>
+            <?php } ?>
+        </div>
+
+        <div class="campo-formulario" style="flex: 1;">
+            <label>Vence *</label>
+            <input type="date" name="fecha_expiracion" value="<?php echo $fechaExp; ?>">
+            <?php if (isset($errores['fecha_expiracion'])) { ?>
+                <p class="error-campo"><?php echo $errores['fecha_expiracion']; ?></p>
+            <?php } ?>
+        </div>
+
+        <div class="mt-25">
+            <button type="submit" name="guardarAnuncio" class="boton-primario">
+                <i class="fas fa-paper-plane"></i> Publicar
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Tabla debajo -->
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3>Historial de Comunicados</h3>
+    </div>
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Mensaje</th>
+                    <th>Vence</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($listaAnuncios)) { ?>
+                    <tr><td colspan="5" class="sin-datos">No hay anuncios publicados</td></tr>
+                <?php } else { ?>
+                    <?php foreach ($listaAnuncios as $anuncio) { ?>
+                    <tr>
+                        <td><?php echo $anuncio['idAnuncio']; ?></td>
+                        <td><strong><?php echo $anuncio['titulo']; ?></strong></td>
+                        <td>
+                            <div class="texto-pequeno texto-atenuado lh-1-4" style="max-width: 400px;">
+                                <?php echo $anuncio['mensaje']; ?>
+                            </div>
+                        </td>
+                        <td>
+                            <?php 
+                                $vence = strtotime($anuncio['fechaExpiracion']);
+                                $hoy = time();
+                                $claseVencido = ($vence < $hoy) ? 'inactivo-rojo' : 'activo-verde';
+                            ?>
+                            <span class="estado-bolita <?php echo $claseVencido; ?>">
+                                <?php echo date('d/m/Y', $vence); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="controladores/anuncios/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar anuncio?');">
+                                <input type="hidden" name="idAnuncio" value="<?php echo $anuncio['idAnuncio']; ?>">
+                                <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                <?php } ?>
+            </tbody>
+        </table>
     </div>
 </div>
 

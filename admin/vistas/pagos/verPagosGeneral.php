@@ -5,9 +5,7 @@ $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
 require_once "../../modelos/pagos.php";
-
-$modeloPagos = new pago();
-$listaPagos = $modeloPagos->listarTodosLosPagosModelo();
+$listaPagos = listarPagos();
 
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
@@ -42,32 +40,42 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <th>Monto</th>
                     <th>Estado</th>
                     <th>Fecha</th>
+                    <th>Comprobante</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaPagos)) { ?>
-                    <tr><td colspan="7" class="sin-datos">No hay pagos registrados</td></tr>
+                    <tr><td colspan="8" class="sin-datos">No hay pagos registrados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaPagos as $p) { ?>
+                    <?php foreach ($listaPagos as $pago) { ?>
                     <tr>
-                        <td><?php echo $p['idPago']; ?></td>
-                        <td><strong><?php echo htmlspecialchars($p['nombreEstudiante']); ?></strong></td>
-                        <td><?php echo htmlspecialchars($p['concepto']); ?></td>
-                        <td><?php echo number_format($p['monto'], 2); ?> €</td>
+                        <td><?php echo $pago['idPago']; ?></td>
+                        <td><strong><?php echo $pago['nombreEstudiante']; ?></strong></td>
+                        <td><?php echo $pago['concepto']; ?></td>
+                        <td><?php echo number_format($pago['monto'], 2); ?> €</td>
                         <td>
-                            <span class="estado-bolita <?php echo ($p['estadoPago'] == 'pagado') ? 'activo-verde' : 'inactivo-rojo'; ?>">
-                                <?php echo ucfirst($p['estadoPago']); ?>
+                            <span class="estado-bolita <?php if ($pago['estadoPago'] == 'pagado') { echo 'activo-verde'; } else { echo 'inactivo-rojo'; } ?>">
+                                <?php echo ucfirst($pago['estadoPago']); ?>
                             </span>
                         </td>
-                        <td><?php echo $p['fechaPago']; ?></td>
+                        <td><?php echo $pago['fechaPago']; ?></td>
+                        <td>
+                            <?php if ($pago['comprobante']) { ?>
+                                <a href="uploads/<?php echo $pago['comprobante']; ?>" target="_blank" class="boton-secundario boton-pequeno">
+                                    <i class="fas fa-file-download"></i> Ver
+                                </a>
+                            <?php } else { ?>
+                                <span class="texto-atenuado">Sin archivo</span>
+                            <?php } ?>
+                        </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="vistas/pagos/modificarPagos.php?id=<?php echo $p['idPago']; ?>" class="boton-icono boton-editar">
+                                <a href="vistas/pagos/modificarPagos.php?idPago=<?php echo $pago['idPago']; ?>" class="boton-icono boton-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form method="POST" action="controladores/pagos/borrar.php" class="d-inline" onsubmit="return confirm('¿Borrar este pago?');">
-                                    <input type="hidden" name="idPago" value="<?php echo $p['idPago']; ?>">
+                                    <input type="hidden" name="idPago" value="<?php echo $pago['idPago']; ?>">
                                     <button type="submit" class="boton-icono boton-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>

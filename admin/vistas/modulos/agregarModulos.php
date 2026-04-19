@@ -6,8 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/ciclos.php";
 
-$cicloObj = new ciclo();
-$listaCiclos = $cicloObj->listarCiclosModelo();
+$listaCiclos = listarTodosLosCiclos();
 
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_modulo'] ?? [];
@@ -36,38 +35,38 @@ unset($_SESSION['errores'], $_SESSION['datos_modulo']);
                 <label for="nombreModulo">Nombre del Módulo *</label>
                 <input type="text" id="nombreModulo" name="nombreModulo" 
                        placeholder="Ej: Programación"
-                       value="<?php echo htmlspecialchars($datos['nombreModulo'] ?? ''); ?>"
-                       class="<?php echo isset($errores['nombreModulo']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['nombreModulo'])): ?>
+                       value="<?php if (isset($datos['nombreModulo'])) { echo $datos['nombreModulo']; } else { echo ''; } ?>"
+                       class="<?php if (isset($errores['nombreModulo'])) { echo 'input-error'; } else { echo ''; } ?>">
+                <?php if (isset($errores['nombreModulo'])) { ?>
                     <span class="error-campo"><?php echo $errores['nombreModulo']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="idCiclo">Ciclo Formativo *</label>
-                <select id="idCiclo" name="idCiclo" class="<?php echo isset($errores['idCiclo']) ? 'input-error' : ''; ?>">
+                <select id="idCiclo" name="idCiclo" class="<?php if (isset($errores['idCiclo'])) { echo 'input-error'; } else { echo ''; } ?>">
                     <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($listaCiclos as $c) { ?>
-                        <option value="<?php echo $c['idCiclo']; ?>" 
-                            <?php echo (isset($datos['idCiclo']) && $datos['idCiclo'] == $c['idCiclo']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($c['nombreCiclo']); ?>
+                    <?php foreach ($listaCiclos as $ciclo) { ?>
+                        <option value="<?php echo $ciclo['idCiclo']; ?>" 
+                            <?php if ((isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo'])) { echo 'selected'; } else { echo ''; } ?>>
+                            <?php echo $ciclo['nombreCiclo']; ?>
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idCiclo'])): ?>
+                <?php if (isset($errores['idCiclo'])) { ?>
                     <span class="error-campo"><?php echo $errores['idCiclo']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="horasMaximas">Horas Máximas Anuales *</label>
                 <input type="text" id="horasMaximas" name="horasMaximas" 
                        placeholder="Ej: 100"
-                       value="<?php echo htmlspecialchars($datos['horasMaximas'] ?? '100'); ?>"
-                       class="<?php echo isset($errores['horasMaximas']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['horasMaximas'])): ?>
+                       value="<?php if (isset($datos['horasMaximas'])) { echo $datos['horasMaximas']; } else { echo '100'; } ?>"
+                       class="<?php if (isset($errores['horasMaximas'])) { echo 'input-error'; } else { echo ''; } ?>">
+                <?php if (isset($errores['horasMaximas'])) { ?>
                     <span class="error-campo"><?php echo $errores['horasMaximas']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -80,3 +79,4 @@ unset($_SESSION['errores'], $_SESSION['datos_modulo']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

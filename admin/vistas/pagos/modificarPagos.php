@@ -4,101 +4,94 @@ $titulo_pagina = "Modificar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
+require_once "../../modelos/conectar.php";
 require_once "../../modelos/pagos.php";
 require_once "../../modelos/estudiantes.php";
 
-$idPago = $_GET['id'];
-$pagoObj = new pago();
-$datosPago = $pagoObj->obtenerPagoPorIdModelo($idPago);
+$idDelPago = $_GET['idPago'] ?? 0;
+$datosPagoBD = obtenerPagoPorId($idDelPago);
 
-$estudianteObj = new estudiante();
-$datosEstudiante = $estudianteObj->obtenerEstudiantePorIdModelo($datosPago['idEstudiante']);
+if (!$datosPagoBD) {
+    header("Location: verPagosGeneral.php");
+    exit;
+}
+
+$listaEstudiantes = listarEstudiantes();
 
 $errores = $_SESSION['errores'] ?? [];
-$datos_sesion = $_SESSION['datos_pagos'] ?? [];
+$datos = $_SESSION['datos_pagos'] ?? $datosPagoBD;
 unset($_SESSION['errores'], $_SESSION['datos_pagos']);
 
-// Usar datos de sesión si existen (por error de validación), sino usar datos de la BD
-$concepto = $datos_sesion['concepto'] ?? $datosPago['concepto'];
-$monto = $datos_sesion['monto'] ?? $datosPago['monto'];
-$tipoPago = $datos_sesion['tipoPago'] ?? $datosPago['tipoPago'];
-$estadoPago = $datos_sesion['estadoPago'] ?? $datosPago['estadoPago'];
-$fechaPago = $datos_sesion['fechaPago'] ?? $datosPago['fechaPago'];
+// Variables simples (Estudiante way)
+$idElegido = $datos['idEstudiante'];
+$concepto = $datos['concepto'];
+$monto = $datos['monto'];
+$tipoElegido = $datos['tipoPago'];
+$estadoElegido = $datos['estadoPago'];
+$fecha = $datos['fechaPago'];
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Pago</h1>
-    <p class="subtitulo-encabezado">Editando pago de: <?php echo htmlspecialchars($datosEstudiante['nombreEstudiante'] ?? ''); ?></p>
+    <h1>Modificar Pago #<?php echo $idDelPago; ?></h1>
+    <a href="vistas/pagos/verPagosGeneral.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="../../controladores/pagos/actualizar.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="idPago" value="<?php echo $idPago; ?>">
-        <input type="hidden" name="idEstudiante" value="<?php echo $datosPago['idEstudiante']; ?>">
-
-        <div class="cuadricula-formulario">
-            <div class="grupo-formulario ancho-completo">
-                <label>Estudiante (No editable)</label>
-                <input type="text" value="<?php echo htmlspecialchars($datosEstudiante['nombreEstudiante'] ?? ''); ?>" disabled>
+    <form action="controladores/pagos/actualizar.php" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="idPago" value="<?php echo $idDelPago; ?>">
+        
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario campo-ancho-total">
+                <label>Estudiante *</label>
+                <select name="idEstudiante">
+                    <?php foreach ($listaEstudiantes as $estudiante) { ?>
+                        <option value="<?php echo $estudiante['idEstudiante']; ?>" <?php if ($idElegido == $estudiante['idEstudiante']) { echo 'selected'; } ?>>
+                            <?php echo $estudiante['nombreEstudiante']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
-            <div class="grupo-formulario ancho-completo">
-                <label>Concepto</label>
-                <input type="text" name="concepto" value="<?php echo htmlspecialchars($concepto); ?>">
-                <?php if (isset($errores['concepto'])): ?>
-                    <p style="color: red;"><?php echo $errores['concepto']; ?></p>
-                <?php endif; ?>
+            <div class="campo-formulario campo-ancho-total">
+                <label>Concepto *</label>
+                <input type="text" name="concepto" value="<?php echo $concepto; ?>">
             </div>
 
-            <div class="grupo-formulario">
-                <label>Monto (€)</label>
-                <input type="text" name="monto" value="<?php echo htmlspecialchars($monto); ?>">
-                <?php if (isset($errores['monto'])): ?>
-                    <p style="color: red;"><?php echo $errores['monto']; ?></p>
-                <?php endif; ?>
+            <div class="campo-formulario">
+                <label>Monto (€) *</label>
+                <input type="text" name="monto" value="<?php echo $monto; ?>">
             </div>
 
-            <div class="grupo-formulario">
-                <label>Tipo de Pago</label>
+            <div class="campo-formulario">
+                <label>Tipo de Pago *</label>
                 <select name="tipoPago">
-                    <option value="mensual" <?php if($tipoPago == 'mensual') echo 'selected'; ?>>Mensual</option>
-                    <option value="trimestral" <?php if($tipoPago == 'trimestral') echo 'selected'; ?>>Trimestral</option>
-                    <option value="semestral" <?php if($tipoPago == 'semestral') echo 'selected'; ?>>Semestral</option>
-                    <option value="unico" <?php if($tipoPago == 'unico') echo 'selected'; ?>>Pago Único</option>
+                    <option value="mensual" <?php if ($tipoElegido == 'mensual') { echo 'selected'; } ?>>Mensual</option>
+                    <option value="trimestral" <?php if ($tipoElegido == 'trimestral') { echo 'selected'; } ?>>Trimestral</option>
+                    <option value="semestral" <?php if ($tipoElegido == 'semestral') { echo 'selected'; } ?>>Semestral</option>
+                    <option value="unico" <?php if ($tipoElegido == 'unico') { echo 'selected'; } ?>>Pago Único</option>
                 </select>
-                <?php if (isset($errores['tipoPago'])): ?>
-                    <p style="color: red;"><?php echo $errores['tipoPago']; ?></p>
-                <?php endif; ?>
             </div>
 
-            <div class="grupo-formulario">
-                <label>Estado</label>
+            <div class="campo-formulario">
+                <label>Estado *</label>
                 <select name="estadoPago">
-                    <option value="pendiente" <?php if($estadoPago == 'pendiente') echo 'selected'; ?>>Pendiente</option>
-                    <option value="pagado" <?php if($estadoPago == 'pagado') echo 'selected'; ?>>Pagado</option>
+                    <option value="pendiente" <?php if ($estadoElegido == 'pendiente') { echo 'selected'; } ?>>Pendiente</option>
+                    <option value="pagado" <?php if ($estadoElegido == 'pagado') { echo 'selected'; } ?>>Pagado</option>
                 </select>
-                <?php if (isset($errores['estadoPago'])): ?>
-                    <p style="color: red;"><?php echo $errores['estadoPago']; ?></p>
-                <?php endif; ?>
             </div>
 
-            <div class="grupo-formulario">
-                <label>Fecha de Pago</label>
-                <input type="date" name="fechaPago" value="<?php echo htmlspecialchars($fechaPago); ?>">
-                <?php if (isset($errores['fechaPago'])): ?>
-                    <p style="color: red;"><?php echo $errores['fechaPago']; ?></p>
-                <?php endif; ?>
+            <div class="campo-formulario">
+                <label>Fecha de Pago *</label>
+                <input type="date" name="fechaPago" value="<?php echo $fecha; ?>">
             </div>
 
-            <div class="grupo-formulario ancho-completo">
-                <label>Comprobante Actual: <?php echo $datosPago['comprobante'] ? htmlspecialchars($datosPago['comprobante']) : 'Ninguno'; ?></label>
+            <div class="campo-formulario campo-ancho-total">
+                <label>Comprobante actual: <?php echo $datosPagoBD['comprobante'] ? $datosPagoBD['comprobante'] : 'Ninguno'; ?></label>
                 <input type="file" name="comprobante" accept="image/*,.pdf">
-                <p class="text-xs text-muted mt-5">Deje vacío para mantener el archivo actual.</p>
             </div>
         </div>
 
-        <div class="acciones-formulario">
-            <a href="verPagosGeneral.php" class="boton-cancelar">Cancelar</a>
+        <div class="margen-arriba">
             <button type="submit" name="actualizarPago" class="boton-primario">Guardar Cambios</button>
         </div>
     </form>

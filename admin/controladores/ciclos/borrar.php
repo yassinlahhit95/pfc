@@ -3,17 +3,18 @@ session_start();
 require_once "../../modelos/ciclos.php";
 
 if (isset($_POST['idCiclo'])) {
-    $id = $_POST['idCiclo'];
+    $idDelCiclo = $_POST['idCiclo'];
     
-    if (is_numeric($id) && ctype_digit($id) && preg_match('/^[0-9]+$/', $id)) {
-        $modelo = new ciclo();
-        if ($modelo->eliminarCicloModelo($id)) {
-            $_SESSION['exito'] = "Ciclo borrado correctamente";
-        } else {
-            $_SESSION['error'] = "Error al borrar el ciclo";
-        }
+    if (empty($idDelCiclo) || !ctype_digit($idDelCiclo)) {
+        $_SESSION['error'] = "ID de ciclo no válido.";
+        header("Location: ../../vistas/ciclos/verCiclos.php");
+        exit;
+    }
+
+    if (eliminarCicloPorId($idDelCiclo)) {
+        $_SESSION['mensaje'] = "Ciclo eliminado con éxito.";
     } else {
-        $_SESSION['error'] = "ID de ciclo no válido";
+        $_SESSION['error'] = "No se ha podido eliminar el ciclo.";
     }
 }
 

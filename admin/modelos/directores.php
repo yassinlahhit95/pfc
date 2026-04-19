@@ -1,66 +1,65 @@
 <?php
 require_once("conectar.php");
 
-class director {
-    public function listarDirectoresModelo() {
-        $bd = getConnection();
-        $sql = "SELECT d.*, e.nombreEstado 
-                FROM directores d 
-                LEFT JOIN estados e ON d.idEstado = e.idEstado 
-                ORDER BY d.idDirector ASC";
-        $datos = [];
-        if ($resultado = $bd->query($sql)) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $datos[] = $fila;
-            }
-        }
-        $bd->close();
-        return $datos;
+function listarDirectores() {
+    $conexion = obtenerConexion();
+    $sql = "SELECT *, (SELECT nombreEstado FROM estados WHERE estados.idEstado = directores.idEstado) as nombreEstado 
+            FROM directores 
+            ORDER BY idDirector ASC";
+    $resultado = mysqli_query($conexion, $sql);
+    $datos = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $datos[] = $fila;
     }
+    mysqli_close($conexion);
+    return $datos;
+}
 
-    public function insertarDirectoresModelo($nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado = 1) {
-        $bd = getConnection();
-        $sql = "INSERT INTO directores (nombreDirector, emailDirector, ciudadDirector, codigoPostalDirector, direccionDirector, telefonoDirector, dniDirector, fechaAltaDirector, idEstado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("sssissssi", $nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
-    }
+function insertarDirector($nombre, $email, $dni, $fechaAlta, $idEstado = 1) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $email = mysqli_real_escape_string($conexion, $email);
+    $dni = mysqli_real_escape_string($conexion, $dni);
+    $fechaAlta = mysqli_real_escape_string($conexion, $fechaAlta);
+    
+    $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, fechaAltaDirector, idEstado) 
+            VALUES ('$nombre', '$email', '$dni', '$fechaAlta', $idEstado)";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function actualizarDirectoresModelo($id, $nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado) {
-        $bd = getConnection();
-        $sql = "UPDATE directores SET nombreDirector = ?, emailDirector = ?, ciudadDirector = ?, codigoPostalDirector = ?, direccionDirector = ?, telefonoDirector = ?, dniDirector = ?, fechaAltaDirector = ?, idEstado = ? WHERE idDirector = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("sssissssii", $nombre, $email, $ciudad, $cp, $direccion, $telefono, $dni, $fechaAlta, $idEstado, $id);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
-    }
+function actualizarDirector($id, $nombre, $email, $dni, $fechaAlta, $idEstado) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $email = mysqli_real_escape_string($conexion, $email);
+    $dni = mysqli_real_escape_string($conexion, $dni);
+    $fechaAlta = mysqli_real_escape_string($conexion, $fechaAlta);
 
-    public function eliminarDirectoresModelo($id) {
-        $bd = getConnection();
-        $sql = "DELETE FROM directores WHERE idDirector = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
-    }
+    $sql = "UPDATE directores SET nombreDirector = '$nombre', emailDirector = '$email', 
+            dniDirector = '$dni', fechaAltaDirector = '$fechaAlta', idEstado = $idEstado 
+            WHERE idDirector = $id";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function obtenerDirectorPorIdModelo($id) {
-        $bd = getConnection();
-        $sql = "SELECT d.*, e.nombreEstado 
-                FROM directores d 
-                LEFT JOIN estados e ON d.idEstado = e.idEstado 
-                WHERE d.idDirector = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $datos = $resultado->fetch_assoc();
-        $bd->close();
-        return $datos;
-    }
+function eliminarDirector($id) {
+    $conexion = obtenerConexion();
+    $sql = "DELETE FROM directores WHERE idDirector = $id";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
+function obtenerDirectorPorId($id) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT *, (SELECT nombreEstado FROM estados WHERE estados.idEstado = directores.idEstado) as nombreEstado 
+            FROM directores 
+            WHERE idDirector = $id";
+    $resultado = mysqli_query($conexion, $sql);
+    $datos = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $datos;
 }
 ?>

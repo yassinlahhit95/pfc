@@ -1,74 +1,76 @@
 <?php
 require_once("conectar.php");
 
-class anuncio {
-    public function listarAnunciosModelo() {
-        $bd = getConnection();
-        $sql = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
-        $datos = [];
-        if ($resultado = $bd->query($sql)) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $datos[] = $fila;
-            }
+function listarTodosLosAnuncios() {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
+    $listaDeAnuncios = [];
+    $resultado = mysqli_query($conexion, $consulta);
+    if ($resultado) {
+        while ($fila = mysqli_fetch_assoc($resultado)) {
+            $listaDeAnuncios[] = $fila;
         }
-        $bd->close();
-        return $datos;
     }
+    mysqli_close($conexion);
+    return $listaDeAnuncios;
+}
 
-    public function insertarAnuncioModelo($titulo, $mensaje, $fecha) {
-        $bd = getConnection();
-        $sql = "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion) VALUES (?, ?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("sss", $titulo, $mensaje, $fecha);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
+function insertarNuevoAnuncio($titulo, $mensaje, $fecha) {
+    $conexion = obtenerConexion();
+    $titulo = mysqli_real_escape_string($conexion, $titulo);
+    $mensaje = mysqli_real_escape_string($conexion, $mensaje);
+    $fecha = mysqli_real_escape_string($conexion, $fecha);
+    $consulta = "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion) VALUES ('$titulo', '$mensaje', '$fecha')";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
+function borrarAnuncioPorId($idAnuncio) {
+    $conexion = obtenerConexion();
+    $idAnuncio = (int)$idAnuncio;
+    $consulta = "DELETE FROM anuncios WHERE idAnuncio = $idAnuncio";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
+function obtenerAnuncioPorId($idAnuncio) {
+    $conexion = obtenerConexion();
+    $idAnuncio = (int)$idAnuncio;
+    $consulta = "SELECT * FROM anuncios WHERE idAnuncio = $idAnuncio";
+    $resultado = mysqli_query($conexion, $consulta);
+    $datosDelAnuncio = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $datosDelAnuncio;
+}
+
+function contarAnunciosQueEstanActivos() {
+    $conexion = obtenerConexion();
+    $hoy = date("Y-m-d");
+    $consulta = "SELECT COUNT(*) as total FROM anuncios WHERE fechaExpiracion >= '$hoy'";
+    $resultado = mysqli_query($conexion, $consulta);
+    $fila = mysqli_fetch_assoc($resultado);
+    $total = 0;
+    if ($fila) {
+        $total = $fila['total'];
     }
+    mysqli_close($conexion);
+    return $total;
+}
 
-    public function eliminarAnuncioModelo($id) {
-        $bd = getConnection();
-        $sql = "DELETE FROM anuncios WHERE idAnuncio = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
-    }
-
-    public function obtenerAnuncioPorIdModelo($id) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM anuncios WHERE idAnuncio = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $datos = $resultado->fetch_assoc();
-        $bd->close();
-        return $datos;
-    }
-
-    public function contarAnunciosActivos() {
-        $bd = getConnection();
-        $sql = "SELECT COUNT(*) as total FROM anuncios WHERE fechaExpiracion >= CURDATE()";
-        $resultado = $bd->query($sql);
-        $fila = $resultado->fetch_assoc();
-        $bd->close();
-        return $fila['total'] ?? 0;
-    }
-
-    public function listarAnunciosPaginados($limite, $inicio) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM anuncios WHERE fechaExpiracion >= CURDATE() ORDER BY idAnuncio DESC LIMIT ? OFFSET ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ii", $limite, $inicio);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $datos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $datos[] = $fila;
+function listarAnunciosConPaginas($limite) {
+    $conexion = obtenerConexion();
+    $hoy = date("Y-m-d");
+    $consulta = "SELECT * FROM anuncios WHERE fechaExpiracion >= '$hoy' ORDER BY idAnuncio DESC LIMIT $limite";
+    $resultado = mysqli_query($conexion, $consulta);
+    $listaPaginada = [];
+    if ($resultado) {
+        while ($fila = mysqli_fetch_assoc($resultado)) {
+            $listaPaginada[] = $fila;
         }
-        $bd->close();
-        return $datos;
     }
+    mysqli_close($conexion);
+    return $listaPaginada;
 }
 ?>

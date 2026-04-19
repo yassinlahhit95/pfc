@@ -5,9 +5,8 @@ require_once "../../modelos/directores.php";
 if (isset($_POST['idDirector'])) {
     $id = $_POST['idDirector'];
     
-    if (is_numeric($id) && ctype_digit($id) && preg_match('/^[0-9]+$/', $id)) {
-        $modelo = new director();
-        if ($modelo->eliminarDirectoresModelo($id)) {
+    if (!empty($id)) {
+        if (eliminarDirector($id)) {
             $_SESSION['exito'] = "Director eliminado correctamente";
         } else {
             $_SESSION['error'] = "Error al eliminar el director";

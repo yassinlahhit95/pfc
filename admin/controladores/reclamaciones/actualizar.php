@@ -12,8 +12,7 @@ if (isset($_POST['idReclamacion']) && isset($_POST['nuevo_estado'])) {
         exit;
     }
 
-    $modeloReclamacion = new reclamacion();
-    if ($modeloReclamacion->cambiarEstadoModelo($id, $nuevoEstado)) {
+    if (cambiarEstadoReclamacion($id, $nuevoEstado)) {
         $_SESSION['exito'] = "Estado actualizado correctamente.";
     } else {
         $_SESSION['error'] = "Error al actualizar el estado.";

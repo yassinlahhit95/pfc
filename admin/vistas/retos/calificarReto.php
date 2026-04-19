@@ -7,31 +7,29 @@ include_once "../comunes/nav.php";
 require_once "../../modelos/retos.php";
 require_once "../../modelos/estudiantes.php";
 
-$id = $_GET['id'] ?? null;
-if (!$id) {
-    header("Location: verRetos.php");
-    exit;
-}
-
-$retoObj = new reto();
-$retoActual = $retoObj->obtenerRetoPorIdModelo($id);
+$id = $_GET['id'];
+$retoActual = obtenerDetallesReto($id);
 
 if (!$retoActual) {
     header("Location: verRetos.php");
     exit;
 }
 
-$estudianteObj = new estudiante();
-$listaEstudiantes = $estudianteObj->listarEstudiantesModelo();
+$listaEstudiantes = listarEstudiantes();
 
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['exito']);
+$exito = "";
+if (isset($_SESSION['exito'])) {
+    $exito = $_SESSION['exito'];
+    unset($_SESSION['exito']);
+}
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Calificar Reto</h1>
-        <p class="subtitulo-encabezado">Reto: <?php echo htmlspecialchars($retoActual['nombreReto']); ?></p>
+    <div class="d-flex-between-end w-100">
+        <div>
+            <h1>Calificar Reto</h1>
+            <p class="subtitulo-encabezado">Reto: <?php echo $retoActual['nombreReto']; ?></p>
+        </div>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/retos/verRetos.php" class="boton-secundario">
@@ -40,12 +38,12 @@ unset($_SESSION['exito']);
     </div>
 </div>
 
-<?php if ($exito): ?>
+<?php if (!empty($exito)) { ?>
 <div class="mensaje-exito">
     <i class="fas fa-check-circle"></i>
-    <p><?php echo htmlspecialchars($exito); ?></p>
+    <p><?php echo $exito; ?></p>
 </div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="contenedor-tabla">
     <form action="controladores/retos/calificar.php" method="POST">
@@ -56,36 +54,45 @@ unset($_SESSION['exito']);
                 <tr>
                     <th>Estudiante</th>
                     <th>DNI</th>
-                    <th>Curso</th>
-                    <th>Nota (0-10)</th>
+                    <th>Nota Actual</th>
+                    <th>Nueva Nota (0-10)</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaEstudiantes)): ?>
+                <?php if (empty($listaEstudiantes)) { ?>
                 <tr>
                     <td colspan="4" class="sin-datos">No hay estudiantes registrados</td>
                 </tr>
-                <?php else: ?>
-                    <?php foreach ($listaEstudiantes as $e) { 
-                        $notaActual = $retoObj->obtenerCalificacion($e['idEstudiante'], $id);
+                <?php } else { ?>
+                    <?php foreach ($listaEstudiantes as $estudiante) { 
+                        $notaActual = obtenerCalificacion($estudiante['idEstudiante'], $id);
                     ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($e['nombreEstudiante']); ?></td>
-                        <td><?php echo htmlspecialchars($e['dniEstudiante']); ?></td>
-                        <td><?php echo htmlspecialchars($e['nombreCurso'] ?? 'Sin curso'); ?></td>
+                        <td><?php echo $estudiante['nombreEstudiante']; ?></td>
+                        <td><?php echo $estudiante['dniEstudiante']; ?></td>
                         <td>
-                            <input type="text" name="notas[<?php echo $e['idEstudiante']; ?>]" 
-                                   step="0.1" min="0" max="10" 
+                            <span class="etiqueta-estado <?php if ($notaActual !== null) { echo 'activo'; } else { echo ''; } ?>">
+                                <?php 
+                                    if ($notaActual !== null) { 
+                                        echo number_format($notaActual, 2); 
+                                    } else { 
+                                        echo 'Sin calificar'; 
+                                    } 
+                                ?>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="text" name="notas[<?php echo $estudiante['idEstudiante']; ?>]" 
                                    value="<?php echo $notaActual; ?>"
-                                   style="padding: 5px; width: 80px; border-radius: 4px; border: 1px solid #ddd;">
+                                   class="p-5 w-80 br-4 border-ddd">
                         </td>
                     </tr>
                     <?php } ?>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
-
-        <div class="botones-formulario" style="margin-top: 20px;">
+        
+       <div class="botones-formulario mt-20">
             <button type="submit" class="boton-primario">Guardar Calificaciones</button>
         </div>
     </form>

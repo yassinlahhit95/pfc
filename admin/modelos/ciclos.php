@@ -1,130 +1,144 @@
 <?php
 require_once("conectar.php");
 
-class ciclo {
-    public function listarCiclosModelo() {
-        $bd = getConnection();
-        $sql = "SELECT c.*, 
-                (SELECT nombreNivel FROM niveles WHERE idNivel = c.idNivel) as nombreNivel
-                FROM ciclos c ORDER BY c.idCiclo ASC";
-        $datos = [];
-        if ($resultado = $bd->query($sql)) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $fila['profesores'] = $this->obtenerProfesoresDeCiclo($fila['idCiclo']);
-                $fila['aulas'] = $this->obtenerAulasDeCiclo($fila['idCiclo']);
-                $datos[] = $fila;
-            }
+function listarTodosLosCiclos() {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT ciclos.*, 
+                (SELECT nombreNivel FROM niveles WHERE niveles.idNivel = ciclos.idNivel) as nombreNivel 
+                 FROM ciclos 
+                 ORDER BY idCiclo ASC";
+    
+    $resultado = mysqli_query($conexion, $consulta);
+    $listaDeCiclos = [];
+    
+    if ($resultado) {
+        while ($fila = mysqli_fetch_assoc($resultado)) {
+            $listaDeCiclos[] = $fila;
         }
-        $bd->close();
-        return $datos;
     }
+    
+    mysqli_close($conexion);
+    return $listaDeCiclos;
+}
 
-    public function obtenerProfesoresDeCiclo($idCiclo) {
-        $bd = getConnection();
-        $sql = "SELECT p.* FROM profesores p JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor WHERE cp.idCiclo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $idCiclo);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $profesores = [];
-        while($f = $res->fetch_assoc()) { $profesores[] = $f; }
-        $bd->close();
-        return $profesores;
-    }
+function insertarNuevoCiclo($nombre, $descripcion, $idNivel, $idEstado, $profesores = [], $aulas = []) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $descripcion = mysqli_real_escape_string($conexion, $descripcion);
 
-    public function obtenerAulasDeCiclo($idCiclo) {
-        $bd = getConnection();
-        $sql = "SELECT a.* FROM aulas a JOIN ciclo_aula ca ON a.idAula = ca.idAula WHERE ca.idCiclo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $idCiclo);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $aulas = [];
-        while($f = $res->fetch_assoc()) { $aulas[] = $f; }
-        $bd->close();
-        return $aulas;
-    }
-
-    public function insertarCicloModelo($nombre, $descripcion, $idNivel, $idEstado, $profesores = [], $aulas = []) {
-        $bd = getConnection();
-        $sql = "INSERT INTO ciclos (nombreCiclo, descripcionCiclo, idNivel, idEstado) VALUES (?, ?, ?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ssii", $nombre, $descripcion, $idNivel, $idEstado);
+    $consulta = "INSERT INTO ciclos (nombreCiclo, descripcionCiclo, idNivel, idEstado) 
+                 VALUES ('$nombre', '$descripcion', $idNivel, $idEstado)";
+    
+    if (mysqli_query($conexion, $consulta)) {
+        $idCiclo = mysqli_insert_id($conexion);
         
-        if ($stmt->execute()) {
-            $idCiclo = $bd->insert_id;
-            
-            foreach ($profesores as $idP) {
-                $sqlP = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
-                $stmtP = $bd->prepare($sqlP);
-                $stmtP->bind_param("ii", $idCiclo, $idP);
-                $stmtP->execute();
-            }
-
-            foreach ($aulas as $idA) {
-                $sqlA = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES (?, ?)";
-                $stmtA = $bd->prepare($sqlA);
-                $stmtA->bind_param("ii", $idCiclo, $idA);
-                $stmtA->execute();
-            }
-
-            $bd->close();
-            return true;
+        // Asociar profesores
+        foreach ($profesores as $idProf) {
+            $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProf)";
+            mysqli_query($conexion, $sql);
         }
-        $bd->close();
-        return false;
-    }
 
-    public function actualizarCicloModelo($id, $nombre, $descripcion, $idNivel, $idEstado, $profesores = [], $aulas = []) {
-        $bd = getConnection();
-        $sql = "UPDATE ciclos SET nombreCiclo = ?, descripcionCiclo = ?, idNivel = ?, idEstado = ? WHERE idCiclo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ssiii", $nombre, $descripcion, $idNivel, $idEstado, $id);
-        
-        if ($stmt->execute()) {
-            $bd->query("DELETE FROM ciclo_profesor WHERE idCiclo = $id");
-            foreach ($profesores as $idP) {
-                $sqlP = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
-                $stmtP = $bd->prepare($sqlP);
-                $stmtP->bind_param("ii", $id, $idP);
-                $stmtP->execute();
-            }
-
-            $bd->query("DELETE FROM ciclo_aula WHERE idCiclo = $id");
-            foreach ($aulas as $idA) {
-                $sqlA = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES (?, ?)";
-                $stmtA = $bd->prepare($sqlA);
-                $stmtA->bind_param("ii", $id, $idA);
-                $stmtA->execute();
-            }
-
-            $bd->close();
-            return true;
+        // Asociar aulas
+        foreach ($aulas as $idAula) {
+            $sql = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCiclo, $idAula)";
+            mysqli_query($conexion, $sql);
         }
-        $bd->close();
-        return false;
+
+        mysqli_close($conexion);
+        return true;
     }
 
-    public function eliminarCicloModelo($id) {
-        $bd = getConnection();
-        $sql = "DELETE FROM ciclos WHERE idCiclo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
+    mysqli_close($conexion);
+    return false;
+}
+
+function actualizarCicloExistente($idCiclo, $nombre, $descripcion, $idNivel, $idEstado, $profesores = [], $aulas = []) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $descripcion = mysqli_real_escape_string($conexion, $descripcion);
+
+    $consulta = "UPDATE ciclos SET nombreCiclo = '$nombre', descripcionCiclo = '$descripcion', 
+                 idNivel = $idNivel, idEstado = $idEstado WHERE idCiclo = $idCiclo";
+    
+    if (mysqli_query($conexion, $consulta)) {
+        // Limpiar asociaciones viejas
+        mysqli_query($conexion, "DELETE FROM ciclo_profesor WHERE idCiclo = $idCiclo");
+        mysqli_query($conexion, "DELETE FROM ciclo_aula WHERE idCiclo = $idCiclo");
+
+        // Asociar profesores nuevos
+        foreach ($profesores as $idProf) {
+            $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProf)";
+            mysqli_query($conexion, $sql);
+        }
+
+        // Asociar aulas nuevas
+        foreach ($aulas as $idAula) {
+            $sql = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCiclo, $idAula)";
+            mysqli_query($conexion, $sql);
+        }
+
+        mysqli_close($conexion);
+        return true;
     }
 
-    public function obtenerCicloPorIdModelo($id) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM ciclos WHERE idCiclo = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $result = $resultado->fetch_assoc();
-        $bd->close();
-        return $result;
-    }
+    mysqli_close($conexion);
+    return false;
+}
+
+function eliminarCicloPorId($idCiclo) {
+    $conexion = obtenerConexion();
+    $consulta = "DELETE FROM ciclos WHERE idCiclo = $idCiclo";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
+function obtenerCicloUnico($idCiclo) {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT * FROM ciclos WHERE idCiclo = $idCiclo";
+    $resultado = mysqli_query($conexion, $consulta);
+    $datosDelCiclo = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $datosDelCiclo;
+}
+
+function comprobarNombreRepetido($nombre) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $consulta = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '$nombre'";
+    $resultado = mysqli_query($conexion, $consulta);
+    $cantidad = mysqli_num_rows($resultado);
+    mysqli_close($conexion);
+    return ($cantidad > 0);
+}
+
+function comprobarNombreEnOtroCiclo($nombre, $idCiclo) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $consulta = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '$nombre' AND idCiclo <> $idCiclo";
+    $resultado = mysqli_query($conexion, $consulta);
+    $cantidad = mysqli_num_rows($resultado);
+    mysqli_close($conexion);
+    return ($cantidad > 0);
+}
+
+function obtenerProfesoresDeUnCiclo($idCiclo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = $idCiclo";
+    $res = mysqli_query($conexion, $sql);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) { $lista[] = $f; }
+    mysqli_close($conexion);
+    return $lista;
+}
+
+function obtenerAulasDeUnCiclo($idCiclo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT idAula FROM ciclo_aula WHERE idCiclo = $idCiclo";
+    $res = mysqli_query($conexion, $sql);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) { $lista[] = $f; }
+    mysqli_close($conexion);
+    return $lista;
 }
 ?>

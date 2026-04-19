@@ -5,9 +5,10 @@ $seccion = 'ciclos';
 include_once "../comunes/nav.php";
 
 require_once "../../modelos/ciclos.php";
+require_once "../../modelos/profesores.php";
+require_once "../../modelos/aulas.php";
 
-$cicloObj = new ciclo();
-$listaCiclos = $cicloObj->listarCiclosModelo();
+$listaCiclos = listarTodosLosCiclos();
 
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
@@ -26,12 +27,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($exito): ?>
+<?php if ($exito) { ?>
 <div class="mensaje-exito">
     <i class="fas fa-check-circle"></i>
-    <p><?php echo htmlspecialchars($exito); ?></p>
+    <p><?php echo $exito; ?></p>
 </div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="contenedor-tabla">
     <table class="tabla-datos">
@@ -47,44 +48,57 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($listaCiclos)): ?>
+            <?php if (empty($listaCiclos)) { ?>
             <tr>
                 <td colspan="7" class="sin-datos">No hay ciclos registrados</td>
             </tr>
-            <?php else: ?>
-                <?php foreach ($listaCiclos as $c) { 
-                    $estado = $c['idEstado'] == 1 ? 'Activo' : 'Inactivo';
-                    $claseEstado = $c['idEstado'] == 1 ? 'estado-activo' : 'estado-inactivo';
+            <?php } else { ?>
+                <?php foreach ($listaCiclos as $ciclo) { 
+                    $estado = $ciclo['idEstado'] == 1 ? 'Activo' : 'Inactivo';
+                    $claseEstado = ($ciclo['idEstado'] == 1) ? 'activo-verde' : 'inactivo-rojo';
                     
-                    // Procesar nombres de profesores
-                    $nombresProfesores = array_column($c['profesores'] ?? [], 'nombreProfesor');
-                    $textoProfesores = !empty($nombresProfesores) ? implode(', ', $nombresProfesores) : 'Sin asignar';
+                    // Recuperar nombres de profesores
+                    $idsProfes = obtenerProfesoresDeUnCiclo($ciclo['idCiclo']);
+                    $nombresProfes = [];
+                    foreach ($idsProfes as $idP) {
+                        $p = obtenerProfesorPorId($idP['idProfesor']);
+                        if ($p) $nombresProfes[] = $p['nombreProfesor'];
+                    }
+                    $textoProfesores = !empty($nombresProfes) ? implode(', ', $nombresProfes) : 'Sin asignar';
                     
-                    // Procesar nombres de aulas
-                    $nombresAulas = array_column($c['aulas'] ?? [], 'nombreAula');
+                    // Recuperar aulas
+                    $idsAulas = obtenerAulasDeUnCiclo($ciclo['idCiclo']);
+                    $nombresAulas = [];
+                    foreach ($idsAulas as $idA) {
+                        // Como no hay obtenerAulaPorId, usamos listarAulas o lo buscamos
+                        $listaA = listarAulas();
+                        foreach ($listaA as $aula) {
+                            if ($aula['idAula'] == $idA['idAula']) $nombresAulas[] = $aula['nombreAula'];
+                        }
+                    }
                     $textoAulas = !empty($nombresAulas) ? implode(', ', $nombresAulas) : 'Sin asignar';
                 ?>
                 <tr>
-                    <td><?php echo $c['idCiclo']; ?></td>
-                    <td><strong><?php echo htmlspecialchars($c['nombreCiclo']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($c['nombreNivel'] ?? 'N/A'); ?></td>
-                    <td class="texto-pequeno"><?php echo htmlspecialchars($textoProfesores); ?></td>
-                    <td class="texto-pequeno"><?php echo htmlspecialchars($textoAulas); ?></td>
+                    <td><?php echo $ciclo['idCiclo']; ?></td>
+                    <td><strong><?php echo $ciclo['nombreCiclo']; ?></strong></td>
+                    <td><?php echo $ciclo['nombreNivel'] ?? 'N/A'; ?></td>
+                    <td><div class="texto-pequeno texto-atenuado lh-1-4"><?php echo $textoProfesores; ?></div></td>
+                    <td><div class="texto-pequeno texto-atenuado lh-1-4"><?php echo $textoAulas; ?></div></td>
                     <td>
-                        <span class="insignia-estado <?php echo $claseEstado; ?>">
+                        <span class="estado-bolita <?php echo $claseEstado; ?>">
                             <?php echo $estado; ?>
                         </span>
                     </td>
                     <td>
                         <div class="botones-accion">
-                            <a href="vistas/ciclos/modificarCiclos.php?id=<?php echo $c['idCiclo']; ?>" 
+                            <a href="vistas/ciclos/modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" 
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="controladores/ciclos/borrar.php" 
-                                  class="form-eliminar d-inline"
-                                  onsubmit="return confirm('¿Está seguro de eliminar este ciclo? Se borrarán sus módulos y retos asociados.');">
-                                <input type="hidden" name="idCiclo" value="<?php echo $c['idCiclo']; ?>">
+                                  class="d-inline"
+                                  onsubmit="return confirm('¿Está seguro de eliminar este ciclo?');">
+                                <input type="hidden" name="idCiclo" value="<?php echo $ciclo['idCiclo']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -93,7 +107,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     </td>
                 </tr>
                 <?php } ?>
-            <?php endif; ?>
+            <?php } ?>
         </tbody>
     </table>
 </div>

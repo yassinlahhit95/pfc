@@ -59,13 +59,13 @@ unset($_SESSION['errores'], $_SESSION['datos_reclamaciones']);
             <div class="campo-formulario campo-ancho-total">
                 <label>Asunto / Motivo corto</label>
                 <input type="text" name="asunto" 
-                       value="<?php echo htmlspecialchars($datos['asunto'] ?? ''); ?>" placeholder="Ej: Falta de respeto, Rotura de material...">
+                       value="<?php echo $datos['asunto'] ?? ''; ?>" placeholder="Ej: Falta de respeto, Rotura de material...">
                 <?php if (isset($errores['asunto'])) echo "<p class='error-campo'>{$errores['asunto']}</p>"; ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Descripción detallada</label>
-                <textarea name="descripcion" rows="5"><?php echo htmlspecialchars($datos['descripcion'] ?? ''); ?></textarea>
+                <textarea name="descripcion" rows="5"><?php echo $datos['descripcion'] ?? ''; ?></textarea>
                 <?php if (isset($errores['descripcion'])) echo "<p class='error-campo'>{$errores['descripcion']}</p>"; ?>
             </div>
 
@@ -81,7 +81,7 @@ unset($_SESSION['errores'], $_SESSION['datos_reclamaciones']);
 
             <div class="campo-formulario">
                 <label>Fecha del Suceso</label>
-                <input type="date" name="fecha" value="<?php echo htmlspecialchars($datos['fecha'] ?? date('Y-m-d')); ?>">
+                <input type="date" name="fecha" value="<?php echo $datos['fecha'] ?? date('Y-m-d'); ?>">
                 <?php if (isset($errores['fecha'])) echo "<p class='error-campo'>{$errores['fecha']}</p>"; ?>
             </div>
         </div>
