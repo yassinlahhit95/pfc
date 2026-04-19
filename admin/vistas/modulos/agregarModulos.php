@@ -27,7 +27,7 @@ unset($_SESSION['errores'], $_SESSION['datos_modulo']);
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-cubes color-primary mr-10"></i> Datos del Módulo</h3>
+        <h3>Datos del Módulo</h3>
     </div>
     <form action="controladores/modulos/insertar.php" method="POST">
         <div class="formulario-cuadricula">

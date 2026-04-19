@@ -14,7 +14,6 @@ if (isset($_POST['guardarEstudiante'])) {
     $cp = trim($_POST['codigoPostalEstudiante'] ?? '');
     $obs = trim($_POST['observacionesEstudiante'] ?? '');
     $idCiclo = $_POST['idCiclo'] ?? '';
-    $idEstado = $_POST['idEstado'] ?? 1;
 
     // Guardamos datos para no perder el formulario
     $_SESSION['datos_estudiante'] = $_POST;
@@ -25,7 +24,7 @@ if (isset($_POST['guardarEstudiante'])) {
         exit;
     }
 
-    if (insertarEstudiante($nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo, $idEstado)) {
+    if (insertarEstudiante($nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo)) {
         unset($_SESSION['datos_estudiante']);
         $_SESSION['exito'] = "Estudiante registrado con éxito.";
         header("Location: ../../vistas/estudiantes/verEstudiantes.php");

@@ -13,81 +13,73 @@ $mensajeError = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <div>
         <h1>Reclamaciones e Incidencias</h1>
-        <p class="texto-atenuado">Seguimiento de reportes de profesores y alumnos</p>
+    </div>
+    <div class="acciones-pagina">
+        <a href="vistas/reclamaciones/agregarReclamacion.php" class="boton-primario">
+            Nueva Reclamación
+        </a>
     </div>
 </div>
 
 <?php if ($mensajeExito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $mensajeExito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $mensajeExito; ?></p></div>
 <?php } ?>
 <?php if ($mensajeError) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $mensajeError; ?></div>
+    <div class="mensaje-error"><p><?php echo $mensajeError; ?></p></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
-        <table class="tabla-datos" id="tablaReclamaciones">
-            <thead>
+<div class="contenedor-tabla">
+    <table class="tabla-datos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Estudiante</th>
+                <th>Profesor</th>
+                <th>Asunto</th>
+                <th>Gravedad</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($listaReclamaciones)) { ?>
+                <tr><td colspan="7" class="sin-datos">No hay reclamaciones registradas</td></tr>
+            <?php } else { ?>
+                <?php foreach ($listaReclamaciones as $reclamacion) { 
+                    $claseGravedad = '';
+                    if ($reclamacion['gravedad'] == 'leve') $claseGravedad = 'activo-verde';
+                    if ($reclamacion['gravedad'] == 'grave') $claseGravedad = 'inactivo-rojo';
+                    if ($reclamacion['gravedad'] == 'muy grave') $claseGravedad = 'inactivo-rojo';
+                ?>
                 <tr>
-                    <th>ID</th>
-                    <th>Usuario / Emisor</th>
-                    <th>Descripción / Asunto</th>
-                    <th class="ancho-fijo-300">Estado de Gestión</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($listaReclamaciones)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay reclamaciones activas.</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($listaReclamaciones as $reclamacion) { 
-                        $claseFila = ($reclamacion['estadoReclamacion'] == 'resuelta') ? 'opacity-6' : '';
-                    ?>
-                    <tr class="<?php echo $claseFila; ?>">
-                        <td><?php echo $reclamacion['idReclamacion']; ?></td>
-                        <td>
-                            <strong><?php echo $reclamacion['nombreEstudiante']; ?></strong><br>
-                            <small class="texto-atenuado">Reportado por: <?php echo $reclamacion['nombreProfesor']; ?></small><br>
-                            <small class="texto-atenuado"><?php echo $reclamacion['fecha']; ?></small>
-                        </td>
-                        <td class="texto-pequeno texto-gray lh-1-4">
-                            <strong><?php echo $reclamacion['asunto']; ?></strong><br>
-                            <?php echo nl2br($reclamacion['descripcion']); ?>
-                        </td>
-                        <td>
-                            <form action="controladores/reclamaciones/actualizar.php" method="POST" class="disposicion-flexible direccion-columna separacion-pequena">
+                    <td><?php echo $reclamacion['idReclamacion']; ?></td>
+                    <td><strong><?php echo $reclamacion['nombreEstudiante']; ?></strong></td>
+                    <td><?php echo $reclamacion['nombreProfesor']; ?></td>
+                    <td><?php echo $reclamacion['asunto']; ?></td>
+                    <td>
+                        <span class="estado-bolita <?php echo $claseGravedad; ?>">
+                            <?php echo ucfirst($reclamacion['gravedad']); ?>
+                        </span>
+                    </td>
+                    <td><?php echo date('d/m/Y', strtotime($reclamacion['fecha'])); ?></td>
+                    <td>
+                        <div class="botones-accion">
+                            <form action="controladores/reclamaciones/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta reclamación?');">
                                 <input type="hidden" name="idReclamacion" value="<?php echo $reclamacion['idReclamacion']; ?>">
-                                
-                                <label class="disposicion-flexible alinear-centro separacion-pequena cursor-pointer color-warning texto-pequeno texto-negrita">
-                                    <input type="radio" name="nuevo_estado" value="pendiente" 
-                                           <?php if($reclamacion['estadoReclamacion'] == 'pendiente') echo 'checked'; ?>
-                                           onchange="this.form.submit()"> Pendiente
-                                </label>
-
-                                <label class="disposicion-flexible alinear-centro separacion-pequena cursor-pointer color-success texto-pequeno texto-negrita">
-                                    <input type="radio" name="nuevo_estado" value="resuelta" 
-                                           <?php if($reclamacion['estadoReclamacion'] == 'resuelta') echo 'checked'; ?>
-                                           onchange="this.form.submit()"> Resuelta
-                                </label>
-                            </form>
-                        </td>
-                        <td>
-                            <form method="POST" action="controladores/reclamaciones/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar reporte?');">
-                                <input type="hidden" name="idReclamacion" value="<?php echo $reclamacion['idReclamacion']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
+                                <button type="submit" class="boton-icono boton-eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
-                        </td>
-                    </tr>
-                    <?php } ?>
+                        </div>
+                    </td>
+                </tr>
                 <?php } ?>
-            </tbody>
-        </table>
-    </div>
+            <?php } ?>
+        </tbody>
+    </table>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

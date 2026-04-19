@@ -20,7 +20,7 @@ body {
 }
 
 /* ==========================================
-   2. BARRA LATERAL (NAV)
+   2. BARRA LATERAL (NAV) - MANTIENE BORDES REDONDEADOS
    ========================================== */
 .barra-lateral {
   width: 260px;
@@ -52,7 +52,7 @@ body {
   width: 40px;
   height: 40px;
   background: #667eea;
-  border-radius: 8px;
+  border-radius: 8px; /* Mantiene redondeado */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +85,7 @@ body {
   padding: 12px 15px;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 8px; /* Mantiene redondeado */
   font-size: 14px;
   transition: all 0.2s;
 }
@@ -102,7 +102,7 @@ body {
 .etiqueta-contador {
   background: rgba(255, 255, 255, 0.2);
   padding: 2px 8px;
-  border-radius: 10px;
+  border-radius: 10px; /* Mantiene redondeado */
   font-size: 11px;
   margin-left: auto;
 }
@@ -130,11 +130,11 @@ body {
 }
 
 /* ==========================================
-   4. COMPONENTES: TARJETAS
+   4. COMPONENTES: TARJETAS - SIN REDONDEO
    ========================================== */
 .tarjeta-blanca {
   background: white;
-  border-radius: 15px;
+  border-radius: 0; /* Eliminado */
   padding: 25px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
@@ -145,7 +145,7 @@ body {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 0; /* Eliminado */
 }
 
 .titulo-tarjeta {
@@ -162,11 +162,11 @@ body {
 }
 
 /* ==========================================
-   5. COMPONENTES: TABLAS
+   5. COMPONENTES: TABLAS - SIN REDONDEO
    ========================================== */
 .contenedor-tabla {
   background: white;
-  border-radius: 12px;
+  border-radius: 0; /* Eliminado */
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
@@ -201,7 +201,7 @@ body {
 }
 
 /* ==========================================
-   6. FORMULARIOS
+   6. FORMULARIOS - SIN REDONDEO
    ========================================== */
 .formulario-cuadricula {
   display: grid;
@@ -230,7 +230,7 @@ body {
 .campo-formulario textarea {
   padding: 10px 12px;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 0; /* Eliminado */
   font-size: 14px;
   transition: border-color 0.2s;
 }
@@ -266,14 +266,14 @@ body {
 }
 
 /* ==========================================
-   7. BOTONES
+   7. BOTONES - SIN REDONDEO
    ========================================== */
 .boton-primario {
   background: #667eea;
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 0; /* Eliminado */
   cursor: pointer;
   text-decoration: none;
   font-weight: 600;
@@ -292,7 +292,7 @@ body {
   color: #4a5568;
   padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 0; /* Eliminado */
   cursor: pointer;
   text-decoration: none;
   font-weight: 600;
@@ -321,7 +321,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: 0; /* Eliminado */
   border: none;
   cursor: pointer;
   background: #f1f5f9;
@@ -334,11 +334,11 @@ body {
 .boton-ver:hover { background: #dcfce7; color: #16a34a; }
 
 /* ==========================================
-   8. ESTADOS E INDICADORES
+   8. ESTADOS E INDICADORES - SIN REDONDEO
    ========================================== */
 .estado-bolita {
   padding: 4px 12px;
-  border-radius: 20px;
+  border-radius: 0; /* Eliminado */
   font-size: 12px;
   font-weight: 600;
   display: inline-block;
@@ -352,17 +352,24 @@ body {
   color: #2d3748;
 }
 
-.mensaje-exito, .mensaje-error {
+.mensaje-exito {
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 0;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
+  background: #dcfce7; 
+  color: #166534; 
+  border: 1px solid #bbf7d0;
 }
 
-.mensaje-exito { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-.mensaje-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.mensaje-error {
+  color: #e53e3e;
+  margin-bottom: 20px;
+  display: block;
+  font-weight: 600;
+}
 
 /* ==========================================
    9. UTILIDADES (LAYOUT)
@@ -375,6 +382,8 @@ body {
 .separacion-pequena { gap: 10px; }
 
 .ancho-total { width: 100%; }
+.w-100 { width: 100% !important; }
+.w-80 { width: 80px; }
 .ancho-fijo-300 { flex: 0 0 300px; }
 .flexible-rellenar { flex: 1; }
 
@@ -388,7 +397,7 @@ body {
 .mt-25 { margin-top: 25px !important; }
 .mt-5 { margin-top: 5px !important; }
 .p-5 { padding: 5px !important; }
-.br-4 { border-radius: 4px !important; }
+.br-4 { border-radius: 0 !important; } /* Modificado a 0 */
 .border-ddd { border: 1px solid #ddd !important; }
 
 .margen-abajo { margin-bottom: 20px; }
@@ -427,7 +436,7 @@ body {
   justify-content: center;
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: 0; /* Eliminado */
   text-decoration: none;
   color: #4a5568;
   font-weight: 600;
@@ -443,14 +452,14 @@ body {
   width: 100px;
   height: 8px;
   background: #edf2f7;
-  border-radius: 4px;
+  border-radius: 0; /* Eliminado */
   margin-top: 5px;
   overflow: hidden;
 }
 
 .barra-progreso {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 0; /* Eliminado */
 }
 
 /* ==========================================
@@ -471,4 +480,3 @@ body {
   color: white !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
 }
-

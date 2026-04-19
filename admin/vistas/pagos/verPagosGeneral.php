@@ -15,7 +15,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <div>
         <h1>Gestión de Pagos</h1>
-        <p class="texto-atenuado">Listado general de cobros y recibos</p>
     </div>
     <a href="vistas/pagos/agregarPagos.php" class="boton-primario">
         <i class="fas fa-plus"></i> Registrar Nuevo Pago
@@ -23,10 +22,10 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php if ($exito != "") { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
 <?php } ?>
 <?php if ($error != "") { ?>
-    <div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -59,7 +58,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                 <?php echo ucfirst($pago['estadoPago']); ?>
                             </span>
                         </td>
-                        <td><?php echo $pago['fechaPago']; ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($pago['fechaPago'])); ?></td>
                         <td>
                             <?php if ($pago['comprobante']) { ?>
                                 <a href="uploads/<?php echo $pago['comprobante']; ?>" target="_blank" class="boton-secundario boton-pequeno">

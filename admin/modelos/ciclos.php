@@ -21,24 +21,22 @@ function listarTodosLosCiclos() {
     return $listaDeCiclos;
 }
 
-function insertarNuevoCiclo($nombre, $descripcion, $idNivel, $idEstado, $profesores = [], $aulas = []) {
+function insertarNuevoCiclo($nombre, $descripcion, $idNivel, $profesores = [], $aulas = []) {
     $conexion = obtenerConexion();
     $nombre = mysqli_real_escape_string($conexion, $nombre);
     $descripcion = mysqli_real_escape_string($conexion, $descripcion);
 
-    $consulta = "INSERT INTO ciclos (nombreCiclo, descripcionCiclo, idNivel, idEstado) 
-                 VALUES ('$nombre', '$descripcion', $idNivel, $idEstado)";
+    $consulta = "INSERT INTO ciclos (nombreCiclo, descripcionCiclo, idNivel) 
+                 VALUES ('$nombre', '$descripcion', $idNivel)";
     
     if (mysqli_query($conexion, $consulta)) {
         $idCiclo = mysqli_insert_id($conexion);
         
-        // Asociar profesores
         foreach ($profesores as $idProf) {
             $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProf)";
             mysqli_query($conexion, $sql);
         }
 
-        // Asociar aulas
         foreach ($aulas as $idAula) {
             $sql = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCiclo, $idAula)";
             mysqli_query($conexion, $sql);
@@ -52,26 +50,23 @@ function insertarNuevoCiclo($nombre, $descripcion, $idNivel, $idEstado, $profeso
     return false;
 }
 
-function actualizarCicloExistente($idCiclo, $nombre, $descripcion, $idNivel, $idEstado, $profesores = [], $aulas = []) {
+function actualizarCicloExistente($idCiclo, $nombre, $descripcion, $idNivel, $profesores = [], $aulas = []) {
     $conexion = obtenerConexion();
     $nombre = mysqli_real_escape_string($conexion, $nombre);
     $descripcion = mysqli_real_escape_string($conexion, $descripcion);
 
     $consulta = "UPDATE ciclos SET nombreCiclo = '$nombre', descripcionCiclo = '$descripcion', 
-                 idNivel = $idNivel, idEstado = $idEstado WHERE idCiclo = $idCiclo";
+                 idNivel = $idNivel WHERE idCiclo = $idCiclo";
     
     if (mysqli_query($conexion, $consulta)) {
-        // Limpiar asociaciones viejas
         mysqli_query($conexion, "DELETE FROM ciclo_profesor WHERE idCiclo = $idCiclo");
         mysqli_query($conexion, "DELETE FROM ciclo_aula WHERE idCiclo = $idCiclo");
 
-        // Asociar profesores nuevos
         foreach ($profesores as $idProf) {
             $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProf)";
             mysqli_query($conexion, $sql);
         }
 
-        // Asociar aulas nuevas
         foreach ($aulas as $idAula) {
             $sql = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCiclo, $idAula)";
             mysqli_query($conexion, $sql);

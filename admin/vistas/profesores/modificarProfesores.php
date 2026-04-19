@@ -22,7 +22,6 @@ $dni = $datos['dniProfesor'] ?? $datosProfesorBD['dniProfesor'];
 $telefono = $datos['telefonoProfesor'] ?? $datosProfesorBD['telefonoProfesor'];
 $especialidad = $datos['especialidad'] ?? $datosProfesorBD['especialidad'];
 $direccion = $datos['direccionProfesor'] ?? $datosProfesorBD['direccionProfesor'];
-$idEstadoElegido = $datos['idEstado'] ?? $datosProfesorBD['idEstado'];
 
 $titulo_pagina = "Modificar Profesor";
 $seccion = 'profesores';
@@ -85,14 +84,6 @@ include_once "../comunes/nav.php";
                 <?php if (isset($errores['direccionProfesor'])) { ?>
                     <p class="error-campo"><?php echo $errores['direccionProfesor']; ?></p>
                 <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Estado *</label>
-                <select name="idEstado">
-                    <option value="1" <?php if ($idEstadoElegido == 1) { echo 'selected'; } ?>>Activo</option>
-                    <option value="2" <?php if ($idEstadoElegido == 2) { echo 'selected'; } ?>>Inactivo</option>
-                </select>
             </div>
         </div>
 

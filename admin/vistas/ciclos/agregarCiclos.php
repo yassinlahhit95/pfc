@@ -20,7 +20,6 @@ unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
 // Variables simples (Estudiante way)
 $nombre = $datos['nombreCiclo'] ?? '';
 $idNivelElegido = $datos['idNivel'] ?? '';
-$idEstadoElegido = $datos['idEstado'] ?? 1;
 $profesoresElegidos = $datos['profesores'] ?? [];
 $aulasElegidas = $datos['aulas'] ?? [];
 $descripcion = $datos['descripcionCiclo'] ?? '';
@@ -29,7 +28,6 @@ $descripcion = $datos['descripcionCiclo'] ?? '';
 <div class="encabezado-pagina">
     <div>
         <h1>Agregar Ciclo</h1>
-        <p class="subtitulo-encabezado">Definir un nuevo ciclo formativo y sus recursos asociados</p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/ciclos/verCiclos.php" class="boton-secundario">
@@ -40,7 +38,7 @@ $descripcion = $datos['descripcionCiclo'] ?? '';
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-sync color-primary mr-10"></i> Configuración del Ciclo</h3>
+        <h3>Configuración del Ciclo</h3>
     </div>
     <form action="controladores/ciclos/insertar.php" method="POST">
         <div class="formulario-cuadricula">
@@ -65,14 +63,6 @@ $descripcion = $datos['descripcionCiclo'] ?? '';
                 <?php if (isset($errores['idNivel'])) { ?>
                     <span class="error-campo"><?php echo $errores['idNivel']; ?></span>
                 <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label for="idEstado">Estado Inicial *</label>
-                <select id="idEstado" name="idEstado">
-                    <option value="1" <?php if ($idEstadoElegido == 1) { echo 'selected'; } ?>>Activo</option>
-                    <option value="2" <?php if ($idEstadoElegido == 2) { echo 'selected'; } ?>>Inactivo</option>
-                </select>
             </div>
 
             <div class="campo-formulario">

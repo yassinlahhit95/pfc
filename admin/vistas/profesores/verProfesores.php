@@ -15,7 +15,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Profesores</h1>
-        <p class="subtitulo-encabezado">Gestión de profesores del sistema</p>
     </div>
     <div class="acciones-pagina">
         <div class="disposicion-flexible separacion-pequena">
@@ -23,7 +22,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <input type="text" placeholder="Buscar profesor..." id="inputBusqueda" class="w-100" />
             </div>
             <a href="vistas/profesores/agregarProfesores.php" class="boton-primario">
-                <i class="fas fa-plus"></i> Agregar Profesor
+                Agregar Profesor
             </a>
         </div>
     </div>
@@ -31,14 +30,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <?php if ($error) { ?>
 <div class="mensaje-error">
-    <i class="fas fa-exclamation-circle"></i>
     <p><?php echo $error; ?></p>
 </div>
 <?php } ?>
 
 <?php if ($exito) { ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
 <?php } ?>
@@ -52,31 +49,22 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <th>Email</th>
                 <th>Teléfono</th>
                 <th>DNI</th>
-                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($listaProfesores)) { ?>
             <tr>
-                <td colspan="7" class="sin-datos">No hay profesores registrados</td>
+                <td colspan="6" class="sin-datos">No hay profesores registrados</td>
             </tr>
             <?php } else { ?>
-                <?php foreach ($listaProfesores as $profesor) { 
-                    $estado = $profesor['nombreEstado'];
-                    $claseEstado = ($estado == 'activo') ? 'activo-verde' : 'inactivo-rojo';
-                ?>
+                <?php foreach ($listaProfesores as $profesor) { ?>
                 <tr>
                     <td><?php echo $profesor['idProfesor']; ?></td>
                     <td><strong><?php echo $profesor['nombreProfesor']; ?></strong></td>
                     <td><?php echo $profesor['emailProfesor'] ?? '-'; ?></td>
                     <td><?php echo $profesor['telefonoProfesor'] ?? '-'; ?></td>
                     <td><?php echo $profesor['dniProfesor'] ?? '-'; ?></td>
-                    <td>
-                        <span class="estado-bolita <?php echo $claseEstado; ?>">
-                            <?php echo ucfirst($estado); ?>
-                        </span>
-                    </td>
                     <td>
                         <div class="botones-accion">
                             <a href="vistas/profesores/verDetallesProfesores.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" 
@@ -88,7 +76,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="controladores/profesores/borrar.php" 
-                                  class="d-inline"
+                                  class="form-eliminar d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este profesor?');">
                                 <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="idProfesor" value="<?php echo $profesor['idProfesor']; ?>">

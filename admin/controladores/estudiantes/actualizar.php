@@ -15,7 +15,6 @@ if (isset($_POST['actualizarEstudiante'])) {
     $cp = trim($_POST['codigoPostalEstudiante'] ?? '');
     $obs = trim($_POST['observacionesEstudiante'] ?? '');
     $idCiclo = $_POST['idCiclo'] ?? '';
-    $idEstado = $_POST['idEstado'] ?? 1;
 
     if (empty($id)) {
         header("Location: ../../vistas/estudiantes/verEstudiantes.php");
@@ -28,7 +27,7 @@ if (isset($_POST['actualizarEstudiante'])) {
         exit;
     }
 
-    if (actualizarEstudiante($id, $nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo, $idEstado)) {
+    if (actualizarEstudiante($id, $nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo)) {
         $_SESSION['exito'] = "Estudiante actualizado correctamente.";
         header("Location: ../../vistas/estudiantes/verEstudiantes.php");
     } else {

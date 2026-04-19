@@ -26,7 +26,6 @@ $listaPrestamosActivos = listarPrestamosActivos();
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <div>
         <h1>Gestión de Préstamos</h1>
-        <p class="texto-atenuado">Asignación de equipos</p>
     </div>
     <div>
         <a href="vistas/inventario/verInventario.php" class="boton-secundario">Volver</a>
@@ -34,10 +33,10 @@ $listaPrestamosActivos = listarPrestamosActivos();
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
 <div class="disposicion-flexible separacion-grande">

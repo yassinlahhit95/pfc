@@ -1,11 +1,3 @@
-<!-- Footer -->
-<footer class="footer-admin">
-  <div class="footer-copyright">
-    <p>
-      © 2025 - 2026 Sistema de Gestión Educativa | Proyecto de Fin de Curso
-    </p>
-  </div>
-</footer>
 
 </main>
 </div>
@@ -17,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var overlayBarra = document.getElementById('overlayBarra');
   var botonAbrir = document.getElementById('botonAbrirMenu');
   var botonCerrar = document.getElementById('botonCerrarBarra');
-  
+
   if (botonAbrir && botonCerrar && barraLateral && overlayBarra) {
     // Abrir sidebar
     botonAbrir.addEventListener('click', function() {
@@ -25,14 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
       overlayBarra.classList.add('activo');
       document.body.style.overflow = 'hidden';
     });
-    
+
     // Cerrar sidebar
     botonCerrar.addEventListener('click', function() {
       barraLateral.classList.remove('activo');
       overlayBarra.classList.remove('activo');
       document.body.style.overflow = '';
     });
-    
+
     // Cerrar al hacer clic en overlay
     overlayBarra.addEventListener('click', function() {
       barraLateral.classList.remove('activo');
@@ -45,4 +37,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-

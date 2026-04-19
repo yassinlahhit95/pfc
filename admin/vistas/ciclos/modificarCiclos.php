@@ -40,7 +40,7 @@ unset($_SESSION['errores']);
 <div class="encabezado-pagina">
     <div>
         <h1>Modificar Ciclo</h1>
-        <p class="subtitulo-encabezado">Actualizando la información de: <strong><?php echo $cicloActual['nombreCiclo']; ?></strong></p>
+        <p>Actualizando la información de: <strong><?php echo $cicloActual['nombreCiclo']; ?></strong></p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/ciclos/verCiclos.php" class="boton-secundario">
@@ -51,7 +51,7 @@ unset($_SESSION['errores']);
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-edit color-primary mr-10"></i> Edición de Recursos del Ciclo</h3>
+        <h3>Edición de Recursos del Ciclo</h3>
     </div>
     <form action="controladores/ciclos/actualizar.php" method="POST">
         <input type="hidden" name="idCiclo" value="<?php echo $cicloActual['idCiclo']; ?>">
@@ -83,18 +83,7 @@ unset($_SESSION['errores']);
             </div>
 
             <div class="campo-formulario">
-                <label for="idEstado">Estado del Ciclo *</label>
-                <select id="idEstado" name="idEstado">
-                    <option value="1" <?php if ($cicloActual['idEstado'] == 1) { echo 'selected'; } else { echo ''; } ?>>Activo</option>
-                    <option value="2" <?php if ($cicloActual['idEstado'] == 2) { echo 'selected'; } else { echo ''; } ?>>Inactivo</option>
-                </select>
-                <?php if (isset($errores['idEstado'])) { ?>
-                    <span class="error-campo"><?php echo $errores['idEstado']; ?></span>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Profesores Tutores * <span class="texto-atenuado">(Selecciona uno o más)</span></label>
+                <label>Profesores Tutores *</label>
                 <div class="tarjeta-gris-suave scroll-vertical">
                     <?php foreach($listaProfesores as $profesor) { 
                         $checked = in_array($profesor['idProfesor'], $profesoresSeleccionados) ? 'checked' : '';
@@ -111,7 +100,7 @@ unset($_SESSION['errores']);
             </div>
 
             <div class="campo-formulario">
-                <label>Aulas Asignadas * <span class="texto-atenuado">(Selecciona una o más)</span></label>
+                <label>Aulas Asignadas *</label>
                 <div class="tarjeta-gris-suave scroll-vertical">
                     <?php foreach($listaAulas as $aula) { 
                         $checked = in_array($aula['idAula'], $aulasSeleccionadas) ? 'checked' : '';

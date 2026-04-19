@@ -25,7 +25,6 @@ include_once "../comunes/nav.php";
 <div class="encabezado-pagina">
     <div>
         <h1>Detalles del Estudiante</h1>
-        <p class="subtitulo-encabezado">Información completa de <?php echo $estudiante['nombreEstudiante']; ?></p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/estudiantes/verEstudiantes.php" class="boton-secundario">
@@ -38,15 +37,15 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user color-primary mr-10"></i> Información Personal</h3>
+        <h3>Información Personal</h3>
     </div>
     <div class="formulario-cuadricula">
         <div class="campo-formulario">
@@ -84,10 +83,10 @@ include_once "../comunes/nav.php";
     </div>
 </div>
 
-<!-- NUEVA SECCIÓN: TFG -->
+<!-- SECCIÓN: TFG -->
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-file-pdf color-danger mr-10"></i> Trabajo Fin de Grado (TFG)</h3>
+        <h3>Trabajo Fin de Grado (TFG)</h3>
     </div>
     <div class="formulario-cuadricula">
         <div class="campo-formulario">
@@ -119,7 +118,7 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-graduation-cap color-success mr-10"></i> Información Académica</h3>
+        <h3>Información Académica</h3>
     </div>
     <div class="formulario-cuadricula">
         <div class="campo-formulario">
@@ -132,18 +131,6 @@ include_once "../comunes/nav.php";
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">Fecha de Alta</label>
             <p class="texto-negrita"><?php if (isset($estudiante['fechaAltaEstudiante'])) { echo $estudiante['fechaAltaEstudiante']; } else { echo '-'; } ?></p>
-        </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Estado del Alumno</label>
-            <div>
-                <?php 
-                $claseEstado = ($estudiante['idEstado'] == 1) ? 'activo-verde' : 'inactivo-rojo';
-                $textoEstado = ($estudiante['idEstado'] == 1) ? 'Activo' : 'Inactivo';
-                ?>
-                <span class="estado-bolita <?php echo $claseEstado; ?>">
-                    <?php echo $textoEstado; ?>
-                </span>
-            </div>
         </div>
         <div class="campo-formulario campo-ancho-total">
             <label class="texto-atenuado texto-pequeno">Observaciones Internas</label>

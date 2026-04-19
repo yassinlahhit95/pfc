@@ -15,7 +15,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Módulos</h1>
-        <p class="subtitulo-encabezado">Gestión de módulos educativos</p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/modulos/agregarModulos.php" class="boton-primario">
@@ -26,7 +25,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <?php if ($exito) { ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
 <?php } ?>
@@ -61,10 +59,10 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <?php echo $horasUsadas; ?> h
                         <?php 
                             $porcentaje = ($modulo['horasMaximas'] > 0) ? ($horasUsadas / $modulo['horasMaximas']) * 100 : 0;
-                            $colorClase = $porcentaje > 100 ? 'inactivo-rojo' : 'activo-verde';
+                            $claseBarra = ($porcentaje > 100) ? 'inactivo-rojo' : 'activo-verde';
                         ?>
                         <div class="barra-progreso-contenedor">
-                            <div class="barra-progreso <?php echo $colorClase; ?>" style="width: <?php echo min($porcentaje, 100); ?>%;"></div>
+                            <div class="barra-progreso <?php echo $claseBarra; ?>" style="width: <?php echo min($porcentaje, 100); ?>%;"></div>
                         </div>
                     </td>
                     <td>

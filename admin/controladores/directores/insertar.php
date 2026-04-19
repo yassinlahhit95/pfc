@@ -9,7 +9,6 @@ if (isset($_POST['guardarDirector'])) {
     $email = trim($_POST['emailDirector'] ?? '');
     $dni = trim($_POST['dniDirector'] ?? '');
     $fechaAlta = trim($_POST['fechaAltaDirector'] ?? '');
-    $idEstado = $_POST['idEstado'] ?? 1;
     
     $errores = [];
 
@@ -25,7 +24,7 @@ if (isset($_POST['guardarDirector'])) {
         exit;
     }
 
-    if (insertarDirector($nombre, $email, $dni, $fechaAlta, $idEstado)) {
+    if (insertarDirector($nombre, $email, $dni, $fechaAlta)) {
         $_SESSION['exito'] = "Director creado correctamente";
     } else {
         $_SESSION['error'] = "Error al crear el director";

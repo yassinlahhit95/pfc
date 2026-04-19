@@ -7,7 +7,6 @@ if (isset($_POST['guardarCiclo'])) {
     $nombre = trim($_POST['nombreCiclo'] ?? '');
     $descripcion = trim($_POST['descripcionCiclo'] ?? '');
     $idNivel = $_POST['idNivel'] ?? '';
-    $idEstado = $_POST['idEstado'] ?? 1;
     $listaProfesores = $_POST['profesores'] ?? [];
     $listaAulas = $_POST['aulas'] ?? [];
 
@@ -28,11 +27,11 @@ if (isset($_POST['guardarCiclo'])) {
         exit;
     }
 
-    if (actualizarCicloExistente($id, $nombre, $descripcion, $idNivel, $idEstado, $listaProfesores, $listaAulas)) {
+    if (actualizarCicloExistente($id, $nombre, $descripcion, $idNivel, $listaProfesores, $listaAulas)) {
         $_SESSION['exito'] = "Ciclo actualizado correctamente.";
         header("Location: ../../vistas/ciclos/verCiclos.php");
     } else {
-        $_SESSION['error'] = "Error al actualizar el ciclo.";
+        $_SESSION['error'] = "Error al actualizar the ciclo.";
         header("Location: ../../vistas/ciclos/modificarCiclos.php?idCiclo=$id");
     }
     exit;

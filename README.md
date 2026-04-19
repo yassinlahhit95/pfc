@@ -1,104 +1,180 @@
 # PFC - Sistema de Gestión Académica
+> Proyecto Final de Grado - Plataforma educativa integral desarrollada en PHP Nativo con arquitectura MVC
 
-## Descripción del Proyecto
-Sistema de gestión académica desarrollado en PHP Native MVC. El proyecto permite gestionar estudiantes, profesores y cursos.
+---
 
-## Estructura del Proyecto
+## 📋 Información General
+| Característica | Detalle |
+|----------------|---------|
+| Estado | ✅ En desarrollo |
+| Tecnología | PHP 7.4+, MySQL, HTML5, CSS3, JavaScript |
+| Arquitectura | Modelo-Vista-Controlador (MVC) |
+| Licencia | MIT |
+| Repositorio | https://github.com/yassinlahhit95/pfc.git |
+
+---
+
+## 📖 Descripción
+Sistema de gestión académica completo que permite administrar de forma centralizada:
+- 👨‍🎓 Estudiantes
+- 👨‍🏫 Profesores
+- 🎓 Directores
+- 📚 Ciclos formativos
+- 🏫 Aulas y horarios
+- 📝 Retos y calificaciones
+- 💸 Pagos y facturación
+- 📢 Anuncios y notificaciones
+- 📩 Reclamaciones y seguimiento
+
+---
+
+## 📂 Estructura del Proyecto
 ```
 pfc/
-├── admin/          # Panel de administración principal
-│   ├── index.php        # Página principal
-│   ├── controladores/     # Controladores MVC
-│   ├── modelos/          # Modelos MVC
-│   ├── vistas/          # Vistas MVC
-│   ├── estiloAdmin/ # CSS
-│   └── imagenesSuperAdmin/ # Imágenes
-├── profesores/          # Panel de profesores
-├── estudiantes/         # Panel de estudiantes
-├── landing/             # Página de inicio
-├── backup_SQL/          # Copias de seguridad de la base de datos
-└── features/           # Documentación de características
+├── 📁 admin/                 # Panel Super Administración
+│   ├── dashboardAdmin.php    # Panel principal
+│   ├── 📁 controladores/     # Lógica de negocio (MVC)
+│   ├── 📁 modelos/           # Acceso a datos y BD
+│   ├── 📁 vistas/            # Plantillas interfaz
+│   ├── 📁 estiloAdmin/       # Estilos CSS
+│   ├── 📁 uploads/           # Archivos subidos
+│   └── 📁 imagenesSuperAdmin/# Recursos gráficos
+│
+├── 📁 directores/            # Panel de Directores
+├── 📁 profesores/            # Panel de Profesores
+├── 📁 estudiantes/           # Panel de Alumnos
+├── 📁 landing/               # Página pública de acceso
+├── 📁 features/              # Documentación funcional
+└── database.sql              # Esquema base de datos
 ```
 
-## Requisitos del Sistema
-- PHP 7.4 o superior
-- MySQL/MariaDB
-- Servidor web (Apache/Nginx)
+---
 
-## Instalación
+## ⚙️ Requisitos del Sistema
+✅ PHP 7.4 o superior  
+✅ MySQL / MariaDB 10.3+  
+✅ Servidor Web (Apache 2.4+ / Nginx)  
+✅ Extensiones PHP: mysqli, gd, curl, mbstring  
+✅ Mod_rewrite habilitado (Apache)
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/yassinlahhit95/pfc.git
-   ```
+---
 
-2. **Configurar la base de datos**
-   - Importar uno de los archivos de backup: `backup_SQL_pfc.sql`
-   - Configurar los parámetros de conexión en los modelos correspondientes
+## 🚀 Instalación Paso a Paso
 
-3. **Configurar el servidor web**
-   - Apuntar el DocumentRoot al directorio `pfc/`
-   - Asegurar que los permisos estén configurados correctamente
+### 1. Descargar código
+```bash
+git clone https://github.com/yassinlahhit95/pfc.git
+cd pfc
+```
 
-## Uso
+### 2. Configurar Base de Datos
+1. Crear base de datos MySQL vacía
+2. Importar esquema: `database.sql`
+3. Editar credenciales en: `admin/modelos/conexion.php`
 
-### Panel de Administración
-- Acceso: `admin/index.php`
-- Gestión completa de usuarios, estudiantes y cursos
+### 3. Configurar Servidor Web
+> **XAMPP/WAMP**: Colocar carpeta `pfc` dentro de `htdocs`  
+> **Apache**: DocumentRoot apuntando a la carpeta raíz del proyecto  
+> **Permisos**: Asegurar permisos de escritura en carpeta `admin/uploads/`
 
-## Estructura MVC
+### 4. Verificar instalación
+Acceder en navegador: `http://localhost/pfc/landing/`
 
-### Modelos
-- `admin/modelos/` - Modelos de datos
-- Responsables de la interacción con la base de datos
+---
 
-### Vistas
-- `admin/vistas/` - Plantillas HTML
-- `admin/estiloAdmin/` - Estilos CSS
+## 🔑 Accesos por Perfil
 
-### Controladores
-- `admin/controladores/` - Lógica de negocio
-- Procesan las peticiones y coordinan modelos y vistas
+| Perfil | Ruta de Acceso | Funcionalidades |
+|--------|----------------|-----------------|
+| Super Admin | `/admin/dashboardAdmin.php` | Gestión completa sistema |
+| Director | `/directores/` | Gestión centro educativo |
+| Profesor | `/profesores/` | Gestión alumnos, notas, retos |
+| Estudiante | `/estudiantes/` | Consultar información personal |
 
-## Características Técnicas
+---
 
-- **PHP Native**: Sin frameworks externos
-- **MVC Architecture**: Separación clara de responsabilidades
+## 🧩 Arquitectura MVC
 
-## Desarrollo
+### 📌 Modelos (`admin/modelos/`)
+- Responsables exclusivos de la interacción con la base de datos
+- Todas las consultas SQL se definen aquí
+- No contienen lógica de negocio ni presentación
 
-### Estructura de Archivos
-- **Controladores**: Gestionan la lógica de negocio
-- **Modelos**: Manejan la persistencia de datos
-- **Vistas**: Presentan la interfaz de usuario
+### ⚙️ Controladores (`admin/controladores/`)
+- Reciben peticiones HTTP
+- Validan datos de entrada
+- Coordinan modelos y vistas
+- Contienen la lógica de negocio de la aplicación
 
-### Funcionalidades Clave
-- Gestión de estudiantes
-- Gestión de profesores
-- Gestión de cursos
-- Sistema de notificaciones
-- Navegación dinámica
+### 🎨 Vistas (`admin/vistas/`)
+- Únicamente presentan información recibida
+- No contienen lógica de negocio ni consultas BD
+- No Utilizan `htmlspecialchars()` para sanitizar salidas
 
-## Estándares de Codificación
+---
 
-Para mantener la consistencia y seguridad del proyecto, se deben seguir los siguientes estándares:
+## 📏 Estándares de Codificación Obligatorios
+> ❗ **Estas reglas deben cumplirse SIEMPRE en TODO el proyecto**
 
-### Validación de Datos Numéricos
-En los controladores, los campos numéricos (IDs, horas, montos, etc.) deben validarse manualmente sin utilizar `filter_var` o `filter_input`. El método estándar es:
+### ✅ Validación Números Enteros
 ```php
+// MÉTODO ESTÁNDAR - NO USAR filter_var()
 if (!is_numeric($valor) || !ctype_digit($valor) || !preg_match('/^[0-9]+$/', $valor)) {
-    // Error de validación
+    // Devolver error de validación
 }
 ```
-*Nota: Para montos decimales, la regex debe ajustarse (ej: `/^[0-9]+(\.[0-9]{1,2})?$/`).*
 
-### Seguridad y Escapado
-- **Prohibido el uso de `htmlentities`**: No se debe utilizar `htmlentities` en ninguna parte del proyecto.
-- **Uso de `htmlspecialchars`**: Para la salida de datos en las vistas (evitar XSS), se debe utilizar preferiblemente `htmlspecialchars`.
-- **Inputs Numéricos**: Se prefiere el uso de `type="text"` en lugar de `type="number"` en los formularios HTML, delegando la validación estricta al controlador.
+### ✅ Validación Números Decimales
+```php
+if (!preg_match('/^[0-9]+(\.[0-9]{1,2})?$/', $valor)) {
+    // Error para importes monetarios
+}
+```
 
-## Licencia
-Este proyecto está bajo licencia MIT - ver el archivo LICENSE para más detalles.
+### ✅ Seguridad
+- ❌ PROHIBIDO usar `htmlentities()`
+- ✅ OBLIGATORIO usar `htmlspecialchars()` en TODAS las salidas HTML
+- ✅ Formularios: usar `type="text"` para campos numéricos (validación en controlador)
+- ✅ Todas las consultas con mysqli prepared statements
 
-## Autor
-Yassin Lahhit
+---
+
+## 📦 Funcionalidades Implementadas
+- [x] CRUD completo Usuarios / Roles
+- [x] Gestión de Ciclos y Aulas
+- [x] Sistema de Retos educativos
+- [x] Calificaciones y evaluaciones
+- [x] Gestión de Pagos
+- [x] Sistema de Reclamaciones
+- [x] Anuncios y notificaciones
+- [x] Paneles diferenciados por perfil
+
+---
+
+## 🛠️ Mantenimiento
+### Comandos útiles
+```bash
+# Actualizar repositorio
+git pull origin main
+
+# Crear backup base de datos
+mysqldump -u usuario -p nombre_bd > backup_$(date +%Y%m%d).sql
+```
+
+---
+
+## 📝 Changelog
+> Actualizar esta sección con cada modificación importante
+- v1.0 - Versión inicial del sistema
+- Estructura MVC implementada
+- Módulos básicos completados
+
+---
+
+## 👤 Autor
+Yassin Lahhit  
+Proyecto Final de Grado 2025/2026
+
+---
+
+> ✅ Archivo actualizado y listo para reutilizar en futuras fases del proyecto

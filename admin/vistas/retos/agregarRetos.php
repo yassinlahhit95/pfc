@@ -19,15 +19,13 @@ unset($_SESSION['errores'], $_SESSION['datos_reto']);
         <p class="subtitulo-encabezado">Diseñar un nuevo reto educativo para el alumnado</p>
     </div>
     <div class="acciones-pagina">
-        <a href="vistas/retos/verRetos.php" class="boton-secundario">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
+        <a href="vistas/retos/verRetos.php" class="boton-secundario">Volver</a>
     </div>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-tasks color-primary mr-10"></i> Configuración del Reto</h3>
+        <h3>Configuración del Reto</h3>
     </div>
     <form action="controladores/retos/insertar.php" method="POST">
         <div class="formulario-cuadricula">
@@ -103,7 +101,7 @@ unset($_SESSION['errores'], $_SESSION['datos_reto']);
 
         <div class="margen-arriba">
             <button type="submit" name="guardarReto" class="boton-primario">
-                <i class="fas fa-save"></i> Crear Reto Educativo
+                Crear Reto Educativo
             </button>
         </div>
     </form>

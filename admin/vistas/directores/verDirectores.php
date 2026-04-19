@@ -16,13 +16,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Directores</h1>
-        <p class="subtitulo-encabezado">Gestión de directores del sistema</p>
     </div>
     <div class="acciones-pagina">
-        <div class="caja-busqueda">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Buscar director..." id="inputBusqueda" />
-        </div>
         <a href="vistas/directores/agregarDirectores.php" class="boton-primario">
             <i class="fas fa-plus"></i> Agregar Director
         </a>
@@ -31,14 +26,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <?php if ($error) { ?>
 <div class="mensaje-error">
-    <i class="fas fa-exclamation-circle"></i>
     <p><?php echo $error; ?></p>
 </div>
 <?php } ?>
 
 <?php if ($exito) { ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
 <?php } ?>
@@ -52,31 +45,22 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <th>Email</th>
                 <th>Teléfono</th>
                 <th>Fecha Alta</th>
-                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($listaDirectores)) { ?>
             <tr>
-                <td colspan="7" class="sin-datos">No hay directores registrados</td>
+                <td colspan="6" class="sin-datos">No hay directores registrados</td>
             </tr>
             <?php } else { ?>
-                <?php foreach ($listaDirectores as $d) { 
-                    $estado = $d['nombreEstado'];
-                    $estiloEstado = $estado === 'activo' ? 'estado-activo' : 'estado-inactivo';
-                ?>
+                <?php foreach ($listaDirectores as $d) { ?>
                 <tr>
                     <td><?php echo $d['idDirector']; ?></td>
-                    <td><?php echo $d['nombreDirector']; ?></td>
+                    <td><strong><?php echo $d['nombreDirector']; ?></strong></td>
                     <td><?php echo $d['emailDirector']; ?></td>
                     <td><?php echo $d['telefonoDirector'] ?? '-'; ?></td>
                     <td><?php echo $d['fechaAltaDirector']; ?></td>
-                    <td>
-                        <span class="insignia-estado <?php echo $estiloEstado; ?>">
-                            <?php echo ucfirst($estado); ?>
-                        </span>
-                    </td>
                     <td>
                         <div class="botones-accion">
                             <a href="vistas/directores/verDetallesDirectores.php?id=<?php echo $d['idDirector']; ?>" 
@@ -103,21 +87,5 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </tbody>
     </table>
 </div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    var inputBusqueda = document.getElementById("inputBusqueda");
-    var tablaFilas = document.querySelectorAll("#tablaDirectores tbody tr");
-
-    inputBusqueda.addEventListener("input", function() {
-        var textoBusqueda = this.value.toLowerCase();
-        tablaFilas.forEach(function(fila) {
-            var nombre = fila.children[1].textContent.toLowerCase();
-            var email = fila.children[2].textContent.toLowerCase();
-            fila.style.display = (nombre.indexOf(textoBusqueda) !== -1 || email.indexOf(textoBusqueda) !== -1) ? "" : "none";
-        });
-    });
-});
-</script>
 
 <?php include '../comunes/footer.php'; ?>

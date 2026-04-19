@@ -10,7 +10,6 @@ if (isset($_POST['guardarDirector'])) {
     $email = trim($_POST['emailDirector'] ?? '');
     $dni = trim($_POST['dniDirector'] ?? '');
     $fechaAlta = trim($_POST['fechaAltaDirector'] ?? '');
-    $idEstado = $_POST['idEstado'] ?? 1;
     
     $errores = [];
 
@@ -27,7 +26,7 @@ if (isset($_POST['guardarDirector'])) {
         exit;
     }
 
-    if (actualizarDirector($id, $nombre, $email, $dni, $fechaAlta, $idEstado)) {
+    if (actualizarDirector($id, $nombre, $email, $dni, $fechaAlta)) {
         $_SESSION['exito'] = "Director actualizado correctamente";
     } else {
         $_SESSION['error'] = "Error al actualizar el director";

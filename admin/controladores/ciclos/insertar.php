@@ -7,7 +7,6 @@ if (isset($_POST['guardarCiclo'])) {
     $nombre = trim($_POST['nombreCiclo'] ?? '');
     $descripcion = trim($_POST['descripcionCiclo'] ?? '');
     $idNivel = $_POST['idNivel'] ?? '';
-    $idEstado = $_POST['idEstado'] ?? 1;
     $listaProfesores = $_POST['profesores'] ?? [];
     $listaAulas = $_POST['aulas'] ?? [];
 
@@ -33,7 +32,7 @@ if (isset($_POST['guardarCiclo'])) {
         exit;
     }
 
-    if (insertarNuevoCiclo($nombre, $descripcion, $idNivel, $idEstado, $listaProfesores, $listaAulas)) {
+    if (insertarNuevoCiclo($nombre, $descripcion, $idNivel, $listaProfesores, $listaAulas)) {
         unset($_SESSION['datos_ciclo']);
         $_SESSION['exito'] = "Ciclo creado con éxito.";
         header("Location: ../../vistas/ciclos/verCiclos.php");

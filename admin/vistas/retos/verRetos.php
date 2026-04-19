@@ -20,7 +20,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Retos</h1>
-        <p class="subtitulo-encabezado">Gestión de retos y desafíos educativos</p>
     </div>
     <div class="acciones-pagina">
         <div class="disposicion-flexible separacion-pequena">
@@ -43,7 +42,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </select>
 
             <a href="vistas/retos/agregarRetos.php" class="boton-primario">
-                <i class="fas fa-plus"></i> Agregar Reto
+                Agregar Reto
             </a>
         </div>
     </div>
@@ -51,14 +50,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <?php if (!empty($exito)) { ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
 <?php } ?>
 
 <?php if (!empty($error)) { ?>
 <div class="mensaje-error">
-    <i class="fas fa-exclamation-circle"></i>
     <p><?php echo $error; ?></p>
 </div>
 <?php } ?>
@@ -96,7 +93,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <td><?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></td>
                     <td><span class="estado-bolita contador-neutral"><?php echo $reto['horasReto']; ?> h</span></td>
                     <td>
-                        <div class="texto-pequeno texto-atenuado lh-1-4 max-w-250">
+                        <div class="texto-pequeno texto-atenuado lh-1-4" style="max-width: 250px;">
                             <?php echo implode(', ', $nombresModulos); ?>
                         </div>
                     </td>

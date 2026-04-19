@@ -18,21 +18,20 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 <div class="encabezado-pagina">
     <div>
         <h1>Gestión de Aulas</h1>
-        <p class="subtitulo-encabezado">Control de espacios físicos del centro</p>
     </div>
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
 <!-- Formulario en una fila superior -->
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-plus"></i> Nueva Aula</h3>
+        <h3>Nueva Aula</h3>
     </div>
     <form method="POST" action="controladores/aulas/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
@@ -42,7 +41,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 <p class="error-campo"><?php echo $errores['nombreAula']; ?></p>
             <?php } ?>
         </div>
-        <div style="margin-top: 25px;">
+        <div class="mt-25">
             <button type="submit" name="guardarAula" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Aula
             </button>

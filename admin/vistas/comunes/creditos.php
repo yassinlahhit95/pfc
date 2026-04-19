@@ -8,13 +8,12 @@ include_once "nav.php";
 <div class="encabezado-pagina">
     <div>
         <h1>Información del Proyecto</h1>
-        <p class="subtitulo-encabezado">Detalles académicos y autoría del TFG</p>
     </div>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-info-circle color-primary mr-10"></i> Acerca de este Proyecto</h3>
+        <h3>Acerca de este Proyecto</h3>
     </div>
     
     <div class="formulario-cuadricula">

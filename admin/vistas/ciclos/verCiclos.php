@@ -18,7 +18,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Ciclos</h1>
-        <p class="subtitulo-encabezado">Gestión de ciclos formativos</p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/ciclos/agregarCiclos.php" class="boton-primario">
@@ -27,12 +26,11 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito): ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
-<?php } ?>
+<?php endif; ?>
 
 <div class="contenedor-tabla">
     <table class="tabla-datos">
@@ -43,20 +41,16 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <th>Nivel</th>
                 <th>Tutor(es)</th>
                 <th>Aula(s)</th>
-                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($listaCiclos)) { ?>
+            <?php if (empty($listaCiclos)): ?>
             <tr>
-                <td colspan="7" class="sin-datos">No hay ciclos registrados</td>
+                <td colspan="6" class="sin-datos">No hay ciclos registrados</td>
             </tr>
-            <?php } else { ?>
+            <?php else: ?>
                 <?php foreach ($listaCiclos as $ciclo) { 
-                    $estado = $ciclo['idEstado'] == 1 ? 'Activo' : 'Inactivo';
-                    $claseEstado = ($ciclo['idEstado'] == 1) ? 'activo-verde' : 'inactivo-rojo';
-                    
                     // Recuperar nombres de profesores
                     $idsProfes = obtenerProfesoresDeUnCiclo($ciclo['idCiclo']);
                     $nombresProfes = [];
@@ -70,7 +64,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     $idsAulas = obtenerAulasDeUnCiclo($ciclo['idCiclo']);
                     $nombresAulas = [];
                     foreach ($idsAulas as $idA) {
-                        // Como no hay obtenerAulaPorId, usamos listarAulas o lo buscamos
                         $listaA = listarAulas();
                         foreach ($listaA as $aula) {
                             if ($aula['idAula'] == $idA['idAula']) $nombresAulas[] = $aula['nombreAula'];
@@ -84,11 +77,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <td><?php echo $ciclo['nombreNivel'] ?? 'N/A'; ?></td>
                     <td><div class="texto-pequeno texto-atenuado lh-1-4"><?php echo $textoProfesores; ?></div></td>
                     <td><div class="texto-pequeno texto-atenuado lh-1-4"><?php echo $textoAulas; ?></div></td>
-                    <td>
-                        <span class="estado-bolita <?php echo $claseEstado; ?>">
-                            <?php echo $estado; ?>
-                        </span>
-                    </td>
                     <td>
                         <div class="botones-accion">
                             <a href="vistas/ciclos/modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" 
@@ -107,7 +95,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     </td>
                 </tr>
                 <?php } ?>
-            <?php } ?>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
