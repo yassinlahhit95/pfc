@@ -42,7 +42,7 @@ unset($_SESSION['errores']);
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-edit color-primary mr-10"></i> Datos del Módulo</h3>
+        <h3>Datos del Módulo</h3>
     </div>
     <form action="controladores/modulos/actualizar.php" method="POST">
         <input type="hidden" name="idModulo" value="<?php echo $moduloActual['idModulo']; ?>">

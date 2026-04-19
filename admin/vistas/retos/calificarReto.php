@@ -25,22 +25,18 @@ if (isset($_SESSION['exito'])) {
 ?>
 
 <div class="encabezado-pagina">
-    <div class="d-flex-between-end w-100">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
         <div>
-            <h1>Calificar Reto</h1>
-            <p class="subtitulo-encabezado">Reto: <?php echo $retoActual['nombreReto']; ?></p>
+            <h1>Calificar Reto: <?php echo $retoActual['nombreReto']; ?></h1>
         </div>
     </div>
     <div class="acciones-pagina">
-        <a href="vistas/retos/verRetos.php" class="boton-secundario">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
+        <a href="vistas/retos/verRetos.php" class="boton-secundario">Volver</a>
     </div>
 </div>
 
 <?php if (!empty($exito)) { ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
 <?php } ?>

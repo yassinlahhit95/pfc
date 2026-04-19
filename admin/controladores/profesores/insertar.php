@@ -9,7 +9,6 @@ if (isset($_POST['guardarProfesor'])) {
     $telefono = trim($_POST['telefonoProfesor'] ?? '');
     $especialidad = trim($_POST['especialidad'] ?? '');
     $direccion = trim($_POST['direccionProfesor'] ?? '');
-    $idEstado = $_POST['idEstado'] ?? 1;
 
     // Guardamos datos para no perder el formulario
     $_SESSION['datos_profesor'] = $_POST;
@@ -20,7 +19,7 @@ if (isset($_POST['guardarProfesor'])) {
         exit;
     }
 
-    if (insertarProfesor($nombre, $email, $telefono, $dni, $especialidad, $direccion, $idEstado)) {
+    if (insertarProfesor($nombre, $email, $telefono, $dni, $especialidad, $direccion)) {
         unset($_SESSION['datos_profesor']);
         $_SESSION['exito'] = "Profesor registrado con éxito.";
         header("Location: ../../vistas/profesores/verProfesores.php");

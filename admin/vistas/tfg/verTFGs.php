@@ -17,15 +17,14 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Proyectos TFG</h1>
-        <p class="subtitulo-encabezado">Visualización de los Trabajos Fin de Grado entregados</p>
     </div>
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <!-- Listado de Proyectos subidos (Modo Lectura para Admin) -->

@@ -22,20 +22,17 @@ $fechaExp = $datos['fecha_expiracion'] ?? date('Y-m-d', strtotime('+7 days'));
 <div class="encabezado-pagina">
     <div>
         <h1>Anuncios</h1>
-        <p class="subtitulo-encabezado">Comunicados oficiales para la comunidad educativa</p>
     </div>
 </div>
 
 <?php if ($exito) { ?>
 <div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
     <p><?php echo $exito; ?></p>
 </div>
 <?php } ?>
 
 <?php if ($error) { ?>
 <div class="mensaje-error">
-    <i class="fas fa-times-circle"></i>
     <p><?php echo $error; ?></p>
 </div>
 <?php } ?>
@@ -43,7 +40,7 @@ $fechaExp = $datos['fecha_expiracion'] ?? date('Y-m-d', strtotime('+7 days'));
 <!-- Formulario en una fila superior -->
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn"></i> Nuevo Anuncio</h3>
+        <h3>Nuevo Anuncio</h3>
     </div>
     <form method="POST" action="controladores/anuncios/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario" style="flex: 2;">

@@ -39,7 +39,7 @@ unset($_SESSION['errores']);
     </div>
     <div class="acciones-pagina">
         <a href="vistas/retos/verRetos.php" class="boton-secundario">
-            <i class="fas fa-arrow-left"></i> Volver al listado
+            Volver al listado
         </a>
     </div>
 </div>
@@ -96,7 +96,7 @@ unset($_SESSION['errores']);
 
         <div class="margen-arriba">
             <button type="submit" name="guardarReto" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Cambios
+                Guardar Cambios
             </button>
         </div>
     </form>

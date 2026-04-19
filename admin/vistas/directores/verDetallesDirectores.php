@@ -19,7 +19,6 @@ if (!$director) {
 <div class="encabezado-pagina">
     <div>
         <h1>Detalles del Director</h1>
-        <p class="subtitulo-encabezado">Información completa del director</p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/directores/verDirectores.php" class="boton-primario">
@@ -30,7 +29,7 @@ if (!$director) {
 
 <div class="tarjeta-panel mb-20">
     <div class="encabezado-tarjeta">
-        <h3><i class="fas fa-user-tie"></i> Información Personal</h3>
+        <h3>Información Personal</h3>
     </div>
     <div class="cuadricula-formulario">
         <div class="grupo-formulario">
@@ -59,12 +58,6 @@ if (!$director) {
             <label>Fecha Alta</label>
             <p class="m-0 py-12 text-dark">
                 <?php echo $director['fechaAltaDirector']; ?>
-            </p>
-        </div>
-        <div class="grupo-formulario">
-            <label>Estado</label>
-            <p class="m-0 py-12 text-dark">
-                <?php echo ucfirst($director['nombreEstado']); ?>
             </p>
         </div>
     </div>

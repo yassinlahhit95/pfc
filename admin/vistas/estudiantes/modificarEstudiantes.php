@@ -26,7 +26,6 @@ $idCicloElegido = $datos['idCiclo'];
 $dni = $datos['dniEstudiante'];
 $telefono = $datos['telefonoEstudiante'];
 $fNacimiento = $datos['fechaNacimientoEstudiante'];
-$idEstadoElegido = $datos['idEstado'];
 $direccion = $datos['direccionEstudiante'];
 $ciudad = $datos['ciudadEstudiante'];
 $cp = $datos['codigoPostalEstudiante'];
@@ -86,14 +85,6 @@ include_once "../comunes/nav.php";
             <div class="campo-formulario">
                 <label>Fecha Nacimiento</label>
                 <input type="date" name="fechaNacimientoEstudiante" value="<?php echo $fNacimiento; ?>">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Estado</label>
-                <select name="idEstado">
-                    <option value="1" <?php if ($idEstadoElegido == 1) echo 'selected'; ?>>Activo</option>
-                    <option value="2" <?php if ($idEstadoElegido == 2) echo 'selected'; ?>>Inactivo</option>
-                </select>
             </div>
 
             <div class="campo-formulario campo-ancho-total">

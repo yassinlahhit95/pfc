@@ -60,15 +60,14 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Calificaciones por Asignatura</h1>
-        <p class="subtitulo-encabezado">Filtrado por ciclo y módulo</p>
     </div>
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
 <!-- Selectores de Filtro -->

@@ -20,7 +20,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 <div class="encabezado-pagina">
     <div>
         <h1>Inventario de Recursos</h1>
-        <p class="subtitulo-encabezado">Control de materiales y préstamos del centro</p>
     </div>
     <div>
         <a href="vistas/inventario/gestionarPrestamos.php" class="boton-primario">
@@ -30,16 +29,16 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?php echo $exito; ?></div>
+    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><i class="fas fa-times-circle"></i> <?php echo $error; ?></div>
+    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
 <!-- 1. SECCIÓN: EQUIPOS PRESTADOS (ACTIVOS) -->
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-clock color-warning mr-10"></i> Equipos Prestados Actualmente</h3>
+        <h3>Equipos Prestados Actualmente</h3>
     </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
@@ -78,7 +77,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 <!-- 2. SECCIÓN: FORMULARIO NUEVO ARTÍCULO (FILA) -->
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-plus"></i> Nuevo Artículo al Inventario</h3>
+        <h3>Nuevo Artículo al Inventario</h3>
     </div>
     <form method="POST" action="controladores/inventario/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">

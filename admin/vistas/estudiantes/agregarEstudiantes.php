@@ -24,7 +24,6 @@ $direccion = $datos['direccionEstudiante'] ?? '';
 $ciudad = $datos['ciudadEstudiante'] ?? '';
 $cp = $datos['codigoPostalEstudiante'] ?? '';
 $idCicloElegido = $datos['idCiclo'] ?? '';
-$idEstadoElegido = $datos['idEstado'] ?? 1;
 ?>
 
 <div class="encabezado-pagina">
@@ -119,17 +118,6 @@ $idEstadoElegido = $datos['idEstado'] ?? 1;
                 </select>
                 <?php if (isset($errores['idCiclo'])) { ?>
                     <p class="error-campo"><?php echo $errores['idCiclo']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Estado *</label>
-                <select name="idEstado">
-                    <option value="1" <?php if ($idEstadoElegido == 1) { echo 'selected'; } ?>>Activo</option>
-                    <option value="2" <?php if ($idEstadoElegido == 2) { echo 'selected'; } ?>>Inactivo</option>
-                </select>
-                <?php if (isset($errores['idEstado'])) { ?>
-                    <p class="error-campo"><?php echo $errores['idEstado']; ?></p>
                 <?php } ?>
             </div>
         </div>

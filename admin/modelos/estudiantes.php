@@ -4,8 +4,7 @@ require_once("conectar.php");
 function listarEstudiantes() {
     $conexion = obtenerConexion();
     $sentenciaSql = "SELECT *, 
-            (SELECT nombreCiclo FROM ciclos WHERE ciclos.idCiclo = estudiantes.idCiclo) as nombreCiclo,
-            (SELECT nombreEstado FROM estados WHERE estados.idEstado = estudiantes.idEstado) as nombreEstado
+            (SELECT nombreCiclo FROM ciclos WHERE ciclos.idCiclo = estudiantes.idCiclo) as nombreCiclo
             FROM estudiantes 
             ORDER BY idEstudiante ASC";
     $resultado = mysqli_query($conexion, $sentenciaSql);
@@ -17,30 +16,30 @@ function listarEstudiantes() {
     return $listaDeEstudiantes;
 }
 
-function insertarEstudiante($nombre, $correo, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $idEstado) {
+function insertarEstudiante($nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo) {
     $conexion = obtenerConexion();
-    $sentenciaSql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, idEstado) 
-            VALUES ('$nombre', '$correo', '$telefono', '$fechaNacimiento', '$dni', '$fechaAlta', '$direccion', '$ciudad', '$codigoPostal', '$observaciones', $idCiclo, $idEstado)";
+    $sentenciaSql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo) 
+            VALUES ('$nombre', '$email', '$telefono', '$fNac', '$dni', '$fAlta', '$dir', '$ciu', '$cp', '$obs', $idCiclo)";
     $resultado = mysqli_query($conexion, $sentenciaSql);
     mysqli_close($conexion);
     return $resultado;
 }
 
-function actualizarEstudiante($idDelEstudiante, $nombre, $correo, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $idEstado) {
+function actualizarEstudiante($id, $nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo) {
     $conexion = obtenerConexion();
-    $sentenciaSql = "UPDATE estudiantes SET nombreEstudiante = '$nombre', emailEstudiante = '$correo', 
-            telefonoEstudiante = '$telefono', fechaNacimientoEstudiante = '$fechaNacimiento', dniEstudiante = '$dni', 
-            fechaAltaEstudiante = '$fechaAlta', direccionEstudiante = '$direccion', ciudadEstudiante = '$ciudad', 
-            codigoPostalEstudiante = '$codigoPostal', observacionesEstudiante = '$observaciones', idCiclo = $idCiclo, 
-            idEstado = $idEstado WHERE idEstudiante = $idDelEstudiante";
+    $sentenciaSql = "UPDATE estudiantes SET nombreEstudiante = '$nombre', emailEstudiante = '$email', 
+            telefonoEstudiante = '$telefono', fechaNacimientoEstudiante = '$fNac', dniEstudiante = '$dni', 
+            fechaAltaEstudiante = '$fAlta', direccionEstudiante = '$dir', ciudadEstudiante = '$ciu', 
+            codigoPostalEstudiante = '$cp', observacionesEstudiante = '$obs', idCiclo = $idCiclo 
+            WHERE idEstudiante = $id";
     $resultado = mysqli_query($conexion, $sentenciaSql);
     mysqli_close($conexion);
     return $resultado;
 }
 
-function eliminarEstudiante($idDelEstudiante) {
+function eliminarEstudiante($id) {
     $conexion = obtenerConexion();
-    $sentenciaSql = "DELETE FROM estudiantes WHERE idEstudiante = $idDelEstudiante";
+    $sentenciaSql = "DELETE FROM estudiantes WHERE idEstudiante = $id";
     $resultado = mysqli_query($conexion, $sentenciaSql);
     mysqli_close($conexion);
     return $resultado;

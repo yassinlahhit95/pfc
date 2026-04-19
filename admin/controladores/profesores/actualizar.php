@@ -10,7 +10,6 @@ if (isset($_POST['guardarProfesor'])) {
     $telefono = trim($_POST['telefonoProfesor'] ?? '');
     $especialidad = trim($_POST['especialidad'] ?? '');
     $direccion = trim($_POST['direccionProfesor'] ?? '');
-    $idEstado = $_POST['idEstado'] ?? 1;
 
     if (empty($id)) {
         header("Location: ../../vistas/profesores/verProfesores.php");
@@ -23,7 +22,7 @@ if (isset($_POST['guardarProfesor'])) {
         exit;
     }
 
-    if (actualizarProfesor($id, $nombre, $email, $telefono, $dni, $especialidad, $direccion, $idEstado)) {
+    if (actualizarProfesor($id, $nombre, $email, $telefono, $dni, $especialidad, $direccion)) {
         $_SESSION['exito'] = "Profesor actualizado correctamente.";
         header("Location: ../../vistas/profesores/verProfesores.php");
     } else {
