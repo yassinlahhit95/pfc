@@ -1,52 +1,49 @@
 <?php
 require_once("conectar.php");
 
-class aula {
-    public function listarAulasModelo() {
-        $bd = getConnection();
-        $sql = "SELECT * FROM aulas ORDER BY nombreAula ASC";
-        $resultado = $bd->query($sql);
-        $aulas = [];
-        
-        if ($resultado) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $aulas[] = $fila;
-            }
+function listarAulas() {
+    $conexion = obtenerConexion();
+    $sql = "SELECT * FROM aulas ORDER BY nombreAula ASC";
+    $resultado = mysqli_query($conexion, $sql);
+    $aulas = [];
+    if ($resultado) {
+        while ($fila = mysqli_fetch_assoc($resultado)) {
+            $aulas[] = $fila;
         }
-        $bd->close();
-        return $aulas;
     }
+    mysqli_close($conexion);
+    return $aulas;
+}
 
-    public function insertarAulasModelo($nombre) {
-        $bd = getConnection();
-        
-        $sql = "INSERT INTO aulas (nombreAula) VALUES (?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('s', $nombre);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
-    }
+function insertarAula($nombre) {
+    $conexion = obtenerConexion();
+    $nombre = mysqli_real_escape_string($conexion, $nombre);
+    $sql = "INSERT INTO aulas (nombreAula) VALUES ('$nombre')";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function eliminarAulasModelo($id) {
-        $bd = getConnection();
-        
-        $sql = "DELETE FROM aulas WHERE idAula = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $resultado = $stmt->execute();
-        $bd->close();
-        return $resultado;
-    }
+function eliminarAula($id) {
+    $conexion = obtenerConexion();
+    $id = (int)$id;
+    $sql = "DELETE FROM aulas WHERE idAula = $id";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function listarEstadosModelo() {
-        $bd = getConnection();
-        $sql = "SELECT * FROM estados ORDER BY nombreEstado ASC";
-        $resultado = $bd->query($sql);
-        $estados = [];
-        while($fila = $resultado->fetch_assoc()) { $estados[] = $fila; }
-        $bd->close();
-        return $estados;
+function listarEstados() {
+    $conexion = obtenerConexion();
+    $sql = "SELECT * FROM estados ORDER BY nombreEstado ASC";
+    $resultado = mysqli_query($conexion, $sql);
+    $estados = [];
+    if ($resultado) {
+        while($fila = mysqli_fetch_assoc($resultado)) { 
+            $estados[] = $fila; 
+        }
     }
+    mysqli_close($conexion);
+    return $estados;
 }
 ?>

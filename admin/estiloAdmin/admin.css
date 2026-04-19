@@ -1,8 +1,7 @@
-/* ========================================
-   ESTILOS DEL ADMINISTRADOR - NOMBRES SENCILLOS
-   ======================================== */
 
-/* General */
+/* ==========================================
+   1. REINICIO Y GLOBALES
+   ========================================== */
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +10,7 @@
 }
 
 body {
-  background-color: #ffffff;
+  background-color: #f8fafc;
   color: #2d3748;
 }
 
@@ -20,7 +19,9 @@ body {
   position: relative;
 }
 
-/* Barra Lateral (Menú) */
+/* ==========================================
+   2. BARRA LATERAL (NAV)
+   ========================================== */
 .barra-lateral {
   width: 260px;
   background-color: #1a1c2e;
@@ -62,7 +63,7 @@ body {
   padding: 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .seccion-del-menu {
@@ -86,6 +87,7 @@ body {
   text-decoration: none;
   border-radius: 8px;
   font-size: 14px;
+  transition: all 0.2s;
 }
 
 .enlace-menu:hover {
@@ -94,17 +96,26 @@ body {
 
 .enlace-menu.activo {
   background: #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-/* Área de Contenido */
+.etiqueta-contador {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  margin-left: auto;
+}
+
+/* ==========================================
+   3. CONTENIDO PRINCIPAL
+   ========================================== */
 .contenido-derecha {
   margin-left: 260px;
   padding: 30px;
-  background-color: #f8fafc;
   min-height: 100vh;
 }
 
-/* Encabezados de Página */
 .encabezado-pagina {
   display: flex;
   justify-content: space-between;
@@ -118,34 +129,23 @@ body {
   margin-top: 5px;
 }
 
-/* Clases de Ayuda (Utilidades en Español) */
-.disposicion-flexible { display: flex; }
-.direccion-columna { flex-direction: column; }
-.alinear-centro { align-items: center; }
-.espacio-entre-elementos { justify-content: space-between; }
-.separacion-grande { gap: 20px; }
-.separacion-pequena { gap: 10px; }
-
-.ancho-total { width: 100%; }
-.ancho-fijo-300 { flex: 0 0 300px; }
-.flexible-rellenar { flex: 1; }
-
-.margen-abajo { margin-bottom: 20px; }
-.margen-arriba { margin-top: 20px; }
-.sin-margen { margin: 0 !important; }
-
-.texto-atenuado { color: #8f9bba; }
-.texto-oscuro { color: #2d3748; }
-.texto-pequeno { font-size: 13px; }
-.texto-negrita { font-weight: bold; }
-
-/* Tarjetas y Paneles */
+/* ==========================================
+   4. COMPONENTES: TARJETAS
+   ========================================== */
 .tarjeta-blanca {
   background: white;
   border-radius: 15px;
   padding: 25px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.tarjeta-gris-suave {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .titulo-tarjeta {
@@ -153,14 +153,23 @@ body {
   padding-bottom: 15px;
   margin-bottom: 20px;
   font-size: 18px;
+  font-weight: 600;
 }
 
-/* Tablas */
+.scroll-vertical {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* ==========================================
+   5. COMPONENTES: TABLAS
+   ========================================== */
 .contenedor-tabla {
   background: white;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
 }
 
 .tabla-datos {
@@ -191,35 +200,75 @@ body {
   color: #a0aec0;
 }
 
-/* Formularios */
+/* ==========================================
+   6. FORMULARIOS
+   ========================================== */
 .formulario-cuadricula {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
 .campo-formulario {
-  flex: 1;
-  min-width: 250px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .campo-ancho-total {
-  flex: 0 0 100%;
+  grid-column: 1 / -1;
+}
+
+.campo-formulario label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #4a5568;
 }
 
 .campo-formulario input, 
 .campo-formulario select, 
 .campo-formulario textarea {
-  padding: 10px;
+  padding: 10px 12px;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
 }
 
-/* Botones */
-.boton-primario, .boton-azul {
+.campo-formulario input:focus, 
+.campo-formulario select:focus, 
+.campo-formulario textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.error-campo {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.input-error {
+  border-color: #e53e3e !important;
+}
+
+.item-seleccionable {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+}
+
+.item-seleccionable:last-child {
+  border-bottom: none;
+}
+
+/* ==========================================
+   7. BOTONES
+   ========================================== */
+.boton-primario {
   background: #667eea;
   color: white;
   padding: 10px 20px;
@@ -228,17 +277,37 @@ body {
   cursor: pointer;
   text-decoration: none;
   font-weight: 600;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
 }
 
-.boton-secundario, .boton-gris {
-  background: #e2e8f0;
+.boton-primario:hover {
+  background: #5a67d8;
+}
+
+.boton-secundario {
+  background: #edf2f7;
   color: #4a5568;
   padding: 10px 20px;
+  border: none;
   border-radius: 8px;
+  cursor: pointer;
   text-decoration: none;
   font-weight: 600;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boton-secundario:hover {
+  background: #e2e8f0;
+}
+
+.boton-pequeno {
+  padding: 4px 8px;
+  font-size: 11px;
 }
 
 .botones-accion {
@@ -257,69 +326,149 @@ body {
   cursor: pointer;
   background: #f1f5f9;
   color: #64748b;
+  transition: all 0.2s;
 }
 
 .boton-eliminar:hover { background: #fee2e2; color: #ef4444; }
 .boton-editar:hover { background: #e0e7ff; color: #4f46e5; }
 .boton-ver:hover { background: #dcfce7; color: #16a34a; }
 
-/* Contadores (Badges) */
-.etiqueta-contador {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  margin-left: auto;
-}
-
-/* Estados */
+/* ==========================================
+   8. ESTADOS E INDICADORES
+   ========================================== */
 .estado-bolita {
-  padding: 5px 12px;
+  padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+  display: inline-block;
 }
+
 .activo-verde { background: #c6f6d5; color: #22543d; }
 .inactivo-rojo { background: #fed7d7; color: #822727; }
 
-/* Mensajes de error bajo el input */
-.error-campo {
-  color: #e53e3e;
-  font-size: 12px;
-  margin-top: 5px;
-  font-weight: 500;
+.contador-neutral {
+  background: #edf2f7;
+  color: #2d3748;
 }
 
-.input-error {
-  border-color: #e53e3e !important;
-}
-
-/* Filtros y Selectores */
-.selector-filtro {
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: white;
-  color: #4a5568;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
-}
-
-.selector-filtro:focus {
-  border-color: #667eea;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-/* Mensajes de Alerta */
 .mensaje-exito, .mensaje-error {
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .mensaje-exito { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 .mensaje-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* ==========================================
+   9. UTILIDADES (LAYOUT)
+   ========================================== */
+.disposicion-flexible { display: flex; }
+.direccion-columna { flex-direction: column; }
+.alinear-centro { align-items: center; }
+.espacio-entre-elementos { justify-content: space-between; }
+.separacion-grande { gap: 20px; }
+.separacion-pequena { gap: 10px; }
+
+.ancho-total { width: 100%; }
+.ancho-fijo-300 { flex: 0 0 300px; }
+.flexible-rellenar { flex: 1; }
+
+.d-inline { display: inline !important; }
+.d-flex-between-end { display: flex; justify-content: space-between; align-items: flex-end; }
+.max-w-250 { max-width: 250px; }
+.w-80 { width: 80px; }
+.w-100 { width: 100%; }
+
+.mt-20 { margin-top: 20px !important; }
+.mt-25 { margin-top: 25px !important; }
+.mt-5 { margin-top: 5px !important; }
+.p-5 { padding: 5px !important; }
+.br-4 { border-radius: 4px !important; }
+.border-ddd { border: 1px solid #ddd !important; }
+
+.margen-abajo { margin-bottom: 20px; }
+.margen-arriba { margin-top: 20px; }
+.sin-margen { margin: 0 !important; }
+.p-0 { padding: 0 !important; }
+.p-10 { padding: 10px !important; }
+
+.cursor-pointer { cursor: pointer; }
+.lh-1-4 { line-height: 1.4; }
+.opacity-6 { opacity: 0.6; }
+
+/* ==========================================
+   10. COMPONENTES ESPECÍFICOS
+   ========================================== */
+.anuncio-item {
+  padding: 15px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.anuncio-item:last-child {
+  border-bottom: none;
+}
+
+.paginacion {
+  margin-top: 20px;
+  display: flex;
+  gap: 8px;
+}
+
+.boton-paginacion {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.boton-paginacion.activo {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.barra-progreso-contenedor {
+  width: 100px;
+  height: 8px;
+  background: #edf2f7;
+  border-radius: 4px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.barra-progreso {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* ==========================================
+   11. ENLACE ESPECIAL DE CRÉDITOS
+   ========================================== */
+.enlace-creditos {
+  color: #a0aec0 !important; /* Color grisáceo diferente */
+  border: 1px border transparent;
+}
+
+.enlace-creditos:hover {
+  background: rgba(102, 126, 234, 0.05) !important;
+  color: #667eea !important;
+}
+
+.enlace-creditos.activo {
+  background: #4a5568 !important; /* Color de fondo diferente al estar activo */
+  color: white !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+

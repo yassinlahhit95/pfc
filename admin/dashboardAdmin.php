@@ -4,23 +4,26 @@ require_once "modelos/conectar.php";
 require_once "modelos/panelDeControl.php";
 require_once "modelos/anuncios.php";
 
-$panelControl = new panelDeControl();
-$cantidadEstudiantes = $panelControl->contadorEstudiantes();
-$cantidadProfesores = $panelControl->contadorProfesores();
-$cantidadDirectores = $panelControl->contadorDirectores();
-$dineroRecaudado = $panelControl->totalRecaudado();
-$pagosPendientes = $panelControl->pagosPendientesContador();
+// Usamos las funciones del panel de control
+$cantidadEstudiantes = contarEstudiantes();
+$cantidadProfesores = contarProfesores();
+$cantidadDirectores = contarDirectores();
+$dineroRecaudado = obtenerTotalRecaudado();
+$pagosPendientes = contarPagosPendientes();
 
-// Paginación para los Anuncios
-$objetoAnuncio = new anuncio();
+// Configuracion de anuncios
 $anunciosPorPagina = 5;
-$paginaActual = isset($_GET['p_anuncios']) ? (int)$_GET['p_anuncios'] : 1;
-if ($paginaActual < 1) { $paginaActual = 1; }
-$posicionInicial = ($paginaActual - 1) * $anunciosPorPagina;
+$paginaActual = 1;
+if (isset($_GET['p_anuncios'])) {
+    $paginaActual = (int)$_GET['p_anuncios'];
+}
+if ($paginaActual < 1) { 
+    $paginaActual = 1; 
+}
 
-$totalAnuncios = $objetoAnuncio->contarAnunciosActivos();
+$totalAnuncios = contarAnunciosQueEstanActivos();
 $totalPaginas = ceil($totalAnuncios / $anunciosPorPagina);
-$listaAnuncios = $objetoAnuncio->listarAnunciosPaginados($anunciosPorPagina, $posicionInicial);
+$listaAnuncios = listarAnunciosConPaginas($anunciosPorPagina);
 
 $titulo_pagina = "Panel de Control - Super Admin";
 $seccion = 'inicio';
@@ -79,8 +82,8 @@ include 'vistas/comunes/nav.php';
         <div>
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
-                <strong class="anuncio-titulo"><?php echo htmlspecialchars($anuncio['titulo']); ?></strong>
-                <p class="texto-pequeno texto-gray sin-margen"><?php echo htmlspecialchars($anuncio['mensaje']); ?></p>
+                <strong class="anuncio-titulo"><?php echo $anuncio['titulo']; ?></strong>
+                <p class="texto-pequeno sin-margen"><?php echo $anuncio['mensaje']; ?></p>
             </div>
             <?php } ?>
         </div>

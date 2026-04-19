@@ -7,22 +7,22 @@ include_once "../comunes/nav.php";
 require_once "../../modelos/modulos.php";
 require_once "../../modelos/ciclos.php";
 
-$id = $_GET['id'] ?? null;
-if (!$id) {
+// Usamos el nombre descriptivo de la variable y del parametro GET
+$idDelModulo = $_GET['idModulo'] ?? null;
+
+if (!$idDelModulo) {
     header("Location: verModulos.php");
     exit;
 }
 
-$moduloObj = new modulo();
-$moduloActual = $moduloObj->obtenerModuloPorIdModelo($id);
+$moduloActual = obtenerModuloPorId($idDelModulo);
 
 if (!$moduloActual) {
     header("Location: verModulos.php");
     exit;
 }
 
-$cicloObj = new ciclo();
-$listaCiclos = $cicloObj->listarCiclosModelo();
+$listaDeCiclos = listarTodosLosCiclos();
 
 $errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['errores']);
@@ -31,7 +31,7 @@ unset($_SESSION['errores']);
 <div class="encabezado-pagina">
     <div>
         <h1>Modificar Módulo</h1>
-        <p class="subtitulo-encabezado">Actualizando información de: <strong><?php echo htmlspecialchars($moduloActual['nombreModulo']); ?></strong></p>
+        <p class="subtitulo-encabezado">Actualizando información de: <strong><?php echo $moduloActual['nombreModulo']; ?></strong></p>
     </div>
     <div class="acciones-pagina">
         <a href="vistas/modulos/verModulos.php" class="boton-secundario">
@@ -52,38 +52,38 @@ unset($_SESSION['errores']);
                 <label for="nombreModulo">Nombre del Módulo *</label>
                 <input type="text" id="nombreModulo" name="nombreModulo" 
                        placeholder="Ej: Programación"
-                       value="<?php echo htmlspecialchars($moduloActual['nombreModulo']); ?>"
-                       class="<?php echo isset($errores['nombreModulo']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['nombreModulo'])): ?>
+                       value="<?php echo $moduloActual['nombreModulo']; ?>"
+                       class="<?php if (isset($errores['nombreModulo'])) { echo 'input-error'; } else { echo ''; } ?>">
+                <?php if (isset($errores['nombreModulo'])) { ?>
                     <span class="error-campo"><?php echo $errores['nombreModulo']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="idCiclo">Ciclo Formativo *</label>
-                <select id="idCiclo" name="idCiclo" class="<?php echo isset($errores['idCiclo']) ? 'input-error' : ''; ?>">
+                <select id="idCiclo" name="idCiclo" class="<?php if (isset($errores['idCiclo'])) { echo 'input-error'; } else { echo ''; } ?>">
                     <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($listaCiclos as $c) { ?>
-                        <option value="<?php echo $c['idCiclo']; ?>" 
-                            <?php echo ($moduloActual['idCiclo'] == $c['idCiclo']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($c['nombreCiclo']); ?>
+                    <?php foreach ($listaDeCiclos as $ciclo) { ?>
+                        <option value="<?php echo $ciclo['idCiclo']; ?>" 
+                            <?php if ($moduloActual['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } else { echo ''; } ?>>
+                            <?php echo $ciclo['nombreCiclo']; ?>
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idCiclo'])): ?>
+                <?php if (isset($errores['idCiclo'])) { ?>
                     <span class="error-campo"><?php echo $errores['idCiclo']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="horasMaximas">Horas Máximas Anuales *</label>
                 <input type="text" id="horasMaximas" name="horasMaximas" 
                        placeholder="Ej: 100"
-                       value="<?php echo htmlspecialchars($moduloActual['horasMaximas']); ?>"
-                       class="<?php echo isset($errores['horasMaximas']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['horasMaximas'])): ?>
+                       value="<?php echo $moduloActual['horasMaximas']; ?>"
+                       class="<?php if (isset($errores['horasMaximas'])) { echo 'input-error'; } else { echo ''; } ?>">
+                <?php if (isset($errores['horasMaximas'])) { ?>
                     <span class="error-campo"><?php echo $errores['horasMaximas']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 

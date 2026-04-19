@@ -7,9 +7,7 @@ include_once "../comunes/nav.php";
 require_once "../../modelos/profesores.php";
 
 $id = $_GET['id'] ?? 0;
-
-$profesorObj = new profesor();
-$profesor = $profesorObj->obtenerProfesorPorIdModelo($id);
+$profesor = obtenerProfesorPorId($id);
 
 if (!$profesor) {
     echo "<div class='mensaje-error'>Profesor no encontrado.</div>";
@@ -42,19 +40,19 @@ if (!$profesor) {
         <div class="grupo-formulario">
             <label>Nombre Completo</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($profesor['nombreProfesor']); ?>
+                <?php echo $profesor['nombreProfesor']; ?>
             </p>
         </div>
         <div class="grupo-formulario">
             <label>Email</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($profesor['emailProfesor']); ?>
+                <?php echo $profesor['emailProfesor']; ?>
             </p>
         </div>
         <div class="grupo-formulario">
             <label>Teléfono</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($profesor['telefonoProfesor'] ?? '-'); ?>
+                <?php if (isset($profesor['telefonoProfesor'])) { echo $profesor['telefonoProfesor']; } else { echo '-'; } ?>
             </p>
         </div>
     </div>
@@ -68,13 +66,13 @@ if (!$profesor) {
         <div class="grupo-formulario">
             <label>Especialidad</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($profesor['especialidad'] ?? 'No especificada'); ?>
+                <?php if (isset($profesor['especialidad'])) { echo $profesor['especialidad']; } else { echo 'No especificada'; } ?>
             </p>
         </div>
         <div class="grupo-formulario">
             <label>Estado</label>
             <p class="m-0 py-12">
-                <span class="insignia-estado <?php echo $profesor['nombreEstado'] == 'activo' ? 'estado-activo' : 'estado-inactivo'; ?>">
+                <span class="insignia-estado <?php if ($profesor['nombreEstado'] == 'activo') { echo 'estado-activo'; } else { echo 'estado-inactivo'; } ?>">
                     <?php echo ucfirst($profesor['nombreEstado']); ?>
                 </span>
             </p>

@@ -5,9 +5,7 @@ $seccion = 'profesores';
 include_once "../comunes/nav.php";
 
 require_once "../../modelos/profesores.php";
-
-$profs = new profesor();
-$listaProfesores = $profs->listarProfesoresModelo();
+$listaProfesores = listarProfesores();
 
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
@@ -20,29 +18,30 @@ unset($_SESSION['exito'], $_SESSION['error']);
         <p class="subtitulo-encabezado">Gestión de profesores del sistema</p>
     </div>
     <div class="acciones-pagina">
-        <div class="caja-busqueda">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Buscar profesor..." id="inputBusqueda" />
+        <div class="disposicion-flexible separacion-pequena">
+            <div class="campo-formulario sin-margen">
+                <input type="text" placeholder="Buscar profesor..." id="inputBusqueda" class="w-100" />
+            </div>
+            <a href="vistas/profesores/agregarProfesores.php" class="boton-primario">
+                <i class="fas fa-plus"></i> Agregar Profesor
+            </a>
         </div>
-        <a href="vistas/profesores/agregarProfesores.php" class="boton-primario">
-            <i class="fas fa-plus"></i> Agregar Profesor
-        </a>
     </div>
 </div>
 
-<?php if ($error): ?>
+<?php if ($error) { ?>
 <div class="mensaje-error">
     <i class="fas fa-exclamation-circle"></i>
-    <p><?php echo htmlspecialchars($error); ?></p>
+    <p><?php echo $error; ?></p>
 </div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($exito): ?>
+<?php if ($exito) { ?>
 <div class="mensaje-exito">
     <i class="fas fa-check-circle"></i>
-    <p><?php echo htmlspecialchars($exito); ?></p>
+    <p><?php echo $exito; ?></p>
 </div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="contenedor-tabla">
     <table class="tabla-datos" id="tablaProfesores">
@@ -58,38 +57,38 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($listaProfesores)): ?>
+            <?php if (empty($listaProfesores)) { ?>
             <tr>
                 <td colspan="7" class="sin-datos">No hay profesores registrados</td>
             </tr>
-            <?php else: ?>
+            <?php } else { ?>
                 <?php foreach ($listaProfesores as $profesor) { 
                     $estado = $profesor['nombreEstado'];
-                    $estiloEstado = $estado === 'activo' ? 'estado-activo' : 'estado-inactivo';
+                    $claseEstado = ($estado == 'activo') ? 'activo-verde' : 'inactivo-rojo';
                 ?>
                 <tr>
                     <td><?php echo $profesor['idProfesor']; ?></td>
-                    <td><?php echo htmlspecialchars($profesor['nombreProfesor']); ?></td>
-                    <td><?php echo htmlspecialchars($profesor['emailProfesor'] ?? '-'); ?></td>
-                    <td><?php echo htmlspecialchars($profesor['telefonoProfesor'] ?? '-'); ?></td>
-                    <td><?php echo htmlspecialchars($profesor['dniProfesor'] ?? '-'); ?></td>
+                    <td><strong><?php echo $profesor['nombreProfesor']; ?></strong></td>
+                    <td><?php echo $profesor['emailProfesor'] ?? '-'; ?></td>
+                    <td><?php echo $profesor['telefonoProfesor'] ?? '-'; ?></td>
+                    <td><?php echo $profesor['dniProfesor'] ?? '-'; ?></td>
                     <td>
-                        <span class="insignia-estado <?php echo $estiloEstado; ?>">
+                        <span class="estado-bolita <?php echo $claseEstado; ?>">
                             <?php echo ucfirst($estado); ?>
                         </span>
                     </td>
                     <td>
                         <div class="botones-accion">
-                            <a href="vistas/profesores/verDetallesProfesores.php?id=<?php echo $profesor['idProfesor']; ?>" 
+                            <a href="vistas/profesores/verDetallesProfesores.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" 
                                class="boton-icono boton-ver" title="Ver detalles">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="vistas/profesores/modificarProfesores.php?id=<?php echo $profesor['idProfesor']; ?>" 
+                            <a href="vistas/profesores/modificarProfesores.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" 
                                class="boton-icono boton-editar" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="controladores/profesores/borrar.php" 
-                                  class="form-eliminar d-inline"
+                                  class="d-inline"
                                   onsubmit="return confirm('¿Está seguro de eliminar este profesor?');">
                                 <input type="hidden" name="accion" value="eliminar">
                                 <input type="hidden" name="idProfesor" value="<?php echo $profesor['idProfesor']; ?>">
@@ -101,7 +100,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     </td>
                 </tr>
                 <?php } ?>
-            <?php endif; ?>
+            <?php } ?>
         </tbody>
     </table>
 </div>
@@ -114,9 +113,15 @@ document.addEventListener("DOMContentLoaded", function() {
     inputBusqueda.addEventListener("input", function() {
         var textoBusqueda = this.value.toLowerCase();
         tablaFilas.forEach(function(fila) {
-            var nombre = fila.children[1].textContent.toLowerCase();
-            var email = fila.children[2].textContent.toLowerCase();
-            fila.style.display = (nombre.indexOf(textoBusqueda) !== -1 || email.indexOf(textoBusqueda) !== -1) ? "" : "none";
+            if (fila.classList.contains('sin-datos')) return;
+            var nombre = fila.cells[1].textContent.toLowerCase();
+            var email = fila.cells[2].textContent.toLowerCase();
+            
+            if (nombre.indexOf(textoBusqueda) !== -1 || email.indexOf(textoBusqueda) !== -1) {
+                fila.style.display = "";
+            } else {
+                fila.style.display = "none";
+            }
         });
     });
 });

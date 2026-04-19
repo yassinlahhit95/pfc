@@ -9,17 +9,21 @@ require_once "../../modelos/niveles.php";
 require_once "../../modelos/profesores.php";
 require_once "../../modelos/aulas.php";
 
-$modeloNivel = new nivel();
-$modeloProfesor = new profesor();
-$modeloAula = new aula();
-
-$listaNiveles = $modeloNivel->listarNivelesModelo();
-$listaProfesores = $modeloProfesor->listarProfesoresModelo();
-$listaAulas = $modeloAula->listarAulasModelo();
+$listaNiveles = listarNiveles();
+$listaProfesores = listarProfesores();
+$listaAulas = listarAulas();
 
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_ciclo'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
+
+// Variables simples (Estudiante way)
+$nombre = $datos['nombreCiclo'] ?? '';
+$idNivelElegido = $datos['idNivel'] ?? '';
+$idEstadoElegido = $datos['idEstado'] ?? 1;
+$profesoresElegidos = $datos['profesores'] ?? [];
+$aulasElegidas = $datos['aulas'] ?? [];
+$descripcion = $datos['descripcionCiclo'] ?? '';
 ?>
 
 <div class="encabezado-pagina">
@@ -42,82 +46,65 @@ unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
                 <label for="nombreCiclo">Nombre del Ciclo *</label>
-                <input type="text" id="nombreCiclo" name="nombreCiclo" 
-                       placeholder="Ej: Desarrollo de Aplicaciones Web"
-                       value="<?php echo htmlspecialchars($datos['nombreCiclo'] ?? ''); ?>"
-                       class="<?php echo isset($errores['nombreCiclo']) ? 'input-error' : ''; ?>">
-                <?php if (isset($errores['nombreCiclo'])): ?>
+                <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?php echo $nombre; ?>" placeholder="Ej: Desarrollo de Aplicaciones Web">
+                <?php if (isset($errores['nombreCiclo'])) { ?>
                     <span class="error-campo"><?php echo $errores['nombreCiclo']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="idNivel">Nivel Educativo *</label>
-                <select id="idNivel" name="idNivel" class="<?php echo isset($errores['idNivel']) ? 'input-error' : ''; ?>">
+                <select id="idNivel" name="idNivel">
                     <option value="">-- Seleccionar Nivel --</option>
-                    <?php foreach($listaNiveles as $n) { 
-                        $selected = ($datos['idNivel'] ?? '') == $n['idNivel'] ? 'selected' : '';
-                        echo "<option value='{$n['idNivel']}' {$selected}>{$n['nombreNivel']}</option>";
-                    } ?>
+                    <?php foreach($listaNiveles as $nivel) { ?>
+                        <option value="<?php echo $nivel['idNivel']; ?>" <?php if ($idNivelElegido == $nivel['idNivel']) { echo 'selected'; } ?>>
+                            <?php echo $nivel['nombreNivel']; ?>
+                        </option>
+                    <?php } ?>
                 </select>
-                <?php if (isset($errores['idNivel'])): ?>
+                <?php if (isset($errores['idNivel'])) { ?>
                     <span class="error-campo"><?php echo $errores['idNivel']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="idEstado">Estado Inicial *</label>
                 <select id="idEstado" name="idEstado">
-                    <option value="1" <?php echo ($datos['idEstado'] ?? '') == 1 ? 'selected' : ''; ?>>Activo</option>
-                    <option value="2" <?php echo ($datos['idEstado'] ?? '') == 2 ? 'selected' : ''; ?>>Inactivo</option>
+                    <option value="1" <?php if ($idEstadoElegido == 1) { echo 'selected'; } ?>>Activo</option>
+                    <option value="2" <?php if ($idEstadoElegido == 2) { echo 'selected'; } ?>>Inactivo</option>
                 </select>
-                <?php if (isset($errores['idEstado'])): ?>
-                    <span class="error-campo"><?php echo $errores['idEstado']; ?></span>
-                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Profesores Tutores * <span class="texto-atenuado">(Selecciona uno o más)</span></label>
-                <div class="tarjeta-blanca sin-margen" style="background: #f8fafc; border: 1px solid #e2e8f0; max-height: 180px; overflow-y: auto; padding: 10px;">
-                    <?php foreach($listaProfesores as $p) { 
-                        $checked = (isset($datos['profesores']) && in_array($p['idProfesor'], $datos['profesores'])) ? 'checked' : '';
-                    ?>
-                        <label class="disposicion-flexible alinear-centro separacion-pequena cursor-pointer" style="padding: 5px 0;">
-                            <input type="checkbox" name="profesores[]" value="<?php echo $p['idProfesor']; ?>" id="profe_<?php echo $p['idProfesor']; ?>" <?php echo $checked; ?>>
-                            <span class="texto-pequeno"><?php echo htmlspecialchars($p['nombreProfesor']); ?></span>
+                <label>Profesores Tutores *</label>
+                <div class="tarjeta-gris-suave scroll-vertical">
+                    <?php foreach($listaProfesores as $profesor) { ?>
+                        <label class="item-seleccionable">
+                            <input type="checkbox" name="profesores[]" value="<?php echo $profesor['idProfesor']; ?>" <?php if (in_array($profesor['idProfesor'], $profesoresElegidos)) { echo 'checked'; } ?>>
+                            <span class="texto-pequeno"><?php echo $profesor['nombreProfesor']; ?></span>
                         </label>
                     <?php } ?>
                 </div>
-                <?php if (isset($errores['profesores'])): ?>
-                    <span class="error-campo"><?php echo $errores['profesores']; ?></span>
-                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Aulas Asignadas * <span class="texto-atenuado">(Selecciona una o más)</span></label>
-                <div class="tarjeta-blanca sin-margen" style="background: #f8fafc; border: 1px solid #e2e8f0; max-height: 180px; overflow-y: auto; padding: 10px;">
-                    <?php foreach($listaAulas as $a) { 
-                        $checked = (isset($datos['aulas']) && in_array($a['idAula'], $datos['aulas'])) ? 'checked' : '';
-                    ?>
-                        <label class="disposicion-flexible alinear-centro separacion-pequena cursor-pointer" style="padding: 5px 0;">
-                            <input type="checkbox" name="aulas[]" value="<?php echo $a['idAula']; ?>" id="aula_<?php echo $a['idAula']; ?>" <?php echo $checked; ?>>
-                            <span class="texto-pequeno"><?php echo htmlspecialchars($a['nombreAula']); ?></span>
+                <label>Aulas Asignadas *</label>
+                <div class="tarjeta-gris-suave scroll-vertical">
+                    <?php foreach($listaAulas as $aula) { ?>
+                        <label class="item-seleccionable">
+                            <input type="checkbox" name="aulas[]" value="<?php echo $aula['idAula']; ?>" <?php if (in_array($aula['idAula'], $aulasElegidas)) { echo 'checked'; } ?>>
+                            <span class="texto-pequeno"><?php echo $aula['nombreAula']; ?></span>
                         </label>
                     <?php } ?>
                 </div>
-                <?php if (isset($errores['aulas'])): ?>
-                    <span class="error-campo"><?php echo $errores['aulas']; ?></span>
-                <?php endif; ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label for="descripcionCiclo">Descripción del Ciclo *</label>
-                <textarea id="descripcionCiclo" name="descripcionCiclo" rows="4" 
-                          placeholder="Escribe una breve descripción del ciclo..."
-                          class="<?php echo isset($errores['descripcionCiclo']) ? 'input-error' : ''; ?>"><?php echo htmlspecialchars($datos['descripcionCiclo'] ?? ''); ?></textarea>
-                <?php if (isset($errores['descripcionCiclo'])): ?>
+                <textarea id="descripcionCiclo" name="descripcionCiclo" rows="4" placeholder="Escribe una breve descripción del ciclo..."><?php echo $descripcion; ?></textarea>
+                <?php if (isset($errores['descripcionCiclo'])) { ?>
                     <span class="error-campo"><?php echo $errores['descripcionCiclo']; ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 

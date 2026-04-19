@@ -3,17 +3,16 @@ session_start();
 require_once "../../modelos/retos.php";
 
 if (isset($_POST['idReto'])) {
-    $id = $_POST['idReto'];
-    
-    if (is_numeric($id) && ctype_digit($id) && preg_match('/^[0-9]+$/', $id)) {
-        $modelo = new reto();
-        if ($modelo->eliminarRetoModelo($id)) {
-            $_SESSION['exito'] = "Reto borrado correctamente";
+    $idReto = $_POST['idReto'];
+
+    if (ctype_digit($idReto)) {
+        if (eliminarReto($idReto)) {
+            $_SESSION['mensaje'] = "Reto borrado con éxito.";
         } else {
-            $_SESSION['error'] = "Error al borrar el reto";
+            $_SESSION['error'] = "No se ha podido borrar el reto.";
         }
     } else {
-        $_SESSION['error'] = "ID del reto no válido";
+        $_SESSION['error'] = "ID de reto no válido.";
     }
 }
 

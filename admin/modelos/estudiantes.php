@@ -1,64 +1,65 @@
 <?php
 require_once("conectar.php");
 
-class estudiante {
-    public function listarEstudiantesModelo() {
-        $bd = getConnection();
-        $sql = "SELECT e.*, 
-                (SELECT nombreCiclo FROM ciclos WHERE idCiclo = e.idCiclo) as nombreCiclo
-                FROM estudiantes e ORDER BY e.idEstudiante ASC";
-        $datos = [];
-        if ($resultado = $bd->query($sql)) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $datos[] = $fila;
-            }
-        }
-        $bd->close();
-        return $datos;
+function listarEstudiantes() {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "SELECT *, 
+            (SELECT nombreCiclo FROM ciclos WHERE ciclos.idCiclo = estudiantes.idCiclo) as nombreCiclo,
+            (SELECT nombreEstado FROM estados WHERE estados.idEstado = estudiantes.idEstado) as nombreEstado
+            FROM estudiantes 
+            ORDER BY idEstudiante ASC";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    $listaDeEstudiantes = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $listaDeEstudiantes[] = $fila;
     }
+    mysqli_close($conexion);
+    return $listaDeEstudiantes;
+}
 
-    public function insertarEstudianteModelo($nombre, $email, $telefono, $fechaNac, $dni, $fechaAlta, $direccion, $ciudad, $cp, $obs, $idCiclo, $idEstado) {
-        $bd = getConnection();
-        $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, idEstado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ssssssssssii", $nombre, $email, $telefono, $fechaNac, $dni, $fechaAlta, $direccion, $ciudad, $cp, $obs, $idCiclo, $idEstado);
-        
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function insertarEstudiante($nombre, $correo, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $idEstado) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, idEstado) 
+            VALUES ('$nombre', '$correo', '$telefono', '$fechaNacimiento', '$dni', '$fechaAlta', '$direccion', '$ciudad', '$codigoPostal', '$observaciones', $idCiclo, $idEstado)";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function actualizarEstudianteModelo($id, $nombre, $email, $telefono, $fechaNac, $dni, $fechaAlta, $direccion, $ciudad, $cp, $obs, $idCiclo, $idEstado) {
-        $bd = getConnection();
-        $sql = "UPDATE estudiantes SET nombreEstudiante = ?, emailEstudiante = ?, telefonoEstudiante = ?, fechaNacimientoEstudiante = ?, dniEstudiante = ?, fechaAltaEstudiante = ?, direccionEstudiante = ?, ciudadEstudiante = ?, codigoPostalEstudiante = ?, observacionesEstudiante = ?, idCiclo = ?, idEstado = ? WHERE idEstudiante = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ssssssssssiii", $nombre, $email, $telefono, $fechaNac, $dni, $fechaAlta, $direccion, $ciudad, $cp, $obs, $idCiclo, $idEstado, $id);
-        
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function actualizarEstudiante($idDelEstudiante, $nombre, $correo, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $idEstado) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "UPDATE estudiantes SET nombreEstudiante = '$nombre', emailEstudiante = '$correo', 
+            telefonoEstudiante = '$telefono', fechaNacimientoEstudiante = '$fechaNacimiento', dniEstudiante = '$dni', 
+            fechaAltaEstudiante = '$fechaAlta', direccionEstudiante = '$direccion', ciudadEstudiante = '$ciudad', 
+            codigoPostalEstudiante = '$codigoPostal', observacionesEstudiante = '$observaciones', idCiclo = $idCiclo, 
+            idEstado = $idEstado WHERE idEstudiante = $idDelEstudiante";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function eliminarEstudianteModelo($id) {
-        $bd = getConnection();
-        $sql = "DELETE FROM estudiantes WHERE idEstudiante = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function eliminarEstudiante($idDelEstudiante) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "DELETE FROM estudiantes WHERE idEstudiante = $idDelEstudiante";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function obtenerEstudiantePorIdModelo($id) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM estudiantes WHERE idEstudiante = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $result = $resultado->fetch_assoc();
-        $bd->close();
-        return $result;
-    }
+function obtenerEstudiantePorId($idDelEstudiante) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "SELECT * FROM estudiantes WHERE idEstudiante = $idDelEstudiante";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    $estudiante = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $estudiante;
+}
+
+function actualizarTFG($idEstudiante, $nombreArchivo) {
+    $conexion = obtenerConexion();
+    $sentenciaSql = "UPDATE estudiantes SET archivoTFG = '$nombreArchivo' WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($conexion, $sentenciaSql);
+    mysqli_close($conexion);
+    return $resultado;
 }
 ?>

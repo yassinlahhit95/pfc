@@ -6,7 +6,7 @@ if (isset($_POST['guardarReclamacion'])) {
     unset($_SESSION['errores'], $_SESSION['datos_reclamaciones']);
 
     $errores = [];
-    
+
     $idEstudiante = $_POST['idEstudiante'] ?? '';
     $idProfesor = $_POST['idProfesor'] ?? '';
     $asunto = trim($_POST['asunto'] ?? '');
@@ -14,16 +14,12 @@ if (isset($_POST['guardarReclamacion'])) {
     $gravedad = $_POST['gravedad'] ?? '';
     $fecha = $_POST['fecha'] ?? '';
 
-    if (empty($idEstudiante)) { 
-        $errores['idEstudiante'] = "Debe seleccionar un estudiante."; 
-    } elseif (!is_numeric($idEstudiante) || !ctype_digit($idEstudiante) || !preg_match('/^[0-9]+$/', $idEstudiante)) {
-        $errores['idEstudiante'] = "El ID del estudiante debe ser numérico.";
+    if (empty($idEstudiante)) {
+        $errores['idEstudiante'] = "Debe seleccionar un estudiante.";
     }
 
-    if (empty($idProfesor)) { 
-        $errores['idProfesor'] = "Debe seleccionar un profesor."; 
-    } elseif (!is_numeric($idProfesor) || !ctype_digit($idProfesor) || !preg_match('/^[0-9]+$/', $idProfesor)) {
-        $errores['idProfesor'] = "El ID del profesor debe ser numérico.";
+    if (empty($idProfesor)) {
+        $errores['idProfesor'] = "Debe seleccionar un profesor.";
     }
     if (empty($asunto)) { $errores['asunto'] = "El asunto es obligatorio."; }
     if (empty($descripcion)) { $errores['descripcion'] = "La descripción es obligatoria."; }
@@ -37,13 +33,12 @@ if (isset($_POST['guardarReclamacion'])) {
         exit;
     }
 
-    $modeloReclamacion = new reclamacion();
-    if ($modeloReclamacion->insertarReclamacionModelo($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha)) {
+    if (insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha)) {
         $_SESSION['exito'] = "Reclamación registrada correctamente.";
     } else {
         $_SESSION['error'] = "Error al registrar la reclamación.";
     }
-    
+
     header("Location: ../../vistas/reclamaciones/verReclamaciones.php");
     exit;
 }

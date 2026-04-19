@@ -7,9 +7,7 @@ include_once "../comunes/nav.php";
 require_once "../../modelos/directores.php";
 
 $id = $_GET['id'] ?? 0;
-
-$directorObj = new director();
-$director = $directorObj->obtenerDirectorPorIdModelo($id);
+$director = obtenerDirectorPorId($id);
 
 if (!$director) {
     echo "<div class='mensaje-error'>Director no encontrado.</div>";
@@ -42,33 +40,31 @@ if (!$director) {
         <div class="grupo-formulario">
             <label>Nombre Completo</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($director['nombreDirector']); ?>
+                <?php echo $director['nombreDirector']; ?>
             </p>
         </div>
         <div class="grupo-formulario">
             <label>Email</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($director['emailDirector']); ?>
-            </p>
-        </div>
-        <div class="grupo-formulario">
-            <label>Teléfono</label>
-            <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($director['telefonoDirector'] ?? '-'); ?>
+                <?php echo $director['emailDirector']; ?>
             </p>
         </div>
         <div class="grupo-formulario">
             <label>DNI</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($director['dniDirector'] ?? '-'); ?>
+                <?php echo $director['dniDirector'] ?? '-'; ?>
             </p>
         </div>
-        <div class="grupo-formulario ancho-completo">
-            <label>Dirección</label>
+        <div class="grupo-formulario">
+            <label>Fecha Alta</label>
             <p class="m-0 py-12 text-dark">
-                <?php echo htmlspecialchars($director['direccionDirector'] ?? '-'); ?>, 
-                <?php echo htmlspecialchars($director['ciudadDirector'] ?? '-'); ?> 
-                (<?php echo htmlspecialchars($director['codigoPostalDirector'] ?? '-'); ?>)
+                <?php echo $director['fechaAltaDirector']; ?>
+            </p>
+        </div>
+        <div class="grupo-formulario">
+            <label>Estado</label>
+            <p class="m-0 py-12 text-dark">
+                <?php echo ucfirst($director['nombreEstado']); ?>
             </p>
         </div>
     </div>

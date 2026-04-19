@@ -2,62 +2,42 @@
 session_start();
 require_once "../../modelos/estudiantes.php";
 
-if (isset($_POST['guardarEstudiante'])) {
-    
-    unset($_SESSION['errores']);
-
-    $id = $_POST['idEstudiante'] ?? '';
+if (isset($_POST['actualizarEstudiante'])) {
+    $id = $_POST['idEstudiante'];
     $nombre = trim($_POST['nombreEstudiante'] ?? '');
     $email = trim($_POST['emailEstudiante'] ?? '');
-    $telefono = trim($_POST['telefonoEstudiante'] ?? '');
-    $fechaNac = $_POST['fechaNacimientoEstudiante'] ?? '';
     $dni = trim($_POST['dniEstudiante'] ?? '');
-    $fechaAlta = $_POST['fechaAltaEstudiante'] ?? '';
-    $direccion = trim($_POST['direccionEstudiante'] ?? '');
-    $ciudad = trim($_POST['ciudadEstudiante'] ?? '');
+    $telefono = trim($_POST['telefonoEstudiante'] ?? '');
+    $fNac = $_POST['fechaNacimientoEstudiante'] ?? '';
+    $fAlta = $_POST['fechaAltaEstudiante'] ?? date('Y-m-d');
+    $dir = trim($_POST['direccionEstudiante'] ?? '');
+    $ciu = trim($_POST['ciudadEstudiante'] ?? '');
     $cp = trim($_POST['codigoPostalEstudiante'] ?? '');
     $obs = trim($_POST['observacionesEstudiante'] ?? '');
     $idCiclo = $_POST['idCiclo'] ?? '';
-    $idEstado = $_POST['idEstado'] ?? '';
-    
-    $errores = [];
+    $idEstado = $_POST['idEstado'] ?? 1;
 
     if (empty($id)) {
-        $errores['general'] = "ID del estudiante no válido";
-    } elseif (!is_numeric($id) || !preg_match('/^[0-9]+$/', $id) || !ctype_digit($id)) {
-        $errores['general'] = "ID del estudiante debe ser un número entero válido";
-    }
-
-    if (empty($nombre)) $errores['nombreEstudiante'] = "El nombre del estudiante es obligatorio";
-    if (empty($email)) $errores['emailEstudiante'] = "El email es obligatorio";
-    if (empty($dni)) $errores['dniEstudiante'] = "El DNI es obligatorio";
-    
-    if (empty($idCiclo)) {
-        $errores['idCiclo'] = "El ciclo es obligatorio";
-    } elseif (!is_numeric($idCiclo) || !preg_match('/^[0-9]+$/', $idCiclo) || !ctype_digit($idCiclo)) {
-        $errores['idCiclo'] = "El ciclo debe ser un número entero válido";
-    }
-
-    if (empty($idEstado)) {
-        $errores['idEstado'] = "El estado es obligatorio";
-    } elseif (!is_numeric($idEstado) || !preg_match('/^[0-9]+$/', $idEstado) || !ctype_digit($idEstado)) {
-        $errores['idEstado'] = "El estado debe ser un número entero válido";
-    }
-
-    if (!empty($errores)) {
-        $_SESSION['errores'] = $errores;
-        header("Location: ../../vistas/estudiantes/modificarEstudiantes.php?id=" . $id);
+        header("Location: ../../vistas/estudiantes/verEstudiantes.php");
         exit;
     }
 
-    $modelo = new estudiante();
-    if ($modelo->actualizarEstudianteModelo($id, $nombre, $email, $telefono, $fechaNac, $dni, $fechaAlta, $direccion, $ciudad, $cp, $obs, $idCiclo, $idEstado)) {
-        $_SESSION['exito'] = "Estudiante actualizado correctamente";
-    } else {
-        $_SESSION['error'] = "Error al actualizar el estudiante";
+    if (empty($nombre) || empty($email) || empty($dni)) {
+        $_SESSION['error'] = "Nombre, Email y DNI son obligatorios.";
+        header("Location: ../../vistas/estudiantes/modificarEstudiantes.php?idEstudiante=$id");
+        exit;
     }
 
-    header("Location: ../../vistas/estudiantes/verEstudiantes.php");
+    if (actualizarEstudiante($id, $nombre, $email, $telefono, $fNac, $dni, $fAlta, $dir, $ciu, $cp, $obs, $idCiclo, $idEstado)) {
+        $_SESSION['exito'] = "Estudiante actualizado correctamente.";
+        header("Location: ../../vistas/estudiantes/verEstudiantes.php");
+    } else {
+        $_SESSION['error'] = "Error al actualizar el estudiante en la base de datos.";
+        header("Location: ../../vistas/estudiantes/modificarEstudiantes.php?idEstudiante=$id");
+    }
     exit;
 }
+
+header("Location: ../../vistas/estudiantes/verEstudiantes.php");
+exit;
 ?>

@@ -2,8 +2,6 @@
 session_start();
 require_once "../../modelos/aulas.php";
 
-$modelo = new aula();
-
 if (isset($_POST['guardarAula'])) {
     unset($_SESSION['errores'], $_SESSION['datos_aulas']);
 
@@ -21,7 +19,7 @@ if (isset($_POST['guardarAula'])) {
         exit;
     }
 
-    if ($modelo->insertarAulasModelo($nombre)) {
+    if (insertarAula($nombre)) {
         $_SESSION['exito'] = "Aula guardada correctamente.";
     } else {
         $_SESSION['error'] = "Error al guardar el aula.";

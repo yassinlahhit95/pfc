@@ -3,42 +3,26 @@ session_start();
 require_once "../../modelos/anuncios.php";
 
 if (isset($_POST['guardarAnuncio'])) {
-    
-    unset($_SESSION['errores']);
-    unset($_SESSION['datos_anuncios']);
-
     $titulo = trim($_POST['titulo'] ?? '');
     $mensaje = trim($_POST['mensaje'] ?? '');
-    $fecha_expiracion = trim($_POST['fecha_expiracion'] ?? '');
-    $errores = [];
+    $fecha = $_POST['fecha_expiracion'] ?? '';
 
-    if (empty($titulo)) {
-        $errores['titulo'] = "El título es obligatorio";
-    }
+    $_SESSION['datos_anuncio'] = $_POST;
 
-    if (empty($mensaje)) {
-        $errores['mensaje'] = "El mensaje es obligatorio";
-    }
-
-    if (empty($fecha_expiracion)) {
-        $errores['fecha_expiracion'] = "La fecha de expiración es obligatoria";
-    }
-
-    if (!empty($errores)) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_anuncios'] = $_POST;
+    if (empty($titulo) || empty($mensaje) || empty($fecha)) {
+        $_SESSION['error'] = "Todos los campos son obligatorios.";
         header("Location: ../../vistas/anuncios/gestionAnuncios.php");
         exit;
     }
 
-    $modelo = new anuncio();
-    if ($modelo->insertarAnuncioModelo($titulo, $mensaje, $fecha_expiracion)) {
-        $_SESSION['exito'] = "Anuncio publicado correctamente";
+    if (insertarNuevoAnuncio($titulo, $mensaje, $fecha)) {
+        unset($_SESSION['datos_anuncio']);
+        $_SESSION['exito'] = "Anuncio publicado con éxito.";
     } else {
-        $_SESSION['error'] = "Error al publicar el anuncio";
+        $_SESSION['error'] = "Error al publicar el anuncio en la base de datos.";
     }
-
-    header("Location: ../../vistas/anuncios/gestionAnuncios.php");
-    exit;
 }
+
+header("Location: ../../vistas/anuncios/gestionAnuncios.php");
+exit;
 ?>

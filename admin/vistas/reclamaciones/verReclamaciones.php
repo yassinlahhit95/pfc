@@ -6,9 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../modelos/reclamaciones.php";
 
-$modeloReclamacion = new reclamacion();
-
-$listaReclamaciones = $modeloReclamacion->listarReclamacionesModelo();
+$listaReclamaciones = listarReclamaciones();
 
 $mensajeExito = $_SESSION['exito'] ?? '';
 $mensajeError = $_SESSION['error'] ?? '';
@@ -51,13 +49,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <tr class="<?php echo $claseFila; ?>">
                         <td><?php echo $reclamacion['idReclamacion']; ?></td>
                         <td>
-                            <strong><?php echo htmlspecialchars($reclamacion['nombreEstudiante']); ?></strong><br>
-                            <small class="texto-atenuado">Reportado por: <?php echo htmlspecialchars($reclamacion['nombreProfesor']); ?></small><br>
+                            <strong><?php echo $reclamacion['nombreEstudiante']; ?></strong><br>
+                            <small class="texto-atenuado">Reportado por: <?php echo $reclamacion['nombreProfesor']; ?></small><br>
                             <small class="texto-atenuado"><?php echo $reclamacion['fecha']; ?></small>
                         </td>
                         <td class="texto-pequeno texto-gray lh-1-4">
-                            <strong><?php echo htmlspecialchars($reclamacion['asunto']); ?></strong><br>
-                            <?php echo nl2br(htmlspecialchars($reclamacion['descripcion'])); ?>
+                            <strong><?php echo $reclamacion['asunto']; ?></strong><br>
+                            <?php echo nl2br($reclamacion['descripcion']); ?>
                         </td>
                         <td>
                             <form action="controladores/reclamaciones/actualizar.php" method="POST" class="disposicion-flexible direccion-columna separacion-pequena">

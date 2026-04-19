@@ -1,134 +1,118 @@
 <?php
 require_once("conectar.php");
 
-class reto {
-    public function listarRetosModelo() {
-        $bd = getConnection();
-        $sql = "SELECT * FROM retos ORDER BY idReto ASC";
-        $datos = [];
-        if ($resultado = $bd->query($sql)) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $datos[] = $fila;
-            }
-        }
-        $bd->close();
-        return $datos;
+function listarRetos() {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT * FROM retos ORDER BY idReto ASC";
+    $resultado = mysqli_query($conexion, $consulta);
+    $datos = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $datos[] = $fila;
     }
+    mysqli_close($conexion);
+    return $datos;
+}
 
-    public function insertarRetoModelo($nombre, $fechaInicio, $fechaFin, $horas) {
-        $bd = getConnection();
-        $sql = "INSERT INTO retos (nombreReto, fechaInicio, fechaFin, horasReto) VALUES (?, ?, ?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("sssi", $nombre, $fechaInicio, $fechaFin, $horas);
-        
-        if ($stmt->execute()) {
-            $lastId = $bd->insert_id;
-            $bd->close();
-            return $lastId;
-        }
-        $bd->close();
-        return false;
+function insertarReto($nombre, $fInicio, $fFin, $horas) {
+    $conexion = obtenerConexion();
+    $consulta = "INSERT INTO retos (nombreReto, fechaInicio, fechaFin, horasReto) 
+            VALUES ('$nombre', '$fInicio', '$fFin', $horas)";
+    if (mysqli_query($conexion, $consulta)) {
+        $id = mysqli_insert_id($conexion);
+        mysqli_close($conexion);
+        return $id;
     }
+    mysqli_close($conexion);
+    return false;
+}
 
-    public function actualizarRetoModelo($id, $nombre, $fechaInicio, $fechaFin, $horas) {
-        $bd = getConnection();
-        $sql = "UPDATE retos SET nombreReto = ?, fechaInicio = ?, fechaFin = ?, horasReto = ? WHERE idReto = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("sssii", $nombre, $fechaInicio, $fechaFin, $horas, $id);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function actualizarReto($id, $nombre, $fInicio, $fFin, $horas) {
+    $conexion = obtenerConexion();
+    $consulta = "UPDATE retos SET nombreReto = '$nombre', fechaInicio = '$fInicio', 
+            fechaFin = '$fFin', horasReto = $horas WHERE idReto = $id";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function eliminarRetoModelo($id) {
-        $bd = getConnection();
-        $sql = "DELETE FROM retos WHERE idReto = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function eliminarReto($id) {
+    $conexion = obtenerConexion();
+    $consulta = "DELETE FROM retos WHERE idReto = $id";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function obtenerRetoPorIdModelo($id) {
-        $bd = getConnection();
-        $sql = "SELECT * FROM retos WHERE idReto = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $result = $resultado->fetch_assoc();
-        $bd->close();
-        return $result;
-    }
+function obtenerRetoPorId($id) {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT * FROM retos WHERE idReto = $id";
+    $resultado = mysqli_query($conexion, $consulta);
+    $dato = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $dato;
+}
 
-    public function asociarModuloReto($idModulo, $idReto) {
-        $bd = getConnection();
-        $sql = "INSERT IGNORE INTO modulo_reto (idModulo, idReto) VALUES (?, ?)";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ii", $idModulo, $idReto);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function obtenerDetallesReto($id) {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT * FROM retos WHERE idReto = $id";
+    $resultado = mysqli_query($conexion, $consulta);
+    $dato = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $dato;
+}
 
-    public function limpiarAsociacionesReto($idReto) {
-        $bd = getConnection();
-        $sql = "DELETE FROM modulo_reto WHERE idReto = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $idReto);
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
-    }
+function asociarModuloReto($idModulo, $idReto) {
+    $conexion = obtenerConexion();
+    $consulta = "INSERT INTO modulo_reto (idModulo, idReto) VALUES ($idModulo, $idReto)";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function obtenerModulosDeReto($idReto) {
-        $bd = getConnection();
-        $sql = "SELECT m.* FROM modulos m JOIN modulo_reto mr ON m.idModulo = mr.idModulo WHERE mr.idReto = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("i", $idReto);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $modulos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $modulos[] = $fila;
-        }
-        $bd->close();
-        return $modulos;
-    }
+function limpiarAsociacionesReto($idReto) {
+    $conexion = obtenerConexion();
+    $consulta = "DELETE FROM modulo_reto WHERE idReto = $idReto";
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
 
-    public function calificarRetoEstudiante($idEstudiante, $idReto, $nota) {
-        $bd = getConnection();
-        $sql_check = "SELECT idCalificacion FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
-        $stmt_check = $bd->prepare($sql_check);
-        $stmt_check->bind_param("ii", $idEstudiante, $idReto);
-        $stmt_check->execute();
-        $res = $stmt_check->get_result();
-        
-        if ($res->num_rows > 0) {
-            $sql = "UPDATE calificaciones_retos SET nota = ? WHERE idEstudiante = ? AND idReto = ?";
-            $stmt = $bd->prepare($sql);
-            $stmt->bind_param("dii", $nota, $idEstudiante, $idReto);
-        } else {
-            $sql = "INSERT INTO calificaciones_retos (idEstudiante, idReto, nota) VALUES (?, ?, ?)";
-            $stmt = $bd->prepare($sql);
-            $stmt->bind_param("iid", $idEstudiante, $idReto, $nota);
-        }
-        $result = $stmt->execute();
-        $bd->close();
-        return $result;
+function obtenerModulosDeReto($idReto) {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT *, 
+            (SELECT nombreCiclo FROM ciclos WHERE idCiclo = modulos.idCiclo) as nombreCiclo 
+            FROM modulos 
+            WHERE idModulo IN (SELECT idModulo FROM modulo_reto WHERE idReto = $idReto)";
+    $resultado = mysqli_query($conexion, $consulta);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
+    mysqli_close($conexion);
+    return $lista;
+}
 
-    public function obtenerCalificacion($idEstudiante, $idReto) {
-        $bd = getConnection();
-        $sql = "SELECT nota FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
-        $stmt = $bd->prepare($sql);
-        $stmt->bind_param("ii", $idEstudiante, $idReto);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $fila = $resultado->fetch_assoc();
-        $bd->close();
-        return $fila ? $fila['nota'] : null;
+function calificarReto($idEstudiante, $idReto, $nota) {
+    $conexion = obtenerConexion();
+    $consultaBusqueda = "SELECT idCalificacion FROM calificaciones_retos WHERE idEstudiante = $idEstudiante AND idReto = $idReto";
+    $resultadoBusqueda = mysqli_query($conexion, $consultaBusqueda);
+    
+    if (mysqli_num_rows($resultadoBusqueda) > 0) {
+        $consulta = "UPDATE calificaciones_retos SET nota = $nota WHERE idEstudiante = $idEstudiante AND idReto = $idReto";
+    } else {
+        $consulta = "INSERT INTO calificaciones_retos (idEstudiante, idReto, nota) VALUES ($idEstudiante, $idReto, $nota)";
     }
+    $resultado = mysqli_query($conexion, $consulta);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
+function obtenerCalificacion($idEstudiante, $idReto) {
+    $conexion = obtenerConexion();
+    $consulta = "SELECT nota FROM calificaciones_retos WHERE idEstudiante = $idEstudiante AND idReto = $idReto";
+    $resultado = mysqli_query($conexion, $consulta);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $fila ? $fila['nota'] : null;
 }
 ?>
