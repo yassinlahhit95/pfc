@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/ciclos.php";
+require_once "../../../modelos/ciclos.php";
 
 if (isset($_POST['idCiclo'])) {
     $idDelCiclo = $_POST['idCiclo'];

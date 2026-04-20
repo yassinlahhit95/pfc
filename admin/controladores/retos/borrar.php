@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/retos.php";
+require_once "../../../modelos/retos.php";
 
 if (isset($_POST['idReto'])) {
     $idReto = $_POST['idReto'];

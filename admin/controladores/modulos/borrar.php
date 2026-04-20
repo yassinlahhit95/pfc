@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/modulos.php";
+require_once "../../../modelos/modulos.php";
 
 if (isset($_POST['idModulo'])) {
     $idDelModulo = $_POST['idModulo'];

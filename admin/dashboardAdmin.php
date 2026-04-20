@@ -1,10 +1,18 @@
 <?php
 session_start();
-require_once "modelos/conectar.php";
-require_once "modelos/panelDeControl.php";
-require_once "modelos/anuncios.php";
 
-// Usamos las funciones del panel de control
+// Simple session check for exercise project
+if (!isset($_SESSION['idAdmin'])) {
+    header("Location: /pfc/index.php");
+    exit;
+}
+
+// Referencia a modelos compartidos
+require_once "../modelos/conectar.php";
+require_once "../modelos/panelDeControl.php";
+require_once "../modelos/anuncios.php";
+
+// Usar funciones del panel de control
 $cantidadEstudiantes = contarEstudiantes();
 $cantidadProfesores = contarProfesores();
 $cantidadDirectores = contarDirectores();

@@ -1,8 +1,13 @@
 <?php
 session_start();
-require_once "../../modelos/inventario.php";
+require_once "../../../modelos/inventario.php";
 
-$id = $_POST['idArticulo'] ?? $_GET['id'] ?? null;
+$id = null;
+if (isset($_POST['idArticulo'])) {
+    $id = $_POST['idArticulo'];
+} elseif (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
 
 if ($id) {
     if (borrarArticulo($id)) {

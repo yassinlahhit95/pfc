@@ -1,9 +1,13 @@
 <?php
 session_start();
-require_once "../../modelos/profesores.php";
+require_once "../../../modelos/profesores.php";
 
 // Usamos idProfesor para ser claros
-$idDelProfesor = $_GET['idProfesor'] ?? 0;
+$idDelProfesor = 0;
+if (isset($_GET['idProfesor'])) {
+    $idDelProfesor = $_GET['idProfesor'];
+}
+
 $datosProfesorBD = obtenerProfesorPorId($idDelProfesor);
 
 if (!$datosProfesorBD) {
@@ -11,17 +15,47 @@ if (!$datosProfesorBD) {
     exit;
 }
 
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_profesor'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = [];
+if (isset($_SESSION['datos_profesor'])) {
+    $datos = $_SESSION['datos_profesor'];
+}
 unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
-// Variables simples (Estudiante way)
-$nombre = $datos['nombreProfesor'] ?? $datosProfesorBD['nombreProfesor'];
-$email = $datos['emailProfesor'] ?? $datosProfesorBD['emailProfesor'];
-$dni = $datos['dniProfesor'] ?? $datosProfesorBD['dniProfesor'];
-$telefono = $datos['telefonoProfesor'] ?? $datosProfesorBD['telefonoProfesor'];
-$especialidad = $datos['especialidad'] ?? $datosProfesorBD['especialidad'];
-$direccion = $datos['direccionProfesor'] ?? $datosProfesorBD['direccionProfesor'];
+// Variables simples
+$nombre = $datosProfesorBD['nombreProfesor'];
+if (isset($datos['nombreProfesor'])) {
+    $nombre = $datos['nombreProfesor'];
+}
+
+$email = $datosProfesorBD['emailProfesor'];
+if (isset($datos['emailProfesor'])) {
+    $email = $datos['emailProfesor'];
+}
+
+$dni = $datosProfesorBD['dniProfesor'];
+if (isset($datos['dniProfesor'])) {
+    $dni = $datos['dniProfesor'];
+}
+
+$telefono = $datosProfesorBD['telefonoProfesor'];
+if (isset($datos['telefonoProfesor'])) {
+    $telefono = $datos['telefonoProfesor'];
+}
+
+$especialidad = $datosProfesorBD['especialidad'];
+if (isset($datos['especialidad'])) {
+    $especialidad = $datos['especialidad'];
+}
+
+$direccion = $datosProfesorBD['direccionProfesor'];
+if (isset($datos['direccionProfesor'])) {
+    $direccion = $datos['direccionProfesor'];
+}
 
 $titulo_pagina = "Modificar Profesor";
 $seccion = 'profesores';
@@ -30,60 +64,42 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Modificar Profesor: <?php echo $nombre; ?></h1>
-    <a href="vistas/profesores/verProfesores.php" class="boton-secundario">Cancelar</a>
+    <a href="vistas/profesores/verProfesores.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
     <form action="controladores/profesores/actualizar.php" method="POST">
         <input type="hidden" name="idProfesor" value="<?php echo $idDelProfesor; ?>">
-
+        
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" value="<?php echo $nombre; ?>">
-                <?php if (isset($errores['nombreProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $errores['nombreProfesor']; ?></p>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Email *</label>
                 <input type="email" name="emailProfesor" value="<?php echo $email; ?>">
-                <?php if (isset($errores['emailProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $errores['emailProfesor']; ?></p>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>DNI *</label>
                 <input type="text" name="dniProfesor" value="<?php echo $dni; ?>">
-                <?php if (isset($errores['dniProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $errores['dniProfesor']; ?></p>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Teléfono *</label>
+                <label>Teléfono</label>
                 <input type="text" name="telefonoProfesor" value="<?php echo $telefono; ?>">
-                <?php if (isset($errores['telefonoProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $errores['telefonoProfesor']; ?></p>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Especialidad *</label>
+                <label>Especialidad</label>
                 <input type="text" name="especialidad" value="<?php echo $especialidad; ?>">
-                <?php if (isset($errores['especialidad'])) { ?>
-                    <p class="error-campo"><?php echo $errores['especialidad']; ?></p>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Dirección *</label>
+                <label>Dirección</label>
                 <input type="text" name="direccionProfesor" value="<?php echo $direccion; ?>">
-                <?php if (isset($errores['direccionProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $errores['direccionProfesor']; ?></p>
-                <?php } ?>
             </div>
         </div>
 

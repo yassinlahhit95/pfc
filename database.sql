@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `prestamos` (
 -- 15. TABLA DE RECLAMACIONES
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `reclamaciones` (
-  `idReclamacion" int(11) NOT NULL AUTO_INCREMENT,
+  `idReclamacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
   `asunto` varchar(150) NOT NULL,

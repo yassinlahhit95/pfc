@@ -4,11 +4,15 @@ $titulo_pagina = "Modificar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conectar.php";
-require_once "../../modelos/pagos.php";
-require_once "../../modelos/estudiantes.php";
+require_once "../../../modelos/conectar.php";
+require_once "../../../modelos/pagos.php";
+require_once "../../../modelos/estudiantes.php";
 
-$idDelPago = $_GET['idPago'] ?? 0;
+$idDelPago = 0;
+if (isset($_GET['idPago'])) {
+    $idDelPago = $_GET['idPago'];
+}
+
 $datosPagoBD = obtenerPagoPorId($idDelPago);
 
 if (!$datosPagoBD) {
@@ -18,11 +22,18 @@ if (!$datosPagoBD) {
 
 $listaEstudiantes = listarEstudiantes();
 
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_pagos'] ?? $datosPagoBD;
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = $datosPagoBD;
+if (isset($_SESSION['datos_pagos'])) {
+    $datos = $_SESSION['datos_pagos'];
+}
 unset($_SESSION['errores'], $_SESSION['datos_pagos']);
 
-// Variables simples (Estudiante way)
+// Variables simples
 $idElegido = $datos['idEstudiante'];
 $concepto = $datos['concepto'];
 $monto = $datos['monto'];
@@ -33,7 +44,7 @@ $fecha = $datos['fechaPago'];
 
 <div class="encabezado-pagina">
     <h1>Modificar Pago #<?php echo $idDelPago; ?></h1>
-    <a href="vistas/pagos/verPagosGeneral.php" class="boton-secundario">Volver</a>
+    <a href="verPagosGeneral.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -86,7 +97,13 @@ $fecha = $datos['fechaPago'];
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label>Comprobante actual: <?php echo $datosPagoBD['comprobante'] ? $datosPagoBD['comprobante'] : 'Ninguno'; ?></label>
+                <label>Comprobante actual: <?php 
+                    if ($datosPagoBD['comprobante']) {
+                        echo $datosPagoBD['comprobante'];
+                    } else {
+                        echo 'Ninguno';
+                    }
+                ?></label>
                 <input type="file" name="comprobante" accept="image/*,.pdf">
             </div>
         </div>

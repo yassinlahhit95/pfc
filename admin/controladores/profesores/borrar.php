@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/profesores.php";
+require_once "../../../modelos/profesores.php";
 
 // Usamos idProfesor directamente
 if (isset($_POST['idProfesor'])) {

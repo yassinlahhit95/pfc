@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/directores.php";
+require_once "../../../modelos/directores.php";
 
 if (isset($_POST['idDirector'])) {
     $id = $_POST['idDirector'];

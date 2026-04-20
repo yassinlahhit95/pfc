@@ -1,27 +1,26 @@
 <?php
 session_start();
-require_once "../../modelos/inventario.php";
+require_once "../../../modelos/inventario.php";
 
 if (isset($_POST['guardarArticulo'])) {
-    $nombre = trim($_POST['nombreArticulo'] ?? '');
-    $nSerie = trim($_POST['numeroSerie'] ?? '');
-    
-    $errores = [];
-    if (empty($nombre)) $errores['nombreArticulo'] = "El nombre es obligatorio.";
-    if (empty($nSerie)) $errores['numeroSerie'] = "El número de serie es obligatorio.";
+    $nombre = trim($_POST['nombreArticulo']);
+    $nSerie = trim($_POST['numeroSerie']);
 
-    if (count($errores) > 0) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_inventario'] = $_POST;
+    if (empty($nombre)) {
+        $_SESSION['error'] = "El nombre del dispositivo es obligatorio.";
         header("Location: ../../vistas/inventario/verInventario.php");
-        exit;
-    }
-
-    if (insertarArticulo($nombre, $nSerie)) {
-        $_SESSION['exito'] = "Dispositivo registrado correctamente";
+    } else if (empty($nSerie)) {
+        $_SESSION['error'] = "El número de serie es obligatorio.";
+        header("Location: ../../vistas/inventario/verInventario.php");
     } else {
-        $_SESSION['error'] = "Error al registrar el dispositivo";
+        if (insertarArticulo($nombre, $nSerie)) {
+            $_SESSION['exito'] = "Dispositivo registrado correctamente";
+        } else {
+            $_SESSION['error'] = "Error al registrar el dispositivo";
+        }
+        header("Location: ../../vistas/inventario/verInventario.php");
     }
+    exit;
 }
 
 header("Location: ../../vistas/inventario/verInventario.php");

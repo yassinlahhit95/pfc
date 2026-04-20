@@ -1,45 +1,44 @@
 <?php
 session_start();
-require_once "../../modelos/reclamaciones.php";
+require_once "../../../modelos/reclamaciones.php";
 
 if (isset($_POST['guardarReclamacion'])) {
-    unset($_SESSION['errores'], $_SESSION['datos_reclamaciones']);
+    $idEstudiante = $_POST['idEstudiante'];
+    $idProfesor = $_POST['idProfesor'];
+    $asunto = trim($_POST['asunto']);
+    $descripcion = trim($_POST['descripcion']);
+    $gravedad = $_POST['gravedad'];
+    $fecha = $_POST['fecha'];
 
-    $errores = [];
-
-    $idEstudiante = $_POST['idEstudiante'] ?? '';
-    $idProfesor = $_POST['idProfesor'] ?? '';
-    $asunto = trim($_POST['asunto'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $gravedad = $_POST['gravedad'] ?? '';
-    $fecha = $_POST['fecha'] ?? '';
+    $regexFecha = "/^\d{4}-\d{2}-\d{2}$/";
 
     if (empty($idEstudiante)) {
-        $errores['idEstudiante'] = "Debe seleccionar un estudiante.";
-    }
-
-    if (empty($idProfesor)) {
-        $errores['idProfesor'] = "Debe seleccionar un profesor.";
-    }
-    if (empty($asunto)) { $errores['asunto'] = "El asunto es obligatorio."; }
-    if (empty($descripcion)) { $errores['descripcion'] = "La descripción es obligatoria."; }
-    if (empty($gravedad)) { $errores['gravedad'] = "La gravedad es obligatoria."; }
-    if (empty($fecha)) { $errores['fecha'] = "La fecha es obligatoria."; }
-
-    if (count($errores) > 0) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_reclamaciones'] = $_POST;
+        $_SESSION['error'] = "Debe seleccionar un estudiante.";
         header("Location: ../../vistas/reclamaciones/agregarReclamacion.php");
-        exit;
-    }
-
-    if (insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha)) {
-        $_SESSION['exito'] = "Reclamación registrada correctamente.";
+    } else if (empty($idProfesor)) {
+        $_SESSION['error'] = "Debe seleccionar un profesor.";
+        header("Location: ../../vistas/reclamaciones/agregarReclamacion.php");
+    } else if (empty($asunto)) {
+        $_SESSION['error'] = "El asunto es obligatorio.";
+        header("Location: ../../vistas/reclamaciones/agregarReclamacion.php");
+    } else if (empty($fecha)) {
+        $_SESSION['error'] = "La fecha es obligatoria.";
+        header("Location: ../../vistas/reclamaciones/agregarReclamacion.php");
+    } else if (!preg_match($regexFecha, $fecha)) {
+        $_SESSION['error'] = "La fecha debe tener formato YYYY-MM-DD.";
+        header("Location: ../../vistas/reclamaciones/agregarReclamacion.php");
     } else {
-        $_SESSION['error'] = "Error al registrar la reclamación.";
+        if (insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha)) {
+            $_SESSION['exito'] = "Reclamación guardada correctamente.";
+            header("Location: ../../vistas/reclamaciones/verReclamaciones.php");
+        } else {
+            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            header("Location: ../../vistas/reclamaciones/agregarReclamacion.php");
+        }
     }
-
-    header("Location: ../../vistas/reclamaciones/verReclamaciones.php");
     exit;
 }
+
+header("Location: ../../vistas/reclamaciones/verReclamaciones.php");
+exit;
 ?>

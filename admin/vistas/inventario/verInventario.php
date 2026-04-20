@@ -4,16 +4,31 @@ $titulo_pagina = "Gestión de Inventario - Super Admin";
 $seccion = 'inventario';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/inventario.php";
+require_once "../../../modelos/inventario.php";
 
 $listaArticulos = listarArticulos();
 $listaPrestamosActivos = listarPrestamosActivos();
 
 // Capturar errores y datos viejos de la sesión
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_inventario'] ?? [];
+$error = '';
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+}
+
+$exito = '';
+if (isset($_SESSION['exito'])) {
+    $exito = $_SESSION['exito'];
+}
+
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = [];
+if (isset($_SESSION['datos_inventario'])) {
+    $datos = $_SESSION['datos_inventario'];
+}
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 ?>
 
@@ -82,7 +97,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <form method="POST" action="controladores/inventario/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>Nombre del Recurso</label>
-            <input type="text" name="nombreArticulo" value="<?php echo $datos['nombreArticulo'] ?? ''; ?>" placeholder="Ej: Proyector">
+            <?php 
+            $nombreArticulo = '';
+            if (isset($datos['nombreArticulo'])) {
+                $nombreArticulo = $datos['nombreArticulo'];
+            }
+            ?>
+            <input type="text" name="nombreArticulo" value="<?php echo $nombreArticulo; ?>" placeholder="Ej: Proyector">
             <?php if (isset($errores['nombreArticulo'])) { ?>
                 <p class="error-campo"><?php echo $errores['nombreArticulo']; ?></p>
             <?php } ?>
@@ -90,7 +111,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 
         <div class="campo-formulario flexible-rellenar">
             <label>Número de Serie</label>
-            <input type="text" name="numeroSerie" value="<?php echo $datos['numeroSerie'] ?? ''; ?>" placeholder="Ej: SN12345">
+            <?php 
+            $numeroSerie = '';
+            if (isset($datos['numeroSerie'])) {
+                $numeroSerie = $datos['numeroSerie'];
+            }
+            ?>
+            <input type="text" name="numeroSerie" value="<?php echo $numeroSerie; ?>" placeholder="Ej: SN12345">
             <?php if (isset($errores['numeroSerie'])) { ?>
                 <p class="error-campo"><?php echo $errores['numeroSerie']; ?></p>
             <?php } ?>
@@ -126,9 +153,21 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                     <?php foreach ($listaArticulos as $art) { ?>
                     <tr>
                         <td><strong><?php echo $art['nombreArticulo']; ?></strong></td>
-                        <td><?php echo $art['numeroSerie'] ?? 'N/A'; ?></td>
+                        <td><?php 
+                            if (isset($art['numeroSerie'])) {
+                                echo $art['numeroSerie'];
+                            } else {
+                                echo 'N/A';
+                            }
+                        ?></td>
                         <td>
-                            <span class="estado-bolita <?php echo ($art['estado'] == 'disponible') ? 'activo-verde' : 'inactivo-rojo'; ?>">
+                            <?php 
+                            $claseBolita = 'inactivo-rojo';
+                            if ($art['estado'] == 'disponible') {
+                                $claseBolita = 'activo-verde';
+                            }
+                            ?>
+                            <span class="estado-bolita <?php echo $claseBolita; ?>">
                                 <?php echo ucfirst($art['estado']); ?>
                             </span>
                         </td>

@@ -4,13 +4,20 @@ $titulo_pagina = "Gestión de TFGs - Super Admin";
 $seccion = 'tfg';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/tfg.php";
-require_once "../../modelos/estudiantes.php";
+require_once "../../../modelos/tfg.php";
+require_once "../../../modelos/estudiantes.php";
 
 $listaTFGs = listarTodosLosTFGs();
 
-$exito = $_SESSION['exito'] ?? '';
-$error = $_SESSION['error'] ?? '';
+$exito = '';
+if (isset($_SESSION['exito'])) {
+    $exito = $_SESSION['exito'];
+}
+
+$error = '';
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+}
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
@@ -48,7 +55,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <?php foreach ($listaTFGs as $tfg) { ?>
                     <tr>
                         <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $tfg['tituloTFG'] ? $tfg['tituloTFG'] : 'Sin título definido'; ?></td>
+                        <td><?php 
+                            if ($tfg['tituloTFG']) {
+                                echo $tfg['tituloTFG'];
+                            } else {
+                                echo 'Sin título definido';
+                            }
+                        ?></td>
                         <td>
                             <a href="uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
                                 <i class="fas fa-file-pdf"></i> Descargar / Ver PDF

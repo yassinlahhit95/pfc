@@ -1,129 +1,111 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Ciclo - Super Admin";
-$seccion = 'ciclos';
-include_once "../comunes/nav.php";
 
-require_once "../../modelos/conectar.php";
-require_once "../../modelos/ciclos.php";
-require_once "../../modelos/niveles.php";
-require_once "../../modelos/profesores.php";
-require_once "../../modelos/aulas.php";
+require_once "../../../modelos/ciclos.php";
+require_once "../../../modelos/niveles.php";
+require_once "../../../modelos/profesores.php";
+require_once "../../../modelos/aulas.php";
 
 // Usamos el nombre descriptivo de la variable y del parametro GET
-$idDelCiclo = $_GET['idCiclo'] ?? null;
+$idDelCiclo = 0;
+if (isset($_GET['idCiclo'])) {
+    $idDelCiclo = $_GET['idCiclo'];
+}
 
 if (!$idDelCiclo) {
     header("Location: verCiclos.php");
     exit;
 }
 
-$cicloActual = obtenerCicloUnico($idDelCiclo);
+$datosCicloBD = obtenerCicloUnico($idDelCiclo);
 
-if (!$cicloActual) {
+if (!$datosCicloBD) {
     header("Location: verCiclos.php");
     exit;
 }
 
+$profesoresDelCicloActual = obtenerProfesoresDeUnCiclo($idDelCiclo);
+$idsProfesoresSeleccionados = array_column($profesoresDelCicloActual, 'idProfesor');
 
-$profesoresSeleccionados = array_column(obtenerProfesoresDeUnCiclo($idDelCiclo), 'idProfesor');
-$aulasSeleccionadas = array_column(obtenerAulasDeUnCiclo($idDelCiclo), 'idAula');
+$aulasDelCicloActual = obtenerAulasDeUnCiclo($idDelCiclo);
+$idsAulasSeleccionadas = array_column($aulasDelCicloActual, 'idAula');
 
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 $listaAulas = listarAulas();
 
-$errores = $_SESSION['errores'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
 unset($_SESSION['errores']);
+
+$titulo_pagina = "Modificar Ciclo - Super Admin";
+$seccion = 'ciclos';
+include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Modificar Ciclo</h1>
-        <p>Actualizando la información de: <strong><?php echo $cicloActual['nombreCiclo']; ?></strong></p>
+        <h1>Modificar Ciclo: <?php echo $datosCicloBD['nombreCiclo']; ?></h1>
     </div>
-    <div class="acciones-pagina">
-        <a href="vistas/ciclos/verCiclos.php" class="boton-secundario">
-            <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
-    </div>
+    <a href="vistas/ciclos/verCiclos.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> Volver a la lista
+    </a>
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Edición de Recursos del Ciclo</h3>
-    </div>
     <form action="controladores/ciclos/actualizar.php" method="POST">
-        <input type="hidden" name="idCiclo" value="<?php echo $cicloActual['idCiclo']; ?>">
+        <input type="hidden" name="idCiclo" value="<?php echo $idDelCiclo; ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
-                <label for="nombreCiclo">Nombre del Ciclo *</label>
-                <input type="text" id="nombreCiclo" name="nombreCiclo" 
-                       placeholder="Ej: Desarrollo de Aplicaciones Web"
-                       value="<?php echo $cicloActual['nombreCiclo']; ?>"
-                       class="<?php if (isset($errores['nombreCiclo'])) { echo 'input-error'; } else { echo ''; } ?>">
-                <?php if (isset($errores['nombreCiclo'])) { ?>
-                    <span class="error-campo"><?php echo $errores['nombreCiclo']; ?></span>
-                <?php } ?>
+                <label>Nombre del Ciclo *</label>
+                <input type="text" name="nombreCiclo" value="<?php echo $datosCicloBD['nombreCiclo']; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="idNivel">Nivel Educativo *</label>
-                <select id="idNivel" name="idNivel" class="<?php if (isset($errores['idNivel'])) { echo 'input-error'; } else { echo ''; } ?>">
-                    <option value="">-- Seleccionar Nivel --</option>
-                    <?php foreach($listaNiveles as $nivel) { 
-                        $selected = ($cicloActual['idNivel'] == $nivel['idNivel']) ? 'selected' : '';
-                        echo "<option value='{$nivel['idNivel']}' {$selected}>" . $nivel['nombreNivel'] . "</option>";
-                    } ?>
+                <label>Nivel Formativo *</label>
+                <select name="idNivel" required>
+                    <?php foreach ($listaNiveles as $nivel) { ?>
+                        <option value="<?php echo $nivel['idNivel']; ?>" <?php if ($datosCicloBD['idNivel'] == $nivel['idNivel']) { echo 'selected'; } ?>>
+                            <?php echo $nivel['nombreNivel']; ?>
+                        </option>
+                    <?php } ?>
                 </select>
-                <?php if (isset($errores['idNivel'])) { ?>
-                    <span class="error-campo"><?php echo $errores['idNivel']; ?></span>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Profesores Tutores *</label>
-                <div class="tarjeta-gris-suave scroll-vertical">
-                    <?php foreach($listaProfesores as $profesor) { 
-                        $checked = in_array($profesor['idProfesor'], $profesoresSeleccionados) ? 'checked' : '';
-                    ?>
-                        <label class="item-seleccionable">
-                            <input type="checkbox" name="profesores[]" value="<?php echo $profesor['idProfesor']; ?>" id="profe_<?php echo $profesor['idProfesor']; ?>" <?php echo $checked; ?>>
-                            <span class="texto-pequeno"><?php echo $profesor['nombreProfesores']; ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
-                <?php if (isset($errores['profesores'])) { ?>
-                    <span class="error-campo"><?php echo $errores['profesores']; ?></span>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Aulas Asignadas *</label>
-                <div class="tarjeta-gris-suave scroll-vertical">
-                    <?php foreach($listaAulas as $aula) { 
-                        $checked = in_array($aula['idAula'], $aulasSeleccionadas) ? 'checked' : '';
-                    ?>
-                        <label class="item-seleccionable">
-                            <input type="checkbox" name="aulas[]" value="<?php echo $aula['idAula']; ?>" id="aula_<?php echo $aula['idAula']; ?>" <?php echo $checked; ?>>
-                            <span class="texto-pequeno"><?php echo $aula['nombreAula']; ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
-                <?php if (isset($errores['aulas'])) { ?>
-                    <span class="error-campo"><?php echo $errores['aulas']; ?></span>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label for="descripcionCiclo">Descripción del Ciclo *</label>
-                <textarea id="descripcionCiclo" name="descripcionCiclo" rows="4" 
-                          placeholder="Escribe una breve descripción del ciclo..."
-                          class="<?php if (isset($errores['descripcionCiclo'])) { echo 'input-error'; } else { echo ''; } ?>"><?php echo $cicloActual['descripcionCiclo']; ?></textarea>
-                <?php if (isset($errores['descripcionCiclo'])) { ?>
-                    <span class="error-campo"><?php echo $errores['descripcionCiclo']; ?></span>
-                <?php } ?>
+                <label>Descripción del Ciclo *</label>
+                <textarea name="descripcionCiclo" rows="3" required><?php echo $datosCicloBD['descripcionCiclo']; ?></textarea>
+            </div>
+        </div>
+
+        <div class="cuadricula-secundaria mt-25">
+            <div>
+                <h4 class="margen-abajo">Vincular Tutores/Profesores</h4>
+                <div class="lista-checkboxes">
+                    <?php foreach ($listaProfesores as $prof) { ?>
+                        <label class="item-checkbox">
+                            <input type="checkbox" name="profesores[]" value="<?php echo $prof['idProfesor']; ?>"
+                                <?php if (in_array($prof['idProfesor'], $idsProfesoresSeleccionados)) { echo 'checked'; } ?>>
+                            <span><?php echo $prof['nombreProfesor']; ?></span>
+                        </label>
+                    <?php } ?>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="margen-abajo">Vincular Aulas Habituales</h4>
+                <div class="lista-checkboxes">
+                    <?php foreach ($listaAulas as $aula) { ?>
+                        <label class="item-checkbox">
+                            <input type="checkbox" name="aulas[]" value="<?php echo $aula['idAula']; ?>"
+                                <?php if (in_array($aula['idAula'], $idsAulasSeleccionadas)) { echo 'checked'; } ?>>
+                            <span><?php echo $aula['nombreAula']; ?></span>
+                        </label>
+                    <?php } ?>
+                </div>
             </div>
         </div>
 

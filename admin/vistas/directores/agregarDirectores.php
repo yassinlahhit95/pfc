@@ -4,20 +4,42 @@ $titulo_pagina = "Nuevo Director";
 $seccion = 'directores';
 include_once "../comunes/nav.php";
 
-$datos = $_SESSION['datos_director'] ?? [];
-$errores = $_SESSION['errores'] ?? [];
+$datos = [];
+if (isset($_SESSION['datos_director'])) {
+    $datos = $_SESSION['datos_director'];
+}
+
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
 unset($_SESSION['datos_director'], $_SESSION['errores']);
 
-// Variables simples (Estudiante way)
-$nombre = $datos['nombreDirector'] ?? '';
-$email = $datos['emailDirector'] ?? '';
-$dni = $datos['dniDirector'] ?? '';
-$fechaAlta = $datos['fechaAltaDirector'] ?? date('Y-m-d');
+// Variables simples
+$nombre = '';
+if (isset($datos['nombreDirector'])) {
+    $nombre = $datos['nombreDirector'];
+}
+
+$email = '';
+if (isset($datos['emailDirector'])) {
+    $email = $datos['emailDirector'];
+}
+
+$dni = '';
+if (isset($datos['dniDirector'])) {
+    $dni = $datos['dniDirector'];
+}
+
+$fechaAlta = date('Y-m-d');
+if (isset($datos['fechaAltaDirector'])) {
+    $fechaAlta = $datos['fechaAltaDirector'];
+}
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nuevo Director</h1>
-    <a href="vistas/directores/verDirectores.php" class="boton-secundario">Volver</a>
+    <a href="verDirectores.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -57,7 +79,7 @@ $fechaAlta = $datos['fechaAltaDirector'] ?? date('Y-m-d');
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarDirector" class="boton-primario">Guardar Director</button>
+            <button type="submit" name="guardarDirector" class="boton-primario">Registrar Director</button>
         </div>
     </form>
 </div>

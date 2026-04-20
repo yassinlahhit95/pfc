@@ -4,9 +4,13 @@ $titulo_pagina = "Detalles Profesor - Super Admin";
 $seccion = 'profesores';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/profesores.php";
+require_once "../../../modelos/profesores.php";
 
-$id = $_GET['id'] ?? 0;
+$id = 0;
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
+
 $profesor = obtenerProfesorPorId($id);
 
 if (!$profesor) {
@@ -17,54 +21,64 @@ if (!$profesor) {
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Detalles del Profesor</h1>
-    </div>
-    <div class="acciones-pagina">
-        <a href="vistas/profesores/verProfesores.php" class="boton-secundario">Volver</a>
-    </div>
+    <h1>Ficha del Profesor</h1>
+    <a href="vistas/profesores/verProfesores.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> Volver a la lista
+    </a>
 </div>
 
-<div class="tarjeta-panel mb-20">
-    <div class="encabezado-tarjeta">
-        <h3>Información Personal</h3>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3>Información General</h3>
     </div>
-    <div class="cuadricula-formulario">
-        <div class="grupo-formulario">
-            <label>ID</label>
-            <p class="m-0 py-12 text-dark">#<?php echo $profesor['idProfesor']; ?></p>
+    <div class="formulario-cuadricula">
+        <div class="campo-formulario">
+            <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
+            <p class="texto-negrita"><?php echo $profesor['nombreProfesor']; ?></p>
         </div>
-        <div class="grupo-formulario">
-            <label>Nombre Completo</label>
-            <p class="m-0 py-12 text-dark">
-                <?php echo $profesor['nombreProfesor']; ?>
-            </p>
+        <div class="campo-formulario">
+            <label class="texto-atenuado texto-pequeno">Email</label>
+            <p class="texto-negrita"><?php echo $profesor['emailProfesor']; ?></p>
         </div>
-        <div class="grupo-formulario">
-            <label>Email</label>
-            <p class="m-0 py-12 text-dark">
-                <?php echo $profesor['emailProfesor']; ?>
-            </p>
+        <div class="campo-formulario">
+            <label class="texto-atenuado texto-pequeno">Teléfono</label>
+            <p class="texto-negrita"><?php 
+                if ($profesor['telefonoProfesor']) {
+                    echo $profesor['telefonoProfesor'];
+                } else {
+                    echo '-';
+                }
+            ?></p>
         </div>
-        <div class="grupo-formulario">
-            <label>Teléfono</label>
-            <p class="m-0 py-12 text-dark">
-                <?php if (isset($profesor['telefonoProfesor'])) { echo $profesor['telefonoProfesor']; } else { echo '-'; } ?>
-            </p>
+        <div class="campo-formulario">
+            <label class="texto-atenuado texto-pequeno">DNI</label>
+            <p class="texto-negrita"><?php 
+                if ($profesor['dniProfesor']) {
+                    echo $profesor['dniProfesor'];
+                } else {
+                    echo '-';
+                }
+            ?></p>
         </div>
-    </div>
-</div>
-
-<div class="tarjeta-panel mb-20">
-    <div class="encabezado-tarjeta">
-        <h3>Información Profesional</h3>
-    </div>
-    <div class="cuadricula-formulario">
-        <div class="grupo-formulario">
-            <label>Especialidad</label>
-            <p class="m-0 py-12 text-dark">
-                <?php if (isset($profesor['especialidad'])) { echo $profesor['especialidad']; } else { echo 'No especificada'; } ?>
-            </p>
+        <div class="campo-formulario">
+            <label class="texto-atenuado texto-pequeno">Especialidad</label>
+            <p class="texto-negrita"><?php 
+                if ($profesor['especialidad']) {
+                    echo $profesor['especialidad'];
+                } else {
+                    echo 'No definida';
+                }
+            ?></p>
+        </div>
+        <div class="campo-formulario campo-ancho-total">
+            <label class="texto-atenuado texto-pequeno">Dirección</label>
+            <p class="texto-negrita"><?php 
+                if ($profesor['direccionProfesor']) {
+                    echo $profesor['direccionProfesor'];
+                } else {
+                    echo '-';
+                }
+            ?></p>
         </div>
     </div>
 </div>
