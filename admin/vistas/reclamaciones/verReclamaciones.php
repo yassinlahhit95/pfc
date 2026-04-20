@@ -23,11 +23,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="encabezado-pagina">
     <div>
         <h1>Gestión de Reclamaciones</h1>
-    </div>
-    <div class="acciones-pagina">
-        <a href="/pfc/admin/vistas/reclamaciones/agregarReclamacion.php" class="boton-primario">
-            <i class="fas fa-plus"></i> Nueva Reclamación
-        </a>
+        <p class="subtitulo-encabezado">Revisión y seguimiento de incidencias</p>
     </div>
 </div>
 
@@ -45,7 +41,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <tr>
                     <th>ID</th>
                     <th>Estudiante</th>
-                    <th>Profesor</th>
+                    <th>Reportado por</th>
                     <th>Asunto</th>
                     <th>Gravedad</th>
                     <th>Estado</th>
@@ -61,7 +57,16 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <tr>
                         <td><?php echo $rec['idReclamacion']; ?></td>
                         <td><strong><?php echo $rec['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $rec['nombreProfesor']; ?></td>
+                        <td>
+                            <?php 
+                            $nombreProf = $rec['nombreProfesor'];
+                            if (empty($nombreProf)) {
+                                echo '<span class="etiqueta-estudiante">Estudiante</span>';
+                            } else {
+                                echo $nombreProf;
+                            }
+                            ?>
+                        </td>
                         <td><?php echo $rec['asunto']; ?></td>
                         <td>
                             <span class="etiqueta-gravedad <?php echo $rec['gravedad']; ?>">
@@ -82,8 +87,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td><?php echo date('d/m/Y', strtotime($rec['fecha'])); ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/admin/vistas/reclamaciones/agregarReclamacion.php?id=<?php echo $rec['idReclamacion']; ?>" 
-                                   class="boton-icono boton-editar" title="Ver / Editar">
+                                <a href="/pfc/admin/vistas/reclamaciones/detallesReclamacion.php?id=<?php echo $rec['idReclamacion']; ?>" 
+                                   class="boton-icono boton-ver" title="Ver Detalles">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <form method="POST" action="/pfc/admin/controladores/reclamaciones/borrar.php" class="d-inline" onsubmit="return confirm('¿Borrar reclamación?');">

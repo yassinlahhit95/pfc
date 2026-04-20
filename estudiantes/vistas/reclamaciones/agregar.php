@@ -7,9 +7,14 @@ if (!isset($_SESSION['idEstudiante'])) {
 }
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$profesores = listarProfesores();
 $idEstudiante = $_SESSION['idEstudiante'];
+$estudianteActual = obtenerEstudiantePorId($idEstudiante);
+$idCiclo = $estudianteActual['idCiclo'];
+
+// Listar profesores del mismo ciclo
+$profesores = listarProfesoresPorCiclo($idCiclo);
 
 $tituloDelPagina = "Nueva Reclamación - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
@@ -18,26 +23,28 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nueva Reclamación</h1>
-    <a href="vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/estudiantes/vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="controladores/reclamaciones/insertar.php" method="POST">
+    <form action="/pfc/estudiantes/controladores/reclamaciones/insertar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?php echo $idEstudiante; ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Profesor *</label>
-                <select name="idProfesor" required>
+                <label>Dirigida a (Profesor o Centro)</label>
+                <select name="idProfesor">
+                    <option value="">-- Asunto General / Otros --</option>
                     <?php foreach ($profesores as $prof) { ?>
                         <option value="<?php echo $prof['idProfesor']; ?>"><?php echo $prof['nombreProfesor']; ?></option>
                     <?php } ?>
                 </select>
+                <small>Selecciona un profesor o deja vacío para temas generales.</small>
             </div>
 
             <div class="campo-formulario">
                 <label>Asunto *</label>
-                <input type="text" name="asunto" required placeholder="Ej: Error en nota de examen">
+                <input type="text" name="asunto" required placeholder="Ej: Error en nota, Instalaciones...">
             </div>
 
             <div class="campo-formulario">
@@ -54,7 +61,7 @@ include_once "../comunes/nav.php";
                 <input type="date" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
             </div>
 
-            <div class="campo-formulario campo-ancho-completo">
+            <div class="campo-formulario campo-ancho-total">
                 <label>Descripción detallada *</label>
                 <textarea name="descripcion" rows="5" required placeholder="Explica aquí el motivo de tu reclamación..."></textarea>
             </div>

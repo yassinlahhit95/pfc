@@ -28,6 +28,10 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
         </div>
 
         <nav class="menu-navegacion">
+            <a href="/pfc/profesores/index.php" class="enlace-menu <?php echo ($seccionActual == 'inicio' ? 'activo' : ''); ?>">
+                <i class="fas fa-home"></i> <span>Inicio</span>
+            </a>
+
             <a href="/pfc/profesores/vistas/perfil/ver.php" class="enlace-menu <?php echo ($seccionActual == 'perfil' ? 'activo' : ''); ?>">
                 <i class="fas fa-user-circle"></i> <span>Mi Perfil</span>
             </a>

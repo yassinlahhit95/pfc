@@ -8,7 +8,8 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
-$notas = listarCalificacionesGeneral();
+$idProfesor = $_SESSION['idProfesor'];
+$calificaciones = listarCalificacionesPorProfesor($idProfesor);
 
 $tituloDelPagina = "Calificaciones - Portal Profesores";
 $seccionActual = 'calificaciones';
@@ -16,8 +17,8 @@ include_once "../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Notas de Módulos</h1>
-    <a href="vistas/calificaciones/agregar.php" class="boton-primario">Asignar Nota</a>
+    <h1>Notas de Alumnos</h1>
+    <a href="/pfc/profesores/vistas/calificaciones/agregar.php" class="boton-primario">Asignar Nota</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -25,28 +26,28 @@ include_once "../comunes/nav.php";
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Estudiante</th>
+                    <th>Alumno</th>
                     <th>Módulo</th>
                     <th>1ª Ev</th>
-                    <th>1ª Fin</th>
+                    <th>1ª Final</th>
                     <th>2ª Ev</th>
-                    <th>2ª Fin</th>
+                    <th>2ª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($notas) { ?>
-                    <?php foreach ($notas as $nota) { ?>
+                <?php if ($calificaciones) { ?>
+                    <?php foreach ($calificaciones as $nota) { ?>
                         <tr>
                             <td><?php echo $nota['nombreEstudiante']; ?></td>
-                            <td><?php echo $nota['nombreModulo']; ?></td>
+                            <td class="texto-negrita"><?php echo $nota['nombreModulo']; ?></td>
                             <td><?php echo $nota['nota_1ev']; ?></td>
-                            <td><?php echo $nota['nota_1final']; ?></td>
+                            <td class="texto-negrita"><?php echo $nota['nota_1final']; ?></td>
                             <td><?php echo $nota['nota_2ev']; ?></td>
-                            <td><?php echo $nota['nota_2final']; ?></td>
+                            <td class="texto-negrita"><?php echo $nota['nota_2final']; ?></td>
                             <td>
-                                <a href="vistas/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="controladores/calificaciones/borrar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/profesores/vistas/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
+                                <a href="/pfc/profesores/controladores/calificaciones/borrar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

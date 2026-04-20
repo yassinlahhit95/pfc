@@ -14,71 +14,56 @@ $estudiante = obtenerEstudiantePorId($id);
 $tituloDelPagina = "Mi Perfil - Portal Estudiantes";
 $seccionActual = 'perfil';
 include_once "../comunes/nav.php";
-
-$nombre = $estudiante['nombreEstudiante'];
-$email = $estudiante['emailEstudiante'];
-$telefono = $estudiante['telefonoEstudiante'];
-$dni = $estudiante['dniEstudiante'];
-$fechaNacimiento = $estudiante['fechaNacimientoEstudiante'];
-$direccion = $estudiante['direccionEstudiante'];
-$ciudad = $estudiante['ciudadEstudiante'];
-$codigoPostal = $estudiante['codigoPostalEstudiante'];
 ?>
 
-<div class="encabezado-pagina">
+<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Mi Perfil</h1>
+    <a href="/pfc/estudiantes/index.php" class="boton-secundario">← Inicio</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Información Personal</h3>
+    <div class="disposicion-flexible alinear-centro">
+        <div class="avatar-perfil margen-derecha">
+            <i class="fas fa-graduation-cap fa-5x"></i>
+        </div>
+        <div class="flexible-rellenar">
+            <h2><?php echo $estudiante['nombreEstudiante']; ?></h2>
+            <p class="texto-secundario"><?php echo $estudiante['nombreCiclo']; ?></p>
+        </div>
     </div>
-    
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-            <p class="texto-negrita"><?php echo $nombre; ?></p>
-        </div>
 
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Número de Documento (DNI)</label>
-            <p class="texto-negrita"><?php echo $dni; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Correo Electrónico</label>
-            <p class="texto-negrita"><?php echo $email; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Número de Teléfono</label>
-            <p class="texto-negrita"><?php echo $telefono; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Fecha de Nacimiento</label>
-            <p class="texto-negrita"><?php echo $fechaNacimiento; ?></p>
-        </div>
-
-        <div class="campo-formulario campo-ancho-completo">
-            <label class="texto-atenuado texto-pequeno">Dirección Física</label>
-            <p class="texto-negrita"><?php echo $direccion; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Ciudad</label>
-            <p class="texto-negrita"><?php echo $ciudad; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Código Postal</label>
-            <p class="texto-negrita"><?php echo $codigoPostal; ?></p>
+    <div class="margen-arriba-grande">
+        <div class="formulario-cuadricula">
+            <div class="item-perfil">
+                <label>Email</label>
+                <p><?php echo $estudiante['emailEstudiante']; ?></p>
+            </div>
+            <div class="item-perfil">
+                <label>Teléfono</label>
+                <?php 
+                $tel = $estudiante['telefonoEstudiante'];
+                if (empty($tel)) { $tel = 'No registrado'; }
+                ?>
+                <p><?php echo $tel; ?></p>
+            </div>
+            <div class="item-perfil">
+                <label>DNI</label>
+                <p><?php echo $estudiante['dniEstudiante']; ?></p>
+            </div>
+            <div class="item-perfil">
+                <label>Ciudad</label>
+                <?php 
+                $ciu = $estudiante['ciudadEstudiante'];
+                if (empty($ciu)) { $ciu = 'No registrada'; }
+                ?>
+                <p><?php echo $ciu; ?></p>
+            </div>
         </div>
     </div>
 
     <div class="margen-arriba">
-        <a href="vistas/perfil/editar.php" class="boton-primario">
-            <i class="fas fa-edit"></i> Editar Perfil
+        <a href="/pfc/estudiantes/vistas/perfil/editar.php" class="boton-primario">
+            <i class="fas fa-edit"></i> Editar mi Perfil
         </a>
     </div>
 </div>

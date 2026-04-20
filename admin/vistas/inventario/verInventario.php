@@ -37,7 +37,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         <h1>Inventario de Recursos</h1>
     </div>
     <div>
-        <a href="vistas/inventario/gestionarPrestamos.php" class="boton-primario">
+        <a href="/pfc/admin/vistas/inventario/gestionarPrestamos.php" class="boton-primario">
             <i class="fas fa-hand-holding"></i> Ir a Préstamos
         </a>
     </div>
@@ -75,9 +75,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                         <td><?php echo $p['nombreEstudiante']; ?></td>
                         <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
                         <td>
-                            <form action="controladores/inventario/devolver.php" method="POST" class="d-inline">
+                            <form action="/pfc/admin/controladores/inventario/devolver.php" method="POST" class="d-inline">
                                 <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                <input type="hidden" name="redireccion" value="../../vistas/inventario/verInventario.php">
+                                <input type="hidden" name="redireccion" value="/pfc/admin/vistas/inventario/verInventario.php">
                                 <button type="submit" class="boton-secundario boton-pequeno">Devolver</button>
                             </form>
                         </td>
@@ -94,7 +94,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <div class="titulo-tarjeta">
         <h3>Nuevo Artículo al Inventario</h3>
     </div>
-    <form method="POST" action="controladores/inventario/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="POST" action="/pfc/admin/controladores/inventario/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>Nombre del Recurso</label>
             <?php 
@@ -172,7 +172,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </span>
                         </td>
                         <td>
-                            <form action="controladores/inventario/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este dispositivo?');">
+                            <form action="/pfc/admin/controladores/inventario/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este dispositivo?');">
                                 <input type="hidden" name="idArticulo" value="<?php echo $art['idArticulo']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar">
                                     <i class="fas fa-trash"></i>
