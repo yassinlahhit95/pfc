@@ -1,107 +1,109 @@
 <?php
 session_start();
-$titulo_pagina = "Agregar Reto - Super Admin";
-$seccion = 'retos';
-include_once "../comunes/nav.php";
-
-require_once "../../modelos/modulos.php";
+require_once "../../../modelos/modulos.php";
 
 $listaModulos = listarModulos();
 
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_reto'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = [];
+if (isset($_SESSION['datos_reto'])) {
+    $datos = $_SESSION['datos_reto'];
+}
 unset($_SESSION['errores'], $_SESSION['datos_reto']);
+
+$titulo_pagina = "Nuevo Reto - Super Admin";
+$seccion = 'retos';
+include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Agregar Reto</h1>
-        <p class="subtitulo-encabezado">Diseñar un nuevo reto educativo para el alumnado</p>
+        <h1>Crear Nuevo Reto</h1>
+        <p class="subtitulo-encabezado">Defina un reto colaborativo y vincule módulos</p>
     </div>
-    <div class="acciones-pagina">
-        <a href="vistas/retos/verRetos.php" class="boton-secundario">Volver</a>
-    </div>
+    <a href="vistas/retos/verRetos.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> Volver a la lista
+    </a>
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Configuración del Reto</h3>
-    </div>
     <form action="controladores/retos/insertar.php" method="POST">
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
-                <label for="nombreReto">Nombre del Reto *</label>
-                <input type="text" id="nombreReto" name="nombreReto" 
-                       placeholder="Ej: Desarrollo de una API REST"
-                       value="<?php if (isset($datos['nombreReto'])) { echo $datos['nombreReto']; } else { echo ''; } ?>"
-                       class="<?php if (isset($errores['nombreReto'])) { echo 'input-error'; } else { echo ''; } ?>">
-                <?php if (isset($errores['nombreReto'])) { ?>
-                    <span class="error-campo"><?php echo $errores['nombreReto']; ?></span>
-                <?php } ?>
+                <label>Nombre del Reto *</label>
+                <?php 
+                $nombreReto = '';
+                if (isset($datos['nombreReto'])) {
+                    $nombreReto = $datos['nombreReto'];
+                }
+                ?>
+                <input type="text" name="nombreReto" placeholder="Ej: Reto Sostenibilidad 2026" value="<?php echo $nombreReto; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="fechaInicio">Fecha de Inicio *</label>
-                <input type="date" id="fechaInicio" name="fechaInicio" 
-                       value="<?php if (isset($datos['fechaInicio'])) { echo $datos['fechaInicio']; } else { echo date('Y-m-d'); } ?>"
-                       class="<?php if (isset($errores['fechaInicio'])) { echo 'input-error'; } else { echo ''; } ?>">
-                <?php if (isset($errores['fechaInicio'])) { ?>
-                    <span class="error-campo"><?php echo $errores['fechaInicio']; ?></span>
-                <?php } ?>
+                <label>Horas del Reto *</label>
+                <?php 
+                $horasReto = 0;
+                if (isset($datos['horasReto'])) {
+                    $horasReto = $datos['horasReto'];
+                }
+                ?>
+                <input type="text" name="horasReto" value="<?php echo $horasReto; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="fechaFin">Fecha de Finalización *</label>
-                <input type="date" id="fechaFin" name="fechaFin" 
-                       value="<?php if (isset($datos['fechaFin'])) { echo $datos['fechaFin']; } else { echo date('Y-m-d'); } ?>"
-                       class="<?php if (isset($errores['fechaFin'])) { echo 'input-error'; } else { echo ''; } ?>">
-                <?php if (isset($errores['fechaFin'])) { ?>
-                    <span class="error-campo"><?php echo $errores['fechaFin']; ?></span>
-                <?php } ?>
+                <label>Fecha de Inicio *</label>
+                <?php 
+                $fechaInicio = date('Y-m-d');
+                if (isset($datos['fechaInicio'])) {
+                    $fechaInicio = $datos['fechaInicio'];
+                }
+                ?>
+                <input type="date" name="fechaInicio" value="<?php echo $fechaInicio; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="horasReto">Carga Horaria (Horas) *</label>
-                <input type="text" id="horasReto" name="horasReto" 
-                       placeholder="Ej: 20"
-                       value="<?php if (isset($datos['horasReto'])) { echo $datos['horasReto']; } else { echo '10'; } ?>"
-                       class="<?php if (isset($errores['horasReto'])) { echo 'input-error'; } else { echo ''; } ?>">
-                <?php if (isset($errores['horasReto'])) { ?>
-                    <span class="error-campo"><?php echo $errores['horasReto']; ?></span>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Módulos Asociados * <span class="texto-atenuado">(Selecciona al menos uno)</span></label>
-                <div class="tarjeta-gris-suave scroll-vertical">
-                    <?php if (empty($listaModulos)) { ?>
-                        <p class="sin-datos">No hay módulos disponibles. Crea uno primero.</p>
-                    <?php } else { ?>
-                        <div class="formulario-cuadricula">
-                            <?php foreach ($listaModulos as $modulo) { ?>
-                                <label class="item-seleccionable tarjeta-blanca sin-margen p-0">
-                                    <div class="disposicion-flexible alinear-centro separacion-pequena p-10">
-                                        <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>" 
-                                            <?php if ((isset($datos['modulos']) && in_array($modulo['idModulo'], $datos['modulos']))) { echo 'checked'; } else { echo ''; } ?>>
-                                        <span class="texto-pequeno">
-                                            <strong><?php echo $modulo['nombreModulo']; ?></strong><br>
-                                            <small class="texto-atenuado"><?php echo $modulo['nombreCiclo']; ?></small>
-                                        </span>
-                                    </div>
-                                </label>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-                </div>
-                <?php if (isset($errores['modulos'])) { ?>
-                    <span class="error-campo"><?php echo $errores['modulos']; ?></span>
-                <?php } ?>
+                <label>Fecha de Finalización *</label>
+                <?php 
+                $fechaFin = date('Y-m-d', strtotime('+1 month'));
+                if (isset($datos['fechaFin'])) {
+                    $fechaFin = $datos['fechaFin'];
+                }
+                ?>
+                <input type="date" name="fechaFin" value="<?php echo $fechaFin; ?>" required>
             </div>
         </div>
 
+        <div class="mt-25">
+            <h4 class="margen-abajo">Vincular Módulos (Subproyectos)</h4>
+            <div class="lista-checkboxes">
+                <?php foreach ($listaModulos as $modulo) { ?>
+                    <label class="item-checkbox">
+                        <?php 
+                        $checked = '';
+                        if (isset($datos['modulos']) && is_array($datos['modulos'])) {
+                            if (in_array($modulo['idModulo'], $datos['modulos'])) {
+                                $checked = 'checked';
+                            }
+                        }
+                        ?>
+                        <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>" <?php echo $checked; ?>>
+                        <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
+                    </label>
+                <?php } ?>
+            </div>
+            <?php if (isset($errores['modulos'])) { ?>
+                <p class="error-campo"><?php echo $errores['modulos']; ?></p>
+            <?php } ?>
+        </div>
+
         <div class="margen-arriba">
-            <button type="submit" name="guardarReto" class="boton-primario">
-                Crear Reto Educativo
+            <button type="submit" name="insertarReto" class="boton-primario">
+                <i class="fas fa-save"></i> Crear Reto
             </button>
         </div>
     </form>

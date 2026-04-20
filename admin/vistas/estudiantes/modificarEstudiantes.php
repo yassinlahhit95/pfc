@@ -1,10 +1,14 @@
 <?php
 session_start();
-require_once "../../modelos/conectar.php";
-require_once "../../modelos/estudiantes.php";
-require_once "../../modelos/ciclos.php";
+require_once "../../../modelos/conectar.php";
+require_once "../../../modelos/estudiantes.php";
+require_once "../../../modelos/ciclos.php";
 
-$idDelEstudiante = $_GET['idEstudiante'] ?? 0;
+$idDelEstudiante = 0;
+if (isset($_GET['idEstudiante'])) {
+    $idDelEstudiante = $_GET['idEstudiante'];
+}
+
 $datosEstudianteBD = obtenerEstudiantePorId($idDelEstudiante);
 
 if (!$datosEstudianteBD) {
@@ -15,8 +19,15 @@ if (!$datosEstudianteBD) {
 $listaTodosLosCiclos = listarTodosLosCiclos();
 
 // Datos y errores
-$datos = $_SESSION['datos_estudiante'] ?? $datosEstudianteBD;
-$errores = $_SESSION['errores'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = $datosEstudianteBD;
+if (isset($_SESSION['datos_estudiante'])) {
+    $datos = $_SESSION['datos_estudiante'];
+}
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
 // Variables simples

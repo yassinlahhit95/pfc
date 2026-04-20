@@ -1,9 +1,18 @@
 <?php
 session_start();
-require_once "../../modelos/inventario.php";
+require_once "../../../modelos/inventario.php";
 
-$id = $_POST['idPrestamo'] ?? $_GET['id'] ?? null;
-$redireccion = $_POST['redireccion'] ?? '../../vistas/inventario/gestionarPrestamos.php';
+$id = null;
+if (isset($_POST['idPrestamo'])) {
+    $id = $_POST['idPrestamo'];
+} elseif (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
+
+$redireccion = '../../vistas/inventario/gestionarPrestamos.php';
+if (isset($_POST['redireccion'])) {
+    $redireccion = $_POST['redireccion'];
+}
 
 if ($id) {
     if (devolverPrestamo($id)) {

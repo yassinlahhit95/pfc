@@ -110,10 +110,60 @@ body {
 /* ==========================================
    3. CONTENIDO PRINCIPAL
    ========================================== */
-.contenido-derecha {
+.contenido-derecha,
+.contenido-principal {
   margin-left: 260px;
   padding: 30px;
   min-height: 100vh;
+  transition: all 0.3s;
+}
+
+.d-none-escritorio { display: none; }
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 992px) {
+  .d-none-escritorio { display: block; }
+  
+  .barra-lateral {
+    width: 70px;
+    padding: 0;
+  }
+  
+  .barra-lateral.mostrar-menu {
+    width: 260px;
+  }
+
+  .barra-lateral.mostrar-menu .texto-negrita,
+  .barra-lateral.mostrar-menu .enlace-menu span,
+  .barra-lateral.mostrar-menu .titulo-de-seccion,
+  .barra-lateral.mostrar-menu .etiqueta-contador {
+    display: block;
+  }
+
+  .contenido-derecha,
+  .contenido-principal {
+    margin-left: 70px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .barra-lateral {
+    left: -260px;
+    width: 260px;
+    transition: left 0.3s;
+  }
+  
+  .barra-lateral.mostrar-menu {
+    left: 0;
+    display: block;
+  }
+
+  .contenido-derecha,
+  .contenido-principal {
+    margin-left: 0 !important;
+    padding: 15px;
+  }
 }
 
 .encabezado-pagina {
@@ -413,6 +463,26 @@ body {
 /* ==========================================
    10. COMPONENTES ESPECÍFICOS
    ========================================== */
+.anuncio-item-completo {
+  border-bottom: 1px solid #edf2f7;
+  padding: 20px 0;
+}
+
+.anuncio-item-completo:last-child {
+  border-bottom: none;
+}
+
+.boton-menu-transparente {
+  color: white !important;
+  background: transparent !important;
+}
+
+.separador-menu-inferior {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .anuncio-item {
   padding: 15px;
   border-bottom: 1px solid #edf2f7;

@@ -4,26 +4,72 @@ $titulo_pagina = "Agregar Estudiante - Super Admin";
 $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conectar.php";
-require_once "../../modelos/ciclos.php";
+require_once "../../../modelos/conectar.php";
+require_once "../../../modelos/ciclos.php";
 
 $listaCiclos = listarTodosLosCiclos();
 
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_estudiante'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = [];
+if (isset($_SESSION['datos_estudiante'])) {
+    $datos = $_SESSION['datos_estudiante'];
+}
 unset($_SESSION['errores'], $_SESSION['datos_estudiante']);
 
-// Variables para los campos (Forma facil para estudiantes)
-$nombre = $datos['nombreEstudiante'] ?? '';
-$email = $datos['emailEstudiante'] ?? '';
-$dni = $datos['dniEstudiante'] ?? '';
-$telefono = $datos['telefonoEstudiante'] ?? '';
-$fNacimiento = $datos['fechaNacimientoEstudiante'] ?? '';
-$fAlta = $datos['fechaAltaEstudiante'] ?? date('Y-m-d');
-$direccion = $datos['direccionEstudiante'] ?? '';
-$ciudad = $datos['ciudadEstudiante'] ?? '';
-$cp = $datos['codigoPostalEstudiante'] ?? '';
-$idCicloElegido = $datos['idCiclo'] ?? '';
+// Variables simples
+$nombre = '';
+if (isset($datos['nombreEstudiante'])) {
+    $nombre = $datos['nombreEstudiante'];
+}
+
+$email = '';
+if (isset($datos['emailEstudiante'])) {
+    $email = $datos['emailEstudiante'];
+}
+
+$dni = '';
+if (isset($datos['dniEstudiante'])) {
+    $dni = $datos['dniEstudiante'];
+}
+
+$telefono = '';
+if (isset($datos['telefonoEstudiante'])) {
+    $telefono = $datos['telefonoEstudiante'];
+}
+
+$fNacimiento = '';
+if (isset($datos['fechaNacimientoEstudiante'])) {
+    $fNacimiento = $datos['fechaNacimientoEstudiante'];
+}
+
+$fAlta = date('Y-m-d');
+if (isset($datos['fechaAltaEstudiante'])) {
+    $fAlta = $datos['fechaAltaEstudiante'];
+}
+
+$direccion = '';
+if (isset($datos['direccionEstudiante'])) {
+    $direccion = $datos['direccionEstudiante'];
+}
+
+$ciudad = '';
+if (isset($datos['ciudadEstudiante'])) {
+    $ciudad = $datos['ciudadEstudiante'];
+}
+
+$cp = '';
+if (isset($datos['codigoPostalEstudiante'])) {
+    $cp = $datos['codigoPostalEstudiante'];
+}
+
+$idCicloElegido = '';
+if (isset($datos['idCiclo'])) {
+    $idCicloElegido = $datos['idCiclo'];
+}
 ?>
 
 <div class="encabezado-pagina">

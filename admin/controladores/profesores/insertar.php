@@ -1,31 +1,42 @@
 <?php
 session_start();
-require_once "../../modelos/profesores.php";
+require_once "../../../modelos/profesores.php";
 
 if (isset($_POST['guardarProfesor'])) {
-    $nombre = trim($_POST['nombreProfesor'] ?? '');
-    $email = trim($_POST['emailProfesor'] ?? '');
-    $dni = trim($_POST['dniProfesor'] ?? '');
-    $telefono = trim($_POST['telefonoProfesor'] ?? '');
-    $especialidad = trim($_POST['especialidad'] ?? '');
-    $direccion = trim($_POST['direccionProfesor'] ?? '');
+    $nombre = trim($_POST['nombreProfesor']);
+    $email = trim($_POST['emailProfesor']);
+    $dni = trim($_POST['dniProfesor']);
+    $telefono = trim($_POST['telefonoProfesor']);
+    $especialidad = trim($_POST['especialidad']);
+    $direccion = trim($_POST['direccionProfesor']);
 
-    // Guardamos datos para no perder el formulario
-    $_SESSION['datos_profesor'] = $_POST;
+    // Regex
+    $regexEmail = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+    $regexTelefono = "/^[0-9]{9}$/";
 
-    if (empty($nombre) || empty($email) || empty($dni)) {
-        $_SESSION['error'] = "Nombre, Email y DNI son obligatorios.";
+    if (empty($nombre)) {
+        $_SESSION['error'] = "El nombre es obligatorio.";
         header("Location: ../../vistas/profesores/agregarProfesores.php");
-        exit;
-    }
-
-    if (insertarProfesor($nombre, $email, $telefono, $dni, $especialidad, $direccion)) {
-        unset($_SESSION['datos_profesor']);
-        $_SESSION['exito'] = "Profesor registrado con éxito.";
-        header("Location: ../../vistas/profesores/verProfesores.php");
+    } else if (empty($email)) {
+        $_SESSION['error'] = "El email es obligatorio.";
+        header("Location: ../../vistas/profesores/agregarProfesores.php");
+    } else if (!preg_match($regexEmail, $email)) {
+        $_SESSION['error'] = "El formato del email no es válido.";
+        header("Location: ../../vistas/profesores/agregarProfesores.php");
+    } else if (empty($dni)) {
+        $_SESSION['error'] = "El DNI es obligatorio.";
+        header("Location: ../../vistas/profesores/agregarProfesores.php");
+    } else if (!empty($telefono) && !preg_match($regexTelefono, $telefono)) {
+        $_SESSION['error'] = "El teléfono debe tener exactamente 9 números.";
+        header("Location: ../../vistas/profesores/agregarProfesores.php");
     } else {
-        $_SESSION['error'] = "Error al guardar el profesor en la base de datos.";
-        header("Location: ../../vistas/profesores/agregarProfesores.php");
+        if (insertarProfesor($nombre, $email, $telefono, $dni, $especialidad, $direccion)) {
+            $_SESSION['exito'] = "Profesor registrado con éxito.";
+            header("Location: ../../vistas/profesores/verProfesores.php");
+        } else {
+            $_SESSION['error'] = "Error al guardar el profesor en la base de datos.";
+            header("Location: ../../vistas/profesores/agregarProfesores.php");
+        }
     }
     exit;
 }

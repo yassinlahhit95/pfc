@@ -4,22 +4,52 @@ $titulo_pagina = "Registrar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/conectar.php";
-require_once "../../modelos/estudiantes.php";
+require_once "../../../modelos/conectar.php";
+require_once "../../../modelos/estudiantes.php";
 
 $listaEstudiantes = listarEstudiantes();
 
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_pagos'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
+
+$datos = [];
+if (isset($_SESSION['datos_pagos'])) {
+    $datos = $_SESSION['datos_pagos'];
+}
 unset($_SESSION['errores'], $_SESSION['datos_pagos']);
 
-// Variables simples (Estudiante way)
-$idElegido = $datos['idEstudiante'] ?? '';
-$concepto = $datos['concepto'] ?? '';
-$monto = $datos['monto'] ?? '0.00';
-$tipoElegido = $datos['tipoPago'] ?? '';
-$estadoElegido = $datos['estadoPago'] ?? '';
-$fecha = $datos['fechaPago'] ?? date('Y-m-d');
+// Variables simples
+$idElegido = '';
+if (isset($datos['idEstudiante'])) {
+    $idElegido = $datos['idEstudiante'];
+}
+
+$concepto = '';
+if (isset($datos['concepto'])) {
+    $concepto = $datos['concepto'];
+}
+
+$monto = '0.00';
+if (isset($datos['monto'])) {
+    $monto = $datos['monto'];
+}
+
+$tipoElegido = '';
+if (isset($datos['tipoPago'])) {
+    $tipoElegido = $datos['tipoPago'];
+}
+
+$estadoElegido = '';
+if (isset($datos['estadoPago'])) {
+    $estadoElegido = $datos['estadoPago'];
+}
+
+$fecha = date('Y-m-d');
+if (isset($datos['fechaPago'])) {
+    $fecha = $datos['fechaPago'];
+}
 ?>
 
 <div class="encabezado-pagina">

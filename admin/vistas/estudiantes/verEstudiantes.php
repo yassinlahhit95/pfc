@@ -1,16 +1,23 @@
 <?php
 session_start();
-$titulo_pagina = "Ver Estudiantes - Super Admin";
+$titulo_pagina = "Gestión de Estudiantes - Super Admin";
 $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 
-require_once "../../modelos/estudiantes.php";
-require_once "../../modelos/ciclos.php";
+require_once "../../../modelos/estudiantes.php";
+require_once "../../../modelos/ciclos.php";
 
 $listaEstudiantes = listarEstudiantes();
 
-$exito = $_SESSION['exito'] ?? '';
-$error = $_SESSION['error'] ?? '';
+$exito = '';
+if (isset($_SESSION['exito'])) {
+    $exito = $_SESSION['exito'];
+}
+
+$error = '';
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+}
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
@@ -20,73 +27,72 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
     <div class="acciones-pagina">
         <a href="vistas/estudiantes/agregarEstudiantes.php" class="boton-primario">
-            <i class="fas fa-plus"></i> Agregar Estudiante
+            <i class="fas fa-user-plus"></i> Nuevo Estudiante
         </a>
     </div>
 </div>
 
-<?php if ($error) { ?>
-<div class="mensaje-error">
-    <p><?php echo $error; ?></p>
-</div>
-<?php } ?>
-
 <?php if ($exito) { ?>
-<div class="mensaje-exito">
-    <p><?php echo $exito; ?></p>
-</div>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
-<div class="contenedor-tabla">
-    <table class="tabla-datos" id="tablaEstudiantes">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Ciclo</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (empty($listaEstudiantes)) { ?>
-            <tr>
-                <td colspan="6" class="sin-datos">No hay estudiantes registrados</td>
-            </tr>
-            <?php } else { ?>
-                <?php foreach ($listaEstudiantes as $estudiante) { ?>
+<div class="tarjeta-blanca">
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
+            <thead>
                 <tr>
-                    <td><?php echo $estudiante['idEstudiante']; ?></td>
-                    <td><strong><?php echo $estudiante['nombreEstudiante']; ?></strong></td>
-                    <td><?php echo $estudiante['nombreCiclo']; ?></td>
-                    <td><?php echo $estudiante['emailEstudiante']; ?></td>
-                    <td><?php echo $estudiante['telefonoEstudiante']; ?></td>
-                    <td>
-                        <div class="botones-accion">
-                            <a href="vistas/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
-                               class="boton-icono boton-ver" title="Ver detalles">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="vistas/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
-                               class="boton-icono boton-editar" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form method="POST" action="controladores/estudiantes/borrar.php" 
-                                  class="form-eliminar d-inline"
-                                  onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
-                                <input type="hidden" name="idEstudiante" value="<?php echo $estudiante['idEstudiante']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Ciclo</th>
+                    <th>Acciones</th>
                 </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($listaEstudiantes)) { ?>
+                    <tr><td colspan="5" class="sin-datos">No hay estudiantes registrados</td></tr>
+                <?php } else { ?>
+                    <?php foreach ($listaEstudiantes as $estudiante) { ?>
+                    <tr>
+                        <td><?php echo $estudiante['idEstudiante']; ?></td>
+                        <td><strong><?php echo $estudiante['nombreEstudiante']; ?></strong></td>
+                        <td><?php echo $estudiante['emailEstudiante']; ?></td>
+                        <td><?php 
+                            if ($estudiante['nombreCiclo']) {
+                                echo $estudiante['nombreCiclo'];
+                            } else {
+                                echo '<span class="texto-atenuado">Sin asignar</span>';
+                            }
+                        ?></td>
+                        <td>
+                            <div class="botones-accion">
+                                <a href="vistas/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
+                                   class="boton-icono boton-ver" title="Ver ficha">
+                                    <i class="fas fa-id-card"></i>
+                                </a>
+                                <a href="vistas/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
+                                   class="boton-icono boton-editar" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="POST" action="controladores/estudiantes/borrar.php" 
+                                      class="d-inline"
+                                      onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
+                                    <input type="hidden" name="idEstudiante" value="<?php echo $estudiante['idEstudiante']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

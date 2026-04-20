@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/calificaciones.php";
+require_once "../../../modelos/calificaciones.php";
 
 if (isset($_POST['guardarNotas'])) {
     $idModulo = $_POST['idModulo'];

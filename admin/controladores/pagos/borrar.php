@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/pagos.php";
+require_once "../../../modelos/pagos.php";
 
 if (isset($_POST['idPago'])) {
     $idDelPago = $_POST['idPago'];

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/estudiantes.php";
+require_once "../../../modelos/estudiantes.php";
 
 if (isset($_POST['idEstudiante'])) {
     $idDelEstudiante = $_POST['idEstudiante'];

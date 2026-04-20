@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/reclamaciones.php";
+require_once "../../../modelos/reclamaciones.php";
 
 if (isset($_POST['idReclamacion'])) {
     $id = $_POST['idReclamacion'];

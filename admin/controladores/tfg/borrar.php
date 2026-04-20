@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/tfg.php";
+require_once "../../../modelos/tfg.php";
 
 if (isset($_POST['idEstudiante'])) {
     $id = $_POST['idEstudiante'];

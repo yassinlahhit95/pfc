@@ -1,102 +1,95 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Reto - Super Admin";
-$seccion = 'retos';
-include_once "../comunes/nav.php";
 
-require_once "../../modelos/retos.php";
-require_once "../../modelos/modulos.php";
+require_once "../../../modelos/retos.php";
+require_once "../../../modelos/modulos.php";
 
 // Usamos el nombre descriptivo de la variable y del parametro GET
-$idDelReto = $_GET['idReto'] ?? null;
+$idDelReto = 0;
+if (isset($_GET['idReto'])) {
+    $idDelReto = $_GET['idReto'];
+}
 
 if (!$idDelReto) {
     header("Location: verRetos.php");
     exit;
 }
 
-$retoActual = obtenerRetoPorId($idDelReto);
+$reto = obtenerRetoPorId($idDelReto);
 
-if (!$retoActual) {
+if (!$reto) {
     header("Location: verRetos.php");
     exit;
 }
-
 
 $modulosDelRetoActual = obtenerModulosDeReto($idDelReto);
 $idsModulosSeleccionados = array_column($modulosDelRetoActual, 'idModulo');
 
 $listaDeModulos = listarModulos();
 
-$errores = $_SESSION['errores'] ?? [];
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+}
 unset($_SESSION['errores']);
+
+$titulo_pagina = "Modificar Reto - Super Admin";
+$seccion = 'retos';
+include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Modificar Reto</h1>
-        <p class="subtitulo-encabezado">Editando: <strong><?php echo $retoActual['nombreReto']; ?></strong></p>
+        <h1>Modificar Reto: <?php echo $reto['nombreReto']; ?></h1>
+        <p class="subtitulo-encabezado">Actualice la información y los módulos vinculados</p>
     </div>
-    <div class="acciones-pagina">
-        <a href="vistas/retos/verRetos.php" class="boton-secundario">
-            Volver al listado
-        </a>
-    </div>
+    <a href="vistas/retos/verRetos.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> Volver a la lista
+    </a>
 </div>
 
 <div class="tarjeta-blanca">
     <form action="controladores/retos/actualizar.php" method="POST">
-        <input type="hidden" name="idReto" value="<?php echo $retoActual['idReto']; ?>">
+        <input type="hidden" name="idReto" value="<?php echo $idDelReto; ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
-                <label for="nombreReto">Nombre del Reto *</label>
-                <input type="text" id="nombreReto" name="nombreReto" 
-                       placeholder="Ej: Reto Sostenibilidad"
-                       value="<?php echo $retoActual['nombreReto']; ?>"
-                       class="<?php if (isset($errores['nombre'])) { echo 'input-error'; } else { echo ''; } ?>">
+                <label>Nombre del Reto *</label>
+                <input type="text" name="nombreReto" value="<?php echo $reto['nombreReto']; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="fechaInicio">Fecha de Inicio *</label>
-                <input type="date" id="fechaInicio" name="fechaInicio" value="<?php echo $retoActual['fechaInicio']; ?>">
+                <label>Horas del Reto *</label>
+                <input type="text" name="horasReto" value="<?php echo $reto['horasReto']; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="fechaFin">Fecha de Fin *</label>
-                <input type="date" id="fechaFin" name="fechaFin" value="<?php echo $retoActual['fechaFin']; ?>">
+                <label>Fecha de Inicio *</label>
+                <input type="date" name="fechaInicio" value="<?php echo $reto['fechaInicio']; ?>" required>
             </div>
 
             <div class="campo-formulario">
-                <label for="horasReto">Horas Estimadas *</label>
-                <input type="text" id="horasReto" name="horasReto" value="<?php echo $retoActual['horasReto']; ?>">
+                <label>Fecha de Finalización *</label>
+                <input type="date" name="fechaFin" value="<?php echo $reto['fechaFin']; ?>" required>
             </div>
+        </div>
 
-            <div class="campo-formulario campo-ancho-total">
-                <label>Módulos Asociados * <span class="texto-atenuado">(Selecciona uno o más)</span></label>
-                <div class="tarjeta-gris-suave scroll-vertical">
-                    <div class="formulario-cuadricula">
-                        <?php foreach($listaDeModulos as $modulo) { 
-                            $marcado = in_array($modulo['idModulo'], $idsModulosSeleccionados) ? 'checked' : '';
-                        ?>
-                            <label class="item-seleccionable tarjeta-blanca sin-margen p-0">
-                                <div class="disposicion-flexible alinear-centro separacion-pequena p-10">
-                                    <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>" <?php echo $marcado; ?>>
-                                    <div>
-                                        <p class="texto-pequeno sin-margen texto-negrita"><?php echo $modulo['nombreModulo']; ?></p>
-                                        <p class="texto-pequeno texto-atenuado sin-margen"><?php echo $modulo['nombreCiclo']; ?></p>
-                                    </div>
-                                </div>
-                            </label>
-                        <?php } ?>
-                    </div>
-                </div>
+        <div class="mt-25">
+            <h4 class="margen-abajo">Vincular Módulos (Subproyectos)</h4>
+            <div class="lista-checkboxes">
+                <?php foreach ($listaDeModulos as $modulo) { ?>
+                    <label class="item-checkbox">
+                        <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>"
+                            <?php if (in_array($modulo['idModulo'], $idsModulosSeleccionados)) { echo 'checked'; } ?>>
+                        <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
+                    </label>
+                <?php } ?>
             </div>
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="guardarReto" class="boton-primario">
-                Guardar Cambios
+            <button type="submit" name="actualizarReto" class="boton-primario">
+                <i class="fas fa-save"></i> Guardar Cambios
             </button>
         </div>
     </form>

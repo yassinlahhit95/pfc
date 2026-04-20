@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../modelos/anuncios.php";
+require_once "../../../modelos/anuncios.php";
 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     $_SESSION['error'] = "El identificador del anuncio es obligatorio.";
