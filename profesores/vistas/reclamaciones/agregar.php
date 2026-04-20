@@ -19,7 +19,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nueva Reclamación</h1>
-    <a href="vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/profesores/vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

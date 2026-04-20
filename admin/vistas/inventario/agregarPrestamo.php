@@ -32,7 +32,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Registrar Nuevo Préstamo</h1>
-    <a href="vistas/inventario/gestionarPrestamos.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/admin/vistas/inventario/gestionarPrestamos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -40,7 +40,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="controladores/inventario/prestar.php">
+    <form method="POST" action="/pfc/admin/controladores/inventario/prestar.php">
         <div class="formulario-cuadricula">
             
             <div class="campo-formulario">

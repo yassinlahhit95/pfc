@@ -22,7 +22,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Editar Calificación</h1>
-    <a href="vistas/calificaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/profesores/vistas/calificaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

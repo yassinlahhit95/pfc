@@ -8,16 +8,17 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-$reclamaciones = listarReclamaciones();
+$idProfesor = $_SESSION['idProfesor'];
+$reclamaciones = listarReclamacionesPorProfesor($idProfesor);
 
-$tituloDelPagina = "Reclamaciones - Portal Profesores";
+$tituloDelPagina = "Mis Reclamaciones - Portal Profesores";
 $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Gestión de Reclamaciones</h1>
-    <a href="vistas/reclamaciones/agregar.php" class="boton-primario">Nueva Reclamación</a>
+    <h1>Mis Reclamaciones Enviadas</h1>
+    <a href="/pfc/profesores/vistas/reclamaciones/agregar.php" class="boton-primario">Nueva Reclamación</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -39,7 +40,7 @@ include_once "../comunes/nav.php";
                         <tr>
                             <td><?php echo $rec['nombreEstudiante']; ?></td>
                             <td class="texto-negrita"><?php echo $rec['asunto']; ?></td>
-                            <td><?php echo $rec['fecha']; ?></td>
+                            <td><?php echo date('d/m/Y', strtotime($rec['fecha'])); ?></td>
                             <td>
                                 <?php 
                                 $claseEstado = 'naranja';
@@ -48,19 +49,19 @@ include_once "../comunes/nav.php";
                                 }
                                 ?>
                                 <span class="etiqueta-estado <?php echo $claseEstado; ?>">
-                                    <?php echo $rec['estadoReclamacion']; ?>
+                                    <?php echo ucfirst($rec['estadoReclamacion']); ?>
                                 </span>
                             </td>
-                            <td><?php echo $rec['gravedad']; ?></td>
+                            <td><?php echo ucfirst($rec['gravedad']); ?></td>
                             <td>
-                                <a href="vistas/reclamaciones/editar.php?id=<?php echo $rec['idReclamacion']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="controladores/reclamaciones/borrar.php?id=<?php echo $rec['idReclamacion']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/profesores/vistas/reclamaciones/editar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-editar" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="/pfc/profesores/controladores/reclamaciones/borrar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-eliminar" title="Eliminar" onclick="return confirm('¿Seguro?');"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="6" class="sin-datos">No hay reclamaciones registradas.</td>
+                        <td colspan="6" class="sin-datos">Aún no has enviado ninguna reclamación.</td>
                     </tr>
                 <?php } ?>
             </tbody>

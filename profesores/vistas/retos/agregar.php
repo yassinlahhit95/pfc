@@ -13,7 +13,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nuevo Reto</h1>
-    <a href="vistas/retos/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/profesores/vistas/retos/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

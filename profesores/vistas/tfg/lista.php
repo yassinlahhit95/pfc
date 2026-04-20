@@ -42,8 +42,8 @@ include_once "../comunes/nav.php";
                                 </a>
                             </td>
                             <td>
-                                <a href="vistas/tfg/editar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="controladores/tfg/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/profesores/vistas/tfg/editar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
+<a href="/pfc/profesores/controladores/tfg/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

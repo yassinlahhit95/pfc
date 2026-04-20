@@ -14,59 +14,56 @@ $profesor = obtenerProfesorPorId($id);
 $tituloDelPagina = "Mi Perfil - Portal Profesores";
 $seccionActual = 'perfil';
 include_once "../comunes/nav.php";
-
-$nombre = $profesor['nombreProfesor'];
-$email = $profesor['emailProfesor'];
-$telefono = $profesor['telefonoProfesor'];
-$dni = $profesor['dniProfesor'];
-$especialidad = $profesor['especialidad'];
-$direccion = $profesor['direccionProfesor'];
 ?>
 
-<div class="encabezado-pagina">
+<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Mi Perfil</h1>
+    <a href="/pfc/profesores/index.php" class="boton-secundario">← Inicio</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Información Personal</h3>
+    <div class="disposicion-flexible alinear-centro">
+        <div class="avatar-perfil margen-derecha">
+            <i class="fas fa-user-circle fa-5x"></i>
+        </div>
+        <div class="flexible-rellenar">
+            <h2><?php echo $profesor['nombreProfesor']; ?></h2>
+            <p class="texto-secundario"><?php echo $profesor['especialidad']; ?></p>
+        </div>
     </div>
-    
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-            <p class="texto-negrita"><?php echo $nombre; ?></p>
-        </div>
 
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Número de Documento (DNI)</label>
-            <p class="texto-negrita"><?php echo $dni; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Correo Electrónico</label>
-            <p class="texto-negrita"><?php echo $email; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Número de Teléfono</label>
-            <p class="texto-negrita"><?php echo $telefono; ?></p>
-        </div>
-
-        <div class="campo-formulario campo-ancho-completo">
-            <label class="texto-atenuado texto-pequeno">Especialidad Docente</label>
-            <p class="texto-negrita"><?php echo $especialidad; ?></p>
-        </div>
-
-        <div class="campo-formulario campo-ancho-completo">
-            <label class="texto-atenuado texto-pequeno">Dirección Física</label>
-            <p class="texto-negrita"><?php echo $direccion; ?></p>
+    <div class="margen-arriba-grande">
+        <div class="formulario-cuadricula">
+            <div class="item-perfil">
+                <label>Email Corporativo</label>
+                <p><?php echo $profesor['emailProfesor']; ?></p>
+            </div>
+            <div class="item-perfil">
+                <label>Teléfono de Contacto</label>
+                <?php 
+                $tel = $profesor['telefonoProfesor'];
+                if (empty($tel)) { $tel = 'No registrado'; }
+                ?>
+                <p><?php echo $tel; ?></p>
+            </div>
+            <div class="item-perfil">
+                <label>DNI</label>
+                <p><?php echo $profesor['dniProfesor']; ?></p>
+            </div>
+            <div class="item-perfil">
+                <label>Dirección</label>
+                <?php 
+                $dir = $profesor['direccionProfesor'];
+                if (empty($dir)) { $dir = 'No registrada'; }
+                ?>
+                <p><?php echo $dir; ?></p>
+            </div>
         </div>
     </div>
 
     <div class="margen-arriba">
-        <a href="vistas/perfil/editar.php" class="boton-primario">
-            <i class="fas fa-edit"></i> Editar Perfil
+        <a href="/pfc/profesores/vistas/perfil/editar.php" class="boton-primario">
+            <i class="fas fa-edit"></i> Editar Información
         </a>
     </div>
 </div>
