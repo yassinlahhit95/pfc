@@ -1,0 +1,102 @@
+/* ==========================================
+   CSS RESPONSIVE - PFC
+   ========================================== */
+
+/* Ajustes generales para tablets y móviles */
+@media (max-width: 992px) {
+    .barra-lateral {
+        width: 0;
+        left: -260px;
+        transition: all 0.3s ease;
+    }
+
+    .barra-lateral.activo {
+        width: 260px;
+        left: 0;
+    }
+
+    .contenido-derecha,
+    .contenido-principal {
+        margin-left: 0 !important;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .disposicion-flexible {
+        flex-direction: column;
+    }
+
+    .ancho-fijo-300, 
+    .ancho-fijo-400 {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    .formulario-cuadricula {
+        grid-template-columns: 1fr;
+    }
+
+    .encabezado-pagina {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .acciones-pagina {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .boton-primario, 
+    .boton-secundario {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Mostrar botón de menú en el nav (necesitaremos añadirlo al HTML) */
+    .menu-toggle {
+        display: block !important;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 2000;
+        background: #1a1c2e;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+}
+
+/* Ajustes específicos para móviles */
+@media (max-width: 576px) {
+    .contenedor-tabla {
+        overflow-x: auto;
+    }
+
+    .tabla-datos {
+        min-width: 600px;
+    }
+
+    .tarjeta-blanca {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .subtitulo-encabezado {
+        font-size: 0.8rem;
+    }
+}
+
+/* Utilidades para ocultar/mostrar según dispositivo */
+.solo-movil { display: none; }
+
+@media (max-width: 768px) {
+    .solo-movil { display: block; }
+    .ocultar-movil { display: none; }
+}

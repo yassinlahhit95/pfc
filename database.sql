@@ -72,7 +72,8 @@ INSERT INTO `modulos` (`nombreModulo`, `idCiclo`) VALUES ('Programación', 1), (
 CREATE TABLE IF NOT EXISTS `profesores` (
   `idProfesor` int(11) NOT NULL AUTO_INCREMENT,
   `nombreProfesor` varchar(150) NOT NULL,
-  `emailProfesor` varchar(150) NOT NULL,
+  `emailProfesor` varchar(150) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoProfesor` varchar(20) DEFAULT NULL,
   `dniProfesor` varchar(20) DEFAULT NULL,
   `especialidad` varchar(100) DEFAULT NULL,
@@ -80,9 +81,9 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   PRIMARY KEY (`idProfesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `profesores` (`nombreProfesor`, `emailProfesor`) VALUES 
-('Juan Pérez', 'juan.perez@email.com'),
-('María García', 'maria.garcia@email.com');
+INSERT INTO `profesores` (`nombreProfesor`, `emailProfesor`, `password`) VALUES 
+('Juan Pérez', 'juan.perez@email.com', '123456'),
+('María García', 'maria.garcia@email.com', '123456');
 
 -- --------------------------------------------------------
 -- 6. TABLA DE ESTUDIANTES
@@ -90,7 +91,8 @@ INSERT INTO `profesores` (`nombreProfesor`, `emailProfesor`) VALUES
 CREATE TABLE IF NOT EXISTS `estudiantes` (
   `idEstudiante` int(11) NOT NULL AUTO_INCREMENT,
   `nombreEstudiante` varchar(150) NOT NULL,
-  `emailEstudiante` varchar(150) NOT NULL,
+  `emailEstudiante` varchar(150) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoEstudiante` varchar(20) DEFAULT NULL,
   `dniEstudiante` varchar(20) NOT NULL,
   `fechaNacimientoEstudiante` date DEFAULT NULL,
@@ -106,9 +108,9 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `estudiantes` (`nombreEstudiante`, `emailEstudiante`, `dniEstudiante`, `idCiclo`) VALUES 
-('Ana Martínez', 'ana.mtz@email.com', '12345678A', 1),
-('Roberto Solís', 'rober.solis@email.com', '87654321B', 1);
+INSERT INTO `estudiantes` (`nombreEstudiante`, `emailEstudiante`, `dniEstudiante`, `idCiclo`, `password`) VALUES 
+('Ana Martínez', 'ana.mtz@email.com', '12345678A', 1, '123456'),
+('Roberto Solís', 'rober.solis@email.com', '87654321B', 1, '123456');
 
 -- --------------------------------------------------------
 -- 7. TABLA DE RETOS
@@ -220,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `prestamos` (
 CREATE TABLE IF NOT EXISTS `reclamaciones` (
   `idReclamacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
-  `idProfesor` int(11) NOT NULL,
+  `idProfesor` int(11) DEFAULT NULL,
   `asunto` varchar(150) NOT NULL,
   `descripcion` text NOT NULL,
   `gravedad` enum('leve','grave','muy grave') DEFAULT 'leve',
@@ -232,16 +234,20 @@ CREATE TABLE IF NOT EXISTS `reclamaciones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 16. TABLA DE DIRECTORES
+-- 16. TABLA DE DIRECTORES (ADMINS)
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `directores` (
   `idDirector` int(11) NOT NULL AUTO_INCREMENT,
   `nombreDirector` varchar(150) NOT NULL,
-  `emailDirector` varchar(150) NOT NULL,
+  `emailDirector` varchar(150) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL DEFAULT '123456',
   `dniDirector` varchar(20) NOT NULL,
   `fechaAltaDirector` date DEFAULT NULL,
   PRIMARY KEY (`idDirector`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `directores` (`nombreDirector`, `emailDirector`, `password`, `dniDirector`) VALUES 
+('Admin Principal', 'admin@email.com', '123456', '00000000T');
 
 -- --------------------------------------------------------
 -- 17. TABLAS DE RELACIÓN CICLOS (PROFESORES Y AULAS)
