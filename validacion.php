@@ -1,74 +1,72 @@
 <?php
 session_start();
+require_once "modelos/conectar.php";
 
-if(!isset($_POST["enviar"])){
+if (!isset($_POST["enviar"])) {
     $_SESSION["error"] = "El formulario no está bien definido.";
-    header("Location:index.php");
-    exit;
-}
-
-if(!isset($_POST["usuario"])){
-    $_SESSION["error"] = "El formulario no está bien definido debido al nombre.";
-    header("Location:index.php");
-    exit;
-}
-
-$_SESSION["usuario"] = strip_tags(trim($_POST["usuario"]));
-if(empty($_SESSION["usuario"])){
-    $_SESSION["error"] = "Nombre de usuario vacío.";
     header("Location: index.php");
     exit;
 }
 
-if(is_numeric($_SESSION["usuario"])){
-    $_SESSION["error"] = "Ha introducido un valor numérico en el nombre.";
+$email = strip_tags(trim($_POST["usuario"]));
+$password = strip_tags(trim($_POST["contrasena"]));
+$tipoUsuario = $_POST['tipoUsuario'];
+
+if (empty($email)) {
+    $_SESSION["error"] = "Email vacío.";
     header("Location: index.php");
     exit;
 }
 
-if(!isset($_POST["contrasena"])){
-    $_SESSION["error"] = "Formulario mal definido por la contraseña.";
+if (empty($password)) {
+    $_SESSION["error"] = "Contraseña vacía.";
     header("Location: index.php");
     exit;
 }
 
-$_SESSION["psw"] = strip_tags(trim($_POST["contrasena"]));
-if(empty($_SESSION["psw"])){
-    $_SESSION["error"] = "Contraseña vacía";
-    header("Location: index.php");
-    exit;
-}
+$conexion = obtenerConexion();
 
-$tipoUsuario = 'admin';
-if (isset($_POST['tipoUsuario'])) {
-    $tipoUsuario = $_POST['tipoUsuario'];
-}
-
-// Validación simple para el proyecto de ejercicio
 if ($tipoUsuario == 'admin') {
-    if (($_SESSION["usuario"] == "admin") && ($_SESSION["psw"] == "admin")) {
+    $sql = "SELECT idDirector, nombreDirector FROM directores WHERE emailDirector = '$email' AND password = '$password'";
+    $res = mysqli_query($conexion, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    
+    if ($fila) {
         $_SESSION["tipoUsuario"] = "admin";
-        $_SESSION["idAdmin"] = 1;
-        header("Location:admin/dashboardAdmin.php");
+        $_SESSION["idAdmin"] = $fila['idDirector'];
+        $_SESSION["nombreUsuario"] = $fila['nombreDirector'];
+        header("Location: /pfc/vistas/admin/dashboard.php");
         exit;
     }
-} elseif ($tipoUsuario == 'profesor') {
-    if (($_SESSION["usuario"] == "profesor") && ($_SESSION["psw"] == "profesor")) {
+} else if ($tipoUsuario == 'profesor') {
+    $sql = "SELECT idProfesor, nombreProfesor FROM profesores WHERE emailProfesor = '$email' AND password = '$password'";
+    $res = mysqli_query($conexion, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    
+    if ($fila) {
         $_SESSION["tipoUsuario"] = "profesor";
-        $_SESSION["idProfesor"] = 1;
-        header("Location:profesores/vistas/perfil/ver.php");
+        $_SESSION["idProfesor"] = $fila['idProfesor'];
+        $_SESSION["nombreUsuario"] = $fila['nombreProfesor'];
+        header("Location: /pfc/vistas/profesores/dashboard.php");
         exit;
     }
-} elseif ($tipoUsuario == 'estudiante') {
-    if (($_SESSION["usuario"] == "estudiante") && ($_SESSION["psw"] == "estudiante")) {
+} else if ($tipoUsuario == 'estudiante') {
+    $sql = "SELECT idEstudiante, nombreEstudiante FROM estudiantes WHERE emailEstudiante = '$email' AND password = '$password'";
+    $res = mysqli_query($conexion, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    
+    if ($fila) {
         $_SESSION["tipoUsuario"] = "estudiante";
-        $_SESSION["idEstudiante"] = 1;
-        header("Location:estudiantes/vistas/perfil/ver.php");
+        $_SESSION["idEstudiante"] = $fila['idEstudiante'];
+        $_SESSION["nombreUsuario"] = $fila['nombreEstudiante'];
+        header("Location: /pfc/vistas/estudiantes/dashboard.php");
         exit;
     }
 }
 
-$_SESSION["error"] = "Los datos no están registrados en el sistema";
+mysqli_close($conexion);
+
+$_SESSION["error"] = "Los datos no son correctos o el tipo de usuario no coincide.";
 header("Location: index.php");
 exit;
 ?>

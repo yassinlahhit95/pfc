@@ -3,13 +3,13 @@ session_start();
 
 // Si ya estamos autenticados, redirigir a la sección correspondiente
 if (isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/admin/dashboardAdmin.php");
+    header("Location: /pfc/vistas/admin/dashboard.php");
     exit;
-} elseif (isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/profesores/vistas/perfil/ver.php");
+} else if (isset($_SESSION['idProfesor'])) {
+    header("Location: /pfc/vistas/profesores/dashboard.php");
     exit;
-} elseif (isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/estudiantes/vistas/perfil/ver.php");
+} else if (isset($_SESSION['idEstudiante'])) {
+    header("Location: /pfc/vistas/estudiantes/dashboard.php");
     exit;
 }
 
@@ -26,7 +26,7 @@ unset($_SESSION['error']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema de Gestión Escolar</title>
-    <link rel="stylesheet" href="/pfc/admin/estiloAdmin/admin.css">
+    <link rel="stylesheet" href="/pfc/public/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -173,7 +173,7 @@ unset($_SESSION['error']);
         <h1 class="titulo-login">Portal Escolar</h1>
         <p class="subtitulo-login">Sistema de Gestión</p>
         
-        <?php if ($mensajeError) { ?>
+        <?php if (!empty($mensajeError)) { ?>
         <div class="mensaje-error-login">
             <i class="fas fa-exclamation-circle"></i> <?php echo $mensajeError; ?>
         </div>
@@ -198,8 +198,8 @@ unset($_SESSION['error']);
             <input type="hidden" name="tipoUsuario" id="tipoUsuario" value="admin">
             
             <div class="campo-login">
-                <label>Email o Usuario:</label>
-                <input type="text" name="usuario" placeholder="Tu email o usuario" required>
+                <label>Email:</label>
+                <input type="text" name="usuario" placeholder="Tu email registrado" required>
             </div>
             
             <div class="campo-login">
