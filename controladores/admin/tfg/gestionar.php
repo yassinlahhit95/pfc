@@ -1,32 +1,25 @@
 <?php
 session_start();
 require_once "../../../modelos/tfg.php";
-
 if (isset($_POST['guardarTFG'])) {
-    $idEstudiante = $_POST['idEstudiante'];
-    $titulo = trim($_POST['tituloTFG']);
-
-    $nombreArchivo = null;
-
-    // Lógica de subida si hay archivo nuevo
-    if (isset($_FILES['archivoTFG']) && $_FILES['archivoTFG']['error'] === UPLOAD_ERR_OK) {
-        $directorioSubida = "../../uploads/tfg/";
-        if (!is_dir($directorioSubida)) {
-            mkdir($directorioSubida, 0777, true);
-        }
-
-        $nombreOriginal = $_FILES['archivoTFG']['name'];
-        $nombreArchivo = time() . "_" . $nombreOriginal;
-        move_uploaded_file($_FILES['archivoTFG']['tmp_name'], $directorioSubida . $nombreArchivo);
+    $id = $_POST['idEstudiante'];
+    $titulo = $_POST['tituloTFG'];
+    $archivo = $_FILES['archivoTFG'];
+    $nombreArchivo = "";
+    if ($archivo['error'] === 0) {
+        $nombreArchivo = time() . "_" . $archivo['name'];
+        move_uploaded_file($archivo['tmp_name'], "../../uploads/tfg/" . $nombreArchivo);
     }
-
-    if (actualizarDatosTFG($idEstudiante, $titulo, $nombreArchivo)) {
-        $_SESSION['exito'] = "Datos del TFG guardados correctamente.";
+    if (actualizarDatosTFG($id, $titulo, $nombreArchivo)) {
+        $_SESSION['exito'] = "Ok";
+        header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+        exit;
     } else {
-        $_SESSION['error'] = "Error al actualizar los datos en la BD.";
+        $_SESSION['error'] = "Error BD";
     }
+    header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+    exit;
 }
-
 header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
 exit;
-?>
+

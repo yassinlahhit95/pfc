@@ -3,54 +3,30 @@ require_once("conectar.php");
 
 function listarTodosLosPagos() {
     $conexion = obtenerConexion();
-    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante 
-            FROM pagos 
-            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante 
-            ORDER BY idPago DESC";
+    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante FROM pagos JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante ORDER BY idPago DESC";
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
-    if ($resultado) {
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $lista[] = $fila;
-        }
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($conexion);
     return $lista;
 }
 
-function listarPagos() {
-    return listarTodosLosPagos();
-}
-
-function insertarPago($idEstudiante, $concepto, $monto, $tipoPago, $estadoPago, $fechaPago, $comprobante = null) {
+function insertarPago($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante = "") {
     $conexion = obtenerConexion();
-    
-    if ($comprobante) {
-        $sql = "INSERT INTO pagos (idEstudiante, concepto, monto, tipoPago, estadoPago, fechaPago, comprobante) 
-                VALUES ($idEstudiante, '$concepto', $monto, '$tipoPago', '$estadoPago', '$fechaPago', '$comprobante')";
-    } else {
-        $sql = "INSERT INTO pagos (idEstudiante, concepto, monto, tipoPago, estadoPago, fechaPago) 
-                VALUES ($idEstudiante, '$concepto', $monto, '$tipoPago', '$estadoPago', '$fechaPago')";
-    }
-    
+    $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago, comprobante) VALUES ($idEstudiante, $monto, '$tipoPago', '$fechaPago', '$fechaProximo', '$comprobante')";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
-function actualizarPago($idPago, $idEstudiante, $concepto, $monto, $tipoPago, $estadoPago, $fechaPago, $rutaComprobante = null) {
+function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante = "") {
     $conexion = obtenerConexion();
-    
-    if ($rutaComprobante) {
-        $sql = "UPDATE pagos SET idEstudiante = $idEstudiante, concepto = '$concepto', monto = $monto, 
-                tipoPago = '$tipoPago', estadoPago = '$estadoPago', fechaPago = '$fechaPago', comprobante = '$rutaComprobante' 
-                WHERE idPago = $idPago";
-    } else {
-        $sql = "UPDATE pagos SET idEstudiante = $idEstudiante, concepto = '$concepto', monto = $monto, 
-                tipoPago = '$tipoPago', estadoPago = '$estadoPago', fechaPago = '$fechaPago' 
-                WHERE idPago = $idPago";
+    $sql = "UPDATE pagos SET idEstudiante = $idEstudiante, monto = $monto, tipoPago = '$tipoPago', fechaPago = '$fechaPago', fechaProximoPago = '$fechaProximo' WHERE idPago = $idPago";
+    if (!empty($comprobante)) {
+        $sql = "UPDATE pagos SET idEstudiante = $idEstudiante, monto = $monto, tipoPago = '$tipoPago', fechaPago = '$fechaPago', fechaProximoPago = '$fechaProximo', comprobante = '$comprobante' WHERE idPago = $idPago";
     }
-    
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
@@ -58,18 +34,16 @@ function actualizarPago($idPago, $idEstudiante, $concepto, $monto, $tipoPago, $e
 
 function eliminarPago($idPago) {
     $conexion = obtenerConexion();
-    $sql = "DELETE FROM pagos WHERE idPago = $idPago";
-    $resultado = mysqli_query($conexion, $sql);
+    $resultado = mysqli_query($conexion, "DELETE FROM pagos WHERE idPago = $idPago");
     mysqli_close($conexion);
     return $resultado;
 }
 
 function obtenerPagoPorId($idPago) {
     $conexion = obtenerConexion();
-    $sql = "SELECT * FROM pagos WHERE idPago = $idPago";
-    $resultado = mysqli_query($conexion, $sql);
-    $datos = mysqli_fetch_assoc($resultado);
+    $resultado = mysqli_query($conexion, "SELECT * FROM pagos WHERE idPago = $idPago");
+    $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
-    return $datos;
+    return $fila;
 }
 ?>

@@ -1,8 +1,8 @@
-/* ==========================================
-   CSS RESPONSIVE - PFC
-   ========================================== */
 
-/* Ajustes generales para tablets y móviles */
+
+
+
+
 @media (max-width: 992px) {
     .barra-lateral {
         width: 0;
@@ -55,7 +55,7 @@
         justify-content: center;
     }
 
-    /* Mostrar botón de menú en el nav (necesitaremos añadirlo al HTML) */
+    
     .menu-toggle {
         display: block !important;
         position: fixed;
@@ -70,7 +70,7 @@
     }
 }
 
-/* Ajustes específicos para móviles */
+
 @media (max-width: 576px) {
     .contenedor-tabla {
         overflow-x: auto;
@@ -93,7 +93,7 @@
     }
 }
 
-/* Utilidades para ocultar/mostrar según dispositivo */
+
 .solo-movil { display: none; }
 
 @media (max-width: 768px) {

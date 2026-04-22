@@ -41,7 +41,7 @@ include_once "../comunes/nav.php";
                     $nombreReto = $datos['nombreReto'];
                 }
                 ?>
-                <input type="text" name="nombreReto" placeholder="Ej: Reto Sostenibilidad 2026" value="<?php echo $nombreReto; ?>" required>
+                <input type="text" name="nombreReto" placeholder="Reto Sostenibilidad 2026" value="<?php echo $nombreReto; ?>">
             </div>
 
             <div class="campo-formulario">
@@ -52,7 +52,7 @@ include_once "../comunes/nav.php";
                     $horasReto = $datos['horasReto'];
                 }
                 ?>
-                <input type="text" name="horasReto" value="<?php echo $horasReto; ?>" required>
+                <input type="text" name="horasReto" value="<?php echo $horasReto; ?>">
             </div>
 
             <div class="campo-formulario">
@@ -63,7 +63,7 @@ include_once "../comunes/nav.php";
                     $fechaInicio = $datos['fechaInicio'];
                 }
                 ?>
-                <input type="date" name="fechaInicio" value="<?php echo $fechaInicio; ?>" required>
+                <input type="date" name="fechaInicio" value="<?php echo $fechaInicio; ?>">
             </div>
 
             <div class="campo-formulario">
@@ -74,7 +74,7 @@ include_once "../comunes/nav.php";
                     $fechaFin = $datos['fechaFin'];
                 }
                 ?>
-                <input type="date" name="fechaFin" value="<?php echo $fechaFin; ?>" required>
+                <input type="date" name="fechaFin" value="<?php echo $fechaFin; ?>">
             </div>
         </div>
 

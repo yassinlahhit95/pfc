@@ -1,24 +1,20 @@
 <?php
 session_start();
 require_once "../../../modelos/aulas.php";
-
 if (isset($_POST['guardarAula'])) {
-    $nombre = trim($_POST['nombreAula']);
-
+    $nombre = $_POST['nombreAula'];
     if (empty($nombre)) {
-        $_SESSION['error'] = "El nombre del aula es obligatorio.";
+        $_SESSION['error'] = "Nombre obligatorio";
+    } else if (insertarAula($nombre)) {
+        $_SESSION['exito'] = "Ok";
+        header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+        exit;
     } else {
-        if (insertarAula($nombre)) {
-            $_SESSION['exito'] = "Aula registrada correctamente.";
-        } else {
-            $_SESSION['error'] = "Error al guardar el aula.";
-        }
+        $_SESSION['error'] = "Error BD";
     }
-
     header("Location: /pfc/vistas/admin/aulas/verAulas.php");
     exit;
 }
-
 header("Location: /pfc/vistas/admin/aulas/verAulas.php");
 exit;
-?>
+

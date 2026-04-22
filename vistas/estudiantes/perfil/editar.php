@@ -22,7 +22,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Editar Mi Perfil</h1>
-    <a href="/pfc/estudiantes/vistas/perfil/ver.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

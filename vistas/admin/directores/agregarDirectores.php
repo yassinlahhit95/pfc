@@ -15,7 +15,7 @@ if (isset($_SESSION['errores'])) {
 }
 unset($_SESSION['datos_director'], $_SESSION['errores']);
 
-// Variables simples
+
 $nombre = '';
 if (isset($datos['nombreDirector'])) {
     $nombre = $datos['nombreDirector'];

@@ -18,7 +18,7 @@ if (!$datosEstudianteBD) {
 
 $listaTodosLosCiclos = listarTodosLosCiclos();
 
-// Datos y errores
+
 $errores = [];
 if (isset($_SESSION['errores'])) {
     $errores = $_SESSION['errores'];
@@ -30,7 +30,7 @@ if (isset($_SESSION['datos_estudiante'])) {
 }
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
-// Variables simples
+
 $nombre = $datos['nombreEstudiante'];
 $email = $datos['emailEstudiante'];
 $idCicloElegido = $datos['idCiclo'];

@@ -1,32 +1,26 @@
 <?php
 session_start();
 require_once "../../../modelos/anuncios.php";
-
 if (isset($_POST['guardarAnuncio'])) {
-    $titulo = trim($_POST['titulo']);
-    $mensaje = trim($_POST['mensaje']);
+    $titulo = $_POST['titulo'];
+    $mensaje = $_POST['mensaje'];
     $fecha = $_POST['fecha_expiracion'];
-
     if (empty($titulo)) {
-        $_SESSION['error'] = "El título es obligatorio.";
-        header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+        $_SESSION['error'] = "Título obligatorio";
     } else if (empty($mensaje)) {
-        $_SESSION['error'] = "El mensaje es obligatorio.";
-        header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+        $_SESSION['error'] = "Mensaje obligatorio";
     } else if (empty($fecha)) {
-        $_SESSION['error'] = "La fecha de expiración es obligatoria.";
+        $_SESSION['error'] = "Fecha obligatoria";
+    } else if (insertarAnuncio($titulo, $mensaje, $fecha)) {
+        $_SESSION['exito'] = "Ok";
         header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+        exit;
     } else {
-        if (insertarAnuncio($titulo, $mensaje, $fecha)) {
-            $_SESSION['exito'] = "Anuncio publicado correctamente.";
-        } else {
-            $_SESSION['error'] = "No se ha podido guardar el anuncio.";
-        }
-        header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+        $_SESSION['error'] = "Error BD";
     }
+    header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
     exit;
 }
-
 header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
 exit;
-?>
+

@@ -2,21 +2,14 @@
 session_start();
 require_once "../../../modelos/inventario.php";
 
-$id = null;
 if (isset($_POST['idArticulo'])) {
     $id = $_POST['idArticulo'];
-} elseif (isset($_GET['id'])) {
-    $id = $_GET['id'];
-}
-
-if ($id) {
-    if (borrarArticulo($id)) {
-        $_SESSION['exito'] = "Dispositivo eliminado";
+    if (eliminarArticulo($id)) {
+        $_SESSION['exito'] = "Artículo eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "No se pudo eliminar el dispositivo";
+        $_SESSION['error'] = "Error al eliminar el artículo.";
     }
 }
-
 header("Location: /pfc/vistas/admin/inventario/verInventario.php");
 exit;
 ?>

@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $id = $_GET['id'];
 
-// Función simple para obtener reclamación por ID (si no existe la añadimos al modelo)
+
 function obtenerReclamacionPorId($id) {
     $conexion = obtenerConexion();
     $sql = "SELECT * FROM reclamaciones WHERE idReclamacion = $id";
@@ -29,7 +29,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Atender Reclamación</h1>
-    <a href="/pfc/profesores/vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -44,7 +44,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Estado *</label>
-                <select name="estadoReclamacion" required>
+                <select name="estadoReclamacion">
                     <option value="pendiente" <?php if ($rec['estadoReclamacion'] == 'pendiente') { echo 'selected'; } ?>>Pendiente</option>
                     <option value="atendido" <?php if ($rec['estadoReclamacion'] == 'atendido') { echo 'selected'; } ?>>Atendido</option>
                 </select>

@@ -102,8 +102,8 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
   `codigoPostalEstudiante` varchar(10) DEFAULT NULL,
   `observacionesEstudiante` text,
   `idCiclo` int(11) DEFAULT NULL,
-  `tituloTFG` varchar(255) DEFAULT NULL,
   `archivoTFG` varchar(255) DEFAULT NULL,
+  `fechaSubidaTFG` datetime DEFAULT NULL,
   PRIMARY KEY (`idEstudiante`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -170,10 +170,9 @@ CREATE TABLE IF NOT EXISTS `calificaciones_modulos` (
 CREATE TABLE IF NOT EXISTS `pagos` (
   `idPago` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
-  `concepto` varchar(100) NOT NULL,
   `monto` decimal(10,2) NOT NULL,
-  `fechaPago` date DEFAULT NULL,
-  `estadoPago` enum('pendiente','pagado') DEFAULT 'pendiente',
+  `fechaPago` date NOT NULL,
+  `fechaProximoPago` date NOT NULL,
   `tipoPago` enum('mensual','trimestral','semestral','unico') DEFAULT 'mensual',
   `comprobante` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idPago`),
@@ -225,7 +224,6 @@ CREATE TABLE IF NOT EXISTS `reclamaciones` (
   `idProfesor` int(11) DEFAULT NULL,
   `asunto` varchar(150) NOT NULL,
   `descripcion` text NOT NULL,
-  `gravedad` enum('leve','grave','muy grave') DEFAULT 'leve',
   `fecha` date NOT NULL,
   `estadoReclamacion` enum('pendiente','atendido') DEFAULT 'pendiente',
   PRIMARY KEY (`idReclamacion`),
@@ -266,6 +264,17 @@ CREATE TABLE IF NOT EXISTS `ciclo_aula` (
   PRIMARY KEY (`idCiclo`, `idAula`),
   CONSTRAINT `fk_ca_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
   CONSTRAINT `fk_ca_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`idAula`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+-- 18. RELACIÓN PROFESOR-MODULO
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `profesor_modulo` (
+  `idProfesor` int(11) NOT NULL,
+  `idModulo` int(11) NOT NULL,
+  PRIMARY KEY (`idProfesor`, `idModulo`),
+  CONSTRAINT `fk_pm_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pm_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 COMMIT;

@@ -1,7 +1,7 @@
 
-/* ==========================================
-   1. REINICIO Y GLOBALES
-   ========================================== */
+
+
+
 * {
   margin: 0;
   padding: 0;
@@ -19,9 +19,9 @@ body {
   position: relative;
 }
 
-/* ==========================================
-   2. BARRA LATERAL (NAV) - MANTIENE BORDES REDONDEADOS
-   ========================================== */
+
+
+
 .barra-lateral {
   width: 260px;
   background-color: #1a1c2e;
@@ -52,7 +52,7 @@ body {
   width: 40px;
   height: 40px;
   background: #667eea;
-  border-radius: 8px; /* Mantiene redondeado */
+  border-radius: 8px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +85,7 @@ body {
   padding: 12px 15px;
   color: white;
   text-decoration: none;
-  border-radius: 8px; /* Mantiene redondeado */
+  border-radius: 8px; 
   font-size: 14px;
   transition: all 0.2s;
 }
@@ -102,14 +102,14 @@ body {
 .etiqueta-contador {
   background: rgba(255, 255, 255, 0.2);
   padding: 2px 8px;
-  border-radius: 10px; /* Mantiene redondeado */
+  border-radius: 10px; 
   font-size: 11px;
   margin-left: auto;
 }
 
-/* ==========================================
-   3. CONTENIDO PRINCIPAL
-   ========================================== */
+
+
+
 .contenido-derecha,
 .contenido-principal {
   margin-left: 260px;
@@ -120,7 +120,7 @@ body {
 
 .d-none-escritorio { display: none; }
 
-/* Responsividad para pantallas pequeñas */
+
 @media (max-width: 992px) {
   .d-none-escritorio { display: block; }
   
@@ -179,12 +179,12 @@ body {
   margin-top: 5px;
 }
 
-/* ==========================================
-   4. COMPONENTES: TARJETAS - SIN REDONDEO
-   ========================================== */
+
+
+
 .tarjeta-blanca {
   background: white;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   padding: 25px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
@@ -195,7 +195,7 @@ body {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   padding: 15px;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
 }
 
 .titulo-tarjeta {
@@ -211,12 +211,12 @@ body {
   overflow-y: auto;
 }
 
-/* ==========================================
-   5. COMPONENTES: TABLAS - SIN REDONDEO
-   ========================================== */
+
+
+
 .contenedor-tabla {
   background: white;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
@@ -250,9 +250,9 @@ body {
   color: #a0aec0;
 }
 
-/* ==========================================
-   6. FORMULARIOS - SIN REDONDEO
-   ========================================== */
+
+
+
 .formulario-cuadricula {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -280,7 +280,7 @@ body {
 .campo-formulario textarea {
   padding: 10px 12px;
   border: 1px solid #e2e8f0;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   font-size: 14px;
   transition: border-color 0.2s;
 }
@@ -315,15 +315,15 @@ body {
   border-bottom: none;
 }
 
-/* ==========================================
-   7. BOTONES - SIN REDONDEO
-   ========================================== */
+
+
+
 .boton-primario {
   background: #667eea;
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   cursor: pointer;
   text-decoration: none;
   font-weight: 600;
@@ -342,7 +342,7 @@ body {
   color: #4a5568;
   padding: 10px 20px;
   border: none;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   cursor: pointer;
   text-decoration: none;
   font-weight: 600;
@@ -371,7 +371,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   border: none;
   cursor: pointer;
   background: #f1f5f9;
@@ -383,12 +383,12 @@ body {
 .boton-editar:hover { background: #e0e7ff; color: #4f46e5; }
 .boton-ver:hover { background: #dcfce7; color: #16a34a; }
 
-/* ==========================================
-   8. ESTADOS E INDICADORES - SIN REDONDEO
-   ========================================== */
+
+
+
 .estado-bolita {
   padding: 4px 12px;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   font-size: 12px;
   font-weight: 600;
   display: inline-block;
@@ -421,9 +421,9 @@ body {
   font-weight: 600;
 }
 
-/* ==========================================
-   9. UTILIDADES (LAYOUT)
-   ========================================== */
+
+
+
 .disposicion-flexible { display: flex; }
 .direccion-columna { flex-direction: column; }
 .alinear-centro { align-items: center; }
@@ -447,7 +447,7 @@ body {
 .mt-25 { margin-top: 25px !important; }
 .mt-5 { margin-top: 5px !important; }
 .p-5 { padding: 5px !important; }
-.br-4 { border-radius: 0 !important; } /* Modificado a 0 */
+.br-4 { border-radius: 0 !important; } 
 .border-ddd { border: 1px solid #ddd !important; }
 
 .margen-abajo { margin-bottom: 20px; }
@@ -460,9 +460,9 @@ body {
 .lh-1-4 { line-height: 1.4; }
 .opacity-6 { opacity: 0.6; }
 
-/* ==========================================
-   10. COMPONENTES ESPECÍFICOS
-   ========================================== */
+
+
+
 .anuncio-item-completo {
   border-bottom: 1px solid #edf2f7;
   padding: 20px 0;
@@ -506,7 +506,7 @@ body {
   justify-content: center;
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   text-decoration: none;
   color: #4a5568;
   font-weight: 600;
@@ -522,21 +522,21 @@ body {
   width: 100px;
   height: 8px;
   background: #edf2f7;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
   margin-top: 5px;
   overflow: hidden;
 }
 
 .barra-progreso {
   height: 100%;
-  border-radius: 0; /* Eliminado */
+  border-radius: 0; 
 }
 
-/* ==========================================
-   11. ENLACE ESPECIAL DE CRÉDITOS
-   ========================================== */
+
+
+
 .enlace-creditos {
-  color: #a0aec0 !important; /* Color grisáceo diferente */
+  color: #a0aec0 !important; 
   border: 1px border transparent;
 }
 
@@ -546,7 +546,7 @@ body {
 }
 
 .enlace-creditos.activo {
-  background: #4a5568 !important; /* Color de fondo diferente al estar activo */
+  background: #4a5568 !important; 
   color: white !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
 }

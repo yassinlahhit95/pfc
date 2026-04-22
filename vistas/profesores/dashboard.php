@@ -6,10 +6,10 @@ if (!isset($_SESSION['idProfesor'])) {
     exit;
 }
 
-require_once __DIR__ . "/../modelos/profesores.php";
-require_once __DIR__ . "/../modelos/anuncios.php";
-require_once __DIR__ . "/../modelos/reclamaciones.php";
-require_once __DIR__ . "/../modelos/estudiantes.php";
+require_once __DIR__ . "/../../modelos/profesores.php";
+require_once __DIR__ . "/../../modelos/anuncios.php";
+require_once __DIR__ . "/../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../modelos/estudiantes.php";
 
 $idProfesor = $_SESSION['idProfesor'];
 $profesor = obtenerProfesorPorId($idProfesor);
@@ -19,7 +19,7 @@ $estudiantes = listarEstudiantesPorProfesor($idProfesor);
 
 $tituloDelPagina = "Dashboard Profesor";
 $seccionActual = 'inicio';
-include_once "vistas/comunes/nav.php";
+include_once __DIR__ . "/comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -29,7 +29,7 @@ include_once "vistas/comunes/nav.php";
 
 <div class="disposicion-flexible separacion-grande">
     <div class="flexible-rellenar">
-        <!-- Sección de Anuncios -->
+        
         <div class="tarjeta-blanca margen-abajo">
             <div class="titulo-tarjeta"><h3><i class="fas fa-bullhorn"></i> Avisos Recientes</h3></div>
             <div class="contenido-anuncios">
@@ -53,7 +53,7 @@ include_once "vistas/comunes/nav.php";
             </div>
         </div>
 
-        <!-- Últimas Reclamaciones Reportadas -->
+        
         <div class="tarjeta-blanca">
             <div class="titulo-tarjeta"><h3><i class="fas fa-exclamation-circle"></i> Mis Reportes Recientes</h3></div>
             <div class="contenedor-tabla">
@@ -96,7 +96,7 @@ include_once "vistas/comunes/nav.php";
         </div>
     </div>
 
-    <!-- Info resumen -->
+    
     <div class="tarjeta-blanca ancho-fijo-300">
         <div class="titulo-tarjeta"><h3>Resumen de Actividad</h3></div>
         <div class="resumen-metricas">
@@ -113,9 +113,9 @@ include_once "vistas/comunes/nav.php";
                 <p><strong>Especialidad:</strong><br><?php echo $esp; ?></p>
                 <p><strong>Email:</strong><br><?php echo $profesor['emailProfesor']; ?></p>
             </div>
-            <a href="/pfc/profesores/vistas/perfil/ver.php" class="boton-secundario ancho-total center-text">Editar Perfil</a>
+            <a href="/pfc/vistas/profesores/perfil/ver.php" class="boton-secundario ancho-total center-text">Editar Perfil</a>
         </div>
     </div>
 </div>
 
-<?php include 'vistas/comunes/footer.php'; ?>
+<?php include __DIR__ . '/comunes/footer.php'; ?>

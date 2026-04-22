@@ -4,7 +4,7 @@ require_once "../../../modelos/conectar.php";
 require_once "../../../modelos/modulos.php";
 require_once "../../../modelos/ciclos.php";
 
-// Usamos el nombre descriptivo de la variable y del parametro GET
+
 $idDelModulo = 0;
 if (isset($_GET['idModulo'])) {
     $idDelModulo = $_GET['idModulo'];
@@ -51,12 +51,12 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Módulo *</label>
-                <input type="text" name="nombreModulo" value="<?php echo $modulo['nombreModulo']; ?>" required>
+                <input type="text" name="nombreModulo" value="<?php echo $modulo['nombreModulo']; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Ciclo Formativo *</label>
-                <select name="idCiclo" required>
+                <select name="idCiclo">
                     <?php foreach ($listaDeCiclos as $ciclo) { ?>
                         <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>>
                             <?php echo $ciclo['nombreCiclo']; ?>
@@ -67,7 +67,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Horas Totales *</label>
-                <input type="text" name="horasMaximas" value="<?php echo $modulo['horasMaximas']; ?>" required>
+                <input type="text" name="horasMaximas" value="<?php echo $modulo['horasMaximas']; ?>">
             </div>
         </div>
 

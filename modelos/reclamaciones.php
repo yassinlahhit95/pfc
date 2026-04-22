@@ -9,54 +9,40 @@ function listarReclamaciones() {
             LEFT JOIN profesores ON reclamaciones.idProfesor = profesores.idProfesor
             ORDER BY idReclamacion DESC";
     $resultado = mysqli_query($conexion, $sql);
-    $reclamaciones = [];
-    if ($resultado) {
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $reclamaciones[] = $fila;
-        }
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($conexion);
-    return $reclamaciones;
+    return $lista;
 }
 
-function obtenerReclamacionPorId($id) {
+function obtenerReclamacionPorId($idReclamacion) {
     $conexion = obtenerConexion();
     $sql = "SELECT reclamaciones.*, estudiantes.nombreEstudiante, profesores.nombreProfesor 
             FROM reclamaciones 
             JOIN estudiantes ON reclamaciones.idEstudiante = estudiantes.idEstudiante
             LEFT JOIN profesores ON reclamaciones.idProfesor = profesores.idProfesor
-            WHERE idReclamacion = $id";
+            WHERE idReclamacion = $idReclamacion";
     $resultado = mysqli_query($conexion, $sql);
-    $reclamacion = mysqli_fetch_assoc($resultado);
+    $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
-    return $reclamacion;
+    return $fila;
 }
 
-function cambiarEstadoReclamacion($id, $nuevoEstado) {
+function cambiarEstadoReclamacion($idReclamacion, $nuevoEstado) {
     $conexion = obtenerConexion();
-    $sql = "UPDATE reclamaciones SET estadoReclamacion = '$nuevoEstado' WHERE idReclamacion = $id";
+    $sql = "UPDATE reclamaciones SET estadoReclamacion = '$nuevoEstado' WHERE idReclamacion = $idReclamacion";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
-function insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha) {
+function insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $fecha) {
     $conexion = obtenerConexion();
     $idProfVal = $idProfesor ? $idProfesor : "NULL";
-    $sql = "INSERT INTO reclamaciones (idEstudiante, idProfesor, asunto, descripcion, gravedad, fecha) 
-            VALUES ($idEstudiante, $idProfVal, '$asunto', '$descripcion', '$gravedad', '$fecha')";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
-}
-
-function actualizarReclamacionCompleta($id, $asunto, $descripcion, $gravedad, $fecha, $idEstudiante = null) {
-    $conexion = obtenerConexion();
-    $sql = "UPDATE reclamaciones SET asunto = '$asunto', descripcion = '$descripcion', gravedad = '$gravedad', fecha = '$fecha'";
-    if ($idEstudiante) {
-        $sql .= ", idEstudiante = $idEstudiante";
-    }
-    $sql .= " WHERE idReclamacion = $id";
+    $sql = "INSERT INTO reclamaciones (idEstudiante, idProfesor, asunto, descripcion, fecha) 
+            VALUES ($idEstudiante, $idProfVal, '$asunto', '$descripcion', '$fecha')";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
@@ -70,14 +56,12 @@ function listarReclamacionesPorEstudiante($idEstudiante) {
             WHERE reclamaciones.idEstudiante = $idEstudiante
             ORDER BY idReclamacion DESC";
     $resultado = mysqli_query($conexion, $sql);
-    $reclamaciones = [];
-    if ($resultado) {
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $reclamaciones[] = $fila;
-        }
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($conexion);
-    return $reclamaciones;
+    return $lista;
 }
 
 function listarReclamacionesPorProfesor($idProfesor) {
@@ -88,20 +72,17 @@ function listarReclamacionesPorProfesor($idProfesor) {
             WHERE reclamaciones.idProfesor = $idProfesor
             ORDER BY idReclamacion DESC";
     $resultado = mysqli_query($conexion, $sql);
-    $reclamaciones = [];
-    if ($resultado) {
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $reclamaciones[] = $fila;
-        }
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($conexion);
-    return $reclamaciones;
+    return $lista;
 }
 
-function eliminarReclamacion($id) {
+function eliminarReclamacion($idReclamacion) {
     $conexion = obtenerConexion();
-    $sql = "DELETE FROM reclamaciones WHERE idReclamacion = $id";
-    $resultado = mysqli_query($conexion, $sql);
+    $resultado = mysqli_query($conexion, "DELETE FROM reclamaciones WHERE idReclamacion = $idReclamacion");
     mysqli_close($conexion);
     return $resultado;
 }

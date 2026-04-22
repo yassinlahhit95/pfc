@@ -1,16 +1,16 @@
 <?php
 session_start();
 require_once "../../../modelos/tfg.php";
-
-if (isset($_POST['idEstudiante'])) {
-    $id = $_POST['idEstudiante'];
-    if (eliminarArchivoTFG($id)) {
-        $_SESSION['exito'] = "Archivo TFG eliminado.";
-    } else {
-        $_SESSION['error'] = "No se pudo eliminar el archivo.";
-    }
+$id = $_POST['idEstudiante'];
+if (empty($id)) {
+    $_SESSION['error'] = "ID obligatorio";
+} else if (eliminarArchivoTFG($id)) {
+    $_SESSION['exito'] = "Ok";
+    header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+    exit;
+} else {
+    $_SESSION['error'] = "Error BD";
 }
-
 header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
 exit;
-?>
+

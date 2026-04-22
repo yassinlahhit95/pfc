@@ -9,8 +9,7 @@ if (!isset($_SESSION['idProfesor'])) {
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-// Filtrar estudiantes por los ciclos asignados al profesor
-$estudiantes = listarEstudiantesPorProfesor($idProfesor);
+$estudiantes = listarEstudiantes();
 
 $tituloDelPagina = "Nueva Reclamación - Portal Profesores";
 $seccionActual = 'reclamaciones';
@@ -18,49 +17,38 @@ include_once "../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Nueva Reclamación</h1>
-    <a href="/pfc/profesores/vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
+    <h1>Reportar Incidencia de Estudiante</h1>
+    <a href="/pfc/vistas/profesores/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/profesores/reclamaciones/insertar.php" method="POST" class="disposicion-flexible direccion-columna separacion-grande">
+    <form action="/pfc/controladores/profesores/reclamaciones/insertar.php" method="POST">
         <input type="hidden" name="idProfesor" value="<?php echo $idProfesor; ?>">
         
-        <div class="campo-formulario">
-            <label>Estudiante *</label>
-            <select name="idEstudiante" required>
-                <?php foreach ($estudiantes as $est) { ?>
-                    <option value="<?php echo $est['idEstudiante']; ?>"><?php echo $est['nombreEstudiante']; ?> (<?php echo $est['nombreCiclo']; ?>)</option>
-                <?php } ?>
-            </select>
-        </div>
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario">
+                <label>Estudiante *</label>
+                <select name="idEstudiante">
+                    <option value="">-- Seleccione un estudiante --</option>
+                    <?php foreach ($estudiantes as $est) { ?>
+                        <option value="<?php echo $est['idEstudiante']; ?>"><?php echo $est['nombreEstudiante']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
 
-        <div class="campo-formulario">
-            <label>Asunto *</label>
-            <input type="text" name="asunto" required placeholder="Ej: Comportamiento inapropiado">
-        </div>
+            <div class="campo-formulario">
+                <label>Asunto *</label>
+                <input type="text" name="asunto" placeholder="Falta de respeto, No entrega de tareas...">
+            </div>
 
-        <div class="campo-formulario">
-            <label>Gravedad *</label>
-            <select name="gravedad" required>
-                <option value="leve">Leve</option>
-                <option value="grave">Grave</option>
-                <option value="muy grave">Muy Grave</option>
-            </select>
-        </div>
-
-        <div class="campo-formulario">
-            <label>Fecha *</label>
-            <input type="date" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
-        </div>
-
-        <div class="campo-formulario">
-            <label>Descripción detallada *</label>
-            <textarea name="descripcion" rows="5" required placeholder="Explica aquí el motivo de la reclamación..."></textarea>
+            <div class="campo-formulario campo-ancho-total">
+                <label>Descripción detallada *</label>
+                <textarea name="descripcion" rows="5" placeholder="Explica aquí lo sucedido..."></textarea>
+            </div>
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="insertarReclamacion" class="boton-primario">Enviar Reclamación</button>
+            <button type="submit" name="insertarReclamacion" class="boton-primario">Enviar Reporte</button>
         </div>
     </form>
 </div>

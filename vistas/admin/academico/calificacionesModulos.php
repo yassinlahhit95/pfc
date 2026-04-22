@@ -21,16 +21,16 @@ if (isset($_GET['idModulo'])) {
     $idModuloElegido = $_GET['idModulo'];
 }
 
-// Obtenemos modulos (filtrados por ciclo si hay uno elegido)
+
 $listaModulos = [];
 if ($idCicloElegido) {
     $listaModulos = listarModulosPorCiclo($idCicloElegido);
 }
 
-// Obtenemos estudiantes (filtrados por ciclo si hay uno elegido)
+
 $listaEstudiantes = [];
 if ($idCicloElegido) {
-    $listaEstudiantes = listarEstudiantes(); // En un sistema real filtraríamos por ciclo
+    $listaEstudiantes = listarEstudiantes(); 
 }
 
 $exito = '';
@@ -108,7 +108,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <tbody>
                     <?php 
                     foreach ($listaEstudiantes as $est) { 
-                        // Solo mostrar estudiantes del ciclo
+                        
                         if ($est['idCiclo'] == $idCicloElegido) {
                             $notas = obtenerNotasModulo($est['idEstudiante'], $idModuloElegido);
                             

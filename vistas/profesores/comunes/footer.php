@@ -2,7 +2,7 @@
 </div>
 
 <script>
-// Toggle Menú Móvil
+
 const botonMenu = document.getElementById('boton-menu-movil');
 const barraLateral = document.querySelector('.barra-lateral');
 

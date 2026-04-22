@@ -6,7 +6,7 @@ include_once "../comunes/nav.php";
 
 require_once "../../../modelos/inventario.php";
 
-// Capturar mensajes de éxito o error
+
 $exito = '';
 if (isset($_SESSION['exito'])) {
     $exito = $_SESSION['exito'];
@@ -18,7 +18,7 @@ if (isset($_SESSION['error'])) {
 }
 unset($_SESSION['exito'], $_SESSION['error']);
 
-// Listas para las tablas
+
 $listaPrestamosActivos = listarPrestamosActivos();
 ?>
 
@@ -27,10 +27,10 @@ $listaPrestamosActivos = listarPrestamosActivos();
         <h1>Gestión de Préstamos</h1>
     </div>
     <div class="acciones-pagina">
-        <a href="/pfc/admin/vistas/inventario/agregarPrestamo.php" class="boton-primario">
+        <a href="/pfc/vistas/admin/inventario/agregarPrestamo.php" class="boton-primario">
             <i class="fas fa-plus"></i> Nuevo Préstamo
         </a>
-        <a href="/pfc/admin/vistas/inventario/verInventario.php" class="boton-secundario">
+        <a href="/pfc/vistas/admin/inventario/verInventario.php" class="boton-secundario">
             <i class="fas fa-box"></i> Ver Inventario
         </a>
     </div>
@@ -65,9 +65,9 @@ $listaPrestamosActivos = listarPrestamosActivos();
                         <td><?php echo $p['nombreEstudiante']; ?></td>
                         <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
                         <td>
-                            <form action="/pfc/admin/controladores/inventario/devolver.php" method="POST" class="d-inline">
+                            <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
                                 <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                <input type="hidden" name="redireccion" value="/pfc/admin/vistas/inventario/gestionarPrestamos.php">
+                                <input type="hidden" name="redireccion" value="/pfc/vistas/admin/inventario/gestionarPrestamos.php">
                                 <button type="submit" class="boton-secundario boton-pequeno">
                                     <i class="fas fa-undo"></i> Devolver
                                 </button>

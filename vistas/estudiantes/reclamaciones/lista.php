@@ -18,7 +18,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Mis Reclamaciones Enviadas</h1>
-    <a href="/pfc/estudiantes/vistas/reclamaciones/agregar.php" class="boton-primario">Nueva Reclamación</a>
+    <a href="/pfc/vistas/estudiantes/reclamaciones/agregar.php" class="boton-primario">Nueva Reclamación</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -30,7 +30,6 @@ include_once "../comunes/nav.php";
                     <th>Asunto</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Gravedad</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,7 +61,6 @@ include_once "../comunes/nav.php";
                                     <?php echo ucfirst($estRec); ?>
                                 </span>
                             </td>
-                            <td><?php echo ucfirst($rec['gravedad']); ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>

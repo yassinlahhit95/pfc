@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
 
-// Filtramos solo los estudiantes y módulos que pertenecen a los ciclos del profesor
+
 $estudiantes = listarEstudiantesPorProfesor($idProfesor);
 $modulos = listarModulosPorProfesor($idProfesor);
 
@@ -22,7 +22,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Asignar Nueva Nota</h1>
-    <a href="/pfc/profesores/vistas/calificaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -30,7 +30,7 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Estudiante *</label>
-                <select name="idEstudiante" required>
+                <select name="idEstudiante">
                     <?php foreach ($estudiantes as $est) { ?>
                         <option value="<?php echo $est['idEstudiante']; ?>"><?php echo $est['nombreEstudiante']; ?> (<?php echo $est['nombreCiclo']; ?>)</option>
                     <?php } ?>
@@ -39,7 +39,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Módulo *</label>
-                <select name="idModulo" required>
+                <select name="idModulo">
                     <?php foreach ($modulos as $mod) { ?>
                         <option value="<?php echo $mod['idModulo']; ?>"><?php echo $mod['nombreModulo']; ?> (<?php echo $mod['nombreCiclo']; ?>)</option>
                     <?php } ?>

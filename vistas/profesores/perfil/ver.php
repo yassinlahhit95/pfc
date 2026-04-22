@@ -18,7 +18,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Mi Perfil</h1>
-    <a href="/pfc/profesores/index.php" class="boton-secundario">← Inicio</a>
+    <a href="/pfc/vistas/profesores/dashboard.php" class="boton-secundario">← Inicio</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -62,7 +62,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="margen-arriba">
-        <a href="/pfc/profesores/vistas/perfil/editar.php" class="boton-primario">
+        <a href="/pfc/vistas/profesores/perfil/editar.php" class="boton-primario">
             <i class="fas fa-edit"></i> Editar Información
         </a>
     </div>

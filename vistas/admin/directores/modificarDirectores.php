@@ -14,7 +14,7 @@ if (!$datosDirectorBD) {
     exit;
 }
 
-// Datos y errores
+
 $errores = [];
 if (isset($_SESSION['errores'])) {
     $errores = $_SESSION['errores'];
@@ -26,7 +26,7 @@ if (isset($_SESSION['datos_director'])) {
 }
 unset($_SESSION['errores'], $_SESSION['datos_director']);
 
-// Variables simples
+
 $nombre = $datosDirectorBD['nombreDirector'];
 if (isset($datos['nombreDirector'])) {
     $nombre = $datos['nombreDirector'];

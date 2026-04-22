@@ -2,7 +2,7 @@
 session_start();
 require_once "../../../modelos/profesores.php";
 
-// Usamos idProfesor para ser claros
+
 $idDelProfesor = 0;
 if (isset($_GET['idProfesor'])) {
     $idDelProfesor = $_GET['idProfesor'];
@@ -26,7 +26,7 @@ if (isset($_SESSION['datos_profesor'])) {
 }
 unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
-// Variables simples
+
 $nombre = $datosProfesorBD['nombreProfesor'];
 if (isset($datos['nombreProfesor'])) {
     $nombre = $datos['nombreProfesor'];

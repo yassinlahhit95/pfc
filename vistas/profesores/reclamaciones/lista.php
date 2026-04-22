@@ -18,7 +18,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Mis Reclamaciones Enviadas</h1>
-    <a href="/pfc/profesores/vistas/reclamaciones/agregar.php" class="boton-primario">Nueva Reclamación</a>
+    <a href="/pfc/vistas/profesores/reclamaciones/agregar.php" class="boton-primario">Nueva Reclamación</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -30,7 +30,6 @@ include_once "../comunes/nav.php";
                     <th>Asunto</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Gravedad</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -52,10 +51,9 @@ include_once "../comunes/nav.php";
                                     <?php echo ucfirst($rec['estadoReclamacion']); ?>
                                 </span>
                             </td>
-                            <td><?php echo ucfirst($rec['gravedad']); ?></td>
                             <td>
-                                <a href="/pfc/profesores/vistas/reclamaciones/editar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-editar" title="Editar"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/profesores/controladores/reclamaciones/borrar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-eliminar" title="Eliminar" onclick="return confirm('¿Seguro?');"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/vistas/profesores/reclamaciones/editar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-editar" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="/pfc/controladores/profesores/reclamaciones/borrar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-eliminar" title="Eliminar" onclick="return confirm('¿Seguro?');"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
