@@ -23,7 +23,7 @@ include_once "../comunes/nav.php";
 <div class="encabezado-pagina">
     <div>
         <h1>Crear Nuevo Reto</h1>
-        <p class="subtitulo-encabezado">Defina un reto colaborativo y vincule módulos</p>
+        <p class="subtitulo-encabezado">Defina un nuevo reto y vincule los módulos correspondientes</p>
     </div>
     <a href="/pfc/vistas/admin/retos/verRetos.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
@@ -31,7 +31,7 @@ include_once "../comunes/nav.php";
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/retos/insertar.php" method="POST">
+    <form action="/pfc/controladores/admin/retos/insertar.php" method="POST" style="max-width: 800px;">
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
                 <label>Nombre del Reto *</label>
@@ -41,18 +41,18 @@ include_once "../comunes/nav.php";
                     $nombreReto = $datos['nombreReto'];
                 }
                 ?>
-                <input type="text" name="nombreReto" placeholder="Reto Sostenibilidad 2026" value="<?php echo $nombreReto; ?>">
+                <input type="text" name="nombreReto" placeholder="Nombre del reto" value="<?php echo $nombreReto; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Horas del Reto *</label>
                 <?php 
-                $horasReto = 0;
+                $horasReto = '';
                 if (isset($datos['horasReto'])) {
                     $horasReto = $datos['horasReto'];
                 }
                 ?>
-                <input type="text" name="horasReto" value="<?php echo $horasReto; ?>">
+                <input type="text" name="horasReto" placeholder="40" value="<?php echo $horasReto; ?>">
             </div>
 
             <div class="campo-formulario">
@@ -78,11 +78,11 @@ include_once "../comunes/nav.php";
             </div>
         </div>
 
-        <div class="mt-25">
+        <div class="margen-arriba-grande">
             <h4 class="margen-abajo">Vincular Módulos (Subproyectos)</h4>
-            <div class="lista-checkboxes">
+            <div class="lista-checkboxes-columna" style="display: flex; flex-direction: column; gap: 10px; background: #f4f8ff; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
                 <?php foreach ($listaModulos as $modulo) { ?>
-                    <label class="item-checkbox">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px; border-bottom: 1px solid #eee;">
                         <?php 
                         $checked = '';
                         if (isset($datos['modulos']) && is_array($datos['modulos'])) {
@@ -92,7 +92,7 @@ include_once "../comunes/nav.php";
                         }
                         ?>
                         <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>" <?php echo $checked; ?>>
-                        <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
+                        <span><strong><?php echo $modulo['nombreModulo']; ?></strong> (<?php echo $modulo['nombreCiclo']; ?>)</span>
                     </label>
                 <?php } ?>
             </div>
@@ -101,7 +101,7 @@ include_once "../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba pt-20">
             <button type="submit" name="insertarReto" class="boton-primario">
                 <i class="fas fa-save"></i> Crear Reto
             </button>

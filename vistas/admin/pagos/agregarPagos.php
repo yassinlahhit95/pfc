@@ -28,11 +28,22 @@ $fechaHoy = date('Y-m-d');
 <?php } ?>
 
 <div class="tarjeta-blanca">
+    <!-- Mensaje de aviso destacado arriba -->
+    <div class="aviso-sistema-pago margen-abajo" style="background: #e7f3ff; border-left: 5px solid #2196F3; padding: 15px; border-radius: 4px;">
+        <p style="margin: 0; color: #0d47a1; font-weight: 500;">
+            <i class="fas fa-info-circle"></i> El sistema calculará automáticamente la fecha del próximo cobro.
+        </p>
+    </div>
+
     <form action="/pfc/controladores/admin/pagos/insertar.php" method="POST" enctype="multipart/form-data">
         <div class="formulario-cuadricula">
+            
             <div class="campo-formulario campo-ancho-total">
                 <label>Estudiante *</label>
-                <select name="idEstudiante">
+                <!-- Filtro básico para buscar estudiante -->
+                <input type="text" id="filtroEstudiante" onkeyup="filtrarLista()" placeholder="Buscar estudiante por nombre o DNI..." style="margin-bottom: 10px; border: 1px dashed #667eea;">
+                
+                <select name="idEstudiante" id="selectEstudiantes">
                     <option value="">Seleccione un Estudiante</option>
                     <?php foreach ($listaEstudiantes as $estudiante) { ?>
                         <option value="<?php echo $estudiante['idEstudiante']; ?>">
@@ -55,12 +66,10 @@ $fechaHoy = date('Y-m-d');
                     <option value="semestral">Semestral</option>
                     <option value="unico">Pago Único</option>
                 </select>
-                <small class="texto-atenuado">El sistema calculará automáticamente la fecha del próximo cobro.</small>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Pago Realizado</label>
-                <!-- Se muestra hoy automáticamente en formato español -->
                 <input type="text" value="<?php echo date('d/m/Y'); ?>" readonly style="background-color: #f9f9f9; color: #666;">
                 <input type="hidden" name="fechaPago" value="<?php echo $fechaHoy; ?>">
             </div>
@@ -77,5 +86,23 @@ $fechaHoy = date('Y-m-d');
         </div>
     </form>
 </div>
+
+<script>
+function filtrarLista() {
+    var input = document.getElementById("filtroEstudiante");
+    var filter = input.value.toLowerCase();
+    var select = document.getElementById("selectEstudiantes");
+    var options = select.options;
+
+    for (var i = 1; i < options.length; i++) {
+        var txtValue = options[i].text;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            options[i].style.display = "";
+        } else {
+            options[i].style.display = "none";
+        }
+    }
+}
+</script>
 
 <?php include '../comunes/footer.php'; ?>

@@ -14,7 +14,7 @@ $cantidadEstudiantes = contarEstudiantes();
 $cantidadProfesores = contarProfesores();
 $cantidadDirectores = contarDirectores();
 $dineroRecaudado = obtenerTotalRecaudado();
-$pagosPendientes = contarPagosPendientes();
+$pagosRealizados = contarPagosRealizados();
 
 $anunciosPorPagina = 5;
 $paginaActual = 1;
@@ -52,7 +52,7 @@ include 'comunes/nav.php';
     <div class="info-estadistica"><h3><?php echo number_format($dineroRecaudado, 2); ?> €</h3><p>Recaudado</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?php echo $pagosPendientes; ?></h3><p>Pendientes</p></div>
+    <div class="info-estadistica"><h3><?php echo $pagosRealizados; ?></h3><p>Cobros</p></div>
   </div>
 </div>
 

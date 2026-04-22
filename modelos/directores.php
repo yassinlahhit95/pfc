@@ -3,25 +3,31 @@ require_once("conectar.php");
 
 function listarDirectores() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT * FROM directores ORDER BY idDirector ASC");
+    $sql = "SELECT * FROM directores ORDER BY idDirector ASC";
+    $resultado = mysqli_query($conexion, $sql);
     $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
+    while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
     mysqli_close($conexion);
     return $lista;
 }
 
-function insertarDirector($nombre, $email, $dni, $fechaAlta) {
+function insertarDirector($nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, fechaAltaDirector) VALUES ('$nombre', '$email', '$dni', '$fechaAlta')");
+    $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector) 
+            VALUES ('$nombreDirector', '$emailDirector', '$dniDirector', '$telefonoDirector', '$fechaAlta')";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
-function actualizarDirector($idDirector, $nombre, $email, $dni, $fechaAlta) {
+function actualizarDirector($idDirector, $nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "UPDATE directores SET nombreDirector = '$nombre', emailDirector = '$email', dniDirector = '$dni', fechaAltaDirector = '$fechaAlta' WHERE idDirector = $idDirector");
+    $sql = "UPDATE directores SET nombreDirector = '$nombreDirector', emailDirector = '$emailDirector', 
+            dniDirector = '$dniDirector', telefonoDirector = '$telefonoDirector', fechaAltaDirector = '$fechaAlta' 
+            WHERE idDirector = $idDirector";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }

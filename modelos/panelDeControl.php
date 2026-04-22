@@ -99,7 +99,7 @@ function contarPrestamosActivos() {
 
 function obtenerTotalRecaudado() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT SUM(monto) as total FROM pagos WHERE estadoPago = 'pagado'");
+    $resultado = mysqli_query($conexion, "SELECT SUM(monto) as total FROM pagos");
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     $total = 0;
@@ -109,11 +109,7 @@ function obtenerTotalRecaudado() {
     return $total;
 }
 
-function contarPagosPendientes() {
-    $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM pagos WHERE estadoPago = 'pendiente'");
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    return $fila['total'];
+function contarPagosRealizados() {
+    return contarPagos();
 }
 ?>
