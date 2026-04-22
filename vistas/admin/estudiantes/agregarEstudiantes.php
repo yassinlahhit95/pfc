@@ -20,7 +20,7 @@ if (isset($_SESSION['datos_estudiante'])) {
 }
 unset($_SESSION['errores'], $_SESSION['datos_estudiante']);
 
-// Variables simples
+
 $nombre = '';
 if (isset($datos['nombreEstudiante'])) {
     $nombre = $datos['nombreEstudiante'];

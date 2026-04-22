@@ -1,5 +1,5 @@
 <?php
-// --- PLANTILLA NAVEGACIÓN - SECCIÓN ESTUDIANTES ---
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -19,7 +19,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 </head>
 <body>
 
-<!-- Botón para menú en móviles -->
+
 <button class="menu-toggle solo-movil" onclick="toggleMenu()">
     <i class="fas fa-bars"></i>
 </button>
@@ -71,7 +71,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="/pfc/logout.php" class="enlace-menu">
+                <a href="/pfc/controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
                 </a>
             </div>

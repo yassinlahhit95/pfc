@@ -3,21 +3,13 @@ session_start();
 require_once "../../../modelos/modulos.php";
 
 if (isset($_POST['idModulo'])) {
-    $idDelModulo = $_POST['idModulo'];
-    
-    if (empty($idDelModulo) || !ctype_digit($idDelModulo)) {
-        $_SESSION['error'] = "ID de módulo no válido.";
-        header("Location: /pfc/vistas/admin/modulos/verModulos.php");
-        exit;
-    }
-
-    if (eliminarModulo($idDelModulo)) {
-        $_SESSION['mensaje'] = "Módulo eliminado con éxito.";
+    $id = $_POST['idModulo'];
+    if (eliminarModulo($id)) {
+        $_SESSION['exito'] = "Módulo eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "No se ha podido eliminar el módulo.";
+        $_SESSION['error'] = "Error al eliminar el módulo.";
     }
 }
-
 header("Location: /pfc/vistas/admin/modulos/verModulos.php");
 exit;
 ?>

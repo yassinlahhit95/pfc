@@ -5,7 +5,7 @@ $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/pagos.php";
-$listaPagos = listarPagos();
+$listaPagos = listarTodosLosPagos();
 
 $exito = '';
 if (isset($_SESSION['exito'])) {
@@ -30,10 +30,10 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($exito) { ?>
+<?php if (!empty($exito)) { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if (!empty($error)) { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
@@ -45,36 +45,32 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <th>Estudiante</th>
                     <th>Concepto</th>
                     <th>Monto</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
+                    <th>Tipo</th>
+                    <th>Fecha Cobro</th>
+                    <th>Próximo Pago</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaPagos)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No hay registros de pagos</td></tr>
+                    <tr><td colspan="7" class="sin-datos">No hay registros de pagos</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaPagos as $pago) { ?>
                     <tr>
                         <td><strong><?php echo $pago['nombreEstudiante']; ?></strong></td>
                         <td><?php echo $pago['concepto']; ?></td>
                         <td><?php echo number_format($pago['monto'], 2); ?> €</td>
+                        <td><span class="etiqueta-gris"><?php echo ucfirst($pago['tipoPago']); ?></span></td>
                         <td><?php echo date('d/m/Y', strtotime($pago['fechaPago'])); ?></td>
                         <td>
-                            <?php 
-                            $claseEstado = 'naranja';
-                            if ($pago['estadoPago'] == 'pagado') {
-                                $claseEstado = 'verde';
-                            }
-                            ?>
-                            <span class="etiqueta-estado <?php echo $claseEstado; ?>">
-                                <?php echo ucfirst($pago['estadoPago']); ?>
-                            </span>
+                            <strong class="texto-primario">
+                                <?php echo date('d/m/Y', strtotime($pago['fechaProximoPago'])); ?>
+                            </strong>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <?php if ($pago['comprobante']) { ?>
-                                    <a href="uploads/<?php echo $pago['comprobante']; ?>" target="_blank" 
+                                <?php if (!empty($pago['comprobante'])) { ?>
+                                    <a href="/pfc/public/uploads/<?php echo $pago['comprobante']; ?>" target="_blank" 
                                        class="boton-icono boton-ver" title="Ver Comprobante">
                                         <i class="fas fa-file-invoice"></i>
                                     </a>

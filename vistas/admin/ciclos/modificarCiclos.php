@@ -6,7 +6,7 @@ require_once "../../../modelos/niveles.php";
 require_once "../../../modelos/profesores.php";
 require_once "../../../modelos/aulas.php";
 
-// Usamos el nombre descriptivo de la variable y del parametro GET
+
 $idDelCiclo = 0;
 if (isset($_GET['idCiclo'])) {
     $idDelCiclo = $_GET['idCiclo'];
@@ -61,12 +61,12 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
                 <label>Nombre del Ciclo *</label>
-                <input type="text" name="nombreCiclo" value="<?php echo $datosCicloBD['nombreCiclo']; ?>" required>
+                <input type="text" name="nombreCiclo" value="<?php echo $datosCicloBD['nombreCiclo']; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Nivel Formativo *</label>
-                <select name="idNivel" required>
+                <select name="idNivel">
                     <?php foreach ($listaNiveles as $nivel) { ?>
                         <option value="<?php echo $nivel['idNivel']; ?>" <?php if ($datosCicloBD['idNivel'] == $nivel['idNivel']) { echo 'selected'; } ?>>
                             <?php echo $nivel['nombreNivel']; ?>
@@ -77,7 +77,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Descripción del Ciclo *</label>
-                <textarea name="descripcionCiclo" rows="3" required><?php echo $datosCicloBD['descripcionCiclo']; ?></textarea>
+                <textarea name="descripcionCiclo" rows="3"><?php echo $datosCicloBD['descripcionCiclo']; ?></textarea>
             </div>
         </div>
 

@@ -43,7 +43,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
-<!-- Formulario Simple (en fila) -->
+
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
         <h3>Nueva Aula</h3>
@@ -57,7 +57,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 $nombreAula = $datos['nombreAula'];
             }
             ?>
-            <input type="text" name="nombreAula" value="<?php echo $nombreAula; ?>" placeholder="Ej: Aula 101">
+            <input type="text" name="nombreAula" value="<?php echo $nombreAula; ?>" placeholder="Aula 101">
             <?php if (isset($errores['nombreAula'])) { ?>
                 <p class="error-campo"><?php echo $errores['nombreAula']; ?></p>
             <?php } ?>

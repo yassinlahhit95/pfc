@@ -16,35 +16,21 @@ if (isset($_GET['idPago'])) {
 $datosPagoBD = obtenerPagoPorId($idDelPago);
 
 if (!$datosPagoBD) {
-    header("Location: verPagosGeneral.php");
+    header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
     exit;
 }
 
 $listaEstudiantes = listarEstudiantes();
 
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
-
-$datos = $datosPagoBD;
-if (isset($_SESSION['datos_pagos'])) {
-    $datos = $_SESSION['datos_pagos'];
-}
-unset($_SESSION['errores'], $_SESSION['datos_pagos']);
-
-// Variables simples
-$idElegido = $datos['idEstudiante'];
-$concepto = $datos['concepto'];
-$monto = $datos['monto'];
-$tipoElegido = $datos['tipoPago'];
-$estadoElegido = $datos['estadoPago'];
-$fecha = $datos['fechaPago'];
+$idElegido = $datosPagoBD['idEstudiante'];
+$monto = $datosPagoBD['monto'];
+$tipoElegido = $datosPagoBD['tipoPago'];
+$fecha = $datosPagoBD['fechaPago'];
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Pago #<?php echo $idDelPago; ?></h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">Volver</a>
+    <a href="/pfc/vistas/admin/pagos/verPagosGeneral.php" class="boton-secundario">Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -63,14 +49,9 @@ $fecha = $datos['fechaPago'];
                 </select>
             </div>
 
-            <div class="campo-formulario campo-ancho-total">
-                <label>Concepto *</label>
-                <input type="text" name="concepto" value="<?php echo $concepto; ?>">
-            </div>
-
             <div class="campo-formulario">
                 <label>Monto (€) *</label>
-                <input type="text" name="monto" value="<?php echo $monto; ?>">
+                <input type="text" name="monto" value="<?php echo $monto; ?>" placeholder="50.00">
             </div>
 
             <div class="campo-formulario">
@@ -84,19 +65,11 @@ $fecha = $datos['fechaPago'];
             </div>
 
             <div class="campo-formulario">
-                <label>Estado *</label>
-                <select name="estadoPago">
-                    <option value="pendiente" <?php if ($estadoElegido == 'pendiente') { echo 'selected'; } ?>>Pendiente</option>
-                    <option value="pagado" <?php if ($estadoElegido == 'pagado') { echo 'selected'; } ?>>Pagado</option>
-                </select>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Fecha de Pago *</label>
+                <label>Fecha de Pago Realizado *</label>
                 <input type="date" name="fechaPago" value="<?php echo $fecha; ?>">
             </div>
 
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo-formulario">
                 <label>Comprobante actual: <?php 
                     if ($datosPagoBD['comprobante']) {
                         echo $datosPagoBD['comprobante'];

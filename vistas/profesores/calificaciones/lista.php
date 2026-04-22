@@ -18,7 +18,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Notas de Alumnos</h1>
-    <a href="/pfc/profesores/vistas/calificaciones/agregar.php" class="boton-primario">Asignar Nota</a>
+    <a href="/pfc/vistas/profesores/calificaciones/agregar.php" class="boton-primario">Asignar Nota</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -46,8 +46,8 @@ include_once "../comunes/nav.php";
                             <td><?php echo $nota['nota_2ev']; ?></td>
                             <td class="texto-negrita"><?php echo $nota['nota_2final']; ?></td>
                             <td>
-                                <a href="/pfc/profesores/vistas/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/profesores/controladores/calificaciones/borrar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/vistas/profesores/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
+                                <a href="/pfc/controladores/profesores/calificaciones/borrar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

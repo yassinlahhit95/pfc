@@ -1,25 +1,21 @@
 <?php
 session_start();
 
-// Simple session check for exercise project
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
 
-// Referencia a modelos compartidos - Ajustado a la nueva estructura
 require_once "../../modelos/conectar.php";
 require_once "../../modelos/panelDeControl.php";
 require_once "../../modelos/anuncios.php";
 
-// Usar funciones del panel de control
 $cantidadEstudiantes = contarEstudiantes();
 $cantidadProfesores = contarProfesores();
 $cantidadDirectores = contarDirectores();
 $dineroRecaudado = obtenerTotalRecaudado();
 $pagosPendientes = contarPagosPendientes();
 
-// Configuracion de anuncios
 $anunciosPorPagina = 5;
 $paginaActual = 1;
 if (isset($_GET['p_anuncios'])) {
@@ -35,7 +31,7 @@ $listaAnuncios = listarAnunciosConPaginas($anunciosPorPagina);
 
 $titulo_pagina = "Panel de Control - Super Admin";
 $seccion = 'inicio';
-include 'comunes/nav.php'; // Ajustado
+include 'comunes/nav.php';
 ?>
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
@@ -44,7 +40,6 @@ include 'comunes/nav.php'; // Ajustado
   </div>
 </div>
 
-<!-- Sección de Estadísticas -->
 <h2 class="margen-abajo texto-oscuro">Análisis de Datos</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
@@ -62,10 +57,8 @@ include 'comunes/nav.php'; // Ajustado
 </div>
 
 <div class="cuadricula-secundaria">
-  <!-- Columna de Acciones y Anuncios -->
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     
-    <!-- Botones de Acceso Rápido -->
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
@@ -76,7 +69,6 @@ include 'comunes/nav.php'; // Ajustado
       </div>
     </div>
 
-    <!-- Lista de Anuncios -->
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
         <h3>Tablón de Anuncios</h3>
@@ -91,7 +83,6 @@ include 'comunes/nav.php'; // Ajustado
             <?php } ?>
         </div>
 
-        <!-- Botones de Paginación -->
         <?php if ($totalPaginas > 1) { ?>
         <div class="paginacion">
             <?php if ($paginaActual > 1) { ?>
@@ -112,7 +103,6 @@ include 'comunes/nav.php'; // Ajustado
     </div>
   </div>
 
-  <!-- Columna de Actividad y Eventos -->
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">

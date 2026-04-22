@@ -6,9 +6,9 @@ if (!isset($_SESSION['idEstudiante'])) {
     exit;
 }
 
-require_once __DIR__ . "/../modelos/estudiantes.php";
-require_once __DIR__ . "/../modelos/anuncios.php";
-require_once __DIR__ . "/../modelos/calificaciones.php";
+require_once __DIR__ . "/../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../modelos/anuncios.php";
+require_once __DIR__ . "/../../modelos/calificaciones.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudiante = obtenerEstudiantePorId($idEstudiante);
@@ -17,7 +17,7 @@ $notas = listarCalificacionesPorEstudiante($idEstudiante);
 
 $tituloDelPagina = "Dashboard Estudiante";
 $seccionActual = 'inicio';
-include_once "vistas/comunes/nav.php";
+include_once __DIR__ . "/comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -27,7 +27,7 @@ include_once "vistas/comunes/nav.php";
 
 <div class="disposicion-flexible separacion-grande">
     <div class="flexible-rellenar">
-        <!-- Sección de Anuncios -->
+        
         <div class="tarjeta-blanca margen-abajo">
             <div class="titulo-tarjeta"><h3><i class="fas fa-bullhorn"></i> Últimos Anuncios</h3></div>
             <div class="contenido-anuncios">
@@ -48,12 +48,12 @@ include_once "vistas/comunes/nav.php";
                         }
                         $contador++;
                     } ?>
-                    <a href="/pfc/estudiantes/vistas/anuncios/lista.php" class="enlace-pequeno">Ver todos los anuncios</a>
+                    <a href="/pfc/vistas/estudiantes/anuncios/lista.php" class="enlace-pequeno">Ver todos los anuncios</a>
                 <?php } ?>
             </div>
         </div>
 
-        <!-- Resumen de Notas -->
+        
         <div class="tarjeta-blanca">
             <div class="titulo-tarjeta"><h3><i class="fas fa-graduation-cap"></i> Calificaciones Recientes</h3></div>
             <div class="contenedor-tabla">
@@ -91,12 +91,12 @@ include_once "vistas/comunes/nav.php";
                         <?php } ?>
                     </tbody>
                 </table>
-                <a href="/pfc/estudiantes/vistas/calificaciones/lista.php" class="enlace-pequeno margen-arriba d-block">Ver boletín completo</a>
+                <a href="/pfc/vistas/estudiantes/calificaciones/lista.php" class="enlace-pequeno margen-arriba d-block">Ver boletín completo</a>
             </div>
         </div>
     </div>
 
-    <!-- Barra lateral con detalles del perfil -->
+    
     <div class="tarjeta-blanca ancho-fijo-300">
         <div class="titulo-tarjeta"><h3>Mi Perfil</h3></div>
         <div class="detalle-perfil-corto">
@@ -105,9 +105,9 @@ include_once "vistas/comunes/nav.php";
             <p><strong>Ciclo:</strong> <?php echo $estudiante['nombreCiclo']; ?></p>
             <p><strong>Fecha Alta:</strong> <?php echo date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante'])); ?></p>
             <hr>
-            <a href="/pfc/estudiantes/vistas/perfil/ver.php" class="boton-secundario ancho-total center-text">Ver Perfil Completo</a>
+            <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="boton-secundario ancho-total center-text">Ver Perfil Completo</a>
         </div>
     </div>
 </div>
 
-<?php include 'vistas/comunes/footer.php'; ?>
+<?php include __DIR__ . '/comunes/footer.php'; ?>

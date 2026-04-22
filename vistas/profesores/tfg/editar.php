@@ -32,7 +32,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Título del TFG *</label>
-                <input type="text" name="tituloTFG" value="<?php echo $tfg['tituloTFG']; ?>" required>
+                <input type="text" name="tituloTFG" value="<?php echo $tfg['tituloTFG']; ?>">
             </div>
         </div>
 

@@ -10,9 +10,9 @@
 
 Se ha refactorizado exitosamente el sistema de gestión escolar en tres portales independientes pero interconectados:
 
-- **Portal Admin** (`/pfc/admin/`) - Gestión completa del sistema
-- **Portal Profesores** (`/pfc/profesores/`) - Gestión de perfil y calificaciones  
-- **Portal Estudiantes** (`/pfc/estudiantes/`) - Gestión de perfil, TFG y calificaciones
+- **Portal Admin** (`/pfc/vistas/admin/`) - Gestión completa del sistema
+- **Portal Profesores** (`/pfc/vistas/profesores/`) - Gestión de perfil y calificaciones  
+- **Portal Estudiantes** (`/pfc/vistas/estudiantes/`) - Gestión de perfil, TFG y calificaciones
 
 **Arquitectura Principal:**
 - Modelos centralizados en `/pfc/modelos/` (accesibles para los 3 portales)
@@ -139,9 +139,9 @@ Se ha refactorizado exitosamente el sistema de gestión escolar en tres portales
 - **Estudiante:** Busca en tabla `estudiantes` por `emailEstudiante`
 
 ### Paso 3: Redirección según Rol
-- **Admin:** → `/pfc/admin/dashboardAdmin.php`
-- **Profesor:** → `/pfc/profesores/vistas/perfil/ver.php`
-- **Estudiante:** → `/pfc/estudiantes/vistas/perfil/ver.php`
+- **Admin:** → `/pfc/vistas/admin/dashboard.php`
+- **Profesor:** → `/pfc/vistas/profesores/perfil/ver.php`
+- **Estudiante:** → `/pfc/vistas/estudiantes/perfil/ver.php`
 
 ### Paso 4: Cierre de Sesión
 - Botón "Cerrar Sesión" en cada portal
@@ -289,8 +289,8 @@ Estudiantes controllers (depth 3): require_once "../../../modelos/estudiantes.ph
 
 ### Prueba 8: Acceso sin Autenticación
 1. Con sesión cerrada, acceder a:
-   - `http://localhost/pfc/profesores/vistas/perfil/ver.php` (directo)
-   - `http://localhost/pfc/estudiantes/vistas/perfil/ver.php` (directo)
+   - `http://localhost/pfc/vistas/profesores/perfil/ver.php` (directo)
+   - `http://localhost/pfc/vistas/estudiantes/perfil/ver.php` (directo)
 2. **Resultado esperado:** 
    - Mensaje error: "No estás autenticado"
    - Redirige a `/pfc/index.php`
@@ -349,22 +349,22 @@ Contraseña: (cualquiera en desarrollo)
 ✓ `/pfc/modelos/panelDeControl.php` - Estadísticas
 
 ### Portal Profesores (6 archivos)
-✓ `/pfc/profesores/vistas/comunes/nav.php`
-✓ `/pfc/profesores/vistas/comunes/footer.php`
-✓ `/pfc/profesores/vistas/perfil/ver.php`
-✓ `/pfc/profesores/vistas/perfil/editar.php`
-✓ `/pfc/profesores/controladores/perfil/actualizar.php`
-✓ `/pfc/profesores/vistas/calificaciones/lista.php`
+✓ `/pfc/vistas/profesores/comunes/nav.php`
+✓ `/pfc/vistas/profesores/comunes/footer.php`
+✓ `/pfc/vistas/profesores/perfil/ver.php`
+✓ `/pfc/vistas/profesores/perfil/editar.php`
+✓ `/pfc/controladores/profesores/perfil/actualizar.php`
+✓ `/pfc/vistas/profesores/calificaciones/lista.php`
 
 ### Portal Estudiantes (8 archivos)
-✓ `/pfc/estudiantes/vistas/comunes/nav.php`
-✓ `/pfc/estudiantes/vistas/comunes/footer.php`
-✓ `/pfc/estudiantes/vistas/perfil/ver.php`
-✓ `/pfc/estudiantes/vistas/perfil/editar.php`
-✓ `/pfc/estudiantes/controladores/perfil/actualizar.php`
-✓ `/pfc/estudiantes/vistas/tfg/lista.php`
-✓ `/pfc/estudiantes/vistas/calificaciones/lista.php`
-✓ `/pfc/estudiantes/controladores/tfg/subir.php`
+✓ `/pfc/vistas/estudiantes/comunes/nav.php`
+✓ `/pfc/vistas/estudiantes/comunes/footer.php`
+✓ `/pfc/vistas/estudiantes/perfil/ver.php`
+✓ `/pfc/vistas/estudiantes/perfil/editar.php`
+✓ `/pfc/controladores/estudiantes/perfil/actualizar.php`
+✓ `/pfc/vistas/estudiantes/tfg/lista.php`
+✓ `/pfc/vistas/estudiantes/calificaciones/lista.php`
+✓ `/pfc/controladores/estudiantes/tfg/subir.php`
 
 ### Punto de Entrada (3 archivos)
 ✓ `/pfc/index.php` - Login con selector de rol
@@ -372,14 +372,14 @@ Contraseña: (cualquiera en desarrollo)
 ✓ `/pfc/logout.php` - Cierre de sesión
 
 ### Admin Actualizado (9 archivos)
-✓ `/pfc/admin/vistas/comunes/nav.php` - Referencias a modelos compartidos
-✓ `/pfc/admin/dashboardAdmin.php` - Referencias a modelos compartidos
-✓ `/pfc/admin/controladores/profesores/insertar.php` - Rutas actualizadas
-✓ `/pfc/admin/controladores/profesores/actualizar.php` - Rutas actualizadas
-✓ `/pfc/admin/controladores/profesores/borrar.php` - Rutas actualizadas
-✓ `/pfc/admin/vistas/profesores/verProfesores.php` - Rutas actualizadas
-✓ `/pfc/admin/vistas/profesores/modificarProfesores.php` - Rutas actualizadas
-✓ `/pfc/admin/vistas/profesores/verDetallesProfesores.php` - Rutas actualizadas
+✓ `/pfc/vistas/admin/comunes/nav.php` - Referencias a modelos compartidos
+✓ `/pfc/vistas/admin/dashboard.php` - Referencias a modelos compartidos
+✓ `/pfc/controladores/admin/profesores/insertar.php` - Rutas actualizadas
+✓ `/pfc/controladores/admin/profesores/actualizar.php` - Rutas actualizadas
+✓ `/pfc/controladores/admin/profesores/borrar.php` - Rutas actualizadas
+✓ `/pfc/vistas/admin/profesores/verProfesores.php` - Rutas actualizadas
+✓ `/pfc/vistas/admin/profesores/modificarProfesores.php` - Rutas actualizadas
+✓ `/pfc/vistas/admin/profesores/verDetallesProfesores.php` - Rutas actualizadas
 
 **Total de archivos creados: 40+**
 
@@ -456,8 +456,8 @@ if ($operacionExitosa) {
 Para actualizar o agregar nuevas funciones:
 
 1. **Agregar nuevo modelo:** Crear en `/pfc/modelos/nuevomodelo.php`
-2. **Agregar a Admin:** Crear en `/pfc/admin/` con referencias a modelos compartidos
-3. **Agregar a Profesor/Estudiante:** Crear en `/pfc/profesores/` o `/pfc/estudiantes/`
+2. **Agregar a Admin:** Crear en `/pfc/vistas/admin/` con referencias a modelos compartidos
+3. **Agregar a Profesor/Estudiante:** Crear en `/pfc/vistas/profesores/` o `/pfc/vistas/estudiantes/`
 4. **Mantener sincronización:** Todas las rutas y referencias deben ser actualizadas
 
 ---
@@ -466,3 +466,4 @@ Para actualizar o agregar nuevas funciones:
 
 Versión 1.0 - Implementación Completa de Tres Portales
 Sistema de Gestión Escolar 2024
+

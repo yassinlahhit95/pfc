@@ -28,7 +28,7 @@ if (isset($_SESSION['datos_anuncio'])) {
 }
 unset($_SESSION['exito'], $_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 
-// Variables simples
+
 $titulo = '';
 if (isset($datos['titulo'])) {
     $titulo = $datos['titulo'];
@@ -59,24 +59,24 @@ if (isset($datos['fecha_expiracion'])) {
     <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
 
-<!-- Formulario de creación arriba, ocupando ancho completo (row) -->
+
 <div class="tarjeta-blanca margen-abajo">
     <div class="titulo-tarjeta"><h3>Nuevo Anuncio</h3></div>
-    <form method="POST" action="/pfc/admin/controladores/anuncios/insertar.php">
+    <form method="POST" action="/pfc/controladores/admin/anuncios/insertar.php">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Título del Aviso *</label>
-                <input type="text" name="titulo" value="<?php echo $titulo; ?>" placeholder="Ej: Mantenimiento del Aula 2" required>
+                <input type="text" name="titulo" value="<?php echo $titulo; ?>" placeholder="Mantenimiento del Aula 2">
             </div>
             <div class="campo-formulario">
                 <label>Válido hasta *</label>
-                <input type="date" name="fecha_expiracion" value="<?php echo $fechaExp; ?>" required>
+                <input type="date" name="fecha_expiracion" value="<?php echo $fechaExp; ?>">
             </div>
         </div>
         
         <div class="campo-formulario margen-arriba">
             <label>Contenido del Mensaje *</label>
-            <textarea name="mensaje" rows="4" placeholder="Escriba aquí el detalle..." required><?php echo $mensaje; ?></textarea>
+            <textarea name="mensaje" rows="4" placeholder="Escriba aquí el detalle..."><?php echo $mensaje; ?></textarea>
         </div>
 
         <div class="margen-arriba">
@@ -87,7 +87,7 @@ if (isset($datos['fecha_expiracion'])) {
     </form>
 </div>
 
-<!-- Listado de anuncios abajo -->
+
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta"><h3>Historial de Avisos</h3></div>
     <div class="contenedor-tabla">
@@ -110,7 +110,7 @@ if (isset($datos['fecha_expiracion'])) {
                         <td><small><?php echo substr($anuncio['mensaje'], 0, 100); ?>...</small></td>
                         <td><?php echo date('d/m/Y', strtotime($anuncio['fechaExpiracion'])); ?></td>
                         <td>
-                            <form action="/pfc/admin/controladores/anuncios/borrar.php" method="POST" class="d-inline">
+                            <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline">
                                 <input type="hidden" name="idAnuncio" value="<?php echo $anuncio['idAnuncio']; ?>">
                                 <button type="submit" class="boton-icono boton-eliminar">
                                     <i class="fas fa-trash"></i>

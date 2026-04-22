@@ -4,43 +4,20 @@ require_once "../../../modelos/retos.php";
 
 if (isset($_POST['actualizarReto'])) {
     $id = $_POST['idReto'];
-    $nombre = trim($_POST['nombreReto']);
-    $fInicio = $_POST['fechaInicio'];
-    $fFin = $_POST['fechaFin'];
-    $horas = $_POST['horasReto'];
-
-    $regexFecha = "/^\d{4}-\d{2}-\d{2}$/";
+    $n = trim($_POST['nombreReto']);
+    $fi = $_POST['fechaInicio'];
+    $ff = $_POST['fechaFin'];
+    $h = $_POST['horasReto'];
 
     if (empty($id)) {
         header("Location: /pfc/vistas/profesores/retos/lista.php");
-    } else if (empty($nombre)) {
-        $_SESSION['error'] = "El nombre del reto es obligatorio.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
-    } else if (empty($fInicio)) {
-        $_SESSION['error'] = "La fecha de inicio es obligatoria.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
-    } else if (!preg_match($regexFecha, $fInicio)) {
-        $_SESSION['error'] = "La fecha de inicio no es válida.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
-    } else if (empty($fFin)) {
-        $_SESSION['error'] = "La fecha de fin es obligatoria.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
-    } else if (!preg_match($regexFecha, $fFin)) {
-        $_SESSION['error'] = "La fecha de fin no es válida.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
-    } else if (!empty($horas) && !is_numeric($horas)) {
-        $_SESSION['error'] = "Las horas deben ser un valor numérico.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
+        exit;
+    } else if (actualizarReto($id, $n, $fi, $ff, $h)) {
+        $_SESSION['exito'] = "Reto actualizado.";
     } else {
-        if (actualizarReto($id, $nombre, $fInicio, $fFin, $horas)) {
-            $_SESSION['exito'] = "Reto actualizado correctamente.";
-        } else {
-            $_SESSION['error'] = "Error al actualizar el reto.";
-        }
+        $_SESSION['error'] = "Error al actualizar.";
     }
-    exit;
 }
-
 header("Location: /pfc/vistas/profesores/retos/lista.php");
 exit;
 ?>

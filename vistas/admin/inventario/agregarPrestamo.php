@@ -12,7 +12,7 @@ $listaArticulos = listarArticulos();
 $listaEstudiantes = listarEstudiantes();
 $listaCiclos = listarTodosLosCiclos();
 
-// Capturar errores y datos de sesión
+
 $error = '';
 if (isset($_SESSION['error'])) {
     $error = $_SESSION['error'];
@@ -32,7 +32,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Registrar Nuevo Préstamo</h1>
-    <a href="/pfc/admin/vistas/inventario/gestionarPrestamos.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -40,12 +40,12 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="/pfc/admin/controladores/inventario/prestar.php">
+    <form method="POST" action="/pfc/controladores/admin/inventario/prestar.php">
         <div class="formulario-cuadricula">
             
             <div class="campo-formulario">
                 <label>Recurso *</label>
-                <select name="idArticulo" required>
+                <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
                     <?php foreach ($listaArticulos as $art) { 
                         if ($art['estado'] == 'disponible') {
@@ -76,7 +76,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 
             <div class="campo-formulario">
                 <label>Estudiante *</label>
-                <select name="idEstudiante" id="selectorEstudiante" required>
+                <select name="idEstudiante" id="selectorEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
                     <?php foreach ($listaEstudiantes as $est) {
                         $selected = '';
@@ -101,7 +101,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
                     $fechaActual = $datos['fechaPrestamo'];
                 }
                 ?>
-                <input type="date" name="fechaPrestamo" value="<?php echo $fechaActual; ?>" required>
+                <input type="date" name="fechaPrestamo" value="<?php echo $fechaActual; ?>">
                 <?php if (isset($errores['fechaPrestamo'])) { ?>
                     <p class='error-campo'><?php echo $errores['fechaPrestamo']; ?></p>
                 <?php } ?>

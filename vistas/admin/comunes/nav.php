@@ -1,5 +1,5 @@
 <?php
-// --- RUTAS A MODELOS COMPARTIDOS ---
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -34,7 +34,7 @@ $totalTFG = contarTFGsSubidos();
 </head>
 <body>
 
-<!-- Botón para menú en móviles -->
+
 <button class="menu-toggle solo-movil" onclick="toggleMenu()">
     <i class="fas fa-bars"></i>
 </button>
@@ -135,7 +135,7 @@ $totalTFG = contarTFGsSubidos();
                 <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu enlace-creditos <?php echo ($seccion == 'creditos' ? 'activo' : ''); ?>">
                     <i class="fas fa-info-circle"></i> <span>Créditos</span>
                 </a>
-                <a href="/pfc/logout.php" class="enlace-menu">
+                <a href="/pfc/controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
                 </a>
             </div>

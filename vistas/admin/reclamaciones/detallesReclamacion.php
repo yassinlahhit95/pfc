@@ -12,13 +12,13 @@ if (isset($_GET['id'])) {
 }
 
 if (empty($id)) {
-    header("Location: /pfc/admin/vistas/reclamaciones/verReclamaciones.php");
+    header("Location: /pfc/vistas/admin/reclamaciones/verReclamaciones.php");
     exit;
 }
 
 $reclamacion = obtenerReclamacionPorId($id);
 if (!$reclamacion) {
-    header("Location: /pfc/admin/vistas/reclamaciones/verReclamaciones.php");
+    header("Location: /pfc/vistas/admin/reclamaciones/verReclamaciones.php");
     exit;
 }
 
@@ -33,7 +33,7 @@ if (empty($nombreReporta)) {
         <h1>Detalle de Reclamación #<?php echo $reclamacion['idReclamacion']; ?></h1>
         <p class="subtitulo-encabezado">Visualización de la queja o reporte</p>
     </div>
-    <a href="/pfc/admin/vistas/reclamaciones/verReclamaciones.php" class="boton-secundario">
+    <a href="/pfc/vistas/admin/reclamaciones/verReclamaciones.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
     </a>
 </div>
@@ -61,11 +61,6 @@ if (empty($nombreReporta)) {
         </div>
 
         <div class="campo-formulario">
-            <label>Gravedad</label>
-            <input type="text" value="<?php echo ucfirst($reclamacion['gravedad']); ?>" readonly disabled>
-        </div>
-
-        <div class="campo-formulario">
             <label>Fecha</label>
             <input type="text" value="<?php echo date('d/m/Y', strtotime($reclamacion['fecha'])); ?>" readonly disabled>
         </div>
@@ -77,7 +72,7 @@ if (empty($nombreReporta)) {
     </div>
 
     <div class="margen-arriba">
-        <form action="/pfc/admin/controladores/reclamaciones/actualizar.php" method="POST" class="d-inline">
+        <form action="/pfc/controladores/admin/reclamaciones/actualizar.php" method="POST" class="d-inline">
             <input type="hidden" name="idReclamacion" value="<?php echo $reclamacion['idReclamacion']; ?>">
             <?php if ($reclamacion['estadoReclamacion'] == 'pendiente') { ?>
                 <input type="hidden" name="nuevo_estado" value="atendido">

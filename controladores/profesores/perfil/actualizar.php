@@ -4,30 +4,29 @@ require_once "../../../modelos/profesores.php";
 
 if (isset($_POST['actualizarPerfil'])) {
     $id = $_POST['idProfesor'];
-    $nombre = trim($_POST['nombreProfesor']);
-    $email = trim($_POST['emailProfesor']);
-    $telefono = trim($_POST['telefonoProfesor']);
+    $n = trim($_POST['nombreProfesor']);
+    $e = strtolower(trim($_POST['emailProfesor']));
+    $t = $_POST['telefonoProfesor'];
 
     if (empty($id)) {
         header("Location: /pfc/vistas/profesores/perfil/ver.php");
-    } else if (empty($nombre)) {
-        $_SESSION['error'] = "El nombre es obligatorio.";
-        header("Location: /pfc/vistas/profesores/perfil/editar.php");
-    } else if (empty($email)) {
-        $_SESSION['error'] = "El email es obligatorio.";
-        header("Location: /pfc/vistas/profesores/perfil/editar.php");
+        exit;
+    } else if (empty($n)) {
+        $_SESSION['error'] = "Nombre vacio";
+    } else if (empty($e)) {
+        $_SESSION['error'] = "Email vacio";
+    } else if (!is_numeric($t)) {
+        $_SESSION['error'] = "Telefono debe ser numero";
+    } else if (actualizarPerfilProfesor($id, $n, $e, $t)) {
+        $_SESSION['exito'] = "Perfil actualizado";
+        header("Location: /pfc/vistas/profesores/perfil/ver.php");
+        exit;
     } else {
-        if (actualizarPerfilProfesor($id, $nombre, $email, $telefono)) {
-            $_SESSION['exito'] = "Perfil actualizado correctamente.";
-            header("Location: /pfc/vistas/profesores/perfil/ver.php");
-        } else {
-            $_SESSION['error'] = "Error al actualizar el perfil.";
-            header("Location: /pfc/vistas/profesores/perfil/editar.php");
-        }
+        $_SESSION['error'] = "Error";
     }
+    header("Location: /pfc/vistas/profesores/perfil/editar.php");
     exit;
 }
-
 header("Location: /pfc/vistas/profesores/perfil/ver.php");
 exit;
 ?>

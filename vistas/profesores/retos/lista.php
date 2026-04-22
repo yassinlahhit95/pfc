@@ -17,7 +17,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Gestión de Retos</h1>
-    <a href="/pfc/profesores/vistas/retos/agregar.php" class="boton-primario">Nuevo Reto</a>
+    <a href="/pfc/vistas/profesores/retos/agregar.php" class="boton-primario">Nuevo Reto</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -41,8 +41,8 @@ include_once "../comunes/nav.php";
                             <td><?php echo $reto['fechaFin']; ?></td>
                             <td><?php echo $reto['horasReto']; ?> h</td>
                             <td>
-                                <a href="/pfc/profesores/vistas/retos/editar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/profesores/controladores/retos/borrar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/vistas/profesores/retos/editar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
+                                <a href="/pfc/controladores/profesores/retos/borrar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

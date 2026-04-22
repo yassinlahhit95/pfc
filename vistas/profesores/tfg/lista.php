@@ -10,13 +10,13 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $tfgs = listarTodosLosTFGs();
 
-$tituloDelPagina = "Gestión TFG - Portal Profesores";
+$tituloDelPagina = "Gestión de TFGs - Portal Profesores";
 $seccionActual = 'tfg';
 include_once "../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Gestión de Trabajos Fin de Grado</h1>
+    <h1>Gestión de TFGs Entregados</h1>
 </div>
 
 <div class="tarjeta-blanca">
@@ -25,8 +25,8 @@ include_once "../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Estudiante</th>
-                    <th>Título del TFG</th>
-                    <th>Archivo</th>
+                    <th>Ciclo</th>
+                    <th>Fecha de Subida</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -34,16 +34,12 @@ include_once "../comunes/nav.php";
                 <?php if ($tfgs) { ?>
                     <?php foreach ($tfgs as $tfg) { ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $tfg['nombreEstudiante']; ?></td>
-                            <td><?php echo $tfg['tituloTFG']; ?></td>
+                            <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
+                            <td><?php echo $tfg['nombreCiclo']; ?></td>
+                            <td><?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?></td>
                             <td>
-                                <a href="/pfc/admin/uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
-                                    <i class="fas fa-download"></i> Descargar
-                                </a>
-                            </td>
-                            <td>
-                                <a href="/pfc/profesores/vistas/tfg/editar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-<a href="/pfc/profesores/controladores/tfg/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/public/uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="enlace-icono azul"><i class="fas fa-download"></i></a>
+                                <a href="/pfc/controladores/profesores/tfg/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

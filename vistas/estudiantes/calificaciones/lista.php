@@ -9,7 +9,7 @@ if (!isset($_SESSION['idEstudiante'])) {
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
 $id = $_SESSION['idEstudiante'];
-// Función hipotética para listar notas del alumno
+
 $notas = []; 
 
 $tituloDelPagina = "Mis Calificaciones - Portal Estudiantes";

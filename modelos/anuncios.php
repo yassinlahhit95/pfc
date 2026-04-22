@@ -3,59 +3,48 @@ require_once("conectar.php");
 
 function listarTodosLosAnuncios() {
     $conexion = obtenerConexion();
-    $consulta = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
-    $listaDeAnuncios = [];
-    $resultado = mysqli_query($conexion, $consulta);
-    if ($resultado) {
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $listaDeAnuncios[] = $fila;
-        }
+    $sql = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($conexion);
-    return $listaDeAnuncios;
+    return $lista;
 }
 
 function insertarAnuncio($titulo, $mensaje, $fecha) {
     $conexion = obtenerConexion();
-    $consulta = "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion) VALUES ('$titulo', '$mensaje', '$fecha')";
-    $resultado = mysqli_query($conexion, $consulta);
+    $resultado = mysqli_query($conexion, "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion) VALUES ('$titulo', '$mensaje', '$fecha')");
     mysqli_close($conexion);
     return $resultado;
 }
 
-function borrarAnuncio($id) {
+function eliminarAnuncio($idAnuncio) {
     $conexion = obtenerConexion();
-    $consulta = "DELETE FROM anuncios WHERE idAnuncio = $id";
-    $resultado = mysqli_query($conexion, $consulta);
+    $resultado = mysqli_query($conexion, "DELETE FROM anuncios WHERE idAnuncio = $idAnuncio");
     mysqli_close($conexion);
     return $resultado;
 }
 
 function contarAnunciosQueEstanActivos() {
     $conexion = obtenerConexion();
-    $consulta = "SELECT COUNT(*) as total FROM anuncios WHERE fechaExpiracion >= CURDATE()";
-    $resultado = mysqli_query($conexion, $consulta);
+    $hoy = date('Y-m-d');
+    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM anuncios WHERE fechaExpiracion >= '$hoy'");
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
-    
-    if (isset($fila['total'])) {
-        return $fila['total'];
-    } else {
-        return 0;
-    }
+    return $fila['total'];
 }
 
 function listarAnunciosConPaginas($cantidad) {
     $conexion = obtenerConexion();
-    $consulta = "SELECT * FROM anuncios WHERE fechaExpiracion >= CURDATE() ORDER BY idAnuncio DESC LIMIT $cantidad";
-    $resultado = mysqli_query($conexion, $consulta);
-    $listaPaginada = [];
-    if ($resultado) {
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $listaPaginada[] = $fila;
-        }
+    $hoy = date('Y-m-d');
+    $resultado = mysqli_query($conexion, "SELECT * FROM anuncios WHERE fechaExpiracion >= '$hoy' ORDER BY idAnuncio DESC LIMIT $cantidad");
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($conexion);
-    return $listaPaginada;
+    return $lista;
 }
 ?>

@@ -4,40 +4,41 @@ require_once "../../../modelos/profesores.php";
 
 if (isset($_POST['guardarProfesor'])) {
     $nombre = trim($_POST['nombreProfesor']);
-    $email = trim($_POST['emailProfesor']);
-    $dni = trim($_POST['dniProfesor']);
+    $email = strtolower(trim($_POST['emailProfesor']));
+    $dni = strtoupper(trim($_POST['dniProfesor']));
     $telefono = trim($_POST['telefonoProfesor']);
-    $especialidad = trim($_POST['especialidad']);
     $direccion = trim($_POST['direccionProfesor']);
-
-    // Regex
-    $regexEmail = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
-    $regexTelefono = "/^[0-9]{9}$/";
+    
+    $ciclos = $_POST['ciclos'];
+    $modulos = $_POST['modulos'];
 
     if (empty($nombre)) {
         $_SESSION['error'] = "El nombre es obligatorio.";
-        header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
     } else if (empty($email)) {
         $_SESSION['error'] = "El email es obligatorio.";
-        header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
-    } else if (!preg_match($regexEmail, $email)) {
-        $_SESSION['error'] = "El formato del email no es válido.";
-        header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
     } else if (empty($dni)) {
         $_SESSION['error'] = "El DNI es obligatorio.";
-        header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
-    } else if (!empty($telefono) && !preg_match($regexTelefono, $telefono)) {
-        $_SESSION['error'] = "El teléfono debe tener exactamente 9 números.";
-        header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
     } else {
-        if (insertarProfesor($nombre, $email, $telefono, $dni, $especialidad, $direccion)) {
+        $idProfesor = insertarProfesor($nombre, $email, $telefono, $dni, $direccion);
+        if ($idProfesor) {
+            if (isset($ciclos) && is_array($ciclos)) {
+                foreach ($ciclos as $idCiclo) {
+                    asociarCicloProfesor($idCiclo, $idProfesor);
+                }
+            }
+            if (isset($modulos) && is_array($modulos)) {
+                foreach ($modulos as $idModulo) {
+                    asociarModuloProfesor($idModulo, $idProfesor);
+                }
+            }
             $_SESSION['exito'] = "Profesor registrado con éxito.";
             header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
+            exit;
         } else {
-            $_SESSION['error'] = "Error al guardar el profesor en la base de datos.";
-            header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
+            $_SESSION['error'] = "Error al guardar.";
         }
     }
+    header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
     exit;
 }
 

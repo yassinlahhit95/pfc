@@ -58,7 +58,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </tr>
             <?php } else { ?>
                 <?php foreach ($listaCiclos as $ciclo) { 
-                    // Recuperar nombres de profesores
+                    
                     $idsProfes = obtenerProfesoresDeUnCiclo($ciclo['idCiclo']);
                     $nombresProfes = [];
                     foreach ($idsProfes as $idP) {
@@ -71,7 +71,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         $textoProfesores = implode(', ', $nombresProfes);
                     }
                     
-                    // Recuperar aulas
+                    
                     $idsAulas = obtenerAulasDeUnCiclo($ciclo['idCiclo']);
                     $nombresAulas = [];
                     foreach ($idsAulas as $idA) {

@@ -4,20 +4,14 @@ require_once "../../../modelos/reclamaciones.php";
 
 if (isset($_POST['actualizarReclamacion'])) {
     $id = $_POST['idReclamacion'];
-    $estado = $_POST['estadoReclamacion'];
+    $est = $_POST['estadoReclamacion'];
 
-    if (empty($id)) {
-        header("Location: /pfc/vistas/profesores/reclamaciones/lista.php");
+    if (cambiarEstadoReclamacion($id, $est)) {
+        $_SESSION['exito'] = "Estado actualizado.";
     } else {
-        if (cambiarEstadoReclamacion($id, $estado)) {
-            $_SESSION['exito'] = "Estado de la reclamación actualizado.";
-        } else {
-            $_SESSION['error'] = "Error al actualizar la reclamación.";
-        }
+        $_SESSION['error'] = "Error al actualizar.";
     }
-    exit;
 }
-
 header("Location: /pfc/vistas/profesores/reclamaciones/lista.php");
 exit;
 ?>

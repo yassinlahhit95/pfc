@@ -4,7 +4,7 @@ session_start();
 require_once "../../../modelos/retos.php";
 require_once "../../../modelos/modulos.php";
 
-// Usamos el nombre descriptivo de la variable y del parametro GET
+
 $idDelReto = 0;
 if (isset($_GET['idReto'])) {
     $idDelReto = $_GET['idReto'];
@@ -55,22 +55,22 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
                 <label>Nombre del Reto *</label>
-                <input type="text" name="nombreReto" value="<?php echo $reto['nombreReto']; ?>" required>
+                <input type="text" name="nombreReto" value="<?php echo $reto['nombreReto']; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Horas del Reto *</label>
-                <input type="text" name="horasReto" value="<?php echo $reto['horasReto']; ?>" required>
+                <input type="text" name="horasReto" value="<?php echo $reto['horasReto']; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicio" value="<?php echo $reto['fechaInicio']; ?>" required>
+                <input type="date" name="fechaInicio" value="<?php echo $reto['fechaInicio']; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Finalización *</label>
-                <input type="date" name="fechaFin" value="<?php echo $reto['fechaFin']; ?>" required>
+                <input type="date" name="fechaFin" value="<?php echo $reto['fechaFin']; ?>">
             </div>
         </div>
 

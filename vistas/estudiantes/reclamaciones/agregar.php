@@ -13,7 +13,6 @@ $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $idCiclo = $estudianteActual['idCiclo'];
 
-// Listar profesores del mismo ciclo
 $profesores = listarProfesoresPorCiclo($idCiclo);
 
 $tituloDelPagina = "Nueva Reclamación - Portal Estudiantes";
@@ -23,11 +22,11 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nueva Reclamación</h1>
-    <a href="/pfc/estudiantes/vistas/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/estudiantes/reclamaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/estudiantes/controladores/reclamaciones/insertar.php" method="POST">
+    <form action="/pfc/controladores/estudiantes/reclamaciones/insertar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?php echo $idEstudiante; ?>">
         
         <div class="formulario-cuadricula">
@@ -44,26 +43,12 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Asunto *</label>
-                <input type="text" name="asunto" required placeholder="Ej: Error en nota, Instalaciones...">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Gravedad *</label>
-                <select name="gravedad" required>
-                    <option value="leve">Leve</option>
-                    <option value="grave">Grave</option>
-                    <option value="muy grave">Muy Grave</option>
-                </select>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Fecha *</label>
-                <input type="date" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
+                <input type="text" name="asunto" placeholder="Error en nota, Instalaciones...">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Descripción detallada *</label>
-                <textarea name="descripcion" rows="5" required placeholder="Explica aquí el motivo de tu reclamación..."></textarea>
+                <textarea name="descripcion" rows="5" placeholder="Explica aquí el motivo de tu reclamación..."></textarea>
             </div>
         </div>
 

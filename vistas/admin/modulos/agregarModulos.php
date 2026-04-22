@@ -15,7 +15,7 @@ if (isset($_SESSION['datos_modulo'])) {
 }
 unset($_SESSION['errores'], $_SESSION['datos_modulo']);
 
-// Variables simples
+
 $nombre = '';
 if (isset($datos['nombreModulo'])) {
     $nombre = $datos['nombreModulo'];
@@ -46,12 +46,12 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Módulo *</label>
-                <input type="text" name="nombreModulo" value="<?php echo $nombre; ?>" required>
+                <input type="text" name="nombreModulo" value="<?php echo $nombre; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Ciclo Formativo *</label>
-                <select name="idCiclo" required>
+                <select name="idCiclo">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($idCicloElegido == $ciclo['idCiclo']) { echo 'selected'; } ?>>
@@ -63,7 +63,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Horas Totales *</label>
-                <input type="text" name="horasMaximas" value="<?php echo $horas; ?>" required>
+                <input type="text" name="horasMaximas" value="<?php echo $horas; ?>">
             </div>
         </div>
 

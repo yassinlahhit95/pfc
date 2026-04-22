@@ -7,32 +7,20 @@ if (isset($_POST['insertarReclamacion'])) {
     $idProfesor = $_POST['idProfesor'];
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
-    $gravedad = $_POST['gravedad'];
-    $fecha = $_POST['fecha'];
-
-    $regexFecha = "/^\d{4}-\d{2}-\d{2}$/";
+    $fechaActual = date('Y-m-d');
 
     if (empty($asunto)) {
-        $_SESSION['error'] = "El asunto es obligatorio.";
-        header("Location: /pfc/vistas/estudiantes/reclamaciones/agregar.php");
-    } else if (empty($fecha)) {
-        $_SESSION['error'] = "La fecha es obligatoria.";
-        header("Location: /pfc/vistas/estudiantes/reclamaciones/agregar.php");
-    } else if (!preg_match($regexFecha, $fecha)) {
-        $_SESSION['error'] = "La fecha no es válida.";
-        header("Location: /pfc/vistas/estudiantes/reclamaciones/agregar.php");
+        $_SESSION['error'] = "Asunto vacio";
+    } else if (insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual)) {
+        $_SESSION['exito'] = "Enviada";
+        header("Location: /pfc/vistas/estudiantes/reclamaciones/lista.php");
+        exit;
     } else {
-        if (insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $gravedad, $fecha)) {
-            $_SESSION['exito'] = "Reclamación enviada correctamente.";
-            header("Location: /pfc/vistas/estudiantes/reclamaciones/lista.php");
-        } else {
-            $_SESSION['error'] = "Error al enviar la reclamación.";
-            header("Location: /pfc/vistas/estudiantes/reclamaciones/agregar.php");
-        }
+        $_SESSION['error'] = "Error";
     }
+    header("Location: /pfc/vistas/estudiantes/reclamaciones/agregar.php");
     exit;
 }
-
 header("Location: /pfc/vistas/estudiantes/reclamaciones/lista.php");
 exit;
 ?>

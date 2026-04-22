@@ -9,53 +9,23 @@ require_once "../../../modelos/estudiantes.php";
 
 $listaEstudiantes = listarEstudiantes();
 
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
+$error = '';
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
 }
+unset($_SESSION['error']);
 
-$datos = [];
-if (isset($_SESSION['datos_pagos'])) {
-    $datos = $_SESSION['datos_pagos'];
-}
-unset($_SESSION['errores'], $_SESSION['datos_pagos']);
-
-// Variables simples
-$idElegido = '';
-if (isset($datos['idEstudiante'])) {
-    $idElegido = $datos['idEstudiante'];
-}
-
-$concepto = '';
-if (isset($datos['concepto'])) {
-    $concepto = $datos['concepto'];
-}
-
-$monto = '0.00';
-if (isset($datos['monto'])) {
-    $monto = $datos['monto'];
-}
-
-$tipoElegido = '';
-if (isset($datos['tipoPago'])) {
-    $tipoElegido = $datos['tipoPago'];
-}
-
-$estadoElegido = '';
-if (isset($datos['estadoPago'])) {
-    $estadoElegido = $datos['estadoPago'];
-}
-
-$fecha = date('Y-m-d');
-if (isset($datos['fechaPago'])) {
-    $fecha = $datos['fechaPago'];
-}
+$fechaHoy = date('Y-m-d');
 ?>
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Pago</h1>
-    <p class="subtitulo-encabezado">Seleccione un estudiante y detalle el cobro</p>
+    <p class="subtitulo-encabezado">Gestión de cobros y recordatorio de próximos pagos</p>
 </div>
+
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/pagos/insertar.php" method="POST" enctype="multipart/form-data">
@@ -63,59 +33,40 @@ if (isset($datos['fechaPago'])) {
             <div class="campo-formulario campo-ancho-total">
                 <label>Estudiante *</label>
                 <select name="idEstudiante">
-                    <option value="">-- Seleccione un Estudiante --</option>
+                    <option value="">Seleccione un Estudiante</option>
                     <?php foreach ($listaEstudiantes as $estudiante) { ?>
-                        <option value="<?php echo $estudiante['idEstudiante']; ?>" <?php if ($idElegido == $estudiante['idEstudiante']) { echo 'selected'; } ?>>
+                        <option value="<?php echo $estudiante['idEstudiante']; ?>">
                             <?php echo $estudiante['nombreEstudiante']; ?> (<?php echo $estudiante['dniEstudiante']; ?>)
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['idEstudiante']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Concepto *</label>
-                <input type="text" name="concepto" placeholder="Ej: Mensualidad Abril 2026" value="<?php echo $concepto; ?>">
-                <?php if (isset($errores['concepto'])) { ?>
-                    <p class="error-campo"><?php echo $errores['concepto']; ?></p>
-                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Monto (€) *</label>
-                <input type="text" name="monto" value="<?php echo $monto; ?>">
-                <?php if (isset($errores['monto'])) { ?>
-                    <p class="error-campo"><?php echo $errores['monto']; ?></p>
-                <?php } ?>
+                <input type="text" name="monto" placeholder="50.00">
             </div>
 
             <div class="campo-formulario">
                 <label>Tipo de Pago *</label>
                 <select name="tipoPago">
-                    <option value="mensual" <?php if ($tipoElegido == 'mensual') { echo 'selected'; } ?>>Mensual</option>
-                    <option value="trimestral" <?php if ($tipoElegido == 'trimestral') { echo 'selected'; } ?>>Trimestral</option>
-                    <option value="semestral" <?php if ($tipoElegido == 'semestral') { echo 'selected'; } ?>>Semestral</option>
-                    <option value="unico" <?php if ($tipoElegido == 'unico') { echo 'selected'; } ?>>Pago Único</option>
+                    <option value="mensual">Mensual</option>
+                    <option value="trimestral">Trimestral</option>
+                    <option value="semestral">Semestral</option>
+                    <option value="unico">Pago Único</option>
                 </select>
+                <small class="texto-atenuado">El sistema calculará automáticamente la fecha del próximo cobro.</small>
             </div>
 
             <div class="campo-formulario">
-                <label>Estado *</label>
-                <select name="estadoPago">
-                    <option value="pendiente" <?php if ($estadoElegido == 'pendiente') { echo 'selected'; } ?>>Pendiente</option>
-                    <option value="pagado" <?php if ($estadoElegido == 'pagado') { echo 'selected'; } ?>>Pagado</option>
-                </select>
+                <label>Fecha de Pago Realizado</label>
+                <!-- Se muestra hoy automáticamente en formato español -->
+                <input type="text" value="<?php echo date('d/m/Y'); ?>" readonly style="background-color: #f9f9f9; color: #666;">
+                <input type="hidden" name="fechaPago" value="<?php echo $fechaHoy; ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Pago *</label>
-                <input type="date" name="fechaPago" value="<?php echo $fecha; ?>">
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Comprobante (Imagen o PDF)</label>
+                <label>Comprobante (Opcional)</label>
                 <input type="file" name="comprobante" accept="image/*,.pdf">
             </div>
         </div>

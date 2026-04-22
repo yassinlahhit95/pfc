@@ -22,7 +22,7 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Editar Calificación</h1>
-    <a href="/pfc/profesores/vistas/calificaciones/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -31,7 +31,7 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Estudiante *</label>
-                <select name="idEstudiante" required disabled>
+                <select name="idEstudiante" disabled>
                     <?php foreach ($estudiantes as $est) { ?>
                         <option value="<?php echo $est['idEstudiante']; ?>" <?php if ($est['idEstudiante'] == $nota['idEstudiante']) { echo 'selected'; } ?>><?php echo $est['nombreEstudiante']; ?></option>
                     <?php } ?>
@@ -41,7 +41,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Módulo *</label>
-                <select name="idModulo" required disabled>
+                <select name="idModulo" disabled>
                     <?php foreach ($modulos as $mod) { ?>
                         <option value="<?php echo $mod['idModulo']; ?>" <?php if ($mod['idModulo'] == $nota['idModulo']) { echo 'selected'; } ?>><?php echo $mod['nombreModulo']; ?></option>
                     <?php } ?>
