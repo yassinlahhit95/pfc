@@ -4,82 +4,54 @@ $titulo_pagina = "Nuevo Director";
 $seccion = 'directores';
 include_once "../comunes/nav.php";
 
-$datos = [];
-if (isset($_SESSION['datos_director'])) {
-    $datos = $_SESSION['datos_director'];
+$error = '';
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
 }
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
-unset($_SESSION['datos_director'], $_SESSION['errores']);
-
-
-$nombre = '';
-if (isset($datos['nombreDirector'])) {
-    $nombre = $datos['nombreDirector'];
-}
-
-$email = '';
-if (isset($datos['emailDirector'])) {
-    $email = $datos['emailDirector'];
-}
-
-$dni = '';
-if (isset($datos['dniDirector'])) {
-    $dni = $datos['dniDirector'];
-}
-
-$fechaAlta = date('Y-m-d');
-if (isset($datos['fechaAltaDirector'])) {
-    $fechaAlta = $datos['fechaAltaDirector'];
-}
+unset($_SESSION['error']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Nuevo Director</h1>
-    <a href="verDirectores.php" class="boton-secundario">Volver</a>
+    <a href="/pfc/vistas/admin/directores/verDirectores.php" class="boton-secundario">Volver</a>
 </div>
 
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/directores/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>Nombre Completo *</label>
-                <input type="text" name="nombreDirector" value="<?php echo $nombre; ?>">
-                <?php if (isset($errores['nombreDirector'])) { ?>
-                    <p class="error-campo"><?php echo $errores['nombreDirector']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Email *</label>
-                <input type="email" name="emailDirector" value="<?php echo $email; ?>">
-                <?php if (isset($errores['emailDirector'])) { ?>
-                    <p class="error-campo"><?php echo $errores['emailDirector']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>DNI *</label>
-                <input type="text" name="dniDirector" value="<?php echo $dni; ?>">
-                <?php if (isset($errores['dniDirector'])) { ?>
-                    <p class="error-campo"><?php echo $errores['dniDirector']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Fecha Alta *</label>
-                <input type="date" name="fechaAltaDirector" value="<?php echo $fechaAlta; ?>">
-                <?php if (isset($errores['fechaAltaDirector'])) { ?>
-                    <p class="error-campo"><?php echo $errores['fechaAltaDirector']; ?></p>
-                <?php } ?>
-            </div>
+    <form action="/pfc/controladores/admin/directores/insertar.php" method="POST" style="max-width: 600px; margin: 0 auto;">
+        
+        <div class="campo-formulario">
+            <label>Nombre Completo *</label>
+            <input type="text" name="nombreDirector" placeholder="Introduce el nombre">
         </div>
 
-        <div class="margen-arriba">
-            <button type="submit" name="guardarDirector" class="boton-primario">Registrar Director</button>
+        <div class="campo-formulario">
+            <label>Email *</label>
+            <input type="email" name="emailDirector" placeholder="correo@ejemplo.com">
+        </div>
+
+        <div class="campo-formulario">
+            <label>DNI *</label>
+            <input type="text" name="dniDirector" placeholder="12345678X">
+        </div>
+
+        <div class="campo-formulario">
+            <label>Teléfono</label>
+            <input type="text" name="telefonoDirector" placeholder="600000000">
+        </div>
+
+        <div class="campo-formulario">
+            <label>Fecha de Alta</label>
+            <input type="date" name="fechaAltaDirector">
+        </div>
+
+        <div class="margen-arriba pt-20">
+            <button type="submit" name="guardarDirector" class="boton-primario ancho-total">
+                <i class="fas fa-save"></i> Registrar Director
+            </button>
         </div>
     </form>
 </div>

@@ -7,14 +7,16 @@ include_once "../comunes/nav.php";
 require_once "../../../modelos/profesores.php";
 
 $id = 0;
-if (isset($_GET['id'])) {
+if (isset($_GET['idProfesor'])) {
+    $id = $_GET['idProfesor'];
+} else if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
 
 $profesor = obtenerProfesorPorId($id);
 
 if (!$profesor) {
-    echo "<div class='mensaje-error'>Profesor no encontrado.</div>";
+    echo "<div class='mensaje-error'>Profesor no encontrado. ID recibido: $id</div>";
     include '../comunes/footer.php';
     exit;
 }
@@ -43,7 +45,7 @@ if (!$profesor) {
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">Teléfono</label>
             <p class="texto-negrita"><?php 
-                if ($profesor['telefonoProfesor']) {
+                if (!empty($profesor['telefonoProfesor'])) {
                     echo $profesor['telefonoProfesor'];
                 } else {
                     echo '-';
@@ -53,27 +55,17 @@ if (!$profesor) {
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">DNI</label>
             <p class="texto-negrita"><?php 
-                if ($profesor['dniProfesor']) {
+                if (!empty($profesor['dniProfesor'])) {
                     echo $profesor['dniProfesor'];
                 } else {
                     echo '-';
                 }
             ?></p>
         </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Especialidad</label>
-            <p class="texto-negrita"><?php 
-                if ($profesor['especialidad']) {
-                    echo $profesor['especialidad'];
-                } else {
-                    echo 'No definida';
-                }
-            ?></p>
-        </div>
         <div class="campo-formulario campo-ancho-total">
             <label class="texto-atenuado texto-pequeno">Dirección</label>
             <p class="texto-negrita"><?php 
-                if ($profesor['direccionProfesor']) {
+                if (!empty($profesor['direccionProfesor'])) {
                     echo $profesor['direccionProfesor'];
                 } else {
                     echo '-';

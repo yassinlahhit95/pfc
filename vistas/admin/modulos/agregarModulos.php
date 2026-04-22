@@ -1,74 +1,58 @@
 <?php
 session_start();
-require_once "../../modelos/ciclos.php";
+require_once "../../../modelos/ciclos.php";
 
 $listaCiclos = listarTodosLosCiclos();
 
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
+$error = '';
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
 }
+unset($_SESSION['error']);
 
-$datos = [];
-if (isset($_SESSION['datos_modulo'])) {
-    $datos = $_SESSION['datos_modulo'];
-}
-unset($_SESSION['errores'], $_SESSION['datos_modulo']);
-
-
-$nombre = '';
-if (isset($datos['nombreModulo'])) {
-    $nombre = $datos['nombreModulo'];
-}
-
-$idCicloElegido = '';
-if (isset($datos['idCiclo'])) {
-    $idCicloElegido = $datos['idCiclo'];
-}
-
-$horas = 0;
-if (isset($datos['horasMaximas'])) {
-    $horas = $datos['horasMaximas'];
-}
-
-$titulo_pagina = "Agregar Módulo - Super Admin";
+$titulo_pagina = "Registrar Módulo - Super Admin";
 $seccion = 'modulos';
 include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Nuevo Módulo Profesional</h1>
-    <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">Volver</a>
+    <h1>Registrar Nuevo Módulo</h1>
+    <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/modulos/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>Nombre del Módulo *</label>
-                <input type="text" name="nombreModulo" value="<?php echo $nombre; ?>">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Ciclo Formativo *</label>
-                <select name="idCiclo">
-                    <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($listaCiclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($idCicloElegido == $ciclo['idCiclo']) { echo 'selected'; } ?>>
-                            <?php echo $ciclo['nombreCiclo']; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Horas Totales *</label>
-                <input type="text" name="horasMaximas" value="<?php echo $horas; ?>">
-            </div>
+    <form action="/pfc/controladores/admin/modulos/insertar.php" method="POST" style="max-width: 600px; margin: 0 auto;">
+        
+        <div class="campo-formulario">
+            <label>Nombre del Módulo *</label>
+            <input type="text" name="nombreModulo" placeholder="Programación PHP">
         </div>
 
-        <div class="margen-arriba">
-            <button type="submit" name="guardarModulo" class="boton-primario">Registrar Módulo</button>
+        <div class="campo-formulario">
+            <label>Ciclo Formativo Asociado *</label>
+            <select name="idCiclo">
+                <option value="">Seleccione un ciclo</option>
+                <?php foreach ($listaCiclos as $ciclo) { ?>
+                    <option value="<?php echo $ciclo['idCiclo']; ?>">
+                        <?php echo $ciclo['nombreCiclo']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <div class="campo-formulario">
+            <label>Horas Máximas *</label>
+            <input type="text" name="horasMaximas" placeholder="180">
+        </div>
+
+        <div class="margen-arriba pt-20">
+            <button type="submit" name="guardarModulo" class="boton-primario ancho-total">
+                <i class="fas fa-save"></i> Registrar Módulo
+            </button>
         </div>
     </form>
 </div>

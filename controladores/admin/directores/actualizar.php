@@ -1,28 +1,37 @@
 <?php
 session_start();
 require_once "../../../modelos/directores.php";
+
 if (isset($_POST['guardarDirector'])) {
-    $id = $_POST['idDirector'];
-    $nombre = $_POST['nombreDirector'];
-    $email = strtolower($_POST['emailDirector']);
-    $dni = strtoupper($_POST['dniDirector']);
+    $idDirector = $_POST['idDirector'];
+    $nombreDirector = trim($_POST['nombreDirector']);
+    $emailDirector = strtolower(trim($_POST['emailDirector']));
+    $dniDirector = strtoupper(trim($_POST['dniDirector']));
+    $telefonoDirector = trim($_POST['telefonoDirector']);
     $fechaAlta = $_POST['fechaAltaDirector'];
-    if (empty($nombre)) {
-        $_SESSION['error'] = "Nombre vacio";
-    } else if (empty($email)) {
-        $_SESSION['error'] = "Email vacio";
-    } else if (empty($dni)) {
-        $_SESSION['error'] = "DNI vacio";
-    } else if (actualizarDirector($id, $nombre, $email, $dni, $fechaAlta)) {
-        $_SESSION['exito'] = "OK";
+
+    if (empty($idDirector)) {
+        header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+        exit;
+    } else if (empty($nombreDirector)) {
+        $_SESSION['error'] = "El nombre es obligatorio.";
+    } else if (empty($emailDirector)) {
+        $_SESSION['error'] = "El email es obligatorio.";
+    } else if (empty($dniDirector)) {
+        $_SESSION['error'] = "El DNI es obligatorio.";
+    } else if (!is_numeric($telefonoDirector) && !empty($telefonoDirector)) {
+        $_SESSION['error'] = "El teléfono debe ser numérico.";
+    } else if (actualizarDirector($idDirector, $nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta)) {
+        $_SESSION['exito'] = "Director actualizado correctamente.";
         header("Location: /pfc/vistas/admin/directores/verDirectores.php");
         exit;
     } else {
-        $_SESSION['error'] = "Error";
+        $_SESSION['error'] = "Error al actualizar.";
     }
-    header("Location: /pfc/vistas/admin/directores/modificarDirectores.php?id=$id");
+    header("Location: /pfc/vistas/admin/directores/modificarDirectores.php?id=$idDirector");
     exit;
 }
+
 header("Location: /pfc/vistas/admin/directores/verDirectores.php");
 exit;
-
+?>

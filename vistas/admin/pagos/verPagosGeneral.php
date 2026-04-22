@@ -19,7 +19,7 @@ if (isset($_SESSION['error'])) {
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <div>
         <h1>Pagos y Cobros</h1>
     </div>
@@ -43,7 +43,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <thead>
                 <tr>
                     <th>Estudiante</th>
-                    <th>Concepto</th>
                     <th>Monto</th>
                     <th>Tipo</th>
                     <th>Fecha Cobro</th>
@@ -53,12 +52,11 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </thead>
             <tbody>
                 <?php if (empty($listaPagos)) { ?>
-                    <tr><td colspan="7" class="sin-datos">No hay registros de pagos</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No hay registros de pagos</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaPagos as $pago) { ?>
                     <tr>
                         <td><strong><?php echo $pago['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $pago['concepto']; ?></td>
                         <td><?php echo number_format($pago['monto'], 2); ?> €</td>
                         <td><span class="etiqueta-gris"><?php echo ucfirst($pago['tipoPago']); ?></span></td>
                         <td><?php echo date('d/m/Y', strtotime($pago['fechaPago'])); ?></td>

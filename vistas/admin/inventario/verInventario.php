@@ -7,8 +7,6 @@ include_once "../comunes/nav.php";
 require_once "../../../modelos/inventario.php";
 
 $listaArticulos = listarArticulos();
-$listaPrestamosActivos = listarPrestamosActivos();
-
 
 $error = '';
 if (isset($_SESSION['error'])) {
@@ -33,14 +31,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Inventario de Recursos</h1>
-    </div>
-    <div>
-        <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="boton-primario">
-            <i class="fas fa-hand-holding"></i> Ir a Préstamos
-        </a>
-    </div>
+    <h1>Inventario de Recursos</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -49,46 +40,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 <?php if ($error) { ?>
     <div class="mensaje-error"><p><?php echo $error; ?></p></div>
 <?php } ?>
-
-
-<div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Equipos Prestados Actualmente</h3>
-    </div>
-    <div class="contenedor-tabla">
-        <table class="tabla-datos">
-            <thead>
-                <tr>
-                    <th>Equipo</th>
-                    <th>Alumno</th>
-                    <th>Fecha Préstamo</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($listaPrestamosActivos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay préstamos activos en este momento</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($listaPrestamosActivos as $p) { ?>
-                    <tr>
-                        <td><strong><?php echo $p['nombreArticulo']; ?></strong></td>
-                        <td><?php echo $p['nombreEstudiante']; ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
-                        <td>
-                            <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
-                                <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                <input type="hidden" name="redireccion" value="/pfc/vistas/admin/inventario/verInventario.php">
-                                <button type="submit" class="boton-secundario boton-pequeno">Devolver</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                <?php } ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -104,9 +55,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             }
             ?>
             <input type="text" name="nombreArticulo" value="<?php echo $nombreArticulo; ?>" placeholder="Proyector">
-            <?php if (isset($errores['nombreArticulo'])) { ?>
-                <p class="error-campo"><?php echo $errores['nombreArticulo']; ?></p>
-            <?php } ?>
         </div>
 
         <div class="campo-formulario flexible-rellenar">
@@ -118,9 +66,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             }
             ?>
             <input type="text" name="numeroSerie" value="<?php echo $numeroSerie; ?>" placeholder="SN12345">
-            <?php if (isset($errores['numeroSerie'])) { ?>
-                <p class="error-campo"><?php echo $errores['numeroSerie']; ?></p>
-            <?php } ?>
         </div>
 
         <div class="mt-25">
@@ -130,7 +75,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         </div>
     </form>
 </div>
-
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -153,13 +97,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                     <?php foreach ($listaArticulos as $art) { ?>
                     <tr>
                         <td><strong><?php echo $art['nombreArticulo']; ?></strong></td>
-                        <td><?php 
-                            if (isset($art['numeroSerie'])) {
-                                echo $art['numeroSerie'];
-                            } else {
-                                echo 'N/A';
-                            }
-                        ?></td>
+                        <td><?php echo !empty($art['numeroSerie']) ? $art['numeroSerie'] : 'N/A'; ?></td>
                         <td>
                             <?php 
                             $claseBolita = 'inactivo-rojo';
