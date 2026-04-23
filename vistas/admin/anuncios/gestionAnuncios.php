@@ -16,33 +16,7 @@ $error = '';
 if (isset($_SESSION['error'])) {
     $error = $_SESSION['error'];
 }
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
-
-$datos = [];
-if (isset($_SESSION['datos_anuncio'])) {
-    $datos = $_SESSION['datos_anuncio'];
-}
-unset($_SESSION['exito'], $_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
-
-
-$titulo = '';
-if (isset($datos['titulo'])) {
-    $titulo = $datos['titulo'];
-}
-
-$mensaje = '';
-if (isset($datos['mensaje'])) {
-    $mensaje = $datos['mensaje'];
-}
-
-$fechaExp = date('Y-m-d', strtotime('+7 days'));
-if (isset($datos['fecha_expiracion'])) {
-    $fechaExp = $datos['fecha_expiracion'];
-}
+unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
@@ -52,13 +26,12 @@ if (isset($datos['fecha_expiracion'])) {
     </div>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
+<?php if (!empty($exito)) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
-
 
 <div class="tarjeta-blanca margen-abajo">
     <div class="titulo-tarjeta"><h3>Nuevo Anuncio</h3></div>
@@ -66,17 +39,25 @@ if (isset($datos['fecha_expiracion'])) {
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Título del Aviso *</label>
-                <input type="text" name="titulo" value="<?php echo $titulo; ?>" placeholder="Mantenimiento del Aula 2">
+                <input type="text" name="titulo" placeholder="Mantenimiento del Aula 2">
             </div>
             <div class="campo-formulario">
                 <label>Válido hasta *</label>
-                <input type="date" name="fecha_expiracion" value="<?php echo $fechaExp; ?>">
+                <input type="date" name="fecha_expiracion" value="<?php echo date('Y-m-d', strtotime('+7 days')); ?>">
+            </div>
+            <div class="campo-formulario">
+                <label>Dirigido a:</label>
+                <select name="dirigidoA">
+                    <option value="todos">Todos</option>
+                    <option value="estudiantes">Solo Estudiantes</option>
+                    <option value="profesores">Solo Profesores</option>
+                </select>
             </div>
         </div>
         
         <div class="campo-formulario margen-arriba">
             <label>Contenido del Mensaje *</label>
-            <textarea name="mensaje" rows="4" placeholder="Escriba aquí el detalle..."><?php echo $mensaje; ?></textarea>
+            <textarea name="mensaje" rows="4" placeholder="Escriba aquí el detalle..."></textarea>
         </div>
 
         <div class="margen-arriba">
@@ -87,7 +68,6 @@ if (isset($datos['fecha_expiracion'])) {
     </form>
 </div>
 
-
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta"><h3>Historial de Avisos</h3></div>
     <div class="contenedor-tabla">
@@ -96,18 +76,20 @@ if (isset($datos['fecha_expiracion'])) {
                 <tr>
                     <th>Título</th>
                     <th>Mensaje</th>
+                    <th>Dirigido a</th>
                     <th>Expira</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaAnuncios)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay anuncios registrados</td></tr>
+                    <tr><td colspan="5" class="sin-datos">No hay anuncios registrados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaAnuncios as $anuncio) { ?>
                     <tr>
                         <td><strong><?php echo $anuncio['titulo']; ?></strong></td>
-                        <td><small><?php echo substr($anuncio['mensaje'], 0, 100); ?>...</small></td>
+                        <td><small><?php echo substr($anuncio['mensaje'], 0, 80); ?>...</small></td>
+                        <td><span class="etiqueta-gris"><?php echo ucfirst($anuncio['dirigidoA']); ?></span></td>
                         <td><?php echo date('d/m/Y', strtotime($anuncio['fechaExpiracion'])); ?></td>
                         <td>
                             <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline">

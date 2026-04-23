@@ -5,6 +5,9 @@ $seccion = 'profesores';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/profesores.php";
+require_once "../../../modelos/ciclos.php";
+require_once "../../../modelos/modulos.php";
+require_once "../../../modelos/retos.php";
 
 $id = 0;
 if (isset($_GET['idProfesor'])) {
@@ -20,6 +23,11 @@ if (!$profesor) {
     include '../comunes/footer.php';
     exit;
 }
+
+// Obtener datos asignados
+$ciclosProfesor = obtenerCiclosDeProfesor($id);
+$modulosProfesor = obtenerModulosDeProfesor($id);
+$retosProfesor = obtenerRetosDeProfesor($id);
 ?>
 
 <div class="encabezado-pagina">
@@ -29,48 +37,98 @@ if (!$profesor) {
     </a>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Información General</h3>
+<div class="disposicion-flexible separacion-grande">
+    <div class="flexible-rellenar">
+        <div class="tarjeta-blanca margen-abajo">
+            <div class="titulo-tarjeta">
+                <h3><i class="fas fa-user-tie"></i> Información General</h3>
+            </div>
+            <div class="formulario-cuadricula">
+                <div class="campo-formulario">
+                    <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
+                    <p class="texto-negrita"><?php echo $profesor['nombreProfesor']; ?></p>
+                </div>
+                <div class="campo-formulario">
+                    <label class="texto-atenuado texto-pequeno">Email</label>
+                    <p class="texto-negrita"><?php echo $profesor['emailProfesor']; ?></p>
+                </div>
+                <div class="campo-formulario">
+                    <label class="texto-atenuado texto-pequeno">Teléfono</label>
+                    <p class="texto-negrita"><?php echo !empty($profesor['telefonoProfesor']) ? $profesor['telefonoProfesor'] : '-'; ?></p>
+                </div>
+                <div class="campo-formulario">
+                    <label class="texto-atenuado texto-pequeno">DNI</label>
+                    <p class="texto-negrita"><?php echo !empty($profesor['dniProfesor']) ? $profesor['dniProfesor'] : '-'; ?></p>
+                </div>
+                <div class="campo-formulario campo-ancho-total">
+                    <label class="texto-atenuado texto-pequeno">Dirección</label>
+                    <p class="texto-negrita"><?php echo !empty($profesor['direccionProfesor']) ? $profesor['direccionProfesor'] : '-'; ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULOS ASIGNADOS -->
+        <div class="tarjeta-blanca">
+            <div class="titulo-tarjeta">
+                <h3><i class="fas fa-book"></i> Módulos Impartidos</h3>
+            </div>
+            <div class="contenedor-tabla">
+                <table class="tabla-datos">
+                    <thead>
+                        <tr>
+                            <th>Módulo</th>
+                            <th>Abreviatura Ciclo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($modulosProfesor)) { ?>
+                            <tr><td colspan="2" class="sin-datos">No tiene módulos asignados</td></tr>
+                        <?php } else { ?>
+                            <?php foreach ($modulosProfesor as $m) { ?>
+                            <tr>
+                                <td><strong><?php echo $m['nombreModulo']; ?></strong></td>
+                                <td><span class="etiqueta-estado azul"><?php echo $m['abreviaturaCiclo']; ?></span></td>
+                            </tr>
+                            <?php } ?>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-            <p class="texto-negrita"><?php echo $profesor['nombreProfesor']; ?></p>
+
+    <!-- BARRA LATERAL: CICLOS Y RETOS -->
+    <div class="ancho-fijo-300">
+        <div class="tarjeta-blanca margen-abajo">
+            <div class="titulo-tarjeta"><h3><i class="fas fa-layer-group"></i> Ciclos</h3></div>
+            <div class="lista-detalles-lateral">
+                <?php if (empty($ciclosProfesor)) { ?>
+                    <p class="texto-atenuado">Sin ciclos asignados</p>
+                <?php } else { ?>
+                    <?php foreach ($ciclosProfesor as $c) { ?>
+                        <div class="item-detalle-lateral" style="margin-bottom: 8px; padding: 8px; background: #fdffdf; border-radius: 4px;">
+                            <strong><?php echo $c['abreviaturaCiclo']; ?></strong><br>
+                            <small><?php echo $c['nombreCiclo']; ?></small>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+            </div>
         </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Email</label>
-            <p class="texto-negrita"><?php echo $profesor['emailProfesor']; ?></p>
-        </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Teléfono</label>
-            <p class="texto-negrita"><?php 
-                if (!empty($profesor['telefonoProfesor'])) {
-                    echo $profesor['telefonoProfesor'];
-                } else {
-                    echo '-';
-                }
-            ?></p>
-        </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">DNI</label>
-            <p class="texto-negrita"><?php 
-                if (!empty($profesor['dniProfesor'])) {
-                    echo $profesor['dniProfesor'];
-                } else {
-                    echo '-';
-                }
-            ?></p>
-        </div>
-        <div class="campo-formulario campo-ancho-total">
-            <label class="texto-atenuado texto-pequeno">Dirección</label>
-            <p class="texto-negrita"><?php 
-                if (!empty($profesor['direccionProfesor'])) {
-                    echo $profesor['direccionProfesor'];
-                } else {
-                    echo '-';
-                }
-            ?></p>
+
+        <div class="tarjeta-blanca">
+            <div class="titulo-tarjeta"><h3><i class="fas fa-tasks"></i> Retos Activos</h3></div>
+            <div class="lista-detalles-lateral">
+                <?php if (empty($retosProfesor)) { ?>
+                    <p class="texto-atenuado">Sin retos asignados</p>
+                <?php } else { ?>
+                    <?php foreach ($retosProfesor as $r) { ?>
+                        <div class="item-detalle-lateral" style="margin-bottom: 8px; padding: 8px; background: #f4f8ff; border-radius: 4px;">
+                            <strong><?php echo $r['nombreReto']; ?></strong><br>
+                            <small><?php echo $r['horasReto']; ?> horas</small>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+            </div>
         </div>
     </div>
 </div>

@@ -43,8 +43,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre del Módulo</th>
-                    <th>Ciclo Formativo</th>
+                    <th>Módulo (Ciclo)</th>
+                    <th>Ciclo Formativo Completo</th>
                     <th>Horas Totales</th>
                     <th>Acciones</th>
                 </tr>
@@ -56,7 +56,16 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <?php foreach ($listaModulos as $modulo) { ?>
                     <tr>
                         <td><?php echo $modulo['idModulo']; ?></td>
-                        <td><strong><?php echo $modulo['nombreModulo']; ?></strong></td>
+                        <td>
+                            <strong>
+                                <?php 
+                                if (!empty($modulo['abreviaturaCiclo'])) {
+                                    echo $modulo['abreviaturaCiclo'] . " - ";
+                                }
+                                echo $modulo['nombreModulo']; 
+                                ?>
+                            </strong>
+                        </td>
                         <td><?php 
                             if ($modulo['nombreCiclo']) {
                                 echo $modulo['nombreCiclo'];
