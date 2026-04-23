@@ -1,108 +1,159 @@
 <?php
 session_start();
+require_once "../../../modelos/estudiantes.php";
+require_once "../../../modelos/ciclos.php";
+require_once "../../../modelos/pagos.php";
+
+$idCicloElegido = isset($_GET['idCiclo']) ? $_GET['idCiclo'] : '';
+$idEstudianteElegido = isset($_GET['idEstudiante']) ? $_GET['idEstudiante'] : '';
+
+$todos_los_ciclos = listarTodosLosCiclos();
+
+// Filtrar estudiantes por ciclo si se ha seleccionado uno
+if ($idCicloElegido != '') {
+    $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloElegido);
+} else {
+    $todos_los_estudiantes = listarEstudiantes();
+}
+
+// Obtener info financiera si hay estudiante seleccionado
+$infoFinanciera = null;
+if ($idEstudianteElegido != '') {
+    $infoFinanciera = obtenerEstadoFinancieroEstudiante($idEstudianteElegido);
+}
+
+// Regla: No se permiten pagos después del 30 de Junio
+$hoy = date('Y-m-d');
+$fechaLimite = date('Y') . '-06-30';
+$esDespuesDeJunio = ($hoy > $fechaLimite);
+
+$lista_de_errores = array();
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+unset($_SESSION['errores']);
+
 $titulo_pagina = "Registrar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
-
-require_once "../../../modelos/conectar.php";
-require_once "../../../modelos/estudiantes.php";
-
-$listaEstudiantes = listarEstudiantes();
-
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['error']);
-
-$fechaHoy = date('Y-m-d');
 ?>
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Pago</h1>
-    <p class="subtitulo-encabezado">Gestión de cobros y recordatorio de próximos pagos</p>
+    <a href="/pfc/vistas/admin/pagos/verPagosGeneral.php" class="boton-secundario">Volver</a>
 </div>
 
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($esDespuesDeJunio) { ?>
+    <div class="mensaje-error">
+        <i class="fas fa-exclamation-triangle"></i> No se pueden registrar pagos después del 30 de Junio del año en curso.
+    </div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <!-- Mensaje de aviso destacado arriba -->
-    <div class="aviso-sistema-pago margen-abajo" style="background: #e7f3ff; border-left: 5px solid #2196F3; padding: 15px; border-radius: 4px;">
-        <p style="margin: 0; color: #0d47a1; font-weight: 500;">
-            <i class="fas fa-info-circle"></i> El sistema calculará automáticamente la fecha del próximo cobro.
-        </p>
-    </div>
-
-    <form action="/pfc/controladores/admin/pagos/insertar.php" method="POST" enctype="multipart/form-data">
+<div class="tarjeta-blanca margen-abajo">
+    <form method="GET" action="">
         <div class="formulario-cuadricula">
-            
-            <div class="campo-formulario campo-ancho-total">
-                <label>Estudiante *</label>
-                <!-- Filtro básico para buscar estudiante -->
-                <input type="text" id="filtroEstudiante" onkeyup="filtrarLista()" placeholder="Buscar estudiante por nombre o DNI..." style="margin-bottom: 10px; border: 1px dashed #667eea;">
-                
-                <select name="idEstudiante" id="selectEstudiantes">
-                    <option value="">Seleccione un Estudiante</option>
-                    <?php foreach ($listaEstudiantes as $estudiante) { ?>
-                        <option value="<?php echo $estudiante['idEstudiante']; ?>">
-                            <?php echo $estudiante['nombreEstudiante']; ?> (<?php echo $estudiante['dniEstudiante']; ?>)
+            <div class="campo-formulario">
+                <label>1. Filtrar por Ciclo:</label>
+                <select name="idCiclo" onchange="this.form.submit()">
+                    <option value="">-- Todos los Ciclos --</option>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($idCicloElegido == $ciclo['idCiclo']) echo 'selected'; ?>>
+                            <?php echo $ciclo['nombreCiclo']; ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
 
             <div class="campo-formulario">
-                <label>Monto (€) *</label>
-                <input type="text" name="monto" placeholder="50.00">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Tipo de Pago *</label>
-                <select name="tipoPago">
-                    <option value="mensual">Mensual</option>
-                    <option value="trimestral">Trimestral</option>
-                    <option value="semestral">Semestral</option>
-                    <option value="unico">Pago Único</option>
+                <label>2. Seleccionar Estudiante:</label>
+                <select name="idEstudiante" onchange="this.form.submit()">
+                    <option value="">-- Seleccionar Estudiante --</option>
+                    <?php foreach ($todos_los_estudiantes as $est) { ?>
+                        <option value="<?php echo $est['idEstudiante']; ?>" <?php if ($idEstudianteElegido == $est['idEstudiante']) echo 'selected'; ?>>
+                            <?php echo $est['nombreEstudiante']; ?>
+                        </option>
+                    <?php } ?>
                 </select>
             </div>
-
-            <div class="campo-formulario">
-                <label>Fecha de Pago Realizado</label>
-                <input type="text" value="<?php echo date('d/m/Y'); ?>" readonly style="background-color: #f9f9f9; color: #666;">
-                <input type="hidden" name="fechaPago" value="<?php echo $fechaHoy; ?>">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Comprobante (Requerido)</label>
-                <input type="file" name="comprobante" accept="image/*,.pdf" required>
-            </div>
-        </div>
-
-        <div class="margen-arriba">
-            <a href="/pfc/vistas/admin/pagos/verPagosGeneral.php" class="boton-secundario">Cancelar</a>
-            <button type="submit" name="guardarPago" class="boton-primario">Registrar Pago</button>
         </div>
     </form>
 </div>
 
-<script>
-function filtrarLista() {
-    var input = document.getElementById("filtroEstudiante");
-    var filter = input.value.toLowerCase();
-    var select = document.getElementById("selectEstudiantes");
-    var options = select.options;
+<?php if ($infoFinanciera) { ?>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3>Estado Financiero de Estudiante</h3>
+    </div>
+    <div class="formulario-cuadricula">
+        <div class="campo-formulario">
+            <label>Precio del Ciclo</label>
+            <p><strong><?php echo number_format($infoFinanciera['precioCiclo'], 2); ?> €</strong></p>
+        </div>
+        <div class="campo-formulario">
+            <label>Ya Pagado</label>
+            <p><?php echo number_format($infoFinanciera['totalPagado'], 2); ?> €</p>
+        </div>
+        <div class="campo-formulario">
+            <label>Pendiente</label>
+            <p style="color: #d9534f; font-weight: bold;"><?php echo number_format($infoFinanciera['restante'], 2); ?> €</p>
+        </div>
+    </div>
 
-    for (var i = 1; i < options.length; i++) {
-        var txtValue = options[i].text;
-        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-            options[i].style.display = "";
-        } else {
-            options[i].style.display = "none";
-        }
-    }
+    <hr class="separador">
+
+    <?php if ($infoFinanciera['restante'] <= 0) { ?>
+        <p class="mensaje-exito">Este estudiante ya ha completado todos los pagos del ciclo.</p>
+    <?php } else if ($esDespuesDeJunio) { ?>
+        <p class="mensaje-error">Periodo de pagos finalizado (30/06 superado).</p>
+    <?php } else { ?>
+        <form action="/pfc/controladores/admin/pagos/insertar.php" method="POST">
+            <input type="hidden" name="idEstudiante" value="<?php echo $idEstudianteElegido; ?>">
+            <input type="hidden" name="fechaPago" value="<?php echo $hoy; ?>">
+            
+            <div class="formulario-cuadricula">
+                <div class="campo-formulario">
+                    <label>Tipo de Pago *</label>
+                    <select name="tipoPago" id="tipoPago" required onchange="actualizarMontoRapido()">
+                        <option value="">-- Elegir --</option>
+                        <option value="mensual">Mensual (10% del total)</option>
+                        <option value="trimestral">Trimestral (25% del total)</option>
+                        <option value="semestral">Semestral (50% del total)</option>
+                        <option value="unico">Todo lo restante (<?php echo number_format($infoFinanciera['restante'], 2); ?> €)</option>
+                    </select>
+                </div>
+
+                <div class="campo-formulario">
+                    <label>Cantidad a Cobrar (€) *</label>
+                    <input type="number" name="monto" id="montoInput" step="0.01" max="<?php echo $infoFinanciera['restante']; ?>" required>
+                    <small>Máximo permitido: <?php echo $infoFinanciera['restante']; ?> €</small>
+                </div>
+            </div>
+
+            <div class="margen-arriba">
+                <button type="submit" name="guardarPago" class="boton-primario">
+                    <i class="fas fa-check"></i> Confirmar y Registrar Pago (<?php echo date('d/m/Y', strtotime($hoy)); ?>)
+                </button>
+            </div>
+        </form>
+    <?php } ?>
+</div>
+
+<script>
+// JavaScript muy simple para ayudar al usuario, no es AJAX
+function actualizarMontoRapido() {
+    const tipo = document.getElementById('tipoPago').value;
+    const precioTotal = <?php echo $infoFinanciera['precioCiclo']; ?>;
+    const restante = <?php echo $infoFinanciera['restante']; ?>;
+    let cuota = 0;
+
+    if (tipo === 'mensual') cuota = precioTotal / 10;
+    else if (tipo === 'trimestral') cuota = precioTotal / 4;
+    else if (tipo === 'semestral') cuota = precioTotal / 2;
+    else if (tipo === 'unico') cuota = restante;
+
+    if (cuota > restante) cuota = restante;
+    
+    document.getElementById('montoInput').value = cuota.toFixed(2);
 }
 </script>
+<?php } ?>
 
 <?php include '../comunes/footer.php'; ?>

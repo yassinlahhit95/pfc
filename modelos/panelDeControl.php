@@ -3,7 +3,8 @@ require_once("conectar.php");
 
 function contarEstudiantes() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM estudiantes");
+    $sql = "SELECT COUNT(*) as total FROM estudiantes";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -11,7 +12,8 @@ function contarEstudiantes() {
 
 function contarProfesores() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM profesores");
+    $sql = "SELECT COUNT(*) as total FROM profesores";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -19,7 +21,8 @@ function contarProfesores() {
 
 function contarDirectores() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM directores");
+    $sql = "SELECT COUNT(*) as total FROM directores";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -27,7 +30,8 @@ function contarDirectores() {
 
 function contarPagos() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM pagos");
+    $sql = "SELECT COUNT(*) as total FROM pagos";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -35,7 +39,8 @@ function contarPagos() {
 
 function contarAnuncios() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM anuncios");
+    $sql = "SELECT COUNT(*) as total FROM anuncios";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -43,7 +48,8 @@ function contarAnuncios() {
 
 function contarReclamaciones() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM reclamaciones");
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -51,7 +57,8 @@ function contarReclamaciones() {
 
 function contarCiclos() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM ciclos");
+    $sql = "SELECT COUNT(*) as total FROM ciclos";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -59,7 +66,8 @@ function contarCiclos() {
 
 function contarModulos() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM modulos");
+    $sql = "SELECT COUNT(*) as total FROM modulos";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -67,7 +75,8 @@ function contarModulos() {
 
 function contarRetos() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM retos");
+    $sql = "SELECT COUNT(*) as total FROM retos";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -75,7 +84,8 @@ function contarRetos() {
 
 function contarAulas() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM aulas");
+    $sql = "SELECT COUNT(*) as total FROM aulas";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -83,7 +93,8 @@ function contarAulas() {
 
 function contarInventario() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM dispositivos");
+    $sql = "SELECT COUNT(*) as total FROM dispositivos";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -91,7 +102,8 @@ function contarInventario() {
 
 function contarPrestamosActivos() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM prestamos WHERE estadoPrestamo = 'en curso'");
+    $sql = "SELECT COUNT(*) as total FROM prestamos WHERE estadoPrestamo = 'en curso'";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];
@@ -99,7 +111,8 @@ function contarPrestamosActivos() {
 
 function obtenerTotalRecaudado() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT SUM(monto) as total FROM pagos");
+    $sql = "SELECT SUM(monto) as total FROM pagos";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     $total = 0;

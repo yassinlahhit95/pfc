@@ -3,8 +3,12 @@ session_start();
 require_once "../../../modelos/ciclos.php";
 
 if (isset($_POST['guardarCiclo'])) {
-    $nombre = $_POST['nombreCiclo'];
-    $grado = $_POST['gradoCiclo'];
+    $nombre = trim($_POST['nombreCiclo']);
+    $idNivel = $_POST['idNivel'];
+    $descripcion = trim($_POST['descripcionCiclo']);
+    $precio = $_POST['precioCiclo'];
+    $profesores = isset($_POST['profesores']) ? $_POST['profesores'] : [];
+    $aulas = isset($_POST['aulas']) ? $_POST['aulas'] : [];
 
     $lista_de_errores = [];
 
@@ -12,12 +16,17 @@ if (isset($_POST['guardarCiclo'])) {
         $lista_de_errores['nombreCiclo'] = "El nombre del ciclo es obligatorio.";
     }
     
-    if (empty($grado)) {
-        $lista_de_errores['gradoCiclo'] = "El grado es obligatorio.";
+    if (empty($idNivel)) {
+        $lista_de_errores['idNivel'] = "El nivel es obligatorio.";
+    }
+
+    if (empty($descripcion)) {
+        $lista_de_errores['descripcionCiclo'] = "La descripción es obligatoria.";
     }
 
     if (empty($lista_de_errores)) {
-        $resultado = insertarCiclo($nombre, $grado);
+        // Corrected function name and arguments according to modelo/ciclos.php
+        $resultado = insertarNuevoCiclo($nombre, $descripcion, $idNivel, $profesores, $aulas, $precio);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo registrado correctamente.";
             header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
@@ -27,10 +36,10 @@ if (isset($_POST['guardarCiclo'])) {
         }
     } else {
         $_SESSION['errores'] = $lista_de_errores;
-        $_SESSION['datos_ciclos'] = $_POST;
+        $_SESSION['datos_ciclo'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
+    header("Location: /pfc/vistas/admin/ciclos/agregarCiclos.php");
     exit;
 }
 

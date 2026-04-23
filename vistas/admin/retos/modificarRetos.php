@@ -32,13 +32,11 @@ if (isset($_SESSION['datos_reto'])) {
 
 $todos_los_modulos = listarModulos();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
+$lista_de_errores = $_SESSION['errores'] ?? [];
 
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
-
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_reto']);
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reto']);
 ?>
 
 <div class="encabezado-pagina">
@@ -46,8 +44,11 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_reto']);
     <a href="verRetos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">

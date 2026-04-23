@@ -16,18 +16,16 @@ if (!$pago) {
 }
 
 if (isset($_SESSION['datos_pago'])) {
-    $pago = $_SESSION['datos_pago'];
+    $pago = array_merge($pago, $_SESSION['datos_pago']);
 }
 
 $todos_los_estudiantes = listarEstudiantes();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
+$lista_de_errores = $_SESSION['errores'] ?? [];
 
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
-
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_pago']);
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_pago']);
 ?>
 
 <div class="encabezado-pagina">
@@ -35,8 +33,11 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_pago']);
     <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -59,16 +60,18 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_pago']);
             </div>
 
             <div class="campo-formulario">
-                <label>Concepto *</label>
-                <input type="text" name="conceptoPago" value="<?php echo $pago['conceptoPago']; ?>">
-                <?php if (isset($lista_de_errores['conceptoPago'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['conceptoPago']; ?></p>
-                <?php } ?>
+                <label>Tipo de Pago *</label>
+                <select name="tipoPago">
+                    <option value="mensual" <?php if($pago['tipoPago'] == 'mensual') echo "selected"; ?>>Mensual</option>
+                    <option value="trimestral" <?php if($pago['tipoPago'] == 'trimestral') echo "selected"; ?>>Trimestral</option>
+                    <option value="semestral" <?php if($pago['tipoPago'] == 'semestral') echo "selected"; ?>>Semestral</option>
+                    <option value="unico" <?php if($pago['tipoPago'] == 'unico') echo "selected"; ?>>Único</option>
+                </select>
             </div>
 
             <div class="campo-formulario">
-                <label>Cantidad *</label>
-                <input type="text" name="cantidadPago" value="<?php echo $pago['cantidadPago']; ?>">
+                <label>Cantidad (Monto) *</label>
+                <input type="number" name="cantidadPago" step="0.01" value="<?php echo $pago['monto']; ?>">
                 <?php if (isset($lista_de_errores['cantidadPago'])) { ?>
                     <p class="error-campo"><?php echo $lista_de_errores['cantidadPago']; ?></p>
                 <?php } ?>
@@ -80,6 +83,11 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_pago']);
                 <?php if (isset($lista_de_errores['fechaPago'])) { ?>
                     <p class="error-campo"><?php echo $lista_de_errores['fechaPago']; ?></p>
                 <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Próxima Fecha de Pago</label>
+                <input type="date" name="fechaProximoPago" value="<?php echo $pago['fechaProximoPago']; ?>">
             </div>
         </div>
 

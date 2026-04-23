@@ -13,10 +13,10 @@ function listarProfesores() {
     return $lista;
 }
 
-function insertarProfesor($nombre, $email, $telefono, $dni, $direccion) {
+function insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especialidad = "") {
     $conexion = obtenerConexion();
-    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor) 
-            VALUES ('$nombre', '$email', '$telefono', '$dni', '$direccion')";
+    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, especialidad) 
+            VALUES ('$nombre', '$email', '$telefono', '$dni', '$direccion', '$especialidad')";
     if (mysqli_query($conexion, $sql)) {
         $idProfesor = mysqli_insert_id($conexion);
         mysqli_close($conexion);
@@ -26,11 +26,11 @@ function insertarProfesor($nombre, $email, $telefono, $dni, $direccion) {
     return false;
 }
 
-function actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion) {
+function actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $especialidad = "") {
     $conexion = obtenerConexion();
     $sql = "UPDATE profesores SET nombreProfesor = '$nombre', emailProfesor = '$email', 
             telefonoProfesor = '$telefono', dniProfesor = '$dni', 
-            direccionProfesor = '$direccion' WHERE idProfesor = $idProfesor";
+            direccionProfesor = '$direccion', especialidad = '$especialidad' WHERE idProfesor = $idProfesor";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
@@ -63,6 +63,21 @@ function obtenerProfesorPorId($idProfesor) {
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila;
+}
+
+function listarProfesoresPorCiclo($idCiclo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT p.* FROM profesores p 
+            JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor 
+            WHERE cp.idCiclo = $idCiclo 
+            ORDER BY p.nombreProfesor ASC";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
 }
 
 function actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono) {

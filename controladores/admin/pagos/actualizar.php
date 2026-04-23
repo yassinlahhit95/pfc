@@ -3,33 +3,27 @@ session_start();
 require_once "../../../modelos/pagos.php";
 
 if (isset($_POST['actualizarPago'])) {
-    $id_pago = $_POST['idPago'];
-    $id_estudiante = $_POST['idEstudiante'];
-    $concepto = trim($_POST['conceptoPago']);
-    $cantidad = $_POST['cantidadPago'];
-    $fecha = $_POST['fechaPago'];
+    $idPago = $_POST['idPago'];
+    $idEstudiante = $_POST['idEstudiante'];
+    $tipoPago = $_POST['tipoPago'];
+    $monto = $_POST['cantidadPago']; // Nota: en el form puse cantidadPago
+    $fechaPago = $_POST['fechaPago'];
+    $fechaProximo = $_POST['fechaProximoPago'];
 
     $lista_de_errores = [];
 
-    if (empty($id_estudiante)) {
+    if (empty($idEstudiante)) {
         $lista_de_errores['idEstudiante'] = "Debe seleccionar un estudiante.";
     }
-    if (empty($concepto)) {
-        $lista_de_errores['conceptoPago'] = "El concepto es obligatorio.";
+    if (empty($monto) || $monto <= 0) {
+        $lista_de_errores['cantidadPago'] = "La cantidad debe ser mayor a 0.";
     }
-    if (empty($cantidad)) {
-        $lista_de_errores['cantidadPago'] = "La cantidad es obligatoria.";
-    } else {
-        if (!is_numeric($cantidad)) {
-            $lista_de_errores['cantidadPago'] = "La cantidad debe ser un número.";
-        }
-    }
-    if (empty($fecha)) {
+    if (empty($fechaPago)) {
         $lista_de_errores['fechaPago'] = "La fecha es obligatoria.";
     }
 
     if (empty($lista_de_errores)) {
-        $resultado = actualizarPago($id_pago, $id_estudiante, $concepto, $cantidad, $fecha);
+        $resultado = actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo);
         if ($resultado) {
             $_SESSION['exito'] = "Pago actualizado correctamente.";
             header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
@@ -42,7 +36,7 @@ if (isset($_POST['actualizarPago'])) {
         $_SESSION['datos_pago'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/pagos/modificarPagos.php?idPago=$id_pago");
+    header("Location: /pfc/vistas/admin/pagos/modificarPagos.php?idPago=$idPago");
     exit;
 }
 

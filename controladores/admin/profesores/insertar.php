@@ -7,7 +7,7 @@ if (isset($_POST['guardarProfesor'])) {
     $email = trim($_POST['emailProfesor']);
     $dni = trim($_POST['dniProfesor']);
     $telefono = trim($_POST['telefonoProfesor']);
-    $especialidad = trim($_POST['especialidadProfesor']);
+    $direccion = trim($_POST['direccionProfesor']);
 
     $lista_de_errores = [];
 
@@ -26,13 +26,15 @@ if (isset($_POST['guardarProfesor'])) {
     }
     if (empty($telefono)) {
         $lista_de_errores['telefonoProfesor'] = "El teléfono es obligatorio.";
+    } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
+        $lista_de_errores['telefonoProfesor'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
     }
-    if (empty($especialidad)) {
-        $lista_de_errores['especialidadProfesor'] = "La especialidad es obligatoria.";
+    if (empty($direccion)) {
+        $lista_de_errores['direccionProfesor'] = "La dirección es obligatoria.";
     }
 
     if (empty($lista_de_errores)) {
-        $resultado = insertarProfesor($nombre, $email, $telefono, $dni, $especialidad);
+        $resultado = insertarProfesor($nombre, $email, $telefono, $dni, $direccion);
         if ($resultado) {
             $_SESSION['exito'] = "Profesor registrado correctamente.";
             header("Location: /pfc/vistas/admin/profesores/verProfesores.php");

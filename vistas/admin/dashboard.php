@@ -19,13 +19,13 @@ $pagosRealizados = contarPagosRealizados();
 $anunciosPorPagina = 5;
 $paginaActual = 1;
 if (isset($_GET['p_anuncios'])) {
-    $paginaActual = (int)$_GET['p_anuncios'];
+    $paginaActual = $_GET['p_anuncios'];
 }
-if ($paginaActual < 1) { 
-    $paginaActual = 1; 
+if ($paginaActual < 1) {
+    $paginaActual = 1;
 }
 
-$totalAnuncios = contarAnunciosQueEstanActivos();
+$totalAnuncios = (int)contarAnunciosQueEstanActivos();
 $totalPaginas = ceil($totalAnuncios / $anunciosPorPagina);
 $listaAnuncios = listarAnunciosConPaginas($anunciosPorPagina);
 

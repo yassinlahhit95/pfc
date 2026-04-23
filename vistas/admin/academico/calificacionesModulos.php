@@ -18,11 +18,8 @@ if ($id_modulo_elegido != 0) {
     $estudiantes_calificados = listarCalificacionesPorModulo($id_modulo_elegido);
 }
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
-
-$mensaje_exito = "";
-if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
@@ -47,11 +44,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </form>
 </div>
 
-<?php if ($mensaje_exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <?php if ($id_modulo_elegido != 0) { ?>

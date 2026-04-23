@@ -6,13 +6,10 @@ include_once "../comunes/nav.php";
 
 require_once "../../../modelos/inventario.php";
 
-$todos_los_prestamos = listarPrestamos();
+$todos_los_prestamos = listarTodosLosPrestamos();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
-
-$mensaje_exito = "";
-if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
@@ -24,11 +21,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($mensaje_exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -64,8 +61,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <?php 
-                            $clase_estado = "activo-verde";
-                            if ($p['estadoPrestamo'] == 'activo') { $clase_estado = "inactivo-rojo"; }
+                            $clase_estado = "inactivo-rojo";
+                            if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
                             ?>
                             <span class="estado-bolita <?php echo $clase_estado; ?>">
                                 <?php echo $p['estadoPrestamo']; ?>
@@ -73,7 +70,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <?php if ($p['estadoPrestamo'] == 'activo') { ?>
+                                <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
                                     <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
                                         <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
                                         <input type="hidden" name="idArticulo" value="<?php echo $p['idArticulo']; ?>">

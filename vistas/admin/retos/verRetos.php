@@ -8,11 +8,8 @@ require_once "../../../modelos/retos.php";
 
 $todos_los_retos = listarRetos();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
-
-$mensaje_exito = "";
-if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
@@ -24,11 +21,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($mensaje_exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -51,8 +48,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <tr>
                         <td><strong><?php echo $reto['nombreReto']; ?></strong></td>
                         <td><?php echo $reto['horasReto']; ?>h</td>
-                        <td><?php echo date('d/m/Y', strtotime($reto['fechaInicioReto'])); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($reto['fechaFinReto'])); ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($reto['fechaInicio'])); ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/retos/modificarRetos.php?idReto=<?php echo $reto['idReto']; ?>" class="boton-icono boton-editar">

@@ -44,6 +44,13 @@ function obtenerRetosDeProfesor($idProfesor) {
 }
 
 function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto) {
+    // Validacion simple de 6 horas/dia (30 horas/semana de 5 dias)
+    if ($horasReto > 30) {
+        if (session_status() == PHP_SESSION_NONE) { session_start(); }
+        $_SESSION['error'] = "Un reto no puede superar las 30 horas semanales (6h/dia).";
+        return false;
+    }
+
     $conexion = obtenerConexion();
     $sql = "INSERT INTO retos (nombreReto, fechaInicio, fechaFin, horasReto) 
             VALUES ('$nombreReto', '$fechaInicio', '$fechaFin', $horasReto)";
@@ -54,6 +61,31 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto) {
     }
     mysqli_close($conexion);
     return false;
+}
+
+function comprobarHorasDisponiblesModulo($idModulo, $nuevasHoras) {
+    $conexion = obtenerConexion();
+    
+    // Horas maximas del modulo
+    $sqlMod = "SELECT horasMaximas FROM modulos WHERE idModulo = $idModulo";
+    $resMod = mysqli_query($conexion, $sqlMod);
+    $filaMod = mysqli_fetch_assoc($resMod);
+    $max = $filaMod['horasMaximas'];
+
+    // Horas ya ocupadas por otros retos
+    $sqlYa = "SELECT SUM(r.horasReto) as total FROM retos r 
+              JOIN modulo_reto mr ON r.idReto = mr.idReto 
+              WHERE mr.idModulo = $idModulo";
+    $resYa = mysqli_query($conexion, $sqlYa);
+    $filaYa = mysqli_fetch_assoc($resYa);
+    $ocupadas = $filaYa['total'] ?: 0;
+
+    mysqli_close($conexion);
+
+    if (($ocupadas + $nuevasHoras) > $max) {
+        return false;
+    }
+    return true;
 }
 
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto) {
@@ -67,7 +99,8 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
 
 function eliminarReto($idReto) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "DELETE FROM retos WHERE idReto = $idReto");
+    $sql = "DELETE FROM retos WHERE idReto = $idReto";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
@@ -81,23 +114,43 @@ function obtenerRetoPorId($idReto) {
     return $fila;
 }
 
+function obtenerRetosPorCiclo($idCiclo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT DISTINCT r.* FROM retos r 
+            JOIN modulo_reto mr ON r.idReto = mr.idReto 
+            JOIN modulos m ON mr.idModulo = m.idModulo 
+            WHERE m.idCiclo = $idCiclo";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
+
 function asociarModuloReto($idModulo, $idReto) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "INSERT INTO modulo_reto (idModulo, idReto) VALUES ($idModulo, $idReto)");
+    $sql = "INSERT INTO modulo_reto (idModulo, idReto) VALUES ($idModulo, $idReto)";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function limpiarAsociacionesReto($idReto) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "DELETE FROM modulo_reto WHERE idReto = $idReto");
+    $sql = "DELETE FROM modulo_reto WHERE idReto = $idReto";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function obtenerModulosDeReto($idReto) {
     $conexion = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.nombreCiclo FROM modulos JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo JOIN modulo_reto ON modulos.idModulo = modulo_reto.idModulo WHERE modulo_reto.idReto = $idReto";
+    $sql = "SELECT modulos.*, ciclos.nombreCiclo FROM modulos 
+            JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo 
+            JOIN modulo_reto ON modulos.idModulo = modulo_reto.idModulo 
+            WHERE modulo_reto.idReto = $idReto";
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
@@ -123,7 +176,8 @@ function calificarReto($idEstudiante, $idReto, $nota) {
 
 function obtenerCalificacion($idEstudiante, $idReto) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT nota FROM calificaciones_retos WHERE idEstudiante = $idEstudiante AND idReto = $idReto");
+    $sql = "SELECT nota FROM calificaciones_retos WHERE idEstudiante = $idEstudiante AND idReto = $idReto";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     $nota = "";

@@ -2,19 +2,19 @@
 session_start();
 require_once "../../../modelos/tfg.php";
 
-if (isset($_POST['idTFG'])) {
-    $id_tfg = $_POST['idTFG'];
+if (isset($_POST['idEstudiante'])) {
+    $id_estudiante = $_POST['idEstudiante'];
     $nombre_archivo = $_POST['nombreArchivo'];
 
-    if (empty($id_tfg)) {
-        $_SESSION['error'] = "ID del TFG no proporcionado.";
+    if (empty($id_estudiante)) {
+        $_SESSION['error'] = "ID del estudiante no proporcionado.";
         header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
         exit;
     }
 
     $ruta_archivo = "../../../public/uploads/tfg/" . $nombre_archivo;
 
-    if (eliminarTFG($id_tfg)) {
+    if (eliminarTFG($id_estudiante)) {
         if (file_exists($ruta_archivo)) {
             unlink($ruta_archivo);
         }

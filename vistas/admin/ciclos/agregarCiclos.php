@@ -84,6 +84,11 @@ include_once "../comunes/nav.php";
                 <label>Descripción del Ciclo *</label>
                 <textarea name="descripcionCiclo" rows="3" placeholder="Resumen del programa formativo..."><?php echo $descripcion; ?></textarea>
             </div>
+
+            <div class="campo-formulario">
+                <label>Precio Total del Ciclo (€) *</label>
+                <input type="number" name="precioCiclo" step="0.01" value="1000.00">
+            </div>
         </div>
 
         <div class="cuadricula-secundaria mt-25">

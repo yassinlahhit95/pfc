@@ -34,16 +34,17 @@ CREATE TABLE IF NOT EXISTS `ciclos` (
   `nombreCiclo` varchar(150) NOT NULL,
   `abreviaturaCiclo` varchar(10) NOT NULL,
   `descripcionCiclo` text,
+  `precioCiclo` decimal(10,2) DEFAULT 1000.00,
   `idNivel` int(11) DEFAULT 1,
   PRIMARY KEY (`idCiclo`),
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `descripcionCiclo`, `idNivel`) VALUES 
-(1, 'Desarrollo de Aplicaciones Web', 'DAW', 'Entornos web frontend y backend.', 2),
-(2, 'Sistemas Microinformáticos y Redes', 'SMR', 'Equipos y redes locales.', 1),
-(3, 'Administración de Sistemas Informáticos', 'ASIR', 'Servidores y seguridad.', 2),
-(4, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM', 'Software para móviles.', 2);
+INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `descripcionCiclo`, `precioCiclo`, `idNivel`) VALUES 
+(1, 'Desarrollo de Aplicaciones Web', 'DAW', 'Entornos web frontend y backend.', 1200.00, 2),
+(2, 'Sistemas Microinformáticos y Redes', 'SMR', 'Equipos y redes locales.', 800.00, 1),
+(3, 'Administración de Sistemas Informáticos', 'ASIR', 'Servidores y seguridad.', 1100.00, 2),
+(4, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM', 'Software para móviles.', 1200.00, 2);
 
 CREATE TABLE IF NOT EXISTS `modulos` (
   `idModulo` int(11) NOT NULL AUTO_INCREMENT,
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   `telefonoProfesor` varchar(20) DEFAULT '',
   `dniProfesor` varchar(20) DEFAULT '',
   `direccionProfesor` varchar(255) DEFAULT '',
+  `especialidad` varchar(150) DEFAULT '',
   PRIMARY KEY (`idProfesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

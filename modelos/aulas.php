@@ -3,7 +3,8 @@ require_once("conectar.php");
 
 function listarAulas() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT * FROM aulas ORDER BY idAula ASC");
+    $sql = "SELECT * FROM aulas ORDER BY idAula ASC";
+    $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
@@ -14,28 +15,32 @@ function listarAulas() {
 
 function insertarAula($nombre) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "INSERT INTO aulas (nombreAula) VALUES ('$nombre')");
+    $sql = "INSERT INTO aulas (nombreAula) VALUES ('$nombre')";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function eliminarAula($idAula) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "DELETE FROM aulas WHERE idAula = $idAula");
+    $sql = "DELETE FROM aulas WHERE idAula = $idAula";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function actualizarAula($idAula, $nombre) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "UPDATE aulas SET nombreAula = '$nombre' WHERE idAula = $idAula");
+    $sql = "UPDATE aulas SET nombreAula = '$nombre' WHERE idAula = $idAula";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function obtenerAulaPorId($idAula) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT * FROM aulas WHERE idAula = $idAula");
+    $sql = "SELECT * FROM aulas WHERE idAula = $idAula";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila;

@@ -69,10 +69,10 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
             </div>
 
             <div class="campo-formulario">
-                <label>Especialidad *</label>
-                <input type="text" name="especialidadProfesor" value="<?php echo $profesor['especialidadProfesor']; ?>">
-                <?php if (isset($lista_de_errores['especialidadProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['especialidadProfesor']; ?></p>
+                <label>Dirección *</label>
+                <input type="text" name="direccionProfesor" value="<?php echo $profesor['direccionProfesor']; ?>">
+                <?php if (isset($lista_de_errores['direccionProfesor'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['direccionProfesor']; ?></p>
                 <?php } ?>
             </div>
         </div>

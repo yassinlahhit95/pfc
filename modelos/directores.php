@@ -34,14 +34,16 @@ function actualizarDirector($idDirector, $nombreDirector, $emailDirector, $dniDi
 
 function eliminarDirector($idDirector) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "DELETE FROM directores WHERE idDirector = $idDirector");
+    $sql = "DELETE FROM directores WHERE idDirector = $idDirector";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function obtenerDirectorPorId($idDirector) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT * FROM directores WHERE idDirector = $idDirector");
+    $sql = "SELECT * FROM directores WHERE idDirector = $idDirector";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila;
