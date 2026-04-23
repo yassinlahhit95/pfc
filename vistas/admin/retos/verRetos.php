@@ -24,7 +24,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Retos</h1>
+        <h1>Gestión de Retos</h1>
+        <p class="subtitulo-encabezado">Listado y seguimiento de proyectos colaborativos</p>
     </div>
     <div class="acciones-pagina">
         <a href="/pfc/vistas/admin/retos/agregarRetos.php" class="boton-primario">
@@ -47,34 +48,34 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <tr>
                     <th>ID</th>
                     <th>Nombre Reto</th>
-                    <th>Módulos</th>
-                    <th>Fechas</th>
+                    <th>Módulos Asociados</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Final</th>
                     <th>Horas</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaRetos)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No hay retos configurados</td></tr>
+                    <tr><td colspan="7" class="sin-datos">No hay retos configurados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaRetos as $reto) { 
-                        $modulos = obtenerModulosDeReto($reto['idReto']);
+                        $modulosReto = obtenerModulosDeReto($reto['idReto']);
                     ?>
                     <tr>
                         <td><?php echo $reto['idReto']; ?></td>
                         <td><strong><?php echo $reto['nombreReto']; ?></strong></td>
                         <td>
-                            <?php foreach ($modulos as $m) { ?>
-                                <span class="etiqueta-estado azul"><?php echo $m['nombreModulo']; ?></span>
+                            <?php if (empty($modulosReto)) { echo '-'; } ?>
+                            <?php foreach ($modulosReto as $m) { ?>
+                                <span class="etiqueta-estado azul" style="display: inline-block; margin-bottom: 2px;">
+                                    <?php echo $m['nombreModulo']; ?>
+                                </span>
                             <?php } ?>
                         </td>
-                        <td>
-                            <div class="texto-pequeno">
-                                <div><i class="far fa-calendar-alt"></i> <?php echo date('d/m/Y', strtotime($reto['fechaInicio'])); ?></div>
-                                <div class="texto-atenuado"><i class="far fa-calendar-check"></i> <?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></div>
-                            </div>
-                        </td>
-                        <td><?php echo $reto['horasReto']; ?>h</td>
+                        <td><?php echo date('d/m/Y', strtotime($reto['fechaInicio'])); ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></td>
+                        <td><strong><?php echo $reto['horasReto']; ?>h</strong></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/retos/modificarRetos.php?idReto=<?php echo $reto['idReto']; ?>" 

@@ -27,7 +27,6 @@ unset($_SESSION['error']);
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <!-- Formulario en una sola columna -->
     <form action="/pfc/controladores/admin/profesores/insertar.php" method="POST" style="max-width: 600px; margin: 0 auto;">
         
         <div class="campo-formulario">
@@ -56,24 +55,24 @@ unset($_SESSION['error']);
         </div>
 
         <div class="campo-formulario margen-arriba">
-            <label>Asignar Ciclos</label>
+            <label>1. Seleccionar Ciclos</label>
             <div class="lista-checkboxes-columna" style="display: flex; flex-direction: column; gap: 10px; background: #fdffdf; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
                 <?php foreach ($listaCiclos as $ciclo) { ?>
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                        <input type="checkbox" name="ciclos[]" value="<?php echo $ciclo['idCiclo']; ?>">
+                        <input type="checkbox" name="ciclos[]" value="<?php echo $ciclo['idCiclo']; ?>" class="check-ciclo" onchange="filtrarModulos()">
                         <span><?php echo $ciclo['nombreCiclo']; ?></span>
                     </label>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="campo-formulario margen-arriba">
-            <label>Asignar Módulos</label>
+        <div class="campo-formulario margen-arriba" id="contenedorModulos" style="display: none;">
+            <label>2. Seleccionar Módulos del Ciclo</label>
             <div class="lista-checkboxes-columna" style="display: flex; flex-direction: column; gap: 10px; background: #f4f8ff; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
                 <?php foreach ($listaModulos as $modulo) { ?>
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <label class="item-modulo" data-ciclo="<?php echo $modulo['idCiclo']; ?>" style="display: none; align-items: center; gap: 10px; cursor: pointer;">
                         <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>">
-                        <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
+                        <span><?php echo $modulo['nombreModulo']; ?></span>
                     </label>
                 <?php } ?>
             </div>
@@ -86,5 +85,42 @@ unset($_SESSION['error']);
         </div>
     </form>
 </div>
+
+<script>
+function filtrarModulos() {
+    // 1. Obtener todos los ciclos seleccionados
+    const checksCiclo = document.querySelectorAll('.check-ciclo');
+    let ciclosSeleccionados = [];
+    
+    checksCiclo.forEach(check => {
+        if (check.checked) {
+            ciclosSeleccionados.push(check.value);
+        }
+    });
+
+    // 2. Mostrar/Ocultar el contenedor de módulos
+    const contenedor = document.getElementById('contenedorModulos');
+    if (ciclosSeleccionados.length > 0) {
+        contenedor.style.display = 'block';
+    } else {
+        contenedor.style.display = 'none';
+    }
+
+    // 3. Filtrar los módulos individualmente
+    const modulos = document.querySelectorAll('.item-modulo');
+    modulos.forEach(mod => {
+        const idCicloModulo = mod.getAttribute('data-ciclo');
+        
+        // Si el ciclo del módulo está entre los seleccionados, se muestra
+        if (ciclosSeleccionados.includes(idCicloModulo)) {
+            mod.style.display = 'flex';
+        } else {
+            mod.style.display = 'none';
+            // Opcional: desmarcar si se oculta
+            mod.querySelector('input').checked = false;
+        }
+    });
+}
+</script>
 
 <?php include '../comunes/footer.php'; ?>

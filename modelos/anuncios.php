@@ -13,9 +13,9 @@ function listarTodosLosAnuncios() {
     return $lista;
 }
 
-function insertarAnuncio($titulo, $mensaje, $fecha) {
+function insertarAnuncio($titulo, $mensaje, $fecha, $dirigidoA) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion) VALUES ('$titulo', '$mensaje', '$fecha')");
+    $resultado = mysqli_query($conexion, "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion, dirigidoA) VALUES ('$titulo', '$mensaje', '$fecha', '$dirigidoA')");
     mysqli_close($conexion);
     return $resultado;
 }
@@ -40,6 +40,19 @@ function listarAnunciosConPaginas($cantidad) {
     $conexion = obtenerConexion();
     $hoy = date('Y-m-d');
     $resultado = mysqli_query($conexion, "SELECT * FROM anuncios WHERE fechaExpiracion >= '$hoy' ORDER BY idAnuncio DESC LIMIT $cantidad");
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
+
+function listarAnunciosPorRol($rol) {
+    $conexion = obtenerConexion();
+    $hoy = date('Y-m-d');
+    $sql = "SELECT * FROM anuncios WHERE fechaExpiracion >= '$hoy' AND (dirigidoA = '$rol' OR dirigidoA = 'todos') ORDER BY idAnuncio DESC";
+    $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
