@@ -4,10 +4,7 @@ require_once "../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { 
-    $mensaje_error = $_SESSION['error']; 
-}
+$error = $_SESSION['error'] ?? "";
 
 $lista_de_errores = array();
 if (isset($_SESSION['errores'])) { 
@@ -31,8 +28,8 @@ include_once "../comunes/nav.php";
     <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">

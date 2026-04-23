@@ -43,7 +43,7 @@ unset($_SESSION['errores'], $_SESSION['datos_reto']);
 
             <div class="campo-formulario">
                 <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicioReto" value="<?php if(isset($datos['fechaInicioReto'])) echo $datos['fechaInicioReto']; ?>">
+                <input type="date" name="fechaInicioReto" min="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($datos['fechaInicioReto'])) echo $datos['fechaInicioReto']; ?>">
                 <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
                     <p class="error-campo"><?php echo $lista_de_errores['fechaInicioReto']; ?></p>
                 <?php } ?>
@@ -51,7 +51,7 @@ unset($_SESSION['errores'], $_SESSION['datos_reto']);
 
             <div class="campo-formulario">
                 <label>Fecha de Fin *</label>
-                <input type="date" name="fechaFinReto" value="<?php if(isset($datos['fechaFinReto'])) echo $datos['fechaFinReto']; ?>">
+                <input type="date" name="fechaFinReto" min="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($datos['fechaFinReto'])) echo $datos['fechaFinReto']; ?>">
                 <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
                     <p class="error-campo"><?php echo $lista_de_errores['fechaFinReto']; ?></p>
                 <?php } ?>

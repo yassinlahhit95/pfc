@@ -8,11 +8,8 @@ require_once "../../../modelos/profesores.php";
 
 $todos_los_profesores = listarProfesores();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
-
-$mensaje_exito = "";
-if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
@@ -24,11 +21,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($mensaje_exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -52,7 +49,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $profesor['idProfesor']; ?></td>
                         <td><strong><?php echo $profesor['nombreProfesor']; ?></strong></td>
                         <td><?php echo $profesor['emailProfesor']; ?></td>
-                        <td><?php echo $profesor['especialidadProfesor']; ?></td>
+                        <td><?php echo $profesor['direccionProfesor']; ?></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" class="boton-icono boton-editar">

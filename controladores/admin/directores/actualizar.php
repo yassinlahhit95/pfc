@@ -26,6 +26,8 @@ if (isset($_POST['actualizarDirector'])) {
     }
     if (empty($telefono)) {
         $lista_de_errores['telefonoDirector'] = "El teléfono es obligatorio.";
+    } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
+        $lista_de_errores['telefonoDirector'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
     }
 
     if (empty($lista_de_errores)) {

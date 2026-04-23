@@ -28,7 +28,7 @@ include_once "../comunes/nav.php";
         </div>
         <div class="flexible-rellenar">
             <h2><?php echo $profesor['nombreProfesor']; ?></h2>
-            <p class="texto-secundario"><?php echo $profesor['especialidad']; ?></p>
+            <p class="texto-secundario"><?php echo $profesor['especialidad'] ?? 'Sin especialidad'; ?></p>
         </div>
     </div>
 

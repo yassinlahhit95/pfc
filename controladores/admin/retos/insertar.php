@@ -22,12 +22,20 @@ if (isset($_POST['guardarReto'])) {
             $lista_de_errores['horasReto'] = "Las horas deben ser un número.";
         }
     }
+    
+    $hoy = date('Y-m-d');
     if (empty($inicio)) {
         $lista_de_errores['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
+    } else if ($inicio < $hoy) {
+        $lista_de_errores['fechaInicioReto'] = "La fecha de inicio no puede ser anterior a hoy.";
     }
+
     if (empty($fin)) {
         $lista_de_errores['fechaFinReto'] = "La fecha de fin es obligatoria.";
+    } else if ($fin < $inicio) {
+        $lista_de_errores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la fecha de inicio.";
     }
+
     if (empty($modulos)) {
         $lista_de_errores['modulosReto'] = "Debe seleccionar al menos un módulo.";
     }

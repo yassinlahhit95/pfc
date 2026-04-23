@@ -51,16 +51,18 @@ function actualizarTFG($idEstudiante, $archivo) {
     return $resultado;
 }
 
-function eliminarArchivoTFG($idEstudiante) {
+function eliminarTFG($idEstudiante) {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = '' WHERE idEstudiante = $idEstudiante");
+    $sql = "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
 function contarTFGsSubidos() {
     $conexion = obtenerConexion();
-    $resultado = mysqli_query($conexion, "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != ''");
+    $sql = "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != ''";
+    $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
     return $fila['total'];

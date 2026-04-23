@@ -41,10 +41,8 @@ if (isset($_POST['actualizarEstudiante'])) {
     }
     if (empty($telefono)) {
         $lista_de_errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
-    } else {
-        if (!is_numeric($telefono)) {
-            $lista_de_errores['telefonoEstudiante'] = "El teléfono debe ser numérico.";
-        }
+    } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
+        $lista_de_errores['telefonoEstudiante'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
     }
     if (empty($id_ciclo)) {
         $lista_de_errores['idCiclo'] = "Debe seleccionar un ciclo.";

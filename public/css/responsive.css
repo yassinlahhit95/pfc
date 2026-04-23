@@ -100,3 +100,28 @@
     .solo-movil { display: block; }
     .ocultar-movil { display: none; }
 }
+
+/* Dashboard responsive */
+@media (max-width: 992px) {
+    .cuadricula-estadisticas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .cuadricula-estadisticas {
+        grid-template-columns: 1fr;
+    }
+    
+    .tarjeta-estadistica {
+        padding: 20px;
+    }
+    
+    .info-estadistica h3 {
+        font-size: 24px;
+    }
+    
+    .cuadricula-acciones-rapidas {
+        grid-template-columns: 1fr;
+    }
+}

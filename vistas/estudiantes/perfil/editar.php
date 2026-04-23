@@ -25,6 +25,10 @@ include_once "../comunes/nav.php";
     <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if (isset($_SESSION['error'])) { ?>
+    <div class="mensaje-error"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/estudiantes/perfil/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">

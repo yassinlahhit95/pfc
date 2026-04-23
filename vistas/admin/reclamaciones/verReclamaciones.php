@@ -10,17 +10,10 @@ require_once "../../../modelos/estudiantes.php";
 $todas_las_reclamaciones = listarReclamaciones();
 $todos_los_estudiantes = listarEstudiantes();
 
-$mensaje_error = "";
-if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
-
-$mensaje_exito = "";
-if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
-
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
-
-$datos = [];
-if (isset($_SESSION['datos_reclamacion'])) { $datos = $_SESSION['datos_reclamacion']; }
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_reclamacion'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reclamacion']);
 ?>
@@ -29,11 +22,11 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Reclamaciones</h1>
 </div>
 
-<?php if ($mensaje_exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($mensaje_error != "") { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -101,13 +94,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                     <?php foreach ($todas_las_reclamaciones as $rec) { ?>
                     <tr>
                         <td><strong><?php echo $rec['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $rec['asuntoReclamacion']; ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($rec['fechaReclamacion'])); ?></td>
+                        <td><?php echo $rec['asunto']; ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($rec['fecha'])); ?></td>
                         <td>
                             <?php 
                             $clase_estado = "contador-neutral";
-                            if ($rec['estadoReclamacion'] == 'Resuelta') { $clase_estado = "activo-verde"; }
-                            if ($rec['estadoReclamacion'] == 'Pendiente') { $clase_estado = "inactivo-rojo"; }
+                            if ($rec['estadoReclamacion'] == 'atendido') { $clase_estado = "activo-verde"; }
+                            if ($rec['estadoReclamacion'] == 'pendiente') { $clase_estado = "inactivo-rojo"; }
                             ?>
                             <span class="estado-bolita <?php echo $clase_estado; ?>">
                                 <?php echo $rec['estadoReclamacion']; ?>

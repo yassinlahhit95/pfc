@@ -11,6 +11,8 @@ function listarReclamaciones() {
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
+        $fila['asuntoReclamacion'] = $fila['asunto'];
+        $fila['fechaReclamacion'] = $fila['fecha'];
         $lista[] = $fila;
     }
     mysqli_close($conexion);
@@ -26,6 +28,11 @@ function obtenerReclamacionPorId($idReclamacion) {
             WHERE idReclamacion = $idReclamacion";
     $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
+    if ($fila) {
+        $fila['asuntoReclamacion'] = $fila['asunto'];
+        $fila['descripcionReclamacion'] = $fila['descripcion'];
+        $fila['fechaReclamacion'] = $fila['fecha'];
+    }
     mysqli_close($conexion);
     return $fila;
 }
@@ -48,9 +55,14 @@ function actualizarReclamacion($idReclamacion, $asunto, $descripcion, $estado) {
 
 function insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $fecha) {
     $conexion = obtenerConexion();
-    $idProfVal = $idProfesor ? $idProfesor : "NULL";
-    $sql = "INSERT INTO reclamaciones (idEstudiante, idProfesor, asunto, descripcion, fecha) 
-            VALUES ($idEstudiante, $idProfVal, '$asunto', '$descripcion', '$fecha')";
+    
+    // Si no se selecciona profesor, usamos NULL en la BD si la tabla lo permite, 
+    // o un ID por defecto. Segun database.sql idProfesor permite NULL o tiene FK.
+    $idProfesorSQL = empty($idProfesor) ? "NULL" : $idProfesor;
+    
+    $sql = "INSERT INTO reclamaciones (idEstudiante, idProfesor, asunto, descripcion, fecha, estadoReclamacion) 
+            VALUES ($idEstudiante, $idProfesorSQL, '$asunto', '$descripcion', '$fecha', 'pendiente')";
+    
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
@@ -66,6 +78,8 @@ function listarReclamacionesPorEstudiante($idEstudiante) {
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
+        $fila['asuntoReclamacion'] = $fila['asunto'];
+        $fila['fechaReclamacion'] = $fila['fecha'];
         $lista[] = $fila;
     }
     mysqli_close($conexion);
@@ -82,6 +96,8 @@ function listarReclamacionesPorProfesor($idProfesor) {
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
+        $fila['asuntoReclamacion'] = $fila['asunto'];
+        $fila['fechaReclamacion'] = $fila['fecha'];
         $lista[] = $fila;
     }
     mysqli_close($conexion);
