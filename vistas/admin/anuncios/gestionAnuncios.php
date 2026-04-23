@@ -5,99 +5,97 @@ $seccion = 'anuncios';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/anuncios.php";
-$listaAnuncios = listarTodosLosAnuncios();
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
+$todos_los_anuncios = listarAnuncios();
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['exito'], $_SESSION['error']);
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+$datos = [];
+if (isset($_SESSION['datos_anuncio'])) { $datos = $_SESSION['datos_anuncio']; }
+
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Anuncios</h1>
-        <p class="subtitulo-encabezado">Publique noticias y avisos para toda la comunidad</p>
-    </div>
+    <h1>Anuncios del Sistema</h1>
 </div>
 
-<?php if (!empty($exito)) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
 <?php } ?>
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="titulo-tarjeta"><h3>Nuevo Anuncio</h3></div>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3>Publicar Nuevo Anuncio</h3>
+    </div>
     <form method="POST" action="/pfc/controladores/admin/anuncios/insertar.php">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>Título del Aviso *</label>
-                <input type="text" name="titulo" placeholder="Mantenimiento del Aula 2">
-            </div>
-            <div class="campo-formulario">
-                <label>Válido hasta *</label>
-                <input type="date" name="fecha_expiracion" value="<?php echo date('Y-m-d', strtotime('+7 days')); ?>">
-            </div>
-            <div class="campo-formulario">
-                <label>Dirigido a:</label>
-                <select name="dirigidoA">
-                    <option value="todos">Todos</option>
-                    <option value="estudiantes">Solo Estudiantes</option>
-                    <option value="profesores">Solo Profesores</option>
-                </select>
-            </div>
+        <div class="campo-formulario">
+            <label>Título del Anuncio *</label>
+            <input type="text" name="tituloAnuncio" value="<?php if(isset($datos['tituloAnuncio'])) echo $datos['tituloAnuncio']; ?>" placeholder="Ej: Mantenimiento de la plataforma">
+            <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
+                <p class="error-campo"><?php echo $lista_de_errores['tituloAnuncio']; ?></p>
+            <?php } ?>
         </div>
-        
+
         <div class="campo-formulario margen-arriba">
-            <label>Contenido del Mensaje *</label>
-            <textarea name="mensaje" rows="4" placeholder="Escriba aquí el detalle..."></textarea>
+            <label>Contenido del Anuncio *</label>
+            <textarea name="contenidoAnuncio" rows="4" placeholder="Escriba aquí el mensaje..."><?php if(isset($datos['contenidoAnuncio'])) echo $datos['contenidoAnuncio']; ?></textarea>
+            <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
+                <p class="error-campo"><?php echo $lista_de_errores['contenidoAnuncio']; ?></p>
+            <?php } ?>
         </div>
 
         <div class="margen-arriba">
             <button type="submit" name="guardarAnuncio" class="boton-primario">
-                <i class="fas fa-bullhorn"></i> Publicar Aviso
+                <i class="fas fa-paper-plane"></i> Publicar Anuncio
             </button>
         </div>
     </form>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="titulo-tarjeta"><h3>Historial de Avisos</h3></div>
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta">
+        <h3>Anuncios Recientes</h3>
+    </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
                     <th>Título</th>
-                    <th>Mensaje</th>
-                    <th>Dirigido a</th>
-                    <th>Expira</th>
-                    <th>Acción</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaAnuncios)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay anuncios registrados</td></tr>
+                <?php if (empty($todos_los_anuncios)) { ?>
+                    <tr><td colspan="3" class="sin-datos">No hay anuncios publicados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaAnuncios as $anuncio) { ?>
+                    <?php foreach ($todos_los_anuncios as $anuncio) { ?>
                     <tr>
-                        <td><strong><?php echo $anuncio['titulo']; ?></strong></td>
-                        <td><small><?php echo substr($anuncio['mensaje'], 0, 80); ?>...</small></td>
-                        <td><span class="etiqueta-gris"><?php echo ucfirst($anuncio['dirigidoA']); ?></span></td>
-                        <td><?php echo date('d/m/Y', strtotime($anuncio['fechaExpiracion'])); ?></td>
+                        <td><strong><?php echo $anuncio['tituloAnuncio']; ?></strong></td>
+                        <td><?php echo date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])); ?></td>
                         <td>
-                            <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline">
-                                <input type="hidden" name="idAnuncio" value="<?php echo $anuncio['idAnuncio']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/anuncios/modificarAnuncios.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="boton-icono boton-editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este anuncio?')">
+                                    <input type="hidden" name="idAnuncio" value="<?php echo $anuncio['idAnuncio']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

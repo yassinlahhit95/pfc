@@ -1,28 +1,38 @@
 <?php
 session_start();
 require_once "../../../modelos/ciclos.php";
+
 if (isset($_POST['guardarCiclo'])) {
     $nombre = $_POST['nombreCiclo'];
-    $descripcion = $_POST['descripcionCiclo'];
-    $idNivel = $_POST['idNivel'];
-    $listaProfesores = $_POST['profesores'];
-    $listaAulas = $_POST['aulas'];
+    $grado = $_POST['gradoCiclo'];
+
+    $lista_de_errores = [];
+
     if (empty($nombre)) {
-        $_SESSION['error'] = "Nombre obligatorio";
-    } else if (empty($descripcion)) {
-        $_SESSION['error'] = "Descripción obligatoria";
-    } else if (comprobarNombreRepetido($nombre)) {
-        $_SESSION['error'] = "Nombre repetido";
-    } else if (insertarNuevoCiclo($nombre, $descripcion, $idNivel, $listaProfesores, $listaAulas)) {
-        $_SESSION['exito'] = "Ok";
-        header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
-        exit;
-    } else {
-        $_SESSION['error'] = "Error BD";
+        $lista_de_errores['nombreCiclo'] = "El nombre del ciclo es obligatorio.";
     }
-    header("Location: /pfc/vistas/admin/ciclos/agregarCiclos.php");
+    
+    if (empty($grado)) {
+        $lista_de_errores['gradoCiclo'] = "El grado es obligatorio.";
+    }
+
+    if (empty($lista_de_errores)) {
+        $resultado = insertarCiclo($nombre, $grado);
+        if ($resultado) {
+            $_SESSION['exito'] = "Ciclo registrado correctamente.";
+            header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
+            exit;
+        } else {
+            $_SESSION['error'] = "Error al insertar en la base de datos.";
+        }
+    } else {
+        $_SESSION['errores'] = $lista_de_errores;
+        $_SESSION['datos_ciclos'] = $_POST;
+    }
+
+    header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
     exit;
 }
+
 header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
 exit;
-

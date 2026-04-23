@@ -63,12 +63,12 @@ unset($_SESSION['error']);
         <form action="/pfc/controladores/validacion.php" method="POST" class="formulario-login">
             <div class="campo-login">
                 <label>Email:</label>
-                <input type="text" name="usuario" placeholder="ejemplo@email.com" required>
+                <input type="text" name="usuario" placeholder="ejemplo@email.com">
             </div>
             
             <div class="campo-login">
                 <label>Contraseña:</label>
-                <input type="password" name="contrasena" placeholder="Tu contraseña" required>
+                <input type="password" name="contrasena" placeholder="Tu contraseña">
             </div>
             
             <button type="submit" name="enviar" class="boton-enviar-login">Entrar al Sistema</button>

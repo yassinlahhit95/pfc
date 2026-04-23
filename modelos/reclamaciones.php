@@ -38,6 +38,14 @@ function cambiarEstadoReclamacion($idReclamacion, $nuevoEstado) {
     return $resultado;
 }
 
+function actualizarReclamacion($idReclamacion, $asunto, $descripcion, $estado) {
+    $conexion = obtenerConexion();
+    $sql = "UPDATE reclamaciones SET asunto = '$asunto', descripcion = '$descripcion', estadoReclamacion = '$estado' WHERE idReclamacion = $idReclamacion";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
 function insertarReclamacion($idEstudiante, $idProfesor, $asunto, $descripcion, $fecha) {
     $conexion = obtenerConexion();
     $idProfVal = $idProfesor ? $idProfesor : "NULL";

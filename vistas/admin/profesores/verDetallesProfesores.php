@@ -54,15 +54,15 @@ $retosProfesor = obtenerRetosDeProfesor($id);
                 </div>
                 <div class="campo-formulario">
                     <label class="texto-atenuado texto-pequeno">Teléfono</label>
-                    <p class="texto-negrita"><?php echo !empty($profesor['telefonoProfesor']) ? $profesor['telefonoProfesor'] : '-'; ?></p>
+                    <p class="texto-negrita"><?php echo $profesor['telefonoProfesor']; ?></p>
                 </div>
                 <div class="campo-formulario">
                     <label class="texto-atenuado texto-pequeno">DNI</label>
-                    <p class="texto-negrita"><?php echo !empty($profesor['dniProfesor']) ? $profesor['dniProfesor'] : '-'; ?></p>
+                    <p class="texto-negrita"><?php echo $profesor['dniProfesor']; ?></p>
                 </div>
                 <div class="campo-formulario campo-ancho-total">
                     <label class="texto-atenuado texto-pequeno">Dirección</label>
-                    <p class="texto-negrita"><?php echo !empty($profesor['direccionProfesor']) ? $profesor['direccionProfesor'] : '-'; ?></p>
+                    <p class="texto-negrita"><?php echo $profesor['direccionProfesor']; ?></p>
                 </div>
             </div>
         </div>

@@ -1,55 +1,61 @@
 <?php
 session_start();
-$titulo_pagina = "Nuevo Director";
+$titulo_pagina = "Registrar Director - Super Admin";
 $seccion = 'directores';
 include_once "../comunes/nav.php";
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['error']);
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+$datos = [];
+if (isset($_SESSION['datos_director'])) { $datos = $_SESSION['datos_director']; }
+
+unset($_SESSION['errores'], $_SESSION['datos_director']);
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Nuevo Director</h1>
-    <a href="/pfc/vistas/admin/directores/verDirectores.php" class="boton-secundario">Volver</a>
+<div class="encabezado-pagina">
+    <h1>Nuevo Director de Ciclo</h1>
+    <a href="/pfc/vistas/admin/directores/verDirectores.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
-
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/directores/insertar.php" method="POST" style="max-width: 600px; margin: 0 auto;">
-        
-        <div class="campo-formulario">
-            <label>Nombre Completo *</label>
-            <input type="text" name="nombreDirector" placeholder="Introduce el nombre">
+    <form action="/pfc/controladores/admin/directores/insertar.php" method="POST">
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario">
+                <label>Nombre Completo *</label>
+                <input type="text" name="nombreDirector" value="<?php if(isset($datos['nombreDirector'])) echo $datos['nombreDirector']; ?>">
+                <?php if (isset($lista_de_errores['nombreDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['nombreDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Email *</label>
+                <input type="text" name="emailDirector" value="<?php if(isset($datos['emailDirector'])) echo $datos['emailDirector']; ?>">
+                <?php if (isset($lista_de_errores['emailDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['emailDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>DNI *</label>
+                <input type="text" name="dniDirector" value="<?php if(isset($datos['dniDirector'])) echo $datos['dniDirector']; ?>">
+                <?php if (isset($lista_de_errores['dniDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['dniDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Teléfono *</label>
+                <input type="text" name="telefonoDirector" value="<?php if(isset($datos['telefonoDirector'])) echo $datos['telefonoDirector']; ?>">
+                <?php if (isset($lista_de_errores['telefonoDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['telefonoDirector']; ?></p>
+                <?php } ?>
+            </div>
         </div>
 
-        <div class="campo-formulario">
-            <label>Email *</label>
-            <input type="email" name="emailDirector" placeholder="correo@ejemplo.com">
-        </div>
-
-        <div class="campo-formulario">
-            <label>DNI *</label>
-            <input type="text" name="dniDirector" placeholder="12345678X">
-        </div>
-
-        <div class="campo-formulario">
-            <label>Teléfono</label>
-            <input type="text" name="telefonoDirector" placeholder="600000000">
-        </div>
-
-        <div class="campo-formulario">
-            <label>Fecha de Alta</label>
-            <input type="date" name="fechaAltaDirector">
-        </div>
-
-        <div class="margen-arriba pt-20">
-            <button type="submit" name="guardarDirector" class="boton-primario ancho-total">
+        <div class="margen-arriba">
+            <button type="submit" name="guardarDirector" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Director
             </button>
         </div>

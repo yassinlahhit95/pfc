@@ -6,41 +6,32 @@ include_once "../comunes/nav.php";
 
 require_once "../../../modelos/aulas.php";
 
-$listaAulas = listarAulas();
+$todas_las_aulas = listarAulas();
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
 
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
+$lista_de_errores = array();
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
-$datos = [];
-if (isset($_SESSION['datos_aulas'])) {
-    $datos = $_SESSION['datos_aulas'];
-}
+$datos = array();
+if (isset($_SESSION['datos_aulas'])) { $datos = $_SESSION['datos_aulas']; }
+
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_aulas']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Aulas del Centro</h1>
-    </div>
+    <h1>Aulas del Centro</h1>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
 
@@ -51,15 +42,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <form method="POST" action="/pfc/controladores/admin/aulas/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>Nombre del Aula</label>
-            <?php 
-            $nombreAula = '';
-            if (isset($datos['nombreAula'])) {
-                $nombreAula = $datos['nombreAula'];
-            }
-            ?>
-            <input type="text" name="nombreAula" value="<?php echo $nombreAula; ?>" placeholder="Aula 101">
-            <?php if (isset($errores['nombreAula'])) { ?>
-                <p class="error-campo"><?php echo $errores['nombreAula']; ?></p>
+            <input type="text" name="nombreAula" value="<?php if(isset($datos['nombreAula'])) { echo $datos['nombreAula']; } ?>" placeholder="Aula 101">
+            <?php if (isset($lista_de_errores['nombreAula'])) { ?>
+                <p class="error-campo"><?php echo $lista_de_errores['nombreAula']; ?></p>
             <?php } ?>
         </div>
         <div class="mt-25">
@@ -81,20 +66,26 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaAulas)) { ?>
+                <?php if (empty($todas_las_aulas)) { ?>
                     <tr><td colspan="3" class="sin-datos">No hay aulas configuradas</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaAulas as $aula) { ?>
+                    <?php foreach ($todas_las_aulas as $aula) { ?>
                     <tr>
                         <td><?php echo $aula['idAula']; ?></td>
                         <td><strong><?php echo $aula['nombreAula']; ?></strong></td>
                         <td>
-                            <form action="/pfc/controladores/admin/aulas/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Borrar aula?');">
-                                <input type="hidden" name="idAula" value="<?php echo $aula['idAula']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/aulas/modificarAulas.php?idAula=<?php echo $aula['idAula']; ?>" 
+                                   class="boton-icono boton-editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="/pfc/controladores/admin/aulas/borrar.php" method="POST" class="d-inline">
+                                    <input type="hidden" name="idAula" value="<?php echo $aula['idAula']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

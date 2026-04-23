@@ -5,87 +5,120 @@ $seccion = 'reclamaciones';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/reclamaciones.php";
+require_once "../../../modelos/estudiantes.php";
 
-$listaReclamaciones = listarReclamaciones();
+$todas_las_reclamaciones = listarReclamaciones();
+$todos_los_estudiantes = listarEstudiantes();
 
-$mensajeExito = '';
-if (isset($_SESSION['exito'])) {
-    $mensajeExito = $_SESSION['exito'];
-}
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$mensajeError = '';
-if (isset($_SESSION['error'])) {
-    $mensajeError = $_SESSION['error'];
-}
-unset($_SESSION['exito'], $_SESSION['error']);
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+$datos = [];
+if (isset($_SESSION['datos_reclamacion'])) { $datos = $_SESSION['datos_reclamacion']; }
+
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reclamacion']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Gestión de Reclamaciones</h1>
-        <p class="subtitulo-encabezado">Revisión y seguimiento de incidencias</p>
-    </div>
+    <h1>Reclamaciones</h1>
 </div>
 
-<?php if ($mensajeExito) { ?>
-    <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
 <?php } ?>
-<?php if ($mensajeError) { ?>
-    <div class="mensaje-error"><?php echo $mensajeError; ?></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3>Nueva Reclamación Administrativa</h3>
+    </div>
+    <form method="POST" action="/pfc/controladores/admin/reclamaciones/insertar.php">
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario">
+                <label>Estudiante *</label>
+                <select name="idEstudiante">
+                    <option value="">-- Seleccionar Estudiante --</option>
+                    <?php foreach ($todos_los_estudiantes as $estudiante) { ?>
+                        <option value="<?php echo $estudiante['idEstudiante']; ?>" <?php if(isset($datos['idEstudiante']) && $datos['idEstudiante'] == $estudiante['idEstudiante']) echo "selected"; ?>>
+                            <?php echo $estudiante['nombreEstudiante']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
+                <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['idEstudiante']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Asunto *</label>
+                <input type="text" name="asuntoReclamacion" value="<?php if(isset($datos['asuntoReclamacion'])) echo $datos['asuntoReclamacion']; ?>" placeholder="Ej: Error en cuota mensual">
+                <?php if (isset($lista_de_errores['asuntoReclamacion'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['asuntoReclamacion']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario campo-ancho-total">
+                <label>Descripción *</label>
+                <textarea name="descripcionReclamacion" rows="4"><?php if(isset($datos['descripcionReclamacion'])) echo $datos['descripcionReclamacion']; ?></textarea>
+                <?php if (isset($lista_de_errores['descripcionReclamacion'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['descripcionReclamacion']; ?></p>
+                <?php } ?>
+            </div>
+        </div>
+
+        <div class="margen-arriba">
+            <button type="submit" name="guardarReclamacion" class="boton-primario">
+                <i class="fas fa-save"></i> Registrar Reclamación
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="tarjeta-blanca margen-arriba">
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Estudiante</th>
-                    <th>Reportado por</th>
                     <th>Asunto</th>
-                    <th>Estado</th>
                     <th>Fecha</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaReclamaciones)) { ?>
-                    <tr><td colspan="7" class="sin-datos">No hay reclamaciones registradas</td></tr>
+                <?php if (empty($todas_las_reclamaciones)) { ?>
+                    <tr><td colspan="5" class="sin-datos">No hay reclamaciones registradas</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaReclamaciones as $rec) { ?>
+                    <?php foreach ($todas_las_reclamaciones as $rec) { ?>
                     <tr>
-                        <td><?php echo $rec['idReclamacion']; ?></td>
                         <td><strong><?php echo $rec['nombreEstudiante']; ?></strong></td>
+                        <td><?php echo $rec['asuntoReclamacion']; ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($rec['fechaReclamacion'])); ?></td>
                         <td>
                             <?php 
-                            $nombreProf = $rec['nombreProfesor'];
-                            if (empty($nombreProf)) {
-                                echo '<span class="etiqueta-estudiante">Estudiante</span>';
-                            } else {
-                                echo $nombreProf;
-                            }
+                            $clase_estado = "contador-neutral";
+                            if ($rec['estadoReclamacion'] == 'Resuelta') { $clase_estado = "activo-verde"; }
+                            if ($rec['estadoReclamacion'] == 'Pendiente') { $clase_estado = "inactivo-rojo"; }
                             ?>
-                        </td>
-                        <td><?php echo $rec['asunto']; ?></td>
-                        <td>
-                            <?php 
-                            $claseBolita = 'inactivo-rojo';
-                            if ($rec['estadoReclamacion'] == 'atendido') {
-                                $claseBolita = 'activo-verde';
-                            }
-                            ?>
-                            <span class="estado-bolita <?php echo $claseBolita; ?>">
-                                <?php echo ucfirst($rec['estadoReclamacion']); ?>
+                            <span class="estado-bolita <?php echo $clase_estado; ?>">
+                                <?php echo $rec['estadoReclamacion']; ?>
                             </span>
                         </td>
-                        <td><?php echo date('d/m/Y', strtotime($rec['fecha'])); ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/reclamaciones/detallesReclamacion.php?id=<?php echo $rec['idReclamacion']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver Detalles">
-                                    <i class="fas fa-eye"></i>
+                                <a href="/pfc/vistas/admin/reclamaciones/modificarReclamacion.php?idReclamacion=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-editar">
+                                    <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="/pfc/controladores/admin/reclamaciones/borrar.php" class="d-inline" onsubmit="return confirm('¿Borrar reclamación?');">
+                                <form action="/pfc/controladores/admin/reclamaciones/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta reclamación?')">
                                     <input type="hidden" name="idReclamacion" value="<?php echo $rec['idReclamacion']; ?>">
                                     <button type="submit" class="boton-icono boton-eliminar">
                                         <i class="fas fa-trash"></i>

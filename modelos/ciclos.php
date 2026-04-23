@@ -95,4 +95,13 @@ function obtenerAulasDeUnCiclo($idCiclo) {
     mysqli_close($conexion);
     return $lista;
 }
+
+function comprobarNombreEnOtroCiclo($nombre, $id) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '$nombre' AND idCiclo != $id";
+    $resultado = mysqli_query($conexion, $sql);
+    $num = mysqli_num_rows($resultado);
+    mysqli_close($conexion);
+    return $num > 0;
+}
 ?>

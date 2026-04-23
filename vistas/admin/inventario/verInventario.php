@@ -1,121 +1,116 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Inventario - Super Admin";
+$titulo_pagina = "Inventario del Centro - Super Admin";
 $seccion = 'inventario';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/inventario.php";
 
-$listaArticulos = listarArticulos();
+$todos_los_articulos = listarArticulos();
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
 
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 $datos = [];
-if (isset($_SESSION['datos_inventario'])) {
-    $datos = $_SESSION['datos_inventario'];
-}
+if (isset($_SESSION['datos_inventario'])) { $datos = $_SESSION['datos_inventario']; }
+
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Inventario de Recursos</h1>
+    <h1>Gestión de Inventario</h1>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Nuevo Artículo al Inventario</h3>
+        <h3>Añadir Nuevo Artículo</h3>
     </div>
-    <form method="POST" action="/pfc/controladores/admin/inventario/insertar.php" class="disposicion-flexible alinear-centro separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
-            <label>Nombre del Recurso</label>
-            <?php 
-            $nombreArticulo = '';
-            if (isset($datos['nombreArticulo'])) {
-                $nombreArticulo = $datos['nombreArticulo'];
-            }
-            ?>
-            <input type="text" name="nombreArticulo" value="<?php echo $nombreArticulo; ?>" placeholder="Proyector">
+    <form method="POST" action="/pfc/controladores/admin/inventario/insertar.php">
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario">
+                <label>Nombre del Artículo *</label>
+                <input type="text" name="nombreArticulo" value="<?php if(isset($datos['nombreArticulo'])) echo $datos['nombreArticulo']; ?>" placeholder="Ej: Portátil HP ProBook">
+                <?php if (isset($lista_de_errores['nombreArticulo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['nombreArticulo']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Número de Serie *</label>
+                <input type="text" name="numeroSerie" value="<?php if(isset($datos['numeroSerie'])) echo $datos['numeroSerie']; ?>" placeholder="Ej: SN-12345678">
+                <?php if (isset($lista_de_errores['numeroSerie'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['numeroSerie']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Estado Inicial *</label>
+                <select name="estadoArticulo">
+                    <option value="disponible" <?php if(isset($datos['estadoArticulo']) && $datos['estadoArticulo'] == 'disponible') echo "selected"; ?>>Disponible</option>
+                    <option value="prestado" <?php if(isset($datos['estadoArticulo']) && $datos['estadoArticulo'] == 'prestado') echo "selected"; ?>>Prestado</option>
+                    <option value="reparacion" <?php if(isset($datos['estadoArticulo']) && $datos['estadoArticulo'] == 'reparacion') echo "selected"; ?>>En Reparación</option>
+                </select>
+            </div>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
-            <label>Número de Serie</label>
-            <?php 
-            $numeroSerie = '';
-            if (isset($datos['numeroSerie'])) {
-                $numeroSerie = $datos['numeroSerie'];
-            }
-            ?>
-            <input type="text" name="numeroSerie" value="<?php echo $numeroSerie; ?>" placeholder="SN12345">
-        </div>
-
-        <div class="mt-25">
+        <div class="margen-arriba">
             <button type="submit" name="guardarArticulo" class="boton-primario">
-                <i class="fas fa-save"></i> Registrar
+                <i class="fas fa-save"></i> Guardar Artículo
             </button>
         </div>
     </form>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Todos los Recursos Registrados</h3>
-    </div>
+<div class="tarjeta-blanca margen-arriba">
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Artículo</th>
+                    <th>Nombre</th>
                     <th>Nº Serie</th>
                     <th>Estado</th>
-                    <th>Acción</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaArticulos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">Inventario vacío</td></tr>
+                <?php if (empty($todos_los_articulos)) { ?>
+                    <tr><td colspan="4" class="sin-datos">No hay artículos en el inventario</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaArticulos as $art) { ?>
+                    <?php foreach ($todos_los_articulos as $art) { ?>
                     <tr>
                         <td><strong><?php echo $art['nombreArticulo']; ?></strong></td>
-                        <td><?php echo !empty($art['numeroSerie']) ? $art['numeroSerie'] : 'N/A'; ?></td>
+                        <td><?php echo $art['numeroSerie']; ?></td>
                         <td>
                             <?php 
-                            $claseBolita = 'inactivo-rojo';
-                            if ($art['estado'] == 'disponible') {
-                                $claseBolita = 'activo-verde';
-                            }
+                            $clase_estado = "activo-verde";
+                            if ($art['estado'] != 'disponible') { $clase_estado = "inactivo-rojo"; }
                             ?>
-                            <span class="estado-bolita <?php echo $claseBolita; ?>">
-                                <?php echo ucfirst($art['estado']); ?>
+                            <span class="estado-bolita <?php echo $clase_estado; ?>">
+                                <?php echo $art['estado']; ?>
                             </span>
                         </td>
                         <td>
-                            <form action="/pfc/controladores/admin/inventario/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este dispositivo?');">
-                                <input type="hidden" name="idArticulo" value="<?php echo $art['idArticulo']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <div class="botones-accion">
+                                <form action="/pfc/controladores/admin/inventario/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este artículo del inventario?')">
+                                    <input type="hidden" name="idArticulo" value="<?php echo $art['idArticulo']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

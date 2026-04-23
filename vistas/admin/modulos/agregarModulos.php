@@ -2,13 +2,24 @@
 session_start();
 require_once "../../../modelos/ciclos.php";
 
-$listaCiclos = listarTodosLosCiclos();
+$todos_los_ciclos = listarTodosLosCiclos();
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { 
+    $mensaje_error = $_SESSION['error']; 
 }
-unset($_SESSION['error']);
+
+$lista_de_errores = array();
+if (isset($_SESSION['errores'])) { 
+    $lista_de_errores = $_SESSION['errores']; 
+}
+
+$datos = array();
+if (isset($_SESSION['datos_modulo'])) { 
+    $datos = $_SESSION['datos_modulo']; 
+}
+
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
 $titulo_pagina = "Registrar Módulo - Super Admin";
 $seccion = 'modulos';
@@ -20,8 +31,8 @@ include_once "../comunes/nav.php";
     <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -29,24 +40,33 @@ include_once "../comunes/nav.php";
         
         <div class="campo-formulario">
             <label>Nombre del Módulo *</label>
-            <input type="text" name="nombreModulo" placeholder="Programación PHP">
+            <input type="text" name="nombreModulo" value="<?php if(isset($datos['nombreModulo'])) { echo $datos['nombreModulo']; } ?>">
+            <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
+                <span class="error-campo"><?php echo $lista_de_errores['nombreModulo']; ?></span>
+            <?php } ?>
         </div>
 
         <div class="campo-formulario">
             <label>Ciclo Formativo Asociado *</label>
             <select name="idCiclo">
                 <option value="">Seleccione un ciclo</option>
-                <?php foreach ($listaCiclos as $ciclo) { ?>
-                    <option value="<?php echo $ciclo['idCiclo']; ?>">
+                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                    <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
                         <?php echo $ciclo['nombreCiclo']; ?>
                     </option>
                 <?php } ?>
             </select>
+            <?php if (isset($lista_de_errores['idCiclo'])) { ?>
+                <span class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></span>
+            <?php } ?>
         </div>
 
         <div class="campo-formulario">
             <label>Horas Máximas *</label>
-            <input type="text" name="horasMaximas" placeholder="180">
+            <input type="text" name="horasMaximas" value="<?php if(isset($datos['horasMaximas'])) { echo $datos['horasMaximas']; } ?>">
+            <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
+                <span class="error-campo"><?php echo $lista_de_errores['horasMaximas']; ?></span>
+            <?php } ?>
         </div>
 
         <div class="margen-arriba pt-20">

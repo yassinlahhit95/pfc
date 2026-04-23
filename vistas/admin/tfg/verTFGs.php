@@ -6,70 +6,64 @@ include_once "../comunes/nav.php";
 
 require_once "../../../modelos/tfg.php";
 
-$listaTFGs = listarTodosLosTFGs();
+$todos_los_tfgs = listarTFGs();
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['exito'], $_SESSION['error']);
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+
+unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Proyectos TFG</h1>
-        <p class="subtitulo-encabezado">Listado de trabajos finales entregados</p>
-    </div>
+    <h1>Gestión de Trabajos Fin de Grado</h1>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
-
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Proyectos Entregados por Alumnos</h3>
-    </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
                     <th>Estudiante</th>
-                    <th>Ciclo</th>
-                    <th>Título del TFG</th>
-                    <th>Fecha de Subida</th>
+                    <th>Título del Proyecto</th>
+                    <th>Archivo</th>
+                    <th>Fecha Subida</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaTFGs)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay TFGs subidos actualmente.</td></tr>
+                <?php if (empty($todos_los_tfgs)) { ?>
+                    <tr><td colspan="5" class="sin-datos">No hay TFGs registrados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaTFGs as $tfg) { ?>
+                    <?php foreach ($todos_los_tfgs as $tfg) { ?>
                     <tr>
                         <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $tfg['nombreCiclo']; ?></td>
-                        <td><?php echo $tfg['tituloTFG'] ? $tfg['tituloTFG'] : 'Sin título'; ?></td>
-                        <td><?php 
-                            if ($tfg['fechaSubidaTFG']) {
-                                echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); 
-                            } else {
-                                echo 'N/A';
-                            }
-                        ?></td>
+                        <td><?php echo $tfg['tituloTFG']; ?></td>
                         <td>
                             <a href="/pfc/public/uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario boton-pequeno">
-                                <i class="fas fa-download"></i> Descargar
+                                <i class="fas fa-file-pdf"></i> Ver PDF
                             </a>
+                        </td>
+                        <td><?php echo date('d/m/Y', strtotime($tfg['fechaSubida'])); ?></td>
+                        <td>
+                            <div class="botones-accion">
+                                <form action="/pfc/controladores/admin/tfg/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar permanentemente este TFG?')">
+                                    <input type="hidden" name="idTFG" value="<?php echo $tfg['idTFG']; ?>">
+                                    <input type="hidden" name="nombreArchivo" value="<?php echo $tfg['archivoTFG']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

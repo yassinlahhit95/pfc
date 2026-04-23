@@ -3,7 +3,28 @@ require_once("conectar.php");
 
 function listarTodosLosPagos() {
     $conexion = obtenerConexion();
-    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante FROM pagos JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante ORDER BY idPago DESC";
+    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo 
+            FROM pagos 
+            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante 
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
+            ORDER BY idPago DESC";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
+
+function listarPagosFiltrados($idCiclo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo 
+            FROM pagos 
+            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante 
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
+            WHERE estudiantes.idCiclo = $idCiclo
+            ORDER BY idPago DESC";
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while($fila = mysqli_fetch_assoc($resultado)) {

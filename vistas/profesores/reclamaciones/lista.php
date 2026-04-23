@@ -53,7 +53,7 @@ include_once "../comunes/nav.php";
                             </td>
                             <td>
                                 <a href="/pfc/vistas/profesores/reclamaciones/editar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-editar" title="Editar"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/controladores/profesores/reclamaciones/borrar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-eliminar" title="Eliminar" onclick="return confirm('¿Seguro?');"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/controladores/profesores/reclamaciones/borrar.php?id=<?php echo $rec['idReclamacion']; ?>" class="boton-icono boton-eliminar" title="Eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

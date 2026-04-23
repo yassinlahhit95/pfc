@@ -1,19 +1,39 @@
 <?php
 session_start();
 require_once "../../../modelos/calificaciones.php";
+
 if (isset($_POST['guardarNotas'])) {
-    $idModulo = $_POST['idModulo'];
-    $n1ev = $_POST['n1ev'];
-    $n1f = $_POST['n1f'];
-    $n2ev = $_POST['n2ev'];
-    $n2f = $_POST['n2f'];
-    foreach ($n1ev as $idAlumn => $valor) {
-        calificarModuloCompleto($idAlumn, $idModulo, $n1ev[$idAlumn], $n1f[$idAlumn], $n2ev[$idAlumn], $n2f[$idAlumn]);
+    $id_modulo = $_POST['idModulo'];
+    $ids_estudiantes = $_POST['estudiantes'];
+    $notas = $_POST['notas'];
+    $observaciones = $_POST['observaciones'];
+
+    $error_al_guardar = false;
+
+    for ($i = 0; $i < count($ids_estudiantes); $i++) {
+        $id_est = $ids_estudiantes[$i];
+        $nota = $notas[$i];
+        $obs = $observaciones[$i];
+
+        if ($nota != "" && ($nota < 0 || $nota > 10)) {
+            $error_al_guardar = true;
+            continue;
+        }
+
+        if (!actualizarOCrearNota($id_est, $id_modulo, $nota, $obs)) {
+            $error_al_guardar = true;
+        }
     }
-    $_SESSION['exito'] = "Ok";
-    header("Location: /pfc/vistas/admin/academico/calificacionesModulos.php?idModulo=$idModulo");
+
+    if ($error_al_guardar) {
+        $_SESSION['error'] = "Se produjeron algunos errores al guardar las notas. Revise los valores.";
+    } else {
+        $_SESSION['exito'] = "Todas las calificaciones se guardaron correctamente.";
+    }
+
+    header("Location: /pfc/vistas/admin/academico/calificacionesModulos.php?idModulo=$id_modulo");
     exit;
 }
+
 header("Location: /pfc/vistas/admin/academico/calificacionesModulos.php");
 exit;
-

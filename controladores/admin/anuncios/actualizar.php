@@ -2,7 +2,8 @@
 session_start();
 require_once "../../../modelos/anuncios.php";
 
-if (isset($_POST['guardarAnuncio'])) {
+if (isset($_POST['actualizarAnuncio'])) {
+    $id_anuncio = $_POST['idAnuncio'];
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
 
@@ -16,20 +17,20 @@ if (isset($_POST['guardarAnuncio'])) {
     }
 
     if (empty($lista_de_errores)) {
-        $resultado = insertarAnuncio($titulo, $contenido);
+        $resultado = actualizarAnuncio($id_anuncio, $titulo, $contenido);
         if ($resultado) {
-            $_SESSION['exito'] = "Anuncio publicado correctamente.";
+            $_SESSION['exito'] = "Anuncio actualizado correctamente.";
             header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar en la base de datos.";
         }
     } else {
         $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_anuncio'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+    header("Location: /pfc/vistas/admin/anuncios/modificarAnuncios.php?idAnuncio=$id_anuncio");
     exit;
 }
 

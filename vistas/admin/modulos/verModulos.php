@@ -66,13 +66,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                 ?>
                             </strong>
                         </td>
-                        <td><?php 
-                            if ($modulo['nombreCiclo']) {
-                                echo $modulo['nombreCiclo'];
-                            } else {
-                                echo '<span class="texto-atenuado">Sin asignar</span>';
-                            }
-                        ?></td>
+                        <td><?php echo $modulo['nombreCiclo']; ?></td>
                         <td><?php echo $modulo['horasMaximas']; ?> h</td>
                         <td>
                             <div class="botones-accion">
@@ -81,8 +75,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form method="POST" action="/pfc/controladores/admin/modulos/borrar.php" 
-                                      class="d-inline"
-                                      onsubmit="return confirm('¿Está seguro de eliminar este módulo?');">
+                                      class="d-inline">
                                     <input type="hidden" name="idModulo" value="<?php echo $modulo['idModulo']; ?>">
                                     <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                         <i class="fas fa-trash"></i>

@@ -1,111 +1,63 @@
 <?php
 session_start();
-
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/niveles.php";
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/aulas.php";
-
-
-$idDelCiclo = 0;
-if (isset($_GET['idCiclo'])) {
-    $idDelCiclo = $_GET['idCiclo'];
-}
-
-if (!$idDelCiclo) {
-    header("Location: verCiclos.php");
-    exit;
-}
-
-$datosCicloBD = obtenerCicloUnico($idDelCiclo);
-
-if (!$datosCicloBD) {
-    header("Location: verCiclos.php");
-    exit;
-}
-
-$profesoresDelCicloActual = obtenerProfesoresDeUnCiclo($idDelCiclo);
-$idsProfesoresSeleccionados = array_column($profesoresDelCicloActual, 'idProfesor');
-
-$aulasDelCicloActual = obtenerAulasDeUnCiclo($idDelCiclo);
-$idsAulasSeleccionadas = array_column($aulasDelCicloActual, 'idAula');
-
-$listaNiveles = listarNiveles();
-$listaProfesores = listarProfesores();
-$listaAulas = listarAulas();
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
-unset($_SESSION['errores']);
-
 $titulo_pagina = "Modificar Ciclo - Super Admin";
 $seccion = 'ciclos';
 include_once "../comunes/nav.php";
+
+require_once "../../../modelos/ciclos.php";
+
+$id_ciclo = $_GET['idCiclo'];
+$ciclo = obtenerCicloPorId($id_ciclo);
+
+if (!$ciclo) {
+    header("Location: verCiclos.php");
+    exit;
+}
+
+if (isset($_SESSION['datos_ciclos'])) {
+    $ciclo = $_SESSION['datos_ciclos'];
+}
+
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Modificar Ciclo: <?php echo $datosCicloBD['nombreCiclo']; ?></h1>
-    </div>
-    <a href="/pfc/vistas/admin/ciclos/verCiclos.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver a la lista
-    </a>
+    <h1>Modificar Ciclo</h1>
+    <a href="verCiclos.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/ciclos/actualizar.php" method="POST">
-        <input type="hidden" name="idCiclo" value="<?php echo $idDelCiclo; ?>">
+    <form method="POST" action="/pfc/controladores/admin/ciclos/actualizar.php">
+        <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo; ?>">
         
         <div class="formulario-cuadricula">
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo-formulario">
                 <label>Nombre del Ciclo *</label>
-                <input type="text" name="nombreCiclo" value="<?php echo $datosCicloBD['nombreCiclo']; ?>">
+                <input type="text" name="nombreCiclo" value="<?php echo $ciclo['nombreCiclo']; ?>">
+                <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['nombreCiclo']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Nivel Formativo *</label>
-                <select name="idNivel">
-                    <?php foreach ($listaNiveles as $nivel) { ?>
-                        <option value="<?php echo $nivel['idNivel']; ?>" <?php if ($datosCicloBD['idNivel'] == $nivel['idNivel']) { echo 'selected'; } ?>>
-                            <?php echo $nivel['nombreNivel']; ?>
-                        </option>
-                    <?php } ?>
+                <label>Grado *</label>
+                <select name="gradoCiclo">
+                    <option value="Medio" <?php if($ciclo['gradoCiclo'] == 'Medio') { echo "selected"; } ?>>Grado Medio</option>
+                    <option value="Superior" <?php if($ciclo['gradoCiclo'] == 'Superior') { echo "selected"; } ?>>Grado Superior</option>
                 </select>
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Descripción del Ciclo *</label>
-                <textarea name="descripcionCiclo" rows="3"><?php echo $datosCicloBD['descripcionCiclo']; ?></textarea>
-            </div>
-        </div>
-
-        <div class="cuadricula-secundaria mt-25">
-            <div>
-                <h4 class="margen-abajo">Vincular Tutores/Profesores</h4>
-                <div class="lista-checkboxes">
-                    <?php foreach ($listaProfesores as $prof) { ?>
-                        <label class="item-checkbox">
-                            <input type="checkbox" name="profesores[]" value="<?php echo $prof['idProfesor']; ?>"
-                                <?php if (in_array($prof['idProfesor'], $idsProfesoresSeleccionados)) { echo 'checked'; } ?>>
-                            <span><?php echo $prof['nombreProfesor']; ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="margen-abajo">Vincular Aulas Habituales</h4>
-                <div class="lista-checkboxes">
-                    <?php foreach ($listaAulas as $aula) { ?>
-                        <label class="item-checkbox">
-                            <input type="checkbox" name="aulas[]" value="<?php echo $aula['idAula']; ?>"
-                                <?php if (in_array($aula['idAula'], $idsAulasSeleccionadas)) { echo 'checked'; } ?>>
-                            <span><?php echo $aula['nombreAula']; ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
+                <?php if (isset($lista_de_errores['gradoCiclo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['gradoCiclo']; ?></p>
+                <?php } ?>
             </div>
         </div>
 

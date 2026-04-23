@@ -4,85 +4,89 @@ $titulo_pagina = "Modificar Pago - Super Admin";
 $seccion = 'pagos';
 include_once "../comunes/nav.php";
 
-require_once "../../../modelos/conectar.php";
 require_once "../../../modelos/pagos.php";
 require_once "../../../modelos/estudiantes.php";
 
-$idDelPago = 0;
-if (isset($_GET['idPago'])) {
-    $idDelPago = $_GET['idPago'];
-}
+$id_pago = $_GET['idPago'];
+$pago = obtenerPagoPorId($id_pago);
 
-$datosPagoBD = obtenerPagoPorId($idDelPago);
-
-if (!$datosPagoBD) {
-    header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
+if (!$pago) {
+    header("Location: verPagosGeneral.php");
     exit;
 }
 
-$listaEstudiantes = listarEstudiantes();
+if (isset($_SESSION['datos_pago'])) {
+    $pago = $_SESSION['datos_pago'];
+}
 
-$idElegido = $datosPagoBD['idEstudiante'];
-$monto = $datosPagoBD['monto'];
-$tipoElegido = $datosPagoBD['tipoPago'];
-$fecha = $datosPagoBD['fechaPago'];
+$todos_los_estudiantes = listarEstudiantes();
+
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_pago']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Pago #<?php echo $idDelPago; ?></h1>
-    <a href="/pfc/vistas/admin/pagos/verPagosGeneral.php" class="boton-secundario">Volver</a>
+    <h1>Modificar Pago</h1>
+    <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/pagos/actualizar.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="idPago" value="<?php echo $idDelPago; ?>">
+    <form method="POST" action="/pfc/controladores/admin/pagos/actualizar.php">
+        <input type="hidden" name="idPago" value="<?php echo $id_pago; ?>">
         
         <div class="formulario-cuadricula">
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo-formulario">
                 <label>Estudiante *</label>
                 <select name="idEstudiante">
-                    <?php foreach ($listaEstudiantes as $estudiante) { ?>
-                        <option value="<?php echo $estudiante['idEstudiante']; ?>" <?php if ($idElegido == $estudiante['idEstudiante']) { echo 'selected'; } ?>>
+                    <?php foreach ($todos_los_estudiantes as $estudiante) { ?>
+                        <option value="<?php echo $estudiante['idEstudiante']; ?>" <?php if($pago['idEstudiante'] == $estudiante['idEstudiante']) echo "selected"; ?>>
                             <?php echo $estudiante['nombreEstudiante']; ?>
                         </option>
                     <?php } ?>
                 </select>
+                <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['idEstudiante']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Monto (€) *</label>
-                <input type="text" name="monto" value="<?php echo $monto; ?>" placeholder="50.00">
+                <label>Concepto *</label>
+                <input type="text" name="conceptoPago" value="<?php echo $pago['conceptoPago']; ?>">
+                <?php if (isset($lista_de_errores['conceptoPago'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['conceptoPago']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Tipo de Pago *</label>
-                <select name="tipoPago">
-                    <option value="mensual" <?php if ($tipoElegido == 'mensual') { echo 'selected'; } ?>>Mensual</option>
-                    <option value="trimestral" <?php if ($tipoElegido == 'trimestral') { echo 'selected'; } ?>>Trimestral</option>
-                    <option value="semestral" <?php if ($tipoElegido == 'semestral') { echo 'selected'; } ?>>Semestral</option>
-                    <option value="unico" <?php if ($tipoElegido == 'unico') { echo 'selected'; } ?>>Pago Único</option>
-                </select>
+                <label>Cantidad *</label>
+                <input type="text" name="cantidadPago" value="<?php echo $pago['cantidadPago']; ?>">
+                <?php if (isset($lista_de_errores['cantidadPago'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['cantidadPago']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Pago Realizado *</label>
-                <input type="date" name="fechaPago" value="<?php echo $fecha; ?>">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Comprobante actual: <?php 
-                    if ($datosPagoBD['comprobante']) {
-                        echo $datosPagoBD['comprobante'];
-                    } else {
-                        echo 'Ninguno';
-                    }
-                ?></label>
-                <input type="file" name="comprobante" accept="image/*,.pdf">
+                <label>Fecha de Pago *</label>
+                <input type="date" name="fechaPago" value="<?php echo $pago['fechaPago']; ?>">
+                <?php if (isset($lista_de_errores['fechaPago'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaPago']; ?></p>
+                <?php } ?>
             </div>
         </div>
 
         <div class="margen-arriba">
-            <button type="submit" name="actualizarPago" class="boton-primario">Guardar Cambios</button>
+            <button type="submit" name="actualizarPago" class="boton-primario">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
         </div>
     </form>
 </div>

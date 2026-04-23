@@ -1,90 +1,107 @@
 <?php
 session_start();
+$titulo_pagina = "Modificar Reto - Super Admin";
+$seccion = 'retos';
+include_once "../comunes/nav.php";
 
 require_once "../../../modelos/retos.php";
 require_once "../../../modelos/modulos.php";
 
-
-$idDelReto = 0;
-if (isset($_GET['idReto'])) {
-    $idDelReto = $_GET['idReto'];
-}
-
-if (!$idDelReto) {
-    header("Location: verRetos.php");
-    exit;
-}
-
-$reto = obtenerRetoPorId($idDelReto);
+$id_reto = $_GET['idReto'];
+$reto = obtenerRetoPorId($id_reto);
 
 if (!$reto) {
     header("Location: verRetos.php");
     exit;
 }
 
-$modulosDelRetoActual = obtenerModulosDeReto($idDelReto);
-$idsModulosSeleccionados = array_column($modulosDelRetoActual, 'idModulo');
-
-$listaDeModulos = listarModulos();
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
+$modulos_del_reto = obtenerModulosDeUnReto($id_reto);
+$ids_modulos_viculados = [];
+foreach ($modulos_del_reto as $m) {
+    $ids_modulos_viculados[] = $m['idModulo'];
 }
-unset($_SESSION['errores']);
 
-$titulo_pagina = "Modificar Reto - Super Admin";
-$seccion = 'retos';
-include_once "../comunes/nav.php";
+if (isset($_SESSION['datos_reto'])) {
+    $reto = $_SESSION['datos_reto'];
+    if (isset($reto['modulosReto'])) {
+        $ids_modulos_viculados = $reto['modulosReto'];
+    } else {
+        $ids_modulos_viculados = [];
+    }
+}
+
+$todos_los_modulos = listarModulos();
+
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_reto']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Modificar Reto: <?php echo $reto['nombreReto']; ?></h1>
-        <p class="subtitulo-encabezado">Actualice la información y los módulos vinculados</p>
-    </div>
-    <a href="/pfc/vistas/admin/retos/verRetos.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver a la lista
-    </a>
+    <h1>Modificar Reto</h1>
+    <a href="verRetos.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/retos/actualizar.php" method="POST">
-        <input type="hidden" name="idReto" value="<?php echo $idDelReto; ?>">
+    <form method="POST" action="/pfc/controladores/admin/retos/actualizar.php">
+        <input type="hidden" name="idReto" value="<?php echo $id_reto; ?>">
         
         <div class="formulario-cuadricula">
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo-formulario">
                 <label>Nombre del Reto *</label>
                 <input type="text" name="nombreReto" value="<?php echo $reto['nombreReto']; ?>">
+                <?php if (isset($lista_de_errores['nombreReto'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['nombreReto']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Horas del Reto *</label>
+                <label>Horas Totales Estimadas *</label>
                 <input type="text" name="horasReto" value="<?php echo $reto['horasReto']; ?>">
+                <?php if (isset($lista_de_errores['horasReto'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['horasReto']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicio" value="<?php echo $reto['fechaInicio']; ?>">
+                <input type="date" name="fechaInicioReto" value="<?php echo $reto['fechaInicioReto']; ?>">
+                <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaInicioReto']; ?></p>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Finalización *</label>
-                <input type="date" name="fechaFin" value="<?php echo $reto['fechaFin']; ?>">
+                <label>Fecha de Fin *</label>
+                <input type="date" name="fechaFinReto" value="<?php echo $reto['fechaFinReto']; ?>">
+                <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaFinReto']; ?></p>
+                <?php } ?>
             </div>
         </div>
 
-        <div class="mt-25">
-            <h4 class="margen-abajo">Vincular Módulos (Subproyectos)</h4>
-            <div class="lista-checkboxes">
-                <?php foreach ($listaDeModulos as $modulo) { ?>
-                    <label class="item-checkbox">
-                        <input type="checkbox" name="modulos[]" value="<?php echo $modulo['idModulo']; ?>"
-                            <?php if (in_array($modulo['idModulo'], $idsModulosSeleccionados)) { echo 'checked'; } ?>>
+        <div class="margen-arriba">
+            <label><strong>Vincular Módulos *</strong></label>
+            <div class="tarjeta-gris-suave scroll-vertical mt-5">
+                <?php foreach ($todos_los_modulos as $modulo) { ?>
+                    <div class="item-seleccionable">
+                        <input type="checkbox" name="modulosReto[]" value="<?php echo $modulo['idModulo']; ?>" 
+                            <?php if(in_array($modulo['idModulo'], $ids_modulos_viculados)) echo "checked"; ?>>
                         <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
-                    </label>
+                    </div>
                 <?php } ?>
             </div>
+            <?php if (isset($lista_de_errores['modulosReto'])) { ?>
+                <p class="error-campo"><?php echo $lista_de_errores['modulosReto']; ?></p>
+            <?php } ?>
         </div>
 
         <div class="margen-arriba">
