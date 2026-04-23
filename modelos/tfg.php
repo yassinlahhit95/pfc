@@ -3,10 +3,26 @@ require_once("conectar.php");
 
 function listarTodosLosTFGs() {
     $conexion = obtenerConexion();
-    $sql = "SELECT estudiantes.idEstudiante, estudiantes.nombreEstudiante, estudiantes.archivoTFG, estudiantes.fechaSubidaTFG, ciclos.nombreCiclo 
+    $sql = "SELECT estudiantes.idEstudiante, estudiantes.nombreEstudiante, estudiantes.archivoTFG, estudiantes.fechaSubidaTFG, ciclos.nombreCiclo, ciclos.idCiclo 
             FROM estudiantes 
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
             WHERE estudiantes.archivoTFG != '' 
+            ORDER BY estudiantes.nombreEstudiante ASC";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
+
+function listarTFGsFiltrados($idCiclo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT estudiantes.idEstudiante, estudiantes.nombreEstudiante, estudiantes.archivoTFG, estudiantes.fechaSubidaTFG, ciclos.nombreCiclo, ciclos.idCiclo 
+            FROM estudiantes 
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
+            WHERE estudiantes.archivoTFG != '' AND estudiantes.idCiclo = $idCiclo
             ORDER BY estudiantes.nombreEstudiante ASC";
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];

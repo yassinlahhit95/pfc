@@ -60,13 +60,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td><?php echo $estudiante['idEstudiante']; ?></td>
                         <td><strong><?php echo $estudiante['nombreEstudiante']; ?></strong></td>
                         <td><?php echo $estudiante['emailEstudiante']; ?></td>
-                        <td><?php 
-                            if ($estudiante['nombreCiclo']) {
-                                echo $estudiante['nombreCiclo'];
-                            } else {
-                                echo '<span class="texto-atenuado">Sin asignar</span>';
-                            }
-                        ?></td>
+                        <td><?php echo $estudiante['nombreCiclo']; ?></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
@@ -78,8 +72,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" 
-                                      class="d-inline"
-                                      onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
+                                      class="d-inline">
                                     <input type="hidden" name="idEstudiante" value="<?php echo $estudiante['idEstudiante']; ?>">
                                     <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
                                         <i class="fas fa-trash"></i>

@@ -56,17 +56,17 @@ include_once "../comunes/nav.php";
 
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">Teléfono</label>
-            <p><?php echo $estudiante['telefonoEstudiante'] ? $estudiante['telefonoEstudiante'] : 'No registrado'; ?></p>
+            <p><?php echo $estudiante['telefonoEstudiante']; ?></p>
         </div>
 
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">Ciclo Formativo</label>
-            <p class="etiqueta-gris"><?php echo $estudiante['nombreCiclo'] ? $estudiante['nombreCiclo'] : 'Sin asignar'; ?></p>
+            <p class="etiqueta-gris"><?php echo $estudiante['nombreCiclo']; ?></p>
         </div>
 
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">Fecha de Nacimiento</label>
-            <p><?php echo $estudiante['fechaNacimientoEstudiante'] ? date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])) : 'No registrada'; ?></p>
+            <p><?php echo date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])); ?></p>
         </div>
 
         <div class="campo-formulario">
@@ -84,7 +84,7 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario campo-ancho-total">
                 <label class="texto-atenuado texto-pequeno">Observaciones</label>
-                <p><?php echo $estudiante['observacionesEstudiante'] ? $estudiante['observacionesEstudiante'] : 'Sin observaciones.'; ?></p>
+                <p><?php echo $estudiante['observacionesEstudiante']; ?></p>
             </div>
         </div>
     </div>

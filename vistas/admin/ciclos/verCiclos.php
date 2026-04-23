@@ -1,124 +1,119 @@
 <?php
 session_start();
-$titulo_pagina = "Ver Ciclos - Super Admin";
+$titulo_pagina = "Gestión de Ciclos - Super Admin";
 $seccion = 'ciclos';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/aulas.php";
 
-$listaCiclos = listarTodosLosCiclos();
+$todos_los_ciclos = listarTodosLosCiclos();
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['exito'], $_SESSION['error']);
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
+
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+$datos = [];
+if (isset($_SESSION['datos_ciclos'])) { $datos = $_SESSION['datos_ciclos']; }
+
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Ciclos</h1>
-    </div>
-    <div class="acciones-pagina">
-        <a href="agregarCiclos.php" class="boton-primario">
-            <i class="fas fa-plus"></i> Agregar Ciclo
-        </a>
-    </div>
+    <h1>Ciclos Formativos</h1>
 </div>
 
-<?php if ($exito) { ?>
-<div class="mensaje-exito">
-    <p><?php echo $exito; ?></p>
-</div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
+<?php } ?>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
-<div class="contenedor-tabla">
-    <table class="tabla-datos">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre Ciclo</th>
-                <th>Nivel</th>
-                <th>Tutor(es)</th>
-                <th>Aula(s)</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (empty($listaCiclos)) { ?>
-            <tr>
-                <td colspan="6" class="sin-datos">No hay ciclos registrados</td>
-            </tr>
-            <?php } else { ?>
-                <?php foreach ($listaCiclos as $ciclo) { 
-                    
-                    $idsProfes = obtenerProfesoresDeUnCiclo($ciclo['idCiclo']);
-                    $nombresProfes = [];
-                    foreach ($idsProfes as $idP) {
-                        $p = obtenerProfesorPorId($idP['idProfesor']);
-                        if ($p) $nombresProfes[] = $p['nombreProfesor'];
-                    }
-                    
-                    $textoProfesores = 'Sin asignar';
-                    if (!empty($nombresProfes)) {
-                        $textoProfesores = implode(', ', $nombresProfes);
-                    }
-                    
-                    
-                    $idsAulas = obtenerAulasDeUnCiclo($ciclo['idCiclo']);
-                    $nombresAulas = [];
-                    foreach ($idsAulas as $idA) {
-                        $listaA = listarAulas();
-                        foreach ($listaA as $aula) {
-                            if ($aula['idAula'] == $idA['idAula']) $nombresAulas[] = $aula['nombreAula'];
-                        }
-                    }
-                    
-                    $textoAulas = 'Sin asignar';
-                    if (!empty($nombresAulas)) {
-                        $textoAulas = implode(', ', $nombresAulas);
-                    }
-                ?>
-                <tr>
-                    <td><?php echo $ciclo['idCiclo']; ?></td>
-                    <td><strong><?php echo $ciclo['nombreCiclo']; ?></strong></td>
-                    <td><?php 
-                        if (isset($ciclo['nombreNivel'])) {
-                            echo $ciclo['nombreNivel'];
-                        } else {
-                            echo 'N/A';
-                        }
-                    ?></td>
-                    <td><div class="texto-pequeno texto-atenuado lh-1-4"><?php echo $textoProfesores; ?></div></td>
-                    <td><div class="texto-pequeno texto-atenuado lh-1-4"><?php echo $textoAulas; ?></div></td>
-                    <td>
-                        <div class="botones-accion">
-                            <a href="modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" 
-                               class="boton-icono boton-editar" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form method="POST" action="/pfc/controladores/admin/ciclos/borrar.php" 
-                                  class="d-inline"
-                                  onsubmit="return confirm('¿Está seguro de eliminar este ciclo?');">
-                                <input type="hidden" name="idCiclo" value="<?php echo $ciclo['idCiclo']; ?>">
-                                <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3>Nuevo Ciclo Formativo</h3>
+    </div>
+    <form method="POST" action="/pfc/controladores/admin/ciclos/insertar.php">
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario">
+                <label>Nombre del Ciclo *</label>
+                <input type="text" name="nombreCiclo" value="<?php if(isset($datos['nombreCiclo'])) { echo $datos['nombreCiclo']; } ?>" placeholder="Ej: Desarrollo de Aplicaciones Web">
+                <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['nombreCiclo']; ?></p>
                 <?php } ?>
-            <?php } ?>
-        </tbody>
-    </table>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Grado *</label>
+                <select name="gradoCiclo">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="Medio" <?php if(isset($datos['gradoCiclo']) && $datos['gradoCiclo'] == 'Medio') { echo "selected"; } ?>>Grado Medio</option>
+                    <option value="Superior" <?php if(isset($datos['gradoCiclo']) && $datos['gradoCiclo'] == 'Superior') { echo "selected"; } ?>>Grado Superior</option>
+                </select>
+                <?php if (isset($lista_de_errores['gradoCiclo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['gradoCiclo']; ?></p>
+                <?php } ?>
+            </div>
+        </div>
+
+        <div class="margen-arriba">
+            <button type="submit" name="guardarCiclo" class="boton-primario">
+                <i class="fas fa-save"></i> Registrar Ciclo
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="tarjeta-blanca">
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Grado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($todos_los_ciclos)) { ?>
+                    <tr><td colspan="4" class="sin-datos">No hay ciclos configurados</td></tr>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                    <tr>
+                        <td><?php echo $ciclo['idCiclo']; ?></td>
+                        <td><?php echo $ciclo['nombreCiclo']; ?></td>
+                        <td>
+                            <?php 
+                            if (isset($ciclo['gradoCiclo'])) {
+                                echo $ciclo['gradoCiclo']; 
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" class="boton-icono boton-editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="/pfc/controladores/admin/ciclos/borrar.php" method="POST" class="d-inline">
+                                    <input type="hidden" name="idCiclo" value="<?php echo $ciclo['idCiclo']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

@@ -40,11 +40,7 @@ include_once "../comunes/nav.php";
             </div>
             <div class="item-perfil">
                 <label>Teléfono de Contacto</label>
-                <?php 
-                $tel = $profesor['telefonoProfesor'];
-                if (empty($tel)) { $tel = 'No registrado'; }
-                ?>
-                <p><?php echo $tel; ?></p>
+                <p><?php echo $profesor['telefonoProfesor']; ?></p>
             </div>
             <div class="item-perfil">
                 <label>DNI</label>
@@ -52,11 +48,7 @@ include_once "../comunes/nav.php";
             </div>
             <div class="item-perfil">
                 <label>Dirección</label>
-                <?php 
-                $dir = $profesor['direccionProfesor'];
-                if (empty($dir)) { $dir = 'No registrada'; }
-                ?>
-                <p><?php echo $dir; ?></p>
+                <p><?php echo $profesor['direccionProfesor']; ?></p>
             </div>
         </div>
     </div>

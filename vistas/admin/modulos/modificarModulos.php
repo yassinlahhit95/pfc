@@ -4,31 +4,27 @@ require_once "../../../modelos/conectar.php";
 require_once "../../../modelos/modulos.php";
 require_once "../../../modelos/ciclos.php";
 
-
-$idDelModulo = 0;
-if (isset($_GET['idModulo'])) {
-    $idDelModulo = $_GET['idModulo'];
-}
-
-if (!$idDelModulo) {
-    header("Location: verModulos.php");
-    exit;
-}
-
-$modulo = obtenerModuloPorId($idDelModulo);
+$id_del_modulo = $_GET['idModulo'];
+$modulo = obtenerModuloPorId($id_del_modulo);
 
 if (!$modulo) {
     header("Location: verModulos.php");
     exit;
 }
 
-$listaDeCiclos = listarTodosLosCiclos();
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
+if (isset($_SESSION['datos_modulo'])) {
+    $modulo = $_SESSION['datos_modulo'];
 }
-unset($_SESSION['errores']);
+
+$todos_los_ciclos = listarTodosLosCiclos();
+
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
+
+$lista_de_errores = array();
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
 $titulo_pagina = "Modificar Módulo - Super Admin";
 $seccion = 'modulos';
@@ -44,30 +40,43 @@ include_once "../comunes/nav.php";
     </a>
 </div>
 
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/modulos/actualizar.php" method="POST">
-        <input type="hidden" name="idModulo" value="<?php echo $idDelModulo; ?>">
+        <input type="hidden" name="idModulo" value="<?php echo $id_del_modulo; ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Módulo *</label>
                 <input type="text" name="nombreModulo" value="<?php echo $modulo['nombreModulo']; ?>">
+                <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
+                    <span class="error-campo"><?php echo $lista_de_errores['nombreModulo']; ?></span>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Ciclo Formativo *</label>
                 <select name="idCiclo">
-                    <?php foreach ($listaDeCiclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
                             <?php echo $ciclo['nombreCiclo']; ?>
                         </option>
                     <?php } ?>
                 </select>
+                <?php if (isset($lista_de_errores['idCiclo'])) { ?>
+                    <span class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></span>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Horas Totales *</label>
                 <input type="text" name="horasMaximas" value="<?php echo $modulo['horasMaximas']; ?>">
+                <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
+                    <span class="error-campo"><?php echo $lista_de_errores['horasMaximas']; ?></span>
+                <?php } ?>
             </div>
         </div>
 

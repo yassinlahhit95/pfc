@@ -6,72 +6,83 @@ include_once "../comunes/nav.php";
 
 require_once "../../../modelos/inventario.php";
 
+$todos_los_prestamos = listarPrestamos();
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['exito'], $_SESSION['error']);
+$mensaje_exito = "";
+if (isset($_SESSION['exito'])) { $mensaje_exito = $_SESSION['exito']; }
 
-
-$listaPrestamosActivos = listarPrestamosActivos();
+unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <div>
-        <h1>Gestión de Préstamos</h1>
-    </div>
-    <div class="acciones-pagina">
-        <a href="/pfc/vistas/admin/inventario/agregarPrestamo.php" class="boton-primario">
-            <i class="fas fa-plus"></i> Nuevo Préstamo
-        </a>
-        <a href="/pfc/vistas/admin/inventario/verInventario.php" class="boton-secundario">
-            <i class="fas fa-box"></i> Ver Inventario
-        </a>
-    </div>
+<div class="encabezado-pagina">
+    <h1>Préstamos de Material</h1>
+    <a href="/pfc/vistas/admin/inventario/agregarPrestamo.php" class="boton-primario">
+        <i class="fas fa-plus"></i> Nuevo Préstamo
+    </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><p><?php echo $exito; ?></p></div>
+<?php if ($mensaje_exito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensaje_exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta"><h3>Equipos Prestados Actualmente</h3></div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Equipo</th>
                     <th>Estudiante</th>
+                    <th>Material</th>
                     <th>Fecha Préstamo</th>
+                    <th>Fecha Devolución</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaPrestamosActivos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay préstamos activos en este momento</td></tr>
+                <?php if (empty($todos_los_prestamos)) { ?>
+                    <tr><td colspan="6" class="sin-datos">No hay registros de préstamos</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaPrestamosActivos as $p) { ?>
+                    <?php foreach ($todos_los_prestamos as $p) { ?>
                     <tr>
-                        <td><strong><?php echo $p['nombreArticulo']; ?></strong></td>
-                        <td><?php echo $p['nombreEstudiante']; ?></td>
+                        <td><strong><?php echo $p['nombreEstudiante']; ?></strong></td>
+                        <td><?php echo $p['nombreArticulo']; ?></td>
                         <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
                         <td>
-                            <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
-                                <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                <input type="hidden" name="redireccion" value="/pfc/vistas/admin/inventario/gestionarPrestamos.php">
-                                <button type="submit" class="boton-secundario boton-pequeno">
-                                    <i class="fas fa-undo"></i> Devolver
-                                </button>
-                            </form>
+                            <?php 
+                            if ($p['fechaDevolucion'] != "") {
+                                echo date('d/m/Y', strtotime($p['fechaDevolucion']));
+                            } else {
+                                echo "-";
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php 
+                            $clase_estado = "activo-verde";
+                            if ($p['estadoPrestamo'] == 'activo') { $clase_estado = "inactivo-rojo"; }
+                            ?>
+                            <span class="estado-bolita <?php echo $clase_estado; ?>">
+                                <?php echo $p['estadoPrestamo']; ?>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="botones-accion">
+                                <?php if ($p['estadoPrestamo'] == 'activo') { ?>
+                                    <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
+                                        <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
+                                        <input type="hidden" name="idArticulo" value="<?php echo $p['idArticulo']; ?>">
+                                        <button type="submit" class="boton-primario boton-pequeno">
+                                            <i class="fas fa-undo"></i> Devolver
+                                        </button>
+                                    </form>
+                                <?php } ?>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

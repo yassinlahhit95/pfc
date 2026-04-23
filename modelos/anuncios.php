@@ -27,6 +27,23 @@ function eliminarAnuncio($idAnuncio) {
     return $resultado;
 }
 
+function obtenerAnuncioPorId($idAnuncio) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT * FROM anuncios WHERE idAnuncio = $idAnuncio";
+    $resultado = mysqli_query($conexion, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $fila;
+}
+
+function actualizarAnuncio($idAnuncio, $titulo, $mensaje, $fecha, $dirigidoA) {
+    $conexion = obtenerConexion();
+    $sql = "UPDATE anuncios SET titulo = '$titulo', mensaje = '$mensaje', fechaExpiracion = '$fecha', dirigidoA = '$dirigidoA' WHERE idAnuncio = $idAnuncio";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
 function contarAnunciosQueEstanActivos() {
     $conexion = obtenerConexion();
     $hoy = date('Y-m-d');

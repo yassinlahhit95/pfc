@@ -13,6 +13,21 @@ function listarRetos() {
     return $lista;
 }
 
+function listarRetosFiltrados($idModulo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT DISTINCT retos.* FROM retos 
+            JOIN modulo_reto ON retos.idReto = modulo_reto.idReto 
+            WHERE modulo_reto.idModulo = $idModulo
+            ORDER BY retos.idReto ASC";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
+
 function obtenerRetosDeProfesor($idProfesor) {
     $conexion = obtenerConexion();
     $sql = "SELECT DISTINCT retos.* FROM retos 

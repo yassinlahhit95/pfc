@@ -37,7 +37,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Correo Electrónico *</label>
-                <input type="email" name="emailProfesor" value="<?php echo $email; ?>">
+                <input type="text" name="emailProfesor" value="<?php echo $email; ?>">
             </div>
 
             <div class="campo-formulario">

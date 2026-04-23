@@ -75,8 +75,8 @@ $fechaHoy = date('Y-m-d');
             </div>
 
             <div class="campo-formulario">
-                <label>Comprobante (Opcional)</label>
-                <input type="file" name="comprobante" accept="image/*,.pdf">
+                <label>Comprobante (Requerido)</label>
+                <input type="file" name="comprobante" accept="image/*,.pdf" required>
             </div>
         </div>
 

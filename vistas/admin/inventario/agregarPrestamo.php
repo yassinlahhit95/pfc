@@ -8,35 +8,29 @@ require_once "../../../modelos/inventario.php";
 require_once "../../../modelos/estudiantes.php";
 require_once "../../../modelos/ciclos.php";
 
-$listaArticulos = listarArticulos();
-$listaEstudiantes = listarEstudiantes();
-$listaCiclos = listarTodosLosCiclos();
+$articulos_disponibles = listarArticulos();
+$todos_los_estudiantes = listarEstudiantes();
+$todos_los_ciclos = listarTodosLosCiclos();
 
+$mensaje_error = "";
+if (isset($_SESSION['error'])) { $mensaje_error = $_SESSION['error']; }
 
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
+$lista_de_errores = [];
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 $datos = [];
-if (isset($_SESSION['datos_inventario'])) {
-    $datos = $_SESSION['datos_inventario'];
-}
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
+if (isset($_SESSION['datos_prestamo'])) { $datos = $_SESSION['datos_prestamo']; }
+
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Registrar Nuevo Préstamo</h1>
     <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><p><?php echo $error; ?></p></div>
+<?php if ($mensaje_error != "") { ?>
+    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -44,66 +38,44 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
         <div class="formulario-cuadricula">
             
             <div class="campo-formulario">
-                <label>Recurso *</label>
+                <label>Recurso (Solo disponibles) *</label>
                 <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
-                    <?php foreach ($listaArticulos as $art) { 
+                    <?php foreach ($articulos_disponibles as $art) { 
                         if ($art['estado'] == 'disponible') {
-                            $selected = '';
-                            if (isset($datos['idArticulo'])) {
-                                if ($datos['idArticulo'] == $art['idArticulo']) {
-                                    $selected = 'selected';
-                                }
-                            }
-                            echo "<option value='{$art['idArticulo']}' {$selected}>{$art['nombreArticulo']} ({$art['numeroSerie']})</option>";
+                            ?>
+                            <option value="<?php echo $art['idArticulo']; ?>" <?php if(isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) echo "selected"; ?>>
+                                <?php echo $art['nombreArticulo']; ?> (<?php echo $art['numeroSerie']; ?>)
+                            </option>
+                            <?php
                         }
                     } ?>
                 </select>
-                <?php if (isset($errores['idArticulo'])) { ?>
-                    <p class='error-campo'><?php echo $errores['idArticulo']; ?></p>
+                <?php if (isset($lista_de_errores['idArticulo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['idArticulo']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Filtrar Estudiantes por Ciclo</label>
-                <select onchange="filtrarAlumnosPorCiclo(this.value)">
-                    <option value="todos">Todos los ciclos</option>
-                    <?php foreach ($listaCiclos as $c) { ?>
-                        <option value="<?php echo $c['idCiclo']; ?>"><?php echo $c['nombreCiclo']; ?></option>
+                <label>Estudiante *</label>
+                <select name="idEstudiante">
+                    <option value="">-- Seleccione un estudiante --</option>
+                    <?php foreach ($todos_los_estudiantes as $est) { ?>
+                        <option value="<?php echo $est['idEstudiante']; ?>" <?php if(isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) echo "selected"; ?>>
+                            <?php echo $est['nombreEstudiante']; ?>
+                        </option>
                     <?php } ?>
                 </select>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Estudiante *</label>
-                <select name="idEstudiante" id="selectorEstudiante">
-                    <option value="">-- Seleccione un estudiante --</option>
-                    <?php foreach ($listaEstudiantes as $est) {
-                        $selected = '';
-                        if (isset($datos['idEstudiante'])) {
-                            if ($datos['idEstudiante'] == $est['idEstudiante']) {
-                                $selected = 'selected';
-                            }
-                        }
-                        echo "<option value='{$est['idEstudiante']}' data-ciclo='{$est['idCiclo']}' {$selected}>{$est['nombreEstudiante']}</option>";
-                    } ?>
-                </select>
-                <?php if (isset($errores['idEstudiante'])) { ?>
-                    <p class='error-campo'><?php echo $errores['idEstudiante']; ?></p>
+                <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['idEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Préstamo *</label>
-                <?php 
-                $fechaActual = date('Y-m-d');
-                if (isset($datos['fechaPrestamo'])) {
-                    $fechaActual = $datos['fechaPrestamo'];
-                }
-                ?>
-                <input type="date" name="fechaPrestamo" value="<?php echo $fechaActual; ?>">
-                <?php if (isset($errores['fechaPrestamo'])) { ?>
-                    <p class='error-campo'><?php echo $errores['fechaPrestamo']; ?></p>
+                <input type="date" name="fechaPrestamo" value="<?php if(isset($datos['fechaPrestamo'])) echo $datos['fechaPrestamo']; ?>">
+                <?php if (isset($lista_de_errores['fechaPrestamo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaPrestamo']; ?></p>
                 <?php } ?>
             </div>
 
@@ -116,26 +88,5 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
         </div>
     </form>
 </div>
-
-<script>
-function filtrarAlumnosPorCiclo(cicloId) {
-    var opciones = document.getElementById('selectorEstudiante').options;
-    for (var i = 1; i < opciones.length; i++) {
-        var ciclo = opciones[i].getAttribute('data-ciclo');
-        var mostrar = false;
-        if (cicloId === "todos") {
-            mostrar = true;
-        } else if (cicloId === ciclo) {
-            mostrar = true;
-        }
-        
-        if (mostrar) {
-            opciones[i].style.display = "block";
-        } else {
-            opciones[i].style.display = "none";
-        }
-    }
-}
-</script>
 
 <?php include '../comunes/footer.php'; ?>

@@ -1,31 +1,39 @@
 <?php
 session_start();
 require_once "../../../modelos/ciclos.php";
+
 if (isset($_POST['guardarCiclo'])) {
-    $id = $_POST['idCiclo'];
+    $id_ciclo = $_POST['idCiclo'];
     $nombre = $_POST['nombreCiclo'];
-    $descripcion = $_POST['descripcionCiclo'];
-    $idNivel = $_POST['idNivel'];
-    $listaProfesores = $_POST['profesores'];
-    $listaAulas = $_POST['aulas'];
-    if (empty($id)) {
-        $_SESSION['error'] = "ID obligatorio";
-    } else if (empty($nombre)) {
-        $_SESSION['error'] = "Nombre obligatorio";
-    } else if (empty($descripcion)) {
-        $_SESSION['error'] = "Descripción obligatoria";
-    } else if (comprobarNombreEnOtroCiclo($nombre, $id)) {
-        $_SESSION['error'] = "Nombre repetido";
-    } else if (actualizarCicloExistente($id, $nombre, $descripcion, $idNivel, $listaProfesores, $listaAulas)) {
-        $_SESSION['exito'] = "Ok";
-        header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
-        exit;
-    } else {
-        $_SESSION['error'] = "Error BD";
+    $grado = $_POST['gradoCiclo'];
+
+    $lista_de_errores = [];
+
+    if (empty($nombre)) {
+        $lista_de_errores['nombreCiclo'] = "El nombre del ciclo es obligatorio.";
     }
-    header("Location: /pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=$id");
+    
+    if (empty($grado)) {
+        $lista_de_errores['gradoCiclo'] = "El grado es obligatorio.";
+    }
+
+    if (empty($lista_de_errores)) {
+        $resultado = actualizarCiclo($id_ciclo, $nombre, $grado);
+        if ($resultado) {
+            $_SESSION['exito'] = "Ciclo actualizado correctamente.";
+            header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
+            exit;
+        } else {
+            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+        }
+    } else {
+        $_SESSION['errores'] = $lista_de_errores;
+        $_SESSION['datos_ciclos'] = $_POST;
+    }
+
+    header("Location: /pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=$id_ciclo");
     exit;
 }
+
 header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
 exit;
-

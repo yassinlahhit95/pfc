@@ -59,7 +59,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <a href="/pfc/public/uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
                             <i class="fas fa-download"></i> Descargar TFG (PDF)
                         </a>
-                        <form action="/pfc/controladores/estudiantes/tfg/eliminar.php" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar tu TFG?');">
+                        <form action="/pfc/controladores/estudiantes/tfg/eliminar.php" method="POST">
                             <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
                             <button type="submit" name="borrarTFG" class="boton-icono rojo" title="Eliminar archivo">
                                 <i class="fas fa-trash-alt"></i> Borrar entrega

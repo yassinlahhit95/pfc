@@ -1,75 +1,20 @@
 <?php
 session_start();
+require_once "../../../modelos/ciclos.php";
+
+$todos_los_ciclos = listarTodosLosCiclos();
+
+$lista_de_errores = array();
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+
+$datos = array();
+if (isset($_SESSION['datos_estudiante'])) { $datos = $_SESSION['datos_estudiante']; }
+
+unset($_SESSION['errores'], $_SESSION['datos_estudiante']);
+
 $titulo_pagina = "Agregar Estudiante - Super Admin";
 $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
-
-require_once "../../../modelos/conectar.php";
-require_once "../../../modelos/ciclos.php";
-
-$listaCiclos = listarTodosLosCiclos();
-
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
-
-$datos = [];
-if (isset($_SESSION['datos_estudiante'])) {
-    $datos = $_SESSION['datos_estudiante'];
-}
-unset($_SESSION['errores'], $_SESSION['datos_estudiante']);
-
-
-$nombre = '';
-if (isset($datos['nombreEstudiante'])) {
-    $nombre = $datos['nombreEstudiante'];
-}
-
-$email = '';
-if (isset($datos['emailEstudiante'])) {
-    $email = $datos['emailEstudiante'];
-}
-
-$dni = '';
-if (isset($datos['dniEstudiante'])) {
-    $dni = $datos['dniEstudiante'];
-}
-
-$telefono = '';
-if (isset($datos['telefonoEstudiante'])) {
-    $telefono = $datos['telefonoEstudiante'];
-}
-
-$fNacimiento = '';
-if (isset($datos['fechaNacimientoEstudiante'])) {
-    $fNacimiento = $datos['fechaNacimientoEstudiante'];
-}
-
-$fAlta = date('Y-m-d');
-if (isset($datos['fechaAltaEstudiante'])) {
-    $fAlta = $datos['fechaAltaEstudiante'];
-}
-
-$direccion = '';
-if (isset($datos['direccionEstudiante'])) {
-    $direccion = $datos['direccionEstudiante'];
-}
-
-$ciudad = '';
-if (isset($datos['ciudadEstudiante'])) {
-    $ciudad = $datos['ciudadEstudiante'];
-}
-
-$cp = '';
-if (isset($datos['codigoPostalEstudiante'])) {
-    $cp = $datos['codigoPostalEstudiante'];
-}
-
-$idCicloElegido = '';
-if (isset($datos['idCiclo'])) {
-    $idCicloElegido = $datos['idCiclo'];
-}
 ?>
 
 <div class="encabezado-pagina">
@@ -82,73 +27,73 @@ if (isset($datos['idCiclo'])) {
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
-                <input type="text" name="nombreEstudiante" value="<?php echo $nombre; ?>">
-                <?php if (isset($errores['nombreEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['nombreEstudiante']; ?></p>
+                <input type="text" name="nombreEstudiante" value="<?php if(isset($datos['nombreEstudiante'])) { echo $datos['nombreEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['nombreEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['nombreEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Email *</label>
-                <input type="email" name="emailEstudiante" value="<?php echo $email; ?>">
-                <?php if (isset($errores['emailEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['emailEstudiante']; ?></p>
+                <input type="text" name="emailEstudiante" value="<?php if(isset($datos['emailEstudiante'])) { echo $datos['emailEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['emailEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['emailEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>DNI *</label>
-                <input type="text" name="dniEstudiante" value="<?php echo $dni; ?>">
-                <?php if (isset($errores['dniEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['dniEstudiante']; ?></p>
+                <input type="text" name="dniEstudiante" value="<?php if(isset($datos['dniEstudiante'])) { echo $datos['dniEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['dniEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['dniEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Teléfono *</label>
-                <input type="text" name="telefonoEstudiante" value="<?php echo $telefono; ?>">
-                <?php if (isset($errores['telefonoEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['telefonoEstudiante']; ?></p>
+                <input type="text" name="telefonoEstudiante" value="<?php if(isset($datos['telefonoEstudiante'])) { echo $datos['telefonoEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['telefonoEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha Nacimiento *</label>
-                <input type="date" name="fechaNacimientoEstudiante" value="<?php echo $fNacimiento; ?>">
-                <?php if (isset($errores['fechaNacimientoEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['fechaNacimientoEstudiante']; ?></p>
+                <input type="date" name="fechaNacimientoEstudiante" value="<?php if(isset($datos['fechaNacimientoEstudiante'])) { echo $datos['fechaNacimientoEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['fechaNacimientoEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaNacimientoEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha Alta *</label>
-                <input type="date" name="fechaAltaEstudiante" value="<?php echo $fAlta; ?>">
-                <?php if (isset($errores['fechaAltaEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['fechaAltaEstudiante']; ?></p>
+                <input type="date" name="fechaAltaEstudiante" value="<?php if(isset($datos['fechaAltaEstudiante'])) { echo $datos['fechaAltaEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['fechaAltaEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaAltaEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Dirección *</label>
-                <input type="text" name="direccionEstudiante" value="<?php echo $direccion; ?>">
-                <?php if (isset($errores['direccionEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['direccionEstudiante']; ?></p>
+                <input type="text" name="direccionEstudiante" value="<?php if(isset($datos['direccionEstudiante'])) { echo $datos['direccionEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['direccionEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['direccionEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Ciudad *</label>
-                <input type="text" name="ciudadEstudiante" value="<?php echo $ciudad; ?>">
-                <?php if (isset($errores['ciudadEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['ciudadEstudiante']; ?></p>
+                <input type="text" name="ciudadEstudiante" value="<?php if(isset($datos['ciudadEstudiante'])) { echo $datos['ciudadEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['ciudadEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['ciudadEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Código Postal *</label>
-                <input type="text" name="codigoPostalEstudiante" value="<?php echo $cp; ?>">
-                <?php if (isset($errores['codigoPostalEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $errores['codigoPostalEstudiante']; ?></p>
+                <input type="text" name="codigoPostalEstudiante" value="<?php if(isset($datos['codigoPostalEstudiante'])) { echo $datos['codigoPostalEstudiante']; } ?>">
+                <?php if (isset($lista_de_errores['codigoPostalEstudiante'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['codigoPostalEstudiante']; ?></p>
                 <?php } ?>
             </div>
 
@@ -156,14 +101,14 @@ if (isset($datos['idCiclo'])) {
                 <label>Ciclo *</label>
                 <select name="idCiclo">
                     <option value="">-- Seleccionar --</option>
-                    <?php foreach ($listaCiclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($idCicloElegido == $ciclo['idCiclo']) { echo 'selected'; } ?>>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
                             <?php echo $ciclo['nombreCiclo']; ?>
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idCiclo'])) { ?>
-                    <p class="error-campo"><?php echo $errores['idCiclo']; ?></p>
+                <?php if (isset($lista_de_errores['idCiclo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></p>
                 <?php } ?>
             </div>
         </div>

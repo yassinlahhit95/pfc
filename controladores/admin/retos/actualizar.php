@@ -3,29 +3,53 @@ session_start();
 require_once "../../../modelos/retos.php";
 
 if (isset($_POST['actualizarReto'])) {
-    $id = $_POST['idReto'];
-    $n = trim($_POST['nombreReto']);
-    $fi = $_POST['fechaInicio'];
-    $ff = $_POST['fechaFin'];
-    $h = $_POST['horasReto'];
+    $id_reto = $_POST['idReto'];
+    $nombre = trim($_POST['nombreReto']);
+    $horas = $_POST['horasReto'];
+    $inicio = $_POST['fechaInicioReto'];
+    $fin = $_POST['fechaFinReto'];
+    $modulos = [];
+    if (isset($_POST['modulosReto'])) { $modulos = $_POST['modulosReto']; }
 
-    if (empty($id)) {
-        header("Location: /pfc/vistas/admin/retos/verRetos.php");
-        exit;
-    } else if (empty($n)) {
-        $_SESSION['error'] = "Nombre vacio";
-    } else if (!is_numeric($h)) {
-        $_SESSION['error'] = "Horas debe ser numero";
-    } else if (actualizarReto($id, $n, $fi, $ff, $h)) {
-        $_SESSION['exito'] = "Actualizado";
-        header("Location: /pfc/vistas/admin/retos/verRetos.php");
-        exit;
-    } else {
-        $_SESSION['error'] = "Error";
+    $lista_de_errores = [];
+
+    if (empty($nombre)) {
+        $lista_de_errores['nombreReto'] = "El nombre es obligatorio.";
     }
-    header("Location: /pfc/vistas/admin/retos/modificarRetos.php?idReto=$id");
+    if (empty($horas)) {
+        $lista_de_errores['horasReto'] = "Las horas son obligatorias.";
+    } else {
+        if (!is_numeric($horas)) {
+            $lista_de_errores['horasReto'] = "Las horas deben ser un número.";
+        }
+    }
+    if (empty($inicio)) {
+        $lista_de_errores['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
+    }
+    if (empty($fin)) {
+        $lista_de_errores['fechaFinReto'] = "La fecha de fin es obligatoria.";
+    }
+    if (empty($modulos)) {
+        $lista_de_errores['modulosReto'] = "Debe seleccionar al menos un módulo.";
+    }
+
+    if (empty($lista_de_errores)) {
+        $resultado = actualizarReto($id_reto, $nombre, $horas, $inicio, $fin, $modulos);
+        if ($resultado) {
+            $_SESSION['exito'] = "Reto actualizado correctamente.";
+            header("Location: /pfc/vistas/admin/retos/verRetos.php");
+            exit;
+        } else {
+            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+        }
+    } else {
+        $_SESSION['errores'] = $lista_de_errores;
+        $_SESSION['datos_reto'] = $_POST;
+    }
+
+    header("Location: /pfc/vistas/admin/retos/modificarRetos.php?idReto=$id_reto");
     exit;
 }
+
 header("Location: /pfc/vistas/admin/retos/verRetos.php");
 exit;
-?>

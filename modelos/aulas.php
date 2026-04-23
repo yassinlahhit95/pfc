@@ -25,4 +25,19 @@ function eliminarAula($idAula) {
     mysqli_close($conexion);
     return $resultado;
 }
+
+function actualizarAula($idAula, $nombre) {
+    $conexion = obtenerConexion();
+    $resultado = mysqli_query($conexion, "UPDATE aulas SET nombreAula = '$nombre' WHERE idAula = $idAula");
+    mysqli_close($conexion);
+    return $resultado;
+}
+
+function obtenerAulaPorId($idAula) {
+    $conexion = obtenerConexion();
+    $resultado = mysqli_query($conexion, "SELECT * FROM aulas WHERE idAula = $idAula");
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $fila;
+}
 ?>
