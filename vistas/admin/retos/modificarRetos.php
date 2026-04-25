@@ -15,7 +15,7 @@ if (!$reto) {
     exit;
 }
 
-$modulos_del_reto = obtenerModulosDeUnReto($id_reto);
+$modulos_del_reto = obtenerModulosDeReto($id_reto);
 $ids_modulos_viculados = [];
 foreach ($modulos_del_reto as $m) {
     $ids_modulos_viculados[] = $m['idModulo'];

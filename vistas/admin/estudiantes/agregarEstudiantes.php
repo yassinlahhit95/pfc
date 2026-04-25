@@ -66,14 +66,6 @@ include_once "../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha Alta *</label>
-                <input type="date" name="fechaAltaEstudiante" value="<?php if(isset($datos['fechaAltaEstudiante'])) { echo $datos['fechaAltaEstudiante']; } ?>">
-                <?php if (isset($lista_de_errores['fechaAltaEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaAltaEstudiante']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
                 <label>Dirección *</label>
                 <input type="text" name="direccionEstudiante" value="<?php if(isset($datos['direccionEstudiante'])) { echo $datos['direccionEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['direccionEstudiante'])) { ?>

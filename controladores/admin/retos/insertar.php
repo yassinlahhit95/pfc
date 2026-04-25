@@ -38,10 +38,18 @@ if (isset($_POST['guardarReto'])) {
 
     if (empty($modulos)) {
         $lista_de_errores['modulosReto'] = "Debe seleccionar al menos un módulo.";
+    } else if (is_numeric($horas)) {
+        // Validar que el módulo tenga suficientes horas disponibles
+        foreach ($modulos as $idModulo) {
+            if (!comprobarHorasDisponiblesModulo($idModulo, $horas)) {
+                $lista_de_errores['modulosReto'] = "Uno de los módulos seleccionados no tiene suficientes horas disponibles (sobrepasa el límite del módulo).";
+                break;
+            }
+        }
     }
 
     if (empty($lista_de_errores)) {
-        $resultado = insertarReto($nombre, $horas, $inicio, $fin, $modulos);
+        $resultado = insertarReto($nombre, $inicio, $fin, $horas, $modulos);
         if ($resultado) {
             $_SESSION['exito'] = "Reto creado correctamente.";
             header("Location: /pfc/vistas/admin/retos/verRetos.php");
