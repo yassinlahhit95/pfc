@@ -30,6 +30,7 @@ $totalTFG = contarTFGsSubidos();
     <title><?php echo $titulo_pagina; ?></title>
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
     <link rel="stylesheet" href="/pfc/public/css/responsive.css">
+    <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -106,9 +107,13 @@ $totalTFG = contarTFGsSubidos();
                     <span class="etiqueta-contador"><?php echo $totalAnuncios; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/reclamaciones/verReclamaciones.php" class="enlace-menu <?php echo ($seccion == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-exclamation-triangle"></i> <span>Reclamaciones</span>
+                <a href="/pfc/vistas/admin/mensajes/lista.php" class="enlace-menu <?php echo ($seccion == 'reclamaciones' ? 'activo' : ''); ?>">
+                    <i class="fas fa-envelope"></i> <span>Mensajería</span>
                     <span class="etiqueta-contador"><?php echo $totalReclamaciones; ?></span>
+                </a>
+
+                <a href="/pfc/vistas/admin/mensajes/enviar_global.php" class="enlace-menu <?php echo ($seccion == 'push' ? 'activo' : ''); ?>">
+                    <i class="fas fa-bell"></i> <span>Notificaciones Push</span>
                 </a>
             </div>
 
@@ -149,3 +154,7 @@ $totalTFG = contarTFGsSubidos();
     </script>
 
     <main class="contenido-derecha">
+    <?php if (isset($_SESSION['idAdmin'])): ?>
+        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idAdmin']; ?>" data-user-role="admin" style="display:none;"></div>
+        <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
+    <?php endif; ?>

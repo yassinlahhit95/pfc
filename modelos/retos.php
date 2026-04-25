@@ -89,6 +89,12 @@ function comprobarHorasDisponiblesModulo($idModulo, $nuevasHoras) {
 }
 
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto) {
+    if ($horasReto > 30) {
+        if (session_status() == PHP_SESSION_NONE) { session_start(); }
+        $_SESSION['error'] = "Un reto no puede superar las 30 horas semanales (6h/dia).";
+        return false;
+    }
+
     $conexion = obtenerConexion();
     $sql = "UPDATE retos SET nombreReto = '$nombreReto', fechaInicio = '$fechaInicio', 
             fechaFin = '$fechaFin', horasReto = $horasReto WHERE idReto = $idReto";

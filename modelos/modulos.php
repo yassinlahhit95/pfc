@@ -96,7 +96,9 @@ function obtenerModuloPorId($idModulo) {
 
 function obtenerModulosPorCiclo($idCiclo) {
     $conexion = obtenerConexion();
-    $sql = "SELECT * FROM modulos WHERE idCiclo = $idCiclo";
+    // Aseguramos que sea un número para evitar errores de sintaxis SQL
+    $idCicloLimpio = (int)$idCiclo;
+    $sql = "SELECT * FROM modulos WHERE idCiclo = $idCicloLimpio";
     $resultado = mysqli_query($conexion, $sql);
     $lista = [];
     while($fila = mysqli_fetch_assoc($resultado)) {

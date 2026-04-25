@@ -10,11 +10,11 @@ require_once "../../modelos/conectar.php";
 require_once "../../modelos/panelDeControl.php";
 require_once "../../modelos/anuncios.php";
 
-$cantidadEstudiantes = contarEstudiantes();
-$cantidadProfesores = contarProfesores();
-$cantidadDirectores = contarDirectores();
-$dineroRecaudado = obtenerTotalRecaudado();
-$pagosRealizados = contarPagosRealizados();
+$totalEstudiantes = contarEstudiantes();
+$totalProfesores = contarProfesores();
+$totalDirectores = contarDirectores();
+$totalRecaudado = obtenerTotalRecaudado();
+$totalPagosRealizados = contarPagosRealizados();
 
 $anunciosPorPagina = 5;
 $paginaActual = 1;
@@ -43,16 +43,16 @@ include 'comunes/nav.php';
 <h2 class="margen-abajo texto-oscuro">Análisis de Datos</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
-    <div class="info-estadistica"><h3><?php echo $cantidadEstudiantes; ?></h3><p>Estudiantes</p></div>
+    <div class="info-estadistica"><h3><?php echo $totalEstudiantes; ?></h3><p>Estudiantes</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?php echo $cantidadProfesores; ?></h3><p>Profesores</p></div>
+    <div class="info-estadistica"><h3><?php echo $totalProfesores; ?></h3><p>Profesores</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?php echo number_format($dineroRecaudado, 2); ?> €</h3><p>Recaudado</p></div>
+    <div class="info-estadistica"><h3><?php echo number_format($totalRecaudado, 2); ?> €</h3><p>Recaudado</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?php echo $pagosRealizados; ?></h3><p>Cobros</p></div>
+    <div class="info-estadistica"><h3><?php echo $totalPagosRealizados; ?></h3><p>Cobros</p></div>
   </div>
 </div>
 
@@ -65,7 +65,8 @@ include 'comunes/nav.php';
         <a href="/pfc/vistas/admin/estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="/pfc/vistas/admin/profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="/pfc/vistas/admin/pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="accion-rapida"><span>Nuevo Anuncio</span></a>
+        <a href="/pfc/vistas/admin/mensajes/enviar_global.php" class="accion-rapida"><span style="color:#ff9800;">🔔 Push Global</span></a>
+        <a href="/pfc/vistas/admin/mensajes/lista.php" class="accion-rapida"><span>Mensajería</span></a>
       </div>
     </div>
 

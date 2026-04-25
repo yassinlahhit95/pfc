@@ -23,9 +23,6 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro">
-        <div class="avatar-perfil margen-derecha">
-            <i class="fas fa-user-circle fa-5x"></i>
-        </div>
         <div class="flexible-rellenar">
             <h2><?php echo $profesor['nombreProfesor']; ?></h2>
             <p class="texto-secundario"><?php echo $profesor['especialidad'] ?? 'Sin especialidad'; ?></p>

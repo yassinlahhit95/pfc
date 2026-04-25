@@ -14,18 +14,18 @@ require_once __DIR__ . "/../../modelos/modulos.php";
 require_once __DIR__ . "/../../modelos/retos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-$profesor = obtenerProfesorPorId($idProfesor);
-$anuncios = listarTodosLosAnuncios();
-$reclamaciones = listarReclamacionesPorProfesor($idProfesor);
-$estudiantes = listarEstudiantesPorProfesor($idProfesor);
-$modulos = obtenerModulosDeProfesor($idProfesor);
-$retos = obtenerRetosDeProfesor($idProfesor);
+$profesorActual = obtenerProfesorPorId($idProfesor);
+$listaAnuncios = listarTodosLosAnuncios();
+$listaMensajes = listarMensajesParaProfesor($idProfesor);
+$listaEstudiantes = listarEstudiantesPorProfesor($idProfesor);
+$listaModulos = obtenerModulosDeProfesor($idProfesor);
+$listaRetos = obtenerRetosDeProfesor($idProfesor);
 
-// Conteo de reclamaciones pendientes
-$pendientes = 0;
-foreach ($reclamaciones as $r) {
-    if ($r['estadoReclamacion'] == 'pendiente') {
-        $pendientes++;
+// Conteo de mensajes pendientes
+$mensajesPendientes = 0;
+foreach ($listaMensajes as $mensaje) {
+    if ($mensaje['estadoReclamacion'] == 'pendiente') {
+        $mensajesPendientes++;
     }
 }
 
@@ -36,23 +36,23 @@ include_once __DIR__ . "/comunes/nav.php";
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
   <div>
-    <h1>Bienvenido/a, <?php echo $profesor['nombreProfesor']; ?></h1>
+    <h1>Bienvenido/a, <?php echo $profesorActual['nombreProfesor']; ?></h1>
   </div>
 </div>
 
 <h2 class="margen-abajo texto-oscuro">Resumen de Actividad</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
-    <div class="info-estadistica"><h3><?php echo count($estudiantes); ?></h3><p>Alumnos</p></div>
+    <div class="info-estadistica"><h3><?php echo count($listaEstudiantes); ?></h3><p>Alumnos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?php echo count($modulos); ?></h3><p>Módulos</p></div>
+    <div class="info-estadistica"><h3><?php echo count($listaModulos); ?></h3><p>Módulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?php echo count($retos); ?></h3><p>Retos</p></div>
+    <div class="info-estadistica"><h3><?php echo count($listaRetos); ?></h3><p>Retos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?php echo $pendientes; ?></h3><p>Reportes</p></div>
+    <div class="info-estadistica"><h3><?php echo $mensajesPendientes; ?></h3><p>Mensajes</p></div>
   </div>
 </div>
 
@@ -62,10 +62,10 @@ include_once __DIR__ . "/comunes/nav.php";
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
-        <a href="/pfc/vistas/profesores/calificaciones/insertar.php" class="accion-rapida"><span>Poner Notas</span></a>
+        <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="accion-rapida"><span>Poner Notas</span></a>
         <a href="/pfc/vistas/profesores/retos/insertar.php" class="accion-rapida"><span>Nuevo Reto</span></a>
-        <a href="/pfc/vistas/profesores/reclamaciones/verReclamaciones.php" class="accion-rapida"><span>Ver Reportes</span></a>
-        <a href="/pfc/vistas/profesores/perfil/actualizar.php" class="accion-rapida"><span>Mi Perfil</span></a>
+        <a href="/pfc/vistas/profesores/mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
+        <a href="/pfc/vistas/profesores/perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
       </div>
     </div>
 
@@ -73,11 +73,11 @@ include_once __DIR__ . "/comunes/nav.php";
       <div class="titulo-tarjeta">
         <h3><i class="fas fa-bullhorn"></i> Últimos Avisos</h3>
       </div>
-      <?php if (!empty($anuncios)) { ?>
+      <?php if (!empty($listaAnuncios)) { ?>
         <div>
             <?php 
             $c = 0;
-            foreach ($anuncios as $anuncio) { 
+            foreach ($listaAnuncios as $anuncio) { 
                 if ($c < 4) {
             ?>
             <div class="anuncio-item">
@@ -101,12 +101,12 @@ include_once __DIR__ . "/comunes/nav.php";
         <h3>Reportes Recientes</h3>
       </div>
       <div class="lista-actividad">
-        <?php if (empty($reclamaciones)) { ?>
+        <?php if (empty($listaMensajes)) { ?>
             <p class="texto-atenuado">Sin reportes pendientes.</p>
         <?php } else { ?>
             <?php 
             $cr = 0;
-            foreach ($reclamaciones as $r) { 
+            foreach ($listaMensajes as $r) { 
                 if ($cr < 5) {
             ?>
             <div class="elemento-actividad">
@@ -128,8 +128,8 @@ include_once __DIR__ . "/comunes/nav.php";
         <h3>Información del Perfil</h3>
       </div>
       <div class="info-adicional-perfil">
-        <p><strong>Especialidad:</strong><br><?php echo $profesor['especialidad'] ?: 'No definida'; ?></p>
-        <p><strong>Email:</strong><br><?php echo $profesor['emailProfesor']; ?></p>
+        <p><strong>Especialidad:</strong><br><?php echo $profesorActual['especialidad'] ?: 'No definida'; ?></p>
+        <p><strong>Email:</strong><br><?php echo $profesorActual['emailProfesor']; ?></p>
         <hr class="margen-arriba">
         <a href="/pfc/vistas/profesores/perfil/ver.php" class="boton-secundario ancho-total center-text">Gestionar Perfil</a>
       </div>
