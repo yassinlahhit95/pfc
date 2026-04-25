@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once "../../../modelos/anuncios.php";
+require_once "../../firebase/firebase_helper.php";
+require_once "../../../modelos/conectar.php";
 
 if (isset($_POST['guardarAnuncio'])) {
     $titulo = trim($_POST['tituloAnuncio']);
@@ -18,7 +20,27 @@ if (isset($_POST['guardarAnuncio'])) {
     if (empty($lista_de_errores)) {
         $resultado = insertarAnuncio($titulo, $contenido);
         if ($resultado) {
-            $_SESSION['exito'] = "Anuncio publicado correctamente.";
+            // Obtener todos los tokens para enviar notificación global
+            $conexion = obtenerConexion();
+            $tokens = [];
+            
+            $tablas = ['estudiantes', 'profesores', 'directores'];
+            foreach ($tablas as $tabla) {
+                $res = mysqli_query($conexion, "SELECT fcm_token FROM $tabla WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+                if ($res) {
+                    while ($row = mysqli_fetch_assoc($res)) {
+                        $tokens[] = $row['fcm_token'];
+                    }
+                }
+            }
+            mysqli_close($conexion);
+            
+            // Enviar notificaciones
+            foreach ($tokens as $token) {
+                enviarNotificacionFirebase($token, "Nuevo Anuncio: " . $titulo, $contenido);
+            }
+
+            $_SESSION['exito'] = "Anuncio publicado correctamente y notificación enviada.";
             header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         } else {

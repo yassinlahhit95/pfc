@@ -14,11 +14,21 @@ if (isset($_POST['enviarMensaje'])) {
         $_SESSION['error'] = "Todos los campos son obligatorios.";
     } else {
         if (insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'estudiante')) {
-            if ($idProfesor) {
+            if (!empty($idProfesor)) {
                 $token = obtenerTokenUsuario($idProfesor, "profesor");
                 if ($token) {
                     enviarNotificacionFirebase($token, "Mensaje de Estudiante: " . $asunto, $descripcion);
                 }
+            } else {
+                // Notificar a administración (directores)
+                $conexion = obtenerConexion();
+                $res = mysqli_query($conexion, "SELECT fcm_token FROM directores WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+                while ($row = mysqli_fetch_assoc($res)) {
+                    if ($row['fcm_token']) {
+                        enviarNotificacionFirebase($row['fcm_token'], "Mensaje de Estudiante a Dirección: " . $asunto, $descripcion);
+                    }
+                }
+                mysqli_close($conexion);
             }
             $_SESSION['exito'] = "Mensaje enviado correctamente.";
             header("Location: /pfc/vistas/estudiantes/mensajes/lista.php");
