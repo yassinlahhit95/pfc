@@ -17,6 +17,10 @@ if (isset($_POST['insertarNota'])) {
     } else if (!is_numeric($n1e) || !is_numeric($n1f) || !is_numeric($n2e) || !is_numeric($n2f)) {
         $_SESSION['error'] = "Notas deben ser numero";
     } else if (calificarModuloCompleto($idEst, $idMod, $n1e, $n1f, $n2e, $n2f)) {
+        if (isset($_POST['notificarEstudiante'])) {
+            require_once "../../comunes/notificaciones_grades.php";
+            enviarEmailNotasEstudiante($idEst);
+        }
         $_SESSION['exito'] = "Calificacion guardada";
         header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
         exit;

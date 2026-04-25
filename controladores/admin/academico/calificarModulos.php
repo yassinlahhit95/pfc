@@ -42,10 +42,17 @@ if (isset($_POST['guardarNotas'])) {
         }
     }
 
-    if ($error_al_guardar == true) {
-        $_SESSION['error'] = "Hubo errores al procesar algunas notas. Asegúrese de que sean números entre 0 y 10.";
-    } else {
+    if ($error_al_guardar == false) {
+        require_once "../../comunes/notificaciones_grades.php";
+        for ($i = 0; $i < count($ids_estudiantes); $i++) {
+            $id_est = $ids_estudiantes[$i];
+            if (isset($_POST['notificarEstudiantes'])) {
+                enviarEmailNotasEstudiante($id_est);
+            }
+        }
         $_SESSION['exito'] = "Calificaciones guardadas con éxito.";
+    } else {
+        $_SESSION['error'] = "Hubo errores al procesar algunas notas. Asegúrese de que sean números entre 0 y 10.";
     }
 
     header("Location: /pfc/vistas/admin/academico/calificacionesModulos.php?idModulo=" . $id_modulo);

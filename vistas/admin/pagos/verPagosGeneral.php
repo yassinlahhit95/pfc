@@ -83,7 +83,15 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><span class="etiqueta-pago"><?php echo ucfirst($pago['tipoPago']); ?></span></td>
                         <td><?php echo number_format($pago['monto'], 2); ?> €</td>
                         <td><?php echo date('d/m/Y', strtotime($pago['fechaPago'])); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($pago['fechaProximoPago'])); ?></td>
+                        <td>
+                            <?php 
+                                if ($pago['tipoPago'] == 'unico') {
+                                    echo '<span class="texto-gris">N/A (Pago Único)</span>';
+                                } else {
+                                    echo date('d/m/Y', strtotime($pago['fechaProximoPago'])); 
+                                }
+                            ?>
+                        </td>
                         <td>
                             <div class="botones-accion">
                                 <a href="historialEstudiante.php?idEstudiante=<?php echo $pago['idEstudiante']; ?>" class="boton-icono boton-ver" title="Ver Historial">
