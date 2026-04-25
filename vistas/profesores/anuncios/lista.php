@@ -8,7 +8,7 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-$anuncios = listarTodosLosAnuncios();
+$anuncios = listarAnunciosPorRol('profesores');
 
 $tituloDelPagina = "Anuncios - Portal Profesores";
 $seccionActual = 'anuncios';

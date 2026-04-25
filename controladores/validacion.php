@@ -27,6 +27,9 @@ if (isset($_POST["enviar"])) {
                 } else {
                     $con = obtenerConexion();
 
+                    // Limpiar roles previos para evitar conflictos
+                    unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante']);
+
                     // 1. Intentamos buscar en DIRECTORES (Admin)
                     $sqlAdmin = "SELECT idDirector FROM directores WHERE emailDirector = '$email' AND password = '$pass'";
                     $resAdmin = mysqli_query($con, $sqlAdmin);

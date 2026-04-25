@@ -8,7 +8,8 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$retos = listarRetos();
+$idProfesor = $_SESSION['idProfesor'];
+$retos = obtenerRetosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Retos - Portal Profesores";
 $seccionActual = 'retos';

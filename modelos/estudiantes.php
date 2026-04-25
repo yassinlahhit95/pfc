@@ -48,6 +48,9 @@ function listarEstudiantesPorProfesor($idProfesor) {
 }
 
 function listarEstudiantesPorCiclo($idCiclo) {
+    if ($idCiclo == "" || !is_numeric($idCiclo)) {
+        return array();
+    }
     $conexion = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
@@ -69,14 +72,65 @@ function eliminarEstudiante($idEstudiante) {
     return $resultado;
 }
 
-function obtenerEstudiantePorId($idEstudiante) {
+function obtenerPorcentajeAprobadosGlobal() {
     $conexion = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
-            LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE idEstudiante = $idEstudiante";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
+
+    // 1. Obtener todos los estudiantes
+    $sqlEst = "SELECT idEstudiante, idCiclo FROM estudiantes";
+    $resEst = mysqli_query($conexion, $sqlEst);
+    $totalEstudiantes = mysqli_num_rows($resEst);
+
+    if ($totalEstudiantes == 0) { return 0; }
+
+    $aprobados = 0;
+
+    require_once "calificaciones.php";
+    require_once "retos.php";
+    require_once "modulos.php";
+
+    while ($est = mysqli_fetch_assoc($resEst)) {
+        $id_est = $est['idEstudiante'];
+        $id_ciclo = $est['idCiclo'];
+
+        if (!$id_ciclo) continue;
+
+        $lista_modulos = obtenerModulosPorCiclo($id_ciclo);
+        if (empty($lista_modulos)) continue;
+
+        $suma_global = 0;
+        $cont_global = 0;
+
+        foreach ($lista_modulos as $mod) {
+            $id_mod = $mod['idModulo'];
+
+            // Media modulo
+            $notas_mod = obtenerNotasModulo($id_est, $id_mod);
+            $suma_m = 0; $cont_m = 0;
+            $campos = array('nota_1ev', 'nota_1final', 'nota_2ev', 'nota_2final');
+            foreach ($campos as $c) {
+                if (isset($notas_mod[$c]) && $notas_mod[$c] > 0) {
+                    $suma_m += $notas_mod[$c]; $cont_m++;
+                }
+            }
+            $media_m = ($cont_m > 0) ? $suma_m / $cont_m : 0;
+
+            // Media retos
+            $medias_retos = listarCalificacionesRetoPorModulo($id_mod);
+            $media_r = isset($medias_retos[$id_est]) ? $medias_retos[$id_est] : 0;
+
+            $nota_f = ($media_m * 0.75) + ($media_r * 0.25);
+            $suma_global += $nota_f;
+            $cont_global++;
+        }
+
+        $media_final_estudiante = ($cont_global > 0) ? $suma_global / $cont_global : 0;
+        if ($media_final_estudiante >= 5.00) {
+            $aprobados++;
+        }
+    }
+
     mysqli_close($conexion);
-    return $fila;
+    return round(($aprobados / $totalEstudiantes) * 100, 1);
 }
 
 function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {

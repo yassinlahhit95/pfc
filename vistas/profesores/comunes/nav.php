@@ -4,6 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!isset($_SESSION['idProfesor'])) {
+    header("Location: /pfc/index.php");
+    exit;
+}
+
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -51,6 +56,10 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
                     <i class="fas fa-user-graduate"></i> <span>Estudiantes</span>
                 </a>
 
+                <a href="/pfc/vistas/profesores/ciclos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'ciclos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-layer-group"></i> <span>Mis Ciclos</span>
+                </a>
+
                 <a href="/pfc/vistas/profesores/modulos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'modulos' ? 'activo' : ''); ?>">
                     <i class="fas fa-cubes"></i> <span>Módulos</span>
                 </a>
@@ -61,6 +70,14 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 
                 <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="enlace-menu <?php echo ($seccionActual == 'calificaciones' ? 'activo' : ''); ?>">
                     <i class="fas fa-graduation-cap"></i> <span>Notas Módulos</span>
+                </a>
+
+                <a href="/pfc/vistas/profesores/calificaciones/retos.php" class="enlace-menu <?php echo ($seccionActual == 'notas_retos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-tasks"></i> <span>Notas Retos</span>
+                </a>
+
+                <a href="/pfc/vistas/profesores/academico/resultadosFinales.php" class="enlace-menu <?php echo ($seccionActual == 'resultados_finales' ? 'activo' : ''); ?>">
+                    <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/tfg/lista.php" class="enlace-menu <?php echo ($seccionActual == 'tfg' ? 'activo' : ''); ?>">
@@ -77,6 +94,10 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 
                 <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
                     <i class="fas fa-paper-plane"></i> <span>Mensajería</span>
+                </a>
+
+                <a href="/pfc/vistas/profesores/eventos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'eventos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-calendar-alt"></i> <span>Eventos</span>
                 </a>
             </div>
 

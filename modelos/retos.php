@@ -260,4 +260,20 @@ function listarCalificacionesRetoPorModulo($idModulo) {
     mysqli_close($conexion);
     return $lista;
 }
+
+function listarCalificacionesRetoPorEstudiante($idEstudiante) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT r.nombreReto, cr.nota, r.fechaInicio, r.fechaFin 
+            FROM calificaciones_retos cr 
+            JOIN retos r ON cr.idReto = r.idReto 
+            WHERE cr.idEstudiante = $idEstudiante 
+            ORDER BY r.fechaInicio DESC";
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = array();
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
 ?>

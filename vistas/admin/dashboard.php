@@ -9,10 +9,17 @@ if (!isset($_SESSION['idAdmin'])) {
 require_once "../../modelos/conectar.php";
 require_once "../../modelos/panelDeControl.php";
 require_once "../../modelos/anuncios.php";
+require_once "../../modelos/eventos.php";
+require_once "../../modelos/retos.php";
+require_once "../../modelos/modulos.php";
+require_once "../../modelos/estudiantes.php";
 
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores = contarProfesores();
-$totalDirectores = contarDirectores();
+$totalRetos = (int)contarRetos();
+$totalModulos = (int)contarModulos();
+$porcentajeAprobados = obtenerPorcentajeAprobadosGlobal();
+
 $totalRecaudado = obtenerTotalRecaudado();
 $totalPagosRealizados = contarPagosRealizados();
 
@@ -29,6 +36,9 @@ $totalAnuncios = (int)contarAnunciosQueEstanActivos();
 $totalPaginas = ceil($totalAnuncios / $anunciosPorPagina);
 $listaAnuncios = listarAnunciosConPaginas($anunciosPorPagina);
 
+// Obtener eventos
+$listaEventos = listarEventosProximos();
+
 $titulo_pagina = "Panel de Control - Super Admin";
 $seccion = 'inicio';
 include 'comunes/nav.php';
@@ -40,19 +50,31 @@ include 'comunes/nav.php';
   </div>
 </div>
 
-<h2 class="margen-abajo texto-oscuro">Análisis de Datos</h2>
+<h2 class="margen-abajo texto-oscuro">Análisis Académico y Datos</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?php echo $totalEstudiantes; ?></h3><p>Estudiantes</p></div>
   </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-verde">
+  <div class="tarjeta-estadistica tarjeta-estadistica-cian">
     <div class="info-estadistica"><h3><?php echo $totalProfesores; ?></h3><p>Profesores</p></div>
   </div>
+  <div class="tarjeta-estadistica tarjeta-estadistica-verde">
+    <div class="info-estadistica"><h3><?php echo $totalModulos; ?></h3><p>Módulos</p></div>
+  </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?php echo number_format($totalRecaudado, 2); ?> €</h3><p>Recaudado</p></div>
+    <div class="info-estadistica"><h3><?php echo $totalRetos; ?></h3><p>Retos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?php echo $totalPagosRealizados; ?></h3><p>Cobros</p></div>
+    <div class="info-estadistica"><h3><?php echo $porcentajeAprobados; ?>%</h3><p>Aprobados</p></div>
+  </div>
+</div>
+
+<div class="cuadricula-estadisticas">
+  <div class="tarjeta-estadistica">
+    <div class="info-estadistica"><h3 style="color:var(--color-primario);"><?php echo number_format($totalRecaudado, 2); ?> €</h3><p>Total Recaudado</p></div>
+  </div>
+  <div class="tarjeta-estadistica">
+    <div class="info-estadistica"><h3 style="color:var(--color-primario);"><?php echo $totalPagosRealizados; ?></h3><p>Cobros Realizados</p></div>
   </div>
 </div>
 
@@ -65,8 +87,8 @@ include 'comunes/nav.php';
         <a href="/pfc/vistas/admin/estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="/pfc/vistas/admin/profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="/pfc/vistas/admin/pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="/pfc/vistas/admin/mensajes/enviar_global.php" class="accion-rapida"><span style="color:#ff9800;">🔔 Push Global</span></a>
-        <a href="/pfc/vistas/admin/mensajes/lista.php" class="accion-rapida"><span>Mensajería</span></a>
+        <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="accion-rapida"><span style="color:#ff9800;">🔔 Avisos y Push</span></a>
+        <a href="/pfc/vistas/admin/eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
 
@@ -107,30 +129,34 @@ include 'comunes/nav.php';
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>Actividad Reciente</h3>
-      </div>
-      <div class="lista-actividad">
-        <div class="elemento-actividad">
-          <div>
-            <p class="texto-negrita">Nuevos registros</p>
-            <p class="texto-atenuado">Actualización diaria realizada</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta">
         <h3>Próximos Eventos</h3>
       </div>
       <div class="lista-eventos">
-        <div class="elemento-evento">
-          <div class="fecha-evento azul"><div class="dia">10</div><div class="mes">DIC</div></div>
-          <div>
-            <p class="texto-negrita">Exámenes 1ª Evaluación</p>
-            <p class="texto-atenuado">Todo el día</p>
-          </div>
-        </div>
+        <?php if (empty($listaEventos)) { ?>
+            <p class="texto-atenuado">No hay eventos próximos.</p>
+        <?php } else { ?>
+            <?php 
+            $contEventos = 0;
+            foreach ($listaEventos as $evento) { 
+                if ($contEventos < 4) {
+                    $dia = date('d', strtotime($evento['fechaEvento']));
+                    $mes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
+            ?>
+            <div class="elemento-evento">
+              <div class="fecha-evento azul"><div class="dia"><?php echo $dia; ?></div><div class="mes"><?php echo $mes; ?></div></div>
+              <div>
+                <p class="texto-negrita"><?php echo $evento['tituloEvento']; ?></p>
+                <p class="texto-atenuado"><?php echo date('H:i', strtotime($evento['horaEvento'])); ?>h - <?php echo $evento['ubicacionEvento']; ?></p>
+              </div>
+            </div>
+            <?php 
+                }
+                $contEventos++;
+            } ?>
+        <?php } ?>
+      </div>
+      <div class="margen-arriba">
+          <a href="/pfc/vistas/admin/eventos/gestionEventos.php" class="boton-secundario ancho-total" style="justify-content:center;">Gestionar Calendario</a>
       </div>
     </div>
   </div>

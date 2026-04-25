@@ -4,6 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!isset($_SESSION['idEstudiante'])) {
+    header("Location: /pfc/index.php");
+    exit;
+}
+
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 ?>
@@ -54,6 +59,14 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
                     <i class="fas fa-graduation-cap"></i> <span>Mis Notas</span>
                 </a>
 
+                <a href="/pfc/vistas/estudiantes/calificaciones/retos.php" class="enlace-menu <?php echo ($seccionActual == 'notas_retos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-tasks"></i> <span>Mis Notas Retos</span>
+                </a>
+
+                <a href="/pfc/vistas/estudiantes/academico/resultadosFinales.php" class="enlace-menu <?php echo ($seccionActual == 'resultados_finales' ? 'activo' : ''); ?>">
+                    <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
+                </a>
+
                 <a href="/pfc/vistas/estudiantes/tfg/subir.php" class="enlace-menu <?php echo ($seccionActual == 'tfg' ? 'activo' : ''); ?>">
                     <i class="fas fa-file-pdf"></i> <span>Mi TFG</span>
                 </a>
@@ -67,7 +80,11 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-bullhorn"></i> <span>Mensajería</span>
+                    <i class="fas fa-envelope"></i> <span>Mensajería</span>
+                </a>
+
+                <a href="/pfc/vistas/estudiantes/eventos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'eventos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-calendar-alt"></i> <span>Eventos</span>
                 </a>
             </div>
 

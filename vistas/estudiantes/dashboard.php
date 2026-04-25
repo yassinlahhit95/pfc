@@ -111,24 +111,29 @@ include_once __DIR__ . "/comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn"></i> Últimos Avisos</h3>
+        <h3>Próximos Eventos</h3>
       </div>
-      <div class="lista-actividad">
-        <?php if (empty($listaAnuncios)) { ?>
-            <p class="texto-atenuado">No hay avisos del centro.</p>
+      <div class="lista-eventos">
+        <?php if (empty($listaEventos)) { ?>
+            <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php 
-            $contadorAnuncios = 0;
-            foreach ($listaAnuncios as $anuncio) { 
-                if ($contadorAnuncios < 3) {
+            $cest = 0;
+            foreach ($listaEventos as $ev) { 
+                if ($cest < 3) {
+                    $d = date('d', strtotime($ev['fechaEvento']));
+                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
             ?>
-            <div class="anuncio-item">
-                <strong class="anuncio-titulo"><?php echo $anuncio['titulo']; ?></strong>
-                <p class="texto-pequeno sin-margen"><?php echo substr($anuncio['mensaje'], 0, 80); ?>...</p>
+            <div class="elemento-evento">
+              <div class="fecha-evento azul"><div class="dia"><?php echo $d; ?></div><div class="mes"><?php echo $m; ?></div></div>
+              <div>
+                <p class="texto-negrita"><?php echo $ev['tituloEvento']; ?></p>
+                <p class="texto-atenuado"><?php echo date('H:i', strtotime($ev['horaEvento'])); ?>h - <?php echo $ev['ubicacionEvento']; ?></p>
+              </div>
             </div>
             <?php 
                 }
-                $contadorAnuncios++;
+                $cest++;
             } ?>
         <?php } ?>
       </div>
