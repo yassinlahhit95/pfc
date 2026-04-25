@@ -234,6 +234,16 @@ CREATE TABLE IF NOT EXISTS `pagos` (
   CONSTRAINT `fk_pagos_estudiantes` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `eventos` (
+  `idEvento` int(11) NOT NULL AUTO_INCREMENT,
+  `tituloEvento` varchar(150) NOT NULL,
+  `descripcionEvento` text,
+  `fechaEvento` date NOT NULL,
+  `horaEvento` time DEFAULT '09:00:00',
+  `ubicacionEvento` varchar(150) DEFAULT '',
+  PRIMARY KEY (`idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 -- 7. TABLAS DE ASIGNACIÓN (RELACIONES MUCHOS A MUCHOS)
 -- --------------------------------------------------------

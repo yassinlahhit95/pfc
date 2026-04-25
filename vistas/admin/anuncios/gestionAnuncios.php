@@ -36,20 +36,31 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         <h3>Publicar Nuevo Anuncio</h3>
     </div>
     <form method="POST" action="/pfc/controladores/admin/anuncios/insertar.php">
-        <div class="campo-formulario">
-            <label>Título del Anuncio *</label>
-            <input type="text" name="tituloAnuncio" value="<?php if(isset($datos['tituloAnuncio'])) echo $datos['tituloAnuncio']; ?>" placeholder="Ej: Mantenimiento de la plataforma">
-            <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['tituloAnuncio']; ?></p>
-            <?php } ?>
-        </div>
+        <div class="formulario-cuadricula">
+            <div class="campo-formulario">
+                <label>Título del Anuncio *</label>
+                <input type="text" name="tituloAnuncio" value="<?php if(isset($datos['tituloAnuncio'])) echo $datos['tituloAnuncio']; ?>" placeholder="Ej: Mantenimiento de la plataforma">
+                <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['tituloAnuncio']; ?></p>
+                <?php } ?>
+            </div>
 
-        <div class="campo-formulario margen-arriba">
-            <label>Contenido del Anuncio *</label>
-            <textarea name="contenidoAnuncio" rows="4" placeholder="Escriba aquí el mensaje..."><?php if(isset($datos['contenidoAnuncio'])) echo $datos['contenidoAnuncio']; ?></textarea>
-            <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['contenidoAnuncio']; ?></p>
-            <?php } ?>
+            <div class="campo-formulario">
+                <label>Dirigido a *</label>
+                <select name="dirigidoA">
+                    <option value="todos">Todos los usuarios</option>
+                    <option value="estudiantes">Solo Estudiantes</option>
+                    <option value="profesores">Solo Profesores</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario campo-ancho-total">
+                <label>Contenido del Anuncio *</label>
+                <textarea name="contenidoAnuncio" rows="4" placeholder="Escriba aquí el mensaje..."><?php if(isset($datos['contenidoAnuncio'])) echo $datos['contenidoAnuncio']; ?></textarea>
+                <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['contenidoAnuncio']; ?></p>
+                <?php } ?>
+            </div>
         </div>
 
         <div class="margen-arriba">
@@ -69,20 +80,25 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <thead>
                 <tr>
                     <th>Título</th>
-                    <th>Fecha</th>
+                    <th>Contenido</th>
+                    <th>Fecha y Hora</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($todos_los_anuncios)) { ?>
-                    <tr><td colspan="3" class="sin-datos">No hay anuncios publicados</td></tr>
+                    <tr><td colspan="4" class="sin-datos">No hay anuncios publicados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_anuncios as $anuncio) { ?>
                     <tr>
                         <td><strong><?php echo $anuncio['tituloAnuncio']; ?></strong></td>
+                        <td><small><?php echo substr($anuncio['contenidoAnuncio'], 0, 100); ?>...</small></td>
                         <td><?php echo date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])); ?></td>
                         <td>
                             <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/anuncios/detallesAnuncio.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="boton-icono boton-ver" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                                 <a href="/pfc/vistas/admin/anuncios/modificarAnuncios.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="boton-icono boton-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>

@@ -421,6 +421,11 @@ body {
   font-weight: 600;
 }
 
+.texto-verde { color: #16a34a !important; }
+.texto-rojo { color: #dc2626 !important; }
+.texto-gris { color: #718096 !important; }
+.texto-negrita { font-weight: bold; }
+
 
 
 
@@ -583,6 +588,16 @@ body {
 
 .tarjeta-estadistica-azul .info-estadistica h3,
 .tarjeta-estadistica-azul .info-estadistica p {
+  color: #ffffff;
+}
+
+.tarjeta-estadistica-cian {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+}
+
+.tarjeta-estadistica-cian .info-estadistica h3,
+.tarjeta-estadistica-cian .info-estadistica p {
   color: #ffffff;
 }
 

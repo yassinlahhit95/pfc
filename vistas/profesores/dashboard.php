@@ -98,26 +98,29 @@ include_once __DIR__ . "/comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>Reportes Recientes</h3>
+        <h3>Próximos Eventos</h3>
       </div>
-      <div class="lista-actividad">
-        <?php if (empty($listaMensajes)) { ?>
-            <p class="texto-atenuado">Sin reportes pendientes.</p>
+      <div class="lista-eventos">
+        <?php if (empty($listaEventos)) { ?>
+            <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php 
-            $cr = 0;
-            foreach ($listaMensajes as $r) { 
-                if ($cr < 5) {
+            $ce = 0;
+            foreach ($listaEventos as $ev) { 
+                if ($ce < 4) {
+                    $d = date('d', strtotime($ev['fechaEvento']));
+                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
             ?>
-            <div class="elemento-actividad">
+            <div class="elemento-evento">
+              <div class="fecha-evento azul"><div class="dia"><?php echo $d; ?></div><div class="mes"><?php echo $m; ?></div></div>
               <div>
-                <p class="texto-negrita"><?php echo $r['nombreEstudiante']; ?></p>
-                <p class="texto-atenuado"><?php echo $r['asunto']; ?></p>
+                <p class="texto-negrita"><?php echo $ev['tituloEvento']; ?></p>
+                <p class="texto-atenuado"><?php echo date('H:i', strtotime($ev['horaEvento'])); ?>h - <?php echo $ev['ubicacionEvento']; ?></p>
               </div>
             </div>
             <?php 
                 }
-                $cr++;
+                $ce++;
             } ?>
         <?php } ?>
       </div>

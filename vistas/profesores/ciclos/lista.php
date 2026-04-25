@@ -6,18 +6,18 @@ if (!isset($_SESSION['idProfesor'])) {
     exit;
 }
 
-require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-$modulos = obtenerModulosDeProfesor($idProfesor);
+$ciclos = obtenerCiclosDeProfesor($idProfesor);
 
-$tituloDelPagina = "Módulos - Portal Profesores";
-$seccionActual = 'modulos';
+$tituloDelPagina = "Mis Ciclos Formativos - Portal Profesores";
+$seccionActual = 'ciclos';
 include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Lista de Módulos</h1>
+    <h1>Mis Ciclos Formativos</h1>
 </div>
 
 <div class="tarjeta-blanca">
@@ -26,22 +26,22 @@ include_once "../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Horas</th>
-                    <th>Ciclo</th>
+                    <th>Abreviatura</th>
+                    <th>Descripción</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($modulos) { ?>
-                    <?php foreach ($modulos as $mod) { ?>
+                <?php if (!empty($ciclos)) { ?>
+                    <?php foreach ($ciclos as $ciclo) { ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $mod['nombreModulo']; ?></td>
-                            <td><?php echo $mod['horasMaximas']; ?> h</td>
-                            <td><?php echo $mod['nombreCiclo']; ?></td>
+                            <td class="texto-negrita"><?php echo $ciclo['nombreCiclo']; ?></td>
+                            <td><?php echo $ciclo['abreviaturaCiclo']; ?></td>
+                            <td><?php echo $ciclo['descripcionCiclo']; ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="3" class="sin-datos">No hay módulos registrados.</td>
+                        <td colspan="3" class="sin-datos">No tiene ciclos asignados.</td>
                     </tr>
                 <?php } ?>
             </tbody>

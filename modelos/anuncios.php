@@ -5,22 +5,24 @@ function listarTodosLosAnuncios() {
     $conexion = obtenerConexion();
     $sql = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
     $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
+    $lista = array();
     while($fila = mysqli_fetch_assoc($resultado)) {
         $fila['tituloAnuncio'] = $fila['titulo'];
         $fila['contenidoAnuncio'] = $fila['mensaje'];
-        $fila['fechaAnuncio'] = $fila['fechaExpiracion']; 
+        // Usamos la nueva columna fechaAnuncio que tiene el tiempo
+        $fila['fechaAnuncio'] = $fila['fechaAnuncio']; 
         $lista[] = $fila;
     }
     mysqli_close($conexion);
     return $lista;
 }
 
-function insertarAnuncio($titulo, $mensaje) {
+function insertarAnuncio($titulo, $mensaje, $dirigidoA = 'todos') {
     $conexion = obtenerConexion();
     $fechaExpiracion = date('Y-m-d', strtotime('+1 month'));
-    $sql = "INSERT INTO anuncios (titulo, mensaje, fechaExpiracion, dirigidoA) 
-            VALUES ('$titulo', '$mensaje', '$fechaExpiracion', 'todos')";
+    $ahora = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO anuncios (titulo, mensaje, fechaAnuncio, fechaExpiracion, dirigidoA) 
+            VALUES ('$titulo', '$mensaje', '$ahora', '$fechaExpiracion', '$dirigidoA')";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;

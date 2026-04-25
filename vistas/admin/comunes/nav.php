@@ -4,6 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!isset($_SESSION['idAdmin'])) {
+    header("Location: /pfc/index.php");
+    exit;
+}
+
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
@@ -78,7 +83,11 @@ $totalTFG = contarTFGsSubidos();
                     <i class="fas fa-graduation-cap"></i> <span>Notas Módulos</span>
                 </a>
 
-                <a href="/pfc/vistas/admin/academico/resultadosModulos.php" class="enlace-menu <?php echo ($seccion == 'resultados_modulos' ? 'activo' : ''); ?>">
+                <a href="/pfc/vistas/admin/academico/calificacionesRetos.php" class="enlace-menu <?php echo ($seccion == 'notas_retos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-tasks"></i> <span>Notas Retos</span>
+                </a>
+
+                <a href="/pfc/vistas/admin/academico/resultadosFinales.php" class="enlace-menu <?php echo ($seccion == 'resultados_modulos' ? 'activo' : ''); ?>">
                     <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
                 </a>
 
@@ -106,18 +115,18 @@ $totalTFG = contarTFGsSubidos();
                     <span class="etiqueta-contador"><?php echo $totalPagos; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?php echo ($seccion == 'anuncios' ? 'activo' : ''); ?>">
-                    <i class="fas fa-bullhorn"></i> <span>Anuncios</span>
+                <a href="/pfc/vistas/admin/eventos/gestionEventos.php" class="enlace-menu <?php echo ($seccion == 'eventos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-calendar-alt"></i> <span>Eventos</span>
+                </a>
+
+                <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?php echo ($seccion == 'anuncios' || $seccion == 'push' ? 'activo' : ''); ?>">
+                    <i class="fas fa-bullhorn"></i> <span>Avisos y Push</span>
                     <span class="etiqueta-contador"><?php echo $totalAnuncios; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/admin/mensajes/lista.php" class="enlace-menu <?php echo ($seccion == 'reclamaciones' ? 'activo' : ''); ?>">
                     <i class="fas fa-envelope"></i> <span>Mensajería</span>
                     <span class="etiqueta-contador"><?php echo $totalReclamaciones; ?></span>
-                </a>
-
-                <a href="/pfc/vistas/admin/mensajes/enviar_global.php" class="enlace-menu <?php echo ($seccion == 'push' ? 'activo' : ''); ?>">
-                    <i class="fas fa-bell"></i> <span>Notificaciones Push</span>
                 </a>
             </div>
 
