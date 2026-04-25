@@ -57,16 +57,16 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <tr>
                         <td><?php echo $modulo['idModulo']; ?></td>
                         <td>
-                            <strong>
-                                <?php 
-                                if (!empty($modulo['abreviaturaCiclo'])) {
-                                    echo $modulo['abreviaturaCiclo'] . " - ";
-                                }
-                                echo $modulo['nombreModulo']; 
-                                ?>
-                            </strong>
+                            <strong><?php echo $modulo['nombreModulo']; ?></strong>
                         </td>
-                        <td><?php echo $modulo['nombreCiclo']; ?></td>
+                        <td>
+                            <?php 
+                                if (!empty($modulo['abreviaturaCiclo'])) {
+                                    echo "<strong>[" . $modulo['abreviaturaCiclo'] . "]</strong> ";
+                                }
+                                echo $modulo['nombreCiclo']; 
+                            ?>
+                        </td>
                         <td><?php echo $modulo['horasMaximas']; ?> h</td>
                         <td>
                             <div class="botones-accion">

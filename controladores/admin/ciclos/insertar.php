@@ -4,29 +4,33 @@ require_once "../../../modelos/ciclos.php";
 
 if (isset($_POST['guardarCiclo'])) {
     $nombre = trim($_POST['nombreCiclo']);
+    $abreviatura = trim($_POST['abreviaturaCiclo']);
     $idNivel = $_POST['idNivel'];
-    $descripcion = trim($_POST['descripcionCiclo']);
     $precio = $_POST['precioCiclo'];
-    $profesores = isset($_POST['profesores']) ? $_POST['profesores'] : [];
-    $aulas = isset($_POST['aulas']) ? $_POST['aulas'] : [];
+    
+    $profesores = array();
+    if (isset($_POST['profesores'])) { $profesores = $_POST['profesores']; }
+    
+    $aulas = array();
+    if (isset($_POST['aulas'])) { $aulas = $_POST['aulas']; }
 
-    $lista_de_errores = [];
+    $lista_de_errores = array();
 
     if (empty($nombre)) {
         $lista_de_errores['nombreCiclo'] = "El nombre del ciclo es obligatorio.";
+    }
+    
+    if (empty($abreviatura)) {
+        $lista_de_errores['abreviaturaCiclo'] = "La abreviatura es obligatoria.";
     }
     
     if (empty($idNivel)) {
         $lista_de_errores['idNivel'] = "El nivel es obligatorio.";
     }
 
-    if (empty($descripcion)) {
-        $lista_de_errores['descripcionCiclo'] = "La descripción es obligatoria.";
-    }
-
     if (empty($lista_de_errores)) {
-        // Corrected function name and arguments according to modelo/ciclos.php
-        $resultado = insertarNuevoCiclo($nombre, $descripcion, $idNivel, $profesores, $aulas, $precio);
+        // Signature updated: insertarNuevoCiclo($nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio)
+        $resultado = insertarNuevoCiclo($nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo registrado correctamente.";
             header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
@@ -45,3 +49,4 @@ if (isset($_POST['guardarCiclo'])) {
 
 header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
 exit;
+?>

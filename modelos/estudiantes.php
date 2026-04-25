@@ -72,6 +72,17 @@ function eliminarEstudiante($idEstudiante) {
     return $resultado;
 }
 
+function obtenerEstudiantePorId($idEstudiante) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
+            LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
+            WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($conexion, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($conexion);
+    return $fila;
+}
+
 function obtenerPorcentajeAprobadosGlobal() {
     $conexion = obtenerConexion();
 

@@ -6,7 +6,7 @@ function listarTodosLosCiclos() {
     $sql = "SELECT ciclos.*, niveles.nombreNivel FROM ciclos 
             LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel ORDER BY idCiclo ASC";
     $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
+    $lista = array();
     while($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
@@ -20,7 +20,7 @@ function obtenerCiclosDeProfesor($idProfesor) {
             JOIN ciclo_profesor ON ciclos.idCiclo = ciclo_profesor.idCiclo 
             WHERE ciclo_profesor.idProfesor = $idProfesor";
     $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
+    $lista = array();
     while($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
@@ -28,10 +28,11 @@ function obtenerCiclosDeProfesor($idProfesor) {
     return $lista;
 }
 
-function insertarNuevoCiclo($nombre, $descripcion, $idNivel, $profesores, $aulas, $precio = 1000.00) {
+function insertarNuevoCiclo($nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio = 1000.00) {
     $conexion = obtenerConexion();
-    $sql = "INSERT INTO ciclos (nombreCiclo, descripcionCiclo, idNivel, precioCiclo) 
-            VALUES ('$nombre', '$descripcion', $idNivel, $precio)";
+    // descripcionCiclo se inserta como vacío ya que se eliminó del formulario
+    $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, descripcionCiclo, idNivel, precioCiclo) 
+            VALUES ('$nombre', '$abreviatura', '', $idNivel, $precio)";
     if (mysqli_query($conexion, $sql)) {
         $idCiclo = mysqli_insert_id($conexion);
         foreach ($profesores as $idProf) {
@@ -49,9 +50,10 @@ function insertarNuevoCiclo($nombre, $descripcion, $idNivel, $profesores, $aulas
     return false;
 }
 
-function actualizarCicloExistente($id, $nombre, $descripcion, $idNivel, $profesores, $aulas, $precio = 1000.00) {
+function actualizarCicloExistente($id, $nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio = 1000.00) {
     $conexion = obtenerConexion();
-    $sql = "UPDATE ciclos SET nombreCiclo = '$nombre', descripcionCiclo = '$descripcion', idNivel = $idNivel, precioCiclo = $precio 
+    // descripcionCiclo no se actualiza (se mantiene o se deja vacío)
+    $sql = "UPDATE ciclos SET nombreCiclo = '$nombre', abreviaturaCiclo = '$abreviatura', idNivel = $idNivel, precioCiclo = $precio 
             WHERE idCiclo = $id";
     if (mysqli_query($conexion, $sql)) {
         $sqlDelProf = "DELETE FROM ciclo_profesor WHERE idCiclo = $id";
@@ -81,9 +83,9 @@ function eliminarCiclo($idCiclo) {
     return $resultado;
 }
 
-function obtenerCicloUnico($idCiclo) {
+function obtenerCicloPorId($id) {
     $conexion = obtenerConexion();
-    $sql = "SELECT * FROM ciclos WHERE idCiclo = $idCiclo";
+    $sql = "SELECT * FROM ciclos WHERE idCiclo = $id";
     $resultado = mysqli_query($conexion, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($conexion);
@@ -94,7 +96,7 @@ function obtenerProfesoresDeUnCiclo($idCiclo) {
     $conexion = obtenerConexion();
     $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = $idCiclo";
     $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
+    $lista = array();
     while($fila = mysqli_fetch_assoc($resultado)) { $lista[] = $fila; }
     mysqli_close($conexion);
     return $lista;
@@ -104,7 +106,7 @@ function obtenerAulasDeUnCiclo($idCiclo) {
     $conexion = obtenerConexion();
     $sql = "SELECT idAula FROM ciclo_aula WHERE idCiclo = $idCiclo";
     $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
+    $lista = array();
     while($fila = mysqli_fetch_assoc($resultado)) { $lista[] = $fila; }
     mysqli_close($conexion);
     return $lista;

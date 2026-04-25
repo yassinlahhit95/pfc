@@ -13,10 +13,10 @@ function listarProfesores() {
     return $lista;
 }
 
-function insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especialidad = "") {
+function insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especialidad = "", $fechaNacimiento = '1980-01-01', $fechaAlta = '2026-01-01', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $conexion = obtenerConexion();
-    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, especialidad) 
-            VALUES ('$nombre', '$email', '$telefono', '$dni', '$direccion', '$especialidad')";
+    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, especialidad, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor)
+            VALUES ('$nombre', '$email', '$telefono', '$dni', '$direccion', '$especialidad', '$fechaNacimiento', '$fechaAlta', '$ciudad', '$codigoPostal', '$observaciones')";
     if (mysqli_query($conexion, $sql)) {
         $idProfesor = mysqli_insert_id($conexion);
         mysqli_close($conexion);
@@ -26,16 +26,19 @@ function insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especia
     return false;
 }
 
-function actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $especialidad = "") {
+function actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $especialidad = "", $fechaNacimiento = '1980-01-01', $fechaAlta = '2026-01-01', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $conexion = obtenerConexion();
-    $sql = "UPDATE profesores SET nombreProfesor = '$nombre', emailProfesor = '$email', 
-            telefonoProfesor = '$telefono', dniProfesor = '$dni', 
-            direccionProfesor = '$direccion', especialidad = '$especialidad' WHERE idProfesor = $idProfesor";
+    $sql = "UPDATE profesores SET nombreProfesor = '$nombre', emailProfesor = '$email',
+            telefonoProfesor = '$telefono', dniProfesor = '$dni',
+            direccionProfesor = '$direccion', especialidad = '$especialidad',
+            fechaNacimientoProfesor = '$fechaNacimiento', fechaAltaProfesor = '$fechaAlta',
+            ciudadProfesor = '$ciudad', codigoPostalProfesor = '$codigoPostal', 
+            observacionesProfesor = '$observaciones'
+            WHERE idProfesor = $idProfesor";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
-
 function asociarCicloProfesor($idCiclo, $idProfesor) {
     $conexion = obtenerConexion();
     $resultado = mysqli_query($conexion, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProfesor)");

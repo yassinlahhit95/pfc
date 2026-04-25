@@ -94,14 +94,17 @@ include 'comunes/nav.php';
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>Tablón de Anuncios</h3>
+        <h3><i class="fas fa-bullhorn texto-azul"></i> Tablón de Anuncios del Sistema</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
-        <div>
+        <div class="lista-anuncios-dashboard">
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
-                <strong class="anuncio-titulo"><?php echo $anuncio['titulo']; ?></strong>
-                <p class="texto-pequeno sin-margen"><?php echo $anuncio['mensaje']; ?></p>
+                <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
+                    <strong class="anuncio-titulo"><?php echo $anuncio['titulo']; ?></strong>
+                    <small class="texto-atenuado"><?php echo date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])); ?></small>
+                </div>
+                <p class="texto-pequeno sin-margen mt-5"><?php echo $anuncio['mensaje']; ?></p>
             </div>
             <?php } ?>
         </div>

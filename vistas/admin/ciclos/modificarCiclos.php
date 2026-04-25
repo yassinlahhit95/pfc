@@ -6,7 +6,7 @@ require_once "../../../modelos/profesores.php";
 require_once "../../../modelos/aulas.php";
 
 $id_ciclo = $_GET['idCiclo'];
-$ciclo = obtenerCicloUnico($id_ciclo);
+$ciclo = obtenerCicloPorId($id_ciclo);
 
 if (!$ciclo) {
     header("Location: verCiclos.php");
@@ -19,18 +19,24 @@ $listaAulas = listarAulas();
 
 // Get current assignments
 $profesoresAsignadosRaw = obtenerProfesoresDeUnCiclo($id_ciclo);
-$profesoresAsignados = array_column($profesoresAsignadosRaw, 'idProfesor');
+$profesoresAsignados = array();
+foreach ($profesoresAsignadosRaw as $p) { $profesoresAsignados[] = $p['idProfesor']; }
 
 $aulasAsignadasRaw = obtenerAulasDeUnCiclo($id_ciclo);
-$aulasAsignadas = array_column($aulasAsignadasRaw, 'idAula');
+$aulasAsignadas = array();
+foreach ($aulasAsignadasRaw as $a) { $aulasAsignadas[] = $a['idAula']; }
 
 if (isset($_SESSION['datos_ciclos'])) {
-    $ciclo = array_merge($ciclo, $_SESSION['datos_ciclos']);
+    // Basic array merge without using array_merge to keep it simple
+    foreach ($_SESSION['datos_ciclos'] as $key => $value) {
+        $ciclo[$key] = $value;
+    }
 }
 
-$error = $_SESSION['error'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 
-$lista_de_errores = [];
+$lista_de_errores = array();
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
@@ -45,7 +51,7 @@ include_once "../comunes/nav.php";
     <a href="verCiclos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
@@ -54,11 +60,19 @@ include_once "../comunes/nav.php";
         <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo; ?>">
         
         <div class="formulario-cuadricula">
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo-formulario">
                 <label>Nombre del Ciclo *</label>
                 <input type="text" name="nombreCiclo" value="<?php echo $ciclo['nombreCiclo']; ?>">
                 <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
                     <p class="error-campo"><?php echo $lista_de_errores['nombreCiclo']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Abreviatura *</label>
+                <input type="text" name="abreviaturaCiclo" maxlength="10" value="<?php echo $ciclo['abreviaturaCiclo']; ?>">
+                <?php if (isset($lista_de_errores['abreviaturaCiclo'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['abreviaturaCiclo']; ?></p>
                 <?php } ?>
             </div>
 
@@ -73,14 +87,6 @@ include_once "../comunes/nav.php";
                 </select>
                 <?php if (isset($lista_de_errores['idNivel'])) { ?>
                     <p class="error-campo"><?php echo $lista_de_errores['idNivel']; ?></p>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Descripción del Ciclo *</label>
-                <textarea name="descripcionCiclo" rows="3"><?php echo $ciclo['descripcionCiclo']; ?></textarea>
-                <?php if (isset($lista_de_errores['descripcionCiclo'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['descripcionCiclo']; ?></p>
                 <?php } ?>
             </div>
 

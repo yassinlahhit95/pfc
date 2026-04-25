@@ -69,6 +69,43 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                     <p class="error-campo"><?php echo $lista_de_errores['telefonoDirector']; ?></p>
                 <?php } ?>
             </div>
+
+            <div class="campo-formulario">
+                <label>Fecha de Nacimiento *</label>
+                <input type="date" name="fechaNacimientoDirector" value="<?php echo $director['fechaNacimientoDirector']; ?>">
+                <?php if (isset($lista_de_errores['fechaNacimientoDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaNacimientoDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Ciudad *</label>
+                <input type="text" name="ciudadDirector" value="<?php echo $director['ciudadDirector']; ?>">
+                <?php if (isset($lista_de_errores['ciudadDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['ciudadDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Código Postal *</label>
+                <input type="text" name="codigoPostalDirector" value="<?php echo $director['codigoPostalDirector']; ?>">
+                <?php if (isset($lista_de_errores['codigoPostalDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['codigoPostalDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario campo-ancho-total">
+                <label>Dirección Completa *</label>
+                <input type="text" name="direccionDirector" value="<?php echo $director['direccionDirector']; ?>">
+                <?php if (isset($lista_de_errores['direccionDirector'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['direccionDirector']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario campo-ancho-total">
+                <label>Observaciones / Notas Internas</label>
+                <textarea name="observacionesDirector" rows="3"><?php echo $director['observacionesDirector']; ?></textarea>
+            </div>
         </div>
 
         <div class="margen-arriba">

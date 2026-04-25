@@ -40,11 +40,6 @@ if (isset($datos['aulas'])) {
     $aulasElegidas = $datos['aulas'];
 }
 
-$descripcion = '';
-if (isset($datos['descripcionCiclo'])) {
-    $descripcion = $datos['descripcionCiclo'];
-}
-
 $titulo_pagina = "Agregar Ciclo - Super Admin";
 $seccion = 'ciclos';
 include_once "../comunes/nav.php";
@@ -63,9 +58,14 @@ include_once "../comunes/nav.php";
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/ciclos/insertar.php" method="POST">
         <div class="formulario-cuadricula">
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo-formulario">
                 <label>Nombre del Ciclo *</label>
                 <input type="text" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?php echo $nombre; ?>">
+            </div>
+
+            <div class="campo-formulario">
+                <label>Abreviatura *</label>
+                <input type="text" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?php if(isset($datos['abreviaturaCiclo'])) echo $datos['abreviaturaCiclo']; ?>">
             </div>
 
             <div class="campo-formulario">
@@ -78,11 +78,6 @@ include_once "../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Descripción del Ciclo *</label>
-                <textarea name="descripcionCiclo" rows="3" placeholder="Resumen del programa formativo..."><?php echo $descripcion; ?></textarea>
             </div>
 
             <div class="campo-formulario">
