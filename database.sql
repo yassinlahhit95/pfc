@@ -1,9 +1,16 @@
+-- --------------------------------------------------------
+-- 1. CREACIÓN DE LA BASE DE DATOS
+-- --------------------------------------------------------
+CREATE DATABASE IF NOT EXISTS `pfc` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
+USE `pfc`;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-CREATE DATABASE IF NOT EXISTS `pfc` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
-USE `pfc`;
+-- --------------------------------------------------------
+-- 2. CONFIGURACIÓN ACADÉMICA BASE
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `niveles` (
   `idNivel` int(11) NOT NULL AUTO_INCREMENT,
@@ -12,9 +19,7 @@ CREATE TABLE IF NOT EXISTS `niveles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES 
-(1, 'Grado Medio'), 
-(2, 'Grado Superior'), 
-(3, 'Bachillerato');
+(1, 'Grado Medio'), (2, 'Grado Superior'), (3, 'Bachillerato');
 
 CREATE TABLE IF NOT EXISTS `aulas` (
   `idAula` int(11) NOT NULL AUTO_INCREMENT,
@@ -23,11 +28,7 @@ CREATE TABLE IF NOT EXISTS `aulas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `aulas` (`idAula`, `nombreAula`) VALUES 
-(1, 'Aula 101'), 
-(2, 'Aula 202'), 
-(3, 'Laboratorio 1'), 
-(4, 'Taller Hardware'),
-(5, 'Salón de Actos');
+(1, 'Aula 101'), (2, 'Aula 202'), (3, 'Laboratorio 1'), (4, 'Taller Hardware'), (5, 'Salón de Actos');
 
 CREATE TABLE IF NOT EXISTS `ciclos` (
   `idCiclo` int(11) NOT NULL AUTO_INCREMENT,
@@ -56,14 +57,13 @@ CREATE TABLE IF NOT EXISTS `modulos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `modulos` (`idModulo`, `nombreModulo`, `horasMaximas`, `idCiclo`) VALUES 
-(1, 'Despliegue Web', 90, 1),
-(2, 'Diseño Interfaces', 120, 1),
-(3, 'Programación PHP', 180, 1),
-(4, 'Montaje Equipos', 140, 2),
-(5, 'Redes Locales', 160, 2),
-(6, 'Sistemas en Red', 130, 3),
-(7, 'Bases de Datos', 150, 3),
-(8, 'Programación Multimedia', 110, 4);
+(1, 'Despliegue Web', 90, 1), (2, 'Diseño Interfaces', 120, 1), (3, 'Programación PHP', 180, 1),
+(4, 'Montaje Equipos', 140, 2), (5, 'Redes Locales', 160, 2), (6, 'Sistemas en Red', 130, 3),
+(7, 'Bases de Datos', 150, 3), (8, 'Programación Multimedia', 110, 4);
+
+-- --------------------------------------------------------
+-- 3. USUARIOS Y ROLES (CON TOKENS PUSH)
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `profesores` (
   `idProfesor` int(11) NOT NULL AUTO_INCREMENT,
@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   `dniProfesor` varchar(20) DEFAULT '',
   `direccionProfesor` varchar(255) DEFAULT '',
   `especialidad` varchar(150) DEFAULT '',
+  `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idProfesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
   `idCiclo` int(11) DEFAULT 1,
   `archivoTFG` varchar(255) DEFAULT '',
   `fechaSubidaTFG` datetime DEFAULT '2026-01-01 00:00:00',
+  `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idEstudiante`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -104,6 +106,25 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
 INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`, `password`, `dniEstudiante`, `idCiclo`) VALUES 
 (1, 'Ana Martínez', 'ana.mtz@email.com', '123456', '12345678A', 1),
 (2, 'Roberto Solís', 'rober.solis@email.com', '123456', '87654321B', 1);
+
+CREATE TABLE IF NOT EXISTS `directores` (
+  `idDirector` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreDirector` varchar(150) NOT NULL,
+  `emailDirector` varchar(150) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL DEFAULT '123456',
+  `telefonoDirector` varchar(20) DEFAULT '',
+  `dniDirector` varchar(20) NOT NULL,
+  `fechaAltaDirector` date DEFAULT '2026-01-01',
+  `fcm_token` text DEFAULT NULL,
+  PRIMARY KEY (`idDirector`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `directores` (`idDirector`, `nombreDirector`, `emailDirector`, `password`, `dniDirector`) VALUES 
+(1, 'Admin Principal', 'admin@email.com', '123456', '00000000T');
+
+-- --------------------------------------------------------
+-- 4. GESTIÓN ACADÉMICA Y CALIFICACIONES
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `retos` (
   `idReto` int(11) NOT NULL AUTO_INCREMENT,
@@ -124,8 +145,6 @@ CREATE TABLE IF NOT EXISTS `modulo_reto` (
   CONSTRAINT `fk_mr_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
   CONSTRAINT `fk_mr_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `modulo_reto` (`idModulo`, `idReto`) VALUES (3, 1);
 
 CREATE TABLE IF NOT EXISTS `calificaciones_retos` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
@@ -150,26 +169,9 @@ CREATE TABLE IF NOT EXISTS `calificaciones_modulos` (
   CONSTRAINT `fk_notamod_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `pagos` (
-  `idPago` int(11) NOT NULL AUTO_INCREMENT,
-  `idEstudiante` int(11) NOT NULL,
-  `monto` decimal(10,2) NOT NULL,
-  `fechaPago` date NOT NULL,
-  `fechaProximoPago` date NOT NULL,
-  `tipoPago` enum('mensual','trimestral','semestral','unico') DEFAULT 'mensual',
-  `comprobante` varchar(255) DEFAULT '',
-  PRIMARY KEY (`idPago`),
-  CONSTRAINT `fk_pagos_estudiantes` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `anuncios` (
-  `idAnuncio` int(11) NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(150) NOT NULL,
-  `mensaje` text NOT NULL,
-  `fechaExpiracion` date NOT NULL,
-  `dirigidoA` enum('todos','estudiantes','profesores') DEFAULT 'todos',
-  PRIMARY KEY (`idAnuncio`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- --------------------------------------------------------
+-- 5. INVENTARIO Y PRÉSTAMOS
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `dispositivos` (
   `idDispositivo` int(11) NOT NULL AUTO_INCREMENT,
@@ -190,32 +192,50 @@ CREATE TABLE IF NOT EXISTS `prestamos` (
   CONSTRAINT `fk_prestamo_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+-- 6. COMUNICACIÓN Y PAGOS
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `anuncios` (
+  `idAnuncio` int(11) NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(150) NOT NULL,
+  `mensaje` text NOT NULL,
+  `fechaExpiracion` date NOT NULL,
+  `dirigidoA` enum('todos','estudiantes','profesores') DEFAULT 'todos',
+  PRIMARY KEY (`idAnuncio`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `reclamaciones` (
   `idReclamacion` int(11) NOT NULL AUTO_INCREMENT,
-  `idEstudiante` int(11) NOT NULL,
-  `idProfesor` int(11) DEFAULT 1,
+  `idEstudiante` int(11) DEFAULT NULL,
+  `idProfesor` int(11) DEFAULT NULL,
+  `emisor_rol` enum('estudiante','profesor','admin') DEFAULT 'estudiante',
   `asunto` varchar(150) NOT NULL,
   `descripcion` text NOT NULL,
   `fecha` date NOT NULL,
   `estadoReclamacion` enum('pendiente','atendido') DEFAULT 'pendiente',
+  `leido` tinyint(1) DEFAULT 0,
+  `respuesta` text DEFAULT '',
   PRIMARY KEY (`idReclamacion`),
   CONSTRAINT `fk_recl_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
-  CONSTRAINT `fk_recl_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
+  CONSTRAINT `fk_recl_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `directores` (
-  `idDirector` int(11) NOT NULL AUTO_INCREMENT,
-  `nombreDirector` varchar(150) NOT NULL,
-  `emailDirector` varchar(150) NOT NULL UNIQUE,
-  `password` varchar(255) NOT NULL DEFAULT '123456',
-  `telefonoDirector` varchar(20) DEFAULT '',
-  `dniDirector` varchar(20) NOT NULL,
-  `fechaAltaDirector` date DEFAULT '2026-01-01',
-  PRIMARY KEY (`idDirector`)
+CREATE TABLE IF NOT EXISTS `pagos` (
+  `idPago` int(11) NOT NULL AUTO_INCREMENT,
+  `idEstudiante` int(11) NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `fechaPago` date NOT NULL,
+  `fechaProximoPago` date NOT NULL,
+  `tipoPago` enum('mensual','trimestral','semestral','unico') DEFAULT 'mensual',
+  `comprobante` varchar(255) DEFAULT '',
+  PRIMARY KEY (`idPago`),
+  CONSTRAINT `fk_pagos_estudiantes` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `directores` (`idDirector`, `nombreDirector`, `emailDirector`, `password`, `dniDirector`) VALUES 
-(1, 'Admin Principal', 'admin@email.com', '123456', '00000000T');
+-- --------------------------------------------------------
+-- 7. TABLAS DE ASIGNACIÓN (RELACIONES MUCHOS A MUCHOS)
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `ciclo_profesor` (
   `idCiclo` int(11) NOT NULL,

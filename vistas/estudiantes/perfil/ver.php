@@ -23,9 +23,6 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro">
-        <div class="avatar-perfil margen-derecha">
-            <i class="fas fa-graduation-cap fa-5x"></i>
-        </div>
         <div class="flexible-rellenar">
             <h2><?php echo $estudiante['nombreEstudiante']; ?></h2>
             <p class="texto-secundario"><?php echo $estudiante['nombreCiclo']; ?></p>

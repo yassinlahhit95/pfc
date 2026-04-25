@@ -16,6 +16,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
     <title><?php echo $tituloDelPagina; ?></title>
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
     <link rel="stylesheet" href="/pfc/public/css/responsive.css">
+    <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -74,8 +75,8 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
                     <i class="fas fa-bullhorn"></i> <span>Anuncios</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/reclamaciones/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-exclamation-triangle"></i> <span>Reclamaciones</span>
+                <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
+                    <i class="fas fa-paper-plane"></i> <span>Mensajería</span>
                 </a>
             </div>
 
@@ -94,3 +95,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
     </script>
 
     <main class="contenido-principal">
+    <?php if (isset($_SESSION['idProfesor'])): ?>
+        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idProfesor']; ?>" data-user-role="profesor" style="display:none;"></div>
+        <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
+    <?php endif; ?>

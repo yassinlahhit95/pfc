@@ -5,7 +5,15 @@ require_once "../../../modelos/tfg.php";
 if (isset($_POST['idEstudiante'])) {
     $id = $_POST['idEstudiante'];
     
-    if (eliminarArchivoTFG($id)) {
+    // Obtenemos los datos antes de borrar de la base de datos para tener el nombre del archivo
+    $tfg = obtenerTFGporEstudiante($id);
+    $nombreArchivo = $tfg['archivoTFG'];
+    
+    if (eliminarTFG($id)) {
+        $rutaArchivo = "../../../public/uploads/tfg/" . $nombreArchivo;
+        if (!empty($nombreArchivo) && file_exists($rutaArchivo)) {
+            unlink($rutaArchivo);
+        }
         $_SESSION['exito'] = "TFG eliminado correctamente.";
     } else {
         $_SESSION['error'] = "Error al eliminar el TFG.";

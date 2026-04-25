@@ -15,6 +15,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
     <title><?php echo $tituloDelPagina; ?></title>
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
     <link rel="stylesheet" href="/pfc/public/css/responsive.css">
+    <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -53,7 +54,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
                     <i class="fas fa-graduation-cap"></i> <span>Mis Notas</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/tfg/lista.php" class="enlace-menu <?php echo ($seccionActual == 'tfg' ? 'activo' : ''); ?>">
+                <a href="/pfc/vistas/estudiantes/tfg/subir.php" class="enlace-menu <?php echo ($seccionActual == 'tfg' ? 'activo' : ''); ?>">
                     <i class="fas fa-file-pdf"></i> <span>Mi TFG</span>
                 </a>
             </div>
@@ -65,8 +66,8 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
                     <i class="fas fa-bullhorn"></i> <span>Anuncios</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/reclamaciones/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-exclamation-triangle"></i> <span>Mis Reclamaciones</span>
+                <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
+                    <i class="fas fa-bullhorn"></i> <span>Mensajería</span>
                 </a>
             </div>
 
@@ -85,3 +86,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
     </script>
 
     <main class="contenido-principal">
+    <?php if (isset($_SESSION['idEstudiante'])): ?>
+        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idEstudiante']; ?>" data-user-role="estudiante" style="display:none;"></div>
+        <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
+    <?php endif; ?>
