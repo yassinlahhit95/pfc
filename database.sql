@@ -164,6 +164,7 @@ CREATE TABLE IF NOT EXISTS `calificaciones_modulos` (
   `nota_1final` decimal(4,2) DEFAULT 0.00,
   `nota_2ev` decimal(4,2) DEFAULT 0.00,
   `nota_2final` decimal(4,2) DEFAULT 0.00,
+  `observaciones` text DEFAULT '',
   PRIMARY KEY (`idCalificacion`),
   CONSTRAINT `fk_notamod_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_notamod_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE

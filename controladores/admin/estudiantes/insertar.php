@@ -41,9 +41,6 @@ if (isset($_POST['guardarEstudiante'])) {
     if (empty($fecha_nacimiento)) {
         $lista_de_errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
     }
-    if (empty($fecha_alta)) {
-        $lista_de_errores['fechaAltaEstudiante'] = "La fecha de alta es obligatoria.";
-    }
     if (empty($direccion)) {
         $lista_de_errores['direccionEstudiante'] = "La dirección es obligatoria.";
     }
@@ -72,6 +69,13 @@ if (isset($_POST['guardarEstudiante'])) {
     }
 
     header("Location: /pfc/vistas/admin/estudiantes/agregarEstudiantes.php");
+    exit;
+}
+
+header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
+exit;
+?>
+tes.php");
     exit;
 }
 

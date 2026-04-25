@@ -78,6 +78,10 @@ $totalTFG = contarTFGsSubidos();
                     <i class="fas fa-graduation-cap"></i> <span>Notas Módulos</span>
                 </a>
 
+                <a href="/pfc/vistas/admin/academico/resultadosModulos.php" class="enlace-menu <?php echo ($seccion == 'resultados_modulos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
+                </a>
+
                 <a href="/pfc/vistas/admin/tfg/verTFGs.php" class="enlace-menu <?php echo ($seccion == 'tfg' ? 'activo' : ''); ?>">
                     <i class="fas fa-file-pdf"></i> <span>Gestión TFG</span>
                     <span class="etiqueta-contador"><?php echo $totalTFG; ?></span>

@@ -34,6 +34,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <thead>
                 <tr>
                     <th>Nombre del Reto</th>
+                    <th>Módulos</th>
                     <th>Horas</th>
                     <th>Inicio</th>
                     <th>Fin</th>
@@ -42,11 +43,16 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_retos)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay retos configurados</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No hay retos configurados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_retos as $reto) { ?>
+                    <?php foreach ($todos_los_retos as $reto) { 
+                        $modulos = obtenerModulosDeReto($reto['idReto']);
+                        $nombresModulos = array_column($modulos, 'nombreModulo');
+                        $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
+                    ?>
                     <tr>
                         <td><strong><?php echo $reto['nombreReto']; ?></strong></td>
+                        <td><?php echo $textoModulos; ?></td>
                         <td><?php echo $reto['horasReto']; ?>h</td>
                         <td><?php echo date('d/m/Y', strtotime($reto['fechaInicio'])); ?></td>
                         <td><?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></td>

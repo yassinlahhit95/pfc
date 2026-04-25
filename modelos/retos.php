@@ -43,11 +43,20 @@ function obtenerRetosDeProfesor($idProfesor) {
     return $lista;
 }
 
-function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto) {
-    // Validacion simple de 6 horas/dia (30 horas/semana de 5 dias)
-    if ($horasReto > 30) {
+function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $modulos = []) {
+    // Validar que las horas no superen el límite de 30h semanales según la duración
+    $inicio = new DateTime($fechaInicio);
+    $fin = new DateTime($fechaFin);
+    $intervalo = $inicio->diff($fin);
+    $diasTotales = $intervalo->days + 1;
+    
+    // Calcular semanas (proporcional)
+    $semanas = $diasTotales / 7;
+    $maximoHorasPermitidas = round($semanas * 30);
+    
+    if ($horasReto > $maximoHorasPermitidas) {
         if (session_status() == PHP_SESSION_NONE) { session_start(); }
-        $_SESSION['error'] = "Un reto no puede superar las 30 horas semanales (6h/dia).";
+        $_SESSION['error'] = "El reto supera el límite de 30h semanales para esa duración (Máx: $maximoHorasPermitidas horas en $diasTotales días).";
         return false;
     }
 
@@ -56,6 +65,13 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto) {
             VALUES ('$nombreReto', '$fechaInicio', '$fechaFin', $horasReto)";
     if (mysqli_query($conexion, $sql)) {
         $idReto = mysqli_insert_id($conexion);
+        
+        // Asociar módulos
+        foreach ($modulos as $idModulo) {
+            $sqlMod = "INSERT INTO modulo_reto (idModulo, idReto) VALUES ($idModulo, $idReto)";
+            mysqli_query($conexion, $sqlMod);
+        }
+        
         mysqli_close($conexion);
         return $idReto;
     }
@@ -63,7 +79,7 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto) {
     return false;
 }
 
-function comprobarHorasDisponiblesModulo($idModulo, $nuevasHoras) {
+function comprobarHorasDisponiblesModulo($idModulo, $nuevasHoras, $idRetoActual = 0) {
     $conexion = obtenerConexion();
     
     // Horas maximas del modulo
@@ -72,10 +88,10 @@ function comprobarHorasDisponiblesModulo($idModulo, $nuevasHoras) {
     $filaMod = mysqli_fetch_assoc($resMod);
     $max = $filaMod['horasMaximas'];
 
-    // Horas ya ocupadas por otros retos
+    // Horas ya ocupadas por otros retos (excluyendo el actual si es una actualización)
     $sqlYa = "SELECT SUM(r.horasReto) as total FROM retos r 
               JOIN modulo_reto mr ON r.idReto = mr.idReto 
-              WHERE mr.idModulo = $idModulo";
+              WHERE mr.idModulo = $idModulo AND r.idReto != $idRetoActual";
     $resYa = mysqli_query($conexion, $sqlYa);
     $filaYa = mysqli_fetch_assoc($resYa);
     $ocupadas = $filaYa['total'] ?: 0;
@@ -88,10 +104,19 @@ function comprobarHorasDisponiblesModulo($idModulo, $nuevasHoras) {
     return true;
 }
 
-function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto) {
-    if ($horasReto > 30) {
+function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $modulos = []) {
+    // Validar que las horas no superen el límite de 30h semanales según la duración
+    $inicio = new DateTime($fechaInicio);
+    $fin = new DateTime($fechaFin);
+    $intervalo = $inicio->diff($fin);
+    $diasTotales = $intervalo->days + 1;
+    
+    $semanas = $diasTotales / 7;
+    $maximoHorasPermitidas = round($semanas * 30);
+    
+    if ($horasReto > $maximoHorasPermitidas) {
         if (session_status() == PHP_SESSION_NONE) { session_start(); }
-        $_SESSION['error'] = "Un reto no puede superar las 30 horas semanales (6h/dia).";
+        $_SESSION['error'] = "El reto supera el límite de 30h semanales para esa duración (Máx: $maximoHorasPermitidas horas en $diasTotales días).";
         return false;
     }
 
@@ -99,6 +124,19 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
     $sql = "UPDATE retos SET nombreReto = '$nombreReto', fechaInicio = '$fechaInicio', 
             fechaFin = '$fechaFin', horasReto = $horasReto WHERE idReto = $idReto";
     $resultado = mysqli_query($conexion, $sql);
+    
+    if ($resultado) {
+        // Limpiar asociaciones previas
+        $sqlDel = "DELETE FROM modulo_reto WHERE idReto = $idReto";
+        mysqli_query($conexion, $sqlDel);
+        
+        // Nuevas asociaciones
+        foreach ($modulos as $idModulo) {
+            $sqlIns = "INSERT INTO modulo_reto (idModulo, idReto) VALUES ($idModulo, $idReto)";
+            mysqli_query($conexion, $sqlIns);
+        }
+    }
+
     mysqli_close($conexion);
     return $resultado;
 }
@@ -189,5 +227,37 @@ function obtenerCalificacion($idEstudiante, $idReto) {
     $nota = "";
     if ($fila) { $nota = $fila['nota']; }
     return $nota;
+}
+
+function listarCalificacionesRetoPorModulo($idModulo) {
+    $conexion = obtenerConexion();
+    // Obtenemos los retos asociados a este módulo
+    $sqlRetos = "SELECT idReto FROM modulo_reto WHERE idModulo = $idModulo";
+    $resRetos = mysqli_query($conexion, $sqlRetos);
+    $idsRetos = array();
+    while($r = mysqli_fetch_assoc($resRetos)) {
+        $idsRetos[] = $r['idReto'];
+    }
+    
+    if (empty($idsRetos)) {
+        mysqli_close($conexion);
+        return array();
+    }
+    
+    $idsString = implode(",", $idsRetos);
+    
+    // Obtenemos la media de las notas de los retos asociados a este módulo para cada estudiante
+    $sql = "SELECT idEstudiante, AVG(nota) as notaMediaReto 
+            FROM calificaciones_retos 
+            WHERE idReto IN ($idsString) 
+            GROUP BY idEstudiante";
+            
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = array();
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[$fila['idEstudiante']] = $fila['notaMediaReto'];
+    }
+    mysqli_close($conexion);
+    return $lista;
 }
 ?>
