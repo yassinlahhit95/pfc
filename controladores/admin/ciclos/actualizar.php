@@ -3,30 +3,31 @@ session_start();
 require_once "../../../modelos/ciclos.php";
 
 if (isset($_POST['actualizarCiclo'])) {
-    $id_ciclo = $_POST['idCiclo'];
+    $id = $_POST['idCiclo'];
     $nombre = trim($_POST['nombreCiclo']);
+    $abreviatura = trim($_POST['abreviaturaCiclo']);
     $idNivel = $_POST['idNivel'];
-    $descripcion = trim($_POST['descripcionCiclo']);
     $precio = $_POST['precioCiclo'];
-    $profesores = isset($_POST['profesores']) ? $_POST['profesores'] : [];
-    $aulas = isset($_POST['aulas']) ? $_POST['aulas'] : [];
+    
+    $profesores = array();
+    if (isset($_POST['profesores'])) { $profesores = $_POST['profesores']; }
+    
+    $aulas = array();
+    if (isset($_POST['aulas'])) { $aulas = $_POST['aulas']; }
 
-    $lista_de_errores = [];
+    $lista_de_errores = array();
 
     if (empty($nombre)) {
         $lista_de_errores['nombreCiclo'] = "El nombre del ciclo es obligatorio.";
     }
     
-    if (empty($idNivel)) {
-        $lista_de_errores['idNivel'] = "El nivel es obligatorio.";
-    }
-
-    if (empty($descripcion)) {
-        $lista_de_errores['descripcionCiclo'] = "La descripción es obligatoria.";
+    if (empty($abreviatura)) {
+        $lista_de_errores['abreviaturaCiclo'] = "La abreviatura es obligatoria.";
     }
 
     if (empty($lista_de_errores)) {
-        $resultado = actualizarCicloExistente($id_ciclo, $nombre, $descripcion, $idNivel, $profesores, $aulas, $precio);
+        // Signature updated: actualizarCicloExistente($id, $nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio)
+        $resultado = actualizarCicloExistente($id, $nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo actualizado correctamente.";
             header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
@@ -39,9 +40,10 @@ if (isset($_POST['actualizarCiclo'])) {
         $_SESSION['datos_ciclos'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=$id_ciclo");
+    header("Location: /pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $id);
     exit;
 }
 
 header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
 exit;
+?>

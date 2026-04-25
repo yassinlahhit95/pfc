@@ -13,19 +13,21 @@ function listarDirectores() {
     return $lista;
 }
 
-function insertarDirector($nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta) {
+function insertarDirector($nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $conexion = obtenerConexion();
-    $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector) 
-            VALUES ('$nombreDirector', '$emailDirector', '$dniDirector', '$telefonoDirector', '$fechaAlta')";
+    $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) 
+            VALUES ('$nombreDirector', '$emailDirector', '$dniDirector', '$telefonoDirector', '$fechaAlta', '$fechaNacimiento', '$direccion', '$ciudad', '$codigoPostal', '$observaciones')";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);
     return $resultado;
 }
 
-function actualizarDirector($idDirector, $nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta) {
+function actualizarDirector($idDirector, $nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $conexion = obtenerConexion();
     $sql = "UPDATE directores SET nombreDirector = '$nombreDirector', emailDirector = '$emailDirector', 
-            dniDirector = '$dniDirector', telefonoDirector = '$telefonoDirector', fechaAltaDirector = '$fechaAlta' 
+            dniDirector = '$dniDirector', telefonoDirector = '$telefonoDirector', fechaAltaDirector = '$fechaAlta',
+            fechaNacimientoDirector = '$fechaNacimiento', direccionDirector = '$direccion',
+            ciudadDirector = '$ciudad', codigoPostalDirector = '$codigoPostal', observacionesDirector = '$observaciones'
             WHERE idDirector = $idDirector";
     $resultado = mysqli_query($conexion, $sql);
     mysqli_close($conexion);

@@ -75,6 +75,45 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                     <p class="error-campo"><?php echo $lista_de_errores['direccionProfesor']; ?></p>
                 <?php } ?>
             </div>
+
+            <div class="campo-formulario">
+                <label>Ciudad *</label>
+                <input type="text" name="ciudadProfesor" value="<?php echo $profesor['ciudadProfesor']; ?>">
+                <?php if (isset($lista_de_errores['ciudadProfesor'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['ciudadProfesor']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Código Postal *</label>
+                <input type="text" name="codigoPostalProfesor" value="<?php echo $profesor['codigoPostalProfesor']; ?>">
+                <?php if (isset($lista_de_errores['codigoPostalProfesor'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['codigoPostalProfesor']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Fecha de Nacimiento *</label>
+                <input type="date" name="fechaNacimientoProfesor" value="<?php echo $profesor['fechaNacimientoProfesor']; ?>">
+                <?php if (isset($lista_de_errores['fechaNacimientoProfesor'])) { ?>
+                    <p class="error-campo"><?php echo $lista_de_errores['fechaNacimientoProfesor']; ?></p>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label>Especialidad</label>
+                <input type="text" name="especialidad" placeholder="Ej: Informática, Matemáticas..." value="<?php echo $profesor['especialidad']; ?>">
+            </div>
+
+            <div class="campo-formulario">
+                <label>Fecha de Alta (en centro)</label>
+                <input type="date" name="fechaAltaProfesor" value="<?php echo $profesor['fechaAltaProfesor']; ?>">
+            </div>
+
+            <div class="campo-formulario campo-ancho-total">
+                <label>Observaciones / Curriculum Vitae (Resumen)</label>
+                <textarea name="observacionesProfesor" rows="3"><?php echo $profesor['observacionesProfesor']; ?></textarea>
+            </div>
         </div>
 
         <div class="margen-arriba">

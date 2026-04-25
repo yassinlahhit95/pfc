@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `niveles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES 
-(1, 'Grado Medio'), (2, 'Grado Superior'), (3, 'Bachillerato');
+(1, 'Grado Medio'), (2, 'Grado Superior');
 
 CREATE TABLE IF NOT EXISTS `aulas` (
   `idAula` int(11) NOT NULL AUTO_INCREMENT,
@@ -34,18 +34,17 @@ CREATE TABLE IF NOT EXISTS `ciclos` (
   `idCiclo` int(11) NOT NULL AUTO_INCREMENT,
   `nombreCiclo` varchar(150) NOT NULL,
   `abreviaturaCiclo` varchar(10) NOT NULL,
-  `descripcionCiclo` text,
   `precioCiclo` decimal(10,2) DEFAULT 1000.00,
   `idNivel` int(11) DEFAULT 1,
   PRIMARY KEY (`idCiclo`),
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `descripcionCiclo`, `precioCiclo`, `idNivel`) VALUES 
-(1, 'Desarrollo de Aplicaciones Web', 'DAW', 'Entornos web frontend y backend.', 1200.00, 2),
-(2, 'Sistemas Microinformáticos y Redes', 'SMR', 'Equipos y redes locales.', 800.00, 1),
-(3, 'Administración de Sistemas Informáticos', 'ASIR', 'Servidores y seguridad.', 1100.00, 2),
-(4, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM', 'Software para móviles.', 1200.00, 2);
+INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`) VALUES 
+(1, 'Desarrollo de Aplicaciones Web', 'DAW', 1200.00, 2),
+(2, 'Sistemas Microinformáticos y Redes', 'SMR', 800.00, 1),
+(3, 'Administración de Sistemas Informáticos', 'ASIR', 1100.00, 2),
+(4, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM', 1200.00, 2);
 
 CREATE TABLE IF NOT EXISTS `modulos` (
   `idModulo` int(11) NOT NULL AUTO_INCREMENT,
@@ -72,7 +71,12 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoProfesor` varchar(20) DEFAULT '',
   `dniProfesor` varchar(20) DEFAULT '',
+  `fechaNacimientoProfesor` date DEFAULT '1980-01-01',
+  `fechaAltaProfesor` date DEFAULT '2026-01-01',
   `direccionProfesor` varchar(255) DEFAULT '',
+  `ciudadProfesor` varchar(100) DEFAULT '',
+  `codigoPostalProfesor` varchar(10) DEFAULT '',
+  `observacionesProfesor` text,
   `especialidad` varchar(150) DEFAULT '',
   `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idProfesor`)
@@ -114,7 +118,12 @@ CREATE TABLE IF NOT EXISTS `directores` (
   `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoDirector` varchar(20) DEFAULT '',
   `dniDirector` varchar(20) NOT NULL,
+  `fechaNacimientoDirector` date DEFAULT '2000-01-01',
   `fechaAltaDirector` date DEFAULT '2026-01-01',
+  `direccionDirector` varchar(255) DEFAULT '',
+  `ciudadDirector` varchar(100) DEFAULT '',
+  `codigoPostalDirector` varchar(10) DEFAULT '',
+  `observacionesDirector` text,
   `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idDirector`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -201,6 +210,7 @@ CREATE TABLE IF NOT EXISTS `anuncios` (
   `idAnuncio` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` varchar(150) NOT NULL,
   `mensaje` text NOT NULL,
+  `fechaAnuncio` datetime DEFAULT CURRENT_TIMESTAMP,
   `fechaExpiracion` date NOT NULL,
   `dirigidoA` enum('todos','estudiantes','profesores') DEFAULT 'todos',
   PRIMARY KEY (`idAnuncio`)

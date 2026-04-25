@@ -1,10 +1,5 @@
 <?php
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['idProfesor'])) {
+if (isset($_SESSION['idProfesor']) == false) {
     header("Location: /pfc/index.php");
     exit;
 }
