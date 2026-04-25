@@ -100,20 +100,39 @@ if ($id_ciclo_elegido != 0) {
     <p class="subtitulo">Promedio global de todos los módulos del ciclo seleccionado</p>
 </div>
 
+<?php 
+$exito = ""; if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+$error = ""; if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+unset($_SESSION['exito'], $_SESSION['error']);
+?>
+<?php if ($exito != "") { ?> <div class="mensaje-exito"><?php echo $exito; ?></div> <?php } ?>
+<?php if ($error != "") { ?> <div class="mensaje-error"><?php echo $error; ?></div> <?php } ?>
+
 <div class="tarjeta-blanca">
-    <form method="GET" action="resultadosFinales.php" class="disposicion-flexible alinear-centro separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
-            <label>Seleccione un Ciclo formativo para ver el resumen:</label>
-            <select name="idCiclo" onchange="this.form.submit()">
-                <option value="">-- Seleccionar Ciclo --</option>
-                <?php foreach ($todos_los_ciclos as $cic) { ?>
-                    <option value="<?php echo $cic['idCiclo']; ?>" <?php if($id_ciclo_elegido == $cic['idCiclo']) { echo "selected"; } ?>>
-                        <?php echo $cic['nombreCiclo']; ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-    </form>
+    <div class="disposicion-flexible alinear-centro separacion-grande">
+        <form method="GET" action="resultadosFinales.php" class="flexible-rellenar disposicion-flexible alinear-centro">
+            <div class="campo-formulario flexible-rellenar">
+                <label>Seleccione un Ciclo formativo para ver el resumen:</label>
+                <select name="idCiclo" onchange="this.form.submit()">
+                    <option value="">-- Seleccionar Ciclo --</option>
+                    <?php foreach ($todos_los_ciclos as $cic) { ?>
+                        <option value="<?php echo $cic['idCiclo']; ?>" <?php if($id_ciclo_elegido == $cic['idCiclo']) { echo "selected"; } ?>>
+                            <?php echo $cic['nombreCiclo']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+        </form>
+
+        <?php if ($id_ciclo_elegido != 0 && !empty($datos_finales)) { ?>
+            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Está seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+                <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo_elegido; ?>">
+                <button type="submit" class="boton-secundario" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-paper-plane"></i> Enviar Resultados por Email a Todos
+                </button>
+            </form>
+        <?php } ?>
+    </div>
 </div>
 
 <?php if ($id_ciclo_elegido != 0) { ?>

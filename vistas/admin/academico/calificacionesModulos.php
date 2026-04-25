@@ -140,10 +140,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
             
             <?php if (!empty($estudiantes_calificados)) { ?>
-                <div class="margen-arriba">
+                <div class="margen-arriba disposicion-flexible alinear-centro">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar Todas las Notas
                     </button>
+                    <label style="margin-left: 20px; font-weight: bold; color: #3498db; cursor: pointer;">
+                        <input type="checkbox" name="notificarEstudiantes" value="1"> 
+                        <i class="fas fa-envelope"></i> Notificar a los estudiantes por email
+                    </label>
                 </div>
             <?php } ?>
         </form>
