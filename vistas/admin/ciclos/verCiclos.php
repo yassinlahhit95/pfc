@@ -8,13 +8,16 @@ require_once "../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 
-$lista_de_errores = [];
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+
+$lista_de_errores = array();
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
-$datos = [];
+$datos = array();
 if (isset($_SESSION['datos_ciclos'])) { $datos = $_SESSION['datos_ciclos']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
@@ -27,16 +30,16 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     </a>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaCiclos">
             <thead>
                 <tr>
                     <th>ID</th>

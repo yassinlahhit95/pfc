@@ -48,7 +48,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaProfesores">
             <thead>
                 <tr>
                     <th>ID</th>

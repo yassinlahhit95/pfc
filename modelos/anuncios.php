@@ -128,4 +128,33 @@ function listarAnunciosPorRol($rolDelUsuario) {
     mysqli_close($conexionBaseDatos);
     return $listaFinalAnuncios;
 }
+/**
+ * Lista los anuncios más recientes con un límite para la paginación
+ */
+function listarAnunciosConPaginas($limiteDeResultados) {
+    $conexionBaseDatos = obtenerConexion();
+    
+    // Obtenemos la página desde la URL si existe
+    $posicionInicio = 0;
+    if (isset($_GET['p_anuncios'])) {
+        $paginaActual = (int)$_GET['p_anuncios'];
+        if ($paginaActual > 1) {
+            $posicionInicio = ($paginaActual - 1) * $limiteDeResultados;
+        }
+    }
+
+    $sentenciaSQL = "SELECT * FROM anuncios 
+                     ORDER BY idAnuncio DESC 
+                     LIMIT $posicionInicio, $limiteDeResultados";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalAnuncios = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalAnuncios[] = $filaDeDatos;
+    }
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalAnuncios;
+}
 ?>

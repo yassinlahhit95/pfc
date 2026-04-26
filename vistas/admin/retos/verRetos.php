@@ -8,8 +8,11 @@ require_once "../../../modelos/retos.php";
 
 $todos_los_retos = listarRetos();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
@@ -21,16 +24,16 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaRetos">
             <thead>
                 <tr>
                     <th>Nombre del Reto</th>

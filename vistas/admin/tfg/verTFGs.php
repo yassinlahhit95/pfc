@@ -5,11 +5,17 @@ $seccion = 'tfg';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/tfg.php";
+require_once "../../../modelos/ciclos.php";
 
 $todos_los_tfgs = listarTodosLosTFGs();
+$listaDeCiclosParaFiltro = listarTodosLosCiclos();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -17,16 +23,30 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <h1>Gestión de Trabajos Fin de Grado</h1>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
+        <select id="selectFiltroCicloTFG" onchange="filtrarTabla('selectFiltroCicloTFG', 'tablaTFGs')">
+            <option value="">-- Todos los Ciclos --</option>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                <option value="<?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>">
+                    <?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>
+                </option>
+            <?php } ?>
+        </select>
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaTFGs">
             <thead>
                 <tr>
                     <th>Estudiante</th>

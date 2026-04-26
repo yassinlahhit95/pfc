@@ -8,8 +8,11 @@ require_once "../../../modelos/aulas.php";
 
 $todas_las_aulas = listarAulas();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
 
 $lista_de_errores = array();
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
@@ -24,10 +27,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Aulas del Centro</h1>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
@@ -53,8 +56,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <div class="tarjeta-blanca">
+    <div class="campo-formulario mb-20">
+        <label><i class="fas fa-search"></i> BUSCAR AULA:</label>
+        <input type="text" id="inputBuscarAula" placeholder="Escriba nombre del aula..." onkeyup="filtrarTabla('inputBuscarAula', 'tablaAulas')">
+    </div>
+
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaAulas">
             <thead>
                 <tr>
                     <th>ID</th>

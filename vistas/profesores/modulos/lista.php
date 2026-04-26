@@ -20,9 +20,16 @@ include_once "../comunes/nav.php";
     <h1>Lista de Módulos</h1>
 </div>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-search"></i> BUSCAR MÓDULO:</label>
+        <input type="text" id="inputBuscarMod" placeholder="Busque por nombre o ciclo..." onkeyup="filtrarTabla('inputBuscarMod', 'tablaModulosProf')">
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaModulosProf">
             <thead>
                 <tr>
                     <th>Nombre</th>

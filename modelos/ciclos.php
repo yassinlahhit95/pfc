@@ -48,8 +48,8 @@ function obtenerCiclosDeProfesor($idProfesorRecibido) {
 function insertarNuevoCiclo($nombreNuevo, $abreviaturaNueva, $idNivelElegido, $listaIdsProfesores, $listaIdsAulas, $precioDelCiclo = 1000.00) {
     $conexionBaseDatos = obtenerConexion();
     
-    $sentenciaSQL = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, descripcionCiclo, idNivel, precioCiclo) 
-                     VALUES ('$nombreNuevo', '$abreviaturaNueva', '', $idNivelElegido, $precioDelCiclo)";
+    $sentenciaSQL = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) 
+                     VALUES ('$nombreNuevo', '$abreviaturaNueva', $idNivelElegido, $precioDelCiclo)";
     
     if (mysqli_query($conexionBaseDatos, $sentenciaSQL)) {
         $idDelCicloCreado = mysqli_insert_id($conexionBaseDatos);

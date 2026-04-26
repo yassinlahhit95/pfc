@@ -218,4 +218,56 @@ function obtenerTotalRecaudado() {
     mysqli_close($conexionBaseDatos);
     return $totalDinero;
 }
+/**
+ * Calcula el porcentaje global de alumnos aprobados
+ */
+function obtenerPorcentajeAprobadosGlobal() {
+    $conexionBaseDatos = obtenerConexion();
+    
+    // Contamos total de calificaciones únicas (por alumno y módulo)
+    $sqlTotal = "SELECT COUNT(*) as total FROM calificaciones_modulos";
+    $resTotal = mysqli_query($conexionBaseDatos, $sqlTotal);
+    $datosTotal = mysqli_fetch_assoc($resTotal);
+    $totalNotas = $datosTotal['total'];
+
+    if ($totalNotas == 0) {
+        mysqli_close($conexionBaseDatos);
+        return 0;
+    }
+
+    // Contamos cuántas de esas notas promedian >= 5
+    // Lógica simple: si nota_1final >= 5 o nota_2final >= 5
+    $sqlAprobados = "SELECT COUNT(*) as aprobados FROM calificaciones_modulos 
+                    WHERE nota_1final >= 5 OR nota_2final >= 5";
+    $resAprobados = mysqli_query($conexionBaseDatos, $sqlAprobados);
+    $datosAprobados = mysqli_fetch_assoc($resAprobados);
+    $totalAprobados = $datosAprobados['aprobados'];
+
+    $porcentaje = ($totalAprobados / $totalNotas) * 100;
+    
+    mysqli_close($conexionBaseDatos);
+    return round($porcentaje, 1);
+}
+
+/**
+ * Cuenta el número total de pagos registrados
+ */
+function contarPagosRealizados() {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT COUNT(*) as total FROM pagos";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $filaDeDatos = mysqli_fetch_assoc($resultadoConsulta);
+    
+    $totalFinal = 0;
+    if (!empty($filaDeDatos)) {
+        $totalFinal = $filaDeDatos['total'];
+    }
+    
+    mysqli_close($conexionBaseDatos);
+    return $totalFinal;
+}
+
+function contarPagos() {
+    return contarPagosRealizados();
+}
 ?>

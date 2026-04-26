@@ -77,8 +77,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="titulo-tarjeta">
         <h3>Eventos Programados</h3>
     </div>
+    <div class="campo-formulario mb-20">
+        <label><i class="fas fa-search"></i> BUSCAR EVENTO:</label>
+        <input type="text" id="inputBuscarEv" placeholder="Busque por título o ubicación..." onkeyup="filtrarTabla('inputBuscarEv', 'tablaEventos')">
+    </div>
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaEventos">
             <thead>
                 <tr>
                     <th>Fecha y Hora</th>
