@@ -16,8 +16,9 @@ function listarTodosLosCiclos() {
 
 function obtenerCiclosDeProfesor($idProfesor) {
     $conexion = obtenerConexion();
-    $sql = "SELECT ciclos.* FROM ciclos 
+    $sql = "SELECT ciclos.*, niveles.nombreNivel FROM ciclos 
             JOIN ciclo_profesor ON ciclos.idCiclo = ciclo_profesor.idCiclo 
+            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel
             WHERE ciclo_profesor.idProfesor = $idProfesor";
     $resultado = mysqli_query($conexion, $sql);
     $lista = array();

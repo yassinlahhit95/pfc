@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
 $id = $_SESSION['idEstudiante'];
 
-$notas = []; 
+$notas = listarCalificacionesPorEstudiante($id); 
 
 $tituloDelPagina = "Mis Calificaciones - Portal Estudiantes";
 $seccionActual = 'calificaciones';
@@ -31,26 +31,39 @@ include_once "../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Módulo</th>
-                    <th>1ª Evaluación</th>
+                    <th>1ª Ev</th>
                     <th>1ª Final</th>
-                    <th>2ª Evaluación</th>
+                    <th>2ª Ev</th>
                     <th>2ª Final</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($notas) { ?>
-                    <?php foreach ($notas as $nota) { ?>
+                    <?php foreach ($notas as $nota) { 
+                        $nFinal = $nota['nota_2final'] > 0 ? $nota['nota_2final'] : $nota['nota_1final'];
+                        $aprobado = ($nFinal >= 5);
+                    ?>
                         <tr>
-                            <td><?php echo $nota['nombreModulo']; ?></td>
+                            <td><strong><?php echo $nota['nombreModulo']; ?></strong></td>
                             <td><?php echo $nota['nota_1ev']; ?></td>
                             <td><?php echo $nota['nota_1final']; ?></td>
                             <td><?php echo $nota['nota_2ev']; ?></td>
                             <td><?php echo $nota['nota_2final']; ?></td>
+                            <td>
+                                <?php if ($aprobado) { ?>
+                                    <span class="texto-verde texto-negrita">Aprobado</span>
+                                <?php } else { ?>
+                                    <span class="texto-rojo texto-negrita">Suspenso</span>
+                                <?php } ?>
+                            </td>
+                            <td><small><?php echo $nota['observaciones']; ?></small></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">
+                        <td colspan="7" class="sin-datos">
                             <i class="fas fa-inbox"></i> No hay calificaciones registradas.
                         </td>
                     </tr>

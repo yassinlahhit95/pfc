@@ -83,6 +83,26 @@ function listarProfesoresPorCiclo($idCiclo) {
     return $lista;
 }
 
+function obtenerIdsModulosDeProfesor($idProfesor) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT idModulo FROM profesor_modulo WHERE idProfesor = $idProfesor";
+    $resultado = mysqli_query($conexion, $sql);
+    $ids = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $ids[] = $fila['idModulo'];
+    }
+    mysqli_close($conexion);
+    return $ids;
+}
+
+function limpiarModulosProfesor($idProfesor) {
+    $conexion = obtenerConexion();
+    $sql = "DELETE FROM profesor_modulo WHERE idProfesor = $idProfesor";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
+}
+
 function actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono) {
     $conexion = obtenerConexion();
     $sql = "UPDATE profesores SET nombreProfesor = '$nombre', emailProfesor = '$email', telefonoProfesor = '$telefono' WHERE idProfesor = $idProfesor";

@@ -52,6 +52,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $profesor['direccionProfesor']; ?></td>
                         <td>
                             <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" class="boton-icono boton-ver" title="Asignar Módulos">
+                                    <i class="fas fa-book"></i>
+                                </a>
                                 <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" class="boton-icono boton-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>

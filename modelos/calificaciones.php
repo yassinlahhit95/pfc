@@ -95,6 +95,35 @@ function listarCalificacionesPorProfesor($idProfesor) {
     return $lista;
 }
 
+function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0) {
+    $conexion = obtenerConexion();
+    
+    $where = "WHERE modulos.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesor)";
+    
+    if ($idCiclo > 0) {
+        $where .= " AND modulos.idCiclo = $idCiclo";
+    }
+    
+    if ($idModulo > 0) {
+        $where .= " AND modulos.idModulo = $idModulo";
+    }
+    
+    $sql = "SELECT calificaciones_modulos.*, estudiantes.nombreEstudiante, modulos.nombreModulo 
+            FROM calificaciones_modulos 
+            JOIN estudiantes ON calificaciones_modulos.idEstudiante = estudiantes.idEstudiante 
+            JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
+            $where
+            ORDER BY estudiantes.nombreEstudiante ASC";
+            
+    $resultado = mysqli_query($conexion, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($conexion);
+    return $lista;
+}
+
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $n1ev, $n1f, $n2ev, $n2f, $observaciones) {
     $conexion = obtenerConexion();
     

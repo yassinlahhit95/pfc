@@ -18,7 +18,7 @@ function listarModulos() {
 
 function obtenerModulosDeProfesor($idProfesor) {
     $conexion = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.abreviaturaCiclo FROM modulos 
+    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos 
             JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo 
             JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
             WHERE profesor_modulo.idProfesor = $idProfesor";
@@ -106,6 +106,26 @@ function obtenerModulosPorCiclo($idCiclo) {
     }
     mysqli_close($conexion);
     return $lista;
+}
+
+function obtenerProfesoresDeModulo($idModulo) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT idProfesor FROM profesor_modulo WHERE idModulo = $idModulo";
+    $resultado = mysqli_query($conexion, $sql);
+    $ids = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $ids[] = $fila['idProfesor'];
+    }
+    mysqli_close($conexion);
+    return $ids;
+}
+
+function limpiarProfesoresModulo($idModulo) {
+    $conexion = obtenerConexion();
+    $sql = "DELETE FROM profesor_modulo WHERE idModulo = $idModulo";
+    $resultado = mysqli_query($conexion, $sql);
+    mysqli_close($conexion);
+    return $resultado;
 }
 
 function obtenerHorasTotalesRetosModulo($idModulo) {
