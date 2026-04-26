@@ -3,58 +3,58 @@ session_start();
 require_once "../../../modelos/directores.php";
 
 if (isset($_POST['actualizarPerfilBtn'])) {
-    $idDirectorRecibido = $_POST['idDirector'];
-    $nombreRecibido = trim($_POST['nombreDirector']);
-    $emailRecibido = strtolower(trim($_POST['emailDirector']));
-    $telefonoRecibido = $_POST['telefonoDirector'];
+    $idDirector = $_POST['idDirector'];
+    $nombre = trim($_POST['nombreDirector']);
+    $email = strtolower(trim($_POST['emailDirector']));
+    $tel = $_POST['telefonoDirector'];
     
     // Contraseñas
-    $passwordActual = $_POST['current_password'];
-    $passwordNueva = $_POST['new_password'];
+    $passActual = $_POST['current_password'];
+    $passNueva = $_POST['new_password'];
 
     $hayError = false;
 
-    if (empty($idDirectorRecibido)) {
+    if (empty($idDirector)) {
         header("Location: /pfc/vistas/admin/dashboard.php");
         exit;
     }
 
-    if (empty($nombreRecibido)) {
-        $_SESSION['error'] = strtoupper("EL NOMBRE ES OBLIGATORIO.");
+    if (empty($nombre)) {
+        $_SESSION['error'] = "Oye, el nombre no puede estar vacio.";
         $hayError = true;
-    } else if (empty($emailRecibido)) {
-        $_SESSION['error'] = strtoupper("EL EMAIL ES OBLIGATORIO.");
+    } else if (empty($email)) {
+        $_SESSION['error'] = "Falta el correo electronico, es obligatorio.";
         $hayError = true;
     }
 
-    // Lógica para cambiar la clave
-    if ($hayError == false && !empty($passwordNueva)) {
-        if (empty($passwordActual)) {
-            $_SESSION['error'] = strtoupper("PARA CAMBIAR LA CLAVE DEBE PONER LA ACTUAL.");
+    // Cambiar la contraseña si han puesto algo
+    if ($hayError == false && !empty($passNueva)) {
+        if (empty($passActual)) {
+            $_SESSION['error'] = "Para cambiar la clave tienes que poner la antigua por seguridad.";
             $hayError = true;
         } else {
-            // Verificar clave actual
-            $datosAdmin = obtenerDirectorPorId($idDirectorRecibido);
+            // Miramos si la actual es correcta
+            $datos = obtenerDirectorPorId($idDirector);
             
-            if ($datosAdmin['password'] == $passwordActual) {
-                actualizarPasswordDirector($idDirectorRecibido, $passwordNueva);
+            if ($datos['password'] == $passActual) {
+                actualizarPasswordDirector($idDirector, $passNueva);
             } else {
-                $_SESSION['error'] = strtoupper("LA CONTRASEÑA ACTUAL NO COINCIDE.");
+                $_SESSION['error'] = "La contraseña actual no es correcta, revisala.";
                 $hayError = true;
             }
         }
     }
 
-    // Guardar cambios del perfil
+    // Si no hay fallos, guardamos
     if ($hayError == false) {
-        $seGuardo = actualizarPerfilDirector($idDirectorRecibido, $nombreRecibido, $emailRecibido, $telefonoRecibido);
+        $ok = actualizarPerfilDirector($idDirector, $nombre, $email, $tel);
         
-        if ($seGuardo == true) {
-            $_SESSION['exito'] = strtoupper("MIS DATOS SE HAN ACTUALIZADO.");
+        if ($ok == true) {
+            $_SESSION['exito'] = "Genial! Tus datos se han actualizado correctamente.";
             header("Location: /pfc/vistas/admin/directores/perfil.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("ERROR AL GUARDAR EN LA BASE DE DATOS.");
+            $_SESSION['error'] = "Error raro al guardar en la base de datos...";
         }
     }
 
