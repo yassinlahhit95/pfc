@@ -1,197 +1,92 @@
 <?php
 require_once("conectar.php");
 
-/**
- * Lista todos los mensajes registrados en el sistema para la administración
- */
+// Ver mensajes admin
 function listarTodosLosMensajes() {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor 
-                    FROM reclamaciones r
-                    LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante
-                    LEFT JOIN profesores p ON r.idProfesor = p.idProfesor
-                    ORDER BY r.idReclamacion DESC";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaDeMensajesFinal = array();
-    
-    while ($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaDeMensajesFinal[] = $filaDeDatos;
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaDeMensajesFinal;
+    $db = obtenerConexion();
+    $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN profesores p ON r.idProfesor = p.idProfesor ORDER BY r.idReclamacion DESC";
+    $res = mysqli_query($db, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Obtiene un mensaje específico por su identificador
- */
-function obtenerMensajePorId($idReclamacionRecibido) {
-    $conexionBaseDatos = obtenerConexion();
-    
-    // Usamos sentencias preparadas para mayor seguridad
-    $preparacion = mysqli_prepare($conexionBaseDatos, "SELECT r.*, e.nombreEstudiante, p.nombreProfesor 
-                                                    FROM reclamaciones r
-                                                    LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante
-                                                    LEFT JOIN profesores p ON r.idProfesor = p.idProfesor
-                                                    WHERE r.idReclamacion = ?");
-    
-    mysqli_stmt_bind_param($preparacion, "i", $idReclamacionRecibido);
-    mysqli_stmt_execute($preparacion);
-    
-    $resultadoFinal = mysqli_stmt_get_result($preparacion);
-    $datosDelMensaje = mysqli_fetch_assoc($resultadoFinal);
-    
-    mysqli_stmt_close($preparacion);
-    mysqli_close($conexionBaseDatos);
-    
-    return $datosDelMensaje;
+// Coger por ID
+function obtenerMensajePorId($id) {
+    $db = obtenerConexion();
+    $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN profesores p ON r.idProfesor = p.idProfesor WHERE r.idReclamacion = $id";
+    $res = mysqli_query($db, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($db);
+    return $fila;
 }
 
-/**
- * Cambia el estado de un mensaje a 'atendido' y lo marca como leído
- */
-function marcarMensajeComoLeido($idReclamacionRecibido) {
-    $conexionBaseDatos = obtenerConexion();
-    
-    $preparacion = mysqli_prepare($conexionBaseDatos, "UPDATE reclamaciones SET leido = 1, estadoReclamacion = 'atendido' WHERE idReclamacion = ?");
-    mysqli_stmt_bind_param($preparacion, "i", $idReclamacionRecibido);
-    $seEjecutoCorrectamente = mysqli_stmt_execute($preparacion);
-    
-    mysqli_stmt_close($preparacion);
-    mysqli_close($conexionBaseDatos);
-    
-    return $seEjecutoCorrectamente;
+// Marcar leido
+function marcarMensajeComoLeido($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "UPDATE reclamaciones SET leido = 1, estadoReclamacion = 'atendido' WHERE idReclamacion = $id");
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Guarda una respuesta de texto para un mensaje específico
- */
-function responderMensaje($idReclamacionRecibido, $textoDeLaRespuesta) {
-    $conexionBaseDatos = obtenerConexion();
+// Responder
+function responderMensaje($id, $txt) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "UPDATE reclamaciones SET respuesta = '$txt', estadoReclamacion = 'atendido', leido = 1 WHERE idReclamacion = $id");
     
-    // 1. Primero actualizamos la base de datos
-    $preparacionUpdate = mysqli_prepare($conexionBaseDatos, "UPDATE reclamaciones SET respuesta = ?, estadoReclamacion = 'atendido', leido = 1 WHERE idReclamacion = ?");
-    mysqli_stmt_bind_param($preparacionUpdate, "si", $textoDeLaRespuesta, $idReclamacionRecibido);
-    $seActualizoDB = mysqli_stmt_execute($preparacionUpdate);
-    mysqli_stmt_close($preparacionUpdate);
-    
-    // 2. Lógica de notificaciones opcional (si existe el helper de Firebase)
-    if ($seActualizoDB == true) {
-        $rutaHelperFirebase = __DIR__ . "/../controladores/firebase/firebase_helper.php";
-        if (file_exists($rutaHelperFirebase)) {
-            // Buscamos datos originales para la notificación
-            $sqlBusqueda = "SELECT idEstudiante, idProfesor, emisor_rol, asunto FROM reclamaciones WHERE idReclamacion = $idReclamacionRecibido";
-            $resBusqueda = mysqli_query($conexionBaseDatos, $sqlBusqueda);
-            $datosOriginales = mysqli_fetch_assoc($resBusqueda);
-            
-            if (!empty($datosOriginales)) {
-                require_once $rutaHelperFirebase;
-                $idDestino = 0;
-                $rolDestino = "";
-                
-                if ($datosOriginales['emisor_rol'] == 'estudiante') {
-                    $idDestino = $datosOriginales['idEstudiante'];
-                    $rolDestino = 'estudiante';
-                } else if ($datosOriginales['emisor_rol'] == 'profesor') {
-                    $idDestino = $datosOriginales['idProfesor'];
-                    $rolDestino = 'profesor';
-                }
-                
-                if ($idDestino > 0) {
-                    $tokenDestinatario = obtenerTokenUsuario($idDestino, $rolDestino);
-                    if (!empty($tokenDestinatario)) {
-                        enviarNotificacionFirebase($tokenDestinatario, "Respuesta a: " . $datosOriginales['asunto'], $textoDeLaRespuesta);
-                    }
-                }
+    if ($res) {
+        $ruta = __DIR__ . "/../controladores/firebase/firebase_helper.php";
+        if (file_exists($ruta)) {
+            $f = mysqli_fetch_assoc(mysqli_query($db, "SELECT idEstudiante, idProfesor, emisor_rol, asunto FROM reclamaciones WHERE idReclamacion = $id"));
+            if (isset($f)) {
+                require_once $ruta;
+                $destino = ($f['emisor_rol'] == 'estudiante') ? $f['idEstudiante'] : $f['idProfesor'];
+                $rol = $f['emisor_rol'];
+                $tok = obtenerTokenUsuario($destino, $rol);
+                if ($tok != "") { enviarNotificacionFirebase($tok, "Respuesta a: " . $f['asunto'], $txt); }
             }
         }
     }
-    
-    mysqli_close($conexionBaseDatos);
-    return $seActualizoDB;
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Crea un nuevo mensaje en el sistema
- */
-function insertarNuevoMensaje($idDelEstudiante, $idDelProfesor, $asuntoMensaje, $descripcionMensaje, $fechaDeEnvio, $rolDelEmisor = 'estudiante') {
-    $conexionBaseDatos = obtenerConexion();
-    
-    $sentenciaSQL = "INSERT INTO reclamaciones (idEstudiante, idProfesor, emisor_rol, asunto, descripcion, fecha, estadoReclamacion, leido, respuesta) 
-                     VALUES (?, ?, ?, ?, ?, ?, 'pendiente', 0, '')";
-                     
-    $preparacion = mysqli_prepare($conexionBaseDatos, $sentenciaSQL);
-    
-    // Si los IDs son 0 o vacíos, los enviamos como null a la base de datos
-    $valorEstudiante = !empty($idDelEstudiante) ? $idDelEstudiante : null;
-    $valorProfesor = !empty($idDelProfesor) ? $idDelProfesor : null;
-    
-    mysqli_stmt_bind_param($preparacion, "iissss", $valorEstudiante, $valorProfesor, $rolDelEmisor, $asuntoMensaje, $descripcionMensaje, $fechaDeEnvio);
-    $resultadoOperacion = mysqli_stmt_execute($preparacion);
-    
-    mysqli_stmt_close($preparacion);
-    mysqli_close($conexionBaseDatos);
-    
-    return $resultadoOperacion;
+// Nuevo mensaje
+function insertarNuevoMensaje($idE, $idP, $asu, $desc, $fec, $rol = 'estudiante') {
+    $db = obtenerConexion();
+    $valE = ($idE > 0) ? $idE : 'NULL';
+    $valP = ($idP > 0) ? $idP : 'NULL';
+    $sql = "INSERT INTO reclamaciones (idEstudiante, idProfesor, emisor_rol, asunto, descripcion, fecha, estadoReclamacion, leido, respuesta) VALUES ($valE, $valP, '$rol', '$asu', '$desc', '$fec', 'pendiente', 0, '')";
+    $res = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Lista todos los mensajes enviados/recibidos por un estudiante
- */
-function listarMensajesDeEstudiante($idEstudianteRecibido) {
-    $conexionBaseDatos = obtenerConexion();
-    
-    $sentenciaSQL = "SELECT r.*, p.nombreProfesor 
-                    FROM reclamaciones r
-                    LEFT JOIN profesores p ON r.idProfesor = p.idProfesor
-                    WHERE r.idEstudiante = $idEstudianteRecibido
-                    ORDER BY r.idReclamacion DESC";
-                    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaFinalMensajes = array();
-    
-    while ($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalMensajes[] = $filaDeDatos;
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalMensajes;
+// Mensajes alumno
+function listarMensajesDeEstudiante($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "SELECT r.*, p.nombreProfesor FROM reclamaciones r LEFT JOIN profesores p ON r.idProfesor = p.idProfesor WHERE r.idEstudiante = $id ORDER BY r.idReclamacion DESC");
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Lista todos los mensajes enviados/recibidos por un profesor
- */
-function listarMensajesParaProfesor($idProfesorRecibido) {
-    $conexionBaseDatos = obtenerConexion();
-    
-    $sentenciaSQL = "SELECT r.*, e.nombreEstudiante 
-                    FROM reclamaciones r
-                    LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante
-                    WHERE r.idProfesor = $idProfesorRecibido
-                    ORDER BY r.idReclamacion DESC";
-                    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaFinalMensajes = array();
-    
-    while ($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalMensajes[] = $filaDeDatos;
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalMensajes;
+// Mensajes profe
+function listarMensajesParaProfesor($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "SELECT r.*, e.nombreEstudiante FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante WHERE r.idProfesor = $id ORDER BY r.idReclamacion DESC");
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Elimina un mensaje permanentemente
- */
-function eliminarMensaje($idReclamacionABorrar) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "DELETE FROM reclamaciones WHERE idReclamacion = $idReclamacionABorrar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    
-    return $resultadoOperacion;
+function eliminarMensaje($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "DELETE FROM reclamaciones WHERE idReclamacion = $id");
+    mysqli_close($db);
+    return $res;
 }
 ?>

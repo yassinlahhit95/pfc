@@ -1,160 +1,95 @@
 <?php
 require_once("conectar.php");
 
-/**
- * Obtiene el listado completo de anuncios registrados
- */
+// Ver avisos
 function listarTodosLosAnuncios() {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    $listaFinalAnuncios = array();
-    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        // Mantenemos compatibilidad con nombres de campos antiguos si fuera necesario
-        $filaDeDatos['tituloAnuncio'] = $filaDeDatos['titulo'];
-        $filaDeDatos['contenidoAnuncio'] = $filaDeDatos['mensaje'];
-        $listaFinalAnuncios[] = $filaDeDatos;
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "SELECT * FROM anuncios ORDER BY idAnuncio DESC");
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($res)) {
+        $fila['tituloAnuncio'] = $fila['titulo'];
+        $fila['contenidoAnuncio'] = $fila['mensaje'];
+        $lista[] = $fila;
     }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalAnuncios;
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Crea un nuevo anuncio en el sistema
- */
-function insertarAnuncio($tituloRecibido, $mensajeRecibido, $dirigidoA = 'todos') {
-    $conexionBaseDatos = obtenerConexion();
-    
-    $fechaDeHoy = date('Y-m-d H:i:s');
-    $fechaDeExpiracionCalculada = date('Y-m-d', strtotime('+1 month'));
-    
-    $sentenciaSQL = "INSERT INTO anuncios (titulo, mensaje, fechaAnuncio, fechaExpiracion, dirigidoA) 
-                     VALUES ('$tituloRecibido', '$mensajeRecibido', '$fechaDeHoy', '$fechaDeExpiracionCalculada', '$dirigidoA')";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Meter aviso
+function insertarAnuncio($titulo, $msj, $para = 'todos') {
+    $db = obtenerConexion();
+    $hoy = date('Y-m-d H:i:s');
+    $exp = date('Y-m-d', strtotime('+1 month'));
+    $sql = "INSERT INTO anuncios (titulo, mensaje, fechaAnuncio, fechaExpiracion, dirigidoA) VALUES ('$titulo', '$msj', '$hoy', '$exp', '$para')";
+    $res = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Elimina un anuncio por su ID
- */
-function eliminarAnuncio($idAnuncioABorrar) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "DELETE FROM anuncios WHERE idAnuncio = $idAnuncioABorrar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Borrar
+function eliminarAnuncio($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "DELETE FROM anuncios WHERE idAnuncio = $id");
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Obtiene los datos de un anuncio específico
- */
-function obtenerAnuncioPorId($idAnuncioBuscado) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT * FROM anuncios WHERE idAnuncio = $idAnuncioBuscado";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $datosAnuncio = mysqli_fetch_assoc($resultadoConsulta);
-    
-    if (!empty($datosAnuncio)) {
-        $datosAnuncio['tituloAnuncio'] = $datosAnuncio['titulo'];
-        $datosAnuncio['contenidoAnuncio'] = $datosAnuncio['mensaje'];
+// Coger por ID
+function obtenerAnuncioPorId($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "SELECT * FROM anuncios WHERE idAnuncio = $id");
+    $fila = mysqli_fetch_assoc($res);
+    if (isset($fila)) {
+        $fila['tituloAnuncio'] = $fila['titulo'];
+        $fila['contenidoAnuncio'] = $fila['mensaje'];
     }
-    
-    mysqli_close($conexionBaseDatos);
-    return $datosAnuncio;
+    mysqli_close($db);
+    return $fila;
 }
 
-/**
- * Actualiza los datos de un anuncio existente
- */
-function actualizarAnuncio($idAnuncioAEditar, $tituloNuevo, $mensajeNuevo, $fechaExpiracionNueva, $dirigidoANuevo) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "UPDATE anuncios SET 
-                     titulo = '$tituloNuevo', 
-                     mensaje = '$mensajeNuevo', 
-                     fechaExpiracion = '$fechaExpiracionNueva', 
-                     dirigidoA = '$dirigidoANuevo' 
-                     WHERE idAnuncio = $idAnuncioAEditar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Actualizar
+function actualizarAnuncio($id, $tit, $msj, $exp, $para) {
+    $db = obtenerConexion();
+    $sql = "UPDATE anuncios SET titulo='$tit', mensaje='$msj', fechaExpiracion='$exp', dirigidoA='$para' WHERE idAnuncio=$id";
+    $res = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Cuenta cuántos anuncios no han expirado aún
- */
+// Ver activos
 function contarAnunciosQueEstanActivos() {
-    $conexionBaseDatos = obtenerConexion();
-    $fechaHoy = date('Y-m-d');
-    
-    $sentenciaSQL = "SELECT COUNT(*) as total FROM anuncios WHERE fechaExpiracion >= '$fechaHoy'";
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $filaDeDatos = mysqli_fetch_assoc($resultadoConsulta);
-    
-    $totalActivos = 0;
-    if (!empty($filaDeDatos)) {
-        $totalActivos = $filaDeDatos['total'];
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $totalActivos;
+    $db = obtenerConexion();
+    $hoy = date('Y-m-d');
+    $res = mysqli_query($db, "SELECT COUNT(*) as total FROM anuncios WHERE fechaExpiracion >= '$hoy'");
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($db);
+    return isset($fila['total']) ? $fila['total'] : 0;
 }
 
-/**
- * Lista los anuncios filtrados por el rol del usuario
- */
-function listarAnunciosPorRol($rolDelUsuario) {
-    $conexionBaseDatos = obtenerConexion();
-    $fechaHoy = date('Y-m-d');
-    
-    $sentenciaSQL = "SELECT * FROM anuncios 
-                     WHERE fechaExpiracion >= '$fechaHoy' 
-                     AND (dirigidoA = '$rolDelUsuario' OR dirigidoA = 'todos') 
-                     ORDER BY idAnuncio DESC";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaFinalAnuncios = array();
-    
-    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalAnuncios[] = $filaDeDatos;
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalAnuncios;
+// Listar por rol
+function listarAnunciosPorRol($rol) {
+    $db = obtenerConexion();
+    $hoy = date('Y-m-d');
+    $sql = "SELECT * FROM anuncios WHERE fechaExpiracion >= '$hoy' AND (dirigidoA = '$rol' OR dirigidoA = 'todos') ORDER BY idAnuncio DESC";
+    $res = mysqli_query($db, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
 }
-/**
- * Lista los anuncios más recientes con un límite para la paginación
- */
-function listarAnunciosConPaginas($limiteDeResultados) {
-    $conexionBaseDatos = obtenerConexion();
-    
-    // Obtenemos la página desde la URL si existe
-    $posicionInicio = 0;
+
+// Paginados
+function listarAnunciosConPaginas($lim) {
+    $db = obtenerConexion();
+    $offset = 0;
     if (isset($_GET['p_anuncios'])) {
-        $paginaActual = (int)$_GET['p_anuncios'];
-        if ($paginaActual > 1) {
-            $posicionInicio = ($paginaActual - 1) * $limiteDeResultados;
-        }
+        $pag = (int)$_GET['p_anuncios'];
+        if ($pag > 1) { $offset = ($pag - 1) * $lim; }
     }
-
-    $sentenciaSQL = "SELECT * FROM anuncios 
-                     ORDER BY idAnuncio DESC 
-                     LIMIT $posicionInicio, $limiteDeResultados";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaFinalAnuncios = array();
-    
-    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalAnuncios[] = $filaDeDatos;
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalAnuncios;
+    $res = mysqli_query($db, "SELECT * FROM anuncios ORDER BY idAnuncio DESC LIMIT $offset, $lim");
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
 }
 ?>

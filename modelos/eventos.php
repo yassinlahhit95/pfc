@@ -1,82 +1,47 @@
 <?php
 require_once("conectar.php");
 
-/**
- * Lista todos los eventos programados desde hoy en adelante
- */
+// Proximos eventos
 function listarEventosProximos() {
-    $conexionBaseDatos = obtenerConexion();
-    $fechaDeHoy = date('Y-m-d');
-    
-    $sentenciaSQL = "SELECT * FROM eventos 
-                     WHERE fechaEvento >= '$fechaDeHoy' 
-                     ORDER BY fechaEvento ASC, horaEvento ASC";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaFinalEventos = array();
-    
-    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalEventos[] = $filaDeDatos;
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalEventos;
+    $db = obtenerConexion();
+    $hoy = date('Y-m-d');
+    $res = mysqli_query($db, "SELECT * FROM eventos WHERE fechaEvento >= '$hoy' ORDER BY fechaEvento ASC, horaEvento ASC");
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Registra un nuevo evento en el calendario
- */
-function insertarEvento($tituloRecibido, $descripcionRecibida, $fechaRecibida, $horaRecibida, $ubicacionRecibida) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "INSERT INTO eventos (tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento) 
-                     VALUES ('$tituloRecibido', '$descripcionRecibida', '$fechaRecibida', '$horaRecibida', '$ubicacionRecibida')";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Meter evento
+function insertarEvento($tit, $desc, $fec, $hora, $ubi) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "INSERT INTO eventos (tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento) VALUES ('$tit', '$desc', '$fec', '$hora', '$ubi')");
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Elimina un evento por su ID
- */
-function eliminarEvento($idEventoABorrar) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "DELETE FROM eventos WHERE idEvento = $idEventoABorrar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Borrar
+function eliminarEvento($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "DELETE FROM eventos WHERE idEvento = $id");
+    mysqli_close($db);
+    return $res;
 }
 
-/**
- * Obtiene los datos de un evento específico por su ID
- */
-function obtenerEventoPorId($idEventoBuscado) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT * FROM eventos WHERE idEvento = $idEventoBuscado";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $datosEncontrados = mysqli_fetch_assoc($resultadoConsulta);
-    
-    mysqli_close($conexionBaseDatos);
-    return $datosEncontrados;
+// Coger por ID
+function obtenerEventoPorId($id) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "SELECT * FROM eventos WHERE idEvento = $id");
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($db);
+    return $fila;
 }
 
-/**
- * Actualiza la información de un evento existente
- */
-function actualizarEvento($idEventoAEditar, $tituloNuevo, $descripcionNueva, $fechaNueva, $horaNueva, $ubicacionNueva) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "UPDATE eventos SET 
-                     tituloEvento = '$tituloNuevo', 
-                     descripcionEvento = '$descripcionNueva', 
-                     fechaEvento = '$fechaNueva', 
-                     horaEvento = '$horaNueva', 
-                     ubicacionEvento = '$ubicacionNueva' 
-                     WHERE idEvento = $idEventoAEditar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Actualizar
+function actualizarEvento($id, $tit, $desc, $fec, $hora, $ubi) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "UPDATE eventos SET tituloEvento='$tit', descripcionEvento='$desc', fechaEvento='$fec', horaEvento='$hora', ubicacionEvento='$ubi' WHERE idEvento=$id");
+    mysqli_close($db);
+    return $res;
 }
 ?>

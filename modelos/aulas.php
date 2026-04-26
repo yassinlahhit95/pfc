@@ -1,26 +1,22 @@
 <?php
 require_once("conectar.php");
 
-/**
- * Obtiene el listado completo de aulas disponibles
- */
+// Ver todas las aulas
 function listarAulas() {
     $conexionBaseDatos = obtenerConexion();
     $sentenciaSQL = "SELECT * FROM aulas ORDER BY idAula ASC";
     $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
     
-    $listaFinalAulas = array();
-    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalAulas[] = $filaDeDatos;
+    $listaFinalAulas = [];
+    while($fila = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalAulas[] = $fila;
     }
     
     mysqli_close($conexionBaseDatos);
     return $listaFinalAulas;
 }
 
-/**
- * Registra una nueva aula en el sistema
- */
+// Meter aula nueva
 function insertarAula($nombreDelAula) {
     $conexionBaseDatos = obtenerConexion();
     $sentenciaSQL = "INSERT INTO aulas (nombreAula) VALUES ('$nombreDelAula')";
@@ -30,9 +26,7 @@ function insertarAula($nombreDelAula) {
     return $resultadoOperacion;
 }
 
-/**
- * Elimina una aula por su ID
- */
+// Borrar un aula
 function eliminarAula($idAulaABorrar) {
     $conexionBaseDatos = obtenerConexion();
     $sentenciaSQL = "DELETE FROM aulas WHERE idAula = $idAulaABorrar";
@@ -42,9 +36,7 @@ function eliminarAula($idAulaABorrar) {
     return $resultadoOperacion;
 }
 
-/**
- * Actualiza el nombre de una aula existente
- */
+// Cambiar nombre del aula
 function actualizarAula($idAulaAEditar, $nombreNuevo) {
     $conexionBaseDatos = obtenerConexion();
     $sentenciaSQL = "UPDATE aulas SET nombreAula = '$nombreNuevo' WHERE idAula = $idAulaAEditar";
@@ -54,9 +46,7 @@ function actualizarAula($idAulaAEditar, $nombreNuevo) {
     return $resultadoOperacion;
 }
 
-/**
- * Obtiene los datos de una aula específica por su ID
- */
+// Coger datos de una aula por ID
 function obtenerAulaPorId($idAulaBuscada) {
     $conexionBaseDatos = obtenerConexion();
     $sentenciaSQL = "SELECT * FROM aulas WHERE idAula = $idAulaBuscada";

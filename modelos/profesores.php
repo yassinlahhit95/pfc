@@ -1,187 +1,131 @@
 <?php
 require_once("conectar.php");
 
-/**
- * Obtiene el listado completo de profesores
- */
+// Ver lista de todos los profes
 function listarProfesores() {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT * FROM profesores ORDER BY idProfesor ASC";
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    $listaFinalProfesores = array();
-    while ($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalProfesores[] = $filaDeDatos;
+    $db = obtenerConexion();
+    $sql = "SELECT * FROM profesores ORDER BY idProfesor ASC";
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
     }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalProfesores;
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Registra un nuevo profesor en el sistema
- */
-function insertarProfesor($nombreRecibido, $emailRecibido, $telefonoRecibido, $dniRecibido, $direccionRecibida, $especialidadRecibida = "", $fechaNacimientoRecibida = '1980-01-01', $fechaAltaRecibida = '2026-01-01', $ciudadRecibida = '', $codigoPostalRecibido = '', $observacionesRecibidas = '') {
-    $conexionBaseDatos = obtenerConexion();
+// Meter profe nuevo
+function insertarProfesor($nombre, $email, $tel, $dni, $dir, $esp, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+    $db = obtenerConexion();
+    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, especialidad, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES ('$nombre', '$email', '$tel', '$dni', '$dir', '$esp', '$f_nac', '$f_alta', '$ciudad', '$cp', '$obs')";
+    $resultado = mysqli_query($db, $sql);
     
-    $sentenciaSQL = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, especialidad, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor)
-                     VALUES ('$nombreRecibido', '$emailRecibido', '$telefonoRecibido', '$dniRecibido', '$direccionRecibida', '$especialidadRecibida', '$fechaNacimientoRecibida', '$fechaAltaRecibida', '$ciudadRecibida', '$codigoPostalRecibido', '$observacionesRecibidas')";
-    
-    if (mysqli_query($conexionBaseDatos, $sentenciaSQL)) {
-        $idDelProfesorCreado = mysqli_insert_id($conexionBaseDatos);
-        mysqli_close($conexionBaseDatos);
-        return $idDelProfesorCreado;
+    // Sacamos el ID mas alto (el nuevo)
+    $sqlId = "SELECT MAX(idProfesor) as ultimoId FROM profesores";
+    $resId = mysqli_query($db, $sqlId);
+    $filaId = mysqli_fetch_assoc($resId);
+    $idNuevo = $filaId['ultimoId'];
+
+    mysqli_close($db);
+    return $idNuevo;
+}
+
+// Actualizar un profesor
+function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $esp, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+    $db = obtenerConexion();
+    $sql = "UPDATE profesores SET nombreProfesor='$nombre', emailProfesor='$email', telefonoProfesor='$tel', dniProfesor='$dni', direccionProfesor='$dir', especialidad='$esp', fechaNacimientoProfesor='$f_nac', fechaAltaProfesor='$f_alta', ciudadProfesor='$ciudad', codigoPostalProfesor='$cp', observacionesProfesor='$obs' WHERE idProfesor=$id";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
+}
+
+// Unir profe con ciclo
+function asociarCicloProfesor($idCic, $idProf) {
+    $db = obtenerConexion();
+    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCic, $idProf)";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
+}
+
+// Unir profe con modulo
+function asociarModuloProfesor($idMod, $idProf) {
+    $db = obtenerConexion();
+    $sql = "INSERT INTO profesor_modulo (idModulo, idProfesor) VALUES ($idMod, $idProf)";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
+}
+
+// Quitar profe
+function eliminarProfesor($id) {
+    $db = obtenerConexion();
+    $sql = "DELETE FROM profesores WHERE idProfesor = $id";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
+}
+
+// Datos de un profe por ID
+function obtenerProfesorPorId($id) {
+    $db = obtenerConexion();
+    $sql = "SELECT * FROM profesores WHERE idProfesor = $id";
+    $resultado = mysqli_query($db, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($db);
+    return $fila;
+}
+
+// Ver profes que dan clase en un ciclo
+function listarProfesoresPorCiclo($idCic) {
+    $db = obtenerConexion();
+    $sql = "SELECT p.* FROM profesores p JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor WHERE cp.idCiclo = $idCic ORDER BY p.nombreProfesor ASC";
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
     }
-    
-    mysqli_close($conexionBaseDatos);
-    return false;
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Actualiza la información de un profesor existente
- */
-function actualizarProfesor($idProfesorAEditar, $nombreNuevo, $emailNuevo, $telefonoNuevo, $dniNuevo, $direccionNueva, $especialidadNueva = "", $fechaNacNuevo = '1980-01-01', $fechaAltaNueva = '2026-01-01', $ciudadNueva = '', $cpNuevo = '', $obsNuevas = '') {
-    $conexionBaseDatos = obtenerConexion();
-    
-    $sentenciaSQL = "UPDATE profesores SET 
-                     nombreProfesor = '$nombreNuevo', 
-                     emailProfesor = '$emailNuevo',
-                     telefonoProfesor = '$telefonoNuevo', 
-                     dniProfesor = '$dniNuevo',
-                     direccionProfesor = '$direccionNueva', 
-                     especialidad = '$especialidadNueva',
-                     fechaNacimientoProfesor = '$fechaNacNuevo', 
-                     fechaAltaProfesor = '$fechaAltaNueva',
-                     ciudadProfesor = '$ciudadNueva', 
-                     codigoPostalProfesor = '$cpNuevo', 
-                     observacionesProfesor = '$obsNuevas'
-                     WHERE idProfesor = $idProfesorAEditar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
-}
-
-/**
- * Vincula un profesor con un ciclo formativo
- */
-function asociarCicloProfesor($idDelCiclo, $idDelProfesor) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idDelCiclo, $idDelProfesor)";
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
-}
-
-/**
- * Vincula un profesor con un módulo profesional
- */
-function asociarModuloProfesor($idDelModulo, $idDelProfesor) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "INSERT INTO profesor_modulo (idModulo, idProfesor) VALUES ($idDelModulo, $idDelProfesor)";
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
-}
-
-/**
- * Elimina un profesor del sistema
- */
-function eliminarProfesor($idProfesorABorrar) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "DELETE FROM profesores WHERE idProfesor = $idProfesorABorrar";
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
-}
-
-/**
- * Obtiene los datos de un profesor por su ID
- */
-function obtenerProfesorPorId($idDelProfesorBuscado) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT * FROM profesores WHERE idProfesor = $idDelProfesorBuscado";
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $datosDelProfesor = mysqli_fetch_assoc($resultadoConsulta);
-    
-    mysqli_close($conexionBaseDatos);
-    return $datosDelProfesor;
-}
-
-/**
- * Lista los profesores asignados a un ciclo específico
- */
-function listarProfesoresPorCiclo($idDelCicloConsultado) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT p.* FROM profesores p 
-                     JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor 
-                     WHERE cp.idCiclo = $idDelCicloConsultado 
-                     ORDER BY p.nombreProfesor ASC";
-    
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    $listaFinalProfesores = array();
-    
-    while ($datosFila = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaFinalProfesores[] = $datosFila;
+// Ver que modulos tiene este profe
+function obtenerIdsModulosDeProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "SELECT idModulo FROM profesor_modulo WHERE idProfesor = $idProf";
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila['idModulo']; 
     }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaFinalProfesores;
+    mysqli_close($db);
+    return $lista;
 }
 
-/**
- * Obtiene solo los IDs de los módulos que tiene asignados un profesor
- */
-function obtenerIdsModulosDeProfesor($idDelProfesorConsultado) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "SELECT idModulo FROM profesor_modulo WHERE idProfesor = $idDelProfesorConsultado";
-    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    $listaDeIdsEncontrados = array();
-    while($datosFila = mysqli_fetch_assoc($resultadoConsulta)) {
-        $listaDeIdsEncontrados[] = $datosFila['idModulo'];
-    }
-    
-    mysqli_close($conexionBaseDatos);
-    return $listaDeIdsEncontrados;
+// Borrar todas las clases de un profe
+function limpiarModulosProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "DELETE FROM profesor_modulo WHERE idProfesor = $idProf";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
 }
 
-/**
- * Elimina todas las asignaciones de módulos de un profesor
- */
-function limpiarModulosProfesor($idDelProfesorALimpiar) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "DELETE FROM profesor_modulo WHERE idProfesor = $idDelProfesorALimpiar";
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Cambiar la clave
+function actualizarPasswordProfesor($id, $pass) {
+    $db = obtenerConexion();
+    $sql = "UPDATE profesores SET password = '$pass' WHERE idProfesor = $id";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
 }
 
-function actualizarPasswordProfesor($idProfesorRecibido, $passwordNueva) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "UPDATE profesores SET password = '$passwordNueva' WHERE idProfesor = $idProfesorRecibido";
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
-}
-
-/**
- * Actualiza la información básica del perfil del propio profesor
- */
-function actualizarPerfilProfesor($idProfesorAActualizar, $nombrePerfil, $emailPerfil, $telefonoPerfil) {
-    $conexionBaseDatos = obtenerConexion();
-    $sentenciaSQL = "UPDATE profesores SET 
-                     nombreProfesor = '$nombrePerfil', 
-                     emailProfesor = '$emailPerfil', 
-                     telefonoProfesor = '$telefonoPerfil' 
-                     WHERE idProfesor = $idProfesorAActualizar";
-    
-    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
-    mysqli_close($conexionBaseDatos);
-    return $resultadoOperacion;
+// Datos basicos de perfil propio
+function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
+    $db = obtenerConexion();
+    $sql = "UPDATE profesores SET nombreProfesor='$nombre', emailProfesor='$email', telefonoProfesor='$tel' WHERE idProfesor=$id";
+    $resultado = mysqli_query($db, $sql);
+    mysqli_close($db);
+    return $resultado;
 }
 ?>
