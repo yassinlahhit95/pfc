@@ -1,6 +1,9 @@
 -- --------------------------------------------------------
--- 1. CREACIÓN DE LA BASE DE DATOS
+-- BASE DE DATOS LIMPIA - CPS IBAIONDO
+-- AUTOR: YASSIN LAHHIT
+-- VERSION: 2.0.0
 -- --------------------------------------------------------
+
 CREATE DATABASE IF NOT EXISTS `pfc` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
 USE `pfc`;
 
@@ -9,7 +12,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
--- 2. CONFIGURACIÓN ACADÉMICA BASE
+-- 1. CONFIGURACIÓN ACADÉMICA BASE
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `niveles` (
@@ -18,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `niveles` (
   PRIMARY KEY (`idNivel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Solo insertamos los niveles base
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES 
 (1, 'Grado Medio'), (2, 'Grado Superior');
 
@@ -26,9 +30,6 @@ CREATE TABLE IF NOT EXISTS `aulas` (
   `nombreAula` varchar(50) NOT NULL,
   PRIMARY KEY (`idAula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `aulas` (`idAula`, `nombreAula`) VALUES 
-(1, 'Aula 101'), (2, 'Aula 202'), (3, 'Laboratorio 1'), (4, 'Taller Hardware'), (5, 'Salón de Actos');
 
 CREATE TABLE IF NOT EXISTS `ciclos` (
   `idCiclo` int(11) NOT NULL AUTO_INCREMENT,
@@ -40,12 +41,6 @@ CREATE TABLE IF NOT EXISTS `ciclos` (
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`) VALUES 
-(1, 'Desarrollo de Aplicaciones Web', 'DAW', 1200.00, 2),
-(2, 'Sistemas Microinformáticos y Redes', 'SMR', 800.00, 1),
-(3, 'Administración de Sistemas Informáticos', 'ASIR', 1100.00, 2),
-(4, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM', 1200.00, 2);
-
 CREATE TABLE IF NOT EXISTS `modulos` (
   `idModulo` int(11) NOT NULL AUTO_INCREMENT,
   `nombreModulo` varchar(150) NOT NULL,
@@ -55,13 +50,8 @@ CREATE TABLE IF NOT EXISTS `modulos` (
   CONSTRAINT `fk_modulos_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `modulos` (`idModulo`, `nombreModulo`, `horasMaximas`, `idCiclo`) VALUES 
-(1, 'Despliegue Web', 90, 1), (2, 'Diseño Interfaces', 120, 1), (3, 'Programación PHP', 180, 1),
-(4, 'Montaje Equipos', 140, 2), (5, 'Redes Locales', 160, 2), (6, 'Sistemas en Red', 130, 3),
-(7, 'Bases de Datos', 150, 3), (8, 'Programación Multimedia', 110, 4);
-
 -- --------------------------------------------------------
--- 3. USUARIOS Y ROLES (CON TOKENS PUSH)
+-- 2. USUARIOS Y ROLES
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `profesores` (
@@ -82,10 +72,6 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   PRIMARY KEY (`idProfesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `profesores` (`idProfesor`, `nombreProfesor`, `emailProfesor`, `password`, `telefonoProfesor`, `dniProfesor`, `direccionProfesor`) VALUES 
-(1, 'Juan Pérez', 'juan.perez@email.com', '123456', '611223344', '11223344J', 'Calle Mayor 1'),
-(2, 'María García', 'maria.garcia@email.com', '123456', '622334455', '22334455M', 'Avenida Principal 45');
-
 CREATE TABLE IF NOT EXISTS `estudiantes` (
   `idEstudiante` int(11) NOT NULL AUTO_INCREMENT,
   `nombreEstudiante` varchar(150) NOT NULL,
@@ -99,22 +85,18 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
   `ciudadEstudiante` varchar(100) DEFAULT '',
   `codigoPostalEstudiante` varchar(10) DEFAULT '',
   `observacionesEstudiante` text,
-  `idCiclo` int(11) DEFAULT 1,
+  `idCiclo` int(11) DEFAULT NULL,
   `archivoTFG` varchar(255) DEFAULT '',
-  `fechaSubidaTFG` datetime DEFAULT '2026-01-01 00:00:00',
+  `fechaSubidaTFG` datetime DEFAULT NULL,
   `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idEstudiante`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`, `password`, `dniEstudiante`, `idCiclo`) VALUES 
-(1, 'Ana Martínez', 'ana.mtz@email.com', '123456', '12345678A', 1),
-(2, 'Roberto Solís', 'rober.solis@email.com', '123456', '87654321B', 1);
-
 CREATE TABLE IF NOT EXISTS `directores` (
   `idDirector` int(11) NOT NULL AUTO_INCREMENT,
   `nombreDirector` varchar(150) NOT NULL,
-  `emailDirector` varchar(150) NOT NULL UNIQUE,
+  `emailDirector" varchar(150) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoDirector` varchar(20) DEFAULT '',
   `dniDirector` varchar(20) NOT NULL,
@@ -128,11 +110,12 @@ CREATE TABLE IF NOT EXISTS `directores` (
   PRIMARY KEY (`idDirector`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Insertamos el administrador por defecto para poder acceder
 INSERT INTO `directores` (`idDirector`, `nombreDirector`, `emailDirector`, `password`, `dniDirector`) VALUES 
-(1, 'Admin Principal', 'admin@email.com', '123456', '00000000T');
+(1, 'Administrador Principal', 'admin@email.com', '123456', '00000000T');
 
 -- --------------------------------------------------------
--- 4. GESTIÓN ACADÉMICA Y CALIFICACIONES
+-- 3. GESTIÓN ACADÉMICA Y CALIFICACIONES
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `retos` (
@@ -143,9 +126,6 @@ CREATE TABLE IF NOT EXISTS `retos` (
   `horasReto` int(11) NOT NULL,
   PRIMARY KEY (`idReto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `retos` (`idReto`, `nombreReto`, `fechaInicio`, `fechaFin`, `horasReto`) VALUES 
-(1, 'Web Solidaria', '2026-01-10', '2026-02-15', 40);
 
 CREATE TABLE IF NOT EXISTS `modulo_reto` (
   `idModulo` int(11) NOT NULL,
@@ -180,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `calificaciones_modulos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 5. INVENTARIO Y PRÉSTAMOS
+-- 4. INVENTARIO Y PRÉSTAMOS
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `dispositivos` (
@@ -196,14 +176,14 @@ CREATE TABLE IF NOT EXISTS `prestamos` (
   `idEstudiante` int(11) NOT NULL,
   `numeroSerie` varchar(100) NOT NULL,
   `fechaPrestamo` date NOT NULL,
-  `fechaDevolucion` date DEFAULT '2026-01-01',
+  `fechaDevolucion` date DEFAULT NULL,
   `estadoPrestamo` enum('en curso','devuelto') DEFAULT 'en curso',
   PRIMARY KEY (`idPrestamo`),
   CONSTRAINT `fk_prestamo_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 6. COMUNICACIÓN Y PAGOS
+-- 5. COMUNICACIÓN Y PAGOS
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `anuncios` (
@@ -255,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `eventos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 7. TABLAS DE ASIGNACIÓN (RELACIONES MUCHOS A MUCHOS)
+-- 6. TABLAS DE ASIGNACIÓN
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `ciclo_profesor` (

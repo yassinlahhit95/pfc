@@ -1,80 +1,100 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Estudiantes - Super Admin";
+
+// Validación de sesión simple
+if (isset($_SESSION['idAdmin']) == false) {
+    header("Location: /pfc/index.php");
+    exit;
+}
+
+$titulo_pagina = "GESTIÓN DE ESTUDIANTES - SUPER ADMIN";
 $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/estudiantes.php";
 require_once "../../../modelos/ciclos.php";
 
-$listaEstudiantes = listarEstudiantes();
+// Obtenemos todos los estudiantes de la base de datos
+$listaDeEstudiantesActuales = listarEstudiantes();
 
-$exito = '';
+// Captura de mensajes de sesión para mostrar alertas
+$mensajeExitoAMostrar = "";
 if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
+    $mensajeExitoAMostrar = $_SESSION['exito'];
 }
 
-$error = '';
+$mensajeErrorAMostrar = "";
 if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
+    $mensajeErrorAMostrar = $_SESSION['error'];
 }
+
+// Limpiamos los mensajes para que no se repitan al recargar
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Estudiantes</h1>
+        <h1>LISTADO DE ESTUDIANTES</h1>
     </div>
     <div class="acciones-pagina">
         <a href="/pfc/vistas/admin/estudiantes/agregarEstudiantes.php" class="boton-primario">
-            <i class="fas fa-user-plus"></i> Nuevo Estudiante
+            <i class="fas fa-user-plus"></i> NUEVO ESTUDIANTE
         </a>
     </div>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($mensajeExitoAMostrar != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensajeExitoAMostrar; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+
+<?php if ($mensajeErrorAMostrar != "") { ?>
+    <div class="mensaje-error"><?php echo $mensajeErrorAMostrar; ?></div>
 <?php } ?>
+
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-search"></i> BUSCAR ESTUDIANTE:</label>
+        <input type="text" id="inputBuscarEstudiante" placeholder="Escriba nombre, email o ciclo..." onkeyup="filtrarTabla('inputBuscarEstudiante', 'tablaEstudiantes')">
+    </div>
+</div>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaEstudiantes">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Ciclo</th>
-                    <th>Acciones</th>
+                    <th>NOMBRE COMPLETO</th>
+                    <th>CORREO ELECTRÓNICO</th>
+                    <th>CICLO ASIGNADO</th>
+                    <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaEstudiantes)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay estudiantes registrados</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($listaEstudiantes as $estudiante) { ?>
+                <?php if ($listaDeEstudiantesActuales == false || count($listaDeEstudiantesActuales) == 0) { ?>
                     <tr>
-                        <td><?php echo $estudiante['idEstudiante']; ?></td>
-                        <td><strong><?php echo $estudiante['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $estudiante['emailEstudiante']; ?></td>
-                        <td><?php echo $estudiante['nombreCiclo']; ?></td>
+                        <td colspan="5" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
+                    </tr>
+                <?php } else { ?>
+                    <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
+                    <tr>
+                        <td><?php echo $estudianteIndividual['idEstudiante']; ?></td>
+                        <td><strong><?php echo strtoupper($estudianteIndividual['nombreEstudiante']); ?></strong></td>
+                        <td><?php echo $estudianteIndividual['emailEstudiante']; ?></td>
+                        <td><?php echo strtoupper($estudianteIndividual['nombreCiclo']); ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver ficha">
+                                <a href="/pfc/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
+                                   class="boton-icono boton-ver" title="Ver ficha completa">
                                     <i class="fas fa-id-card"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudiante['idEstudiante']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar">
+                                <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
+                                   class="boton-icono boton-editar" title="Editar información">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" 
-                                      class="d-inline">
-                                    <input type="hidden" name="idEstudiante" value="<?php echo $estudiante['idEstudiante']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" title="Eliminar">
+                                <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
+                                    <input type="hidden" name="idEstudiante" value="<?php echo $estudianteIndividual['idEstudiante']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar" title="Borrar registro">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

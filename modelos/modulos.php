@@ -1,143 +1,209 @@
 <?php
 require_once("conectar.php");
 
+/**
+ * Lista todos los módulos profesionales registrados
+ */
 function listarModulos() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo 
-            FROM modulos 
-            LEFT JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo 
-            ORDER BY idModulo ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo 
+                    FROM modulos 
+                    LEFT JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo 
+                    ORDER BY idModulo ASC";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalModulos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalModulos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalModulos;
 }
 
-function obtenerModulosDeProfesor($idProfesor) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos 
-            JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo 
-            JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
-            WHERE profesor_modulo.idProfesor = $idProfesor";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+/**
+ * Obtiene los módulos que imparte un profesor específico
+ */
+function obtenerModulosDeProfesor($idProfesorRecibido) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos 
+                    JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo 
+                    JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
+                    WHERE profesor_modulo.idProfesor = $idProfesorRecibido";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaModulosProfesor = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaModulosProfesor[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaModulosProfesor;
 }
 
-function listarModulosPorCiclo($idCiclo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM modulos WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+/**
+ * Lista módulos filtrados por ciclo formativo
+ */
+function listarModulosPorCiclo($idCicloRecibido) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM modulos WHERE idCiclo = $idCicloRecibido";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    
+    $listaModulosCiclo = array();
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaModulosCiclo[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaModulosCiclo;
 }
 
-function listarModulosPorProfesor($idProfesor) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo 
-            FROM modulos 
-            JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo 
-            WHERE modulos.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesor) 
-            ORDER BY nombreModulo ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+/**
+ * Lista módulos asignados indirectamente a un profesor a través de sus ciclos
+ */
+function listarModulosPorProfesor($idProfesorRecibido) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo 
+                    FROM modulos 
+                    JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo 
+                    WHERE modulos.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesorRecibido) 
+                    ORDER BY nombreModulo ASC";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalModulos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalModulos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalModulos;
 }
 
-function insertarModulo($nombreModulo, $idCiclo, $horasMaximas) {
-    $conexion = obtenerConexion();
-    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas) 
-            VALUES ('$nombreModulo', $idCiclo, $horasMaximas)";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Registra un nuevo módulo profesional
+ */
+function insertarModulo($nombreModuloRecibido, $idCicloAsociado, $horasMaximasRecibidas) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas) 
+                    VALUES ('$nombreModuloRecibido', $idCicloAsociado, $horasMaximasRecibidas)";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
-    $conexion = obtenerConexion();
-    $sql = "UPDATE modulos SET nombreModulo = '$nombreModulo', idCiclo = $idCiclo, horasMaximas = $horasMaximas 
-            WHERE idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Actualiza los datos de un módulo existente
+ */
+function actualizarModulo($idModuloAEditar, $nombreNuevo, $idCicloNuevo, $horasNuevas) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "UPDATE modulos SET 
+                    nombreModulo = '$nombreNuevo', 
+                    idCiclo = $idCicloNuevo, 
+                    horasMaximas = $horasNuevas 
+                    WHERE idModulo = $idModuloAEditar";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function eliminarModulo($idModulo) {
-    $conexion = obtenerConexion();
-    $sql = "DELETE FROM modulos WHERE idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Elimina un módulo profesional
+ */
+function eliminarModulo($idModuloABorrar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "DELETE FROM modulos WHERE idModulo = $idModuloABorrar";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function obtenerModuloPorId($idModulo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM modulos WHERE idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    return $fila;
+/**
+ * Obtiene los datos de un módulo por su ID
+ */
+function obtenerModuloPorId($idModuloBuscado) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM modulos WHERE idModulo = $idModuloBuscado";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datosModuloEncontrado = mysqli_fetch_assoc($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    return $datosModuloEncontrado;
 }
 
-function obtenerModulosPorCiclo($idCiclo) {
-    $conexion = obtenerConexion();
-    // Aseguramos que sea un número para evitar errores de sintaxis SQL
-    $idCicloLimpio = (int)$idCiclo;
-    $sql = "SELECT * FROM modulos WHERE idCiclo = $idCicloLimpio";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+/**
+ * Obtiene todos los módulos pertenecientes a un ciclo específico
+ */
+function obtenerModulosPorCiclo($idCicloAConsultar) {
+    $conexionBaseDatos = obtenerConexion();
+    $idCicloSeguro = (int)$idCicloAConsultar;
+    $sentenciaSQL = "SELECT * FROM modulos WHERE idCiclo = $idCicloSeguro";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalModulos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalModulos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalModulos;
 }
 
-function obtenerProfesoresDeModulo($idModulo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT idProfesor FROM profesor_modulo WHERE idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    $ids = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $ids[] = $fila['idProfesor'];
+/**
+ * Obtiene los IDs de los profesores que imparten un módulo
+ */
+function obtenerProfesoresDeModulo($idModuloAConsultar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT idProfesor FROM profesor_modulo WHERE idModulo = $idModuloAConsultar";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaDeIdsProfesores = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaDeIdsProfesores[] = $filaDeDatos['idProfesor'];
     }
-    mysqli_close($conexion);
-    return $ids;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaDeIdsProfesores;
 }
 
-function limpiarProfesoresModulo($idModulo) {
-    $conexion = obtenerConexion();
-    $sql = "DELETE FROM profesor_modulo WHERE idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Elimina todas las asignaciones de profesores de un módulo
+ */
+function limpiarProfesoresModulo($idModuloALimpiar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "DELETE FROM profesor_modulo WHERE idModulo = $idModuloALimpiar";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function obtenerHorasTotalesRetosModulo($idModulo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT SUM(retos.horasReto) as total FROM retos 
-            JOIN modulo_reto ON retos.idReto = modulo_reto.idReto 
-            WHERE modulo_reto.idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    $total = 0;
-    if ($fila['total'] > 0) { $total = $fila['total']; }
-    return $total;
+/**
+ * Obtiene la suma total de horas de los retos asociados a un módulo
+ */
+function obtenerHorasTotalesRetosModulo($idModuloAConsultar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT SUM(retos.horasReto) as total_horas FROM retos 
+                    JOIN modulo_reto ON retos.idReto = modulo_reto.idReto 
+                    WHERE modulo_reto.idModulo = $idModuloAConsultar";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datosSuma = mysqli_fetch_assoc($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    
+    $totalFinalHoras = 0;
+    if ($datosSuma['total_horas'] > 0) {
+        $totalFinalHoras = $datosSuma['total_horas'];
+    }
+    return $totalFinalHoras;
 }
 ?>

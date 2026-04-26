@@ -1,187 +1,191 @@
 <?php
 require_once("conectar.php");
 
-function obtenerNotasModulo($idEstudiante, $idModulo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = $idEstudiante AND idModulo = $idModulo";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    return $fila;
+/**
+ * Obtiene las notas de un estudiante en un módulo específico
+ */
+function obtenerNotasModulo($idEstudianteBuscado, $idModuloBuscado) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = $idEstudianteBuscado AND idModulo = $idModuloBuscado";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datosEncontrados = mysqli_fetch_assoc($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    return $datosEncontrados;
 }
 
+/**
+ * Lista todas las calificaciones registradas en el sistema
+ */
 function listarCalificacionesGeneral() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT calificaciones_modulos.*, estudiantes.nombreEstudiante, modulos.nombreModulo 
-            FROM calificaciones_modulos 
-            JOIN estudiantes ON calificaciones_modulos.idEstudiante = estudiantes.idEstudiante 
-            JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
-            ORDER BY idEstudiante ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    mysqli_close($conexion);
-    return $lista;
-}
-
-function obtenerCalificacionPorId($idCalificacion) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM calificaciones_modulos WHERE idCalificacion = $idCalificacion";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    return $fila;
-}
-
-function eliminarCalificacion($idCalificacion) {
-    $conexion = obtenerConexion();
-    $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = $idCalificacion";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
-}
-
-function calificarModuloCompleto($idEstudiante, $idModulo, $nota1eva, $nota1final, $nota2eva, $nota2final) {
-    $conexion = obtenerConexion();
-    $sqlCheck = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = $idEstudiante AND idModulo = $idModulo";
-    $resultadoCheck = mysqli_query($conexion, $sqlCheck);
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT calificaciones_modulos.*, estudiantes.nombreEstudiante, modulos.nombreModulo 
+                    FROM calificaciones_modulos 
+                    JOIN estudiantes ON calificaciones_modulos.idEstudiante = estudiantes.idEstudiante 
+                    JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
+                    ORDER BY estudiantes.idEstudiante ASC";
     
-    if(mysqli_num_rows($resultadoCheck) > 0) {
-        $sql = "UPDATE calificaciones_modulos SET 
-                nota_1ev = '$nota1eva', nota_1final = '$nota1final', 
-                nota_2ev = '$nota2eva', nota_2final = '$nota2final' 
-                WHERE idEstudiante = $idEstudiante AND idModulo = $idModulo";
-    } else {
-        $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final) 
-                VALUES ($idEstudiante, $idModulo, '$nota1eva', '$nota1final', '$nota2eva', '$nota2final')";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalCalificaciones = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalCalificaciones[] = $filaDeDatos;
     }
     
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalCalificaciones;
 }
 
-function listarCalificacionesPorEstudiante($idEstudiante) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT calificaciones_modulos.*, modulos.nombreModulo 
-            FROM calificaciones_modulos 
-            JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
-            WHERE idEstudiante = $idEstudiante";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    mysqli_close($conexion);
-    return $lista;
+/**
+ * Obtiene una calificación específica por su ID
+ */
+function obtenerCalificacionPorId($idCalificacionBuscada) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM calificaciones_modulos WHERE idCalificacion = $idCalificacionBuscada";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datosCalificacion = mysqli_fetch_assoc($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    return $datosCalificacion;
 }
 
-function listarCalificacionesPorProfesor($idProfesor) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT calificaciones_modulos.*, estudiantes.nombreEstudiante, modulos.nombreModulo 
-            FROM calificaciones_modulos 
-            JOIN estudiantes ON calificaciones_modulos.idEstudiante = estudiantes.idEstudiante 
-            JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
-            WHERE modulos.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesor) 
-            ORDER BY estudiantes.nombreEstudiante ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    mysqli_close($conexion);
-    return $lista;
+/**
+ * Elimina un registro de calificación
+ */
+function eliminarCalificacion($idCalificacionABorrar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "DELETE FROM calificaciones_modulos WHERE idCalificacion = $idCalificacionABorrar";
+    $resultadoEliminacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    
+    mysqli_close($conexionBaseDatos);
+    return $resultadoEliminacion;
 }
 
-function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0) {
-    $conexion = obtenerConexion();
+/**
+ * Lista las calificaciones de un estudiante en particular
+ */
+function listarCalificacionesPorEstudiante($idDelEstudianteAConsultar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT calificaciones_modulos.*, modulos.nombreModulo 
+                    FROM calificaciones_modulos 
+                    JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
+                    WHERE idEstudiante = $idDelEstudianteAConsultar";
     
-    $where = "WHERE modulos.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesor)";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaCalificacionesEstudiante = array();
     
-    if ($idCiclo > 0) {
-        $where .= " AND modulos.idCiclo = $idCiclo";
+    while($datosEstudiante = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaCalificacionesEstudiante[] = $datosEstudiante;
     }
     
-    if ($idModulo > 0) {
-        $where .= " AND modulos.idModulo = $idModulo";
+    mysqli_close($conexionBaseDatos);
+    return $listaCalificacionesEstudiante;
+}
+
+/**
+ * Lista calificaciones filtradas para un profesor, ciclo y módulo
+ */
+function listarCalificacionesPorProfesorFiltrado($idProfesorRecibido, $idCicloElegido = 0, $idModuloElegido = 0) {
+    $conexionBaseDatos = obtenerConexion();
+    
+    // Filtro base: solo ciclos que imparte el profesor
+    $condicionWhere = "WHERE modulos.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesorRecibido)";
+    
+    if ($idCicloElegido > 0) {
+        $condicionWhere = $condicionWhere . " AND modulos.idCiclo = $idCicloElegido";
     }
     
-    $sql = "SELECT calificaciones_modulos.*, estudiantes.nombreEstudiante, modulos.nombreModulo 
-            FROM calificaciones_modulos 
-            JOIN estudiantes ON calificaciones_modulos.idEstudiante = estudiantes.idEstudiante 
-            JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
-            $where
-            ORDER BY estudiantes.nombreEstudiante ASC";
+    if ($idModuloElegido > 0) {
+        $condicionWhere = $condicionWhere . " AND modulos.idModulo = $idModuloElegido";
+    }
+    
+    $sentenciaSQL = "SELECT calificaciones_modulos.*, estudiantes.nombreEstudiante, modulos.nombreModulo 
+                    FROM calificaciones_modulos 
+                    JOIN estudiantes ON calificaciones_modulos.idEstudiante = estudiantes.idEstudiante 
+                    JOIN modulos ON calificaciones_modulos.idModulo = modulos.idModulo 
+                    $condicionWhere
+                    ORDER BY estudiantes.nombreEstudiante ASC";
             
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFiltradaFinal = array();
+    
+    while($filaResultados = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFiltradaFinal[] = $filaResultados;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFiltradaFinal;
 }
 
-function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $n1ev, $n1f, $n2ev, $n2f, $observaciones) {
-    $conexion = obtenerConexion();
+/**
+ * Crea o actualiza una calificación completa de un estudiante en un módulo
+ */
+function actualizarOCrearNotaCompleta($idEstudianteRecibido, $idModuloRecibido, $nota1evRecibida, $nota1finalRecibida, $nota2evRecibida, $nota2finalRecibida, $observacionesRecibidas) {
+    $conexionBaseDatos = obtenerConexion();
     
-    // Sanitizar vacíos para decimales sin usar ternarias
-    if ($n1ev == "") { $n1ev = "0.00"; }
-    if ($n1f == "") { $n1f = "0.00"; }
-    if ($n2ev == "") { $n2ev = "0.00"; }
-    if ($n2f == "") { $n2f = "0.00"; }
+    // Aseguramos valores por defecto si vienen vacíos
+    if ($nota1evRecibida == "") { $nota1evRecibida = "0.00"; }
+    if ($nota1finalRecibida == "") { $nota1finalRecibida = "0.00"; }
+    if ($nota2evRecibida == "") { $nota2evRecibida = "0.00"; }
+    if ($nota2finalRecibida == "") { $nota2finalRecibida = "0.00"; }
 
-    $sqlCheck = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = $idEstudiante AND idModulo = $idModulo";
-    $resultadoCheck = mysqli_query($conexion, $sqlCheck);
+    // Comprobar si ya existe la nota
+    $sqlChequeo = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = $idEstudianteRecibido AND idModulo = $idModuloRecibido";
+    $resultadoChequeo = mysqli_query($conexionBaseDatos, $sqlChequeo);
+    $cantidadRegistros = mysqli_num_rows($resultadoChequeo);
     
-    if(mysqli_num_rows($resultadoCheck) > 0) {
-        $sql = "UPDATE calificaciones_modulos SET 
-                nota_1ev = '$n1ev', nota_1final = '$n1f', 
-                nota_2ev = '$n2ev', nota_2final = '$n2f',
-                observaciones = '$observaciones' 
-                WHERE idEstudiante = $idEstudiante AND idModulo = $idModulo";
+    if($cantidadRegistros > 0) {
+        // Actualizar
+        $sentenciaSQL = "UPDATE calificaciones_modulos SET 
+                        nota_1ev = '$nota1evRecibida', 
+                        nota_1final = '$nota1finalRecibida', 
+                        nota_2ev = '$nota2evRecibida', 
+                        nota_2final = '$nota2finalRecibida',
+                        observaciones = '$observacionesRecibidas' 
+                        WHERE idEstudiante = $idEstudianteRecibido AND idModulo = $idModuloRecibido";
     } else {
-        $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) 
-                VALUES ($idEstudiante, $idModulo, '$n1ev', '$n1f', '$n2ev', '$n2f', '$observaciones')";
+        // Insertar
+        $sentenciaSQL = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) 
+                        VALUES ($idEstudianteRecibido, $idModuloRecibido, '$nota1evRecibida', '$nota1finalRecibida', '$nota2evRecibida', '$nota2finalRecibida', '$observacionesRecibidas')";
     }
     
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function listarCalificacionesPorModulo($idModulo) {
-    if ($idModulo == "" || !is_numeric($idModulo)) {
-        return array();
+/**
+ * Lista estudiantes de un módulo y sus notas actuales (para el formulario de ingreso masivo)
+ */
+function listarCalificacionesPorModulo($idModuloConsultado) {
+    $conexionBaseDatos = obtenerConexion();
+    
+    // Buscamos el ID del ciclo al que pertenece el módulo
+    $sqlModulo = "SELECT idCiclo FROM modulos WHERE idModulo = $idModuloConsultado";
+    $resultadoModulo = mysqli_query($conexionBaseDatos, $sqlModulo);
+    $datosDelModulo = mysqli_fetch_assoc($resultadoModulo);
+    
+    $idCicloAsociado = 0;
+    if (!empty($datosDelModulo['idCiclo'])) {
+        $idCicloAsociado = $datosDelModulo['idCiclo'];
     }
     
-    $conexion = obtenerConexion();
-    
-    // Obtener idCiclo sin usar ternarias ni ??
-    $sqlModulo = "SELECT idCiclo FROM modulos WHERE idModulo = $idModulo";
-    $resMod = mysqli_query($conexion, $sqlModulo);
-    $filaMod = mysqli_fetch_assoc($resMod);
-    
-    $idCiclo = 0;
-    if (isset($filaMod['idCiclo'])) {
-        $idCiclo = $filaMod['idCiclo'];
-    }
-    
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, 
-                   cm.nota_1ev as calificacion, cm.observaciones 
-            FROM estudiantes e 
-            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = $idModulo 
-            WHERE e.idCiclo = $idCiclo 
-            ORDER BY e.nombreEstudiante ASC";
+    // Obtenemos todos los estudiantes del ciclo y su nota en este módulo (si existe)
+    $sentenciaSQL = "SELECT e.idEstudiante, e.nombreEstudiante, 
+                           cm.nota_1ev as calificacion, cm.observaciones 
+                    FROM estudiantes e 
+                    LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = $idModuloConsultado 
+                    WHERE e.idCiclo = $idCicloAsociado 
+                    ORDER BY e.nombreEstudiante ASC";
             
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = array();
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaEstudiantesNotas = array();
+    
+    while($datosFila = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaEstudiantesNotas[] = $datosFila;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaEstudiantesNotas;
 }
 ?>

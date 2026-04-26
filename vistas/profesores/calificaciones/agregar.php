@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['idProfesor'])) {
+// Validación de sesión
+if (isset($_SESSION['idProfesor']) == false || $_SESSION['idProfesor'] == "") {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -11,45 +12,57 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idProfesor = $_SESSION['idProfesor'];
+$idProfesorLogueado = $_SESSION['idProfesor'];
 
-$id_ciclo_elegido = 0;
-if (isset($_GET['idCiclo'])) {
-    $id_ciclo_elegido = intval($_GET['idCiclo']);
+// Captura de filtros desde la URL
+$idCicloSeleccionado = 0;
+if (isset($_GET['idCiclo']) && $_GET['idCiclo'] != "") {
+    $idCicloSeleccionado = intval($_GET['idCiclo']);
 }
 
-$id_modulo_elegido = 0;
-if (isset($_GET['idModulo'])) {
-    $id_modulo_elegido = intval($_GET['idModulo']);
+$idModuloSeleccionado = 0;
+if (isset($_GET['idModulo']) && $_GET['idModulo'] != "") {
+    $idModuloSeleccionado = intval($_GET['idModulo']);
 }
 
-// Filtros: Solo los ciclos y módulos asignados al profesor
-$mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
-$modulos_filtrados = array();
-if ($id_ciclo_elegido != 0) {
-    // Solo módulos del ciclo elegido que pertenezcan al profesor
-    $todos_modulos_ciclo = obtenerModulosPorCiclo($id_ciclo_elegido);
-    $mis_modulos_general = obtenerModulosDeProfesor($idProfesor);
-    $mis_ids_modulos = array_column($mis_modulos_general, 'idModulo');
+// Obtener listas para los selectores de filtros
+$listaMisCiclos = obtenerCiclosDeProfesor($idProfesorLogueado);
+$listaModulosFiltrados = array();
+
+if ($idCicloSeleccionado != 0) {
+    // Obtenemos módulos del ciclo y solo los que imparte este profesor
+    $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCicloSeleccionado);
+    $misModulosAsignados = obtenerIdsModulosDeProfesor($idProfesorLogueado);
     
-    foreach ($todos_modulos_ciclo as $m) {
-        if (in_array($m['idModulo'], $mis_ids_modulos)) {
-            $modulos_filtrados[] = $m;
+    foreach ($todosLosModulosDelCiclo as $moduloIndividual) {
+        $idDeEsteModulo = $moduloIndividual['idModulo'];
+        if (in_array($idDeEsteModulo, $misModulosAsignados)) {
+            $listaModulosFiltrados[] = $moduloIndividual;
         }
     }
 }
 
-$estudiantes_calificados = array();
-if ($id_modulo_elegido != 0) {
-    // Obtener estudiantes del ciclo y sus notas para este módulo
-    $estudiantes_calificados = listarCalificacionesPorModulo($id_modulo_elegido);
+// Obtener estudiantes si hay un módulo seleccionado
+$listaEstudiantesAMostrar = array();
+if ($idModuloSeleccionado != 0) {
+    $listaEstudiantesAMostrar = listarCalificacionesPorModulo($idModuloSeleccionado);
 }
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+// Manejo de mensajes de éxito o error
+$mensajeDeError = "";
+if (isset($_SESSION['error']) && $_SESSION['error'] != "") { 
+    $mensajeDeError = $_SESSION['error']; 
+}
+
+$mensajeDeExito = "";
+if (isset($_SESSION['exito']) && $_SESSION['exito'] != "") { 
+    $mensajeDeExito = $_SESSION['exito']; 
+}
+
+// Limpiamos la sesión después de capturar los mensajes
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = "Calificaciones por Módulo - Portal Profesores";
+$tituloDelPagina = "CALIFICACIONES POR MÓDULO - PORTAL PROFESORES";
 $seccionActual = 'calificaciones';
 include_once "../comunes/nav.php";
 ?>
@@ -65,9 +78,9 @@ include_once "../comunes/nav.php";
             <label>1. Seleccione un Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Ciclo --</option>
-                <?php foreach ($mis_ciclos as $cic) { ?>
-                    <option value="<?php echo $cic['idCiclo']; ?>" <?php if($id_ciclo_elegido == $cic['idCiclo']) { echo "selected"; } ?>>
-                        <?php echo $cic['nombreCiclo']; ?>
+                <?php foreach ($listaMisCiclos as $cicloItem) { ?>
+                    <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($idCicloSeleccionado == $cicloItem['idCiclo']) { echo "selected"; } ?>>
+                        <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
                     </option>
                 <?php } ?>
             </select>
@@ -75,11 +88,11 @@ include_once "../comunes/nav.php";
 
         <div class="campo-formulario flexible-rellenar">
             <label>2. Seleccione un Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?php if($id_ciclo_elegido == 0) { echo "disabled"; } ?>>
+            <select name="idModulo" onchange="this.form.submit()" <?php if($idCicloSeleccionado == 0) { echo "disabled"; } ?>>
                 <option value="">-- Seleccionar Módulo --</option>
-                <?php foreach ($modulos_filtrados as $mod) { ?>
-                    <option value="<?php echo $mod['idModulo']; ?>" <?php if($id_modulo_elegido == $mod['idModulo']) { echo "selected"; } ?>>
-                        <?php echo $mod['nombreModulo']; ?>
+                <?php foreach ($listaModulosFiltrados as $moduloItem) { ?>
+                    <option value="<?php echo $moduloItem['idModulo']; ?>" <?php if($idModuloSeleccionado == $moduloItem['idModulo']) { echo "selected"; } ?>>
+                        <?php echo strtoupper($moduloItem['nombreModulo']); ?>
                     </option>
                 <?php } ?>
             </select>
@@ -87,18 +100,18 @@ include_once "../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($mensajeDeExito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensajeDeExito; ?></div>
 <?php } ?>
-<?php if ($error != "") { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($mensajeDeError != "") { ?>
+    <div class="mensaje-error"><?php echo $mensajeDeError; ?></div>
 <?php } ?>
 
-<?php if ($id_modulo_elegido != 0) { ?>
+<?php if ($idModuloSeleccionado != 0) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <form action="/pfc/controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
-            <input type="hidden" name="idModulo" value="<?php echo $id_modulo_elegido; ?>">
-            <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo_elegido; ?>">
+            <input type="hidden" name="idModulo" value="<?php echo $idModuloSeleccionado; ?>">
+            <input type="hidden" name="idCiclo" value="<?php echo $idCicloSeleccionado; ?>">
             
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
@@ -113,38 +126,44 @@ include_once "../comunes/nav.php";
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($estudiantes_calificados)) { ?>
+                        <?php if ($listaEstudiantesAMostrar == false || count($listaEstudiantesAMostrar) == 0) { ?>
                             <tr><td colspan="6" class="sin-datos">No hay estudiantes matriculados en este ciclo</td></tr>
                         <?php } else { ?>
-                            <?php foreach ($estudiantes_calificados as $cal) { 
-                                $id_est = $cal['idEstudiante'];
-                                $notasCompletas = obtenerNotasModulo($id_est, $id_modulo_elegido);
+                            <?php foreach ($listaEstudiantesAMostrar as $estudianteCalificado) { 
+                                $idDelEstudiante = $estudianteCalificado['idEstudiante'];
+                                $notasCompletasDelEstudiante = obtenerNotasModulo($idDelEstudiante, $idModuloSeleccionado);
                                 
-                                $v_1ev = $notasCompletas['nota_1ev'] ?? "";
-                                $v_1f = $notasCompletas['nota_1final'] ?? "";
-                                $v_2ev = $notasCompletas['nota_2ev'] ?? "";
-                                $v_2f = $notasCompletas['nota_2final'] ?? "";
-                                $v_obs = $notasCompletas['observaciones'] ?? "";
+                                $valorNota1Ev = "";
+                                $valorNota1Final = "";
+                                $valorNota2Ev = "";
+                                $valorNota2Final = "";
+                                $textoObservaciones = "";
+
+                                if (isset($notasCompletasDelEstudiante['nota_1ev'])) { $valorNota1Ev = $notasCompletasDelEstudiante['nota_1ev']; }
+                                if (isset($notasCompletasDelEstudiante['nota_1final'])) { $valorNota1Final = $notasCompletasDelEstudiante['nota_1final']; }
+                                if (isset($notasCompletasDelEstudiante['nota_2ev'])) { $valorNota2Ev = $notasCompletasDelEstudiante['nota_2ev']; }
+                                if (isset($notasCompletasDelEstudiante['nota_2final'])) { $valorNota2Final = $notasCompletasDelEstudiante['nota_2final']; }
+                                if (isset($notasCompletasDelEstudiante['observaciones'])) { $textoObservaciones = $notasCompletasDelEstudiante['observaciones']; }
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?php echo $cal['nombreEstudiante']; ?></strong>
-                                    <input type="hidden" name="estudiantes[]" value="<?php echo $id_est; ?>">
+                                    <strong><?php echo strtoupper($estudianteCalificado['nombreEstudiante']); ?></strong>
+                                    <input type="hidden" name="estudiantes[]" value="<?php echo $idDelEstudiante; ?>">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1ev[]" value="<?php echo $v_1ev; ?>" style="width: 60px;">
+                                    <input type="text" name="notas_1ev[]" value="<?php echo $valorNota1Ev; ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1final[]" value="<?php echo $v_1f; ?>" style="width: 60px;">
+                                    <input type="text" name="notas_1final[]" value="<?php echo $valorNota1Final; ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2ev[]" value="<?php echo $v_2ev; ?>" style="width: 60px;">
+                                    <input type="text" name="notas_2ev[]" value="<?php echo $valorNota2Ev; ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2final[]" value="<?php echo $v_2f; ?>" style="width: 60px;">
+                                    <input type="text" name="notas_2final[]" value="<?php echo $valorNota2Final; ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="observaciones[]" value="<?php echo $v_obs; ?>" class="ancho-total">
+                                    <input type="text" name="observaciones[]" value="<?php echo $textoObservaciones; ?>" class="ancho-total">
                                 </td>
                             </tr>
                             <?php } ?>
@@ -153,14 +172,14 @@ include_once "../comunes/nav.php";
                 </table>
             </div>
             
-            <?php if (!empty($estudiantes_calificados)) { ?>
+            <?php if ($listaEstudiantesAMostrar) { ?>
                 <div class="margen-arriba disposicion-flexible alinear-centro">
                     <button type="submit" name="guardarNotas" class="boton-primario">
-                        <i class="fas fa-save"></i> Guardar Todas las Notas
+                        <i class="fas fa-save"></i> GUARDAR TODAS LAS NOTAS
                     </button>
-                    <label style="margin-left: 20px; font-weight: bold; color: #3498db; cursor: pointer;">
+                    <label class="etiqueta-notificacion">
                         <input type="checkbox" name="notificarEstudiantes" value="1"> 
-                        <i class="fas fa-envelope"></i> Notificar a los estudiantes por email
+                        <i class="fas fa-envelope"></i> NOTIFICAR POR EMAIL
                     </label>
                 </div>
             <?php } ?>

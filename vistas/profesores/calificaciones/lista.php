@@ -66,9 +66,16 @@ include_once "../comunes/nav.php";
     </form>
 </div>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-search"></i> BUSCAR EN RESULTADOS:</label>
+        <input type="text" id="inputBuscarNota" placeholder="Escriba nombre del alumno o módulo..." onkeyup="filtrarTabla('inputBuscarNota', 'tablaNotasProf')">
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaNotasProf">
             <thead>
                 <tr>
                     <th>Alumno</th>

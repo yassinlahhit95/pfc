@@ -30,71 +30,70 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
         <div class="cabecera-menu">
             <div class="logo-sistema">
                 <span class="logo-icono">E</span>
-                <span class="texto-negrita">Portal Estudiantes</span>
+                <span class="texto-negrita">PORTAL ESTUDIANTES</span>
             </div>
         </div>
 
         <nav class="menu-navegacion">
-            <a href="/pfc/vistas/estudiantes/dashboard.php" class="enlace-menu <?php echo ($seccionActual == 'inicio' ? 'activo' : ''); ?>">
-                <i class="fas fa-home"></i> <span>Inicio</span>
-            </a>
-
-            <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="enlace-menu <?php echo ($seccionActual == 'perfil' ? 'activo' : ''); ?>">
-                <i class="fas fa-user-circle"></i> <span>Mi Perfil</span>
+            <a href="/pfc/vistas/estudiantes/dashboard.php" class="enlace-menu <?php if ($seccionActual == 'inicio') { echo 'activo'; } ?>">
+                <i class="fas fa-home"></i> <span>INICIO</span>
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Mis Estudios</p>
+                <p class="titulo-de-seccion">MIS ESTUDIOS</p>
 
-                <a href="/pfc/vistas/estudiantes/retos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'retos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-tasks"></i> <span>Mis Retos</span>
+                <a href="/pfc/vistas/estudiantes/retos/lista.php" class="enlace-menu <?php if ($seccionActual == 'retos') { echo 'activo'; } ?>">
+                    <i class="fas fa-tasks"></i> <span>MIS RETOS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/calificaciones/lista.php" class="enlace-menu <?php echo ($seccionActual == 'calificaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>Mis Notas</span>
+                <a href="/pfc/vistas/estudiantes/calificaciones/lista.php" class="enlace-menu <?php if ($seccionActual == 'calificaciones') { echo 'activo'; } ?>">
+                    <i class="fas fa-graduation-cap"></i> <span>MIS NOTAS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/calificaciones/retos.php" class="enlace-menu <?php echo ($seccionActual == 'notas_retos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-tasks"></i> <span>Mis Notas Retos</span>
+                <a href="/pfc/vistas/estudiantes/calificaciones/retos.php" class="enlace-menu <?php if ($seccionActual == 'notas_retos') { echo 'activo'; } ?>">
+                    <i class="fas fa-tasks"></i> <span>MIS NOTAS RETOS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/academico/resultadosFinales.php" class="enlace-menu <?php echo ($seccionActual == 'resultados_finales' ? 'activo' : ''); ?>">
-                    <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
+                <a href="/pfc/vistas/estudiantes/academico/resultadosFinales.php" class="enlace-menu <?php if ($seccionActual == 'resultados_finales') { echo 'activo'; } ?>">
+                    <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/tfg/subir.php" class="enlace-menu <?php echo ($seccionActual == 'tfg' ? 'activo' : ''); ?>">
-                    <i class="fas fa-file-pdf"></i> <span>Mi TFG</span>
+                <a href="/pfc/vistas/estudiantes/tfg/subir.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
+                    <i class="fas fa-file-pdf"></i> <span>MI TFG</span>
                 </a>
             </div>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Portal</p>
+                <p class="titulo-de-seccion">PORTAL</p>
 
-                <a href="/pfc/vistas/estudiantes/anuncios/lista.php" class="enlace-menu <?php echo ($seccionActual == 'anuncios' ? 'activo' : ''); ?>">
-                    <i class="fas fa-bullhorn"></i> <span>Anuncios</span>
+                <a href="/pfc/vistas/estudiantes/anuncios/lista.php" class="enlace-menu <?php if ($seccionActual == 'anuncios') { echo 'activo'; } ?>">
+                    <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-envelope"></i> <span>Mensajería</span>
+                <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/pagos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'pagos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-credit-card"></i> <span>Mis Pagos</span>
+                <a href="/pfc/vistas/estudiantes/pagos/lista.php" class="enlace-menu <?php if ($seccionActual == 'pagos') { echo 'activo'; } ?>">
+                    <i class="fas fa-credit-card"></i> <span>MIS PAGOS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/eventos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'eventos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-calendar-alt"></i> <span>Eventos</span>
+                <a href="/pfc/vistas/estudiantes/eventos/lista.php" class="enlace-menu <?php if ($seccionActual == 'eventos') { echo 'activo'; } ?>">
+                    <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu <?php echo ($seccionActual == 'creditos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-fingerprint"></i> <span>Huella Digital</span>
+                <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="enlace-menu <?php if ($seccionActual == 'perfil') { echo 'activo'; } ?>">
+                    <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
+                </a>
+                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu <?php if ($seccionActual == 'creditos') { echo 'activo'; } ?>">
+                    <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
-                <div style="padding: 15px; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="info-sistema-footer">
                     &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified
                 </div>
             </div>
@@ -103,7 +102,8 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
     <script>
     function toggleMenu() {
-        document.getElementById('barraLateral').classList.toggle('activo');
+        var sidebar = document.getElementById('barraLateral');
+        sidebar.classList.toggle('activo');
     }
     </script>
 

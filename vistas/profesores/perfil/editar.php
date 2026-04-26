@@ -50,6 +50,21 @@ include_once "../comunes/nav.php";
             </div>
         </div>
 
+        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> SEGURIDAD (Opcional)</h3>
+        <p class="texto-atenuado texto-pequeno">Solo rellene estos campos si desea cambiar su contraseña.</p>
+
+        <div class="formulario-cuadricula mt-10">
+            <div class="campo-formulario">
+                <label>CONTRASEÑA ACTUAL:</label>
+                <input type="password" name="current_password" placeholder="Para validar cambios">
+            </div>
+
+            <div class="campo-formulario">
+                <label>NUEVA CONTRASEÑA:</label>
+                <input type="password" name="new_password" placeholder="Mínimo 6 caracteres">
+            </div>
+        </div>
+
         <div class="margen-arriba">
             <button type="submit" name="actualizarPerfil" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios

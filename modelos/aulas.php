@@ -1,48 +1,70 @@
 <?php
 require_once("conectar.php");
 
+/**
+ * Obtiene el listado completo de aulas disponibles
+ */
 function listarAulas() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM aulas ORDER BY idAula ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM aulas ORDER BY idAula ASC";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    
+    $listaFinalAulas = array();
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalAulas[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalAulas;
 }
 
-function insertarAula($nombre) {
-    $conexion = obtenerConexion();
-    $sql = "INSERT INTO aulas (nombreAula) VALUES ('$nombre')";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Registra una nueva aula en el sistema
+ */
+function insertarAula($nombreDelAula) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "INSERT INTO aulas (nombreAula) VALUES ('$nombreDelAula')";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function eliminarAula($idAula) {
-    $conexion = obtenerConexion();
-    $sql = "DELETE FROM aulas WHERE idAula = $idAula";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Elimina una aula por su ID
+ */
+function eliminarAula($idAulaABorrar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "DELETE FROM aulas WHERE idAula = $idAulaABorrar";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function actualizarAula($idAula, $nombre) {
-    $conexion = obtenerConexion();
-    $sql = "UPDATE aulas SET nombreAula = '$nombre' WHERE idAula = $idAula";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Actualiza el nombre de una aula existente
+ */
+function actualizarAula($idAulaAEditar, $nombreNuevo) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "UPDATE aulas SET nombreAula = '$nombreNuevo' WHERE idAula = $idAulaAEditar";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function obtenerAulaPorId($idAula) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM aulas WHERE idAula = $idAula";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    return $fila;
+/**
+ * Obtiene los datos de una aula específica por su ID
+ */
+function obtenerAulaPorId($idAulaBuscada) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM aulas WHERE idAula = $idAulaBuscada";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datosEncontrados = mysqli_fetch_assoc($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    return $datosEncontrados;
 }
 ?>

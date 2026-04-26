@@ -1,31 +1,49 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Profesores - Super Admin";
+
+// Validación de sesión simple
+if (isset($_SESSION['idAdmin']) == false) {
+    header("Location: /pfc/index.php");
+    exit;
+}
+
+$titulo_pagina = "GESTIÓN DE PROFESORES - SUPER ADMIN";
 $seccion = 'profesores';
 include_once "../comunes/nav.php";
 
 require_once "../../../modelos/profesores.php";
 
-$todos_los_profesores = listarProfesores();
+// Obtenemos la lista completa de profesores
+$listaDeTodosLosProfesores = listarProfesores();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+// Captura de mensajes de sesión para alertas
+$mensajeDeError = "";
+if (isset($_SESSION['error'])) { 
+    $mensajeDeError = $_SESSION['error']; 
+}
 
+$mensajeDeExito = "";
+if (isset($_SESSION['exito'])) { 
+    $mensajeDeExito = $_SESSION['exito']; 
+}
+
+// Limpiamos la sesión después de capturar
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Profesores del Centro</h1>
+    <h1>PROFESORES DEL CENTRO</h1>
     <a href="/pfc/vistas/admin/profesores/agregarProfesores.php" class="boton-primario">
-        <i class="fas fa-plus"></i> Nuevo Profesor
+        <i class="fas fa-plus"></i> NUEVO PROFESOR
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($mensajeDeExito != "") { ?>
+    <div class="mensaje-exito"><?php echo $mensajeDeExito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+
+<?php if ($mensajeDeError != "") { ?>
+    <div class="mensaje-error"><?php echo $mensajeDeError; ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -34,33 +52,37 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Especialidad</th>
-                    <th>Acciones</th>
+                    <th>NOMBRE COMPLETO</th>
+                    <th>CORREO ELECTRÓNICO</th>
+                    <th>ESPECIALIDAD / ÁREA</th>
+                    <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_profesores)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay profesores registrados</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($todos_los_profesores as $profesor) { ?>
+                <?php if ($listaDeTodosLosProfesores == false || count($listaDeTodosLosProfesores) == 0) { ?>
                     <tr>
-                        <td><?php echo $profesor['idProfesor']; ?></td>
-                        <td><strong><?php echo $profesor['nombreProfesor']; ?></strong></td>
-                        <td><?php echo $profesor['emailProfesor']; ?></td>
-                        <td><?php echo $profesor['direccionProfesor']; ?></td>
+                        <td colspan="5" class="sin-datos">No hay profesores registrados en el sistema.</td>
+                    </tr>
+                <?php } else { ?>
+                    <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
+                    <tr>
+                        <td><?php echo $profesorIndividual['idProfesor']; ?></td>
+                        <td><strong><?php echo strtoupper($profesorIndividual['nombreProfesor']); ?></strong></td>
+                        <td><?php echo $profesorIndividual['emailProfesor']; ?></td>
+                        <td><?php echo strtoupper($profesorIndividual['especialidad']); ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" class="boton-icono boton-ver" title="Asignar Módulos">
+                                <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
+                                   class="boton-icono boton-ver" title="Asignar Módulos específicos">
                                     <i class="fas fa-book"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesor['idProfesor']; ?>" class="boton-icono boton-editar">
+                                <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
+                                   class="boton-icono boton-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este profesor?')">
-                                    <input type="hidden" name="idProfesor" value="<?php echo $profesor['idProfesor']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                <form action="/pfc/controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
+                                    <input type="hidden" name="idProfesor" value="<?php echo $profesorIndividual['idProfesor']; ?>">
+                                    <button type="submit" class="boton-icono boton-eliminar" title="Eliminar del sistema">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
