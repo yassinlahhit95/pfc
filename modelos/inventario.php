@@ -1,104 +1,143 @@
 <?php
 require_once("conectar.php");
 
+/**
+ * Lista el historial completo de préstamos de dispositivos
+ */
 function listarTodosLosPrestamos() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT prestamos.*, estudiantes.nombreEstudiante, dispositivos.nombreDispositivo as nombreArticulo, dispositivos.idDispositivo as idArticulo 
-            FROM prestamos 
-            JOIN estudiantes ON prestamos.idEstudiante = estudiantes.idEstudiante 
-            JOIN dispositivos ON prestamos.numeroSerie = dispositivos.numeroSerie 
-            ORDER BY idPrestamo DESC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT prestamos.*, estudiantes.nombreEstudiante, dispositivos.nombreDispositivo as nombreArticulo, dispositivos.idDispositivo as idArticulo 
+                    FROM prestamos 
+                    JOIN estudiantes ON prestamos.idEstudiante = estudiantes.idEstudiante 
+                    JOIN dispositivos ON prestamos.numeroSerie = dispositivos.numeroSerie 
+                    ORDER BY idPrestamo DESC";
+                    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalPrestamos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalPrestamos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalPrestamos;
 }
 
+/**
+ * Lista todos los artículos (dispositivos) registrados en el inventario
+ */
 function listarArticulos() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, numeroSerie, estadoDispositivo as estado 
-            FROM dispositivos ORDER BY idDispositivo ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, numeroSerie, estadoDispositivo as estado 
+                    FROM dispositivos ORDER BY idDispositivo ASC";
+                    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalArticulos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalArticulos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalArticulos;
 }
 
+/**
+ * Lista únicamente los préstamos que aún no han sido devueltos
+ */
 function listarPrestamosActivos() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT prestamos.*, estudiantes.nombreEstudiante, dispositivos.nombreDispositivo as nombreArticulo 
-            FROM prestamos 
-            JOIN estudiantes ON prestamos.idEstudiante = estudiantes.idEstudiante 
-            JOIN dispositivos ON prestamos.numeroSerie = dispositivos.numeroSerie 
-            WHERE prestamos.estadoPrestamo = 'en curso' ORDER BY idPrestamo DESC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT prestamos.*, estudiantes.nombreEstudiante, dispositivos.nombreDispositivo as nombreArticulo 
+                    FROM prestamos 
+                    JOIN estudiantes ON prestamos.idEstudiante = estudiantes.idEstudiante 
+                    JOIN dispositivos ON prestamos.numeroSerie = dispositivos.numeroSerie 
+                    WHERE prestamos.estadoPrestamo = 'en curso' ORDER BY idPrestamo DESC";
+                    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaPrestamosActivos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaPrestamosActivos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
-}
-
-function insertarArticulo($nombre, $numeroSerie) {
-    $conexion = obtenerConexion();
-    $numeroSerie = strtoupper($numeroSerie);
-    $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) 
-            VALUES ('$nombre', '$numeroSerie', 'disponible')";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
-}
-
-function eliminarArticulo($idArticulo) {
-    $conexion = obtenerConexion();
-    $sql = "DELETE FROM dispositivos WHERE idDispositivo = $idArticulo";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
-}
-
-function registrarPrestamo($idEstudiante, $idArticulo, $fecha) {
-    $conexion = obtenerConexion();
     
-    $sqlSerie = "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = $idArticulo";
-    $resultadoSerie = mysqli_query($conexion, $sqlSerie);
-    $fila = mysqli_fetch_assoc($resultadoSerie);
-    $numeroSerie = $fila['numeroSerie'];
+    mysqli_close($conexionBaseDatos);
+    return $listaPrestamosActivos;
+}
 
+/**
+ * Registra un nuevo artículo en el inventario
+ */
+function insertarArticulo($nombreRecibido, $numeroSerieRecibido) {
+    $conexionBaseDatos = obtenerConexion();
+    $numeroSerieMayusculas = strtoupper($numeroSerieRecibido);
+    
+    $sentenciaSQL = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) 
+                    VALUES ('$nombreRecibido', '$numeroSerieMayusculas', 'disponible')";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
+}
+
+/**
+ * Elimina un artículo del inventario
+ */
+function eliminarArticulo($idArticuloABorrar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "DELETE FROM dispositivos WHERE idDispositivo = $idArticuloABorrar";
+    
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
+}
+
+/**
+ * Registra el préstamo de un dispositivo a un estudiante
+ */
+function registrarPrestamo($idEstudianteRecibido, $idArticuloRecibido, $fechaDelPrestamo) {
+    $conexionBaseDatos = obtenerConexion();
+    
+    // 1. Buscamos el número de serie del dispositivo
+    $sqlSerie = "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = $idArticuloRecibido";
+    $resSerie = mysqli_query($conexionBaseDatos, $sqlSerie);
+    $datosArticulo = mysqli_fetch_assoc($resSerie);
+    $numeroDeSerie = $datosArticulo['numeroSerie'];
+
+    // 2. Insertamos el registro en la tabla de préstamos
     $sqlInsert = "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) 
-                  VALUES ($idEstudiante, '$numeroSerie', '$fecha', 'en curso')";
-    mysqli_query($conexion, $sqlInsert);
+                  VALUES ($idEstudianteRecibido, '$numeroDeSerie', '$fechaDelPrestamo', 'en curso')";
+    mysqli_query($conexionBaseDatos, $sqlInsert);
 
-    $sqlUpdate = "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = $idArticulo";
-    $resultado = mysqli_query($conexion, $sqlUpdate);
+    // 3. Cambiamos el estado del dispositivo a 'prestado'
+    $sqlUpdate = "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = $idArticuloRecibido";
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sqlUpdate);
 
-    mysqli_close($conexion);
-    return $resultado;
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 
-function devolverPrestamo($idPrestamo) {
-    $conexion = obtenerConexion();
-    $fecha = date('Y-m-d');
+/**
+ * Registra la devolución de un dispositivo
+ */
+function devolverPrestamo($idPrestamoRecibido) {
+    $conexionBaseDatos = obtenerConexion();
+    $fechaDeHoy = date('Y-m-d');
     
-    $sqlSerie = "SELECT numeroSerie FROM prestamos WHERE idPrestamo = $idPrestamo";
-    $resultadoSerie = mysqli_query($conexion, $sqlSerie);
-    $fila = mysqli_fetch_assoc($resultadoSerie);
-    $numeroSerie = $fila['numeroSerie'];
+    // 1. Buscamos el número de serie asociado a este préstamo
+    $sqlSerie = "SELECT numeroSerie FROM prestamos WHERE idPrestamo = $idPrestamoRecibido";
+    $resSerie = mysqli_query($conexionBaseDatos, $sqlSerie);
+    $datosPrestamo = mysqli_fetch_assoc($resSerie);
+    $numeroDeSerie = $datosPrestamo['numeroSerie'];
 
-    $sqlPrestamo = "UPDATE prestamos SET fechaDevolucion = '$fecha', estadoPrestamo = 'devuelto' WHERE idPrestamo = $idPrestamo";
-    mysqli_query($conexion, $sqlPrestamo);
+    // 2. Marcamos el préstamo como 'devuelto'
+    $sqlPrestamo = "UPDATE prestamos SET fechaDevolucion = '$fechaDeHoy', estadoPrestamo = 'devuelto' WHERE idPrestamo = $idPrestamoRecibido";
+    mysqli_query($conexionBaseDatos, $sqlPrestamo);
 
-    $sqlArticulo = "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = '$numeroSerie'";
-    $resultado = mysqli_query($conexion, $sqlArticulo);
+    // 3. Cambiamos el estado del dispositivo a 'disponible'
+    $sqlArticulo = "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = '$numeroDeSerie'";
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sqlArticulo);
 
-    mysqli_close($conexion);
-    return $resultado;
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
 }
 ?>

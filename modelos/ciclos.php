@@ -1,124 +1,154 @@
 <?php
 require_once("conectar.php");
 
+/**
+ * Lista todos los ciclos formativos con su nivel académico
+ */
 function listarTodosLosCiclos() {
-    $conexion = obtenerConexion();
-    $sql = "SELECT ciclos.*, niveles.nombreNivel FROM ciclos 
-            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel ORDER BY idCiclo ASC";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = array();
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT ciclos.*, niveles.nombreNivel FROM ciclos 
+                     LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel 
+                     ORDER BY ciclos.idCiclo ASC";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaFinalCiclos = array();
+    
+    while($filaDeDatos = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaFinalCiclos[] = $filaDeDatos;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaFinalCiclos;
 }
 
-function obtenerCiclosDeProfesor($idProfesor) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT ciclos.*, niveles.nombreNivel FROM ciclos 
-            JOIN ciclo_profesor ON ciclos.idCiclo = ciclo_profesor.idCiclo 
-            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel
-            WHERE ciclo_profesor.idProfesor = $idProfesor";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = array();
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+/**
+ * Obtiene los ciclos que imparte un profesor específico
+ */
+function obtenerCiclosDeProfesor($idProfesorRecibido) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT ciclos.*, niveles.nombreNivel FROM ciclos 
+                     JOIN ciclo_profesor ON ciclos.idCiclo = ciclo_profesor.idCiclo 
+                     LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel
+                     WHERE ciclo_profesor.idProfesor = $idProfesorRecibido";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $listaCiclosProfesor = array();
+    
+    while($datosCiclo = mysqli_fetch_assoc($resultadoConsulta)) {
+        $listaCiclosProfesor[] = $datosCiclo;
     }
-    mysqli_close($conexion);
-    return $lista;
+    
+    mysqli_close($conexionBaseDatos);
+    return $listaCiclosProfesor;
 }
 
-function insertarNuevoCiclo($nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio = 1000.00) {
-    $conexion = obtenerConexion();
-    // descripcionCiclo se inserta como vacío ya que se eliminó del formulario
-    $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, descripcionCiclo, idNivel, precioCiclo) 
-            VALUES ('$nombre', '$abreviatura', '', $idNivel, $precio)";
-    if (mysqli_query($conexion, $sql)) {
-        $idCiclo = mysqli_insert_id($conexion);
-        foreach ($profesores as $idProf) {
-            $sqlProf = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProf)";
-            mysqli_query($conexion, $sqlProf);
+/**
+ * Crea un nuevo ciclo formativo y asocia sus profesores y aulas
+ */
+function insertarNuevoCiclo($nombreNuevo, $abreviaturaNueva, $idNivelElegido, $listaIdsProfesores, $listaIdsAulas, $precioDelCiclo = 1000.00) {
+    $conexionBaseDatos = obtenerConexion();
+    
+    $sentenciaSQL = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, descripcionCiclo, idNivel, precioCiclo) 
+                     VALUES ('$nombreNuevo', '$abreviaturaNueva', '', $idNivelElegido, $precioDelCiclo)";
+    
+    if (mysqli_query($conexionBaseDatos, $sentenciaSQL)) {
+        $idDelCicloCreado = mysqli_insert_id($conexionBaseDatos);
+        
+        // Asociar profesores
+        foreach ($listaIdsProfesores as $idProfesorIndividual) {
+            $sqlAsociarProf = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idDelCicloCreado, $idProfesorIndividual)";
+            mysqli_query($conexionBaseDatos, $sqlAsociarProf);
         }
-        foreach ($aulas as $idAula) {
-            $sqlAula = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCiclo, $idAula)";
-            mysqli_query($conexion, $sqlAula);
+        
+        // Asociar aulas
+        foreach ($listaIdsAulas as $idAulaIndividual) {
+            $sqlAsociarAula = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idDelCicloCreado, $idAulaIndividual)";
+            mysqli_query($conexionBaseDatos, $sqlAsociarAula);
         }
-        mysqli_close($conexion);
+        
+        mysqli_close($conexionBaseDatos);
         return true;
     }
-    mysqli_close($conexion);
+    
+    mysqli_close($conexionBaseDatos);
     return false;
 }
 
-function actualizarCicloExistente($id, $nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio = 1000.00) {
-    $conexion = obtenerConexion();
-    // descripcionCiclo no se actualiza (se mantiene o se deja vacío)
-    $sql = "UPDATE ciclos SET nombreCiclo = '$nombre', abreviaturaCiclo = '$abreviatura', idNivel = $idNivel, precioCiclo = $precio 
-            WHERE idCiclo = $id";
-    if (mysqli_query($conexion, $sql)) {
-        $sqlDelProf = "DELETE FROM ciclo_profesor WHERE idCiclo = $id";
-        mysqli_query($conexion, $sqlDelProf);
-        foreach ($profesores as $idProf) {
-            $sqlInsProf = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($id, $idProf)";
-            mysqli_query($conexion, $sqlInsProf);
+/**
+ * Actualiza los datos de un ciclo y refresca sus asociaciones
+ */
+function actualizarCicloExistente($idCicloAEditar, $nombreNuevo, $abreviaturaNueva, $idNivelNuevo, $listaProfesoresNuevos, $listaAulasNuevas, $precioNuevo = 1000.00) {
+    $conexionBaseDatos = obtenerConexion();
+    
+    $sentenciaSQL = "UPDATE ciclos SET 
+                     nombreCiclo = '$nombreNuevo', 
+                     abreviaturaCiclo = '$abreviaturaNueva', 
+                     idNivel = $idNivelNuevo, 
+                     precioCiclo = $precioNuevo 
+                     WHERE idCiclo = $idCicloAEditar";
+    
+    if (mysqli_query($conexionBaseDatos, $sentenciaSQL)) {
+        // Limpiar y actualizar profesores
+        mysqli_query($conexionBaseDatos, "DELETE FROM ciclo_profesor WHERE idCiclo = $idCicloAEditar");
+        foreach ($listaProfesoresNuevos as $idProfesorItem) {
+            mysqli_query($conexionBaseDatos, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCicloAEditar, $idProfesorItem)");
         }
-        $sqlDelAula = "DELETE FROM ciclo_aula WHERE idCiclo = $id";
-        mysqli_query($conexion, $sqlDelAula);
-        foreach ($aulas as $idAula) {
-            $sqlInsAula = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($id, $idAula)";
-            mysqli_query($conexion, $sqlInsAula);
+        
+        // Limpiar y actualizar aulas
+        mysqli_query($conexionBaseDatos, "DELETE FROM ciclo_aula WHERE idCiclo = $idCicloAEditar");
+        foreach ($listaAulasNuevas as $idAulaItem) {
+            mysqli_query($conexionBaseDatos, "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCicloAEditar, $idAulaItem)");
         }
-        mysqli_close($conexion);
+        
+        mysqli_close($conexionBaseDatos);
         return true;
     }
-    mysqli_close($conexion);
+    
+    mysqli_close($conexionBaseDatos);
     return false;
 }
 
-function eliminarCiclo($idCiclo) {
-    $conexion = obtenerConexion();
-    $sql = "DELETE FROM ciclos WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($conexion, $sql);
-    mysqli_close($conexion);
-    return $resultado;
+/**
+ * Elimina un ciclo formativo
+ */
+function eliminarCiclo($idCicloABorrar) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "DELETE FROM ciclos WHERE idCiclo = $idCicloABorrar";
+    
+    $resultadoEliminacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoEliminacion;
 }
 
-function obtenerCicloPorId($id) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT * FROM ciclos WHERE idCiclo = $id";
-    $resultado = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($conexion);
-    return $fila;
+/**
+ * Obtiene los datos de un ciclo por su ID
+ */
+function obtenerCicloPorId($idCicloBuscado) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT * FROM ciclos WHERE idCiclo = $idCicloBuscado";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datosCicloEncontrado = mysqli_fetch_assoc($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    return $datosCicloEncontrado;
 }
 
-function obtenerProfesoresDeUnCiclo($idCiclo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = array();
-    while($fila = mysqli_fetch_assoc($resultado)) { $lista[] = $fila; }
-    mysqli_close($conexion);
-    return $lista;
-}
-
-function obtenerAulasDeUnCiclo($idCiclo) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT idAula FROM ciclo_aula WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($conexion, $sql);
-    $lista = array();
-    while($fila = mysqli_fetch_assoc($resultado)) { $lista[] = $fila; }
-    mysqli_close($conexion);
-    return $lista;
-}
-
-function comprobarNombreEnOtroCiclo($nombre, $id) {
-    $conexion = obtenerConexion();
-    $sql = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '$nombre' AND idCiclo != $id";
-    $resultado = mysqli_query($conexion, $sql);
-    $num = mysqli_num_rows($resultado);
-    mysqli_close($conexion);
-    return $num > 0;
+/**
+ * Verifica si ya existe otro ciclo con el mismo nombre
+ */
+function comprobarNombreEnOtroCiclo($nombreAChequear, $idCicloActual) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '$nombreAChequear' AND idCiclo != $idCicloActual";
+    
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $cantidadRegistros = mysqli_num_rows($resultadoConsulta);
+    
+    mysqli_close($conexionBaseDatos);
+    
+    if ($cantidadRegistros > 0) {
+        return true;
+    }
+    return false;
 }
 ?>

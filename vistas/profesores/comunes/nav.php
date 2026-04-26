@@ -31,79 +31,78 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
         <div class="cabecera-menu">
             <div class="logo-sistema">
                 <span class="logo-icono">P</span>
-                <span class="texto-negrita">Portal Profesores</span>
+                <span class="texto-negrita">PORTAL PROFESORES</span>
             </div>
         </div>
 
         <nav class="menu-navegacion">
-            <a href="/pfc/vistas/profesores/dashboard.php" class="enlace-menu <?php echo ($seccionActual == 'inicio' ? 'activo' : ''); ?>">
-                <i class="fas fa-home"></i> <span>Inicio</span>
-            </a>
-
-            <a href="/pfc/vistas/profesores/perfil/ver.php" class="enlace-menu <?php echo ($seccionActual == 'perfil' ? 'activo' : ''); ?>">
-                <i class="fas fa-user-circle"></i> <span>Mi Perfil</span>
+            <a href="/pfc/vistas/profesores/dashboard.php" class="enlace-menu <?php if ($seccionActual == 'inicio') { echo 'activo'; } ?>">
+                <i class="fas fa-home"></i> <span>INICIO</span>
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Gestión Académica</p>
+                <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
                 
-                <a href="/pfc/vistas/profesores/estudiantes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'estudiantes' ? 'activo' : ''); ?>">
-                    <i class="fas fa-user-graduate"></i> <span>Estudiantes</span>
+                <a href="/pfc/vistas/profesores/estudiantes/lista.php" class="enlace-menu <?php if ($seccionActual == 'estudiantes') { echo 'activo'; } ?>">
+                    <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/ciclos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'ciclos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-layer-group"></i> <span>Mis Ciclos</span>
+                <a href="/pfc/vistas/profesores/ciclos/lista.php" class="enlace-menu <?php if ($seccionActual == 'ciclos') { echo 'activo'; } ?>">
+                    <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/modulos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'modulos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-cubes"></i> <span>Módulos</span>
+                <a href="/pfc/vistas/profesores/modulos/lista.php" class="enlace-menu <?php if ($seccionActual == 'modulos') { echo 'activo'; } ?>">
+                    <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/retos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'retos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-tasks"></i> <span>Retos</span>
+                <a href="/pfc/vistas/profesores/retos/lista.php" class="enlace-menu <?php if ($seccionActual == 'retos') { echo 'activo'; } ?>">
+                    <i class="fas fa-tasks"></i> <span>RETOS</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="enlace-menu <?php echo ($seccionActual == 'calificaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>Notas Módulos</span>
+                <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="enlace-menu <?php if ($seccionActual == 'calificaciones') { echo 'activo'; } ?>">
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/calificaciones/retos.php" class="enlace-menu <?php echo ($seccionActual == 'notas_retos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-tasks"></i> <span>Notas Retos</span>
+                <a href="/pfc/vistas/profesores/calificaciones/retos.php" class="enlace-menu <?php if ($seccionActual == 'notas_retos') { echo 'activo'; } ?>">
+                    <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/academico/resultadosFinales.php" class="enlace-menu <?php echo ($seccionActual == 'resultados_finales' ? 'activo' : ''); ?>">
-                    <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
+                <a href="/pfc/vistas/profesores/academico/resultadosFinales.php" class="enlace-menu <?php if ($seccionActual == 'resultados_finales') { echo 'activo'; } ?>">
+                    <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/tfg/lista.php" class="enlace-menu <?php echo ($seccionActual == 'tfg' ? 'activo' : ''); ?>">
-                    <i class="fas fa-file-pdf"></i> <span>Gestión TFG</span>
+                <a href="/pfc/vistas/profesores/tfg/lista.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
+                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
                 </a>
             </div>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Comunicación</p>
+                <p class="titulo-de-seccion">COMUNICACIÓN</p>
 
-                <a href="/pfc/vistas/profesores/anuncios/lista.php" class="enlace-menu <?php echo ($seccionActual == 'anuncios' ? 'activo' : ''); ?>">
-                    <i class="fas fa-bullhorn"></i> <span>Anuncios</span>
+                <a href="/pfc/vistas/profesores/anuncios/lista.php" class="enlace-menu <?php if ($seccionActual == 'anuncios') { echo 'activo'; } ?>">
+                    <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php echo ($seccionActual == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-paper-plane"></i> <span>Mensajería</span>
+                <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
+                    <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/eventos/lista.php" class="enlace-menu <?php echo ($seccionActual == 'eventos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-calendar-alt"></i> <span>Eventos</span>
+                <a href="/pfc/vistas/profesores/eventos/lista.php" class="enlace-menu <?php if ($seccionActual == 'eventos') { echo 'activo'; } ?>">
+                    <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu <?php echo ($seccionActual == 'creditos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-fingerprint"></i> <span>Huella Digital</span>
+                <a href="/pfc/vistas/profesores/perfil/ver.php" class="enlace-menu <?php if ($seccionActual == 'perfil') { echo 'activo'; } ?>">
+                    <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
+                </a>
+                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu <?php if ($seccionActual == 'creditos') { echo 'activo'; } ?>">
+                    <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
-                <div style="padding: 15px; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="info-sistema-footer">
                     &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified
                 </div>
             </div>
@@ -112,7 +111,8 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 
     <script>
     function toggleMenu() {
-        document.getElementById('barraLateral').classList.toggle('activo');
+        var sidebar = document.getElementById('barraLateral');
+        sidebar.classList.toggle('activo');
     }
     </script>
 

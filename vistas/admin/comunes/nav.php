@@ -1,4 +1,5 @@
 <?php
+// Comprobación de seguridad: Solo administradores pueden ver esta navegación
 if (isset($_SESSION['idAdmin']) == false) {
     header("Location: /pfc/index.php");
     exit;
@@ -8,19 +9,20 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
-$totalEstudiantes = contarEstudiantes();
-$totalProfesores = contarProfesores();
-$totalDirectores = contarDirectores();
-$totalPagos = contarPagos();
-$totalAnuncios = contarAnuncios();
-$totalReclamaciones = contarReclamaciones();
-$totalCiclos = contarCiclos();
-$totalModulos = contarModulos();
-$totalRetos = contarRetos();
-$totalAulas = contarAulas();
-$totalInventario = contarInventario();
-$totalPrestamos = contarPrestamosActivos();
-$totalTFG = contarTFGsSubidos();
+// Obtenemos todos los contadores para las etiquetas del menú
+$cantidadAlumnosMenu = contarEstudiantes();
+$cantidadProfesoresMenu = contarProfesores();
+$cantidadDirectoresMenu = contarDirectores();
+$cantidadPagosMenu = contarPagos();
+$cantidadAnunciosMenu = contarAnuncios();
+$cantidadMensajesMenu = contarReclamaciones();
+$cantidadCiclosMenu = contarCiclos();
+$cantidadModulosMenu = contarModulos();
+$cantidadRetosMenu = contarRetos();
+$cantidadAulasMenu = contarAulas();
+$cantidadArticulosMenu = contarInventario();
+$cantidadPrestamosMenu = contarPrestamosActivos();
+$cantidadTFGMenu = contarTFGsSubidos();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -35,7 +37,6 @@ $totalTFG = contarTFGsSubidos();
 </head>
 <body>
 
-
 <button class="menu-toggle solo-movil" onclick="toggleMenu()">
     <i class="fas fa-bars"></i>
 </button>
@@ -43,115 +44,118 @@ $totalTFG = contarTFGsSubidos();
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <h3>Super Admin</h3>
+            <h3>SUPER ADMIN</h3>
         </div>
 
         <nav class="menu-navegacion">
-            <a href="/pfc/vistas/admin/dashboard.php" class="enlace-menu <?php echo ($seccion == 'inicio' ? 'activo' : ''); ?>">
-                <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+            <a href="/pfc/vistas/admin/dashboard.php" class="enlace-menu <?php if ($seccion == 'inicio') { echo 'activo'; } ?>">
+                <i class="fas fa-chart-line"></i> <span>DASHBOARD</span>
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Gestión Académica</p>
+                <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
                 
-                <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?php echo ($seccion == 'estudiantes' ? 'activo' : ''); ?>">
-                    <i class="fas fa-user-graduate"></i> <span>Estudiantes</span>
-                    <span class="etiqueta-contador"><?php echo $totalEstudiantes; ?></span>
+                <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?php if ($seccion == 'estudiantes') { echo 'activo'; } ?>">
+                    <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadAlumnosMenu; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/ciclos/verCiclos.php" class="enlace-menu <?php echo ($seccion == 'ciclos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-layer-group"></i> <span>Ciclos Formativos</span>
-                    <span class="etiqueta-contador"><?php echo $totalCiclos; ?></span>
+                <a href="/pfc/vistas/admin/ciclos/verCiclos.php" class="enlace-menu <?php if ($seccion == 'ciclos') { echo 'activo'; } ?>">
+                    <i class="fas fa-layer-group"></i> <span>CICLOS FORMATIVOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadCiclosMenu; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/modulos/verModulos.php" class="enlace-menu <?php echo ($seccion == 'modulos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-book"></i> <span>Módulos</span>
-                    <span class="etiqueta-contador"><?php echo $totalModulos; ?></span>
+                <a href="/pfc/vistas/admin/modulos/verModulos.php" class="enlace-menu <?php if ($seccion == 'modulos') { echo 'activo'; } ?>">
+                    <i class="fas fa-book"></i> <span>MÓDULOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadModulosMenu; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/retos/verRetos.php" class="enlace-menu <?php echo ($seccion == 'retos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-tasks"></i> <span>Retos / Proyectos</span>
-                    <span class="etiqueta-contador"><?php echo $totalRetos; ?></span>
+                <a href="/pfc/vistas/admin/retos/verRetos.php" class="enlace-menu <?php if ($seccion == 'retos') { echo 'activo'; } ?>">
+                    <i class="fas fa-tasks"></i> <span>RETOS / PROYECTOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadRetosMenu; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?php echo ($seccion == 'notas_modulos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>Notas Módulos</span>
+                <a href="/pfc/vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?php if ($seccion == 'notas_modulos') { echo 'activo'; } ?>">
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
                 </a>
 
-                <a href="/pfc/vistas/admin/academico/calificacionesRetos.php" class="enlace-menu <?php echo ($seccion == 'notas_retos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-tasks"></i> <span>Notas Retos</span>
+                <a href="/pfc/vistas/admin/academico/calificacionesRetos.php" class="enlace-menu <?php if ($seccion == 'notas_retos') { echo 'activo'; } ?>">
+                    <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 
-                <a href="/pfc/vistas/admin/academico/resultadosFinales.php" class="enlace-menu <?php echo ($seccion == 'resultados_modulos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-check-double"></i> <span>Resultados Finales</span>
+                <a href="/pfc/vistas/admin/academico/resultadosFinales.php" class="enlace-menu <?php if ($seccion == 'resultados_modulos') { echo 'activo'; } ?>">
+                    <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="/pfc/vistas/admin/tfg/verTFGs.php" class="enlace-menu <?php echo ($seccion == 'tfg' ? 'activo' : ''); ?>">
-                    <i class="fas fa-file-pdf"></i> <span>Gestión TFG</span>
-                    <span class="etiqueta-contador"><?php echo $totalTFG; ?></span>
-                </a>
-            </div>
-
-            <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Personal y Centro</p>
-
-                <a href="/pfc/vistas/admin/directores/verDirectores.php" class="enlace-menu <?php echo ($seccion == 'directores' ? 'activo' : ''); ?>">
-                    <i class="fas fa-user-tie"></i> <span>Directores</span>
-                    <span class="etiqueta-contador"><?php echo $totalDirectores; ?></span>
-                </a>
-
-                <a href="/pfc/vistas/admin/profesores/verProfesores.php" class="enlace-menu <?php echo ($seccion == 'profesores' ? 'activo' : ''); ?>">
-                    <i class="fas fa-chalkboard-teacher"></i> <span>Profesores</span>
-                    <span class="etiqueta-contador"><?php echo $totalProfesores; ?></span>
-                </a>
-
-                <a href="/pfc/vistas/admin/pagos/verPagosGeneral.php" class="enlace-menu <?php echo ($seccion == 'pagos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-wallet"></i> <span>Pagos</span>
-                    <span class="etiqueta-contador"><?php echo $totalPagos; ?></span>
-                </a>
-
-                <a href="/pfc/vistas/admin/eventos/gestionEventos.php" class="enlace-menu <?php echo ($seccion == 'eventos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-calendar-alt"></i> <span>Eventos</span>
-                </a>
-
-                <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?php echo ($seccion == 'anuncios' || $seccion == 'push' ? 'activo' : ''); ?>">
-                    <i class="fas fa-bullhorn"></i> <span>Avisos y Push</span>
-                    <span class="etiqueta-contador"><?php echo $totalAnuncios; ?></span>
-                </a>
-
-                <a href="/pfc/vistas/admin/mensajes/lista.php" class="enlace-menu <?php echo ($seccion == 'reclamaciones' ? 'activo' : ''); ?>">
-                    <i class="fas fa-envelope"></i> <span>Mensajería</span>
-                    <span class="etiqueta-contador"><?php echo $totalReclamaciones; ?></span>
+                <a href="/pfc/vistas/admin/tfg/verTFGs.php" class="enlace-menu <?php if ($seccion == 'tfg') { echo 'activo'; } ?>">
+                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadTFGMenu; ?></span>
                 </a>
             </div>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">Recursos</p>
+                <p class="titulo-de-seccion">PERSONAL Y CENTRO</p>
 
-                <a href="/pfc/vistas/admin/aulas/verAulas.php" class="enlace-menu <?php echo ($seccion == 'aulas' ? 'activo' : ''); ?>">
-                    <i class="fas fa-door-open"></i> <span>Aulas</span>
-                    <span class="etiqueta-contador"><?php echo $totalAulas; ?></span>
+                <a href="/pfc/vistas/admin/directores/verDirectores.php" class="enlace-menu <?php if ($seccion == 'directores') { echo 'activo'; } ?>">
+                    <i class="fas fa-user-tie"></i> <span>DIRECTORES</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadDirectoresMenu; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/inventario/verInventario.php" class="enlace-menu <?php echo ($seccion == 'inventario' ? 'activo' : ''); ?>">
-                    <i class="fas fa-boxes"></i> <span>Inventario</span>
-                    <span class="etiqueta-contador"><?php echo $totalInventario; ?></span>
+                <a href="/pfc/vistas/admin/profesores/verProfesores.php" class="enlace-menu <?php if ($seccion == 'profesores') { echo 'activo'; } ?>">
+                    <i class="fas fa-chalkboard-teacher"></i> <span>PROFESORES</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadProfesoresMenu; ?></span>
                 </a>
 
-                <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?php echo ($seccion == 'prestamos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-hand-holding"></i> <span>Préstamos</span>
-                    <span class="etiqueta-contador"><?php echo $totalPrestamos; ?></span>
+                <a href="/pfc/vistas/admin/pagos/verPagosGeneral.php" class="enlace-menu <?php if ($seccion == 'pagos') { echo 'activo'; } ?>">
+                    <i class="fas fa-wallet"></i> <span>PAGOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadPagosMenu; ?></span>
+                </a>
+
+                <a href="/pfc/vistas/admin/eventos/gestionEventos.php" class="enlace-menu <?php if ($seccion == 'eventos') { echo 'activo'; } ?>">
+                    <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
+                </a>
+
+                <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?php if ($seccion == 'anuncios' || $seccion == 'push') { echo 'activo'; } ?>">
+                    <i class="fas fa-bullhorn"></i> <span>AVISOS Y PUSH</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadAnunciosMenu; ?></span>
+                </a>
+
+                <a href="/pfc/vistas/admin/mensajes/lista.php" class="enlace-menu <?php if ($seccion == 'reclamaciones') { echo 'activo'; } ?>">
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadMensajesMenu; ?></span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">RECURSOS</p>
+
+                <a href="/pfc/vistas/admin/aulas/verAulas.php" class="enlace-menu <?php if ($seccion == 'aulas') { echo 'activo'; } ?>">
+                    <i class="fas fa-door-open"></i> <span>AULAS</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadAulasMenu; ?></span>
+                </a>
+
+                <a href="/pfc/vistas/admin/inventario/verInventario.php" class="enlace-menu <?php if ($seccion == 'inventario') { echo 'activo'; } ?>">
+                    <i class="fas fa-boxes"></i> <span>INVENTARIO</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadArticulosMenu; ?></span>
+                </a>
+
+                <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?php if ($seccion == 'prestamos') { echo 'activo'; } ?>">
+                    <i class="fas fa-hand-holding"></i> <span>PRÉSTAMOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantidadPrestamosMenu; ?></span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu enlace-creditos <?php echo ($seccion == 'creditos' ? 'activo' : ''); ?>">
-                    <i class="fas fa-fingerprint"></i> <span>Huella Digital</span>
+                <a href="/pfc/vistas/admin/directores/perfil.php" class="enlace-menu <?php if ($seccion == 'perfil') { echo 'activo'; } ?>">
+                    <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
+                </a>
+                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu enlace-creditos <?php if ($seccion == 'creditos') { echo 'activo'; } ?>">
+                    <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
-                <div style="padding: 15px; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="info-sistema-footer">
                     &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified
                 </div>
             </div>
@@ -160,7 +164,8 @@ $totalTFG = contarTFGsSubidos();
 
     <script>
     function toggleMenu() {
-        document.getElementById('barraLateral').classList.toggle('activo');
+        var sidebar = document.getElementById('barraLateral');
+        sidebar.classList.toggle('activo');
     }
     </script>
 
