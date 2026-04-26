@@ -97,9 +97,15 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
             </div>
 
             <div class="separador-menu-inferior">
+                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu <?php echo ($seccionActual == 'creditos' ? 'activo' : ''); ?>">
+                    <i class="fas fa-fingerprint"></i> <span>Huella Digital</span>
+                </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
                 </a>
+                <div style="padding: 15px; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified
+                </div>
             </div>
         </nav>
     </aside>

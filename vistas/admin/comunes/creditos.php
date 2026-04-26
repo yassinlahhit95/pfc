@@ -1,64 +1,49 @@
 <?php
 session_start();
-$titulo_pagina = "Créditos del Proyecto - TFG";
+$titulo_pagina = "Huella Digital - Yassin Lahhit";
 $seccion = 'creditos';
 include_once "nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Información del Proyecto</h1>
+        <h1>Fingerprint & Copyright</h1>
+        <p class="subtitulo">Identificación oficial del desarrollador y autoría del sistema</p>
     </div>
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Acerca de este Proyecto</h3>
-    </div>
-    
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Autor / Estudiante</label>
-            <p class="texto-negrita" style="font-size: 1.2rem;">Yassin Lahhit</p>
+    <div class="disposicion-flexible alinear-centro separacion-grande">
+        <div style="flex: 0 0 150px; text-align: center;">
+            <div style="width: 120px; height: 120px; background: var(--color-primario); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; margin: auto;">
+                YL
+            </div>
         </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Año Académico</label>
-            <p class="texto-negrita"><?php echo date('Y'); ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Centro de Estudios</label>
-            <p class="texto-negrita">CPS Ibaiondo</p>
-            <p class="texto-atenuado">Centro de Formación Profesional</p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Tipo de Trabajo</label>
-            <p class="texto-negrita">Trabajo de Fin de Grado (TFG)</p>
-        </div>
-
-        <div class="campo-formulario campo-ancho-total">
-            <label class="texto-atenuado texto-pequeno">La Idea del Proyecto</label>
-            <div class="tarjeta-gris-suave mt-5">
-                <p class="lh-1-4">
-                    Este sistema de gestión escolar ha sido desarrollado como proyecto final de grado para centralizar y simplificar 
-                    las tareas administrativas y académicas de un centro de formación. 
-                </p>
-                <p class="lh-1-4 mt-5">
-                    La plataforma permite el control de estudiantes, profesorado, gestión de pagos, inventario de recursos y el seguimiento 
-                    de retos educativos, proporcionando una interfaz intuitiva y eficiente para el personal administrativo.
-                </p>
+        <div class="flexible-rellenar">
+            <h2 style="color: var(--color-primario); margin-bottom: 5px;">Yassin Lahhit</h2>
+            <p class="texto-atenuado">Full Stack Developer | Autor del TFG</p>
+            <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
+                <p><strong>Propiedad Intelectual:</strong> Este software es un Trabajo de Fin de Grado original desarrollado para CPS Ibaiondo.</p>
+                <p><strong>Versión del Sistema:</strong> 2.0.0 (Abril 2026)</p>
             </div>
         </div>
     </div>
-
-    <div class="margen-arriba">
-        <p class="texto-atenuado" style="text-align: center; font-size: 12px;">
-            © <?php echo date('Y'); ?> Yassin Lahhit - Todos los derechos reservados
+    
+    <div class="tarjeta-gris-suave mt-20">
+        <h3 style="margin-top: 0;"><i class="fas fa-fingerprint"></i> Certificado de Autoría</h3>
+        <p class="lh-1-4">
+            Queda certificada la autoría de <strong>Yassin Lahhit</strong> sobre el diseño de la base de datos, la arquitectura lógica, 
+            el desarrollo del backend en PHP y la implementación del frontend de esta plataforma de gestión académica (PFC).
         </p>
+        <p class="lh-1-4">
+            Cualquier reproducción o uso parcial de este sistema requiere el consentimiento explícito del autor.
+        </p>
+    </div>
+
+    <div class="margen-arriba" style="text-align: center; border-top: 1px dashed #ddd; padding-top: 20px;">
+        <p class="texto-negrita" style="margin-bottom: 5px;">© <?php echo date('Y'); ?> Yassin Lahhit</p>
+        <p class="texto-atenuado" style="font-size: 12px;">Todos los derechos reservados. Desarrollado con PHP, MySQL y Brevo API.</p>
     </div>
 </div>
 
 <?php include 'footer.php'; ?>
-

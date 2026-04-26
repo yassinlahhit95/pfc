@@ -7,9 +7,24 @@ if (!isset($_SESSION['idProfesor'])) {
 }
 
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-$calificaciones = listarCalificacionesPorProfesor($idProfesor);
+
+$idCiclo = isset($_GET['idCiclo']) ? intval($_GET['idCiclo']) : 0;
+$idModulo = isset($_GET['idModulo']) ? intval($_GET['idModulo']) : 0;
+
+// Filtros disponibles para el profesor
+$mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
+$mis_modulos = [];
+if ($idCiclo > 0) {
+    $mis_modulos = obtenerModulosPorCiclo($idCiclo);
+} else {
+    $mis_modulos = obtenerModulosDeProfesor($idProfesor);
+}
+
+$calificaciones = listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo, $idModulo);
 
 $tituloDelPagina = "Calificaciones - Portal Profesores";
 $seccionActual = 'calificaciones';
@@ -19,6 +34,36 @@ include_once "../comunes/nav.php";
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Notas de Alumnos</h1>
     <a href="/pfc/vistas/profesores/calificaciones/agregar.php" class="boton-primario">Asignar Nota</a>
+</div>
+
+<div class="tarjeta-blanca margen-abajo">
+    <form method="GET" action="" class="disposicion-flexible alinear-fin separacion-grande">
+        <div class="campo-formulario flexible-rellenar">
+            <label>Filtrar por Ciclo:</label>
+            <select name="idCiclo" onchange="this.form.submit()">
+                <option value="0">-- Todos mis Ciclos --</option>
+                <?php foreach ($mis_ciclos as $c) { ?>
+                    <option value="<?php echo $c['idCiclo']; ?>" <?php if($idCiclo == $c['idCiclo']) echo "selected"; ?>>
+                        <?php echo $c['nombreCiclo']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo-formulario flexible-rellenar">
+            <label>Filtrar por Módulo:</label>
+            <select name="idModulo" onchange="this.form.submit()">
+                <option value="0">-- Todos mis Módulos --</option>
+                <?php foreach ($mis_modulos as $m) { ?>
+                    <option value="<?php echo $m['idModulo']; ?>" <?php if($idModulo == $m['idModulo']) echo "selected"; ?>>
+                        <?php echo $m['nombreModulo']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="mb-15">
+            <a href="lista.php" class="boton-secundario">Limpiar</a>
+        </div>
+    </form>
 </div>
 
 <div class="tarjeta-blanca">
@@ -46,14 +91,15 @@ include_once "../comunes/nav.php";
                             <td><?php echo $nota['nota_2ev']; ?></td>
                             <td class="texto-negrita"><?php echo $nota['nota_2final']; ?></td>
                             <td>
-                                <a href="/pfc/vistas/profesores/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/controladores/profesores/calificaciones/borrar.php?id=<?php echo $nota['idCalificacion']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <div class="botones-accion">
+                                    <a href="/pfc/vistas/profesores/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="boton-icono boton-editar"><i class="fas fa-edit"></i></a>
+                                </div>
                             </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="7" class="sin-datos">No hay calificaciones registradas.</td>
+                        <td colspan="7" class="sin-datos">No hay calificaciones que coincidan con los filtros.</td>
                     </tr>
                 <?php } ?>
             </tbody>

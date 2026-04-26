@@ -27,7 +27,7 @@ include_once "../comunes/nav.php";
                 <tr>
                     <th>Nombre</th>
                     <th>Abreviatura</th>
-                    <th>Descripción</th>
+                    <th>Nivel</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@ include_once "../comunes/nav.php";
                         <tr>
                             <td class="texto-negrita"><?php echo $ciclo['nombreCiclo']; ?></td>
                             <td><?php echo $ciclo['abreviaturaCiclo']; ?></td>
-                            <td><?php echo $ciclo['descripcionCiclo']; ?></td>
+                            <td><?php echo (isset($ciclo['nombreNivel']) ? $ciclo['nombreNivel'] : 'N/A'); ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>

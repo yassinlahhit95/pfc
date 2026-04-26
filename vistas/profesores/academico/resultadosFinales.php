@@ -17,7 +17,7 @@ require_once "../../../modelos/retos.php";
 require_once "../../../modelos/ciclos.php";
 
 // Obtenemos solo los ciclos del profesor
-$todos_los_ciclos = listarCiclosPorProfesor($idProfesor);
+$todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $id_ciclo_elegido = 0;
 if (isset($_GET['idCiclo'])) {
