@@ -8,11 +8,11 @@ if (isset($_POST['idEstudiante'])) {
 
     if (empty($id_estudiante)) {
         $_SESSION['error'] = "ID del estudiante no proporcionado.";
-        header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+        header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
         exit;
     }
 
-    $ruta_archivo = "../../../public/uploads/tfg/" . $nombre_archivo;
+    $ruta_archivo = "../../../public/uploads/pfc/" . $nombre_archivo;
 
     if (eliminarTFG($id_estudiante)) {
         if (file_exists($ruta_archivo)) {
@@ -24,5 +24,6 @@ if (isset($_POST['idEstudiante'])) {
     }
 }
 
-header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
 exit;
+

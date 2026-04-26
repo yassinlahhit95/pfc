@@ -73,3 +73,4 @@ if (isset($_POST['guardarAnuncio'])) {
 header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
 exit;
 ?>
+

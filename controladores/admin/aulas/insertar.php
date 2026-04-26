@@ -30,3 +30,4 @@ if (isset($_POST['guardarAula'])) {
 
 header("Location: /pfc/vistas/admin/aulas/verAulas.php");
 exit;
+

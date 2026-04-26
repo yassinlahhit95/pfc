@@ -82,3 +82,4 @@ tes.php");
 header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
 exit;
 ?>
+

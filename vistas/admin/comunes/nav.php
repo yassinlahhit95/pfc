@@ -88,7 +88,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="/pfc/vistas/admin/tfg/verTFGs.php" class="enlace-menu <?php if ($seccion == 'tfg') { echo 'activo'; } ?>">
+                <a href="/pfc/vistas/admin/pfc/verTFGs.php" class="enlace-menu <?php if ($seccion == 'tfg') { echo 'activo'; } ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
                     <span class="etiqueta-contador"><?php echo $cantidadTFGMenu; ?></span>
                 </a>
@@ -175,3 +175,4 @@ $cantidadTFGMenu = contarTFGsSubidos();
         <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idAdmin']; ?>" data-user-role="admin" style="display:none;"></div>
         <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
     <?php endif; ?>
+

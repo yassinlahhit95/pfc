@@ -1,4 +1,4 @@
-# PFC - Sistema de Gestión Académica
+# TFG - Sistema de Gestión Académica
 > Proyecto Final de Grado - Plataforma educativa integral desarrollada en PHP Nativo con arquitectura MVC
 
 ---
@@ -10,7 +10,7 @@
 | Tecnología | PHP 7.4+, MySQL, HTML5, CSS3, JavaScript |
 | Arquitectura | Modelo-Vista-Controlador (MVC) |
 | Licencia | MIT |
-| Repositorio | https://github.com/yassinlahhit95/pfc.git |
+| Repositorio | https://github.com/yassinlahhit95/tfg.git |
 
 ---
 
@@ -30,7 +30,7 @@ Sistema de gestión académica completo que permite administrar de forma central
 
 ## 📂 Estructura del Proyecto
 ```
-pfc/
+tfg/
 ├── 📁 admin/                 # Panel Super Administración
 │   ├── dashboardAdmin.php    # Panel principal
 │   ├── 📁 controladores/     # Lógica de negocio (MVC)
@@ -63,8 +63,8 @@ pfc/
 
 ### 1. Descargar código
 ```bash
-git clone https://github.com/yassinlahhit95/pfc.git
-cd pfc
+git clone https://github.com/yassinlahhit95/tfg.git
+cd tfg
 ```
 
 ### 2. Configurar Base de Datos
@@ -73,7 +73,7 @@ cd pfc
 3. Editar credenciales en: `admin/modelos/conexion.php`
 
 ### 3. Configurar Servidor Web
-> **XAMPP/WAMP**: Colocar carpeta `pfc` dentro de `htdocs`  
+> **XAMPP/WAMP**: Colocar carpeta `tfg` dentro de `htdocs`  
 > **Apache**: DocumentRoot apuntando a la carpeta raíz del proyecto  
 > **Permisos**: Asegurar permisos de escritura en carpeta `admin/uploads/`
 

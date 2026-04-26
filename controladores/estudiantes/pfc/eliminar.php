@@ -10,7 +10,7 @@ if (isset($_POST['idEstudiante'])) {
     $nombreArchivo = $tfg['archivoTFG'];
     
     if (eliminarTFG($id)) {
-        $rutaArchivo = "../../../public/uploads/tfg/" . $nombreArchivo;
+        $rutaArchivo = "../../../public/uploads/pfc/" . $nombreArchivo;
         if (!empty($nombreArchivo) && file_exists($rutaArchivo)) {
             unlink($rutaArchivo);
         }
@@ -20,6 +20,6 @@ if (isset($_POST['idEstudiante'])) {
     }
 }
 
-header("Location: /pfc/vistas/estudiantes/tfg/lista.php");
+header("Location: /pfc/vistas/estudiantes/pfc/lista.php");
 exit;
 ?>

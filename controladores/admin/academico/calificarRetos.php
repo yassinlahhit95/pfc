@@ -51,3 +51,4 @@ if (isset($_POST['guardarNotasReto'])) {
 
 header("Location: /pfc/vistas/admin/academico/calificacionesRetos.php");
 exit;
+

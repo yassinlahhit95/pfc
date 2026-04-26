@@ -69,3 +69,4 @@ if (isset($_POST['actualizarEstudiante'])) {
 header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
 exit;
 ?>
+

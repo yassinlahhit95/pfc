@@ -102,6 +102,32 @@ function obtenerCicloPorId($id) {
     return $fila;
 }
 
+// Obtener profesores asignados a un ciclo
+function obtenerProfesoresDeUnCiclo($idCiclo) {
+    $db = obtenerConexion();
+    $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = $idCiclo";
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
+    }
+    mysqli_close($db);
+    return $lista;
+}
+
+// Obtener aulas asignadas a un ciclo
+function obtenerAulasDeUnCiclo($idCiclo) {
+    $db = obtenerConexion();
+    $sql = "SELECT idAula FROM ciclo_aula WHERE idCiclo = $idCiclo";
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
+    }
+    mysqli_close($db);
+    return $lista;
+}
+
 // Mirar si el nombre esta repetido
 function comprobarNombreEnOtroCiclo($nombre, $idActual) {
     $db = obtenerConexion();

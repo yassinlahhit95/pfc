@@ -168,3 +168,4 @@ function obtenerTokenUsuario($userId, $userRole) {
     mysqli_close($conexion);
     return null;
 }
+

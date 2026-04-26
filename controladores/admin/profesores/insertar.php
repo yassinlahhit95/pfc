@@ -40,9 +40,25 @@ if (isset($_POST['guardarProfesor'])) {
 
     if (empty($lista_de_errores)) {
         // Signature: insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especialidad, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
-        $resultado = insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especialidad, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
-        if ($resultado) {
-            $_SESSION['exito'] = "Profesor registrado correctamente.";
+        // We pass empty string for especialidad as it was removed from form
+        $idNuevoProfesor = insertarProfesor($nombre, $email, $telefono, $dni, $direccion, '', $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
+        
+        if ($idNuevoProfesor) {
+            // Asignar Ciclos
+            if (isset($_POST['ciclos']) && is_array($_POST['ciclos'])) {
+                foreach ($_POST['ciclos'] as $idCiclo) {
+                    asociarCicloProfesor($idCiclo, $idNuevoProfesor);
+                }
+            }
+
+            // Asignar Módulos
+            if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
+                foreach ($_POST['modulos'] as $idModulo) {
+                    asociarModuloProfesor($idModulo, $idNuevoProfesor);
+                }
+            }
+
+            $_SESSION['exito'] = "Profesor registrado y asignado correctamente.";
             header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
             exit;
         } else {

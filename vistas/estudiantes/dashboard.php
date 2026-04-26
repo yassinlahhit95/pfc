@@ -64,7 +64,7 @@ include_once __DIR__ . "/comunes/nav.php";
       <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="/pfc/vistas/estudiantes/calificaciones/lista.php" class="accion-rapida"><span>Mis Notas</span></a>
-        <a href="/pfc/vistas/estudiantes/tfg/subir.php" class="accion-rapida"><span>Mi TFG</span></a>
+        <a href="/pfc/vistas/estudiantes/pfc/subir.php" class="accion-rapida"><span>Mi TFG</span></a>
         <a href="/pfc/vistas/estudiantes/mensajes/agregar.php" class="accion-rapida"><span>Nuevo Mensaje</span></a>
         <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
       </div>

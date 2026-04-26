@@ -10,7 +10,7 @@ if (isset($_POST['subirTFG'])) {
         $_SESSION['error'] = "Error archivo";
     } else {
         $nombreArchivo = "TFG_" . $id . "_" . time() . ".pdf";
-        if (move_uploaded_file($archivo['tmp_name'], "../../uploads/tfg/" . $nombreArchivo)) {
+        if (move_uploaded_file($archivo['tmp_name'], "../../uploads/pfc/" . $nombreArchivo)) {
             if (actualizarTFG($id, $nombreArchivo)) {
                 $_SESSION['exito'] = "Ok";
                 header("Location: /pfc/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$id");
@@ -27,4 +27,5 @@ if (isset($_POST['subirTFG'])) {
 }
 header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
 exit;
+
 

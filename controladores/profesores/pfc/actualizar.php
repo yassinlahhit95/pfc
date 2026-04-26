@@ -7,10 +7,10 @@ if (isset($_POST['actualizarTFG'])) {
     $titulo = trim($_POST['tituloTFG']);
 
     if (empty($id)) {
-        header("Location: /pfc/vistas/profesores/tfg/lista.php");
+        header("Location: /pfc/vistas/profesores/pfc/lista.php");
     } else if (empty($titulo)) {
         $_SESSION['error'] = "El título del TFG es obligatorio.";
-        header("Location: /pfc/vistas/profesores/tfg/lista.php");
+        header("Location: /pfc/vistas/profesores/pfc/lista.php");
     } else {
         if (actualizarDatosTFG($id, $titulo)) {
             $_SESSION['exito'] = "Datos del TFG actualizados correctamente.";
@@ -21,6 +21,7 @@ if (isset($_POST['actualizarTFG'])) {
     exit;
 }
 
-header("Location: /pfc/vistas/profesores/tfg/lista.php");
+header("Location: /pfc/vistas/profesores/pfc/lista.php");
 exit;
 ?>
+

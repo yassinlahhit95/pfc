@@ -59,3 +59,4 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

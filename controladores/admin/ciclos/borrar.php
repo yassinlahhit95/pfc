@@ -13,3 +13,4 @@ if (isset($_POST['idCiclo'])) {
 header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
 exit;
 ?>
+

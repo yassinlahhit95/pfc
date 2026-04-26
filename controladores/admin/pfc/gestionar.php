@@ -8,18 +8,19 @@ if (isset($_POST['guardarTFG'])) {
     $nombreArchivo = "";
     if ($archivo['error'] === 0) {
         $nombreArchivo = time() . "_" . $archivo['name'];
-        move_uploaded_file($archivo['tmp_name'], "../../uploads/tfg/" . $nombreArchivo);
+        move_uploaded_file($archivo['tmp_name'], "../../uploads/pfc/" . $nombreArchivo);
     }
     if (actualizarDatosTFG($id, $titulo, $nombreArchivo)) {
         $_SESSION['exito'] = "Ok";
-        header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+        header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
         exit;
     } else {
         $_SESSION['error'] = "Error BD";
     }
-    header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+    header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
     exit;
 }
-header("Location: /pfc/vistas/admin/tfg/verTFGs.php");
+header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
 exit;
+
 

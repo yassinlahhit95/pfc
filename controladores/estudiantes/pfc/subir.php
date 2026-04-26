@@ -17,12 +17,12 @@ if (isset($_POST['subirTFG'])) {
         $fechaActual = date('d-m-Y');
         $nombreArchivo = "TFG_" . $nombreLimpio . "_" . $fechaActual . ".pdf";
         
-        $rutaDestino = "../../../public/uploads/tfg/" . $nombreArchivo;
+        $rutaDestino = "../../../public/uploads/pfc/" . $nombreArchivo;
 
         if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {
                 $_SESSION['exito'] = "TFG subido correctamente.";
-                header("Location: /pfc/vistas/estudiantes/tfg/lista.php");
+                header("Location: /pfc/vistas/estudiantes/pfc/lista.php");
                 exit;
             } else {
                 $_SESSION['error'] = "Error al actualizar en la base de datos.";
@@ -31,7 +31,7 @@ if (isset($_POST['subirTFG'])) {
             $_SESSION['error'] = "No se pudo mover el archivo al servidor.";
         }
     }
-    header("Location: /pfc/vistas/estudiantes/tfg/lista.php");
+    header("Location: /pfc/vistas/estudiantes/pfc/lista.php");
     exit;
 }
 header("Location: /pfc/vistas/estudiantes/dashboard.php");

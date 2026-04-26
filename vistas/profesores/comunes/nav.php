@@ -72,7 +72,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="/pfc/vistas/profesores/tfg/lista.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
+                <a href="/pfc/vistas/profesores/pfc/lista.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
                 </a>
             </div>
@@ -122,3 +122,4 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
         <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idProfesor']; ?>" data-user-role="profesor" style="display:none;"></div>
         <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
     <?php endif; ?>
+

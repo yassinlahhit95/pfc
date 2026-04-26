@@ -119,3 +119,4 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

@@ -61,3 +61,4 @@ if (isset($_POST['actualizarReto'])) {
 
 header("Location: /pfc/vistas/admin/retos/verRetos.php");
 exit;
+

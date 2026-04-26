@@ -64,7 +64,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
                         <td><?php echo $tfg['nombreCiclo']; ?></td>
                         <td>
-                            <a href="/pfc/public/uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario boton-pequeno">
+                            <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario boton-pequeno">
                                 <i class="fas fa-file-pdf"></i> Ver PDF
                             </a>
                         </td>
@@ -78,3 +78,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

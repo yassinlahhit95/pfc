@@ -63,3 +63,4 @@ $todos_los_profesores = listarProfesores();
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

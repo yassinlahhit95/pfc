@@ -275,7 +275,7 @@ Estudiantes controllers (depth 3): require_once "../../../modelos/estudiantes.ph
 3. Seleccionar archivo PDF desde disco
 4. Clic "Subir"
 5. **Resultado esperado:** 
-   - Archivo se guarda en `/admin/uploads/tfg/tfg_[idEstudiante]_[timestamp].pdf`
+   - Archivo se guarda en `/admin/uploads/pfc/tfg_[idEstudiante]_[timestamp].pdf`
    - Mensaje "TFG subido correctamente"
    - PDF disponible para descargar
 
@@ -362,9 +362,9 @@ Contraseña: (cualquiera en desarrollo)
 ✓ `/pfc/vistas/estudiantes/perfil/ver.php`
 ✓ `/pfc/vistas/estudiantes/perfil/editar.php`
 ✓ `/pfc/controladores/estudiantes/perfil/actualizar.php`
-✓ `/pfc/vistas/estudiantes/tfg/lista.php`
+✓ `/pfc/vistas/estudiantes/pfc/lista.php`
 ✓ `/pfc/vistas/estudiantes/calificaciones/lista.php`
-✓ `/pfc/controladores/estudiantes/tfg/subir.php`
+✓ `/pfc/controladores/estudiantes/pfc/subir.php`
 
 ### Punto de Entrada (3 archivos)
 ✓ `/pfc/index.php` - Login con selector de rol

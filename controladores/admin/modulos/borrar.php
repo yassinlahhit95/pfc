@@ -13,3 +13,4 @@ if (isset($_POST['idModulo'])) {
 header("Location: /pfc/vistas/admin/modulos/verModulos.php");
 exit;
 ?>
+

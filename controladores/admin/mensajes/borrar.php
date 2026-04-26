@@ -13,3 +13,4 @@ if (isset($_POST['idReclamacion'])) {
 header("Location: /pfc/vistas/admin/reclamaciones/verReclamaciones.php");
 exit;
 ?>
+

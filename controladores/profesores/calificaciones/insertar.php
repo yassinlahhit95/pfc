@@ -37,3 +37,4 @@ if (isset($_POST['insertarNota'])) {
 header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
 exit;
 ?>
+

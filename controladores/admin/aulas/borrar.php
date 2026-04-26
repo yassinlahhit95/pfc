@@ -13,3 +13,4 @@ if (isset($_POST['idAula'])) {
 header("Location: /pfc/vistas/admin/aulas/verAulas.php");
 exit;
 ?>
+

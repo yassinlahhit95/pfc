@@ -13,3 +13,4 @@ if (isset($_POST['idProfesor'])) {
 header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
 exit;
 ?>
+

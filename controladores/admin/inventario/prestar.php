@@ -39,3 +39,4 @@ if (isset($_POST['registrarPrestamo'])) {
 
 header("Location: /pfc/vistas/admin/inventario/gestionarPrestamos.php");
 exit;
+

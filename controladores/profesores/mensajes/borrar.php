@@ -13,3 +13,4 @@ if (isset($_GET['id'])) {
 header("Location: /pfc/vistas/profesores/reclamaciones/lista.php");
 exit;
 ?>
+

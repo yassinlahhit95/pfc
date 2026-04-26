@@ -36,3 +36,4 @@ if (isset($_POST['actualizarAnuncio'])) {
 
 header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
 exit;
+

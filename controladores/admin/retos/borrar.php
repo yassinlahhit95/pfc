@@ -13,3 +13,4 @@ if (isset($_POST['idReto'])) {
 header("Location: /pfc/vistas/admin/retos/verRetos.php");
 exit;
 ?>
+
