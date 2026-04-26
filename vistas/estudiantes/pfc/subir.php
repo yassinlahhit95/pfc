@@ -56,10 +56,10 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <div class="mt-5">
                 <?php if (!empty($tfg['archivoTFG'])) { ?>
                     <div class="disposicion-flexible alinear-centro separacion-grande">
-                        <a href="/pfc/public/uploads/tfg/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
+                        <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
                             <i class="fas fa-download"></i> Descargar TFG (PDF)
                         </a>
-                        <form action="/pfc/controladores/estudiantes/tfg/eliminar.php" method="POST">
+                        <form action="/pfc/controladores/estudiantes/pfc/eliminar.php" method="POST">
                             <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
                             <button type="submit" name="borrarTFG" class="boton-icono rojo" title="Eliminar archivo">
                                 <i class="fas fa-trash-alt"></i> Borrar entrega
@@ -78,7 +78,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno"><?php echo empty($tfg['archivoTFG']) ? 'Subir TFG (Solo PDF)' : 'Actualizar TFG (Reemplaza el anterior)'; ?></label>
-            <form action="/pfc/controladores/estudiantes/tfg/subir.php" method="POST" enctype="multipart/form-data" class="disposicion-flexible alinear-centro separacion-pequena mt-5">
+            <form action="/pfc/controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="disposicion-flexible alinear-centro separacion-pequena mt-5">
                 <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
                 <input type="file" name="archivoTFG" accept=".pdf">
                 <button type="submit" name="subirTFG" class="boton-primario">
@@ -90,3 +90,4 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

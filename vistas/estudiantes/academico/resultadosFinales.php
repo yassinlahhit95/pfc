@@ -116,3 +116,4 @@ foreach ($lista_modulos as $mod_item) {
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

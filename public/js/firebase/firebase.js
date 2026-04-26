@@ -65,3 +65,4 @@ onMessage(messaging, (payload) => {
 });
 
 export { app, messaging };
+

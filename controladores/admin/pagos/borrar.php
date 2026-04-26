@@ -13,3 +13,4 @@ if (isset($_POST['idPago'])) {
 header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
 exit;
 ?>
+

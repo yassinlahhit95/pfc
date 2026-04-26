@@ -18,11 +18,11 @@ include_once "../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Editar Datos TFG</h1>
-    <a href="/pfc/vistas/profesores/tfg/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/pfc/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/profesores/tfg/actualizar.php" method="POST">
+    <form action="/pfc/controladores/profesores/pfc/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
@@ -43,3 +43,4 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

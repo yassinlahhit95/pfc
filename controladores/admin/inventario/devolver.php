@@ -17,3 +17,4 @@ if (empty($id)) {
 header("Location: /pfc/vistas/admin/inventario/gestionarPrestamos.php");
 exit;
 
+

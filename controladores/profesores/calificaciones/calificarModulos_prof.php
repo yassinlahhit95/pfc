@@ -66,3 +66,4 @@ if (isset($_POST['guardarNotas'])) {
 header("Location: /pfc/vistas/profesores/calificaciones/agregar.php");
 exit;
 ?>
+

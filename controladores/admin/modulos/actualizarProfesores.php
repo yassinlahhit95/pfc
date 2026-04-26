@@ -27,3 +27,4 @@ if (isset($_POST['actualizarProfesores'])) {
 
 header("Location: /pfc/vistas/admin/modulos/verModulos.php");
 exit;
+

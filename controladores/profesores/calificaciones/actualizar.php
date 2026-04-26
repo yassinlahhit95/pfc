@@ -35,3 +35,4 @@ if (isset($_POST['actualizarNota'])) {
 header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
 exit;
 ?>
+

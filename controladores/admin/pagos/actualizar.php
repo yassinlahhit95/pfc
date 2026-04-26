@@ -42,3 +42,4 @@ if (isset($_POST['actualizarPago'])) {
 
 header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
 exit;
+

@@ -36,3 +36,4 @@ if (isset($_POST['guardarArticulo'])) {
 
 header("Location: /pfc/vistas/admin/inventario/verInventario.php");
 exit;
+

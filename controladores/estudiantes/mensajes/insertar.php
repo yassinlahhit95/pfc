@@ -43,3 +43,4 @@ if (isset($_POST['enviarMensaje'])) {
 header("Location: /pfc/vistas/estudiantes/mensajes/lista.php");
 exit;
 ?>
+

@@ -13,3 +13,4 @@ if (isset($_POST['idDirector'])) {
 header("Location: /pfc/vistas/admin/directores/verDirectores.php");
 exit;
 ?>
+

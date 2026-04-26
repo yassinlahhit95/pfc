@@ -4,6 +4,25 @@ $titulo_pagina = "Agregar Profesor - Super Admin";
 $seccion = 'profesores';
 include_once "../comunes/nav.php";
 
+require_once "../../../modelos/ciclos.php";
+require_once "../../../modelos/modulos.php";
+
+$listaCiclos = listarTodosLosCiclos();
+$todosLosModulos = listarModulos();
+
+// Organizar módulos por ciclo
+$modulos_por_ciclo = [];
+foreach ($todosLosModulos as $m) {
+    $idC = $m['idCiclo'];
+    if (!isset($modulos_por_ciclo[$idC])) {
+        $modulos_por_ciclo[$idC] = [
+            'nombre' => $m['nombreCiclo'],
+            'modulos' => []
+        ];
+    }
+    $modulos_por_ciclo[$idC]['modulos'][] = $m;
+}
+
 $lista_de_errores = [];
 if (isset($_SESSION['errores'])) {
     $lista_de_errores = $_SESSION['errores'];
@@ -13,6 +32,9 @@ $datos = [];
 if (isset($_SESSION['datos_profesor'])) {
     $datos = $_SESSION['datos_profesor'];
 }
+
+$ciclosElegidos = (isset($datos['ciclos']) && is_array($datos['ciclos'])) ? $datos['ciclos'] : [];
+$modulosElegidos = (isset($datos['modulos']) && is_array($datos['modulos'])) ? $datos['modulos'] : [];
 
 unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 ?>
@@ -25,6 +47,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/profesores/insertar.php" method="POST">
         <div class="formulario-cuadricula">
+            <!-- (Same profile fields as before) -->
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
@@ -89,14 +112,47 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
-                <label>Especialidad</label>
-                <input type="text" name="especialidad" placeholder="Ej: Informática, Matemáticas..." value="<?php if(isset($datos['especialidad'])) { echo $datos['especialidad']; } ?>">
-            </div>
-
             <div class="campo-formulario campo-ancho-total">
                 <label>Observaciones / Curriculum Vitae (Resumen)</label>
                 <textarea name="observacionesProfesor" rows="3"><?php if(isset($datos['observacionesProfesor'])) { echo $datos['observacionesProfesor']; } ?></textarea>
+            </div>
+        </div>
+
+        <div class="cuadricula-secundaria mt-25">
+            <div>
+                <h4 class="margen-abajo"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
+                <div class="lista-checkboxes" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #fff;">
+                    <?php foreach ($listaCiclos as $ciclo) { ?>
+                        <label class="item-checkbox" style="display: block; margin-bottom: 5px;">
+                            <input type="checkbox" name="ciclos[]" value="<?php echo $ciclo['idCiclo']; ?>" class="check-ciclo" data-id="<?php echo $ciclo['idCiclo']; ?>"
+                                <?php if (in_array($ciclo['idCiclo'], $ciclosElegidos)) { echo 'checked'; } ?>>
+                            <span><?php echo $ciclo['nombreCiclo']; ?></span>
+                        </label>
+                    <?php } ?>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="margen-abajo"><i class="fas fa-book"></i> 2. Seleccionar Módulos</h4>
+                <div id="contenedor-modulos-dinamico" class="lista-checkboxes" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #f9f9f9;">
+                    <p id="msg-seleccionar-ciclo" class="texto-atenuado" style="text-align: center; padding: 20px;">
+                        Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
+                    </p>
+                    <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
+                        <div class="grupo-modulos" data-ciclo-id="<?php echo $idCiclo; ?>" style="display: none; margin-bottom: 15px;">
+                            <p style="font-weight: bold; color: var(--color-primario); border-bottom: 1px solid #ddd; margin-bottom: 8px; padding-bottom: 3px;">
+                                <?php echo $grupo['nombre']; ?>
+                            </p>
+                            <?php foreach ($grupo['modulos'] as $mod) { ?>
+                                <label class="item-checkbox" style="display: block; margin-bottom: 5px; padding-left: 10px;">
+                                    <input type="checkbox" name="modulos[]" value="<?php echo $mod['idModulo']; ?>"
+                                        <?php if (in_array($mod['idModulo'], $modulosElegidos)) { echo 'checked'; } ?>>
+                                    <span><?php echo $mod['nombreModulo']; ?></span>
+                                </label>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
 
@@ -108,4 +164,43 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
     </form>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkCiclos = document.querySelectorAll('.check-ciclo');
+    const gruposModulos = document.querySelectorAll('.grupo-modulos');
+    const msgVacio = document.getElementById('msg-seleccionar-ciclo');
+
+    function actualizarModulos() {
+        let algunoSeleccionado = false;
+        
+        checkCiclos.forEach(check => {
+            const idCiclo = check.getAttribute('data-id');
+            const grupo = document.querySelector(`.grupo-modulos[data-ciclo-id="${idCiclo}"]`);
+            
+            if (grupo) {
+                if (check.checked) {
+                    grupo.style.display = 'block';
+                    algunoSeleccionado = true;
+                } else {
+                    grupo.style.display = 'none';
+                    // Opcional: desmarcar módulos si el ciclo se deselecciona
+                    const inputsModulo = grupo.querySelectorAll('input[type="checkbox"]');
+                    inputsModulo.forEach(i => i.checked = false);
+                }
+            }
+        });
+
+        msgVacio.style.display = algunoSeleccionado ? 'none' : 'block';
+    }
+
+    checkCiclos.forEach(check => {
+        check.addEventListener('change', actualizarModulos);
+    });
+
+    // Ejecutar al cargar por si hay datos de sesión
+    actualizarModulos();
+});
+</script>
+
 <?php include '../comunes/footer.php'; ?>
+

@@ -23,3 +23,4 @@ if (isset($_POST['insertarReto'])) {
 header("Location: /pfc/vistas/profesores/retos/lista.php");
 exit;
 ?>
+

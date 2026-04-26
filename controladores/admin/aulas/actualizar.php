@@ -31,3 +31,4 @@ if (isset($_POST['actualizarAula'])) {
 
 header("Location: /pfc/vistas/admin/aulas/verAulas.php");
 exit;
+

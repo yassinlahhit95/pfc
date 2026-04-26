@@ -13,3 +13,4 @@ if (isset($_POST['idAnuncio'])) {
 header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
 exit;
 ?>
+

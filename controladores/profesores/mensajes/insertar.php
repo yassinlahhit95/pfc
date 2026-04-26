@@ -43,3 +43,4 @@ if (isset($_POST['insertarReclamacion'])) {
 header("Location: /pfc/vistas/profesores/mensajes/lista.php");
 exit;
 ?>
+

@@ -100,3 +100,4 @@ unset($_SESSION['errores'], $_SESSION['datos_director']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

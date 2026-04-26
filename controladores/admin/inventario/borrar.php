@@ -13,3 +13,4 @@ if (isset($_POST['idArticulo'])) {
 header("Location: /pfc/vistas/admin/inventario/verInventario.php");
 exit;
 ?>
+

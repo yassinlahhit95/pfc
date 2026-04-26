@@ -45,3 +45,4 @@ if (isset($_POST['guardarModulo'])) {
 
 header("Location: /pfc/vistas/admin/modulos/verModulos.php");
 exit;
+

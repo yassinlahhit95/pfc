@@ -125,3 +125,4 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

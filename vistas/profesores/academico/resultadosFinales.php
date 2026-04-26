@@ -189,3 +189,4 @@ if ($id_ciclo_elegido != 0) {
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+

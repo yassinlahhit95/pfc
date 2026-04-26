@@ -13,3 +13,4 @@ if (isset($_POST['idEstudiante'])) {
 header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
 exit;
 ?>
+

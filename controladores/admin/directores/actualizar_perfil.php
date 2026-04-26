@@ -65,3 +65,4 @@ if (isset($_POST['actualizarPerfilBtn'])) {
 header("Location: /pfc/vistas/admin/dashboard.php");
 exit;
 ?>
+

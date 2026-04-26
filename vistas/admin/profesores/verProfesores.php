@@ -72,6 +72,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo strtoupper($profesorIndividual['especialidad']); ?></td>
                         <td>
                             <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
+                                   class="boton-icono boton-ver" title="Ver ficha completa">
+                                    <i class="fas fa-search"></i>
+                                </a>
                                 <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
                                    class="boton-icono boton-ver" title="Asignar Módulos específicos">
                                     <i class="fas fa-book"></i>
@@ -97,3 +101,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

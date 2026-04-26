@@ -70,3 +70,4 @@ if (isset($_POST['actualizarPerfil'])) {
 header("Location: /pfc/vistas/profesores/perfil/ver.php");
 exit;
 ?>
+

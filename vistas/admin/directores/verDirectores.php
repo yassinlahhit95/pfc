@@ -62,6 +62,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $director['telefonoDirector']; ?></td>
                         <td>
                             <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/directores/verDetallesDirectores.php?id=<?php echo $director['idDirector']; ?>" class="boton-icono boton-ver" title="Ver ficha completa">
+                                    <i class="fas fa-search"></i>
+                                </a>
                                 <a href="/pfc/vistas/admin/directores/modificarDirectores.php?idDirector=<?php echo $director['idDirector']; ?>" class="boton-icono boton-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -82,3 +85,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

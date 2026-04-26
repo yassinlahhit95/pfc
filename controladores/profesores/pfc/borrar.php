@@ -10,6 +10,7 @@ if (isset($_GET['id'])) {
         $_SESSION['error'] = "Error al eliminar el archivo.";
     }
 }
-header("Location: /pfc/vistas/profesores/tfg/lista.php");
+header("Location: /pfc/vistas/profesores/pfc/lista.php");
 exit;
 ?>
+
