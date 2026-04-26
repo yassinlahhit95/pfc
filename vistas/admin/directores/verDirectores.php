@@ -8,8 +8,11 @@ require_once "../../../modelos/directores.php";
 
 $todos_los_directores = listarDirectores();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
@@ -21,16 +24,23 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-search"></i> BUSCAR DIRECTOR:</label>
+        <input type="text" id="inputBuscarDirector" placeholder="Busque por nombre o email..." onkeyup="filtrarTabla('inputBuscarDirector', 'tablaDirectores')">
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaDirectores">
             <thead>
                 <tr>
                     <th>ID</th>

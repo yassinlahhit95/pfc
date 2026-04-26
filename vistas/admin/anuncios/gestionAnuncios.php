@@ -8,13 +8,16 @@ require_once "../../../modelos/anuncios.php";
 
 $todos_los_anuncios = listarTodosLosAnuncios();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 
-$lista_de_errores = [];
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+
+$lista_de_errores = array();
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
-$datos = [];
+$datos = array();
 if (isset($_SESSION['datos_anuncio'])) { $datos = $_SESSION['datos_anuncio']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
@@ -24,10 +27,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Anuncios del Sistema</h1>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 

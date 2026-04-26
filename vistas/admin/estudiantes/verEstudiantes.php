@@ -51,10 +51,20 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="mensaje-error"><?php echo $mensajeErrorAMostrar; ?></div>
 <?php } ?>
 
+<?php 
+$listaDeCiclosParaFiltro = listarTodosLosCiclos(); 
+?>
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
-        <label><i class="fas fa-search"></i> BUSCAR ESTUDIANTE:</label>
-        <input type="text" id="inputBuscarEstudiante" placeholder="Escriba nombre, email o ciclo..." onkeyup="filtrarTabla('inputBuscarEstudiante', 'tablaEstudiantes')">
+        <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
+        <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaEstudiantes')">
+            <option value="">-- Todos los Ciclos --</option>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                <option value="<?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>">
+                    <?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>
+                </option>
+            <?php } ?>
+        </select>
     </div>
 </div>
 

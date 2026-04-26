@@ -1,18 +1,16 @@
 -- --------------------------------------------------------
--- BASE DE DATOS LIMPIA - CPS IBAIONDO
--- AUTOR: YASSIN LAHHIT
--- VERSION: 2.0.0
+-- BASE DE DATOS LIMPIA Y CORREGIDA - CPS IBAIONDO
 -- --------------------------------------------------------
 
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+-- 1. Crear base de datos
 CREATE DATABASE IF NOT EXISTS `pfc` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
 USE `pfc`;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
 -- --------------------------------------------------------
--- 1. CONFIGURACIÓN ACADÉMICA BASE
+-- 2. TABLAS DE CONFIGURACIÓN
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `niveles` (
@@ -21,9 +19,7 @@ CREATE TABLE IF NOT EXISTS `niveles` (
   PRIMARY KEY (`idNivel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Solo insertamos los niveles base
-INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES 
-(1, 'Grado Medio'), (2, 'Grado Superior');
+INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES (1, 'Grado Medio'), (2, 'Grado Superior');
 
 CREATE TABLE IF NOT EXISTS `aulas` (
   `idAula` int(11) NOT NULL AUTO_INCREMENT,
@@ -51,13 +47,13 @@ CREATE TABLE IF NOT EXISTS `modulos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 2. USUARIOS Y ROLES
+-- 3. TABLAS DE USUARIOS
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `profesores` (
   `idProfesor` int(11) NOT NULL AUTO_INCREMENT,
   `nombreProfesor` varchar(150) NOT NULL,
-  `emailProfesor` varchar(150) NOT NULL UNIQUE,
+  `emailProfesor` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoProfesor` varchar(20) DEFAULT '',
   `dniProfesor` varchar(20) DEFAULT '',
@@ -66,16 +62,17 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   `direccionProfesor` varchar(255) DEFAULT '',
   `ciudadProfesor` varchar(100) DEFAULT '',
   `codigoPostalProfesor` varchar(10) DEFAULT '',
-  `observacionesProfesor` text,
+  `observacionesProfesor` text DEFAULT NULL,
   `especialidad` varchar(150) DEFAULT '',
   `fcm_token` text DEFAULT NULL,
-  PRIMARY KEY (`idProfesor`)
+  PRIMARY KEY (`idProfesor`),
+  UNIQUE KEY `uk_email_prof` (`emailProfesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `estudiantes` (
   `idEstudiante` int(11) NOT NULL AUTO_INCREMENT,
   `nombreEstudiante` varchar(150) NOT NULL,
-  `emailEstudiante` varchar(150) NOT NULL UNIQUE,
+  `emailEstudiante` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoEstudiante` varchar(20) DEFAULT '',
   `dniEstudiante` varchar(20) NOT NULL,
@@ -84,19 +81,20 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
   `direccionEstudiante` varchar(255) DEFAULT '',
   `ciudadEstudiante` varchar(100) DEFAULT '',
   `codigoPostalEstudiante` varchar(10) DEFAULT '',
-  `observacionesEstudiante` text,
+  `observacionesEstudiante` text DEFAULT NULL,
   `idCiclo` int(11) DEFAULT NULL,
   `archivoTFG` varchar(255) DEFAULT '',
   `fechaSubidaTFG` datetime DEFAULT NULL,
   `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idEstudiante`),
+  UNIQUE KEY `uk_email_est` (`emailEstudiante`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `directores` (
   `idDirector` int(11) NOT NULL AUTO_INCREMENT,
   `nombreDirector` varchar(150) NOT NULL,
-  `emailDirector" varchar(150) NOT NULL UNIQUE,
+  `emailDirector` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '123456',
   `telefonoDirector` varchar(20) DEFAULT '',
   `dniDirector` varchar(20) NOT NULL,
@@ -105,17 +103,17 @@ CREATE TABLE IF NOT EXISTS `directores` (
   `direccionDirector` varchar(255) DEFAULT '',
   `ciudadDirector` varchar(100) DEFAULT '',
   `codigoPostalDirector` varchar(10) DEFAULT '',
-  `observacionesDirector` text,
+  `observacionesDirector` text DEFAULT NULL,
   `fcm_token` text DEFAULT NULL,
-  PRIMARY KEY (`idDirector`)
+  PRIMARY KEY (`idDirector`),
+  UNIQUE KEY `uk_email_dir` (`emailDirector`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insertamos el administrador por defecto para poder acceder
 INSERT INTO `directores` (`idDirector`, `nombreDirector`, `emailDirector`, `password`, `dniDirector`) VALUES 
-(1, 'Administrador Principal', 'admin@email.com', '123456', '00000000T');
+(1, 'ADMINISTRADOR', 'admin@email.com', '123456', '00000000T');
 
 -- --------------------------------------------------------
--- 3. GESTIÓN ACADÉMICA Y CALIFICACIONES
+-- 4. ACADÉMICO Y NOTAS
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `retos` (
@@ -141,8 +139,8 @@ CREATE TABLE IF NOT EXISTS `calificaciones_retos` (
   `idReto` int(11) NOT NULL,
   `nota` decimal(4,2) NOT NULL,
   PRIMARY KEY (`idCalificacion`),
-  CONSTRAINT `fk_nota_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
-  CONSTRAINT `fk_nota_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
+  CONSTRAINT `fk_cr_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_cr_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `calificaciones_modulos` (
@@ -153,22 +151,23 @@ CREATE TABLE IF NOT EXISTS `calificaciones_modulos` (
   `nota_1final` decimal(4,2) DEFAULT 0.00,
   `nota_2ev` decimal(4,2) DEFAULT 0.00,
   `nota_2final` decimal(4,2) DEFAULT 0.00,
-  `observaciones` text DEFAULT '',
+  `observaciones` text DEFAULT NULL,
   PRIMARY KEY (`idCalificacion`),
-  CONSTRAINT `fk_notamod_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
-  CONSTRAINT `fk_notamod_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
+  CONSTRAINT `fk_cm_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_cm_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 4. INVENTARIO Y PRÉSTAMOS
+-- 5. INVENTARIO Y PRÉSTAMOS
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `dispositivos` (
   `idDispositivo` int(11) NOT NULL AUTO_INCREMENT,
   `nombreDispositivo` varchar(100) NOT NULL,
-  `numeroSerie` varchar(100) NOT NULL UNIQUE,
+  `numeroSerie` varchar(100) NOT NULL,
   `estadoDispositivo` enum('disponible','prestado') DEFAULT 'disponible',
-  PRIMARY KEY (`idDispositivo`)
+  PRIMARY KEY (`idDispositivo`),
+  UNIQUE KEY `uk_serie` (`numeroSerie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `prestamos` (
@@ -179,11 +178,11 @@ CREATE TABLE IF NOT EXISTS `prestamos` (
   `fechaDevolucion` date DEFAULT NULL,
   `estadoPrestamo` enum('en curso','devuelto') DEFAULT 'en curso',
   PRIMARY KEY (`idPrestamo`),
-  CONSTRAINT `fk_prestamo_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+  CONSTRAINT `fk_pres_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 5. COMUNICACIÓN Y PAGOS
+-- 6. COMUNICACIÓN Y PAGOS
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `anuncios` (
@@ -206,10 +205,10 @@ CREATE TABLE IF NOT EXISTS `reclamaciones` (
   `fecha` date NOT NULL,
   `estadoReclamacion` enum('pendiente','atendido') DEFAULT 'pendiente',
   `leido` tinyint(1) DEFAULT 0,
-  `respuesta` text DEFAULT '',
+  `respuesta` text DEFAULT NULL,
   PRIMARY KEY (`idReclamacion`),
-  CONSTRAINT `fk_recl_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
-  CONSTRAINT `fk_recl_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
+  CONSTRAINT `fk_rec_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rec_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `pagos` (
@@ -221,13 +220,13 @@ CREATE TABLE IF NOT EXISTS `pagos` (
   `tipoPago` enum('mensual','trimestral','semestral','unico') DEFAULT 'mensual',
   `comprobante` varchar(255) DEFAULT '',
   PRIMARY KEY (`idPago`),
-  CONSTRAINT `fk_pagos_estudiantes` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+  CONSTRAINT `fk_pag_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `eventos` (
   `idEvento` int(11) NOT NULL AUTO_INCREMENT,
   `tituloEvento` varchar(150) NOT NULL,
-  `descripcionEvento` text,
+  `descripcionEvento` text DEFAULT NULL,
   `fechaEvento` date NOT NULL,
   `horaEvento` time DEFAULT '09:00:00',
   `ubicacionEvento` varchar(150) DEFAULT '',
@@ -235,31 +234,31 @@ CREATE TABLE IF NOT EXISTS `eventos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
--- 6. TABLAS DE ASIGNACIÓN
+-- 7. TABLAS DE RELACIÓN (ASIGNACIONES)
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `ciclo_profesor` (
   `idCiclo` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
   PRIMARY KEY (`idCiclo`, `idProfesor`),
-  CONSTRAINT `fk_cp_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_cp_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
+  CONSTRAINT `fk_rel_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rel_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `ciclo_aula` (
   `idCiclo` int(11) NOT NULL,
   `idAula` int(11) NOT NULL,
   PRIMARY KEY (`idCiclo`, `idAula`),
-  CONSTRAINT `fk_ca_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_ca_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`idAula`) ON DELETE CASCADE
+  CONSTRAINT `fk_rela_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rela_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`idAula`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `profesor_modulo` (
   `idProfesor` int(11) NOT NULL,
   `idModulo` int(11) NOT NULL,
   PRIMARY KEY (`idProfesor`, `idModulo`),
-  CONSTRAINT `fk_pm_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE,
-  CONSTRAINT `fk_pm_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
+  CONSTRAINT `fk_relm_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE,
+  CONSTRAINT `fk_relm_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 COMMIT;

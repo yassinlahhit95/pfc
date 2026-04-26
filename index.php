@@ -33,7 +33,7 @@ unset($_SESSION['error']);
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         .contenedor-login { width: 100%; max-width: 400px; padding: 20px; }
         .tarjeta-login { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; text-align: center; }

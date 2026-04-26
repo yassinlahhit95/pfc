@@ -60,26 +60,24 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
-    <div class="disposicion-flexible alinear-fin separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
-            <label><i class="fas fa-search"></i> BUSCAR PAGO (ALUMNO O TIPO):</label>
-            <input type="text" id="inputBuscarPago" placeholder="Escriba nombre del alumno o tipo de pago..." onkeyup="filtrarTabla('inputBuscarPago', 'tablaPagos')">
+    <form method="GET" action="verPagosGeneral.php">
+        <div class="disposicion-flexible alinear-fin separacion-grande">
+            <div class="campo-formulario flexible-rellenar">
+                <label>FILTRAR POR CICLO FORMATIVO:</label>
+                <select name="idCiclo" onchange="this.form.submit()">
+                    <option value="">-- Todos los Ciclos --</option>
+                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
+                        <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($idDelCicloParaFiltrar == $cicloItem['idCiclo']) { echo "selected"; } ?>>
+                            <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div>
+                <a href="verPagosGeneral.php" class="boton-secundario">LIMPIAR</a>
+            </div>
         </div>
-        <div class="campo-formulario flexible-rellenar">
-            <label>FILTRAR POR CICLO FORMATIVO:</label>
-            <select name="idCiclo" onchange="window.location.href='verPagosGeneral.php?idCiclo=' + this.value">
-                <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                    <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($idDelCicloParaFiltrar == $cicloItem['idCiclo']) { echo "selected"; } ?>>
-                        <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-        <div>
-            <a href="verPagosGeneral.php" class="boton-secundario">LIMPIAR</a>
-        </div>
-    </div>
+    </form>
 </div>
 
 <div class="tarjeta-blanca">

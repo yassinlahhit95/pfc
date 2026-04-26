@@ -50,13 +50,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="mensaje-error"><?php echo $mensajeError; ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-search"></i> BUSCAR MÓDULO O PROFESOR:</label>
-        <input type="text" id="inputBuscarModulo" placeholder="Escriba nombre del módulo, ciclo o profesor..." onkeyup="filtrarTabla('inputBuscarModulo', 'tablaModulos')">
-    </div>
-</div>
-
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaModulos">

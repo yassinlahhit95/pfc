@@ -8,13 +8,16 @@ require_once "../../../modelos/inventario.php";
 
 $todos_los_articulos = listarArticulos();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 
-$lista_de_errores = [];
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+
+$lista_de_errores = array();
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
-$datos = [];
+$datos = array();
 if (isset($_SESSION['datos_inventario'])) { $datos = $_SESSION['datos_inventario']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_inventario']);
@@ -24,10 +27,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Gestión de Inventario</h1>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
@@ -52,15 +55,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                     <p class="error-campo"><?php echo $lista_de_errores['numeroSerie']; ?></p>
                 <?php } ?>
             </div>
-
-            <div class="campo-formulario">
-                <label>Estado Inicial *</label>
-                <select name="estadoArticulo">
-                    <option value="disponible" <?php if(isset($datos['estadoArticulo']) && $datos['estadoArticulo'] == 'disponible') echo "selected"; ?>>Disponible</option>
-                    <option value="prestado" <?php if(isset($datos['estadoArticulo']) && $datos['estadoArticulo'] == 'prestado') echo "selected"; ?>>Prestado</option>
-                    <option value="reparacion" <?php if(isset($datos['estadoArticulo']) && $datos['estadoArticulo'] == 'reparacion') echo "selected"; ?>>En Reparación</option>
-                </select>
-            </div>
         </div>
 
         <div class="margen-arriba">
@@ -72,8 +66,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <div class="tarjeta-blanca margen-arriba">
+    <div class="campo-formulario mb-20">
+        <label><i class="fas fa-search"></i> BUSCAR EN INVENTARIO:</label>
+        <input type="text" id="inputBuscarInv" placeholder="Busque por nombre o nº de serie..." onkeyup="filtrarTabla('inputBuscarInv', 'tablaInventario')">
+    </div>
+
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaInventario">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -101,6 +100,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                         </td>
                         <td>
                             <div class="botones-accion">
+                                <a href="/pfc/vistas/admin/inventario/modificarArticulo.php?idArticulo=<?php echo $art['idArticulo']; ?>" class="boton-icono boton-editar" title="Editar datos">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                                 <form action="/pfc/controladores/admin/inventario/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este artículo del inventario?')">
                                     <input type="hidden" name="idArticulo" value="<?php echo $art['idArticulo']; ?>">
                                     <button type="submit" class="boton-icono boton-eliminar">

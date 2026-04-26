@@ -3,25 +3,35 @@ session_start();
 require_once "../../../modelos/calificaciones.php";
 
 if (isset($_POST['actualizarNota'])) {
-    $idEst = $_POST['idEstudiante'];
-    $idMod = $_POST['idModulo'];
-    $n1e = $_POST['nota_1ev'];
-    $n1f = $_POST['nota_1final'];
-    $n2e = $_POST['nota_2ev'];
-    $n2f = $_POST['nota_2final'];
+    $idEstudianteRecibido = $_POST['idEstudiante'];
+    $idModuloRecibido = $_POST['idModulo'];
+    $notaEv1Recibida = $_POST['nota_1ev'];
+    $notaFinal1Recibida = $_POST['nota_1final'];
+    $notaEv2Recibida = $_POST['nota_2ev'];
+    $notaFinal2Recibida = $_POST['nota_2final'];
 
-    if (!is_numeric($n1e) || !is_numeric($n1f) || !is_numeric($n2e) || !is_numeric($n2f)) {
-        $_SESSION['error'] = "Notas deben ser numero";
-    } else if (calificarModuloCompleto($idEst, $idMod, $n1e, $n1f, $n2e, $n2f)) {
-        if (isset($_POST['notificarEstudiante'])) {
-            require_once "../../comunes/notificaciones_grades.php";
-            enviarEmailNotasEstudiante($idEst);
+    $errorEncontrado = false;
+
+    if (!is_numeric($notaEv1Recibida) || !is_numeric($notaFinal1Recibida) || !is_numeric($notaEv2Recibida) || !is_numeric($notaFinal2Recibida)) {
+        $_SESSION['error'] = strtoupper("LAS NOTAS DEBEN SER VALORES NUMÉRICOS.");
+        $errorEncontrado = true;
+    } 
+    
+    if ($errorEncontrado == false) {
+        $resultado = actualizarOCrearNotaCompleta($idEstudianteRecibido, $idModuloRecibido, $notaEv1Recibida, $notaFinal1Recibida, $notaEv2Recibida, $notaFinal2Recibida, "");
+        
+        if ($resultado == true) {
+            if (isset($_POST['notificarEstudiante']) && !empty($_POST['notificarEstudiante'])) {
+                require_once "../../comunes/notificaciones_grades.php";
+                enviarEmailNotasEstudiante($idEstudianteRecibido);
+            }
+            $_SESSION['exito'] = strtoupper("CALIFICACIÓN ACTUALIZADA CORRECTAMENTE.");
+        } else {
+            $_SESSION['error'] = strtoupper("ERROR AL GUARDAR EN LA BASE DE DATOS.");
         }
-        $_SESSION['exito'] = "Calificacion actualizada";
-    } else {
-        $_SESSION['error'] = "Error";
     }
 }
+
 header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
 exit;
 ?>

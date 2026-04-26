@@ -140,4 +140,32 @@ function devolverPrestamo($idPrestamoRecibido) {
     mysqli_close($conexionBaseDatos);
     return $resultadoOperacion;
 }
+
+/**
+ * Obtiene los datos de un artículo por su ID
+ */
+function obtenerArticuloPorId($idArticuloBuscado) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, numeroSerie, estadoDispositivo as estado 
+                    FROM dispositivos WHERE idDispositivo = $idArticuloBuscado";
+    $resultadoConsulta = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    $datos = mysqli_fetch_assoc($resultadoConsulta);
+    mysqli_close($conexionBaseDatos);
+    return $datos;
+}
+
+/**
+ * Actualiza los datos de un artículo
+ */
+function actualizarArticulo($idArticuloRecibido, $nombreNuevo, $serieNueva, $estadoNuevo) {
+    $conexionBaseDatos = obtenerConexion();
+    $sentenciaSQL = "UPDATE dispositivos SET 
+                    nombreDispositivo = '$nombreNuevo', 
+                    numeroSerie = '$serieNueva', 
+                    estadoDispositivo = '$estadoNuevo' 
+                    WHERE idDispositivo = $idArticuloRecibido";
+    $resultadoOperacion = mysqli_query($conexionBaseDatos, $sentenciaSQL);
+    mysqli_close($conexionBaseDatos);
+    return $resultadoOperacion;
+}
 ?>

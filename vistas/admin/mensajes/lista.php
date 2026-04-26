@@ -14,8 +14,12 @@ $titulo_pagina = "Gestión de Mensajería - Super Admin";
 $seccion = 'reclamaciones';
 include_once "../comunes/nav.php";
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -26,16 +30,23 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito != "") { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if ($error != "") { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-search"></i> BUSCAR MENSAJE:</label>
+        <input type="text" id="inputBuscarMsg" placeholder="Busque por emisor, asunto o destinatario..." onkeyup="filtrarTabla('inputBuscarMsg', 'tablaMensajes')">
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaMensajes">
             <thead>
                 <tr>
                     <th>Emisor</th>
