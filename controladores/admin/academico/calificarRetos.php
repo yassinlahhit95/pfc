@@ -40,9 +40,9 @@ if (isset($_POST['guardarNotasReto'])) {
     }
 
     if ($error_al_guardar == true) {
-        $_SESSION['error'] = "Hubo errores al procesar algunas notas. Asegúrese de que sean números entre 0 y 10.";
+        $_SESSION['error'] = strtoupper("HUBO ERRORES AL PROCESAR ALGUNAS NOTAS. LAS CALIFICACIONES DEBEN ESTAR ENTRE 0.00 Y 10.00.");
     } else {
-        $_SESSION['exito'] = "Calificaciones del reto guardadas con éxito.";
+        $_SESSION['exito'] = strtoupper("CALIFICACIONES DEL RETO GUARDADAS CON ÉXITO.");
     }
 
     header("Location: /pfc/vistas/admin/academico/calificacionesRetos.php?idCiclo=" . $id_ciclo . "&idModulo=" . $id_modulo . "&idReto=" . $id_reto);

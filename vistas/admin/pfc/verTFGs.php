@@ -59,13 +59,16 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <?php if (empty($todos_los_tfgs)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay TFGs registrados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_tfgs as $tfg) { ?>
+                    <?php foreach ($todos_los_tfgs as $tfg) { 
+                        $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
+                        $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";
+                    ?>
                     <tr>
                         <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
                         <td><?php echo $tfg['nombreCiclo']; ?></td>
                         <td>
-                            <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario boton-pequeno">
-                                <i class="fas fa-file-pdf"></i> Ver PDF
+                            <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario boton-pequeno" download="<?php echo $nombreDescarga; ?>">
+                                <i class="fas fa-file-pdf"></i> Descargar PDF
                             </a>
                         </td>
                         <td><?php echo date('d/m/Y', strtotime($tfg['fechaSubidaTFG'])); ?></td>

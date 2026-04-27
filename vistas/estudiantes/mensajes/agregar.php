@@ -18,36 +18,37 @@ $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/estudiantes/mensajes/insertar.php" method="POST">
+    <form action="/pfc/controladores/estudiantes/mensajes/insertar.php" method="POST" class="form-estandar">
         <input type="hidden" name="idEstudiante" value="<?php echo $idEstudiante; ?>">
         
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>Destinatario (Profesor o Dirección)</label>
-                <select name="idProfesor">
-                    <option value="">-- Dirección (Administración) --</option>
-                    <?php foreach ($listaDeProfesores as $profesor) { ?>
-                        <option value="<?php echo $profesor['idProfesor']; ?>">
-                            <?php echo $profesor['nombreProfesor'] . " (" . $profesor['nombreModulo'] . ")"; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-                <small>Selecciona a quién quieres dirigir tu consulta.</small>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Asunto *</label>
-                <input type="text" name="asunto" placeholder="Duda sobre contenido, problema técnico...">
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Mensaje *</label>
-                <textarea name="descripcion" rows="5" placeholder="Escribe aquí tu mensaje..."></textarea>
-            </div>
+        <div class="campo-formulario">
+            <label>Destinatario (Profesor o Dirección)</label>
+            <select name="idProfesor">
+                <option value="">-- Dirección (Administración) --</option>
+                <?php foreach ($listaDeProfesores as $profesor) { ?>
+                    <option value="<?php echo $profesor['idProfesor']; ?>">
+                        <?php echo $profesor['nombreProfesor'] . " (" . $profesor['nombreModulo'] . ")"; ?>
+                    </option>
+                <?php } ?>
+            </select>
+            <small class="texto-atenuado">Selecciona a quién quieres dirigir tu consulta.</small>
         </div>
 
-        <div class="margen-arriba">
-            <button type="submit" name="enviarMensaje" class="boton-primario">Enviar Mensaje</button>
+        <div class="campo-formulario">
+            <label>Asunto del Mensaje</label>
+            <input type="text" name="asunto" placeholder="Duda sobre contenido, problema técnico...">
+        </div>
+
+        <div class="campo-formulario">
+            <label>Contenido del Mensaje</label>
+            <textarea name="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250"></textarea>
+        </div>
+
+        <div class="form-acciones">
+            <button type="submit" name="enviarMensaje" class="boton-primario">
+                <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
+            </button>
+            <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="boton-secundario ml-10">CANCELAR</a>
         </div>
     </form>
 </div>

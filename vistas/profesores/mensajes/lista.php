@@ -39,41 +39,45 @@ unset($_SESSION['error'], $_SESSION['exito']);
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Estudiante</th>
-                    <th>Asunto y Mensaje</th>
+                    <th>Emisor / Receptor</th>
+                    <th>Asunto</th>
+                    <th>Mensaje</th>
                     <th>Fecha</th>
-                    <th>Visto</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No has recibido mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No hay mensajes registrados aún.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { ?>
-                    <tr>
-                        <td><strong><?php echo $mensaje['nombreEstudiante']; ?></strong></td>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
+                        // Si el rol emisor es profesor, significa que lo envió el propio usuario actual
+                        $claseFila = ($mensaje['emisor_rol'] == 'profesor') ? 'fila-propia' : '';
+                    ?>
+                    <tr class="<?php echo $claseFila; ?>">
                         <td>
-                            <p class="texto-negrita"><?php echo $mensaje['asunto']; ?></p>
-                            <p class="texto-atenuado texto-pequeno"><?php echo $mensaje['descripcion']; ?></p>
-                            <?php if (!empty($mensaje['respuesta'])) { ?>
-                                <div class="tarjeta-gris-suave mt-5">
-                                    <small><strong>Tu Respuesta:</strong> <?php echo $mensaje['respuesta']; ?></small>
-                                </div>
-                            <?php } ?>
+                            <strong><?php echo ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Dirección (Admin)') : $mensaje['nombreEstudiante']; ?></strong>
+                            <br><small class="texto-atenuado"><?php echo ($mensaje['emisor_rol'] == 'profesor') ? '(Enviado por ti)' : '(Recibido)'; ?></small>
+                        </td>
+                        <td><p class="texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></p></td>
+                        <td>
+                            <div class="cuerpo-mensaje-tabla">
+                                <?php echo nl2br($mensaje['descripcion']); ?>
+                            </div>
                         </td>
                         <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
-                        <td class="center-text">
+                        <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <i class="fas fa-check-double color-primario" title="Leído"></i>
+                                <span class="estado-bolita activo-verde">LEÍDO</span>
                             <?php } else { ?>
-                                <i class="fas fa-envelope texto-rojo" title="Nuevo"></i>
+                                <span class="estado-bolita inactivo-rojo">NUEVO</span>
                             <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/profesores/mensajes/editar.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Responder o Marcar Leído">
-                                    <i class="fas fa-reply"></i>
+                                <a href="/pfc/vistas/profesores/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                    <i class="fas fa-eye"></i>
                                 </a>
                             </div>
                         </td>

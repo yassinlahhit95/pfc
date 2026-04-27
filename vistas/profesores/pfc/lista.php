@@ -32,13 +32,16 @@ include_once "../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($tfgs) { ?>
-                    <?php foreach ($tfgs as $tfg) { ?>
+                    <?php foreach ($tfgs as $tfg) { 
+                        $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
+                        $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";
+                    ?>
                         <tr>
                             <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
                             <td><?php echo $tfg['nombreCiclo']; ?></td>
                             <td><?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?></td>
                             <td>
-                                <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
+                                <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="btn-accion btn-ver" download="<?php echo $nombreDescarga; ?>"><i class="fas fa-download"></i></a>
                                 <a href="/pfc/controladores/profesores/pfc/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>

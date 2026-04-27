@@ -455,6 +455,14 @@ body {
     margin-top: 15px;
 }
 
+.cuerpo-mensaje-tabla {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #4a5568;
+    max-width: 400px;
+    white-space: normal;
+}
+
 .borde-abajo-gris { border-bottom: 1px solid #e2e8f0; }
 .mt-10 { margin-top: 10px !important; }
 .mt-20 { margin-top: 20px !important; }
@@ -728,6 +736,10 @@ body {
     flex: 1;
     color: #2d3748;
     font-size: 15px;
+}
+
+.fila-propia {
+    background-color: #f0f7ff !important; /* Azul muy suave para mis mensajes */
 }
 
 .disposicion-flexible { display: flex; }

@@ -8,6 +8,15 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+
+$idEstMenu = $_SESSION['idEstudiante'];
+$cantMensajesEst = count(listarMensajesDeEstudiante($idEstMenu));
+$cantAnunciosEst = count(listarAnunciosPorRol('estudiantes'));
+$cantPagosEst = contarPagosEstudiante($idEstMenu);
+$cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -47,6 +56,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
                 <a href="/pfc/vistas/estudiantes/retos/lista.php" class="enlace-menu <?php if ($seccionActual == 'retos') { echo 'activo'; } ?>">
                     <i class="fas fa-tasks"></i> <span>MIS RETOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantRetosEst; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/calificaciones/lista.php" class="enlace-menu <?php if ($seccionActual == 'calificaciones') { echo 'activo'; } ?>">
@@ -71,14 +81,17 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
                 <a href="/pfc/vistas/estudiantes/anuncios/lista.php" class="enlace-menu <?php if ($seccionActual == 'anuncios') { echo 'activo'; } ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantAnunciosEst; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
+                    <span class="etiqueta-contador"><?php echo $cantMensajesEst; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/pagos/lista.php" class="enlace-menu <?php if ($seccionActual == 'pagos') { echo 'activo'; } ?>">
                     <i class="fas fa-credit-card"></i> <span>MIS PAGOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantPagosEst; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/eventos/lista.php" class="enlace-menu <?php if ($seccionActual == 'eventos') { echo 'activo'; } ?>">

@@ -9,7 +9,8 @@ if (isset($_POST['subirTFG'])) {
     } else if ($archivo['error'] !== 0) {
         $_SESSION['error'] = "Error archivo";
     } else {
-        $nombreArchivo = "TFG_" . $id . "_" . time() . ".pdf";
+        $timestamp = date('d-m-Y_H-i-s');
+        $nombreArchivo = "TFG_" . $id . "_" . $timestamp . ".pdf";
         if (move_uploaded_file($archivo['tmp_name'], "../../uploads/pfc/" . $nombreArchivo)) {
             if (actualizarTFG($id, $nombreArchivo)) {
                 $_SESSION['exito'] = "Ok";

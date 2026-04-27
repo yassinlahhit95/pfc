@@ -19,6 +19,24 @@ include_once "../comunes/nav.php";
     <h1>Gestión de Estudiantes</h1>
 </div>
 
+<?php 
+require_once "../../../modelos/ciclos.php";
+$listaDeCiclosParaFiltro = listarTodosLosCiclos(); 
+?>
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
+        <select id="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
+            <option value="">-- Todos los Ciclos --</option>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                <option value="<?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>">
+                    <?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>
+                </option>
+            <?php } ?>
+        </select>
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
         <h3>Estudiantes Registrados</h3>

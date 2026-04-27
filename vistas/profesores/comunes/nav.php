@@ -7,6 +7,13 @@ if (isset($_SESSION['idProfesor']) == false) {
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
+
+$idProfMenu = $_SESSION['idProfesor'];
+$cantAlumnos = contarEstudiantes(); // General o específicos si prefieres
+$cantCiclos = contarCiclos();
+$cantMensajes = contarReclamaciones();
+$cantTFGs = contarTFGsSubidos();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -46,10 +53,12 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
                 
                 <a href="/pfc/vistas/profesores/estudiantes/lista.php" class="enlace-menu <?php if ($seccionActual == 'estudiantes') { echo 'activo'; } ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
+                    <span class="etiqueta-contador"><?php echo $cantAlumnos; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/ciclos/lista.php" class="enlace-menu <?php if ($seccionActual == 'ciclos') { echo 'activo'; } ?>">
                     <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
+                    <span class="etiqueta-contador"><?php echo $cantCiclos; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/modulos/lista.php" class="enlace-menu <?php if ($seccionActual == 'modulos') { echo 'activo'; } ?>">
@@ -74,6 +83,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 
                 <a href="/pfc/vistas/profesores/pfc/lista.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
+                    <span class="etiqueta-contador"><?php echo $cantTFGs; ?></span>
                 </a>
             </div>
 
@@ -86,6 +96,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 
                 <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
                     <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
+                    <span class="etiqueta-contador"><?php echo $cantMensajes; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/eventos/lista.php" class="enlace-menu <?php if ($seccionActual == 'eventos') { echo 'activo'; } ?>">
@@ -118,7 +129,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
     </script>
 
     <main class="contenido-principal">
-    <?php if (isset($_SESSION['idProfesor'])): ?>
+    <?php if (isset($_SESSION['idProfesor'])) { ?>
         <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idProfesor']; ?>" data-user-role="profesor" class="d-none"></div>
         <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
     <?php } ?>

@@ -20,6 +20,6 @@ if (isset($_POST['idEstudiante'])) {
     }
 }
 
-header("Location: /pfc/vistas/estudiantes/pfc/lista.php");
+header("Location: /pfc/vistas/estudiantes/pfc/subir.php");
 exit;
 ?>

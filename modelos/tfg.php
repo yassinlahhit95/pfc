@@ -83,4 +83,27 @@ function contarTFGsSubidos() {
     mysqli_close($db);
     return $total;
 }
+// Eliminar archivo TFG de un alumno
+function eliminarArchivoTFG($idEst) {
+    $db = obtenerConexion();
+    
+    // Primero obtenemos el nombre del archivo para borrarlo del disco
+    $sql = "SELECT archivoTFG FROM tfg WHERE idEstudiante = $idEst";
+    $res = mysqli_query($db, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    
+    if ($fila && !empty($fila['archivoTFG'])) {
+        $ruta = "../../../public/uploads/pfc/" . $fila['archivoTFG'];
+        if (file_exists($ruta)) {
+            unlink($ruta);
+        }
+    }
+    
+    // Ahora limpiamos el registro en la base de datos
+    $sqlDelete = "UPDATE tfg SET archivoTFG = NULL, fechaSubidaTFG = NULL WHERE idEstudiante = $idEst";
+    $resultado = mysqli_query($db, $sqlDelete);
+    
+    mysqli_close($db);
+    return $resultado;
+}
 ?>

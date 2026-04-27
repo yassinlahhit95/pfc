@@ -10,8 +10,22 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$id = $_GET['id'];
+$id = $_GET['id'] ?? null;
+
+if (!$id || !is_numeric($id)) {
+    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
+    header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
+    exit;
+}
+
 $nota = obtenerCalificacionPorId($id);
+
+if (!$nota) {
+    $_SESSION['error'] = strtoupper("NO SE ENCONTRÓ LA CALIFICACIÓN SOLICITADA.");
+    header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
+    exit;
+}
+
 $estudiantes = listarEstudiantes();
 $modulos = listarModulos();
 
@@ -24,6 +38,10 @@ include_once "../comunes/nav.php";
     <h1>Editar Calificación</h1>
     <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>
+
+<?php if (isset($_SESSION['error'])) { ?>
+    <div class="mensaje-error"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/profesores/calificaciones/actualizar.php" method="POST">

@@ -11,7 +11,9 @@ if (isset($_POST['enviarMensaje'])) {
     $fechaActual = date('Y-m-d');
 
     if (empty($asunto) || empty($descripcion)) {
-        $_SESSION['error'] = "Todos los campos son obligatorios.";
+        $_SESSION['error'] = strtoupper("TODOS LOS CAMPOS SON OBLIGATORIOS.");
+    } else if (strlen($descripcion) > 250) {
+        $_SESSION['error'] = strtoupper("EL MENSAJE NO PUEDE SUPERAR LOS 250 CARACTERES.");
     } else {
         if (insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'estudiante')) {
             if (!empty($idProfesor)) {
@@ -30,11 +32,11 @@ if (isset($_POST['enviarMensaje'])) {
                 }
                 mysqli_close($conexion);
             }
-            $_SESSION['exito'] = "Mensaje enviado correctamente.";
+            $_SESSION['exito'] = strtoupper("MENSAJE ENVIADO CORRECTAMENTE.");
             header("Location: /pfc/vistas/estudiantes/mensajes/lista.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al procesar el mensaje.";
+            $_SESSION['error'] = strtoupper("ERROR AL PROCESAR EL MENSAJE.");
         }
     }
     header("Location: /pfc/vistas/estudiantes/mensajes/agregar.php");

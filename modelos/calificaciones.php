@@ -24,8 +24,11 @@ function listarCalificacionesGeneral() {
 
 // Sacar nota por ID
 function obtenerCalificacionPorId($id) {
+    if (empty($id) || !is_numeric($id)) {
+        return null;
+    }
     $db = obtenerConexion();
-    $sql = "SELECT * FROM calificaciones_modulos WHERE idCalificacion = $id";
+    $sql = "SELECT * FROM calificaciones_modulos WHERE idCalificacion = " . (int)$id;
     $resultado = mysqli_query($db, $sql);
     $datos = mysqli_fetch_assoc($resultado);
     mysqli_close($db);

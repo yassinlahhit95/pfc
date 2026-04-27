@@ -106,21 +106,22 @@ function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExclui
 }
 
 // Actualizar los datos de un reto
-function actualizarReto($idReto, $nombre, $inicio, $fin, $horas, $listaModulos) {
+function actualizarReto($idReto, $nombre, $inicio, $fin, $horas, $listaModulos = null) {
     $db = obtenerConexion();
     $sql = "UPDATE retos SET nombreReto='$nombre', fechaInicio='$inicio', fechaFin='$fin', horasReto=$horas WHERE idReto=$idReto";
     $resultado = mysqli_query($db, $sql);
-    
-    if ($resultado) {
+
+    if ($resultado && $listaModulos !== null) {
         // Borramos las uniones viejas y ponemos las nuevas
         $sqlBorrar = "DELETE FROM modulo_reto WHERE idReto = $idReto";
         mysqli_query($db, $sqlBorrar);
-        
+
         foreach ($listaModulos as $idModuloIndividual) { 
             $sqlInsertar = "INSERT INTO modulo_reto (idModulo, idReto) VALUES ($idModuloIndividual, $idReto)";
-            mysqli_query($db, $sqlInsertar); 
+            mysqli_query($db, $sqlInsertar);
         }
     }
+
     mysqli_close($db);
     return $resultado;
 }

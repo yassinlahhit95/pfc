@@ -41,41 +41,43 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <tr>
                     <th>Destinatario</th>
                     <th>Asunto</th>
+                    <th>Mensaje</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Visto</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No has enviado mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { ?>
-                    <tr>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
+                        $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
+                    ?>
+                    <tr class="<?php echo $claseFila; ?>">
                         <td>
                             <strong><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></strong>
                         </td>
+                        <td><p class="texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></p></td>
                         <td>
-                            <p class="texto-negrita"><?php echo $mensaje['asunto']; ?></p>
-                            <small class="texto-atenuado"><?php echo substr($mensaje['descripcion'], 0, 50); ?>...</small>
-                            <?php if (!empty($mensaje['respuesta'])) { ?>
-                                <div class="tarjeta-gris-suave mt-5">
-                                    <small><strong>Respuesta:</strong> <?php echo $mensaje['respuesta']; ?></small>
-                                </div>
-                            <?php } ?>
+                            <div class="cuerpo-mensaje-tabla">
+                                <?php echo substr($mensaje['descripcion'], 0, 80); ?>...
+                            </div>
                         </td>
                         <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
                         <td>
-                            <span class="estado-bolita <?php echo ($mensaje['estadoReclamacion'] == 'atendido' ? 'activo-verde' : 'inactivo-rojo'); ?>">
-                                <?php echo ucfirst($mensaje['estadoReclamacion']); ?>
-                            </span>
+                            <?php if ($mensaje['leido']) { ?>
+                                <span class="estado-bolita activo-verde">VISTO</span>
+                            <?php } else { ?>
+                                <span class="estado-bolita inactivo-rojo">ENVIADO</span>
+                            <?php } ?>
                         </td>
                         <td>
-                            <?php if ($mensaje['leido']) { ?>
-                                <i class="fas fa-check-double color-primario" title="Leído por el destinatario"></i>
-                            <?php } else { ?>
-                                <i class="fas fa-check texto-atenuado" title="Enviado"></i>
-                            <?php } ?>
+                            <div class="botones-accion">
+                                <a href="/pfc/vistas/estudiantes/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>

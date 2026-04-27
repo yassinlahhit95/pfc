@@ -7,9 +7,14 @@ if (!isset($_SESSION['idEstudiante'])) {
 }
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $id = $_SESSION['idEstudiante'];
 $tfg = obtenerTFGporEstudiante($id);
+$estudianteActual = obtenerEstudiantePorId($id);
+$nombreLimpio = str_replace(' ', '_', $estudianteActual['nombreEstudiante']);
+$timestampDescarga = date('d-m-Y_H-i-s');
+$nombreDescarga = "TFG_" . $nombreLimpio . "_" . $timestampDescarga . ".pdf";
 
 $tituloDelPagina = "Mi TFG - Portal Estudiantes";
 $seccionActual = 'tfg';
@@ -65,7 +70,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <div class="etiqueta-detalle">Acciones del Archivo</div>
             <div class="valor-detalle">
                 <div class="disposicion-flexible separacion-media">
-                    <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
+                    <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario" download="<?php echo $nombreDescarga; ?>">
                         <i class="fas fa-download"></i> DESCARGAR PDF
                     </a>
                     <form action="/pfc/controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
@@ -86,7 +91,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
         <div class="fila-detalle">
             <div class="etiqueta-detalle"><?php echo empty($tfg['archivoTFG']) ? 'Subir Trabajo' : 'Actualizar Archivo'; ?></div>
             <div class="valor-detalle">
-                <input type="file" name="archivoTFG" accept=".pdf" class="sin-borde">
+                <input type="file" name="archivoTFG">
             </div>
         </div>
 
