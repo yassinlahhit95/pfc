@@ -79,12 +79,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="boton-icono boton-ver" title="Ver y Gestionar">
+                                <a href="/pfc/vistas/admin/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Ver y Gestionar">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?php echo $mensaje['idReclamacion']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

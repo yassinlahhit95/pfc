@@ -20,7 +20,7 @@ $seccionActual = 'perfil';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Editar Mi Perfil</h1>
     <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="boton-secundario">← Volver</a>
 </div>

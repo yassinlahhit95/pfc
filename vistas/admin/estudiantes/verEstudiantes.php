@@ -95,16 +95,16 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver ficha completa">
+                                   class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-id-card"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar información">
+                                   class="btn-accion btn-editar" title="Editar información">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
                                     <input type="hidden" name="idEstudiante" value="<?php echo $estudianteIndividual['idEstudiante']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" title="Borrar registro">
+                                    <button type="submit" class="btn-accion btn-eliminar" title="Borrar registro">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

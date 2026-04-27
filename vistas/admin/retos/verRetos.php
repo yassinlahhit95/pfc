@@ -61,12 +61,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/retos/modificarRetos.php?idReto=<?php echo $reto['idReto']; ?>" class="boton-icono boton-editar">
+                                <a href="/pfc/vistas/admin/retos/modificarRetos.php?idReto=<?php echo $reto['idReto']; ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/retos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este reto?')">
                                     <input type="hidden" name="idReto" value="<?php echo $reto['idReto']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

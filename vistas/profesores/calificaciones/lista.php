@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -50,9 +50,9 @@ include_once "../comunes/nav.php";
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por Módulo:</label>
+            <label>Filtrar por MÃ³dulo:</label>
             <select name="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis Módulos --</option>
+                <option value="0">-- Todos mis MÃ³dulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?php echo $m['idModulo']; ?>" <?php if($idModulo == $m['idModulo']) echo "selected"; ?>>
                         <?php echo $m['nombreModulo']; ?>
@@ -69,7 +69,7 @@ include_once "../comunes/nav.php";
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
         <label><i class="fas fa-search"></i> BUSCAR EN RESULTADOS:</label>
-        <input type="text" id="inputBuscarNota" placeholder="Escriba nombre del alumno o módulo..." onkeyup="filtrarTabla('inputBuscarNota', 'tablaNotasProf')">
+        <input type="text" id="inputBuscarNota" placeholder="Escriba nombre del alumno o mÃ³dulo..." onkeyup="filtrarTabla('inputBuscarNota', 'tablaNotasProf')">
     </div>
 </div>
 
@@ -79,11 +79,11 @@ include_once "../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>Módulo</th>
-                    <th>1ª Ev</th>
-                    <th>1ª Final</th>
-                    <th>2ª Ev</th>
-                    <th>2ª Final</th>
+                    <th>MÃ³dulo</th>
+                    <th>1Âª Ev</th>
+                    <th>1Âª Final</th>
+                    <th>2Âª Ev</th>
+                    <th>2Âª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -99,7 +99,7 @@ include_once "../comunes/nav.php";
                             <td class="texto-negrita"><?php echo $nota['nota_2final']; ?></td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="/pfc/vistas/profesores/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="boton-icono boton-editar"><i class="fas fa-edit"></i></a>
+                                    <a href="/pfc/vistas/profesores/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -115,4 +115,5 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

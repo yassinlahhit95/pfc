@@ -20,7 +20,7 @@ $seccionActual = 'calificaciones';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Editar Calificación</h1>
     <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="boton-secundario">← Volver</a>
 </div>

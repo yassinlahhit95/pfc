@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idProfesor = $_SESSION['idProfesor'];
 $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 
-$tituloDelPagina = "Buzón de Mensajes - Portal Profesores";
+$tituloDelPagina = "BuzÃ³n de Mensajes - Portal Profesores";
 $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 
@@ -21,7 +21,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Buzón de Mensajes</h1>
+    <h1>BuzÃ³n de Mensajes</h1>
     <a href="/pfc/vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-paper-plane"></i> Redactar Nuevo
     </a>
@@ -48,7 +48,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No has recibido mensajes aún.</td></tr>
+                    <tr><td colspan="5" class="sin-datos">No has recibido mensajes aÃºn.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { ?>
                     <tr>
@@ -65,14 +65,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
                         <td class="center-text">
                             <?php if ($mensaje['leido']) { ?>
-                                <i class="fas fa-check-double" style="color: #667eea;" title="Leído"></i>
+                                <i class="fas fa-check-double" style="color: #667eea;" title="LeÃ­do"></i>
                             <?php } else { ?>
                                 <i class="fas fa-envelope" style="color: #e43653;" title="Nuevo"></i>
                             <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/profesores/mensajes/editar.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="boton-icono boton-ver" title="Responder o Marcar Leído">
+                                <a href="/pfc/vistas/profesores/mensajes/editar.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Responder o Marcar LeÃ­do">
                                     <i class="fas fa-reply"></i>
                                 </a>
                             </div>
@@ -86,3 +86,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

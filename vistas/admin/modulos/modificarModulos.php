@@ -31,9 +31,7 @@ include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <div>
-        <h1>Modificar Módulo: <?php echo $modulo['nombreModulo']; ?></h1>
-    </div>
+    <h1>Modificar Módulo: <?php echo $modulo['nombreModulo']; ?></h1>
     <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
     </a>

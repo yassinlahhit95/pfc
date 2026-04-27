@@ -42,8 +42,8 @@ include_once "../comunes/nav.php";
                             <td><?php echo $reto['fechaFin']; ?></td>
                             <td><?php echo $reto['horasReto']; ?> h</td>
                             <td>
-                                <a href="/pfc/vistas/profesores/retos/editar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/controladores/profesores/retos/borrar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/vistas/profesores/retos/editar.php?id=<?php echo $reto['idReto']; ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                <a href="/pfc/controladores/profesores/retos/borrar.php?id=<?php echo $reto['idReto']; ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

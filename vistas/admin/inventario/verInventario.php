@@ -100,12 +100,12 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/inventario/modificarArticulo.php?idArticulo=<?php echo $art['idArticulo']; ?>" class="boton-icono boton-editar" title="Editar datos">
+                                <a href="/pfc/vistas/admin/inventario/modificarArticulo.php?idArticulo=<?php echo $art['idArticulo']; ?>" class="btn-accion btn-editar" title="Editar datos">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/inventario/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este artículo del inventario?')">
                                     <input type="hidden" name="idArticulo" value="<?php echo $art['idArticulo']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

@@ -113,16 +113,16 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/modulos/asignarProfesorModulo.php?idModulo=<?php echo $moduloIndividual['idModulo']; ?>" 
-                                   class="boton-icono boton-ver" title="Asignar o cambiar profesor">
+                                   class="btn-accion btn-ver" title="Asignar o cambiar profesor">
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/modulos/modificarModulos.php?idModulo=<?php echo $moduloIndividual['idModulo']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar módulo">
+                                   class="btn-accion btn-editar" title="Editar módulo">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form method="POST" action="/pfc/controladores/admin/modulos/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar este módulo?')">
                                     <input type="hidden" name="idModulo" value="<?php echo $moduloIndividual['idModulo']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" title="Borrar">
+                                    <button type="submit" class="btn-accion btn-eliminar" title="Borrar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

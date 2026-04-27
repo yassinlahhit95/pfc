@@ -99,15 +99,15 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                         <td><?php echo date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])); ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/anuncios/detallesAnuncio.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="boton-icono boton-ver" title="Ver detalles">
+                                <a href="/pfc/vistas/admin/anuncios/detallesAnuncio.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="btn-accion btn-ver" title="Ver detalles">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/anuncios/modificarAnuncios.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="boton-icono boton-editar">
+                                <a href="/pfc/vistas/admin/anuncios/modificarAnuncios.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este anuncio?')">
                                     <input type="hidden" name="idAnuncio" value="<?php echo $anuncio['idAnuncio']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

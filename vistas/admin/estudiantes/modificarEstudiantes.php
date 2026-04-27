@@ -28,11 +28,9 @@ $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Modificar Estudiante: <?php echo $estudiante['nombreEstudiante']; ?></h1>
-    <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
+    <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

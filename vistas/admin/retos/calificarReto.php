@@ -25,14 +25,8 @@ if (isset($_SESSION['exito'])) {
 ?>
 
 <div class="encabezado-pagina">
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-        <div>
-            <h1>Calificar Reto: <?php echo $retoActual['nombreReto']; ?></h1>
-        </div>
-    </div>
-    <div class="acciones-pagina">
-        <a href="/pfc/vistas/admin/retos/verRetos.php" class="boton-secundario">Volver</a>
-    </div>
+    <h1>Calificar Reto: <?php echo $retoActual['nombreReto']; ?></h1>
+    <a href="/pfc/vistas/admin/retos/verRetos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if (!empty($exito)) { ?>

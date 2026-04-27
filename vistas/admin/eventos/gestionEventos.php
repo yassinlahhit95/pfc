@@ -108,12 +108,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $evento['ubicacionEvento']; ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="modificarEvento.php?idEvento=<?php echo $evento['idEvento']; ?>" class="boton-icono boton-editar">
+                                <a href="modificarEvento.php?idEvento=<?php echo $evento['idEvento']; ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/eventos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este evento?')">
                                     <input type="hidden" name="idEvento" value="<?php echo $evento['idEvento']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

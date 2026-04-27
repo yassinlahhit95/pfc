@@ -21,7 +21,7 @@ $seccion = 'estudiantes';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Ficha de Estudiante</h1>
     <div class="acciones-pagina">
         <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $idDelEstudiante; ?>" class="boton-primario">

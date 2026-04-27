@@ -62,15 +62,15 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $director['telefonoDirector']; ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/directores/verDetallesDirectores.php?id=<?php echo $director['idDirector']; ?>" class="boton-icono boton-ver" title="Ver ficha completa">
+                                <a href="/pfc/vistas/admin/directores/verDetallesDirectores.php?id=<?php echo $director['idDirector']; ?>" class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/directores/modificarDirectores.php?idDirector=<?php echo $director['idDirector']; ?>" class="boton-icono boton-editar">
+                                <a href="/pfc/vistas/admin/directores/modificarDirectores.php?idDirector=<?php echo $director['idDirector']; ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/directores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este director?')">
                                     <input type="hidden" name="idDirector" value="<?php echo $director['idDirector']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

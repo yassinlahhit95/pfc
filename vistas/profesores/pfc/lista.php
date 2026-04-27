@@ -38,8 +38,8 @@ include_once "../comunes/nav.php";
                             <td><?php echo $tfg['nombreCiclo']; ?></td>
                             <td><?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?></td>
                             <td>
-                                <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="enlace-icono azul"><i class="fas fa-download"></i></a>
-                                <a href="/pfc/controladores/profesores/pfc/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
+                                <a href="/pfc/controladores/profesores/pfc/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

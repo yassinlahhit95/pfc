@@ -21,7 +21,7 @@ $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
     <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
 </div>

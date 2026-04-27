@@ -59,12 +59,12 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                         <td><?php echo $ciclo['nombreNivel']; ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" class="boton-icono boton-editar">
+                                <a href="/pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/ciclos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este ciclo?')">
                                     <input type="hidden" name="idCiclo" value="<?php echo $ciclo['idCiclo']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

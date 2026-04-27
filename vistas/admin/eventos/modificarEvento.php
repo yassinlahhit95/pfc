@@ -20,7 +20,7 @@ $seccion = 'eventos';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Modificar Evento</h1>
     <a href="gestionEventos.php" class="boton-secundario">← Volver</a>
 </div>

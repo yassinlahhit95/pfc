@@ -21,7 +21,7 @@ $seccion = 'anuncios';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Detalles del Anuncio</h1>
     <a href="gestionAnuncios.php" class="boton-secundario">← Volver a la lista</a>
 </div>

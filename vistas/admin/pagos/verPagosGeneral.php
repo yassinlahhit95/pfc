@@ -121,16 +121,16 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td>
                             <div class="botones-accion">
                                 <a href="historialEstudiante.php?idEstudiante=<?php echo $pagoIndividual['idEstudiante']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver historial completo">
+                                   class="btn-accion btn-ver" title="Ver historial completo">
                                     <i class="fas fa-history"></i>
                                 </a>
                                 <a href="modificarPagos.php?idPago=<?php echo $pagoIndividual['idPago']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar este pago">
+                                   class="btn-accion btn-editar" title="Editar este pago">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/pagos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este registro de pago?')">
                                     <input type="hidden" name="idPago" value="<?php echo $pagoIndividual['idPago']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

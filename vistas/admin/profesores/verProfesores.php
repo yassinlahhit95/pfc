@@ -73,20 +73,20 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver ficha completa">
+                                   class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-search"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
-                                   class="boton-icono boton-ver" title="Asignar Módulos específicos">
+                                   class="btn-accion btn-ver" title="Asignar Módulos específicos">
                                     <i class="fas fa-book"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar datos del profesor">
+                                   class="btn-accion btn-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="/pfc/controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
                                     <input type="hidden" name="idProfesor" value="<?php echo $profesorIndividual['idProfesor']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" title="Eliminar del sistema">
+                                    <button type="submit" class="btn-accion btn-eliminar" title="Eliminar del sistema">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

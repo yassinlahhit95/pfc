@@ -81,15 +81,15 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/aulas/modificarAulas.php?idAula=<?php echo $aula['idAula']; ?>" 
-                                   class="boton-icono boton-editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="/pfc/controladores/admin/aulas/borrar.php" method="POST" class="d-inline">
-                                    <input type="hidden" name="idAula" value="<?php echo $aula['idAula']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                                                   class="btn-accion btn-editar">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                                <form action="/pfc/controladores/admin/aulas/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta aula?')">
+                                                                    <input type="hidden" name="idAula" value="<?php echo $aula['idAula']; ?>">
+                                                                    <button type="submit" class="btn-accion btn-eliminar">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
                             </div>
                         </td>
                     </tr>

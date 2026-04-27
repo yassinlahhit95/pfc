@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
@@ -61,7 +61,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         </a>
                         <form action="/pfc/controladores/estudiantes/pfc/eliminar.php" method="POST">
                             <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
-                            <button type="submit" name="borrarTFG" class="boton-icono rojo" title="Eliminar archivo">
+                            <button type="submit" name="borrarTFG" class="btn-accion btn-eliminar" title="Eliminar archivo">
                                 <i class="fas fa-trash-alt"></i> Borrar entrega
                             </button>
                         </form>
@@ -71,7 +71,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <strong>Subido el:</strong> <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?>
                     </p>
                 <?php } else { ?>
-                    <p class="texto-atenuado">No se ha subido ningún archivo todavía.</p>
+                    <p class="texto-atenuado">No se ha subido ningÃºn archivo todavÃ­a.</p>
                 <?php } ?>
             </div>
         </div>
@@ -90,4 +90,5 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
