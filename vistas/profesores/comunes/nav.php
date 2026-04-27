@@ -8,11 +8,13 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idProfMenu = $_SESSION['idProfesor'];
 $cantAlumnos = contarEstudiantes(); // General o específicos si prefieres
 $cantCiclos = contarCiclos();
 $cantMensajes = contarReclamaciones();
+$cantMensajesNoLeidosProf = contarMensajesNoLeidosProfesor($idProfMenu);
 $cantTFGs = contarTFGsSubidos();
 ?>
 <!DOCTYPE html>
@@ -96,7 +98,7 @@ $cantTFGs = contarTFGsSubidos();
 
                 <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
                     <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador"><?php echo $cantMensajes; ?></span>
+                    <span class="etiqueta-contador <?php echo ($cantMensajesNoLeidosProf > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantMensajes; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/eventos/lista.php" class="enlace-menu <?php if ($seccionActual == 'eventos') { echo 'activo'; } ?>">

@@ -8,6 +8,7 @@ if (isset($_SESSION['idAdmin']) == false) {
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 // Obtenemos todos los contadores para las etiquetas del menú
 $cantidadAlumnosMenu = contarEstudiantes();
@@ -16,6 +17,7 @@ $cantidadDirectoresMenu = contarDirectores();
 $cantidadPagosMenu = contarPagos();
 $cantidadAnunciosMenu = contarAnuncios();
 $cantidadMensajesMenu = contarReclamaciones();
+$cantidadMensajesNoLeidosAdmin = contarMensajesNoLeidosAdmin();
 $cantidadCiclosMenu = contarCiclos();
 $cantidadModulosMenu = contarModulos();
 $cantidadRetosMenu = contarRetos();
@@ -123,7 +125,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
 
                 <a href="/pfc/vistas/admin/mensajes/lista.php" class="enlace-menu <?php if ($seccion == 'reclamaciones') { echo 'activo'; } ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador"><?php echo $cantidadMensajesMenu; ?></span>
+                    <span class="etiqueta-contador <?php echo ($cantidadMensajesNoLeidosAdmin > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantidadMensajesMenu; ?></span>
                 </a>
             </div>
 

@@ -56,7 +56,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     ?>
                     <tr class="<?php echo $claseFila; ?>">
                         <td>
-                            <strong><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></strong>
+                            <strong><?php 
+                                if ($mensaje['emisor_rol'] == 'profesor') {
+                                    echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
+                                } else {
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
+                                }
+                            ?></strong>
                         </td>
                         <td><p class="texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></p></td>
                         <td>

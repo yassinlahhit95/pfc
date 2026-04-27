@@ -11,9 +11,11 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idEstMenu = $_SESSION['idEstudiante'];
 $cantMensajesEst = count(listarMensajesDeEstudiante($idEstMenu));
+$cantMensajesNoLeidosEst = contarMensajesNoLeidosEstudiante($idEstMenu);
 $cantAnunciosEst = count(listarAnunciosPorRol('estudiantes'));
 $cantPagosEst = contarPagosEstudiante($idEstMenu);
 $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
@@ -86,7 +88,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
 
                 <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador"><?php echo $cantMensajesEst; ?></span>
+                    <span class="etiqueta-contador <?php echo ($cantMensajesNoLeidosEst > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantMensajesEst; ?></span>
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/pagos/lista.php" class="enlace-menu <?php if ($seccionActual == 'pagos') { echo 'activo'; } ?>">

@@ -11,10 +11,21 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
-if (!$mensaje || ($mensaje['idProfesor'] != $_SESSION['idProfesor'] && $mensaje['emisor_rol'] != 'profesor')) {
-    $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.");
+if (!$mensaje) {
+    $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO.");
     header("Location: /pfc/vistas/profesores/mensajes/lista.php");
     exit;
+}
+
+// Obtenemos info del profesor actual para mostrar su nombre en lugar de "Tú"
+require_once __DIR__ . "/../../../modelos/profesores.php";
+$profeActual = obtenerProfesorPorId($_SESSION['idProfesor']);
+$nombreProfeParaVista = $profeActual['nombreProfesor'] ?? 'Profesor';
+
+// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+if (!$mensaje['leido'] && $mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] == $_SESSION['idProfesor']) {
+    marcarMensajeComoLeido($idReclamacion);
+    $mensaje['leido'] = 1;
 }
 
 $tituloDelPagina = "Detalles del Mensaje - Portal Profesores";
@@ -35,14 +46,14 @@ include_once "../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : 'Tú (Profesor)'; ?>
+            <?php echo ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)'; ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Dirección') : 'Tú (Profesor)'; ?>
+            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Dirección') : $nombreProfeParaVista . ' (Profesor)'; ?>
         </div>
     </div>
 
@@ -67,41 +78,10 @@ include_once "../comunes/nav.php";
         </div>
     </div>
 
-    <div class="margen-arriba p-20 bg-gris-suave rounded-8">
+    <div class="margen-arriba p-20 bg-gris-suave rounded-8" style="width: 100%; overflow-wrap: break-word;">
         <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
-        <div class="line-height-16 pre-wrap"><?php echo $mensaje['descripcion']; ?></div>
+        <div class="line-height-16 pre-wrap" style="max-width: 100%;"><?php echo $mensaje['descripcion']; ?></div>
     </div>
-
-    <?php if (!empty($mensaje['respuesta'])) { ?>
-        <div class="margen-arriba p-20 bg-secundario text-white rounded-8">
-            <label class="text-white texto-pequeno d-block mb-10">TU RESPUESTA:</label>
-            <div class="line-height-16 pre-wrap"><?php echo $mensaje['respuesta']; ?></div>
-        </div>
-    <?php } ?>
-
-    <?php if (!$mensaje['leido'] && $mensaje['emisor_rol'] == 'estudiante') { ?>
-        <div class="margen-arriba-grande pt-20" style="border-top: 1px solid #e2e8f0;">
-            <div class="titulo-tarjeta"><h3><i class="fas fa-reply"></i> RESPONDER MENSAJE</h3></div>
-            <form action="/pfc/controladores/profesores/mensajes/responder.php" method="POST" class="form-estandar">
-                <input type="hidden" name="idReclamacion" value="<?php echo $idReclamacion; ?>">
-                <div class="campo-formulario">
-                    <label>Tu Respuesta (Máx 250 caracteres)</label>
-                    <textarea name="respuesta" rows="4" maxlength="250" placeholder="Escribe aquí tu respuesta..."></textarea>
-                </div>
-                <div class="form-acciones">
-                    <button type="submit" name="enviarRespuesta" class="boton-primario">
-                        <i class="fas fa-paper-plane"></i> ENVIAR RESPUESTA Y MARCAR VISTO
-                    </button>
-                    <form action="/pfc/controladores/profesores/mensajes/marcar_visto.php" method="POST" style="display:inline;">
-                         <input type="hidden" name="idReclamacion" value="<?php echo $idReclamacion; ?>">
-                         <button type="submit" name="marcarVisto" class="boton-secundario">
-                             <i class="fas fa-check"></i> SOLO MARCAR VISTO
-                         </button>
-                    </form>
-                </div>
-            </form>
-        </div>
-    <?php } ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

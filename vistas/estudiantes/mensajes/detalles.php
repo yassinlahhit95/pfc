@@ -17,6 +17,12 @@ if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
     exit;
 }
 
+// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'estudiante' && $mensaje['idEstudiante'] == $_SESSION['idEstudiante']) {
+    marcarMensajeComoLeido($idReclamacion);
+    $mensaje['leido'] = 1;
+}
+
 $tituloDelPagina = "Detalles del Mensaje - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
@@ -29,13 +35,13 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> INFORMACIÓN DEL MENSAJE</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> Información del Mensaje</h3>
     </div>
     
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Para</div>
+        <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['idProfesor'] > 0) ? $mensaje['nombreProfesor'] : 'Dirección (Administración)'; ?>
+            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administración (Sistema)'; ?>
         </div>
     </div>
 
@@ -53,35 +59,17 @@ include_once "../comunes/nav.php";
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">LEÍDO POR EL DESTINATARIO</span>
+                <span class="estado-bolita activo-verde">VISTO</span>
             <?php } else { ?>
-                <span class="estado-bolita inactivo-rojo">PENDIENTE DE LECTURA</span>
+                <span class="estado-bolita inactivo-rojo">NUEVO / SIN LEER</span>
             <?php } ?>
         </div>
     </div>
 
     <div class="margen-arriba p-20 bg-gris-suave rounded-8">
-        <label class="texto-atenuado texto-pequeno d-block mb-10">TU MENSAJE:</label>
+        <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
         <div class="line-height-16 pre-wrap"><?php echo $mensaje['descripcion']; ?></div>
     </div>
-
-    <?php if (!empty($mensaje['respuesta'])) { ?>
-        <div class="margen-arriba p-20 bg-secundario text-white rounded-8">
-            <label class="text-white texto-pequeno d-block mb-10">RESPUESTA RECIBIDA:</label>
-            <div class="line-height-16 pre-wrap"><?php echo $mensaje['respuesta']; ?></div>
-        </div>
-    <?php } ?>
-
-    <?php if (!$mensaje['leido'] && $mensaje['emisor_rol'] == 'profesor') { ?>
-        <div class="form-acciones">
-            <form action="/pfc/controladores/estudiantes/mensajes/marcar_visto.php" method="POST">
-                <input type="hidden" name="idReclamacion" value="<?php echo $idReclamacion; ?>">
-                <button type="submit" name="marcarVisto" class="boton-primario">
-                    <i class="fas fa-check-double"></i> MARCAR COMO LEÍDO / VISTO
-                </button>
-            </form>
-        </div>
-    <?php } ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
