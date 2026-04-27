@@ -20,10 +20,10 @@ $exito = $_SESSION['exito'] ?? "";
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Mis Mensajes</h1>
+<div class="encabezado-pagina">
+    <h1>MIS MENSAJES</h1>
     <a href="/pfc/vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
-        <i class="fas fa-plus"></i> Nuevo Mensaje
+        <i class="fas fa-plus"></i> NUEVO MENSAJE
     </a>
 </div>
 
@@ -72,9 +72,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <i class="fas fa-check-double" style="color: #667eea;" title="Leído por el destinatario"></i>
+                                <i class="fas fa-check-double color-primario" title="Leído por el destinatario"></i>
                             <?php } else { ?>
-                                <i class="fas fa-check" class="texto-atenuado" title="Enviado"></i>
+                                <i class="fas fa-check texto-atenuado" title="Enviado"></i>
                             <?php } ?>
                         </td>
                     </tr>

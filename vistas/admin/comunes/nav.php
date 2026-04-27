@@ -171,8 +171,8 @@ $cantidadTFGMenu = contarTFGsSubidos();
     </script>
 
     <main class="contenido-derecha">
-    <?php if (isset($_SESSION['idAdmin'])): ?>
-        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idAdmin']; ?>" data-user-role="admin" style="display:none;"></div>
+    <?php if (isset($_SESSION['idAdmin'])) { ?>
+        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idAdmin']; ?>" data-user-role="admin" class="d-none"></div>
         <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
-    <?php endif; ?>
+    <?php } ?>
 

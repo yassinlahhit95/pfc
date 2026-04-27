@@ -215,6 +215,34 @@ body {
   overflow-y: auto;
 }
 
+.scroll-vertical-200 {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.scroll-vertical-400 {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.lista-checkboxes {
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.bg-gris-suave { background-color: #f8fafc !important; }
+
+.item-checkbox {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.pl-10 { padding-left: 10px !important; }
+.pt-3 { padding-top: 3px !important; }
+.pb-3 { padding-bottom: 3px !important; }
+
 .contenedor-tabla {
   background: transparent;
   border-radius: 0; 
@@ -401,6 +429,73 @@ body {
 .texto-rojo { color: #dc2626 !important; }
 .texto-gris { color: #718096 !important; }
 .texto-negrita { font-weight: bold; }
+
+/* Utilidades de espaciado */
+.mt-0 { margin-top: 0 !important; }
+.mt-5 { margin-top: 5px !important; }
+.sin-margen { margin: 0 !important; }
+.anuncio-item-completo {
+    padding: 25px;
+    border-bottom: 1px solid #e2e8f0;
+    transition: background 0.2s;
+}
+
+.anuncio-item-completo:last-child {
+    border-bottom: none;
+}
+
+.anuncio-item-completo:hover {
+    background-color: #f8fafc;
+}
+
+.cuerpo-anuncio {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #4a5568;
+    margin-top: 15px;
+}
+
+.borde-abajo-gris { border-bottom: 1px solid #e2e8f0; }
+.mt-10 { margin-top: 10px !important; }
+.mt-20 { margin-top: 20px !important; }
+.mt-30 { margin-top: 30px !important; }
+.mb-5 { margin-bottom: 5px !important; }
+.mb-10 { margin-bottom: 10px !important; }
+.mb-15 { margin-bottom: 15px !important; }
+.mb-20 { margin-bottom: 20px !important; }
+.pb-10 { padding-bottom: 10px !important; }
+.p-8 { padding: 8px !important; }
+.p-15 { padding: 15px !important; }
+.p-20 { padding: 20px !important; }
+.ml-10 { margin-left: 10px !important; }
+.ml-20 { margin-left: 20px !important; }
+
+/* Utilidades de visualización */
+.d-none { display: none !important; }
+.d-inline { display: inline !important; }
+.d-block { display: block !important; }
+.d-grid { display: grid !important; }
+.pre-wrap { white-space: pre-wrap !important; }
+
+/* Utilidades de bordes */
+.border-secundario { border: 1px solid #3498db !important; }
+.rounded-8 { border-radius: 8px !important; }
+
+/* Utilidades de texto */
+.text-white { color: white !important; }
+.text-uppercase { text-transform: uppercase !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.line-height-15 { line-height: 1.5 !important; }
+.line-height-16 { line-height: 1.6 !important; }
+.font-size-11 { font-size: 1.1em !important; }
+
+/* Colores utilitarios */
+.bg-secundario { background-color: #3498db !important; }
+.color-primario { color: #667eea !important; }
+.color-secundario { color: #3498db !important; }
+.color-error { color: #dc2626 !important; }
+.border-error { border-color: #dc2626 !important; }
 
 .contenedor-tabla {
   background: transparent;
@@ -606,11 +701,47 @@ body {
   font-size: 14px;
 }
 
+/* Estilos para filas de detalles (Fichas de ver) */
+.fila-detalle {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.fila-detalle:last-child {
+    border-bottom: none;
+}
+
+.fila-detalle .etiqueta-detalle {
+    flex: 0 0 200px; /* Ancho fijo para etiquetas para que todo se alinee */
+    font-weight: 600;
+    color: #718096;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fila-detalle .valor-detalle {
+    flex: 1;
+    color: #2d3748;
+    font-size: 15px;
+}
+
 .disposicion-flexible { display: flex; }
+.direccion-columna { flex-direction: column; }
+.envoltura-flexible { flex-wrap: wrap; }
 .alinear-centro { align-items: center; }
 .alinear-fin { align-items: flex-end; }
+.espacio-entre-elementos { justify-content: space-between; }
 .separacion-grande { gap: 20px; }
+.separacion-media { gap: 15px; }
 .flexible-rellenar { flex: 1; }
+.ancho-total { width: 100%; }
+
+.item-detalle-lateral { margin-bottom: 8px; padding: 8px; border-radius: 4px; }
+.item-detalle-lateral-amarillo { background: #fdffdf; border: 1px solid #e6e9c0; }
+.item-detalle-lateral-azul { background: #f4f8ff; border: 1px solid #d0e1fd; }
 
 /* Utilidades para eliminar CSS en línea */
 .texto-centrado { text-align: center !important; }

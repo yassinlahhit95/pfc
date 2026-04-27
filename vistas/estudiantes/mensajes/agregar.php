@@ -1,23 +1,15 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
-    exit;
-}
-
-require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-require_once __DIR__ . "/../../../modelos/estudiantes.php";
+$tituloDelPagina = "Nuevo Mensaje - Portal Estudiantes";
+$seccionActual = 'reclamaciones';
+include_once "../comunes/nav.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 
-// Obtenemos los profesores asignados con sus módulos
+// Obtenemos los profesores asignados con sus módulos para el select
 $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
-
-$tituloDelPagina = "Nuevo Mensaje - Portal Estudiantes";
-$seccionActual = 'reclamaciones'; // Mantenemos el nombre de la sección para el CSS activo por ahora
-include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -45,12 +37,12 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Asunto *</label>
-                <input type="text" name="asunto" placeholder="Duda sobre contenido, problema técnico..." required>
+                <input type="text" name="asunto" placeholder="Duda sobre contenido, problema técnico...">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Mensaje *</label>
-                <textarea name="descripcion" rows="5" placeholder="Escribe aquí tu mensaje..." required></textarea>
+                <textarea name="descripcion" rows="5" placeholder="Escribe aquí tu mensaje..."></textarea>
             </div>
         </div>
 

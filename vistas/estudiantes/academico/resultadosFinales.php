@@ -111,8 +111,8 @@ foreach ($lista_modulos as $mod_item) {
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><i class="fas fa-info-circle"></i> <strong>Nota:</strong> El cálculo se basa en el 75% de las notas de evaluación y el 25% de la media de los retos del módulo.</p>
-    <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
+    <p><strong>Nota:</strong> El cálculo se basa en el 75% de las notas de evaluación y el 25% de la media de los retos del módulo.</p>
+    <p><strong>Estados:</strong> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

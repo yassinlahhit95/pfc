@@ -121,9 +121,9 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
         <div class="cuadricula-secundaria mt-25">
             <div>
                 <h4 class="margen-abajo"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
-                <div class="lista-checkboxes" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #fff;">
+                <div class="lista-checkboxes scroll-vertical-200">
                     <?php foreach ($listaCiclos as $ciclo) { ?>
-                        <label class="item-checkbox" style="display: block; margin-bottom: 5px;">
+                        <label class="item-checkbox">
                             <input type="checkbox" name="ciclos[]" value="<?php echo $ciclo['idCiclo']; ?>" class="check-ciclo" data-id="<?php echo $ciclo['idCiclo']; ?>"
                                 <?php if (in_array($ciclo['idCiclo'], $ciclosElegidos)) { echo 'checked'; } ?>>
                             <span><?php echo $ciclo['nombreCiclo']; ?></span>
@@ -134,17 +134,17 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
             <div>
                 <h4 class="margen-abajo"><i class="fas fa-book"></i> 2. Seleccionar Módulos</h4>
-                <div id="contenedor-modulos-dinamico" class="lista-checkboxes" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #f9f9f9;">
-                    <p id="msg-seleccionar-ciclo" class="texto-atenuado" style="text-align: center; padding: 20px;">
+                <div id="contenedor-modulos-dinamico" class="lista-checkboxes scroll-vertical-400 bg-gris-suave">
+                    <p id="msg-seleccionar-ciclo" class="texto-atenuado text-center p-20">
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos" data-ciclo-id="<?php echo $idCiclo; ?>" style="display: none; margin-bottom: 15px;">
-                            <p style="font-weight: bold; color: var(--color-primario); border-bottom: 1px solid #ddd; margin-bottom: 8px; padding-bottom: 3px;">
+                        <div class="grupo-modulos mb-15 d-none" data-ciclo-id="<?php echo $idCiclo; ?>">
+                            <p class="texto-negrita color-primario borde-abajo-gris mb-10 pb-3">
                                 <?php echo $grupo['nombre']; ?>
                             </p>
                             <?php foreach ($grupo['modulos'] as $mod) { ?>
-                                <label class="item-checkbox" style="display: block; margin-bottom: 5px; padding-left: 10px;">
+                                <label class="item-checkbox pl-10">
                                     <input type="checkbox" name="modulos[]" value="<?php echo $mod['idModulo']; ?>"
                                         <?php if (in_array($mod['idModulo'], $modulosElegidos)) { echo 'checked'; } ?>>
                                     <span><?php echo $mod['nombreModulo']; ?></span>

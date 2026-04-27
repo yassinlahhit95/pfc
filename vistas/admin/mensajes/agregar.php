@@ -81,7 +81,7 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>3. Destinatario Específico *</label>
-                <select name="<?php echo ($tipoDeDestinatario == 'profesor' ? 'idProfesor' : 'idEstudiante'); ?>" required>
+                <select name="<?php echo ($tipoDeDestinatario == 'profesor' ? 'idProfesor' : 'idEstudiante'); ?>">
                     <option value="">-- Seleccionar Nombre --</option>
                     
                     <?php if ($tipoDeDestinatario == 'profesor') { ?>
@@ -102,12 +102,12 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Asunto del Mensaje *</label>
-                <input type="text" name="asunto" required placeholder="Ej: Convocatoria de reunión, Aviso importante...">
+                <input type="text" name="asunto" placeholder="Ej: Convocatoria de reunión, Aviso importante...">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Cuerpo del Mensaje *</label>
-                <textarea name="descripcion" rows="6" required placeholder="Escribe aquí el contenido detallado del mensaje..."></textarea>
+                <textarea name="descripcion" rows="6" placeholder="Escribe aquí el contenido detallado del mensaje..."></textarea>
             </div>
         </div>
 

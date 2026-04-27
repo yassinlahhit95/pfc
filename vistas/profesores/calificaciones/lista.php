@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -50,9 +50,9 @@ include_once "../comunes/nav.php";
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por MÃ³dulo:</label>
+            <label>Filtrar por Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis MÃ³dulos --</option>
+                <option value="0">-- Todos mis Módulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?php echo $m['idModulo']; ?>" <?php if($idModulo == $m['idModulo']) echo "selected"; ?>>
                         <?php echo $m['nombreModulo']; ?>
@@ -66,24 +66,17 @@ include_once "../comunes/nav.php";
     </form>
 </div>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-search"></i> BUSCAR EN RESULTADOS:</label>
-        <input type="text" id="inputBuscarNota" placeholder="Escriba nombre del alumno o mÃ³dulo..." onkeyup="filtrarTabla('inputBuscarNota', 'tablaNotasProf')">
-    </div>
-</div>
-
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaNotasProf">
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>MÃ³dulo</th>
-                    <th>1Âª Ev</th>
-                    <th>1Âª Final</th>
-                    <th>2Âª Ev</th>
-                    <th>2Âª Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>

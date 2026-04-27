@@ -43,27 +43,30 @@ $retosProfesor = obtenerRetosDeProfesor($id);
             <div class="titulo-tarjeta">
                 <h3><i class="fas fa-user-tie"></i> Información General</h3>
             </div>
-            <div class="formulario-cuadricula">
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-                    <p class="texto-negrita"><?php echo $profesor['nombreProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">Email</label>
-                    <p class="texto-negrita"><?php echo $profesor['emailProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">Teléfono</label>
-                    <p class="texto-negrita"><?php echo $profesor['telefonoProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">DNI</label>
-                    <p class="texto-negrita"><?php echo $profesor['dniProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario campo-ancho-total">
-                    <label class="texto-atenuado texto-pequeno">Dirección</label>
-                    <p class="texto-negrita"><?php echo $profesor['direccionProfesor']; ?></p>
-                </div>
+            
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Nombre Completo</div>
+                <div class="valor-detalle texto-negrita"><?php echo $profesor['nombreProfesor']; ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Email</div>
+                <div class="valor-detalle"><?php echo $profesor['emailProfesor']; ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Teléfono</div>
+                <div class="valor-detalle"><?php echo $profesor['telefonoProfesor']; ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">DNI</div>
+                <div class="valor-detalle"><?php echo $profesor['dniProfesor']; ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Dirección</div>
+                <div class="valor-detalle"><?php echo $profesor['direccionProfesor']; ?></div>
             </div>
         </div>
 
@@ -106,7 +109,7 @@ $retosProfesor = obtenerRetosDeProfesor($id);
                     <p class="texto-atenuado">Sin ciclos asignados</p>
                 <?php } else { ?>
                     <?php foreach ($ciclosProfesor as $c) { ?>
-                        <div class="item-detalle-lateral" style="margin-bottom: 8px; padding: 8px; background: #fdffdf; border-radius: 4px;">
+                        <div class="item-detalle-lateral item-detalle-lateral-amarillo">
                             <strong><?php echo $c['abreviaturaCiclo']; ?></strong><br>
                             <small><?php echo $c['nombreCiclo']; ?></small>
                         </div>
@@ -122,7 +125,7 @@ $retosProfesor = obtenerRetosDeProfesor($id);
                     <p class="texto-atenuado">Sin retos asignados</p>
                 <?php } else { ?>
                     <?php foreach ($retosProfesor as $r) { ?>
-                        <div class="item-detalle-lateral" style="margin-bottom: 8px; padding: 8px; background: #f4f8ff; border-radius: 4px;">
+                        <div class="item-detalle-lateral item-detalle-lateral-azul">
                             <strong><?php echo $r['nombreReto']; ?></strong><br>
                             <small><?php echo $r['horasReto']; ?> horas</small>
                         </div>

@@ -93,7 +93,7 @@ include_once "../comunes/nav.php";
         </div>
         <div class="campo-formulario">
             <label>Pendiente</label>
-            <p style="color: #d9534f; font-weight: bold;"><?php echo number_format($infoFinanciera['restante'], 2); ?> €</p>
+            <p class="color-error texto-negrita"><?php echo number_format($infoFinanciera['restante'], 2); ?> €</p>
         </div>
     </div>
 
@@ -111,7 +111,7 @@ include_once "../comunes/nav.php";
             <div class="formulario-cuadricula">
                 <div class="campo-formulario">
                     <label>Tipo de Pago *</label>
-                    <select name="tipoPago" id="tipoPago" required onchange="actualizarMontoRapido()">
+                    <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()">
                         <option value="">-- Elegir --</option>
                         <option value="mensual">Mensual (10% del total)</option>
                         <option value="trimestral">Trimestral (25% del total)</option>
@@ -122,7 +122,7 @@ include_once "../comunes/nav.php";
 
                 <div class="campo-formulario">
                     <label>Cantidad a Cobrar (€) *</label>
-                    <input type="number" name="monto" id="montoInput" step="0.01" max="<?php echo $infoFinanciera['restante']; ?>" required>
+                    <input type="number" name="monto" id="montoInput" step="0.01" max="<?php echo $infoFinanciera['restante']; ?>">
                     <small>Máximo permitido: <?php echo $infoFinanciera['restante']; ?> €</small>
                 </div>
             </div>

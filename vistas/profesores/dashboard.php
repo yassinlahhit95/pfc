@@ -66,15 +66,15 @@ include_once __DIR__ . "/comunes/nav.php";
         <a href="/pfc/vistas/profesores/retos/insertar.php" class="accion-rapida"><span>Nuevo Reto</span></a>
         <a href="/pfc/vistas/profesores/mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
         <a href="/pfc/vistas/profesores/perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
-        <a href="#" class="accion-rapida" onclick="document.getElementById('formMasivo').style.display='block'; return false;" style="background-color: #3498db; color: white;">
+        <a href="#" class="accion-rapida color-secundario text-white" onclick="document.getElementById('formMasivo').style.display='block'; return false;">
           <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
         </a>
       </div>
       
-      <div id="formMasivo" style="display:none; margin-top: 20px; padding: 15px; border: 1px solid #3498db; border-radius: 8px;">
-        <h4 style="margin-top:0;">Enviar Resultados por Email a un Ciclo</h4>
+      <div id="formMasivo" class="d-none mt-20 p-15 border-secundario rounded-8">
+        <h4 class="mt-0">Enviar Resultados por Email a un Ciclo</h4>
         <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST">
-          <select name="idCiclo" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+          <select name="idCiclo" class="ancho-total p-8 mb-10">
             <option value="">Seleccione un ciclo...</option>
             <?php 
             $ciclosVistos = [];
@@ -85,7 +85,7 @@ include_once __DIR__ . "/comunes/nav.php";
                 <option value="<?php echo $m['idCiclo']; ?>"><?php echo $m['nombreCiclo']; ?></option>
             <?php } } ?>
           </select>
-          <button type="submit" class="boton-primario ancho-total" style="background-color: #3498db;">Enviar a todos los alumnos</button>
+          <button type="submit" class="boton-primario ancho-total bg-secundario">Enviar a todos los alumnos</button>
         </form>
       </div>
     </div>

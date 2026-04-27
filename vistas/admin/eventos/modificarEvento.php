@@ -32,7 +32,7 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Título del Evento *</label>
-                <input type="text" name="tituloEvento" required value="<?php echo $evento['tituloEvento']; ?>">
+                <input type="text" name="tituloEvento" value="<?php echo $evento['tituloEvento']; ?>">
             </div>
 
             <div class="campo-formulario">
@@ -42,7 +42,7 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Fecha *</label>
-                <input type="date" name="fechaEvento" required value="<?php echo $evento['fechaEvento']; ?>">
+                <input type="date" name="fechaEvento" value="<?php echo $evento['fechaEvento']; ?>">
             </div>
 
             <div class="campo-formulario">

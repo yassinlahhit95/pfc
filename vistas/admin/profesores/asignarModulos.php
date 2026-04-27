@@ -49,15 +49,15 @@ foreach ($todos_los_modulos as $m) {
         
         <?php foreach ($modulos_por_ciclo as $nombreCiclo => $modulos) { ?>
             <div class="seccion-asignacion margen-abajo">
-                <h4 style="border-bottom: 2px solid var(--color-primario); padding-bottom: 5px; color: var(--color-primario);">
+                <h4 class="borde-abajo-primario color-primario">
                     <i class="fas fa-layer-group"></i> <?php echo $nombreCiclo; ?>
                 </h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; padding: 10px;">
+                <div class="cuadricula-asignacion">
                     <?php foreach ($modulos as $mod) { 
                         $checked = in_array($mod['idModulo'], $modulos_asignados) ? "checked" : "";
                     ?>
-                        <label style="display: flex; align-items: center; cursor: pointer; padding: 5px; border-radius: 4px; background: #f9f9f9;">
-                            <input type="checkbox" name="modulos[]" value="<?php echo $mod['idModulo']; ?>" <?php echo $checked; ?> style="margin-right: 10px; width: 18px; height: 18px;">
+                        <label class="elemento-asignacion">
+                            <input type="checkbox" name="modulos[]" value="<?php echo $mod['idModulo']; ?>" <?php echo $checked; ?> class="checkbox-grande">
                             <span><?php echo $mod['nombreModulo']; ?></span>
                         </label>
                     <?php } ?>
@@ -69,7 +69,7 @@ foreach ($todos_los_modulos as $m) {
             <button type="submit" name="actualizarModulos" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Asignaciones
             </button>
-            <a href="verProfesores.php" class="boton-secundario" style="margin-left: 10px;">Cancelar</a>
+            <a href="verProfesores.php" class="boton-secundario ml-10">Cancelar</a>
         </div>
     </form>
 </div>

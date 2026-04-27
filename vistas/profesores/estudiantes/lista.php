@@ -19,13 +19,6 @@ include_once "../comunes/nav.php";
     <h1>Gestión de Estudiantes</h1>
 </div>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-search"></i> BUSCAR ALUMNO:</label>
-        <input type="text" id="inputBuscarEst" placeholder="Busque por nombre, email, DNI o ciclo..." onkeyup="filtrarTabla('inputBuscarEst', 'tablaEstudiantesProf')">
-    </div>
-</div>
-
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
         <h3>Estudiantes Registrados</h3>

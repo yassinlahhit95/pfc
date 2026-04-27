@@ -38,55 +38,49 @@ include_once "../comunes/nav.php";
         <h3>Información Personal</h3>
     </div>
     
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-            <p class="texto-grande texto-negrita"><?php echo $estudiante['nombreEstudiante']; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Email</label>
-            <p><?php echo $estudiante['emailEstudiante']; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">DNI</label>
-            <p><?php echo $estudiante['dniEstudiante']; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Teléfono</label>
-            <p><?php echo $estudiante['telefonoEstudiante']; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Ciclo Formativo</label>
-            <p class="etiqueta-gris"><?php echo $estudiante['nombreCiclo']; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Fecha de Nacimiento</label>
-            <p><?php echo date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])); ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Ciudad / Dirección</label>
-            <p><?php echo $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante']; ?></p>
-        </div>
-
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Fecha de Alta en el Centro</label>
-            <p><?php echo date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante'])); ?></p>
-        </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Nombre Completo</div>
+        <div class="valor-detalle texto-negrita"><?php echo $estudiante['nombreEstudiante']; ?></div>
     </div>
 
-    <div class="margen-arriba-grande pt-20" style="border-top: 1px solid #eee;">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario campo-ancho-total">
-                <label class="texto-atenuado texto-pequeno">Observaciones</label>
-                <p><?php echo $estudiante['observacionesEstudiante']; ?></p>
-            </div>
-        </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Email</div>
+        <div class="valor-detalle"><?php echo $estudiante['emailEstudiante']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">DNI</div>
+        <div class="valor-detalle"><?php echo $estudiante['dniEstudiante']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="valor-detalle"><?php echo $estudiante['telefonoEstudiante']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Ciclo Formativo</div>
+        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?php echo $estudiante['nombreCiclo']; ?></span></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha de Nacimiento</div>
+        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])); ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Ciudad / Dirección</div>
+        <div class="valor-detalle"><?php echo $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha de Alta</div>
+        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante'])); ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Observaciones</div>
+        <div class="valor-detalle"><?php echo !empty($estudiante['observacionesEstudiante']) ? $estudiante['observacionesEstudiante'] : '<span class="texto-atenuado">Sin observaciones</span>'; ?></div>
     </div>
 </div>
 

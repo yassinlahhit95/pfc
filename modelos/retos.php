@@ -244,4 +244,21 @@ function listarCalificacionesRetoPorEstudiante($idEstudiante) {
     mysqli_close($db);
     return $listaFinal;
 }
+// Retos de un ciclo (via sus modulos)
+function obtenerRetosPorCiclo($idCic) {
+    $db = obtenerConexion();
+    $sql = "SELECT DISTINCT retos.* FROM retos 
+            JOIN modulo_reto ON retos.idReto = modulo_reto.idReto 
+            JOIN modulos ON modulo_reto.idModulo = modulos.idModulo 
+            WHERE modulos.idCiclo = $idCic 
+            ORDER BY retos.idReto ASC";
+            
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
+    }
+    mysqli_close($db);
+    return $lista;
+}
 ?>

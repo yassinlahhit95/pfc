@@ -58,7 +58,7 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Destinatario (Estudiante o Dirección)</label>
-                <select name="idEstudiante" required>
+                <select name="idEstudiante">
                     <option value="">-- Seleccionar Destinatario --</option>
                     <option value="1">Dirección (Administración)</option>
                     <optgroup label="Estudiantes">
@@ -73,12 +73,12 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Asunto *</label>
-                <input type="text" name="asunto" placeholder="Motivo del mensaje..." required>
+                <input type="text" name="asunto" placeholder="Motivo del mensaje...">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Mensaje *</label>
-                <textarea name="descripcion" rows="5" placeholder="Escribe aquí tu explicación o consulta..." required></textarea>
+                <textarea name="descripcion" rows="5" placeholder="Escribe aquí tu explicación o consulta..."></textarea>
             </div>
         </div>
 

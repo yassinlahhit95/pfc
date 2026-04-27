@@ -22,38 +22,40 @@ include_once "../comunes/nav.php";
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="disposicion-flexible alinear-centro">
+    <div class="disposicion-flexible alinear-centro margen-abajo">
         <div class="flexible-rellenar">
             <h2><?php echo $profesor['nombreProfesor']; ?></h2>
-            <p class="texto-secundario"><?php echo $profesor['especialidad'] ?? 'Sin especialidad'; ?></p>
+            <p class="texto-atenuado"><?php echo $profesor['especialidad'] ?? 'Profesor del Centro'; ?></p>
+        </div>
+        <div>
+            <a href="/pfc/vistas/profesores/perfil/editar.php" class="boton-primario">
+                <i class="fas fa-edit"></i> Editar Información
+            </a>
         </div>
     </div>
 
-    <div class="margen-arriba-grande">
-        <div class="formulario-cuadricula">
-            <div class="item-perfil">
-                <label>Email Corporativo</label>
-                <p><?php echo $profesor['emailProfesor']; ?></p>
-            </div>
-            <div class="item-perfil">
-                <label>Teléfono de Contacto</label>
-                <p><?php echo $profesor['telefonoProfesor']; ?></p>
-            </div>
-            <div class="item-perfil">
-                <label>DNI</label>
-                <p><?php echo $profesor['dniProfesor']; ?></p>
-            </div>
-            <div class="item-perfil">
-                <label>Dirección</label>
-                <p><?php echo $profesor['direccionProfesor']; ?></p>
-            </div>
-        </div>
+    <div class="titulo-tarjeta mt-20">
+        <h3>Datos Personales</h3>
     </div>
 
-    <div class="margen-arriba">
-        <a href="/pfc/vistas/profesores/perfil/editar.php" class="boton-primario">
-            <i class="fas fa-edit"></i> Editar Información
-        </a>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Email Corporativo</div>
+        <div class="valor-detalle"><?php echo $profesor['emailProfesor']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Teléfono de Contacto</div>
+        <div class="valor-detalle"><?php echo $profesor['telefonoProfesor']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">DNI</div>
+        <div class="valor-detalle"><?php echo $profesor['dniProfesor']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Dirección</div>
+        <div class="valor-detalle"><?php echo $profesor['direccionProfesor']; ?></div>
     </div>
 </div>
 

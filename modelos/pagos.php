@@ -61,7 +61,7 @@ function obtenerEstadoFinancieroEstudiante($idEst) {
     $precio = 0;
     if ($resC) {
         $fC = mysqli_fetch_assoc($resC);
-        if (isset($fC['precioCiclo'])) { $precio = $fC['fC']['precioCiclo']; }
+        if ($fC && isset($fC['precioCiclo'])) { $precio = $fC['precioCiclo']; }
     }
     mysqli_close($db);
     return ['totalPagado' => $pagado, 'precioCiclo' => $precio, 'restante' => ($precio - $pagado)];
@@ -86,5 +86,13 @@ function obtenerPagoPorId($id) {
     }
     mysqli_close($db);
     return $fila;
+}
+// Contar cuántos pagos ha hecho un estudiante
+function contarPagosEstudiante($idEst) {
+    $db = obtenerConexion();
+    $res = mysqli_query($db, "SELECT COUNT(*) as total FROM pagos WHERE idEstudiante = $idEst");
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($db);
+    return isset($fila['total']) ? $fila['total'] : 0;
 }
 ?>

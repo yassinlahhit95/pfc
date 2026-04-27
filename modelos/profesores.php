@@ -128,4 +128,30 @@ function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
     mysqli_close($db);
     return $resultado;
 }
+// Obtener profesores y sus módulos para un estudiante específico (según su ciclo)
+function obtenerProfesoresConModulosParaEstudiante($idEst) {
+    $db = obtenerConexion();
+    
+    // Primero obtenemos el ciclo del estudiante
+    $sqlCiclo = "SELECT idCiclo FROM estudiantes WHERE idEstudiante = $idEst";
+    $resCiclo = mysqli_query($db, $sqlCiclo);
+    $filaCiclo = mysqli_fetch_assoc($resCiclo);
+    $idCiclo = $filaCiclo['idCiclo'];
+
+    // Ahora buscamos los profesores que dan clase en los módulos de ese ciclo
+    $sql = "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo 
+            FROM profesores p 
+            JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor 
+            JOIN modulos m ON pm.idModulo = m.idModulo 
+            WHERE m.idCiclo = $idCiclo 
+            ORDER BY p.nombreProfesor ASC, m.nombreModulo ASC";
+            
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
+    }
+    mysqli_close($db);
+    return $lista;
+}
 ?>

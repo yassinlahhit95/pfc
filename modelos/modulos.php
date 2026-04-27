@@ -24,7 +24,7 @@ function obtenerModulosDeProfesor($idProf) {
 }
 
 // Listar modulos de un ciclo
-function listarModulosPorCiclo($idCic) {
+function obtenerModulosPorCiclo($idCic) {
     $db = obtenerConexion();
     $res = mysqli_query($db, "SELECT * FROM modulos WHERE idCiclo = $idCic");
     $lista = [];

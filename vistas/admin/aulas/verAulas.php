@@ -56,11 +56,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="campo-formulario mb-20">
-        <label><i class="fas fa-search"></i> BUSCAR AULA:</label>
-        <input type="text" id="inputBuscarAula" placeholder="Escriba nombre del aula..." onkeyup="filtrarTabla('inputBuscarAula', 'tablaAulas')">
-    </div>
-
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaAulas">
             <thead>

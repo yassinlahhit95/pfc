@@ -33,12 +33,12 @@ include_once "../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Artículo *</label>
-                <input type="text" name="nombreArticulo" value="<?php echo $articulo['nombreArticulo']; ?>" required>
+                <input type="text" name="nombreArticulo" value="<?php echo $articulo['nombreArticulo']; ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Número de Serie *</label>
-                <input type="text" name="numeroSerie" value="<?php echo $articulo['numeroSerie']; ?>" required>
+                <input type="text" name="numeroSerie" value="<?php echo $articulo['numeroSerie']; ?>">
             </div>
         </div>
 

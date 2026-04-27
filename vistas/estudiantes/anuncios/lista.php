@@ -21,19 +21,30 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <?php if ($anuncios) { ?>
-        <div class="lista-anuncios">
+        <div class="lista-anuncios-completa">
             <?php foreach ($anuncios as $anuncio) { ?>
                 <div class="anuncio-item-completo">
-                    <h3 class="texto-azul"><?php echo $anuncio['titulo']; ?></h3>
-                    <p class="texto-pequeno texto-atenuado">Publicado hasta: <?php echo $anuncio['fechaExpiracion']; ?></p>
-                    <div class="mensaje-anuncio mt-10">
-                        <?php echo $anuncio['mensaje']; ?>
+                    <div class="mb-10">
+                        <label class="texto-negrita">Título del Anuncio:</label> 
+                        <span class="color-primario texto-negrita"><?php echo strtoupper($anuncio['titulo']); ?></span>
                     </div>
+                    
+                    <div class="cuerpo-anuncio mb-15">
+                        <label class="texto-negrita">Contenido:</label>
+                       <span class="color-primario texto-negrita"><?php echo nl2br($anuncio['mensaje']); ?></span>
+                    </div>
+
+                                        <div class="cuerpo-anuncio mb-15">
+                        <label class="texto-negrita">Disponible hasta:</label>
+                       <span class="color-primario texto-negrita"><?php echo date('d/m/Y', strtotime($anuncio['fechaExpiracion'])); ?></span>
+                    </div>
+
+                  
                 </div>
             <?php } ?>
         </div>
     <?php } else { ?>
-        <p class="texto-atenuado">No hay anuncios publicados en este momento.</p>
+        <p class="texto-atenuado text-center p-20">No hay anuncios publicados en este momento.</p>
     <?php } ?>
 </div>
 

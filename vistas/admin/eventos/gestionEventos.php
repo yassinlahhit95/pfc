@@ -41,7 +41,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Título del Evento *</label>
-                <input type="text" name="tituloEvento" required placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <input type="text" name="tituloEvento" placeholder="Ej: Examen Final, Reunión de Profesores...">
             </div>
 
             <div class="campo-formulario">
@@ -51,7 +51,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
             <div class="campo-formulario">
                 <label>Fecha *</label>
-                <input type="date" name="fechaEvento" required value="<?php echo date('Y-m-d'); ?>">
+                <input type="date" name="fechaEvento" value="<?php echo date('Y-m-d'); ?>">
             </div>
 
             <div class="campo-formulario">
@@ -76,10 +76,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
         <h3>Eventos Programados</h3>
-    </div>
-    <div class="campo-formulario mb-20">
-        <label><i class="fas fa-search"></i> BUSCAR EVENTO:</label>
-        <input type="text" id="inputBuscarEv" placeholder="Busque por título o ubicación..." onkeyup="filtrarTabla('inputBuscarEv', 'tablaEventos')">
     </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaEventos">

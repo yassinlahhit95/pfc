@@ -39,12 +39,12 @@ $todos_los_profesores = listarProfesores();
     <form action="/pfc/controladores/admin/modulos/actualizarProfesores.php" method="POST">
         <input type="hidden" name="idModulo" value="<?php echo $idModulo; ?>">
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; padding: 10px;">
+        <div class="cuadricula-asignacion">
             <?php foreach ($todos_los_profesores as $prof) { 
                 $checked = in_array($prof['idProfesor'], $profesores_asignados) ? "checked" : "";
             ?>
-                <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 1px solid #eee; border-radius: 8px; transition: background 0.2s;">
-                    <input type="checkbox" name="profesores[]" value="<?php echo $prof['idProfesor']; ?>" <?php echo $checked; ?> style="margin-right: 15px; width: 20px; height: 20px;">
+                <label class="elemento-asignacion">
+                    <input type="checkbox" name="profesores[]" value="<?php echo $prof['idProfesor']; ?>" <?php echo $checked; ?> class="checkbox-extra-grande">
                     <div>
                         <div class="texto-negrita"><?php echo $prof['nombreProfesor']; ?></div>
                         <div class="texto-atenuado texto-pequeno"><?php echo $prof['especialidad']; ?></div>
@@ -53,11 +53,11 @@ $todos_los_profesores = listarProfesores();
             <?php } ?>
         </div>
 
-        <div class="margen-arriba" style="border-top: 1px solid #eee; padding-top: 20px;">
+        <div class="form-acciones">
             <button type="submit" name="actualizarProfesores" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
-            <a href="verModulos.php" class="boton-secundario" style="margin-left: 10px;">Cancelar</a>
+            <a href="verModulos.php" class="boton-secundario ml-10">Cancelar</a>
         </div>
     </form>
 </div>

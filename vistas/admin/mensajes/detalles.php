@@ -29,25 +29,42 @@ include_once "../comunes/nav.php";
 <div class="disposicion-flexible separacion-grande">
     <div class="flexible-rellenar">
         <div class="tarjeta-blanca">
-    <div class="disposicion-flexible espacio-entre-elementos margen-abajo">
-        <div>
-            <p class="texto-atenuado">De:</p>
-            <p class="texto-negrita"><?php echo $mensaje['nombreEstudiante'] ?: 'Administración (Sistema)'; ?></p>
-        </div>
-        <div>
-            <p class="texto-atenuado">Para:</p>
-            <p class="texto-negrita"><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></p>
-        </div>
-        <div>
-            <p class="texto-atenuado">Fecha:</p>
-            <p class="texto-negrita"><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></p>
-        </div>
-    </div>
+            <div class="titulo-tarjeta">
+                <h3><i class="fas fa-envelope"></i> Detalles del Mensaje</h3>
+            </div>
+            
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">De</div>
+                <div class="valor-detalle texto-negrita"><?php echo $mensaje['nombreEstudiante'] ?: 'Administración (Sistema)'; ?></div>
+            </div>
 
-    <div class="tarjeta-gris-suave margen-abajo">
-        <h3 class="margen-abajo"><?php echo $mensaje['asunto']; ?></h3>
-        <p><?php echo nl2br($mensaje['descripcion']); ?></p>
-    </div>
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Para</div>
+                <div class="valor-detalle texto-negrita"><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Fecha</div>
+                <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Estado</div>
+                <div class="valor-detalle">
+                    <?php if ($mensaje['leido']) { ?>
+                        <span class="estado-bolita activo-verde">Leído</span>
+                    <?php } else { ?>
+                        <span class="estado-bolita inactivo-rojo">Pendiente</span>
+                    <?php } ?>
+                </div>
+            </div>
+
+            <div class="margen-arriba">
+                <div class="tarjeta-gris-suave p-20">
+                    <h4 class="mb-10 text-uppercase"><?php echo $mensaje['asunto']; ?></h4>
+                    <p class="font-size-11 line-height-15"><?php echo nl2br($mensaje['descripcion']); ?></p>
+                </div>
+            </div>
 
     <form action="/pfc/controladores/admin/mensajes/actualizar.php" method="POST">
         <input type="hidden" name="idReclamacion" value="<?php echo $idReclamacion; ?>">

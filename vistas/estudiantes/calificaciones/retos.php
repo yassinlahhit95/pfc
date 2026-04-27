@@ -18,7 +18,6 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 
 <div class="encabezado-pagina">
     <h1>Mis Calificaciones en Retos</h1>
-    <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
 </div>
 
 <div class="tarjeta-blanca">
@@ -43,7 +42,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
                         <td><strong><?php echo $nota['nombreReto']; ?></strong></td>
                         <td><?php echo $nota['fechaInicio']; ?></td>
                         <td><?php echo $nota['fechaFin']; ?></td>
-                        <td class="texto-negrita" style="font-size: 1.1em; color: var(--color-primario);">
+                        <td class="texto-negrita color-primario font-size-11">
                             <?php echo $nota['nota']; ?>
                         </td>
                     </tr>
@@ -55,7 +54,8 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><i class="fas fa-info-circle"></i> Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
+    <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
+    <p>Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

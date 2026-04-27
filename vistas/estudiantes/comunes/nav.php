@@ -6,6 +6,8 @@ if (isset($_SESSION['idEstudiante']) == false) {
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -109,8 +111,8 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
     </script>
 
     <main class="contenido-principal">
-    <?php if (isset($_SESSION['idEstudiante'])): ?>
-        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idEstudiante']; ?>" data-user-role="estudiante" style="display:none;"></div>
+    <?php if (isset($_SESSION['idEstudiante'])) { ?>
+        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idEstudiante']; ?>" data-user-role="estudiante" class="d-none"></div>
         <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
-    <?php endif; ?>
+    <?php } ?>
 

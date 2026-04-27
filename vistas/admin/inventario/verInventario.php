@@ -66,11 +66,6 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <div class="tarjeta-blanca margen-arriba">
-    <div class="campo-formulario mb-20">
-        <label><i class="fas fa-search"></i> BUSCAR EN INVENTARIO:</label>
-        <input type="text" id="inputBuscarInv" placeholder="Busque por nombre o nº de serie..." onkeyup="filtrarTabla('inputBuscarInv', 'tablaInventario')">
-    </div>
-
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaInventario">
             <thead>

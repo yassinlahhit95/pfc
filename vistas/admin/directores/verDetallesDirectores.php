@@ -31,29 +31,33 @@ if (!$director) {
     <div class="titulo-tarjeta">
         <h3>Información General</h3>
     </div>
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-            <p class="texto-negrita"><?php echo $director['nombreDirector']; ?></p>
-        </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Email</label>
-            <p class="texto-negrita"><?php echo $director['emailDirector']; ?></p>
-        </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">DNI</label>
-            <p class="texto-negrita"><?php 
-                if (isset($director['dniDirector'])) {
+    
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Nombre Completo</div>
+        <div class="valor-detalle texto-negrita"><?php echo $director['nombreDirector']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Email</div>
+        <div class="valor-detalle"><?php echo $director['emailDirector']; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">DNI</div>
+        <div class="valor-detalle">
+            <?php 
+                if (isset($director['dniDirector']) && !empty($director['dniDirector'])) {
                     echo $director['dniDirector'];
                 } else {
-                    echo '-';
+                    echo '<span class="texto-atenuado">No especificado</span>';
                 }
-            ?></p>
+            ?>
         </div>
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Fecha Alta</label>
-            <p class="texto-negrita"><?php echo date('d/m/Y', strtotime($director['fechaAltaDirector'])); ?></p>
-        </div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha Alta</div>
+        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($director['fechaAltaDirector'])); ?></div>
     </div>
 </div>
 

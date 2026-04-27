@@ -33,7 +33,7 @@ include_once "../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/modulos/insertar.php" method="POST" style="max-width: 600px; margin: 0 auto;">
+    <form action="/pfc/controladores/admin/modulos/insertar.php" method="POST" class="form-estandar">
         
         <div class="campo-formulario">
             <label>Nombre del Módulo *</label>

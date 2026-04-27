@@ -72,7 +72,7 @@ include_once "../comunes/nav.php";
 
         <div class="margen-arriba disposicion-flexible alinear-centro">
             <button type="submit" name="actualizarNota" class="boton-primario">Actualizar Calificación</button>
-            <label style="margin-left: 20px; font-weight: bold; color: #3498db; cursor: pointer;">
+            <label class="etiqueta-notificacion">
                 <input type="checkbox" name="notificarEstudiante" value="1"> Notificar por Email
             </label>
         </div>
