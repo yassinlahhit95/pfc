@@ -15,80 +15,87 @@ $tituloDelPagina = "Mi TFG - Portal Estudiantes";
 $seccionActual = 'tfg';
 include_once "../comunes/nav.php";
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
-
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
+$exito = $_SESSION['exito'] ?? "";
+$error = $_SESSION['error'] ?? "";
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Mi Trabajo Fin de Grado (TFG)</h1>
+    <h1>MI TRABAJO FIN DE GRADO (TFG)</h1>
 </div>
 
-<?php if (!empty($error)) { ?>
-<div class="mensaje-error">
-    <i class="fas fa-exclamation-circle"></i>
-    <p><?php echo $error; ?></p>
-</div>
+<?php if ($error) { ?>
+    <div class="mensaje-error">
+        <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
+    </div>
 <?php } ?>
 
-<?php if (!empty($exito)) { ?>
-<div class="mensaje-exito">
-    <i class="fas fa-check-circle"></i>
-    <p><?php echo $exito; ?></p>
-</div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito">
+        <i class="fas fa-check-circle"></i> <?php echo $exito; ?>
+    </div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Estado de tu TFG</h3>
+        <h3>ESTADO DE LA ENTREGA Y GESTIÓN</h3>
     </div>
     
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno">Archivo del TFG</label>
-            <div class="mt-5">
-                <?php if (!empty($tfg['archivoTFG'])) { ?>
-                    <div class="disposicion-flexible alinear-centro separacion-grande">
-                        <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
-                            <i class="fas fa-download"></i> Descargar TFG (PDF)
-                        </a>
-                        <form action="/pfc/controladores/estudiantes/pfc/eliminar.php" method="POST">
-                            <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
-                            <button type="submit" name="borrarTFG" class="btn-accion btn-eliminar" title="Eliminar archivo">
-                                <i class="fas fa-trash-alt"></i> Borrar entrega
-                            </button>
-                        </form>
-                    </div>
-                    <p class="texto-pequeno texto-atenuado mt-10">
-                        <strong>Archivo:</strong> <?php echo $tfg['archivoTFG']; ?><br>
-                        <strong>Subido el:</strong> <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?>
-                    </p>
-                <?php } else { ?>
-                    <p class="texto-atenuado">No se ha subido ningún archivo todavía.</p>
-                <?php } ?>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Estado Actual</div>
+        <div class="valor-detalle">
+            <?php if (!empty($tfg['archivoTFG'])) { ?>
+                <span class="estado-bolita activo-verde">ENTREGADO</span>
+            <?php } else { ?>
+                <span class="estado-bolita inactivo-rojo">NO ENTREGADO</span>
+            <?php } ?>
+        </div>
+    </div>
+
+    <?php if (!empty($tfg['archivoTFG'])) { ?>
+        <div class="fila-detalle">
+            <div class="etiqueta-detalle">Archivo subido</div>
+            <div class="valor-detalle">
+                <p class="texto-negrita"><?php echo $tfg['archivoTFG']; ?></p>
+                <small class="texto-atenuado">Fecha de entrega: <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?></small>
             </div>
         </div>
 
-        <div class="campo-formulario">
-            <label class="texto-atenuado texto-pequeno"><?php echo empty($tfg['archivoTFG']) ? 'Subir TFG (Solo PDF)' : 'Actualizar TFG (Reemplaza el anterior)'; ?></label>
-            <form action="/pfc/controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="disposicion-flexible alinear-centro separacion-pequena mt-5">
-                <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
-                <input type="file" name="archivoTFG" accept=".pdf">
-                <button type="submit" name="subirTFG" class="boton-primario">
-                    <i class="fas fa-upload"></i> <?php echo empty($tfg['archivoTFG']) ? 'Subir' : 'Actualizar'; ?>
-                </button>
-            </form>
+        <div class="fila-detalle">
+            <div class="etiqueta-detalle">Acciones del Archivo</div>
+            <div class="valor-detalle">
+                <div class="disposicion-flexible separacion-media">
+                    <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
+                        <i class="fas fa-download"></i> DESCARGAR PDF
+                    </a>
+                    <form action="/pfc/controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
+                        <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
+                        <button type="submit" name="borrarTFG" class="boton-secundario color-error">
+                            <i class="fas fa-trash-alt"></i> ELIMINAR ENTREGA
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
+    <?php } ?>
+
+    <!-- INTEGRACIÓN DEL FORMULARIO DE SUBIDA -->
+    <form action="/pfc/controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
+        
+        <div class="fila-detalle">
+            <div class="etiqueta-detalle"><?php echo empty($tfg['archivoTFG']) ? 'Subir Trabajo' : 'Actualizar Archivo'; ?></div>
+            <div class="valor-detalle">
+                <input type="file" name="archivoTFG" accept=".pdf" class="sin-borde">
+            </div>
+        </div>
+
+        <div class="form-acciones">
+            <button type="submit" name="subirTFG" class="boton-primario">
+                <i class="fas fa-upload"></i> <?php echo empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG'; ?>
+            </button>
+        </div>
+    </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

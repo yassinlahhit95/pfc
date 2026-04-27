@@ -97,4 +97,107 @@ function listarCalificacionesPorModulo($idMod) {
     mysqli_close($db);
     return $lista;
 }
+// --- LÓGICA DE NEGOCIO PARA RESULTADOS FINALES (75% Módulos / 25% Retos) ---
+
+/**
+ * Calcula los resultados finales para todos los estudiantes de un ciclo.
+ */
+function obtenerResultadosFinalesCiclo($idCiclo) {
+    require_once("modulos.php");
+    require_once("estudiantes.php");
+    require_once("retos.php");
+
+    $estudiantes = listarEstudiantesPorCiclo($idCiclo);
+    $modulos = obtenerModulosPorCiclo($idCiclo);
+    $resultados = [];
+
+    foreach ($estudiantes as $est) {
+        $resultados[] = obtenerResultadosFinalesEstudiante($est['idEstudiante'], $modulos);
+    }
+    return $resultados;
+}
+
+/**
+ * Calcula los resultados finales para un estudiante específico.
+ */
+function obtenerResultadosFinalesEstudiante($idEst, $modulos = null) {
+    require_once("modulos.php");
+    require_once("retos.php");
+    require_once("estudiantes.php");
+
+    if ($modulos === null) {
+        $est = obtenerEstudiantePorId($idEst);
+        $modulos = obtenerModulosPorCiclo($est['idCiclo']);
+    } else {
+        $est = obtenerEstudiantePorId($idEst);
+    }
+
+    $datos_estudiante = [
+        'idEstudiante' => $idEst,
+        'nombreEstudiante' => strtoupper($est['nombreEstudiante']),
+        'nombreCiclo' => $est['nombreCiclo'],
+        'detalles_modulos' => [],
+        'promedio_global' => 0,
+        'estado_global' => 'PENDIENTE',
+        'tiene_suspensos' => false
+    ];
+
+    $suma_final_acumulada = 0;
+    $modulos_con_nota = 0;
+
+    foreach ($modulos as $mod) {
+        $idMod = $mod['idModulo'];
+        
+        // 1. Media de Módulo (75%)
+        $notas = obtenerNotasModulo($idEst, $idMod);
+        $campos = ['nota_1ev', 'nota_1final', 'nota_2ev', 'nota_2final'];
+        $suma_m = 0; $cont_m = 0;
+        foreach ($campos as $c) {
+            if (isset($notas[$c]) && is_numeric($notas[$c]) && $notas[$c] > 0) {
+                $suma_m += $notas[$c];
+                $cont_m++;
+            }
+        }
+        $media_m = ($cont_m > 0) ? $suma_m / $cont_m : 0;
+
+        // 2. Media de Retos (25%)
+        $medias_retos = listarCalificacionesRetoPorModulo($idMod);
+        $media_r = isset($medias_retos[$idEst]) ? $medias_retos[$idEst] : 0;
+
+        // 3. Nota Final Módulo
+        $nota_f = ($media_m * 0.75) + ($media_r * 0.25);
+        
+        $estado_m = "Suspenso";
+        if ($cont_m == 0) { $estado_m = "Pendiente"; }
+        elseif ($nota_f >= 5) { $estado_m = "Aprobado"; }
+        else { $datos_estudiante['tiene_suspensos'] = true; }
+
+        $datos_estudiante['detalles_modulos'][] = [
+            'idModulo' => $idMod,
+            'nombreModulo' => $mod['nombreModulo'],
+            'media_notas' => round($media_m, 2),
+            'media_retos' => round($media_r, 2),
+            'nota_final' => round($nota_f, 2),
+            'estado' => $estado_m
+        ];
+
+        if ($cont_m > 0) {
+            $suma_final_acumulada += $nota_f;
+            $modulos_con_nota++;
+        }
+    }
+
+    if ($modulos_con_nota > 0) {
+        $promedio = $suma_final_acumulada / $modulos_con_nota;
+        $datos_estudiante['promedio_global'] = round($promedio, 2);
+        
+        if ($promedio >= 5 && !$datos_estudiante['tiene_suspensos']) {
+            $datos_estudiante['estado_global'] = 'APROBADO';
+        } else {
+            $datos_estudiante['estado_global'] = 'SUSPENSO';
+        }
+    }
+
+    return $datos_estudiante;
+}
 ?>

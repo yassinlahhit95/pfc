@@ -497,6 +497,8 @@ body {
 .color-error { color: #dc2626 !important; }
 .border-error { border-color: #dc2626 !important; }
 
+.sin-borde { border: none !important; box-shadow: none !important; }
+
 .contenedor-tabla {
   background: transparent;
   border: none;
