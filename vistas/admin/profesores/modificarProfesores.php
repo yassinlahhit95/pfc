@@ -101,11 +101,6 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
             </div>
 
             <div class="campo-formulario">
-                <label>Especialidad</label>
-                <input type="text" name="especialidad" placeholder="Ej: Informática, Matemáticas..." value="<?php echo $profesor['especialidad']; ?>">
-            </div>
-
-            <div class="campo-formulario">
                 <label>Fecha de Alta (en centro)</label>
                 <input type="date" name="fechaAltaProfesor" value="<?php echo $profesor['fechaAltaProfesor']; ?>">
             </div>

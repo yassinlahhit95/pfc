@@ -56,6 +56,28 @@ function contarCiclos() {
     return isset($fila['t']) ? $fila['t'] : 0;
 }
 
+function contarEstudiantesDeProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as t 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            WHERE cp.idProfesor = $idProf";
+    $res = mysqli_query($db, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($db);
+    return isset($fila['t']) ? $fila['t'] : 0;
+}
+
+function contarCiclosDeProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "SELECT COUNT(*) as t FROM ciclo_profesor WHERE idProfesor = $idProf";
+    $res = mysqli_query($db, $sql);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($db);
+    return isset($fila['t']) ? $fila['t'] : 0;
+}
+
 function contarModulos() {
     $db = obtenerConexion();
     $sql = "SELECT COUNT(*) as t FROM modulos";

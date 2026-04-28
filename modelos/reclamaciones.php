@@ -108,6 +108,14 @@ function contarMensajesNoLeidosProfesor($idProf) {
     return $res['total'] ?? 0;
 }
 
+function contarMensajesDeProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE idProfesor = $idProf";
+    $res = mysqli_fetch_assoc(mysqli_query($db, $sql));
+    mysqli_close($db);
+    return $res['total'] ?? 0;
+}
+
 function contarMensajesNoLeidosEstudiante($idEst) {
     $db = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idEstudiante = $idEst AND emisor_rol = 'profesor'";

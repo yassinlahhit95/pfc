@@ -7,7 +7,7 @@
 
 ### Módulos de Gestión
 - **Estudiantes**: Registro, edición y seguimiento de datos personales y académicos.
-- **Profesores**: Administración de perfiles docentes y especialidades.
+- **Profesores**: Administración de perfiles docentes.
 - **Ciclos y Módulos**: Estructuración de la oferta formativa (FP, Bachillerato, etc.).
 - **Inventario**: Control de dispositivos (portátiles, tablets) y préstamos a estudiantes.
 - **Pagos**: Seguimiento de mensualidades y comprobantes.

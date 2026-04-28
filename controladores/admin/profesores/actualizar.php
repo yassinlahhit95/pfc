@@ -10,7 +10,6 @@ if (isset($_POST['actualizarProfesor'])) {
     $telefono = trim($_POST['telefonoProfesor']);
     $direccion = trim($_POST['direccionProfesor']);
     
-    $especialidad = trim($_POST['especialidad'] ?? '');
     $fechaNacimiento = $_POST['fechaNacimientoProfesor'] ?? '1980-01-01';
     $fechaAlta = $_POST['fechaAltaProfesor'] ?? '2026-01-01';
     $ciudad = trim($_POST['ciudadProfesor'] ?? '');
@@ -40,8 +39,8 @@ if (isset($_POST['actualizarProfesor'])) {
     }
 
     if (empty($lista_de_errores)) {
-        // Signature: actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $especialidad, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
-        $resultado = actualizarProfesor($id_profesor, $nombre, $email, $telefono, $dni, $direccion, $especialidad, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
+        // Signature: actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
+        $resultado = actualizarProfesor($id_profesor, $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
         if ($resultado) {
             $_SESSION['exito'] = "Profesor actualizado correctamente.";
             header("Location: /pfc/vistas/admin/profesores/verProfesores.php");

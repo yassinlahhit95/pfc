@@ -11,11 +11,11 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idProfMenu = $_SESSION['idProfesor'];
-$cantAlumnos = contarEstudiantes(); // General o específicos si prefieres
-$cantCiclos = contarCiclos();
-$cantMensajes = contarReclamaciones();
+$cantAlumnos = contarEstudiantesDeProfesor($idProfMenu);
+$cantCiclos = contarCiclosDeProfesor($idProfMenu);
+$cantMensajes = contarMensajesDeProfesor($idProfMenu);
 $cantMensajesNoLeidosProf = contarMensajesNoLeidosProfesor($idProfMenu);
-$cantTFGs = contarTFGsSubidos();
+$cantTFGs = contarTFGsDeProfesor($idProfMenu);
 ?>
 <!DOCTYPE html>
 <html lang="es">

@@ -25,7 +25,6 @@ include_once "../comunes/nav.php";
     <div class="disposicion-flexible alinear-centro margen-abajo">
         <div class="flexible-rellenar">
             <h2><?php echo $profesor['nombreProfesor']; ?></h2>
-            <p class="texto-atenuado"><?php echo $profesor['especialidad'] ?? 'Profesor del Centro'; ?></p>
         </div>
         <div>
             <a href="/pfc/vistas/profesores/perfil/editar.php" class="boton-primario">

@@ -18,8 +18,8 @@ $idModulo = isset($_GET['idModulo']) ? intval($_GET['idModulo']) : 0;
 // Filtros disponibles para el profesor
 $mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
 $mis_modulos = [];
-if ($idCiclo > 0) {
-    $mis_modulos = obtenerModulosPorCiclo($idCiclo);
+if ($idCic > 0) {
+    $mis_modulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCic);
 } else {
     $mis_modulos = obtenerModulosDeProfesor($idProfesor);
 }

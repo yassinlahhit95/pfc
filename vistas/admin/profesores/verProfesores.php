@@ -54,14 +54,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <th>ID</th>
                     <th>NOMBRE COMPLETO</th>
                     <th>CORREO ELECTRÓNICO</th>
-                    <th>ESPECIALIDAD / ÁREA</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($listaDeTodosLosProfesores == false || count($listaDeTodosLosProfesores) == 0) { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">No hay profesores registrados en el sistema.</td>
+                        <td colspan="4" class="sin-datos">No hay profesores registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
@@ -69,7 +68,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $profesorIndividual['idProfesor']; ?></td>
                         <td><strong><?php echo strtoupper($profesorIndividual['nombreProfesor']); ?></strong></td>
                         <td><?php echo $profesorIndividual['emailProfesor']; ?></td>
-                        <td><?php echo strtoupper($profesorIndividual['especialidad']); ?></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="/pfc/vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 

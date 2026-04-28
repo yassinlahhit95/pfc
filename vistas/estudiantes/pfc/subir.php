@@ -45,7 +45,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="titulo-tarjeta">
         <h3>ESTADO DE LA ENTREGA Y GESTIÓN</h3>
     </div>
-    
+
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
@@ -87,7 +87,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <!-- INTEGRACIÓN DEL FORMULARIO DE SUBIDA -->
     <form action="/pfc/controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
-        
+
         <div class="fila-detalle">
             <div class="etiqueta-detalle"><?php echo empty($tfg['archivoTFG']) ? 'Subir Trabajo' : 'Actualizar Archivo'; ?></div>
             <div class="valor-detalle">

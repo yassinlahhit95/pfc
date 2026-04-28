@@ -83,6 +83,44 @@ function contarTFGsSubidos() {
     mysqli_close($db);
     return $total;
 }
+
+function contarTFGsDeProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            WHERE cp.idProfesor = $idProf AND e.archivoTFG != ''";
+    $resultado = mysqli_query($db, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    
+    $total = 0;
+    if (isset($fila)) {
+        $total = $fila['total'];
+    }
+    mysqli_close($db);
+    return $total;
+}
+
+// Ver TFGs de un profesor
+function listarTFGsPorProfesor($idProf) {
+    $db = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            WHERE cp.idProfesor = $idProf AND e.archivoTFG != '' 
+            ORDER BY e.nombreEstudiante ASC";
+            
+    $resultado = mysqli_query($db, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) { 
+        $lista[] = $fila; 
+    }
+    mysqli_close($db);
+    return $lista;
+}
+
 // Eliminar archivo TFG de un alumno
 function eliminarArchivoTFG($idEst) {
     $db = obtenerConexion();

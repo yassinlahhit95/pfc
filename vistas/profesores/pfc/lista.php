@@ -8,7 +8,8 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
-$tfgs = listarTodosLosTFGs();
+$idProfesor = $_SESSION['idProfesor'];
+$tfgs = listarTFGsPorProfesor($idProfesor);
 
 $tituloDelPagina = "Gestión de TFGs - Portal Profesores";
 $seccionActual = 'tfg';

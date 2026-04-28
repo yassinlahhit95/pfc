@@ -15,9 +15,9 @@ function listarProfesores() {
 }
 
 // Meter profe nuevo
-function insertarProfesor($nombre, $email, $tel, $dni, $dir, $esp, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
     $db = obtenerConexion();
-    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, especialidad, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES ('$nombre', '$email', '$tel', '$dni', '$dir', '$esp', '$f_nac', '$f_alta', '$ciudad', '$cp', '$obs')";
+    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES ('$nombre', '$email', '$tel', '$dni', '$dir', '$f_nac', '$f_alta', '$ciudad', '$cp', '$obs')";
     $resultado = mysqli_query($db, $sql);
     
     // Sacamos el ID mas alto (el nuevo)
@@ -31,9 +31,9 @@ function insertarProfesor($nombre, $email, $tel, $dni, $dir, $esp, $f_nac, $f_al
 }
 
 // Actualizar un profesor
-function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $esp, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
     $db = obtenerConexion();
-    $sql = "UPDATE profesores SET nombreProfesor='$nombre', emailProfesor='$email', telefonoProfesor='$tel', dniProfesor='$dni', direccionProfesor='$dir', especialidad='$esp', fechaNacimientoProfesor='$f_nac', fechaAltaProfesor='$f_alta', ciudadProfesor='$ciudad', codigoPostalProfesor='$cp', observacionesProfesor='$obs' WHERE idProfesor=$id";
+    $sql = "UPDATE profesores SET nombreProfesor='$nombre', emailProfesor='$email', telefonoProfesor='$tel', dniProfesor='$dni', direccionProfesor='$dir', fechaNacimientoProfesor='$f_nac', fechaAltaProfesor='$f_alta', ciudadProfesor='$ciudad', codigoPostalProfesor='$cp', observacionesProfesor='$obs' WHERE idProfesor=$id";
     $resultado = mysqli_query($db, $sql);
     mysqli_close($db);
     return $resultado;

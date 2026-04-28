@@ -9,7 +9,6 @@ if (isset($_POST['guardarProfesor'])) {
     $telefono = trim($_POST['telefonoProfesor']);
     $direccion = trim($_POST['direccionProfesor']);
     
-    $especialidad = trim($_POST['especialidad'] ?? '');
     $fechaNacimiento = $_POST['fechaNacimientoProfesor'] ?? '1980-01-01';
     $fechaAlta = date('Y-m-d');
     $ciudad = trim($_POST['ciudadProfesor'] ?? '');
@@ -39,9 +38,8 @@ if (isset($_POST['guardarProfesor'])) {
     }
 
     if (empty($lista_de_errores)) {
-        // Signature: insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $especialidad, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
-        // We pass empty string for especialidad as it was removed from form
-        $idNuevoProfesor = insertarProfesor($nombre, $email, $telefono, $dni, $direccion, '', $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
+        // Signature: insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
+        $idNuevoProfesor = insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
         
         if ($idNuevoProfesor) {
             // Asignar Ciclos

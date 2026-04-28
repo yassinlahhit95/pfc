@@ -24,11 +24,12 @@ if (isset($_GET['idModulo'])) { $id_modulo_elegido = $_GET['idModulo']; }
 $id_reto_elegido = 0;
 if (isset($_GET['idReto'])) { $id_reto_elegido = $_GET['idReto']; }
 
-$todos_los_ciclos = listarTodosLosCiclos();
+$idProfesor = $_SESSION['idProfesor'];
+$todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $modulos_filtrados = array();
 if ($id_ciclo_elegido != 0) {
-    $modulos_filtrados = obtenerModulosPorCiclo($id_ciclo_elegido);
+    $modulos_filtrados = obtenerModulosDeProfesorPorCiclo($idProfesor, $id_ciclo_elegido);
 }
 
 $retos_filtrados = array();

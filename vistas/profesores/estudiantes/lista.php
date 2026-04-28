@@ -7,8 +7,11 @@ if (!isset($_SESSION['idProfesor'])) {
 }
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$estudiantes = listarEstudiantes();
+$idProfesor = $_SESSION['idProfesor'];
+$estudiantes = listarEstudiantesPorProfesor($idProfesor);
+$listaDeCiclosParaFiltro = obtenerCiclosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Lista de Estudiantes - Portal Profesores";
 $seccionActual = 'estudiantes';
@@ -19,10 +22,6 @@ include_once "../comunes/nav.php";
     <h1>Gestión de Estudiantes</h1>
 </div>
 
-<?php 
-require_once "../../../modelos/ciclos.php";
-$listaDeCiclosParaFiltro = listarTodosLosCiclos(); 
-?>
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
         <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>

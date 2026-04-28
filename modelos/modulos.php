@@ -23,6 +23,20 @@ function obtenerModulosDeProfesor($idProf) {
     return $lista;
 }
 
+function obtenerModulosDeProfesorPorCiclo($idProf, $idCic) {
+    $db = obtenerConexion();
+    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo 
+            FROM modulos 
+            JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo 
+            JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo 
+            WHERE profesor_modulo.idProfesor = $idProf AND modulos.idCiclo = $idCic";
+    $res = mysqli_query($db, $sql);
+    $lista = [];
+    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
+    mysqli_close($db);
+    return $lista;
+}
+
 // Listar modulos de un ciclo
 function obtenerModulosPorCiclo($idCic) {
     $db = obtenerConexion();

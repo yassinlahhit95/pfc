@@ -63,7 +63,6 @@ CREATE TABLE IF NOT EXISTS `profesores` (
   `ciudadProfesor` varchar(100) DEFAULT '',
   `codigoPostalProfesor` varchar(10) DEFAULT '',
   `observacionesProfesor` text DEFAULT NULL,
-  `especialidad` varchar(150) DEFAULT '',
   `fcm_token` text DEFAULT NULL,
   PRIMARY KEY (`idProfesor`),
   UNIQUE KEY `uk_email_prof` (`emailProfesor`)

@@ -152,7 +152,6 @@ include_once __DIR__ . "/comunes/nav.php";
         <h3>Información del Perfil</h3>
       </div>
       <div class="info-adicional-perfil">
-        <p><strong>Especialidad:</strong><br><?php echo $profesorActual['especialidad'] ?: 'No definida'; ?></p>
         <p><strong>Email:</strong><br><?php echo $profesorActual['emailProfesor']; ?></p>
         <hr class="margen-arriba">
         <a href="/pfc/vistas/profesores/perfil/ver.php" class="boton-secundario ancho-total center-text">Gestionar Perfil</a>
