@@ -977,3 +977,13 @@ body {
     font-size: 14px;
     color: #4a5568;
 }
+
+/* ============================================
+   ESTILOS DE UTILIDAD PARA ELIMINAR INLINE
+   ============================================ */
+.avatar-contenedor { flex: 0 0 150px; }
+.borde-superior-suave { border-top: 1px solid #eee; }
+.copyright-texto { font-size: 12px; }
+.break-word { overflow-wrap: break-word; }
+.ancho-completo { width: 100%; }
+.max-ancho-completo { max-width: 100%; }

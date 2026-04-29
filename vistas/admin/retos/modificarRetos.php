@@ -32,9 +32,14 @@ if (isset($_SESSION['datos_reto'])) {
 
 $todos_los_modulos = listarModulos();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$error = "";
+if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
+
+$exito = "";
+if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+
+$lista_de_errores = array();
+if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reto']);
 ?>
@@ -44,10 +49,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <a href="verRetos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($exito) { ?>
+<?php if (!empty($exito)) { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error) { ?>
+<?php if (!empty($error)) { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 

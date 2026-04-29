@@ -14,7 +14,7 @@ include_once "nav.php";
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro separacion-grande">
-        <div class="text-center" style="flex: 0 0 150px;">
+        <div class="text-center avatar-contenedor">
             <div class="avatar-huella">
                 YL
             </div>
@@ -22,7 +22,7 @@ include_once "nav.php";
         <div class="flexible-rellenar">
             <h2 class="subtitulo-huella">Yassin Lahhit</h2>
             <p class="texto-atenuado">Full Stack Developer | Autor del TFG</p>
-            <div class="mt-15 pb-15" style="border-top: 1px solid #eee;">
+            <div class="mt-15 pb-15 borde-superior-suave">
                 <p><strong>Propiedad Intelectual:</strong> Este software es un Trabajo de Fin de Grado original desarrollado para CPS Ibaiondo.</p>
                 <p><strong>Versión del Sistema:</strong> 2.0.0 (Abril 2026)</p>
             </div>
@@ -42,7 +42,7 @@ include_once "nav.php";
 
     <div class="separador-huella mt-20">
         <p class="texto-negrita mb-5">© <?php echo date('Y'); ?> Yassin Lahhit</p>
-        <p class="texto-atenuado" style="font-size: 12px;">Todos los derechos reservados. Desarrollado con PHP, MySQL y Brevo API.</p>
+        <p class="texto-atenuado copyright-texto">Todos los derechos reservados. Desarrollado con PHP, MySQL y Brevo API.</p>
     </div>
 </div>
 

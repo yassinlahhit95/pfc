@@ -78,9 +78,9 @@ include_once "../comunes/nav.php";
         </div>
     </div>
 
-    <div class="margen-arriba p-20 bg-gris-suave rounded-8" style="width: 100%; overflow-wrap: break-word;">
+    <div class="margen-arriba p-20 bg-gris-suave rounded-8 break-word ancho-completo">
         <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
-        <div class="line-height-16 pre-wrap" style="max-width: 100%;"><?php echo $mensaje['descripcion']; ?></div>
+        <div class="line-height-16 pre-wrap max-ancho-completo"><?php echo $mensaje['descripcion']; ?></div>
     </div>
 </div>
 
