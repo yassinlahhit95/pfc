@@ -50,7 +50,7 @@ include_once "../comunes/nav.php";
                 <label>Nombre del Módulo *</label>
                 <input type="text" name="nombreModulo" value="<?php echo $modulo['nombreModulo']; ?>">
                 <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                    <span class="error-campo"><?php echo $lista_de_errores['nombreModulo']; ?></span>
+                    <p class="texto-rojo texto-pequeno mt-5"><?php echo $lista_de_errores['nombreModulo']; ?></p>
                 <?php } ?>
             </div>
 
@@ -64,7 +64,7 @@ include_once "../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <span class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></span>
+                    <p class="texto-rojo texto-pequeno mt-5"><?php echo $lista_de_errores['idCiclo']; ?></p>
                 <?php } ?>
             </div>
 
@@ -72,7 +72,7 @@ include_once "../comunes/nav.php";
                 <label>Horas Totales *</label>
                 <input type="text" name="horasMaximas" value="<?php echo $modulo['horasMaximas']; ?>">
                 <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                    <span class="error-campo"><?php echo $lista_de_errores['horasMaximas']; ?></span>
+                    <p class="texto-rojo texto-pequeno mt-5"><?php echo $lista_de_errores['horasMaximas']; ?></p>
                 <?php } ?>
             </div>
         </div>

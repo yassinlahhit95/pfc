@@ -14,13 +14,23 @@ if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 $datos = [];
 if (isset($_SESSION['datos_reto'])) { $datos = $_SESSION['datos_reto']; }
 
-unset($_SESSION['errores'], $_SESSION['datos_reto']);
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
+
+unset($_SESSION['errores'], $_SESSION['datos_reto'], $_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>Crear Nuevo Reto</h1>
     <a href="/pfc/vistas/admin/retos/verRetos.php" class="boton-secundario">← Volver</a>
 </div>
+
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/retos/insertar.php" method="POST">

@@ -26,8 +26,8 @@ if (!empty($_GET['idCiclo'])) {
     // Verificar que el profesor tiene acceso a este ciclo
     $tieneAcceso = false;
     $cantidad_ciclos = count($todos_los_ciclos);
-    for ($indiceCiclo = 0; $indiceCiclo < $cantidad_ciclos; $indiceCiclo = $indiceCiclo + 1) {
-        $cicloIndividual = $todos_los_ciclos[$indiceCiclo];
+    for ($i = 0; $i < $cantidad_ciclos; $i++) {
+        $cicloIndividual = $todos_los_ciclos[$i];
         if ($cicloIndividual['idCiclo'] == $id_ciclo_elegido) {
             $tieneAcceso = true;
         }
@@ -70,7 +70,7 @@ if (!empty($id_ciclo_elegido)) {
             if (!empty($notasDeEsteModulo)) {
                 $mediaMod = array_sum($notasDeEsteModulo) / count($notasDeEsteModulo);
                 $suma_total_modulos = $suma_total_modulos + $mediaMod;
-                $contador_total_notas_modulos = $contador_total_notas_modulos + 1;
+                $contador_total_notas_modulos++;
                 if ($mediaMod < 5) {
                     $hayModuloSuspenso = true;
                 }
@@ -79,7 +79,7 @@ if (!empty($id_ciclo_elegido)) {
             $medias_retos_del_modulo = listarCalificacionesRetoPorModulo($id_mod);
             if (isset($medias_retos_del_modulo[$id_est])) {
                 $suma_total_retos = $suma_total_retos + $medias_retos_del_modulo[$id_est];
-                $contador_modulos_con_reto = $contador_modulos_con_reto + 1;
+                $contador_modulos_con_reto++;
             }
         }
         

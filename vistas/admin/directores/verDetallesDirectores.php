@@ -56,8 +56,56 @@ if (!$director) {
     </div>
 
     <div class="fila-detalle">
+        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="valor-detalle"><?php echo $director['telefonoDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha de Nacimiento</div>
+        <div class="valor-detalle">
+            <?php 
+                if (isset($director['fechaNacimientoDirector']) && $director['fechaNacimientoDirector'] != '0000-00-00') {
+                    echo date('d/m/Y', strtotime($director['fechaNacimientoDirector']));
+                } else {
+                    echo '<span class="texto-atenuado">No especificado</span>';
+                }
+            ?>
+        </div>
+    </div>
+
+    <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha Alta</div>
         <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($director['fechaAltaDirector'])); ?></div>
+    </div>
+</div>
+
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta">
+        <h3>Dirección y Contacto</h3>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Dirección</div>
+        <div class="valor-detalle"><?php echo $director['direccionDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Ciudad</div>
+        <div class="valor-detalle"><?php echo $director['ciudadDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Código Postal</div>
+        <div class="valor-detalle"><?php echo $director['codigoPostalDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+    </div>
+</div>
+
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta">
+        <h3>Observaciones</h3>
+    </div>
+    <div class="tarjeta-gris-suave p-20 pre-wrap">
+        <?php echo $director['observacionesDirector'] ?: '<span class="texto-atenuado">Sin observaciones.</span>'; ?>
     </div>
 </div>
 

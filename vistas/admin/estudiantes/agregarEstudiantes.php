@@ -10,17 +10,24 @@ if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 $datos = array();
 if (isset($_SESSION['datos_estudiante'])) { $datos = $_SESSION['datos_estudiante']; }
 
-unset($_SESSION['errores'], $_SESSION['datos_estudiante']);
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
 
-$titulo_pagina = "Agregar Estudiante - Super Admin";
-$seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>Nuevo Estudiante</h1>
     <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">Volver</a>
 </div>
+
+<?php if (!empty($exito)) { ?>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php } ?>
+
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/estudiantes/insertar.php" method="POST">

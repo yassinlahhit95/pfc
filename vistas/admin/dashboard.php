@@ -158,7 +158,7 @@ include 'comunes/nav.php';
               </div>
             </div>
             <?php 
-                    $contadorEventosMostrados = $contadorEventosMostrados + 1;
+                    $contadorEventosMostrados++;
                 }
             } ?>
         <?php } ?>

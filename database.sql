@@ -260,4 +260,70 @@ CREATE TABLE IF NOT EXISTS `profesor_modulo` (
   CONSTRAINT `fk_relm_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+-- 8. DATOS DE PRUEBA REALISTAS
+-- --------------------------------------------------------
+
+-- Aulas
+INSERT INTO `aulas` (`nombreAula`) VALUES ('Aula 101'), ('Aula 102'), ('Laboratorio de Redes'), ('Taller de Montaje');
+
+-- Ciclos
+INSERT INTO `ciclos` (`nombreCiclo`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`) VALUES 
+('Desarrollo de Aplicaciones Web', 'DAW', 1200.00, 2),
+('Desarrollo de Aplicaciones Multiplataforma', 'DAM', 1200.00, 2),
+('Sistemas Microinformáticos y Redes', 'SMR', 800.00, 1);
+
+-- Módulos DAW
+INSERT INTO `modulos` (`nombreModulo`, `horasMaximas`, `idCiclo`) VALUES 
+('Programación', 240, 1),
+('Bases de Datos', 180, 1),
+('Desarrollo Web en Entorno Cliente', 160, 1),
+('Desarrollo Web en Entorno Servidor', 180, 1);
+
+-- Módulos SMR
+INSERT INTO `modulos` (`nombreModulo`, `horasMaximas`, `idCiclo`) VALUES 
+('Montaje y Mantenimiento de Equipos', 200, 3),
+('Redes Locales', 180, 3);
+
+-- Profesores
+INSERT INTO `profesores` (`nombreProfesor`, `emailProfesor`, `password`, `dniProfesor`, `telefonoProfesor`) VALUES 
+('JUAN PÉREZ GARCÍA', 'juan.perez@email.com', '123456', '12345678A', '600111222'),
+('MARÍA RODRÍGUEZ LÓPEZ', 'maria.rodriguez@email.com', '123456', '87654321B', '600333444');
+
+-- Estudiantes
+INSERT INTO `estudiantes` (`nombreEstudiante`, `emailEstudiante`, `password`, `dniEstudiante`, `idCiclo`, `telefonoEstudiante`) VALUES 
+('CARLOS SÁNCHEZ MARTÍN', 'carlos.sanchez@email.com', '123456', '11223344C', 1, '611000111'),
+('ANA BELÉN RUIZ', 'ana.ruiz@email.com', '123456', '44332211D', 1, '611000222'),
+('DAVID GARCÍA FERNÁNDEZ', 'david.garcia@email.com', '123456', '55667788E', 3, '611000333'),
+('ELENA MARTÍNEZ SOLER', 'elena.martinez@email.com', '123456', '99887766F', 1, '611000444');
+
+-- Asignaciones Ciclo-Profesor
+INSERT INTO `ciclo_profesor` (`idCiclo`, `idProfesor`) VALUES (1, 1), (1, 2), (3, 2);
+
+-- Asignaciones Profesor-Módulo
+INSERT INTO `profesor_modulo` (`idProfesor`, `idModulo`) VALUES 
+(1, 1), (1, 4), -- Juan da Programación y Servidor
+(2, 2), (2, 3), -- María da BD y Cliente
+(2, 5), (2, 6); -- María también apoya en SMR
+
+-- Retos
+INSERT INTO `retos` (`nombreReto`, `fechaInicio`, `fechaFin`, `horasReto`) VALUES 
+('PROYECTO E-COMMERCE PHP', '2026-05-01', '2026-06-15', 60),
+('CONFIGURACIÓN RED CORPORATIVA', '2026-05-10', '2026-05-30', 40);
+
+-- Relación Módulo-Reto
+INSERT INTO `modulo_reto` (`idModulo`, `idReto`) VALUES 
+(1, 1), (2, 1), (4, 1), -- El e-commerce involucra prog, bd y servidor
+(6, 2); -- La red involucra Redes Locales
+
+-- Anuncios
+INSERT INTO `anuncios` (`titulo`, `mensaje`, `fechaExpiracion`, `dirigidoA`) VALUES 
+('Mantenimiento del Servidor', 'El próximo viernes el servidor estará fuera de servicio de 15:00 a 17:00.', '2026-05-10', 'todos'),
+('Entrega de Proyectos Finales', 'Recordad que la fecha límite es el 15 de junio.', '2026-06-15', 'estudiantes');
+
+-- Eventos
+INSERT INTO `eventos` (`tituloEvento`, `descripcionEvento`, `fechaEvento`, `horaEvento`, `ubicacionEvento`) VALUES 
+('Charla Ciberseguridad', 'Ponencia a cargo de expertos en seguridad informática.', '2026-05-20', '10:30:00', 'Salón de Actos'),
+('Graduación 2026', 'Ceremonia de entrega de diplomas.', '2026-06-25', '18:00:00', 'Patio Central');
+
 COMMIT;

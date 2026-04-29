@@ -52,7 +52,12 @@ if (isset($_POST['actualizarReto'])) {
         }
     } else {
         $_SESSION['errores'] = $lista_de_errores;
-        $_SESSION['datos_reto'] = $_POST;
+        
+        // Mapear campos de formulario a nombres de base de datos para repoblación consistente
+        $datos_para_sesion = $_POST;
+        $datos_para_sesion['fechaInicio'] = $_POST['fechaInicioReto'];
+        $datos_para_sesion['fechaFin'] = $_POST['fechaFinReto'];
+        $_SESSION['datos_reto'] = $datos_para_sesion;
     }
 
     header("Location: /pfc/vistas/admin/retos/modificarRetos.php?idReto=$id_reto");
