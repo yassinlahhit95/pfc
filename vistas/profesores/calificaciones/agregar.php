@@ -2,7 +2,7 @@
 session_start();
 
 // Validar que sea profesor
-if (isset($_SESSION['idProfesor']) == false || $_SESSION['idProfesor'] == "") {
+if (empty($_SESSION['idProfesor'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -16,12 +16,12 @@ $idProfLogueado = $_SESSION['idProfesor'];
 
 // Coger filtros de la URL
 $idCicloSeleccionado = 0;
-if (isset($_GET['idCiclo']) && $_GET['idCiclo'] != "") {
+if (!empty($_GET['idCiclo'])) {
     $idCicloSeleccionado = intval($_GET['idCiclo']);
 }
 
 $idModuloSeleccionado = 0;
-if (isset($_GET['idModulo']) && $_GET['idModulo'] != "") {
+if (!empty($_GET['idModulo'])) {
     $idModuloSeleccionado = intval($_GET['idModulo']);
 }
 
@@ -29,7 +29,7 @@ if (isset($_GET['idModulo']) && $_GET['idModulo'] != "") {
 $listaMisCiclos = obtenerCiclosDeProfesor($idProfLogueado);
 $listaModulosFiltrados = array();
 
-if ($idCicloSeleccionado != 0) {
+if (!empty($idCicloSeleccionado)) {
     $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCicloSeleccionado);
     $misModulosAsignados = obtenerIdsModulosDeProfesor($idProfLogueado);
     
@@ -43,16 +43,16 @@ if ($idCicloSeleccionado != 0) {
 
 // Sacar alumnos si ya eligio modulo
 $listaAlumnos = array();
-if ($idModuloSeleccionado != 0) {
+if (!empty($idModuloSeleccionado)) {
     $listaAlumnos = listarCalificacionesPorModulo($idModuloSeleccionado);
 }
 
 // Mensajes de la sesion
 $error_msg = "";
-if (isset($_SESSION['error']) && $_SESSION['error'] != "") { $error_msg = $_SESSION['error']; }
+if (!empty($_SESSION['error'])) { $error_msg = $_SESSION['error']; }
 
 $exito_msg = "";
-if (isset($_SESSION['exito']) && $_SESSION['exito'] != "") { $exito_msg = $_SESSION['exito']; }
+if (!empty($_SESSION['exito'])) { $exito_msg = $_SESSION['exito']; }
 
 unset($_SESSION['error'], $_SESSION['exito']);
 
@@ -82,7 +82,7 @@ include_once "../comunes/nav.php";
 
         <div class="campo-formulario flexible-rellenar">
             <label>2. Selecciona el Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?php if($idCicloSeleccionado == 0) { echo "disabled"; } ?>>
+            <select name="idModulo" onchange="this.form.submit()" <?php if(empty($idCicloSeleccionado)) { echo "disabled"; } ?>>
                 <option value="">-- Elige un modulo --</option>
                 <?php foreach ($listaModulosFiltrados as $m) { ?>
                     <option value="<?php echo $m['idModulo']; ?>" <?php if($idModuloSeleccionado == $m['idModulo']) { echo "selected"; } ?>>
@@ -94,14 +94,14 @@ include_once "../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito_msg != "") { ?>
+<?php if (!empty($exito_msg)) { ?>
     <div class="mensaje-exito"><?php echo $exito_msg; ?></div>
 <?php } ?>
-<?php if ($error_msg != "") { ?>
+<?php if (!empty($error_msg)) { ?>
     <div class="mensaje-error"><?php echo $error_msg; ?></div>
 <?php } ?>
 
-<?php if ($idModuloSeleccionado != 0) { ?>
+<?php if (!empty($idModuloSeleccionado)) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <form action="/pfc/controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
             <input type="hidden" name="idModulo" value="<?php echo $idModuloSeleccionado; ?>">
@@ -120,7 +120,7 @@ include_once "../comunes/nav.php";
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($listaAlumnos == false || count($listaAlumnos) == 0) { ?>
+                        <?php if (empty($listaAlumnos)) { ?>
                             <tr><td colspan="6" class="sin-datos">No hay alumnos en este ciclo todavia.</td></tr>
                         <?php } else { ?>
                             <?php foreach ($listaAlumnos as $alu) { 
@@ -162,7 +162,7 @@ include_once "../comunes/nav.php";
                 </table>
             </div>
             
-            <?php if ($listaAlumnos) { ?>
+            <?php if (!empty($listaAlumnos)) { ?>
                 <div class="margen-arriba disposicion-flexible alinear-centro">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar todas las Notas

@@ -14,19 +14,19 @@ if (isset($_POST['guardarNotas'])) {
     $errorDetectadoAlGuardar = false;
     $cantidadEstudiantesAProcesar = count($listaIdsEstudiantes);
 
-    for ($indiceEstudiante = 0; $indiceEstudiante < $cantidadEstudiantesAProcesar; $indiceEstudiante = $indiceEstudiante + 1) {
-        $idDeEsteEstudiante = $listaIdsEstudiantes[$indiceEstudiante];
-        $nota1EvAProcesar = $listaNotas1Ev[$indiceEstudiante];
-        $nota1FinalAProcesar = $listaNotas1Final[$indiceEstudiante];
-        $nota2EvAProcesar = $listaNotas2Ev[$indiceEstudiante];
-        $nota2FinalAProcesar = $listaNotas2Final[$indiceEstudiante];
-        $observacionAProcesar = $listaObservaciones[$indiceEstudiante];
+    for ($i = 0; $i < $cantidadEstudiantesAProcesar; $i++) {
+        $idDeEsteEstudiante = $listaIdsEstudiantes[$i];
+        $nota1EvAProcesar = $listaNotas1Ev[$i];
+        $nota1FinalAProcesar = $listaNotas1Final[$i];
+        $nota2EvAProcesar = $listaNotas2Ev[$i];
+        $nota2FinalAProcesar = $listaNotas2Final[$i];
+        $observacionAProcesar = $listaObservaciones[$i];
 
         // Validar que cada nota sea numérica o esté vacía
         $arrayTemporalNotas = array($nota1EvAProcesar, $nota1FinalAProcesar, $nota2EvAProcesar, $nota2FinalAProcesar);
         
         foreach ($arrayTemporalNotas as $notaIndividualAChequear) {
-            if ($notaIndividualAChequear != "") {
+            if (!empty($notaIndividualAChequear)) {
                 if (!is_numeric($notaIndividualAChequear)) {
                     $errorDetectadoAlGuardar = true;
                 } else {
@@ -51,8 +51,8 @@ if (isset($_POST['guardarNotas'])) {
         require_once "../../comunes/notificaciones_grades.php";
         
         if (isset($_POST['notificarEstudiantes']) && !empty($_POST['notificarEstudiantes'])) {
-            for ($indiceNotif = 0; $indiceNotif < $cantidadEstudiantesAProcesar; $indiceNotif = $indiceNotif + 1) {
-                $idEstudianteANotificar = $listaIdsEstudiantes[$indiceNotif];
+            for ($i = 0; $i < $cantidadEstudiantesAProcesar; $i++) {
+                $idEstudianteANotificar = $listaIdsEstudiantes[$i];
                 enviarEmailNotasEstudiante($idEstudianteANotificar);
             }
         }

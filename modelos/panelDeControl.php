@@ -139,7 +139,7 @@ function obtenerPorcentajeAprobadosGlobal() {
     $fT = mysqli_fetch_assoc(mysqli_query($db, $sql1));
     $total = $fT['t'];
 
-    if ($total == 0) { mysqli_close($db); return 0; }
+    if (empty($total)) { mysqli_close($db); return 0; }
 
     $sql2 = "SELECT COUNT(*) as a FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5";
     $fA = mysqli_fetch_assoc(mysqli_query($db, $sql2));

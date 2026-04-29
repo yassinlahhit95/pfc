@@ -10,7 +10,7 @@ $idEstudianteElegido = isset($_GET['idEstudiante']) ? $_GET['idEstudiante'] : ''
 $todos_los_ciclos = listarTodosLosCiclos();
 
 // Filtrar estudiantes por ciclo si se ha seleccionado uno
-if ($idCicloElegido != '') {
+if (!empty($idCicloElegido)) {
     $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 } else {
     $todos_los_estudiantes = listarEstudiantes();
@@ -18,7 +18,7 @@ if ($idCicloElegido != '') {
 
 // Obtener info financiera si hay estudiante seleccionado
 $infoFinanciera = null;
-if ($idEstudianteElegido != '') {
+if (!empty($idEstudianteElegido)) {
     $infoFinanciera = obtenerEstadoFinancieroEstudiante($idEstudianteElegido);
 }
 

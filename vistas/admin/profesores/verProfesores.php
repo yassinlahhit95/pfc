@@ -2,7 +2,7 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -38,11 +38,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($mensajeDeExito != "") { ?>
+<?php if (!empty($mensajeDeExito)) { ?>
     <div class="mensaje-exito"><?php echo $mensajeDeExito; ?></div>
 <?php } ?>
 
-<?php if ($mensajeDeError != "") { ?>
+<?php if (!empty($mensajeDeError)) { ?>
     <div class="mensaje-error"><?php echo $mensajeDeError; ?></div>
 <?php } ?>
 
@@ -58,7 +58,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDeTodosLosProfesores == false || count($listaDeTodosLosProfesores) == 0) { ?>
+                <?php if (empty($listaDeTodosLosProfesores)) { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay profesores registrados en el sistema.</td>
                     </tr>

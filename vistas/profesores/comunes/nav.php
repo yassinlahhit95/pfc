@@ -1,5 +1,5 @@
 <?php
-if (isset($_SESSION['idProfesor']) == false) {
+if (empty($_SESSION['idProfesor'])) {
     header("Location: /pfc/index.php");
     exit;
 }

@@ -51,15 +51,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo $p['nombreArticulo']; ?></td>
                         <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
                         <td>
-                            <?php 
-                            if ($p['fechaDevolucion'] != "") {
+                            <?php
+                            if (!empty($p['fechaDevolucion'])) {
                                 echo date('d/m/Y', strtotime($p['fechaDevolucion']));
                             } else {
                                 echo "-";
                             }
                             ?>
-                        </td>
-                        <td>
+                        </td>                        <td>
                             <?php 
                             $clase_estado = "inactivo-rojo";
                             if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }

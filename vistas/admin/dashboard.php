@@ -2,7 +2,7 @@
 session_start();
 
 // Control de acceso para administradores
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -140,7 +140,7 @@ include 'comunes/nav.php';
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
-        <?php if ($listaEventosProximos == false || count($listaEventosProximos) == 0) { ?>
+        <?php if (empty($listaEventosProximos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php 

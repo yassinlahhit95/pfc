@@ -43,7 +43,7 @@ function insertarPagoCompleto($idEst, $mon, $tipo, $fecP, $fecProx) {
 function actualizarPago($id, $idEst, $mon, $tipo, $fecP, $fecProx, $comp = "") {
     $db = obtenerConexion();
     $sql = "UPDATE pagos SET idEstudiante=$idEst, monto=$mon, tipoPago='$tipo', fechaPago='$fecP', fechaProximoPago='$fecProx'";
-    if ($comp != "") { $sql = $sql . ", comprobante = '$comp'"; }
+    if (!empty($comp)) { $sql = $sql . ", comprobante = '$comp'"; }
     $sql = $sql . " WHERE idPago = $id";
     $res = mysqli_query($db, $sql);
     mysqli_close($db);

@@ -22,12 +22,12 @@ if (isset($_POST['actualizarNota'])) {
     $notasCheck = array($notaEv1Recibida, $notaFinal1Recibida, $notaEv2Recibida, $notaFinal2Recibida);
     
     foreach ($notasCheck as $nota) {
-        if ($nota !== "" && !is_numeric($nota)) {
+        if (!empty($nota) && !is_numeric($nota)) {
             $_SESSION['error'] = strtoupper("LAS NOTAS DEBEN SER VALORES NUMÉRICOS.");
             $errorEncontrado = true;
             break;
         }
-        if ($nota !== "" && ($nota < 0 || $nota > 10)) {
+        if (!empty($nota) && ($nota < 0 || $nota > 10)) {
             $_SESSION['error'] = strtoupper("LAS CALIFICACIONES DEBEN ESTAR ENTRE 0.00 Y 10.00.");
             $errorEncontrado = true;
             break;
@@ -39,7 +39,7 @@ if (isset($_POST['actualizarNota'])) {
         exit;
     }
 
-    if ($errorEncontrado == false) {
+    if (!$errorEncontrado) {
         $resultado = actualizarOCrearNotaCompleta($idEstudianteRecibido, $idModuloRecibido, $notaEv1Recibida, $notaFinal1Recibida, $notaEv2Recibida, $notaFinal2Recibida, "");
         
         if ($resultado == true) {

@@ -76,7 +76,7 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
         }
 
         $sumaTotalNotasModulos = $sumaTotalNotasModulos + $notaFinalDelModulo;
-        $contadorTotalModulos = $contadorTotalModulos + 1;
+        $contadorTotalModulos++;
 
         $nombreModuloMayus = strtoupper($datosDelModulo['nombreModulo']);
 
@@ -111,7 +111,7 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
 
     $estadoGlobalTexto = "APROBADO";
     $colorGlobalTexto = "green";
-    if ($notaFinalCalculada < 5 || $existeAlgundoSuspenso == true) {
+    if ($notaFinalCalculada < 5 || $existeAlgundoSuspenso) {
         $estadoGlobalTexto = "SUSPENSO";
         $colorGlobalTexto = "red";
     }
@@ -168,7 +168,7 @@ function enviarEmailNotasClase($idDelCicloElegido) {
     while ($datosAlumnoIndividual = mysqli_fetch_assoc($resultadoAlumnos)) {
         $idDeEsteAlumno = $datosAlumnoIndividual['idEstudiante'];
         if (enviarEmailNotasEstudiante($idDeEsteAlumno)) {
-            $contadorCorreosEnviados = $contadorCorreosEnviados + 1;
+            $contadorCorreosEnviados++;
         }
     }
     

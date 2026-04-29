@@ -17,7 +17,7 @@ if (isset($_POST['guardarNotasReto'])) {
         $nota = $notas[$i];
 
         // Validar que sea numérico o vacío
-        if ($nota != "") {
+        if (!empty($nota)) {
             if (!is_numeric($nota)) {
                 $error_al_guardar = true;
             } else {
@@ -27,11 +27,11 @@ if (isset($_POST['guardarNotasReto'])) {
             }
         }
 
-        if ($error_al_guardar == false) {
+        if (!$error_al_guardar) {
             // calificarReto($idEstudiante, $idReto, $nota)
             // Si la nota es vacía, podemos decidir no guardarla o guardar un 0
             $nota_final = $nota;
-            if ($nota_final == "") { $nota_final = 0; }
+            if (empty($nota_final)) { $nota_final = 0; }
             
             if (!calificarReto($id_est, $id_reto, $nota_final)) {
                 $error_al_guardar = true;

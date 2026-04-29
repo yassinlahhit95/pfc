@@ -2,7 +2,7 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -42,11 +42,11 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($mensajeExito != "") { ?>
+<?php if (!empty($mensajeExito)) { ?>
     <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
 <?php } ?>
 
-<?php if ($mensajeError != "") { ?>
+<?php if (!empty($mensajeError)) { ?>
     <div class="mensaje-error"><?php echo $mensajeError; ?></div>
 <?php } ?>
 
@@ -64,7 +64,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDeModulosActuales == false || count($listaDeModulosActuales) == 0) { ?>
+                <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
                         <td colspan="6" class="sin-datos">No hay módulos registrados en el sistema.</td>
                     </tr>
@@ -92,14 +92,14 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td><strong><?php echo strtoupper($moduloIndividual['nombreModulo']); ?></strong></td>
                         <td>
                             <?php 
-                                if (isset($moduloIndividual['abreviaturaCiclo']) && $moduloIndividual['abreviaturaCiclo'] != "") {
+                                if (!empty($moduloIndividual['abreviaturaCiclo'])) {
                                     echo "<strong>[" . $moduloIndividual['abreviaturaCiclo'] . "]</strong> ";
                                 }
                                 echo strtoupper($moduloIndividual['nombreCiclo']); 
                             ?>
                         </td>
                         <td>
-                            <?php if ($nombresProfesores == false || count($nombresProfesores) == 0) { ?>
+                            <?php if (empty($nombresProfesores)) { ?>
                                 <span class="texto-rojo texto-pequeno">
                                     <i class="fas fa-exclamation-triangle"></i> SIN PROFESOR
                                 </span>

@@ -2,7 +2,7 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -21,7 +21,7 @@ if (isset($_GET['idCiclo'])) {
 }
 
 // Obtener datos según el filtro
-if ($idDelCicloParaFiltrar != "") {
+if (!empty($idDelCicloParaFiltrar)) {
     $listaDePagosAMostrar = listarPagosFiltrados($idDelCicloParaFiltrar);
 } else {
     $listaDePagosAMostrar = listarTodosLosPagos();
@@ -51,11 +51,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($mensajeExito != "") { ?>
+<?php if (!empty($mensajeExito)) { ?>
     <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
 <?php } ?>
 
-<?php if ($mensajeError != "") { ?>
+<?php if (!empty($mensajeError)) { ?>
     <div class="mensaje-error"><?php echo $mensajeError; ?></div>
 <?php } ?>
 
@@ -95,7 +95,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDePagosAMostrar == false || count($listaDePagosAMostrar) == 0) { ?>
+                <?php if (empty($listaDePagosAMostrar)) { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">No hay registros de pagos que coincidan con la búsqueda.</td>
                     </tr>

@@ -6,7 +6,7 @@ if (isset($_POST['subirTFG'])) {
     $archivo = $_FILES['archivoTFG'];
     if (empty($id)) {
         $_SESSION['error'] = "ID obligatorio";
-    } else if ($archivo['error'] !== 0) {
+    } else if (!empty($archivo['error'])) {
         $_SESSION['error'] = "Error archivo";
     } else {
         $timestamp = date('d-m-Y_H-i-s');

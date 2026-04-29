@@ -15,19 +15,19 @@ if (isset($_POST['guardarNotas'])) {
     $error = false;
     $total = count($estudiantes);
 
-    for ($posicion = 0; $posicion < $total; $posicion++) {
-        $idEst = $estudiantes[$posicion];
-        $nota1 = $n1ev[$posicion];
-        $nota2 = $n1f[$posicion];
-        $nota3 = $n2ev[$posicion];
-        $nota4 = $n2f[$posicion];
-        $comentario = $obs[$posicion];
+    for ($i = 0; $i < $total; $i++) {
+        $idEst = $estudiantes[$i];
+        $nota1 = $n1ev[$i];
+        $nota2 = $n1f[$i];
+        $nota3 = $n2ev[$i];
+        $nota4 = $n2f[$i];
+        $comentario = $obs[$i];
 
         // Mirar si son numeros
-        if ($nota1 != "" && !is_numeric($nota1)) { $error = true; }
-        if ($nota2 != "" && !is_numeric($nota2)) { $error = true; }
-        if ($nota3 != "" && !is_numeric($nota3)) { $error = true; }
-        if ($nota4 != "" && !is_numeric($nota4)) { $error = true; }
+        if (!empty($nota1) && !is_numeric($nota1)) { $error = true; }
+        if (!empty($nota2) && !is_numeric($nota2)) { $error = true; }
+        if (!empty($nota3) && !is_numeric($nota3)) { $error = true; }
+        if (!empty($nota4) && !is_numeric($nota4)) { $error = true; }
 
         if ($error == false) {
             // Entre 0 y 10
@@ -36,21 +36,20 @@ if (isset($_POST['guardarNotas'])) {
             if (is_numeric($nota3) && ($nota3 < 0 || $nota3 > 10)) { $error = true; }
             if (is_numeric($nota4) && ($nota4 < 0 || $nota4 > 10)) { $error = true; }
         }
-
-        // Si esta todo ok, guardar
-        if ($error == false) {
-            $res = actualizarOCrearNotaCompleta($idEst, $idMod, $nota1, $nota2, $nota3, $nota4, $comentario);
-            if ($res == false) {
-                $error = true;
-            }
-        }
+if (!$error) {
+...
+if (!$error) {
+    if (!$res) {
+        $error = true;
     }
+}
+}
 
-    if ($error == false) {
+if (!$error) {
         require_once "../../comunes/notificaciones_grades.php";
         if (isset($_POST['notificarEstudiantes']) && !empty($_POST['notificarEstudiantes'])) {
-            for ($i = 0; $i < $total; $i++) {
-                $idEnvio = $estudiantes[$i];
+            for ($j = 0; $j < $total; $j++) {
+                $idEnvio = $estudiantes[$j];
                 enviarEmailNotasEstudiante($idEnvio);
             }
         }

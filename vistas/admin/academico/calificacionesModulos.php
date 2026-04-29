@@ -22,7 +22,7 @@ if (isset($_GET['idModulo'])) {
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $modulos_filtrados = array();
-if ($id_ciclo_elegido != 0) {
+if (!empty($id_ciclo_elegido)) {
     $modulos_filtrados = obtenerModulosPorCiclo($id_ciclo_elegido);
 }
 
@@ -60,7 +60,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
         <div class="campo-formulario flexible-rellenar">
             <label>2. Seleccione un Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?php if($id_ciclo_elegido == 0) { echo "disabled"; } ?>>
+            <select name="idModulo" onchange="this.form.submit()" <?php if(empty($id_ciclo_elegido)) { echo "disabled"; } ?>>
                 <option value="">-- Seleccionar Módulo --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>
                     <option value="<?php echo $modItem['idModulo']; ?>" <?php if($id_modulo_elegido == $modItem['idModulo']) { echo "selected"; } ?>>
@@ -72,14 +72,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </form>
 </div>
 
-<?php if ($exito != "") { ?>
+<?php if (!empty($exito)) { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error != "") { ?>
+<?php if (!empty($error)) { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
-<?php if ($id_modulo_elegido != 0) { ?>
+<?php if (!empty($id_modulo_elegido)) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <form action="/pfc/controladores/admin/academico/calificarModulos.php" method="POST">
             <input type="hidden" name="idModulo" value="<?php echo $id_modulo_elegido; ?>">
@@ -96,7 +96,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($estudiantes_calificados == false || count($estudiantes_calificados) == 0) { ?>
+                        <?php if (empty($estudiantes_calificados)) { ?>
                             <tr><td colspan="6" class="sin-datos">No hay estudiantes matriculados en este ciclo</td></tr>
                         <?php } else { ?>
                             <?php foreach ($estudiantes_calificados as $estIndividual) { 
@@ -154,4 +154,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 

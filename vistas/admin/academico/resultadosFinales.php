@@ -2,7 +2,7 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -23,7 +23,7 @@ if (isset($_GET['idCiclo'])) {
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
 $listaDeDatosFinalesAMostrar = array();
 
-if ($idCicloElegidoParaVer != 0) {
+if (!empty($idCicloElegidoParaVer)) {
     // Obtenemos los datos procesados desde el Modelo (MVC)
     $listaDeDatosFinalesAMostrar = obtenerResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
@@ -39,8 +39,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
 </div>
 
-<?php if ($mensajeExito != "") { ?> <div class="mensaje-exito"><?php echo $mensajeExito; ?></div> <?php } ?>
-<?php if ($mensajeError != "") { ?> <div class="mensaje-error"><?php echo $mensajeError; ?></div> <?php } ?>
+<?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?php echo $mensajeExito; ?></div> <?php } ?>
+<?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?php echo $mensajeError; ?></div> <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro separacion-grande">
@@ -58,7 +58,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
             </div>
         </form>
 
-        <?php if ($idCicloElegidoParaVer != 0 && !empty($listaDeDatosFinalesAMostrar)) { ?>
+        <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
             <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Está seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?php echo $idCicloElegidoParaVer; ?>">
                 <button type="submit" class="boton-primario">
@@ -69,7 +69,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($idCicloElegidoParaVer != 0) { ?>
+<?php if (!empty($idCicloElegidoParaVer)) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <div class="contenedor-tabla">
             <table class="tabla-datos">

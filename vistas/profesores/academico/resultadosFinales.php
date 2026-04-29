@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_SESSION['idProfesor']) == false || $_SESSION['idProfesor'] == "") {
+if (empty($_SESSION['idProfesor'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -20,7 +20,7 @@ require_once "../../../modelos/ciclos.php";
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $id_ciclo_elegido = 0;
-if (isset($_GET['idCiclo']) && $_GET['idCiclo'] != "") {
+if (!empty($_GET['idCiclo'])) {
     $id_ciclo_elegido = intval($_GET['idCiclo']);
     
     // Verificar que el profesor tiene acceso a este ciclo
@@ -33,14 +33,14 @@ if (isset($_GET['idCiclo']) && $_GET['idCiclo'] != "") {
         }
     }
     
-    if ($tieneAcceso == false) {
+    if (empty($tieneAcceso)) {
         $id_ciclo_elegido = 0;
     }
 }
 
 $datos_finales = array();
 
-if ($id_ciclo_elegido != 0) {
+if (!empty($id_ciclo_elegido)) {
     // 1. Obtener todos los estudiantes del ciclo
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
     
@@ -67,7 +67,7 @@ if ($id_ciclo_elegido != 0) {
             if (isset($notas_mod['nota_2ev']) && is_numeric($notas_mod['nota_2ev']) && $notas_mod['nota_2ev'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_2ev']; }
             if (isset($notas_mod['nota_2final']) && is_numeric($notas_mod['nota_2final']) && $notas_mod['nota_2final'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_2final']; }
             
-            if (count($notasDeEsteModulo) > 0) {
+            if (!empty($notasDeEsteModulo)) {
                 $mediaMod = array_sum($notasDeEsteModulo) / count($notasDeEsteModulo);
                 $suma_total_modulos = $suma_total_modulos + $mediaMod;
                 $contador_total_notas_modulos = $contador_total_notas_modulos + 1;
@@ -96,10 +96,10 @@ if ($id_ciclo_elegido != 0) {
         $nota_final = ($media_global_modulo * 0.75) + ($media_global_reto * 0.25);
         
         $estado = "SUSPENSO";
-        if ($contador_total_notas_modulos == 0) {
+        if (empty($contador_total_notas_modulos)) {
             $estado = "PENDIENTE";
         } else {
-            if ($nota_final >= 5.00 && $hayModuloSuspenso == false) {
+            if ($nota_final >= 5.00 && empty($hayModuloSuspenso)) {
                 $estado = "APROBADO";
             }
         }
@@ -137,7 +137,7 @@ if ($id_ciclo_elegido != 0) {
             </div>
         </form>
 
-        <?php if ($id_ciclo_elegido != 0 && $datos_finales) { ?>
+        <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
             <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Enviar resultados por email a todos los alumnos de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo_elegido; ?>">
                 <button type="submit" class="boton-primario">
@@ -148,7 +148,7 @@ if ($id_ciclo_elegido != 0) {
     </div>
 </div>
 
-<?php if ($id_ciclo_elegido != 0) { ?>
+<?php if (!empty($id_ciclo_elegido)) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <div class="contenedor-tabla">
             <table class="tabla-datos">
@@ -162,7 +162,7 @@ if ($id_ciclo_elegido != 0) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($datos_finales == false || count($datos_finales) == 0) { ?>
+                    <?php if (empty($datos_finales)) { ?>
                         <tr><td colspan="5" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($datos_finales as $filaIndividual) { 

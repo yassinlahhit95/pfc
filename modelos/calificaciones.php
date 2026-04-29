@@ -160,7 +160,7 @@ function obtenerResultadosFinalesEstudiante($idEst, $modulos = null) {
         if ($notas) {
             foreach ($campos as $c) {
                 // Si el campo existe y no es una cadena vacía ni nulo, lo contamos (incluyendo el 0.00)
-                if (isset($notas[$c]) && is_numeric($notas[$c]) && $notas[$c] !== "") {
+                if (isset($notas[$c]) && is_numeric($notas[$c]) && !empty($notas[$c])) {
                     $suma_m += (float)$notas[$c];
                     $cont_m++;
                 }
@@ -177,7 +177,7 @@ function obtenerResultadosFinalesEstudiante($idEst, $modulos = null) {
         $nota_f = ($media_m * 0.75) + ($media_r * 0.25);
         
         // Definición de Estado
-        if ($cont_m == 0) { 
+        if (empty($cont_m)) { 
             $estado_m = "Pendiente"; 
         } elseif ($nota_f >= 5) { 
             $estado_m = "Aprobado"; 

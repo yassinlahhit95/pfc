@@ -27,10 +27,11 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Anuncios del Sistema</h1>
 </div>
 
-<?php if ($exito != "") { ?>
+<?php if (!empty($exito)) { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error != "") { ?>
+
+<?php if (!empty($error)) { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 

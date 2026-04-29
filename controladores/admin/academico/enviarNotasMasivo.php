@@ -16,9 +16,8 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
 }
 
 $url_retorno = "/pfc/vistas/admin/dashboard.php";
-// Evitamos $_SERVER['HTTP_REFERER'] si es posible, o lo usamos con isset y empty
-if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
-    $url_retorno = $_SERVER['HTTP_REFERER'];
+if (isset($_SESSION['idProfesor'])) {
+    $url_retorno = "/pfc/vistas/profesores/dashboard.php";
 }
 
 header("Location: " . $url_retorno);

@@ -1,6 +1,6 @@
 <?php
 // Comprobación de seguridad: Solo administradores pueden ver esta navegación
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }

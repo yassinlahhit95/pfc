@@ -28,17 +28,17 @@ $idProfesor = $_SESSION['idProfesor'];
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $modulos_filtrados = array();
-if ($id_ciclo_elegido != 0) {
+if (!empty($id_ciclo_elegido)) {
     $modulos_filtrados = obtenerModulosDeProfesorPorCiclo($idProfesor, $id_ciclo_elegido);
 }
 
 $retos_filtrados = array();
-if ($id_modulo_elegido != 0) {
+if (!empty($id_modulo_elegido)) {
     $retos_filtrados = listarRetosFiltrados($id_modulo_elegido);
 }
 
 $estudiantes_lista = array();
-if ($id_reto_elegido != 0) {
+if (!empty($id_reto_elegido)) {
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
 }
 
@@ -71,7 +71,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
         <div class="campo-formulario flexible-rellenar">
             <label>2. Seleccione Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?php if($id_ciclo_elegido == 0) echo "disabled"; ?>>
+            <select name="idModulo" onchange="this.form.submit()" <?php if(empty($id_ciclo_elegido)) echo "disabled"; ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>
                     <option value="<?php echo $modItem['idModulo']; ?>" <?php if($id_modulo_elegido == $modItem['idModulo']) echo "selected"; ?>>
@@ -83,7 +83,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
         <div class="campo-formulario flexible-rellenar">
             <label>3. Seleccione Reto:</label>
-            <select name="idReto" onchange="this.form.submit()" <?php if($id_modulo_elegido == 0) echo "disabled"; ?>>
+            <select name="idReto" onchange="this.form.submit()" <?php if(empty($id_modulo_elegido)) echo "disabled"; ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($retos_filtrados as $retoItem) { ?>
                     <option value="<?php echo $retoItem['idReto']; ?>" <?php if($id_reto_elegido == $retoItem['idReto']) echo "selected"; ?>>
@@ -95,14 +95,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </form>
 </div>
 
-<?php if ($exito != "") { ?>
+<?php if (!empty($exito)) { ?>
     <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
-<?php if ($error != "") { ?>
+<?php if (!empty($error)) { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
-<?php if ($id_reto_elegido != 0) { ?>
+<?php if (!empty($id_reto_elegido)) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <form action="/pfc/controladores/profesores/calificaciones/calificarRetos.php" method="POST">
             <input type="hidden" name="idReto" value="<?php echo $id_reto_elegido; ?>">
@@ -118,7 +118,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($estudiantes_lista == false || count($estudiantes_lista) == 0) { ?>
+                        <?php if (empty($estudiantes_lista)) { ?>
                             <tr><td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                         <?php } else { ?>
                             <?php foreach ($estudiantes_lista as $estudianteItem) { 
@@ -140,7 +140,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </table>
             </div>
             
-            <?php if ($estudiantes_lista) { ?>
+            <?php if (!empty($estudiantes_lista)) { ?>
                 <div class="margen-arriba">
                     <button type="submit" name="guardarNotasReto" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar Notas del Reto

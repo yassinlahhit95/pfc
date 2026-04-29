@@ -6,7 +6,7 @@ if (isset($_POST['guardarTFG'])) {
     $titulo = $_POST['tituloTFG'];
     $archivo = $_FILES['archivoTFG'];
     $nombreArchivo = "";
-    if ($archivo['error'] === 0) {
+    if (empty($archivo['error'])) {
         $timestamp = date('d-m-Y_H-i-s');
         $nombreArchivo = $timestamp . "_" . $archivo['name'];
         move_uploaded_file($archivo['tmp_name'], "../../uploads/pfc/" . $nombreArchivo);

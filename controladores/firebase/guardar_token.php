@@ -21,7 +21,7 @@ if (isset($data['token'], $data['userId'], $data['userRole'])) {
         case 'admin': $tabla = "directores"; $columnaId = "idDirector"; break;
     }
 
-    if ($tabla != "") {
+    if (!empty($tabla)) {
         $stmt = mysqli_prepare($conexion, "UPDATE $tabla SET fcm_token = ? WHERE $columnaId = ?");
         mysqli_stmt_bind_param($stmt, "si", $token, $userId);
         

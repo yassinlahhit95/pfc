@@ -9,7 +9,7 @@ if (isset($_POST['subirTFG'])) {
     
     if (empty($idEstudiante)) {
         $_SESSION['error'] = "ID de estudiante obligatorio.";
-    } else if ($archivo['error'] != 0) {
+    } else if (!empty($archivo['error'])) {
         $_SESSION['error'] = "Error al subir el archivo.";
     } else {
         $estudiante = obtenerEstudiantePorId($idEstudiante);

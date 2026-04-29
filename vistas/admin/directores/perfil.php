@@ -2,7 +2,7 @@
 session_start();
 
 // Control de acceso para administradores
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -31,14 +31,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <h1>MI PERFIL Y SEGURIDAD</h1>
 </div>
 
-<?php if ($mensajeExito != "") { ?>
+<?php if (!empty($mensajeExito)) { ?>
     <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
 <?php } ?>
 
-<?php if ($mensajeError != "") { ?>
+<?php if (!empty($mensajeError)) { ?>
     <div class="mensaje-error"><?php echo $mensajeError; ?></div>
 <?php } ?>
-
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/admin/directores/actualizar_perfil.php" method="POST">
         <input type="hidden" name="idDirector" value="<?php echo $idLogueado; ?>">

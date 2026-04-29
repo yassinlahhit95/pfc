@@ -208,7 +208,7 @@ function listarCalificacionesRetoPorModulo($idModulo) {
         $idsDeRetos[] = $filaReto['idReto']; 
     }
     
-    if (count($idsDeRetos) == 0) { 
+    if (empty($idsDeRetos)) { 
         mysqli_close($db); 
         return []; 
     }

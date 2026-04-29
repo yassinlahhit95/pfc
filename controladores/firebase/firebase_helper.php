@@ -153,7 +153,7 @@ function obtenerTokenUsuario($userId, $userRole) {
         case 'admin': $tabla = "directores"; $columnaId = "idDirector"; break;
     }
 
-    if ($tabla != "") {
+    if (!empty($tabla)) {
         $stmt = mysqli_prepare($conexion, "SELECT fcm_token FROM $tabla WHERE $columnaId = ?");
         mysqli_stmt_bind_param($stmt, "i", $userId);
         mysqli_stmt_execute($stmt);

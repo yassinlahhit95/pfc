@@ -17,7 +17,7 @@ if (isset($_POST['insertarNota'])) {
         $errorDetectado = true;
     } 
     
-    if ($errorDetectado == false) {
+    if (!$errorDetectado) {
         $resultado = actualizarOCrearNotaCompleta($idEstudianteRecibido, $idModuloRecibido, $notaEv1Recibida, $notaFinal1Recibida, $notaEv2Recibida, $notaFinal2Recibida, "");
         
         if ($resultado == true) {

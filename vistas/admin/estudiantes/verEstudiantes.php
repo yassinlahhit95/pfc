@@ -2,7 +2,7 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
+if (empty($_SESSION['idAdmin'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -43,11 +43,11 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($mensajeExitoAMostrar != "") { ?>
+<?php if (!empty($mensajeExitoAMostrar)) { ?>
     <div class="mensaje-exito"><?php echo $mensajeExitoAMostrar; ?></div>
 <?php } ?>
 
-<?php if ($mensajeErrorAMostrar != "") { ?>
+<?php if (!empty($mensajeErrorAMostrar)) { ?>
     <div class="mensaje-error"><?php echo $mensajeErrorAMostrar; ?></div>
 <?php } ?>
 
@@ -81,7 +81,7 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDeEstudiantesActuales == false || count($listaDeEstudiantesActuales) == 0) { ?>
+                <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
                         <td colspan="5" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
                     </tr>

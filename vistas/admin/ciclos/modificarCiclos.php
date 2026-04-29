@@ -51,7 +51,7 @@ include_once "../comunes/nav.php";
     <a href="verCiclos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error != "") { ?>
+<?php if (!empty($error)) { ?>
     <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 

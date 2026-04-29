@@ -2,7 +2,7 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idEstudiante']) == false || $_SESSION['idEstudiante'] == "") {
+if (empty($_SESSION['idEstudiante'])) {
     header("Location: /pfc/index.php");
     exit;
 }
@@ -60,9 +60,9 @@ include_once "../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaMisPagos == false || count($listaMisPagos) == 0) { ?>
+                <?php if (empty($listaMisPagos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No se han registrado pagos en tu historial.</td>
+                        <td colspan="4" class="sin-datos">No hay pagos registrados en su historial.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaMisPagos as $pagoIndividual) { ?>
