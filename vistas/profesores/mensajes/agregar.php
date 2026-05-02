@@ -100,6 +100,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="enviarMensaje" class="boton-primario">
                 <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
             </button>
+            <button type="reset" class="boton-secundario px-25">
+                <i class="fas fa-eraser"></i> Limpiar
+            </button>
             <a href="lista.php" class="boton-secundario ml-10">CANCELAR</a>
         </div>
     </form>

@@ -38,7 +38,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 <label>Nombre del Artículo *</label>
                 <input type="text" name="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? '' ?>" placeholder="Ej: Portátil HP ProBook">
                 <?php if (isset($lista_de_errores['nombreArticulo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreArticulo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreArticulo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -46,7 +46,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 <label>Número de Serie *</label>
                 <input type="text" name="numeroSerie" value="<?= $datos['numeroSerie'] ?? '' ?>" placeholder="Ej: SN-12345678">
                 <?php if (isset($lista_de_errores['numeroSerie'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['numeroSerie'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['numeroSerie'] ?></strong>
                 <?php } ?>
             </div>
         </div>

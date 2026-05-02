@@ -48,7 +48,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['nombreProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -56,7 +56,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Email *</label>
                 <input type="text" name="emailProfesor" value="<?php if(isset($datos['emailProfesor'])) { echo $datos['emailProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['emailProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['emailProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -64,7 +64,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>DNI *</label>
                 <input type="text" name="dniProfesor" value="<?php if(isset($datos['dniProfesor'])) { echo $datos['dniProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['dniProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['dniProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -72,7 +72,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Teléfono *</label>
                 <input type="text" name="telefonoProfesor" value="<?php if(isset($datos['telefonoProfesor'])) { echo $datos['telefonoProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['telefonoProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['telefonoProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -80,7 +80,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Dirección *</label>
                 <input type="text" name="direccionProfesor" value="<?php if(isset($datos['direccionProfesor'])) { echo $datos['direccionProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['direccionProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['direccionProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['direccionProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -88,7 +88,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Ciudad *</label>
                 <input type="text" name="ciudadProfesor" value="<?php if(isset($datos['ciudadProfesor'])) { echo $datos['ciudadProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['ciudadProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['ciudadProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['ciudadProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -96,7 +96,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Código Postal *</label>
                 <input type="text" name="codigoPostalProfesor" value="<?php if(isset($datos['codigoPostalProfesor'])) { echo $datos['codigoPostalProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['codigoPostalProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['codigoPostalProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['codigoPostalProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -104,7 +104,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Fecha de Nacimiento *</label>
                 <input type="date" name="fechaNacimientoProfesor" value="<?php if(isset($datos['fechaNacimientoProfesor'])) { echo $datos['fechaNacimientoProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaNacimientoProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 

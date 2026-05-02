@@ -74,6 +74,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="actualizarPerfil" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
+            <button type="reset" class="boton-secundario px-25">
+                <i class="fas fa-eraser"></i> Limpiar
+            </button>
             <a href="../../../vistas/estudiantes/perfil/ver.php" class="boton-secundario ml-10">CANCELAR</a>
         </div>
     </form>

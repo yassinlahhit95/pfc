@@ -36,9 +36,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         <input type="hidden" name="idAula" value="<?= $id_aula ?>">
         <div class="campo-formulario">
             <label>Nombre del Aula</label>
-            <input type="text" name="nombreAula" value="<?= $la_aula['nombreAula'] ?? '' ?>">
+            <input type="text" name="nombreAula" value="<?= $aula['nombreAula'] ?>" required>
             <?php if (isset($lista_de_errores['nombreAula'])) { ?>
-                <span class="error-campo"><?= $lista_de_errores['nombreAula'] ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['nombreAula'] ?></strong>
             <?php } ?>
         </div>
         <div class="margen-arriba disposicion-flexible separacion-media">

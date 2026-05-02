@@ -2,13 +2,21 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
+$titulo_pagina = "Nuevo Estudiante - Admin";
+$seccion = 'estudiantes';
+include_once __DIR__ . "/../comunes/nav.php";
+
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = [];
-$lista_de_errores = ($_SESSION['errores'] ?? 0);
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_estudiante'] ?? [];
 
-$datos = [];
-$datos = ($_SESSION['datos_estudiante'] ?? 0);
+if (!is_array($lista_de_errores)) {
+    $lista_de_errores = [];
+}
+if (!is_array($datos)) {
+    $datos = [];
+}
 
 $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
@@ -36,7 +44,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreEstudiante" value="<?php if(isset($datos['nombreEstudiante'])) { echo $datos['nombreEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['nombreEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -44,7 +52,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                 <label>Email *</label>
                 <input type="text" name="emailEstudiante" value="<?php if(isset($datos['emailEstudiante'])) { echo $datos['emailEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['emailEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -52,15 +60,15 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                 <label>DNI *</label>
                 <input type="text" name="dniEstudiante" value="<?php if(isset($datos['dniEstudiante'])) { echo $datos['dniEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['dniEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Teléfono *</label>
+                <label>TelÃ©fono *</label>
                 <input type="text" name="telefonoEstudiante" value="<?php if(isset($datos['telefonoEstudiante'])) { echo $datos['telefonoEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -68,15 +76,15 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                 <label>Fecha Nacimiento *</label>
                 <input type="date" name="fechaNacimientoEstudiante" value="<?php if(isset($datos['fechaNacimientoEstudiante'])) { echo $datos['fechaNacimientoEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaNacimientoEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Dirección *</label>
+                <label>DirecciÃ³n *</label>
                 <input type="text" name="direccionEstudiante" value="<?php if(isset($datos['direccionEstudiante'])) { echo $datos['direccionEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['direccionEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['direccionEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['direccionEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -84,15 +92,15 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                 <label>Ciudad *</label>
                 <input type="text" name="ciudadEstudiante" value="<?php if(isset($datos['ciudadEstudiante'])) { echo $datos['ciudadEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['ciudadEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['ciudadEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['ciudadEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Código Postal *</label>
+                <label>CÃ³digo Postal *</label>
                 <input type="text" name="codigoPostalEstudiante" value="<?php if(isset($datos['codigoPostalEstudiante'])) { echo $datos['codigoPostalEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['codigoPostalEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['codigoPostalEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['codigoPostalEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -107,7 +115,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
         </div>
@@ -121,7 +129,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 
 

@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>ESTADO DE LA ENTREGA Y GESTIÓN</h3>
+        <h3>ESTADO DE LA ENTREGA Y GESTIï¿½N</h3>
     </div>
 
     <div class="fila-detalle">
@@ -73,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario" download="<?= $nombreDescarga ?>">
                         <i class="fas fa-download"></i> DESCARGAR PDF
                     </a>
-                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
+                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('ï¿½Estï¿½s seguro de eliminar el archivo entregado?')">
                         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
                         <button type="submit" name="borrarTFG" class="boton-secundario color-error">
                             <i class="fas fa-trash-alt"></i> ELIMINAR ENTREGA
@@ -84,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     <?php } ?>
 
-    <!-- INTEGRACIÓN DEL FORMULARIO DE SUBIDA -->
+    <!-- INTEGRACIï¿½N DEL FORMULARIO DE SUBIDA -->
     <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
@@ -98,6 +98,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="form-acciones">
             <button type="submit" name="subirTFG" class="boton-primario">
                 <i class="fas fa-upload"></i> <?= empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG' ?>
+            </button>
+            <button type="reset" class="boton-secundario px-25">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

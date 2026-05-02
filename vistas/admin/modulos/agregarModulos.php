@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Nombre del Módulo *</label>
             <input type="text" name="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
             <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                <span class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></strong>
             <?php } ?>
         </div>
 
@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
             <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                <span class="error-campo"><?= $lista_de_errores['idCiclo'] ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
             <?php } ?>
         </div>
 
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Horas Máximas *</label>
             <input type="text" name="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
             <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                <span class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></strong>
             <?php } ?>
         </div>
 

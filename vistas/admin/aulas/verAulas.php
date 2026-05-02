@@ -37,7 +37,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <label>Nombre del Aula</label>
             <input type="text" name="nombreAula" value="<?= $datos['nombreAula'] ?? '' ?>" placeholder="Aula 101">
             <?php if (isset($lista_de_errores['nombreAula'])) { ?>
-                <p class="error-campo"><?= $lista_de_errores['nombreAula'] ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['nombreAula'] ?></strong>
             <?php } ?>
         </div>
         <div class="mt-25 disposicion-flexible separacion-media">

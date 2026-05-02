@@ -45,7 +45,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idArticulo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idArticulo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idArticulo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -60,7 +60,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -68,7 +68,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                 <label>Fecha de Préstamo *</label>
                 <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaPrestamo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaPrestamo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaPrestamo'] ?></strong>
                 <?php } ?>
             </div>
 

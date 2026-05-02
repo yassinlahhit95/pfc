@@ -41,7 +41,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
             <label>Título del Anuncio *</label>
             <input type="text" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
             <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                <p class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
@@ -49,7 +49,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
             <label>Contenido del Anuncio *</label>
             <textarea name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
             <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                <p class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></strong>
             <?php } ?>
         </div>
 

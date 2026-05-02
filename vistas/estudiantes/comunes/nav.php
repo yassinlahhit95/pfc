@@ -4,7 +4,7 @@ if (empty($_SESSION['idEstudiante'])) {
     exit;
 }
 
-// Calculamos la ruta base de forma dinámica
+// Calculamos la ruta base de forma dinï¿½mica
 $URL_ACTUAL = $_SERVER['PHP_SELF'];
 $partesRuta = explode('/vistas/', $URL_ACTUAL);
 $rutaRelativaVistas = $partesRuta[1] ?? '';
@@ -95,7 +95,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
-                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
+                    <i class="fas fa-envelope"></i> <span>MENSAJERï¿½A</span>
                     <span class="etiqueta-contador <?= ($cantMensajesNoLeidosEst > 0) ? 'alerta-roja' : '' ?>"><?= $cantMensajesEst ?></span>
                 </a>
 
@@ -113,11 +113,11 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
                 <a href="<?= $ruta_base ?>vistas/estudiantes/perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
-                <a href="<?= $ruta_base ?>vistas/estudiantes/comunes/creditos.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="<?= $ruta_base ?>controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIï¿½N</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?= date('Y') ?> Yassin Lahhit<br>Fingerprint Verified

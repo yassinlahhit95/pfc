@@ -18,15 +18,25 @@ $listaProfesores = listarProfesores();
 $listaAulas = listarAulas();
 
 $profesoresAsignadosRaw = obtenerProfesoresDeUnCiclo($id_ciclo);
+if (!is_array($profesoresAsignadosRaw)) {
+    $profesoresAsignadosRaw = [];
+}
 $profesoresAsignados = [];
 foreach ($profesoresAsignadosRaw as $p) {
-    $profesoresAsignados[] = $p['idProfesor'];
+    if (is_array($p) && isset($p['idProfesor'])) {
+        $profesoresAsignados[] = $p['idProfesor'];
+    }
 }
 
 $aulasAsignadasRaw = obtenerAulasDeUnCiclo($id_ciclo);
+if (!is_array($aulasAsignadasRaw)) {
+    $aulasAsignadasRaw = [];
+}
 $aulasAsignadas = [];
 foreach ($aulasAsignadasRaw as $a) {
-    $aulasAsignadas[] = $a['idAula'];
+    if (is_array($a) && isset($a['idAula'])) {
+        $aulasAsignadas[] = $a['idAula'];
+    }
 }
 
 if (isset($_SESSION['datos_ciclos'])) {
@@ -63,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Nombre del Ciclo *</label>
                 <input type="text" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -71,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Abreviatura *</label>
                 <input type="text" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['abreviaturaCiclo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -85,7 +95,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idNivel'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idNivel'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idNivel'] ?></strong>
                 <?php } ?>
             </div>
 

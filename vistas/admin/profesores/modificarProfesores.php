@@ -36,7 +36,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" value="<?= $profesor['nombreProfesor'] ?>">
                 <?php if (isset($lista_de_errores['nombreProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -44,7 +44,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Email *</label>
                 <input type="text" name="emailProfesor" value="<?= $profesor['emailProfesor'] ?>">
                 <?php if (isset($lista_de_errores['emailProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['emailProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -52,7 +52,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>DNI *</label>
                 <input type="text" name="dniProfesor" value="<?= $profesor['dniProfesor'] ?>">
                 <?php if (isset($lista_de_errores['dniProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['dniProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -60,7 +60,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Teléfono *</label>
                 <input type="text" name="telefonoProfesor" value="<?= $profesor['telefonoProfesor'] ?>">
                 <?php if (isset($lista_de_errores['telefonoProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['telefonoProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -68,7 +68,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Dirección *</label>
                 <input type="text" name="direccionProfesor" value="<?= $profesor['direccionProfesor'] ?>">
                 <?php if (isset($lista_de_errores['direccionProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['direccionProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['direccionProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -76,7 +76,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Ciudad *</label>
                 <input type="text" name="ciudadProfesor" value="<?= $profesor['ciudadProfesor'] ?>">
                 <?php if (isset($lista_de_errores['ciudadProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['ciudadProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['ciudadProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -84,7 +84,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Código Postal *</label>
                 <input type="text" name="codigoPostalProfesor" value="<?= $profesor['codigoPostalProfesor'] ?>">
                 <?php if (isset($lista_de_errores['codigoPostalProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['codigoPostalProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['codigoPostalProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -92,7 +92,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Fecha de Nacimiento *</label>
                 <input type="date" name="fechaNacimientoProfesor" value="<?= $profesor['fechaNacimientoProfesor'] ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoProfesor'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaNacimientoProfesor'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 

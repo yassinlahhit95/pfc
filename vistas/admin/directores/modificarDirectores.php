@@ -40,7 +40,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreDirector" value="<?= $director['nombreDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['nombreDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -48,7 +48,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Email *</label>
                 <input type="text" name="emailDirector" value="<?= $director['emailDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['emailDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['emailDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -56,7 +56,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>DNI *</label>
                 <input type="text" name="dniDirector" value="<?= $director['dniDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['dniDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['dniDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -64,7 +64,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Teléfono *</label>
                 <input type="text" name="telefonoDirector" value="<?= $director['telefonoDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['telefonoDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['telefonoDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -72,7 +72,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Fecha de Nacimiento *</label>
                 <input type="date" name="fechaNacimientoDirector" value="<?= $director['fechaNacimientoDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaNacimientoDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -80,7 +80,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Ciudad *</label>
                 <input type="text" name="ciudadDirector" value="<?= $director['ciudadDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['ciudadDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['ciudadDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['ciudadDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -88,7 +88,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Código Postal *</label>
                 <input type="text" name="codigoPostalDirector" value="<?= $director['codigoPostalDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['codigoPostalDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['codigoPostalDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['codigoPostalDirector'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -96,7 +96,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
                 <label>Dirección Completa *</label>
                 <input type="text" name="direccionDirector" value="<?= $director['direccionDirector'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['direccionDirector'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['direccionDirector'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['direccionDirector'] ?></strong>
                 <?php } ?>
             </div>
 

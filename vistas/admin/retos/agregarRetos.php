@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Nombre del Reto *</label>
                 <input type="text" name="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['nombreReto'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreReto'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Horas Totales Estimadas *</label>
                 <input type="text" name="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['horasReto'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['horasReto'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Fecha de Inicio *</label>
                 <input type="date" name="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaInicioReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Fecha de Fin *</label>
                 <input type="date" name="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaFinReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
         </div>
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </div>
             <?php if (isset($lista_de_errores['modulosReto'])) { ?>
-                <p class="error-campo"><?= $lista_de_errores['modulosReto'] ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['modulosReto'] ?></strong>
             <?php } ?>
         </div>
 

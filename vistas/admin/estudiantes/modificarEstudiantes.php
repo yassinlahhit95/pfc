@@ -12,12 +12,23 @@ if (!$estudiante) {
     exit;
 }
 
-$estudiante = ($_SESSION['datos_estudiante'] ?? 0);
+$datosGuardados = $_SESSION['datos_estudiante'] ?? [];
+if (!is_array($datosGuardados)) {
+    $datosGuardados = [];
+}
+
+if (!empty($datosGuardados)) {
+    foreach ($datosGuardados as $key => $value) {
+        $estudiante[$key] = $value;
+    }
+}
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = [];
-$lista_de_errores = ($_SESSION['errores'] ?? 0);
+$lista_de_errores = $_SESSION['errores'] ?? [];
+if (!is_array($lista_de_errores)) {
+    $lista_de_errores = [];
+}
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
@@ -40,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['nombreEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -48,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Email *</label>
                 <input type="text" name="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['emailEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -62,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -70,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>DNI *</label>
                 <input type="text" name="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['dniEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -78,7 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Teléfono *</label>
                 <input type="text" name="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 

@@ -4,7 +4,7 @@ if (empty($_SESSION['idProfesor'])) {
     exit;
 }
 
-// Calculamos la ruta base de forma dinámica
+// Calculamos la ruta base de forma dinï¿½mica
 $URL_ACTUAL = $_SERVER['PHP_SELF'];
 $partesRuta = explode('/vistas/', $URL_ACTUAL);
 $rutaRelativaVistas = $partesRuta[1] ?? '';
@@ -58,7 +58,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
+                <p class="titulo-de-seccion">GESTIï¿½N ACADï¿½MICA</p>
                 
                 <a href="<?= $ruta_base ?>vistas/profesores/estudiantes/lista.php" class="enlace-menu <?= ($seccionActual == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
@@ -71,7 +71,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
-                    <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
+                    <i class="fas fa-cubes"></i> <span>Mï¿½DULOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
@@ -79,7 +79,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS Mï¿½DULOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/calificaciones/retos.php" class="enlace-menu <?= ($seccionActual == 'notas_retos') ? 'activo' : '' ?>">
@@ -91,20 +91,20 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/pfc/lista.php" class="enlace-menu <?= ($seccionActual == 'tfg') ? 'activo' : '' ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
+                    <i class="fas fa-file-pdf"></i> <span>GESTIï¿½N TFG</span>
                     <span class="etiqueta-contador"><?= $cantTFGs ?></span>
                 </a>
             </div>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">COMUNICACIÓN</p>
+                <p class="titulo-de-seccion">COMUNICACIï¿½N</p>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
-                    <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
+                    <i class="fas fa-paper-plane"></i> <span>MENSAJERï¿½A</span>
                     <span class="etiqueta-contador <?= ($cantMensajesNoLeidosProf > 0) ? 'alerta-roja' : '' ?>"><?= $cantMensajes ?></span>
                 </a>
 
@@ -117,11 +117,11 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 <a href="<?= $ruta_base ?>vistas/profesores/perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
-                <a href="<?= $ruta_base ?>vistas/profesores/comunes/creditos.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
+                <a href="<?= $ruta_base ?>vistas/profesores/comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="<?= $ruta_base ?>controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIï¿½N</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?= date('Y') ?> Yassin Lahhit<br>Fingerprint Verified

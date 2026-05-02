@@ -459,13 +459,9 @@ body {
 .error-campo {
   display: block;
   font-size: 13px;
-  color: #c53030;
-  background-color: #fff5f5;
-  border-left: 3px solid #fc8181;
-  padding: 5px 10px;
+  color: #dc2626;
   margin-top: 5px;
-  border-radius: 4px;
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .texto-verde { color: #16a34a !important; }
@@ -1003,7 +999,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.3fr 0.7fr;
     gap: 40px;
     align-items: center;
 }
@@ -1029,6 +1025,13 @@ body {
     object-fit: contain;
 }
 
+.silhueta-imagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
 .about-contenido {
     color: white;
 }
@@ -1052,6 +1055,13 @@ body {
     line-height: 1.8;
     margin-bottom: 30px;
     opacity: 0.95;
+}
+
+.about-acciones {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .about-redes-sociales {
@@ -1110,5 +1120,10 @@ body {
         width: 45px;
         height: 45px;
         font-size: 20px;
+    }
+
+    .about-acciones {
+        flex-direction: column;
+        align-items: stretch;
     }
 }

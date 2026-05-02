@@ -29,6 +29,14 @@ if ($tipoDeDestinatario == 'profesor') {
     }
 }
 
+// Mensajes y errores de la sesión
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos_form = $_SESSION['datos_mensaje'] ?? [];
+
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_mensaje']);
+
 $titulo_pagina = "Redactar Mensaje Oficial - Admin";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -40,6 +48,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         <i class="fas fa-arrow-left"></i> Volver al Buzón
     </a>
 </div>
+
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca p-25">
     <div class="disposicion-flexible separacion-grande margen-abajo alinear-centro" style="padding: 10px 0;">
@@ -85,29 +100,42 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="">-- Seleccionar Nombre --</option>
 
                     <?php if ($tipoDeDestinatario == 'profesor') { ?>
-                        <?php foreach ($listaDeProfesores as $profesorItem) { ?>
-                            <option value="<?= $profesorItem['idProfesor'] ?>">
+                        <?php foreach ($listaDeProfesores as $profesorItem) { 
+                            $selected = (isset($datos_form['idProfesor']) && $datos_form['idProfesor'] == $profesorItem['idProfesor']) ? 'selected' : '';
+                        ?>
+                            <option value="<?= $profesorItem['idProfesor'] ?>" <?= $selected ?>>
                                 <?= $profesorItem['nombreProfesor'] ?>
                             </option>
                         <?php } ?>
                     <?php } else { ?>
-                        <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
-                            <option value="<?= $estudianteItem['idEstudiante'] ?>">
+                        <?php foreach ($listaDeEstudiantes as $estudianteItem) { 
+                            $selected = (isset($datos_form['idEstudiante']) && $datos_form['idEstudiante'] == $estudianteItem['idEstudiante']) ? 'selected' : '';
+                        ?>
+                            <option value="<?= $estudianteItem['idEstudiante'] ?>" <?= $selected ?>>
                                 <?= $estudianteItem['nombreEstudiante'] ?> (<?= $estudianteItem['nombreCiclo'] ?>)
                             </option>
                         <?php } ?>
                     <?php } ?>
                 </select>
+                <?php if (isset($lista_de_errores['destinatario'])) { ?>
+                    <strong class="error-campo"><?= $lista_de_errores['destinatario'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Asunto del Mensaje *</label>
-                <input type="text" name="asunto" class="mt-5 ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante...">
+                <input type="text" name="asunto" class="mt-5 ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['asunto'])) { ?>
+                    <strong class="error-campo"><?= $lista_de_errores['asunto'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Cuerpo del Mensaje *</label>
-                <textarea name="descripcion" rows="6" class="mt-5 ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."></textarea>  
+                <textarea name="descripcion" rows="6" class="mt-5 ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
+                <?php if (isset($lista_de_errores['descripcion'])) { ?>
+                    <strong class="error-campo"><?= $lista_de_errores['descripcion'] ?></strong>
+                <?php } ?>
             </div>
         </div>
 

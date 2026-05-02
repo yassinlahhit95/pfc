@@ -46,7 +46,7 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
                 <label>Asunto *</label>
                 <input type="text" name="asuntoReclamacion" value="<?= $reclamacion['asuntoReclamacion'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['asuntoReclamacion'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['asuntoReclamacion'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['asuntoReclamacion'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -63,7 +63,7 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
                 <label>Descripción *</label>
                 <textarea name="descripcionReclamacion" rows="6"><?= $reclamacion['descripcionReclamacion'] ?? '' ?></textarea>
                 <?php if (isset($lista_de_errores['descripcionReclamacion'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['descripcionReclamacion'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['descripcionReclamacion'] ?></strong>
                 <?php } ?>
             </div>
         </div>

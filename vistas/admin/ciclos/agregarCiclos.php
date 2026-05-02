@@ -38,7 +38,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Nombre del Ciclo *</label>
                 <input type="text" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= $datos['nombreCiclo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Abreviatura *</label>
                 <input type="text" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= $datos['abreviaturaCiclo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['abreviaturaCiclo'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -61,7 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idNivel'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idNivel'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idNivel'] ?></strong>
                 <?php } ?>
             </div>
 

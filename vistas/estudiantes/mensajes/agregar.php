@@ -17,7 +17,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 
-// Obtenemos los profesores asignados con sus módulos para el select
+// Obtenemos los profesores asignados con sus mï¿½dulos para el select
 $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
 ?>
 
@@ -38,31 +38,34 @@ $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
         <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
         
         <div class="campo-formulario">
-            <label>Destinatario (Profesor o Dirección)</label>
+            <label>Destinatario (Profesor o Direcciï¿½n)</label>
             <select name="idProfesor">
-                <option value="">-- Dirección (Administración) --</option>
+                <option value="">-- Direcciï¿½n (Administraciï¿½n) --</option>
                 <?php foreach ($listaDeProfesores as $profesor) { ?>
                     <option value="<?= $profesor['idProfesor'] ?>">
                         <?= $profesor['nombreProfesor'] . " (" . $profesor['nombreModulo'] . ")" ?>
                     </option>
                 <?php } ?>
             </select>
-            <small class="texto-atenuado">Selecciona a quién quieres dirigir tu consulta.</small>
+            <small class="texto-atenuado">Selecciona a quiï¿½n quieres dirigir tu consulta.</small>
         </div>
 
         <div class="campo-formulario">
             <label>Asunto del Mensaje</label>
-            <input type="text" name="asunto" placeholder="Duda sobre contenido, problema técnico...">
+            <input type="text" name="asunto" placeholder="Duda sobre contenido, problema tï¿½cnico...">
         </div>
 
         <div class="campo-formulario">
             <label>Contenido del Mensaje</label>
-            <textarea name="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250"></textarea>
+            <textarea name="descripcion" rows="6" placeholder="Escribe aquï¿½ tu mensaje (mï¿½ximo 250 caracteres)..." maxlength="250"></textarea>
         </div>
 
         <div class="form-acciones">
             <button type="submit" name="enviarMensaje" class="boton-primario">
                 <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
+            </button>
+            <button type="reset" class="boton-secundario px-25">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
             <a href="lista.php" class="boton-secundario ml-10">CANCELAR</a>
         </div>

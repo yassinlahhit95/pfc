@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -73,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Cantidad (Monto) *</label>
                 <input type="number" name="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>">
                 <?php if (isset($lista_de_errores['cantidadPago'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['cantidadPago'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['cantidadPago'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Fecha de Pago *</label>
                 <input type="date" name="fechaPago" value="<?= $pago['fechaPago'] ?>">
                 <?php if (isset($lista_de_errores['fechaPago'])) { ?>
-                    <p class="error-campo"><?= $lista_de_errores['fechaPago'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaPago'] ?></strong>
                 <?php } ?>
             </div>
 
