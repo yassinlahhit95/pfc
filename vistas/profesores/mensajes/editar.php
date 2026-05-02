@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">â† Volver</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -48,8 +48,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
         
         <div class="campo-formulario">
-            <label>Tu Respuesta / ExplicaciÃ³n:</label>
-            <textarea name="respuesta" rows="4" placeholder="Escribe aquÃ­ tu respuesta..."><?= $mensaje['respuesta'] ?></textarea>
+            <label>Tu Respuesta / Explicación:</label>
+            <textarea name="respuesta" rows="4" placeholder="Escribe aquí tu respuesta..."><?= $mensaje['respuesta'] ?></textarea>
         </div>
 
         <div class="disposicion-flexible separacion-grande margen-arriba">
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <i class="fas fa-save"></i> Guardar Respuesta
             </button>
             <button type="submit" name="marcarLeido" class="boton-secundario">
-                <i class="fas fa-check"></i> Solo marcar como LeÃ­do
+                <i class="fas fa-check"></i> Solo marcar como Leído
             </button>
         </div>
     </form>

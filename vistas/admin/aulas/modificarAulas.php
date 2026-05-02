@@ -41,9 +41,12 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 <span class="error-campo"><?= $lista_de_errores['nombreAula'] ?></span>
             <?php } ?>
         </div>
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="actualizarAula" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

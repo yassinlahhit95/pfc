@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>TablÃ³n de Anuncios</h1>
+    <h1>Tablón de Anuncios</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php foreach ($anuncios as $anuncio) { ?>
                 <div class="anuncio-item-completo">
                     <div class="mb-10">
-                        <label class="texto-negrita">TÃ­tulo del Anuncio:</label> 
+                        <label class="texto-negrita">Título del Anuncio:</label> 
                         <span class="color-primario texto-negrita"><?= strtoupper($anuncio['titulo'] ?? '') ?></span>
                     </div>
 

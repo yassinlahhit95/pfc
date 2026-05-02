@@ -74,9 +74,12 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="registrarPrestamo" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Préstamo
+            </button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

@@ -21,6 +21,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
 <div class="encabezado-pagina">
     <h1>Próximos Eventos</h1>
+    <a href="agregarEvento.php" class="boton-primario">
+        <i class="fas fa-calendar-plus"></i> Crear Nuevo Evento
+    </a>
 </div>
 
 <?php if ($exito) { ?>
@@ -29,46 +32,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
-
-<div class="tarjeta-blanca">
-    <div class="titulo-tarjeta">
-        <h3>Crear Nuevo Evento</h3>
-    </div>
-    <form method="POST" action="../../../controladores/admin/eventos/insertar.php">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>Título del Evento *</label>
-                <input type="text" name="tituloEvento" placeholder="Ej: Examen Final, Reunión de Profesores...">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Ubicación</label>
-                <input type="text" name="ubicacionEvento" placeholder="Ej: Aula 101, Salón de Actos...">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Fecha *</label>
-                <input type="date" name="fechaEvento" value="<?= date('Y-m-d') ?>">
-            </div>
-
-            <div class="campo-formulario">
-                <label>Hora</label>
-                <input type="time" name="horaEvento" value="09:00">
-            </div>
-
-            <div class="campo-formulario campo-ancho-total">
-                <label>Descripción</label>
-                <textarea name="descripcionEvento" rows="3" placeholder="Detalles del evento..."></textarea>
-            </div>
-        </div>
-
-        <div class="margen-arriba">
-            <button type="submit" name="guardarEvento" class="boton-primario">
-                <i class="fas fa-calendar-plus"></i> Publicar Evento
-            </button>
-        </div>
-    </form>
-</div>
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
@@ -121,5 +84,3 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -22,14 +22,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Datos TFG</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <a href="lista.php" class="boton-secundario">? Volver</a>
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>TÃ­tulo del TFG *</label>
+                <label>Título del TFG *</label>
                 <input type="text" name="tituloTFG" value="<?= $tfg['tituloTFG'] ?>">
             </div>
         </div>

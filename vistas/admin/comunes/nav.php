@@ -1,12 +1,12 @@
-Ôªø<?php
-// Comprobaci√≥n de seguridad: Solo administradores pueden ver esta navegaci√≥n
+<?php
+// ComprobaciÛn de seguridad: Solo administradores pueden ver esta navegaciÛn
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../../index.php");
     exit;
 }
 
-// Calculamos la ruta base de forma din√°mica para que los estilos carguen siempre bien
-// Contamos cu√°ntas carpetas hay entre este archivo y la ra√≠z de 'vistas'
+// Calculamos la ruta base de forma din·mica para que los estilos carguen siempre bien
+// Contamos cu·ntas carpetas hay entre este archivo y la raÌz de 'vistas'
 $URL_ACTUAL = $_SERVER['PHP_SELF'];
 $partesRuta = explode('/vistas/', $URL_ACTUAL);
 $rutaRelativaVistas = $partesRuta[1] ?? '';
@@ -18,7 +18,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-// Obtenemos todos los contadores para las etiquetas del men√∫
+// Obtenemos todos los contadores para las etiquetas del men˙
 $cantidadAlumnosMenu = contarEstudiantes();
 $cantidadProfesoresMenu = contarProfesores();
 $cantidadDirectoresMenu = contarDirectores();
@@ -65,7 +65,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">GESTI√ìN ACAD√âMICA</p>
+                <p class="titulo-de-seccion">GESTI”N ACAD…MICA</p>
                 
                 <a href="<?= $ruta_base ?>vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?php if ($seccion == 'estudiantes') { echo 'activo'; } ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
@@ -78,7 +78,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/admin/modulos/verModulos.php" class="enlace-menu <?php if ($seccion == 'modulos') { echo 'activo'; } ?>">
-                    <i class="fas fa-book"></i> <span>M√ìDULOS</span>
+                    <i class="fas fa-book"></i> <span>M”DULOS</span>
                     <span class="etiqueta-contador"><?= $cantidadModulosMenu ?></span>
                 </a>
 
@@ -88,7 +88,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?php if ($seccion == 'notas_modulos') { echo 'activo'; } ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>NOTAS M√ìDULOS</span>
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS M”DULOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/admin/academico/calificacionesRetos.php" class="enlace-menu <?php if ($seccion == 'notas_retos') { echo 'activo'; } ?>">
@@ -100,7 +100,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/admin/pfc/verTFGs.php" class="enlace-menu <?php if ($seccion == 'tfg') { echo 'activo'; } ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTI√ìN TFG</span>
+                    <i class="fas fa-file-pdf"></i> <span>GESTI”N TFG</span>
                     <span class="etiqueta-contador"><?= $cantidadTFGMenu ?></span>
                 </a>
             </div>
@@ -133,7 +133,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/admin/mensajes/lista.php" class="enlace-menu <?php if ($seccion == 'reclamaciones') { echo 'activo'; } ?>">
-                    <i class="fas fa-envelope"></i> <span>MENSAJER√çA</span>
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÕA</span>
                     <span class="etiqueta-contador <?= ($cantidadMensajesNoLeidosAdmin > 0) ? 'alerta-roja' : '' ?>"><?= $cantidadMensajesMenu ?></span>
                 </a>
             </div>
@@ -152,7 +152,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?php if ($seccion == 'prestamos') { echo 'activo'; } ?>">
-                    <i class="fas fa-hand-holding"></i> <span>PR√âSTAMOS</span>
+                    <i class="fas fa-hand-holding"></i> <span>PR…STAMOS</span>
                     <span class="etiqueta-contador"><?= $cantidadPrestamosMenu ?></span>
                 </a>
             </div>
@@ -165,7 +165,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="<?= $ruta_base ?>controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESI√ìN</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESI”N</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?= date('Y') ?> Yassin Lahhit<br>Fingerprint Verified

@@ -110,9 +110,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="fechaAltaEstudiante" value="<?= $estudiante['fechaAltaEstudiante'] ?>">
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="actualizarEstudiante" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

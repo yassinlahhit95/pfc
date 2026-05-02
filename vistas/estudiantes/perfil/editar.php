@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -26,14 +26,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Mi Perfil</h1>
-    <a href="ver.php" class="boton-secundario">← Volver</a>
+    <a href="ver.php" class="boton-secundario">? Volver</a>
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -48,25 +48,25 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo-formulario">
-            <label>Correo ElectrÃ³nico</label>
+            <label>Correo Electrónico</label>
             <input type="text" name="emailEstudiante" value="<?= $email ?>">
         </div>
 
         <div class="campo-formulario">
-            <label>NÃºmero de TelÃ©fono</label>
+            <label>Número de Teléfono</label>
             <input type="tel" name="telefonoEstudiante" value="<?= $telefono ?>">
         </div>
 
-        <div class="titulo-tarjeta mt-30"><h3>Seguridad y ContraseÃ±a</h3></div>
-        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseÃ±a de acceso.</p>
+        <div class="titulo-tarjeta mt-30"><h3>Seguridad y Contraseña</h3></div>
+        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo-formulario">
-            <label>ContraseÃ±a Actual</label>
-            <input type="password" name="current_password" placeholder="Escriba su contraseÃ±a para validar los cambios">
+            <label>Contraseña Actual</label>
+            <input type="password" name="current_password" placeholder="Escriba su contraseña para validar los cambios">
         </div>
 
         <div class="campo-formulario">
-            <label>Nueva ContraseÃ±a</label>
+            <label>Nueva Contraseña</label>
             <input type="password" name="new_password" placeholder="Debe tener al menos 6 caracteres">
         </div>
 

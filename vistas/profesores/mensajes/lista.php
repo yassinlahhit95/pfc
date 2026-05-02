@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -18,13 +18,13 @@ $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 // Nota: listarMensajesParaProfesor en el modelo actual solo saca los recibidos. 
 // Vamos a unificar para que vea ambos en la misma tabla como admin.
 
-$tituloDelPagina = "BuzÃ³n de Mensajes - Portal Profesores";
+$tituloDelPagina = "Buzón de Mensajes - Portal Profesores";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>BuzÃ³n de Mensajes</h1>
+    <h1>Buzón de Mensajes</h1>
     <a href="agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> Redactar Mensaje
     </a>
@@ -53,7 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aÃºn.</td></tr>
+                    <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aún.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
@@ -61,7 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?= $esMio ? 'TÃº (Profesor)' : $mensaje['nombreEstudiante'] ?></strong>
+                            <strong><?= $esMio ? 'Tú (Profesor)' : $mensaje['nombreEstudiante'] ?></strong>
                         </td>
                         <td><?= $mensaje['nombreCiclo'] ?: '-' ?></td>
                         <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="estado-bolita activo-verde">LeÃ­do</span>
+                                <span class="estado-bolita activo-verde">Leído</span>
                             <?php } else { ?>
                                 <span class="estado-bolita inactivo-rojo">Nuevo</span>
                             <?php } ?>
@@ -86,7 +86,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Ver mensaje">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('Â¿Eliminar este mensaje?')">
+                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?= $mensaje['idReclamacion'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -26,26 +26,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Calificaciones por MÃ³dulo</h3>
+        <h3>Calificaciones por Módulo</h3>
     </div>
     
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>MÃ³dulo</th>
-                    <th>1Âª Ev</th>
-                    <th>1Âª Final</th>
-                    <th>2Âª Ev</th>
-                    <th>2Âª Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Estado</th>
                     <th>Observaciones</th>
                 </tr>

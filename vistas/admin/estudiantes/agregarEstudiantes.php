@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
@@ -57,7 +57,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
 
             <div class="campo-formulario">
-                <label>TelÃ©fono *</label>
+                <label>Teléfono *</label>
                 <input type="text" name="telefonoEstudiante" value="<?php if(isset($datos['telefonoEstudiante'])) { echo $datos['telefonoEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></p>
@@ -73,7 +73,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
 
             <div class="campo-formulario">
-                <label>DirecciÃ³n *</label>
+                <label>Dirección *</label>
                 <input type="text" name="direccionEstudiante" value="<?php if(isset($datos['direccionEstudiante'])) { echo $datos['direccionEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['direccionEstudiante'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['direccionEstudiante'] ?></p>
@@ -89,7 +89,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
 
             <div class="campo-formulario">
-                <label>CÃ³digo Postal *</label>
+                <label>Código Postal *</label>
                 <input type="text" name="codigoPostalEstudiante" value="<?php if(isset($datos['codigoPostalEstudiante'])) { echo $datos['codigoPostalEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['codigoPostalEstudiante'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['codigoPostalEstudiante'] ?></p>
@@ -112,8 +112,11 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="guardarEstudiante" class="boton-primario">Registrar Estudiante</button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> Limpiar
+            </button>
         </div>
     </form>
 </div>

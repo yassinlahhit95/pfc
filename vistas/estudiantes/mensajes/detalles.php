@@ -1,4 +1,4 @@
-Ôªø<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,7 +21,7 @@ if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
     exit;
 }
 
-// Marcar como le√≠do autom√°ticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+// Marcar como leÌdo autom·ticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'estudiante' && $mensaje['idEstudiante'] == $_SESSION['idEstudiante']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
@@ -34,25 +34,25 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">‚Üê Volver</a>
+    <a href="lista.php" class="boton-secundario">? Volver</a>
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> Informaci√≥n del Mensaje</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> InformaciÛn del Mensaje</h3>
     </div>
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administraci√≥n (Sistema)' ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'AdministraciÛn (Sistema)' ?>
         </div>
     </div>
 

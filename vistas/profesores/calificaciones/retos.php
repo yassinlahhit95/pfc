@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -61,7 +61,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Seleccione Módulo:</label>
+            <label>2. Seleccione M�dulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($id_ciclo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>

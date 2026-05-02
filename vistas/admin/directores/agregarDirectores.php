@@ -88,9 +88,12 @@ unset($_SESSION['errores'], $_SESSION['datos_director']);
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="guardarDirector" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Director
+            </button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

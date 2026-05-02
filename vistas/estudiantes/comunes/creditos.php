@@ -1,14 +1,14 @@
 <?php
 session_start();
 $titulo_pagina = "Huella Digital - Yassin Lahhit";
-$seccion = 'creditos';
+$seccionActual = 'creditos';
 include_once __DIR__ . "/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <div>
         <h1>Fingerprint & Copyright</h1>
-        <p class="subtitulo">Identificación oficial del desarrollador y autoría del sistema</p>
+        <p class="subtitulo">IdentificaciÃ³n oficial del desarrollador y autorÃ­a del sistema</p>
     </div>
 </div>
 
@@ -24,24 +24,24 @@ include_once __DIR__ . "/nav.php";
             <p class="texto-atenuado">Full Stack Developer | Autor del TFG</p>
             <div class="mt-15 pb-15 borde-superior-suave">
                 <p><strong>Propiedad Intelectual:</strong> Este software es un Trabajo de Fin de Grado original desarrollado para CPS Ibaiondo.</p>
-                <p><strong>Versión del Sistema:</strong> 2.0.0 (Abril 2026)</p>
+                <p><strong>VersiÃ³n del Sistema:</strong> 2.0.0 (Abril 2026)</p>
             </div>
         </div>
     </div>
     
     <div class="tarjeta-gris-suave mt-20">
-        <h3 class="mt-0"><i class="fas fa-fingerprint"></i> Certificado de Autoría</h3>
+        <h3 class="mt-0"><i class="fas fa-fingerprint"></i> Certificado de AutorÃ­a</h3>
         <p class="line-height-16">
-            Queda certificada la autoría de <strong>Yassin Lahhit</strong> sobre el diseño de la base de datos, la arquitectura lógica, 
-            el desarrollo del backend en PHP y la implementación del frontend de esta plataforma de gestión académica (PFC).
+            Queda certificada la autorÃ­a de <strong>Yassin Lahhit</strong> sobre el diseÃ±o de la base de datos, la arquitectura lÃ³gica, 
+            el desarrollo del backend en PHP y la implementaciÃ³n del frontend de esta plataforma de gestiÃ³n acadÃ©mica (PFC).
         </p>
         <p class="line-height-16">
-            Cualquier reproducción o uso parcial de este sistema requiere el consentimiento explícito del autor.
+            Cualquier reproducciÃ³n o uso parcial de este sistema requiere el consentimiento explÃ­cito del autor.
         </p>
     </div>
 
     <div class="separador-huella mt-20">
-        <p class="texto-negrita mb-5">© <?= date('Y') ?> Yassin Lahhit</p>
+        <p class="texto-negrita mb-5">Â© <?= date('Y') ?> Yassin Lahhit</p>
         <p class="texto-atenuado copyright-texto">Todos los derechos reservados. Desarrollado con PHP, MySQL y Brevo API.</p>
     </div>
 </div>
@@ -93,10 +93,10 @@ include_once __DIR__ . "/nav.php";
             <h2 class="about-titulo">ABOUT ME</h2>
             <h3 class="about-subtitulo">YASSIN LAHHIT - DEVELOPER</h3>
             <p class="about-descripcion">
-                Full Stack Developer especializado en la creación de soluciones web integradas. 
-                Experiencia en desarrollo de sistemas académicos completos, diseño de bases de datos normalizadas, 
-                implementación de APIs y desarrollo de interfaces responsivas. Comprometido con la calidad del código, 
-                buenas prácticas de programación y entrega de soluciones eficientes y escalables.
+                Full Stack Developer especializado en la creaciÃ³n de soluciones web integradas. 
+                Experiencia en desarrollo de sistemas acadÃ©micos completos, diseÃ±o de bases de datos normalizadas, 
+                implementaciÃ³n de APIs y desarrollo de interfaces responsivas. Comprometido con la calidad del cÃ³digo, 
+                buenas prÃ¡cticas de programaciÃ³n y entrega de soluciones eficientes y escalables.
             </p>
             
             <div class="about-redes-sociales">
@@ -121,5 +121,3 @@ include_once __DIR__ . "/nav.php";
 </div>
 
 <?php include __DIR__ . '/footer.php'; ?>
-
-

@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 // Validar que sea profesor
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificaciones por MÃ³dulo</h1>
+    <h1>Calificaciones por Módulo</h1>
     <p class="subtitulo">Aqui puedes poner las notas de todos tus alumnos a la vez</p>
 </div>
 
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Selecciona el MÃ³dulo:</label>
+            <label>2. Selecciona el Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloSeleccionado) ? 'disabled' : '' ?>>
                 <option value="">-- Elige un modulo --</option>
                 <?php foreach ($listaModulosFiltrados as $m) { ?>
@@ -99,10 +99,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <thead>
                         <tr>
                             <th>Alumno</th>
-                            <th>1Âª Ev</th>
-                            <th>1Âª Final</th>
-                            <th>2Âª Ev</th>
-                            <th>2Âª Final</th>
+                            <th>1ª Ev</th>
+                            <th>1ª Final</th>
+                            <th>2ª Ev</th>
+                            <th>2ª Final</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>

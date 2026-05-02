@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -28,10 +28,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">TelÃ©fono</div>
+        <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
@@ -69,7 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">DirecciÃ³n</div>
+        <div class="etiqueta-detalle">Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] ?></div>
     </div>
 

@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -18,7 +18,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $id = $_GET['id'] ?? null;
 
 if (!$id || !is_numeric($id)) {
-    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÃ“N NO VÃLIDO.");
+    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
     header("Location: lista.php");
     exit;
 }
@@ -26,7 +26,7 @@ if (!$id || !is_numeric($id)) {
 $nota = obtenerCalificacionPorId($id);
 
 if (!$nota) {
-    $_SESSION['error'] = strtoupper("NO SE ENCONTRÃ“ LA CALIFICACIÃ“N SOLICITADA.");
+    $_SESSION['error'] = strtoupper("NO SE ENCONTRÓ LA CALIFICACIÓN SOLICITADA.");
     header("Location: lista.php");
     exit;
 }
@@ -40,8 +40,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Editar CalificaciÃ³n</h1>
-    <a href="lista.php" class="boton-secundario">â† Volver</a>
+    <h1>Editar Calificación</h1>
+    <a href="lista.php" class="boton-secundario">? Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -66,7 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>MÃ³dulo *</label>
+                <label>Módulo *</label>
                 <select name="idModulo" disabled>
                     <?php foreach ($modulos as $mod) { ?>
                         <option value="<?= $mod['idModulo'] ?>" <?= $mod['idModulo'] == $nota['idModulo'] ? 'selected' : '' ?>><?= $mod['nombreModulo'] ?></option>
@@ -76,28 +76,28 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>1Âª EvaluaciÃ³n</label>
+                <label>1ª Evaluación</label>
                 <input type="text" name="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>1Âª Final</label>
+                <label>1ª Final</label>
                 <input type="text" name="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>2Âª EvaluaciÃ³n</label>
+                <label>2ª Evaluación</label>
                 <input type="text" name="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>2Âª Final</label>
+                <label>2ª Final</label>
                 <input type="text" name="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>">
             </div>
         </div>
 
         <div class="margen-arriba disposicion-flexible alinear-centro">
-            <button type="submit" name="actualizarNota" class="boton-primario">Actualizar CalificaciÃ³n</button>
+            <button type="submit" name="actualizarNota" class="boton-primario">Actualizar Calificación</button>
             <label class="etiqueta-notificacion">
                 <input type="checkbox" name="notificarEstudiante" value="1"> Notificar por Email
             </label>

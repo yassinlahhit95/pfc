@@ -5,56 +5,51 @@ if (!isset($_SESSION['idAdmin'])) {
     exit;
 }
 
-require_once __DIR__ . "/../../../modelos/eventos.php";
-
-$idEvento = intval($_GET['idEvento'] ?? 0);
-$evento = obtenerEventoPorId($idEvento);
-
-if (!$evento) {
-    header("Location: gestionEventos.php");
-    exit;
-}
-
-$titulo_pagina = "Modificar Evento - Admin";
+$titulo_pagina = "Agregar Evento - Admin";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
+
+$error = $_SESSION['error'] ?? '';
+unset($_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Evento</h1>
+    <h1>Crear Nuevo Evento</h1>
     <a href="gestionEventos.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la Lista
     </a>
 </div>
 
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca p-25">
-    <form method="POST" action="../../../controladores/admin/eventos/actualizar.php" class="p-10">
-        <input type="hidden" name="idEvento" value="<?= $idEvento ?>">
-        
+    <form method="POST" action="../../../controladores/admin/eventos/insertar.php" class="p-10">
         <div class="disposicion-flexible direccion-columna separacion-grande">
             <div class="campo-formulario">
                 <label class="texto-negrita">Título del Evento *</label>
-                <input type="text" name="tituloEvento" class="mt-5 ancho-total" value="<?= $evento['tituloEvento'] ?? '' ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <input type="text" name="tituloEvento" class="mt-5 ancho-total" placeholder="Ej: Examen Final, Reunión de Profesores...">
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Ubicación</label>
-                <input type="text" name="ubicacionEvento" class="mt-5 ancho-total" value="<?= $evento['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Aula 101, Salón de Actos...">
+                <input type="text" name="ubicacionEvento" class="mt-5 ancho-total" placeholder="Ej: Aula 101, Salón de Actos...">
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Fecha *</label>
-                <input type="date" name="fechaEvento" class="mt-5 ancho-total" value="<?= $evento['fechaEvento'] ?? '' ?>">
+                <input type="date" name="fechaEvento" class="mt-5 ancho-total" value="<?= date('Y-m-d') ?>">
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Hora</label>
-                <input type="time" name="horaEvento" class="mt-5 ancho-total" value="<?= date('H:i', strtotime($evento['horaEvento'] ?? 'now')) ?>">
+                <input type="time" name="horaEvento" class="mt-5 ancho-total" value="09:00">
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Descripción</label>
-                <textarea name="descripcionEvento" rows="4" class="mt-5 ancho-total" placeholder="Detalles del evento..."><?= $evento['descripcionEvento'] ?? '' ?></textarea>
+                <textarea name="descripcionEvento" rows="4" class="mt-5 ancho-total" placeholder="Detalles del evento..."></textarea>
             </div>
         </div>
 
@@ -62,8 +57,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="reset" class="boton-secundario px-25">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
-            <button type="submit" name="actualizarEvento" class="boton-primario px-30">
-                <i class="fas fa-save"></i> Guardar Cambios
+            <button type="submit" name="guardarEvento" class="boton-primario px-30">
+                <i class="fas fa-calendar-plus"></i> Publicar Evento
             </button>
         </div>
     </form>

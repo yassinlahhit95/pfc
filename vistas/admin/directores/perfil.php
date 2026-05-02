@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 // Control de acceso para administradores
@@ -7,7 +7,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "MI PERFIL - ADMINISTRACIÃ“N";
+$titulo_pagina = "MI PERFIL - ADMINISTRACIÓN";
 $seccion = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -44,34 +44,37 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
 
             <div class="campo-formulario">
-                <label>Correo ElectrÃ³nico</label>
+                <label>Correo Electrónico</label>
                 <input type="text" name="emailDirector" value="<?= $datosAdmin['emailDirector'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>NÃºmero de TelÃ©fono</label>
+                <label>Número de Teléfono</label>
                 <input type="text" name="telefonoDirector" value="<?= $datosAdmin['telefonoDirector'] ?? '' ?>">
             </div>
         </div>
 
-        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÃ‘A (OPCIONAL)</h3>
+        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÑA (OPCIONAL)</h3>
         <p class="texto-atenuado texto-pequeno">Solo rellene si desea actualizar su clave de acceso.</p>
 
         <div class="formulario-cuadricula mt-10">
             <div class="campo-formulario">
-                <label>CONTRASEÃ‘A ACTUAL:</label>
+                <label>CONTRASEÑA ACTUAL:</label>
                 <input type="password" name="current_password" placeholder="Validar cambios">
             </div>
 
             <div class="campo-formulario">
-                <label>NUEVA CONTRASEÃ‘A:</label>
-                <input type="password" name="new_password" placeholder="MÃ­nimo 6 caracteres">
+                <label>NUEVA CONTRASEÑA:</label>
+                <input type="password" name="new_password" placeholder="Mínimo 6 caracteres">
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="actualizarPerfilBtn" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR MIS DATOS
+            </button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

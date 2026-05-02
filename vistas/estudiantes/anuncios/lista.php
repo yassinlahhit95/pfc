@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,14 +20,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>TablÃ³n de Anuncios</h1>
+    <h1>Tablón de Anuncios</h1>
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -36,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php foreach ($anuncios as $anuncio) { ?>
                 <div class="anuncio-item-completo">
                     <div class="mb-10">
-                        <label class="texto-negrita">TÃ­tulo del Anuncio:</label> 
+                        <label class="texto-negrita">Título del Anuncio:</label> 
                         <span class="color-primario texto-negrita"><?= strtoupper($anuncio['titulo']) ?></span>
                     </div>
                     

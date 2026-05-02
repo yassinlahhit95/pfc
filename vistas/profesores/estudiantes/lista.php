@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Estudiantes</h1>
+    <h1>Gesti�n de Estudiantes</h1>
 </div>
 
 <?php if ($exito) { ?>

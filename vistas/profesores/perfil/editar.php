@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Mi Perfil</h1>
-    <a href="ver.php" class="boton-secundario">â† Volver</a>
+    <a href="ver.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -49,21 +49,21 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo-formulario">
-            <label>NÃºmero de TelÃ©fono</label>
+            <label>Número de Teléfono</label>
             <input type="tel" name="telefonoProfesor" value="<?= $telefono ?>">
         </div>
 
-        <div class="titulo-tarjeta mt-30"><h3>Seguridad y ContraseÃ±a</h3></div>
-        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseÃ±a de acceso.</p>
+        <div class="titulo-tarjeta mt-30"><h3>Seguridad y Contraseña</h3></div>
+        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo-formulario">
-            <label>ContraseÃ±a Actual</label>
-            <input type="password" name="current_password" placeholder="Escriba su contraseÃ±a actual para validar">
+            <label>Contraseña Actual</label>
+            <input type="password" name="current_password" placeholder="Escriba su contraseña actual para validar">
         </div>
 
         <div class="campo-formulario">
-            <label>Nueva ContraseÃ±a</label>
-            <input type="password" name="new_password" placeholder="MÃ­nimo 6 caracteres">
+            <label>Nueva Contraseña</label>
+            <input type="password" name="new_password" placeholder="Mínimo 6 caracteres">
         </div>
 
         <div class="form-acciones">

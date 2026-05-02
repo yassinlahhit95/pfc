@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -60,9 +60,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por MÃ³dulo:</label>
+            <label>Filtrar por Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis MÃ³dulos --</option>
+                <option value="0">-- Todos mis Módulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
@@ -82,11 +82,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>MÃ³dulo</th>
-                    <th>1Âª Ev</th>
-                    <th>1Âª Final</th>
-                    <th>2Âª Ev</th>
-                    <th>2Âª Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>

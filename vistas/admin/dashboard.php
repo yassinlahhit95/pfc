@@ -17,16 +17,16 @@ require_once __DIR__ . "/../../modelos/estudiantes.php";
 // Estadísticas resumidas
 $totalEstudiantesRegistrados = contarEstudiantes();
 $totalProfesoresRegistrados = contarProfesores();
-$totalRetosAcademicos = (int)contarRetos();
-$totalModulosProfesionales = (int)contarModulos();
+$totalRetosAcademicos = intval(contarRetos());
+$totalModulosProfesionales = intval(contarModulos());
 $porcentajeGlobalAprobados = obtenerPorcentajeAprobadosGlobal();
 $cantidadTotalRecaudada = obtenerTotalRecaudado();
 $totalOperacionesDePago = contarPagosRealizados();
 
 // Paginación de anuncios simplificada
 $anunciosAMostrarPorPagina = 5;
-$numeroPaginaActual = max(1, (int)($_GET['p_anuncios'] ?? 1));
-$totalAnunciosActivos = (int)contarAnunciosQueEstanActivos();
+$numeroPaginaActual = max(1, intval($_GET['p_anuncios'] ?? 1));
+$totalAnunciosActivos = intval(contarAnunciosQueEstanActivos());
 $totalPaginasAnuncios = ceil($totalAnunciosActivos / $anunciosAMostrarPorPagina);
 $listaAnunciosSistema = listarAnunciosPaginados($numeroPaginaActual, $anunciosAMostrarPorPagina);
 

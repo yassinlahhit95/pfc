@@ -99,7 +99,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <hr class="separador">
 
     <?php if ($infoFinanciera['restante'] <= 0) { ?>
-        <p class="mensaje-exito">Este estudiante ya ha completado todos los pagos del ciclo.</p>
+        <div class="mensaje-exito">Este estudiante ya ha completado todos los pagos del ciclo.</div>
     <?php } elseif ($esDespuesDeJunio) { ?>
         <p class="mensaje-error">Periodo de pagos finalizado (30/06 superado).</p>
     <?php } else { ?>

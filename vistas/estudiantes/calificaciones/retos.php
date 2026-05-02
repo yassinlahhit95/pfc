@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -25,10 +25,10 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -45,7 +45,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
             <tbody>
                 <?php if (empty($mis_notas_retos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">Aún no tienes calificaciones registradas en retos.</td>
+                        <td colspan="4" class="sin-datos">A�n no tienes calificaciones registradas en retos.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($mis_notas_retos as $nota) { ?>
@@ -66,7 +66,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 
 <div class="margen-arriba tarjeta-gris-suave">
     <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
-    <p>Estas notas son finales y contribuyen al 25% de la calificaciÃ³n global del mÃ³dulo asociado.</p>
+    <p>Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

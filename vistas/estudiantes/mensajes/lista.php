@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -28,10 +28,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($error) { ?>
-    <div class="alerta-error"><?= $error ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="alerta-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aÃºn.</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 if ($mensaje['emisor_rol'] == 'profesor') {
                                     echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
                                 } else {
-                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÃ“N (ADMIN)';
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
                                 }
                             ?></strong>
                         </td>

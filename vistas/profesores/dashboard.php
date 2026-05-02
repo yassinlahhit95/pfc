@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -57,7 +57,7 @@ include_once __DIR__ . "/comunes/nav.php";
     <div class="info-estadistica"><h3><?= count($listaEstudiantes) ?></h3><p>Alumnos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>MÃ³dulos</p></div>
+    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
     <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
@@ -71,7 +71,7 @@ include_once __DIR__ . "/comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     
     <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta"><h3>Acciones RÃ¡pidas</h3></div>
+      <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="calificaciones/agregar.php" class="accion-rapida"><span>Poner Notas</span></a>
         <a href="retos/insertar.php" class="accion-rapida"><span>Nuevo Reto</span></a>
@@ -103,7 +103,7 @@ include_once __DIR__ . "/comunes/nav.php";
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn"></i> Ãšltimos Avisos</h3>
+        <h3><i class="fas fa-bullhorn"></i> Últimos Avisos</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div>
@@ -130,11 +130,11 @@ include_once __DIR__ . "/comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PrÃ³ximos Eventos</h3>
+        <h3>Próximos Eventos</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventos)) { ?>
-            <p class="texto-atenuado">No hay eventos prÃ³ximos.</p>
+            <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php 
             $ce = 0;
@@ -160,7 +160,7 @@ include_once __DIR__ . "/comunes/nav.php";
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>InformaciÃ³n del Perfil</h3>
+        <h3>Información del Perfil</h3>
       </div>
       <div class="info-adicional-perfil">
         <p><strong>Email:</strong><br><?= $profesorActual['emailProfesor'] ?></p>

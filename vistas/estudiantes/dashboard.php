@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -42,10 +42,17 @@ include_once __DIR__ . "/comunes/nav.php";
     <p class="texto-atenuado"><?= strtoupper($estudianteActual['nombreCiclo']) ?></p>
 </div>
 
-<!-- ESTADÍSTICAS EN FLEX -->
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+
+<!-- ESTAD�STICAS EN FLEX -->
 <div class="disposicion-flexible envoltura-flexible separacion-grande margen-abajo">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul flexible-rellenar">
-        <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
+        <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>M�dulos</p></div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-verde flexible-rellenar">
         <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
@@ -64,7 +71,7 @@ include_once __DIR__ . "/comunes/nav.php";
     
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
+        <h3><i class="fas fa-bullhorn texto-azul"></i> TABL�N DE ANUNCIOS</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">
@@ -98,11 +105,11 @@ include_once __DIR__ . "/comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PRÓXIMOS EVENTOS</h3>
+        <h3>PR�XIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventosProximos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
+            <p class="texto-atenuado">No hay eventos pr�ximos.</p>
         <?php } else { ?>
             <?php 
             $cest = 0;
