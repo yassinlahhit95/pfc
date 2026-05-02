@@ -9,14 +9,14 @@ if (!isset($_SESSION['idAdmin'])) {
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idReclamacion = $_GET['id'] ?? 0;
-$mensaje = obtenerMensajePorId($idReclamacion);
+$mensaje = obtenerMensajePorId(intval($idReclamacion));
 
 if (!$mensaje) {
-    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    header("Location: lista.php");
     exit;
 }
 
-// Marcar como leÃ­do automÃ¡ticamente SOLO si el que abre el mensaje es el receptor (AdministraciÃ³n)
+// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (Administración)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] === NULL) || ($mensaje['emisor_rol'] == 'profesor' && $mensaje['idEstudiante'] === NULL))) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
@@ -29,59 +29,63 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/admin/mensajes/lista.php" class="boton-secundario">â† Volver</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope"></i> InformaciÃ³n del Mensaje</h3>
+        <h3><i class="fas fa-envelope"></i> Información del Mensaje</h3>
     </div>
-    
+
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php 
-                if ($mensaje['emisor_rol'] == 'admin') echo 'TÃº (AdministraciÃ³n)';
-                else if ($mensaje['emisor_rol'] == 'profesor') echo $mensaje['nombreProfesor'] . ' (Profesor)';
-                else echo $mensaje['nombreEstudiante'] . ' (Estudiante)';
-            ?>
+            <?php if ($mensaje['emisor_rol'] == 'admin') : ?>
+                Tú (Administración)
+            <?php elseif ($mensaje['emisor_rol'] == 'profesor') : ?>
+                <?= $mensaje['nombreProfesor'] ?> (Profesor)
+            <?php else : ?>
+                <?= $mensaje['nombreEstudiante'] ?> (Estudiante)
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?php 
-                if ($mensaje['emisor_rol'] == 'admin') {
-                    if ($mensaje['idEstudiante'] > 0) echo $mensaje['nombreEstudiante'] . ' (Estudiante)';
-                    else if ($mensaje['idProfesor'] > 0) echo $mensaje['nombreProfesor'] . ' (Profesor)';
-                    else echo 'General';
-                } else {
-                    echo 'TÃº (AdministraciÃ³n)';
-                }
-            ?>
+            <?php if ($mensaje['emisor_rol'] == 'admin') : ?>
+                <?php if ($mensaje['idEstudiante'] > 0) : ?>
+                    <?= $mensaje['nombreEstudiante'] ?> (Estudiante)
+                <?php elseif ($mensaje['idProfesor'] > 0) : ?>
+                    <?= $mensaje['nombreProfesor'] ?> (Profesor)
+                <?php else : ?>
+                    General
+                <?php endif; ?>
+            <?php else : ?>
+                Tú (Administración)
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y H:i', strtotime($mensaje['fecha'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
-            <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">LeÃ­do</span>
-            <?php } else { ?>
+            <?php if ($mensaje['leido']) : ?>
+                <span class="estado-bolita activo-verde">Leído</span>
+            <?php else : ?>
                 <span class="estado-bolita inactivo-rojo">Pendiente</span>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="margen-arriba p-20 bg-gris-suave rounded-8">
-        <h4 class="mb-10 text-uppercase color-primario"><?php echo $mensaje['asunto']; ?></h4>
-        <div class="line-height-15 pre-wrap"><?php echo $mensaje['descripcion']; ?></div>
+        <h4 class="mb-10 text-uppercase color-primario"><?= $mensaje['asunto'] ?></h4>
+        <div class="line-height-15 pre-wrap"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['idProfesor'])) {
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
     header("Location: ../../../index.php");
     exit;
 }
@@ -10,21 +11,23 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$idProfesor = $_SESSION['idProfesor'];
-
-$idCiclo = isset($_GET['idCiclo']) ? intval($_GET['idCiclo']) : 0;
-$idModulo = isset($_GET['idModulo']) ? intval($_GET['idModulo']) : 0;
+$idCiclo = intval($_GET['idCiclo'] ?? 0);
+$idModulo = intval($_GET['idModulo'] ?? 0);
 
 // Filtros disponibles para el profesor
 $mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
 $mis_modulos = [];
-if ($idCic > 0) {
-    $mis_modulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCic);
-} else {
+if ($idCiclo > 0) :
+    $mis_modulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
+else :
     $mis_modulos = obtenerModulosDeProfesor($idProfesor);
-}
+endif;
 
 $calificaciones = listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo, $idModulo);
+
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['error'], $_SESSION['exito']);
 
 $tituloDelPagina = "Calificaciones - Portal Profesores";
 $seccionActual = 'calificaciones';
@@ -33,8 +36,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Notas de Alumnos</h1>
-    <a href="/pfc/vistas/profesores/calificaciones/agregar.php" class="boton-primario">Asignar Nota</a>
+    <a href="agregar.php" class="boton-primario">Asignar Nota</a>
 </div>
+
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <form method="GET" action="" class="disposicion-flexible alinear-fin separacion-grande">
@@ -42,22 +52,22 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Filtrar por Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Ciclos --</option>
-                <?php foreach ($mis_ciclos as $c) { ?>
-                    <option value="<?php echo $c['idCiclo']; ?>" <?php if($idCiclo == $c['idCiclo']) echo "selected"; ?>>
-                        <?php echo $c['nombreCiclo']; ?>
+                <?php foreach ($mis_ciclos as $c) : ?>
+                    <option value="<?= $c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
+                        <?= $c['nombreCiclo'] ?>
                     </option>
-                <?php } ?>
+                <?php endforeach; ?>
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por MÃ³dulo:</label>
+            <label>Filtrar por Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis MÃ³dulos --</option>
-                <?php foreach ($mis_modulos as $m) { ?>
-                    <option value="<?php echo $m['idModulo']; ?>" <?php if($idModulo == $m['idModulo']) echo "selected"; ?>>
-                        <?php echo $m['nombreModulo']; ?>
+                <option value="0">-- Todos mis Módulos --</option>
+                <?php foreach ($mis_modulos as $m) : ?>
+                    <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
+                        <?= $m['nombreModulo'] ?>
                     </option>
-                <?php } ?>
+                <?php endforeach; ?>
             </select>
         </div>
         <div class="mb-15">
@@ -72,41 +82,39 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>MÃ³dulo</th>
-                    <th>1Âª Ev</th>
-                    <th>1Âª Final</th>
-                    <th>2Âª Ev</th>
-                    <th>2Âª Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($calificaciones) { ?>
-                    <?php foreach ($calificaciones as $nota) { ?>
+                <?php if ($calificaciones) : ?>
+                    <?php foreach ($calificaciones as $nota) : ?>
                         <tr>
-                            <td><?php echo $nota['nombreEstudiante']; ?></td>
-                            <td class="texto-negrita"><?php echo $nota['nombreModulo']; ?></td>
-                            <td><?php echo $nota['nota_1ev']; ?></td>
-                            <td class="texto-negrita"><?php echo $nota['nota_1final']; ?></td>
-                            <td><?php echo $nota['nota_2ev']; ?></td>
-                            <td class="texto-negrita"><?php echo $nota['nota_2final']; ?></td>
+                            <td><?= $nota['nombreEstudiante'] ?></td>
+                            <td class="texto-negrita"><?= $nota['nombreModulo'] ?></td>
+                            <td><?= $nota['nota_1ev'] ?></td>
+                            <td class="texto-negrita"><?= $nota['nota_1final'] ?></td>
+                            <td><?= $nota['nota_2ev'] ?></td>
+                            <td class="texto-negrita"><?= $nota['nota_2final'] ?></td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="/pfc/vistas/profesores/calificaciones/editar.php?id=<?php echo $nota['idCalificacion']; ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                    <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
                                 </div>
                             </td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="7" class="sin-datos">No hay calificaciones que coincidan con los filtros.</td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

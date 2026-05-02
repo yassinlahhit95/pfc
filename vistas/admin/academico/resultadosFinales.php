@@ -16,9 +16,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Captura del ciclo seleccionado
 $idCicloElegidoParaVer = 0;
-if (isset($_GET['idCiclo'])) {
-    $idCicloElegidoParaVer = (int)$_GET['idCiclo'];
-}
+$idCicloElegidoParaVer = (int)($_GET['idCiclo'] ?? 0);
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
 $listaDeDatosFinalesAMostrar = [];
@@ -29,8 +27,8 @@ if (!empty($idCicloElegidoParaVer)) {
 }
 
 // Mensajes de sesiÃ³n
-$mensajeExito = ""; if (isset($_SESSION['exito'])) { $mensajeExito = $_SESSION['exito']; }
-$mensajeError = ""; if (isset($_SESSION['error'])) { $mensajeError = $_SESSION['error']; }
+$mensajeExito = $_SESSION['exito'] ?? '';
+$mensajeError = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
@@ -39,8 +37,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <p class="subtitulo">Promedio global del ciclo (75% MÃ³dulos / 25% Retos)</p>
 </div>
 
-<?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?php echo $mensajeExito; ?></div> <?php } ?>
-<?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?php echo $mensajeError; ?></div> <?php } ?>
+<?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?= $mensajeExito ?></div> <?php } ?>
+<?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?= $mensajeError ?></div> <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro separacion-grande">
@@ -50,8 +48,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                        <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo "selected"; } ?>>
-                            <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
+                        <option value="<?= $cicloItem['idCiclo'] ?>" <?php if($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo "selected"; } ?>>
+                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -59,8 +57,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
-                <input type="hidden" name="idCiclo" value="<?php echo $idCicloElegidoParaVer; ?>">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+                <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
                 </button>
@@ -92,12 +90,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><strong><?php echo $fila['nombreEstudiante']; ?></strong></td>
-                            <td><?php echo $fila['promedio_global']; ?> (Notas)</td> 
+                            <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>
+                            <td><?= $fila['promedio_global'] ?> (Notas)</td> 
                             <td>-</td> <!-- En el modelo calculamos el global, podrÃ­amos desglosar si fuera necesario -->
-                            <td class="texto-negrita"><?php echo $fila['promedio_global']; ?></td>
-                            <td class="<?php echo $claseDelColor; ?> texto-negrita">
-                                <?php echo $fila['estado_global']; ?>
+                            <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
+                            <td class="<?= $claseDelColor ?> texto-negrita">
+                                <?= $fila['estado_global'] ?>
                                 <?php if($fila['tiene_suspensos'] == true && $fila['estado_global'] != "PENDIENTE") { 
                                     echo " <small title='Tiene mÃ³dulos suspensos'>(!)</small>"; 
                                 } ?>

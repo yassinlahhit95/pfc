@@ -41,7 +41,7 @@ include_once __DIR__ . "/nav.php";
     </div>
 
     <div class="separador-huella mt-20">
-        <p class="texto-negrita mb-5">© <?php echo date('Y'); ?> Yassin Lahhit</p>
+        <p class="texto-negrita mb-5">© <?= date('Y') ?> Yassin Lahhit</p>
         <p class="texto-atenuado copyright-texto">Todos los derechos reservados. Desarrollado con PHP, MySQL y Brevo API.</p>
     </div>
 </div>

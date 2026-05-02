@@ -1,6 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION['idProfesor'])) {
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
     header("Location: ../../../index.php");
     exit;
 }
@@ -8,14 +9,25 @@ if (!isset($_SESSION['idProfesor'])) {
 require_once __DIR__ . "/../../../modelos/eventos.php";
 $eventos = listarEventosProximos();
 
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['error'], $_SESSION['exito']);
+
 $tituloDelPagina = "Calendario de Eventos - Portal Profesores";
 $seccionActual = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>PrÃ³ximos Eventos del Centro</h1>
+    <h1>Próximos Eventos del Centro</h1>
 </div>
+
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -25,29 +37,28 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Evento</th>
-                    <th>UbicaciÃ³n</th>
+                    <th>Ubicación</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($eventos)) { ?>
+                <?php if (empty($eventos)) : ?>
                     <tr><td colspan="4" class="sin-datos">No hay eventos programados.</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($eventos as $ev) { ?>
+                <?php else : ?>
+                    <?php foreach ($eventos as $ev) : ?>
                     <tr>
-                        <td class="texto-negrita"><?php echo date('d/m/Y', strtotime($ev['fechaEvento'])); ?></td>
-                        <td><?php echo date('H:i', strtotime($ev['horaEvento'])); ?>h</td>
+                        <td class="texto-negrita"><?= date('d/m/Y', strtotime($ev['fechaEvento'])) ?></td>
+                        <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
                         <td>
-                            <strong><?php echo $ev['tituloEvento']; ?></strong><br>
-                            <small class="texto-atenuado"><?php echo $ev['descripcionEvento']; ?></small>
+                            <strong><?= $ev['tituloEvento'] ?></strong><br>
+                            <small class="texto-atenuado"><?= $ev['descripcionEvento'] ?></small>
                         </td>
-                        <td><?php echo $ev['ubicacionEvento']; ?></td>
+                        <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

@@ -4,6 +4,13 @@ if (empty($_SESSION['idEstudiante'])) {
     exit;
 }
 
+// Calculamos la ruta base de forma dinámica
+$URL_ACTUAL = $_SERVER['PHP_SELF'];
+$partesRuta = explode('/vistas/', $URL_ACTUAL);
+$rutaRelativaVistas = $partesRuta[1] ?? '';
+$numeroCarpetas = substr_count($rutaRelativaVistas, '/');
+$ruta_base = str_repeat('../', $numeroCarpetas + 1);
+
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
@@ -25,12 +32,11 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $tituloDelPagina; ?></title>
-    <link rel="stylesheet" href="/pfc/public/css/admin.css">
-    <link rel="stylesheet" href="/pfc/public/css/responsive.css">
-    <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
-        <link rel="icon" href="/pfc/public/imagenes/favicon.ico">
-
+    <title><?= $tituloDelPagina ?></title>
+    <link rel="stylesheet" href="<?= $ruta_base ?>public/css/admin.css">
+    <link rel="stylesheet" href="<?= $ruta_base ?>public/css/responsive.css">
+    <link rel="stylesheet" href="<?= $ruta_base ?>public/css/notificaciones.css">
+    <link rel="icon" href="<?= $ruta_base ?>public/imagenes/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -51,31 +57,31 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
         </div>
 
         <nav class="menu-navegacion">
-            <a href="/pfc/vistas/estudiantes/dashboard.php" class="enlace-menu <?php if ($seccionActual == 'inicio') { echo 'activo'; } ?>">
+            <a href="<?= $ruta_base ?>vistas/estudiantes/dashboard.php" class="enlace-menu <?= ($seccionActual == 'inicio') ? 'activo' : '' ?>">
                 <i class="fas fa-home"></i> <span>INICIO</span>
             </a>
 
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">MIS ESTUDIOS</p>
 
-                <a href="/pfc/vistas/estudiantes/retos/lista.php" class="enlace-menu <?php if ($seccionActual == 'retos') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>MIS RETOS</span>
-                    <span class="etiqueta-contador"><?php echo $cantRetosEst; ?></span>
+                    <span class="etiqueta-contador"><?= $cantRetosEst ?></span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/calificaciones/lista.php" class="enlace-menu <?php if ($seccionActual == 'calificaciones') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-graduation-cap"></i> <span>MIS NOTAS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/calificaciones/retos.php" class="enlace-menu <?php if ($seccionActual == 'notas_retos') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/calificaciones/retos.php" class="enlace-menu <?= ($seccionActual == 'notas_retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>MIS NOTAS RETOS</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/academico/resultadosFinales.php" class="enlace-menu <?php if ($seccionActual == 'resultados_finales') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/academico/resultadosFinales.php" class="enlace-menu <?= ($seccionActual == 'resultados_finales') ? 'activo' : '' ?>">
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/pfc/subir.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/pfc/subir.php" class="enlace-menu <?= ($seccionActual == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>MI TFG</span>
                 </a>
             </div>
@@ -83,38 +89,38 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">PORTAL</p>
 
-                <a href="/pfc/vistas/estudiantes/anuncios/lista.php" class="enlace-menu <?php if ($seccionActual == 'anuncios') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
-                    <span class="etiqueta-contador"><?php echo $cantAnunciosEst; ?></span>
+                    <span class="etiqueta-contador"><?= $cantAnunciosEst ?></span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
-                    <i class="fas fa-envelope"></i> <span>MENSAJERÃA</span>
-                    <span class="etiqueta-contador <?php echo ($cantMensajesNoLeidosEst > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantMensajesEst; ?></span>
+                <a href="<?= $ruta_base ?>vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
+                    <span class="etiqueta-contador <?= ($cantMensajesNoLeidosEst > 0) ? 'alerta-roja' : '' ?>"><?= $cantMensajesEst ?></span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/pagos/lista.php" class="enlace-menu <?php if ($seccionActual == 'pagos') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/pagos/lista.php" class="enlace-menu <?= ($seccionActual == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-credit-card"></i> <span>MIS PAGOS</span>
-                    <span class="etiqueta-contador"><?php echo $cantPagosEst; ?></span>
+                    <span class="etiqueta-contador"><?= $cantPagosEst ?></span>
                 </a>
 
-                <a href="/pfc/vistas/estudiantes/eventos/lista.php" class="enlace-menu <?php if ($seccionActual == 'eventos') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">
                     <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="enlace-menu <?php if ($seccionActual == 'perfil') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/estudiantes/perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
-                <a href="/pfc/vistas/admin/comunes/creditos.php" class="enlace-menu <?php if ($seccionActual == 'creditos') { echo 'activo'; } ?>">
+                <a href="<?= $ruta_base ?>vistas/admin/comunes/creditos.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
-                <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÃ“N</span>
+                <a href="<?= $ruta_base ?>controladores/logout.php" class="enlace-menu">
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
                 <div class="info-sistema-footer">
-                    &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified
+                    &copy; <?= date('Y') ?> Yassin Lahhit<br>Fingerprint Verified
                 </div>
             </div>
         </nav>
@@ -129,7 +135,6 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
 
     <main class="contenido-principal">
     <?php if (isset($_SESSION['idEstudiante'])) { ?>
-        <div id="firebase-user-data" data-user-id="<?php echo $_SESSION['idEstudiante']; ?>" data-user-role="estudiante" class="d-none"></div>
-        <script type="module" src="/pfc/public/js/firebase/firebase-init.js"></script>
+        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idEstudiante'] ?>" data-user-role="estudiante" class="d-none"></div>
+        <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
-

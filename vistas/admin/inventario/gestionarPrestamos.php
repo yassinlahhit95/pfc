@@ -16,17 +16,18 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
 <div class="encabezado-pagina">
     <h1>Préstamos de Material</h1>
-    <a href="/pfc/vistas/admin/inventario/agregarPrestamo.php" class="boton-primario">
+    <a href="agregarPrestamo.php" class="boton-primario">
         <i class="fas fa-plus"></i> Nuevo Préstamo
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -42,51 +43,49 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_prestamos)) { ?>
+                <?php if (empty($todos_los_prestamos)) : ?>
                     <tr><td colspan="6" class="sin-datos">No hay registros de préstamos</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($todos_los_prestamos as $p) { ?>
+                <?php else : ?>
+                    <?php foreach ($todos_los_prestamos as $p) : ?>
                     <tr>
-                        <td><strong><?php echo $p['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $p['nombreArticulo']; ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
+                        <td><strong><?= $p['nombreEstudiante'] ?></strong></td>
+                        <td><?= $p['nombreArticulo'] ?></td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaPrestamo'])) ?></td>
+                        <td>
+                            <?php if (!empty($p['fechaDevolucion'])) : ?>
+                                <?= date('d/m/Y', strtotime($p['fechaDevolucion'])) ?>
+                            <?php else : ?>
+                                -
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <?php
-                            if (!empty($p['fechaDevolucion'])) {
-                                echo date('d/m/Y', strtotime($p['fechaDevolucion']));
-                            } else {
-                                echo "-";
-                            }
-                            ?>
-                        </td>                        <td>
-                            <?php 
                             $clase_estado = "inactivo-rojo";
                             if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
                             ?>
-                            <span class="estado-bolita <?php echo $clase_estado; ?>">
-                                <?php echo $p['estadoPrestamo']; ?>
+                            <span class="estado-bolita <?= $clase_estado ?>">
+                                <?= $p['estadoPrestamo'] ?>
                             </span>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
-                                    <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
-                                        <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                        <input type="hidden" name="idArticulo" value="<?php echo $p['idArticulo']; ?>">
+                                <?php if ($p['estadoPrestamo'] == 'en curso') : ?>
+                                    <form action="../../../controladores/admin/inventario/devolver.php" method="POST" class="d-inline">    
+                                        <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
+                                        <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
                                         <button type="submit" class="boton-primario boton-pequeno">
                                             <i class="fas fa-undo"></i> Devolver
                                         </button>
                                     </form>
-                                <?php } ?>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

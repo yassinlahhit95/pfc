@@ -28,22 +28,22 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="cabecera-detalles mb-20">
-        <h2 class="texto-azul"><?php echo $anuncio['tituloAnuncio']; ?></h2>
+        <h2 class="texto-azul"><?= $anuncio['tituloAnuncio'] ?></h2>
     </div>
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle"><i class="fas fa-calendar-alt"></i> Publicado</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle"><i class="fas fa-user-friends"></i> Dirigido a</div>
-        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?php echo ucfirst($anuncio['dirigidoA']); ?></span></div>
+        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle"><i class="fas fa-hourglass-end"></i> Expira el</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($anuncio['fechaExpiracion'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y', strtotime($anuncio['fechaExpiracion'])) ?></div>
     </div>
     
     <div class="margen-arriba">
@@ -51,17 +51,17 @@ include_once __DIR__ . "/../comunes/nav.php";
             <h3>Contenido del Anuncio</h3>
         </div>
         <div class="tarjeta-gris-suave p-20 pre-wrap font-size-11 line-height-16">
-            <?php echo $anuncio['contenidoAnuncio']; ?>
+            <?= $anuncio['contenidoAnuncio'] ?>
         </div>
     </div>
 
     <div class="margen-arriba-grande botones-accion">
-        <a href="modificarAnuncios.php?idAnuncio=<?php echo $idAnuncio; ?>" class="boton-primario">
+        <a href="modificarAnuncios.php?idAnuncio=<?= $idAnuncio ?>" class="boton-primario">
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿Eliminar definitivamente este anuncio?')">
-            <input type="hidden" name="idAnuncio" value="<?php echo $idAnuncio; ?>">
+        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿Eliminar definitivamente este anuncio?')">
+            <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
             <button type="submit" class="boton-secundario color-error border-error">
                 <i class="fas fa-trash"></i> Eliminar
             </button>

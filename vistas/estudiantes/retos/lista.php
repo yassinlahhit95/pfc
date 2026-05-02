@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -19,6 +23,13 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Mis Retos</h1>
 </div>
 
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
+
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
         <h3>Lista de Retos Disponibles</h3>
@@ -35,22 +46,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($retos) { ?>
-                    <?php foreach ($retos as $reto) { ?>
+                <?php if ($retos) : ?>
+                    <?php foreach ($retos as $reto) : ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $reto['nombreReto']; ?></td>
-                            <td><?php echo $reto['fechaInicio']; ?></td>
-                            <td><?php echo $reto['fechaFin']; ?></td>
-                            <td><?php echo $reto['horasReto']; ?> h</td>
+                            <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
+                            <td><?= $reto['fechaInicio'] ?></td>
+                            <td><?= $reto['fechaFin'] ?></td>
+                            <td><?= $reto['horasReto'] ?> h</td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="4" class="sin-datos">
                             <i class="fas fa-tasks"></i> No hay retos asignados actualmente.
                         </td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

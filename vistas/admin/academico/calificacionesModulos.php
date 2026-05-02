@@ -9,34 +9,17 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$id_ciclo_elegido = 0;
-if (isset($_GET['idCiclo'])) {
-    $id_ciclo_elegido = $_GET['idCiclo'];
-}
+// Capturamos selecciones
+$idCicloElegido = $_GET['idCiclo'] ?? '';
+$idModuloElegido = $_GET['idModulo'] ?? '';
 
-$id_modulo_elegido = 0;
-if (isset($_GET['idModulo'])) {
-    $id_modulo_elegido = $_GET['idModulo'];
-}
+$listaCiclos = listarTodosLosCiclos();
+$listaModulos = !empty($idCicloElegido) ? obtenerModulosPorCiclo($idCicloElegido) : [];
+$listaEstudiantes = !empty($idModuloElegido) ? listarCalificacionesPorModulo($idModuloElegido) : [];
 
-$todos_los_ciclos = listarTodosLosCiclos();
-
-$modulos_filtrados = [];
-if (!empty($id_ciclo_elegido)) {
-    $modulos_filtrados = obtenerModulosPorCiclo($id_ciclo_elegido);
-}
-
-$estudiantes_calificados = [];
-if ($id_modulo_elegido != 0) {
-    $estudiantes_calificados = listarCalificacionesPorModulo($id_modulo_elegido);
-}
-
-$error = "";
-if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
-
-$exito = "";
-if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
-
+// Mensajes de feedback
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -50,39 +33,35 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <label>1. Seleccione un Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Ciclo --</option>
-                <?php foreach ($todos_los_ciclos as $cicItem) { ?>
-                    <option value="<?php echo $cicItem['idCiclo']; ?>" <?php if($id_ciclo_elegido == $cicItem['idCiclo']) { echo "selected"; } ?>>
-                        <?php echo $cicItem['nombreCiclo']; ?>
+                <?php foreach ($listaCiclos as $ciclo) : ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= $ciclo['nombreCiclo'] ?>
                     </option>
-                <?php } ?>
+                <?php endforeach; ?>
             </select>
         </div>
 
         <div class="campo-formulario flexible-rellenar">
             <label>2. Seleccione un Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?php if(empty($id_ciclo_elegido)) { echo "disabled"; } ?>>
+            <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar Módulo --</option>
-                <?php foreach ($modulos_filtrados as $modItem) { ?>
-                    <option value="<?php echo $modItem['idModulo']; ?>" <?php if($id_modulo_elegido == $modItem['idModulo']) { echo "selected"; } ?>>
-                        <?php echo $modItem['nombreModulo']; ?>
+                <?php foreach ($listaModulos as $modulo) : ?>
+                    <option value="<?= $modulo['idModulo'] ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
+                        <?= $modulo['nombreModulo'] ?>
                     </option>
-                <?php } ?>
+                <?php endforeach; ?>
             </select>
         </div>
     </form>
 </div>
 
-<?php if (!empty($exito)) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($exito) : ?><div class="mensaje-exito"><?= $exito ?></div><?php endif; ?>
+<?php if ($error) : ?><div class="mensaje-error"><?= $error ?></div><?php endif; ?>
 
-<?php if (!empty($id_modulo_elegido)) { ?>
+<?php if (!empty($idModuloElegido)) : ?>
     <div class="tarjeta-blanca margen-arriba">
-        <form action="/pfc/controladores/admin/academico/calificarModulos.php" method="POST">
-            <input type="hidden" name="idModulo" value="<?php echo $id_modulo_elegido; ?>">
+        <form action="../../../controladores/admin/academico/calificarModulos.php" method="POST">
+            <input type="hidden" name="idModulo" value="<?= $idModuloElegido ?>">
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
@@ -96,49 +75,31 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($estudiantes_calificados)) { ?>
+                        <?php if (empty($listaEstudiantes)) : ?>
                             <tr><td colspan="6" class="sin-datos">No hay estudiantes matriculados en este ciclo</td></tr>
-                        <?php } else { ?>
-                            <?php foreach ($estudiantes_calificados as $estIndividual) { 
-                                $idEstudianteActual = $estIndividual['idEstudiante'];
-                                $notasCompletasActuales = obtenerNotasModulo($idEstudianteActual, $id_modulo_elegido);
-                                
-                                $val_1ev = ""; $val_1f = ""; $val_2ev = ""; $val_2f = ""; $val_obs = "";
-                                
-                                if (isset($notasCompletasActuales['nota_1ev'])) { $val_1ev = $notasCompletasActuales['nota_1ev']; }
-                                if (isset($notasCompletasActuales['nota_1final'])) { $val_1f = $notasCompletasActuales['nota_1final']; }
-                                if (isset($notasCompletasActuales['nota_2ev'])) { $val_2ev = $notasCompletasActuales['nota_2ev']; }
-                                if (isset($notasCompletasActuales['nota_2final'])) { $val_2f = $notasCompletasActuales['nota_2final']; }
-                                if (isset($notasCompletasActuales['observaciones'])) { $val_obs = $notasCompletasActuales['observaciones']; }
+                        <?php else : ?>
+                            <?php foreach ($listaEstudiantes as $alumno) : 
+                                $idEst = $alumno['idEstudiante'];
+                                $notas = obtenerNotasModulo($idEst, $idModuloElegido) ?? [];
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?php echo strtoupper($estIndividual['nombreEstudiante']); ?></strong>
-                                    <input type="hidden" name="estudiantes[]" value="<?php echo $idEstudianteActual; ?>">
+                                    <strong><?= strtoupper($alumno['nombreEstudiante']) ?></strong>
+                                    <input type="hidden" name="estudiantes[]" value="<?= $idEst ?>">
                                 </td>
-                                <td>
-                                    <input type="text" name="notas_1ev[]" value="<?php echo $val_1ev; ?>" class="ancho-ajustable-nota">
-                                </td>
-                                <td>
-                                    <input type="text" name="notas_1final[]" value="<?php echo $val_1f; ?>" class="ancho-ajustable-nota">
-                                </td>
-                                <td>
-                                    <input type="text" name="notas_2ev[]" value="<?php echo $val_2ev; ?>" class="ancho-ajustable-nota">
-                                </td>
-                                <td>
-                                    <input type="text" name="notas_2final[]" value="<?php echo $val_2f; ?>" class="ancho-ajustable-nota">
-                                </td>
-                                <td>
-                                    <input type="text" name="observaciones[]" value="<?php echo $val_obs; ?>" class="ancho-total">
-                                </td>
+                                <td><input type="text" name="notas_1ev[]" value="<?= $notas['nota_1ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                <td><input type="text" name="notas_1final[]" value="<?= $notas['nota_1final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                <td><input type="text" name="notas_2ev[]" value="<?= $notas['nota_2ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                <td><input type="text" name="notas_2final[]" value="<?= $notas['nota_2final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                <td><input type="text" name="observaciones[]" value="<?= $notas['observaciones'] ?? '' ?>" class="ancho-total"></td>
                             </tr>
-                            <?php } ?>
-                        <?php } ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
             
-            <?php if ($estudiantes_calificados) { ?>
+            <?php if (!empty($listaEstudiantes)) : ?>
                 <div class="margen-arriba disposicion-flexible alinear-centro">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> GUARDAR TODAS LAS NOTAS
@@ -148,11 +109,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <i class="fas fa-envelope"></i> NOTIFICAR POR EMAIL
                     </label>
                 </div>
-            <?php } ?>
+            <?php endif; ?>
         </form>
     </div>
-<?php } ?>
+<?php endif; ?>
 
-<?php include '../comunes/footer.php'; ?>
-
-
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

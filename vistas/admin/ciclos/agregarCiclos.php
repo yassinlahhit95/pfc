@@ -8,37 +8,13 @@ $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 $listaAulas = listarAulas();
 
-$errores = [];
-if (isset($_SESSION['errores'])) {
-    $errores = $_SESSION['errores'];
-}
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_ciclo'] ?? [];
 
-$datos = [];
-if (isset($_SESSION['datos_ciclo'])) {
-    $datos = $_SESSION['datos_ciclo'];
-}
 unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
 
-
-$nombre = '';
-if (isset($datos['nombreCiclo'])) {
-    $nombre = $datos['nombreCiclo'];
-}
-
-$idNivelElegido = '';
-if (isset($datos['idNivel'])) {
-    $idNivelElegido = $datos['idNivel'];
-}
-
-$profesoresElegidos = [];
-if (isset($datos['profesores'])) {
-    $profesoresElegidos = $datos['profesores'];
-}
-
-$aulasElegidas = [];
-if (isset($datos['aulas'])) {
-    $aulasElegidas = $datos['aulas'];
-}
+$profesoresElegidos = $datos['profesores'] ?? [];
+$aulasElegidas = $datos['aulas'] ?? [];
 
 $titulo_pagina = "Agregar Ciclo - Super Admin";
 $seccion = 'ciclos';
@@ -50,39 +26,48 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h1>Agregar Ciclo</h1>
         <p class="subtitulo-encabezado">Defina un nuevo programa formativo y asigne recursos</p>
     </div>
-    <a href="/pfc/vistas/admin/ciclos/verCiclos.php" class="boton-secundario">
+    <a href="verCiclos.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
     </a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/ciclos/insertar.php" method="POST">
+    <form action="../../../controladores/admin/ciclos/insertar.php" method="POST">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Ciclo *</label>
-                <input type="text" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?php echo $nombre; ?>">
+                <input type="text" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= $datos['nombreCiclo'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['nombreCiclo'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Abreviatura *</label>
-                <input type="text" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?php if(isset($datos['abreviaturaCiclo'])) echo $datos['abreviaturaCiclo']; ?>">
+                <input type="text" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= $datos['abreviaturaCiclo'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['abreviaturaCiclo'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Nivel Formativo *</label>
                 <select name="idNivel">
                     <option value="">-- Seleccionar Nivel --</option>
-                    <?php foreach ($listaNiveles as $nivel) { ?>
-                        <option value="<?php echo $nivel['idNivel']; ?>" <?php if ($idNivelElegido == $nivel['idNivel']) { echo 'selected'; } ?>>
-                            <?php echo $nivel['nombreNivel']; ?>
+                    <?php foreach ($listaNiveles as $nivel) : ?>
+                        <option value="<?= $nivel['idNivel'] ?>" <?php if (($datos['idNivel'] ?? '') == $nivel['idNivel']) : ?>selected<?php endif; ?>>
+                            <?= $nivel['nombreNivel'] ?>
                         </option>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </select>
+                <?php if (isset($lista_de_errores['idNivel'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['idNivel'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Precio Total del Ciclo (€) *</label>
-                <input type="number" name="precioCiclo" step="0.01" value="1000.00">
+                <input type="number" name="precioCiclo" step="0.01" value="<?= $datos['precioCiclo'] ?? '1000.00' ?>">
             </div>
         </div>
 
@@ -90,26 +75,26 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div>
                 <h4 class="margen-abajo">Asignar Tutores/Profesores</h4>
                 <div class="lista-checkboxes">
-                    <?php foreach ($listaProfesores as $prof) { ?>
+                    <?php foreach ($listaProfesores as $prof) : ?>
                         <label class="item-checkbox">
-                            <input type="checkbox" name="profesores[]" value="<?php echo $prof['idProfesor']; ?>"
-                                <?php if (in_array($prof['idProfesor'], $profesoresElegidos)) { echo 'checked'; } ?>>
-                            <span><?php echo $prof['nombreProfesor']; ?></span>
+                            <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
+                                <?php if (in_array($prof['idProfesor'], $profesoresElegidos)) : ?>checked<?php endif; ?>>
+                            <span><?= $prof['nombreProfesor'] ?></span>
                         </label>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
             <div>
                 <h4 class="margen-abajo">Asignar Aulas Habituales</h4>
                 <div class="lista-checkboxes">
-                    <?php foreach ($listaAulas as $aula) { ?>
+                    <?php foreach ($listaAulas as $aula) : ?>
                         <label class="item-checkbox">
-                            <input type="checkbox" name="aulas[]" value="<?php echo $aula['idAula']; ?>"
-                                <?php if (in_array($aula['idAula'], $aulasElegidas)) { echo 'checked'; } ?>>
-                            <span><?php echo $aula['nombreAula']; ?></span>
+                            <input type="checkbox" name="aulas[]" value="<?= $aula['idAula'] ?>"
+                                <?php if (in_array($aula['idAula'], $aulasElegidas)) : ?>checked<?php endif; ?>>
+                            <span><?= $aula['nombreAula'] ?></span>
                         </label>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
@@ -123,4 +108,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

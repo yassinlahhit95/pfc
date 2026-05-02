@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['idProfesor'])) {
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
     header("Location: ../../../index.php");
     exit;
 }
@@ -9,9 +10,12 @@ if (!isset($_SESSION['idProfesor'])) {
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idProfesor = $_SESSION['idProfesor'];
 $estudiantes = listarEstudiantesPorProfesor($idProfesor);
 $listaDeCiclosParaFiltro = obtenerCiclosDeProfesor($idProfesor);
+
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['error'], $_SESSION['exito']);
 
 $tituloDelPagina = "Lista de Estudiantes - Portal Profesores";
 $seccionActual = 'estudiantes';
@@ -19,19 +23,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>GestiÃ³n de Estudiantes</h1>
+    <h1>Gestión de Estudiantes</h1>
 </div>
+
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
         <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
         <select id="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
-            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>">
-                    <?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) : ?>
+                <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
+                    <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                 </option>
-            <?php } ?>
+            <?php endforeach; ?>
         </select>
     </div>
 </div>
@@ -52,24 +63,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($estudiantes) { ?>
-                    <?php foreach ($estudiantes as $est) { ?>
+                <?php if ($estudiantes) : ?>
+                    <?php foreach ($estudiantes as $est) : ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $est['nombreEstudiante']; ?></td>
-                            <td><?php echo $est['emailEstudiante']; ?></td>
-                            <td><?php echo $est['dniEstudiante']; ?></td>
-                            <td><?php echo $est['nombreCiclo']; ?></td>
+                            <td class="texto-negrita"><?= $est['nombreEstudiante'] ?></td>
+                            <td><?= $est['emailEstudiante'] ?></td>
+                            <td><?= $est['dniEstudiante'] ?></td>
+                            <td><?= $est['nombreCiclo'] ?></td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay estudiantes registrados.</td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

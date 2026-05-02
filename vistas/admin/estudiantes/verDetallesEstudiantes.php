@@ -5,9 +5,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idDelEstudiante = 0;
-if (isset($_GET['idEstudiante'])) {
-    $idDelEstudiante = $_GET['idEstudiante'];
-}
+$idDelEstudiante = ($_GET['idEstudiante'] ?? 0);
 
 $estudiante = obtenerEstudiantePorId($idDelEstudiante);
 
@@ -24,10 +22,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="encabezado-pagina">
     <h1>Ficha de Estudiante</h1>
     <div class="acciones-pagina">
-        <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $idDelEstudiante; ?>" class="boton-primario">
+        <a href="../../../vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-primario">
             <i class="fas fa-edit"></i> Editar Datos
         </a>
-        <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">
+        <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">
             <i class="fas fa-arrow-left"></i> Volver
         </a>
     </div>
@@ -40,47 +38,47 @@ include_once __DIR__ . "/../comunes/nav.php";
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?php echo $estudiante['nombreEstudiante']; ?></div>
+        <div class="valor-detalle texto-negrita"><?= $estudiante['nombreEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Email</div>
-        <div class="valor-detalle"><?php echo $estudiante['emailEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['emailEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">DNI</div>
-        <div class="valor-detalle"><?php echo $estudiante['dniEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">TelÃ©fono</div>
-        <div class="valor-detalle"><?php echo $estudiante['telefonoEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Ciclo Formativo</div>
-        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?php echo $estudiante['nombreCiclo']; ?></span></div>
+        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha de Nacimiento</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Ciudad / DirecciÃ³n</div>
-        <div class="valor-detalle"><?php echo $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha de Alta</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante'])) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Observaciones</div>
-        <div class="valor-detalle"><?php echo !empty($estudiante['observacionesEstudiante']) ? $estudiante['observacionesEstudiante'] : '<span class="texto-atenuado">Sin observaciones</span>'; ?></div>
+        <div class="valor-detalle"><?= !empty($estudiante['observacionesEstudiante']) ? $estudiante['observacionesEstudiante'] : '<span class="texto-atenuado">Sin observaciones</span>' ?></div>
     </div>
 </div>
 
@@ -92,7 +90,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div>
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
                 <span class="estado-bolita activo-verde">Entregado</span>
-                <p class="texto-pequeno texto-atenuado mt-5">Subido el: <?php echo date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])); ?></p>
+                <p class="texto-pequeno texto-atenuado mt-5">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
             <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">No subido</span>
             <?php } ?>

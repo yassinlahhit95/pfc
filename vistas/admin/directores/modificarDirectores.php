@@ -6,7 +6,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-$id_director = $_GET['idDirector'];
+$id_director = $_GET['idDirector'] ?? '';
 $director = obtenerDirectorPorId($id_director);
 
 if (!$director) {
@@ -14,12 +14,10 @@ if (!$director) {
     exit;
 }
 
-if (isset($_SESSION['datos_director'])) {
-    $director = $_SESSION['datos_director'];
-}
+$director = ($_SESSION['datos_director'] ?? 0);
 
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$error = $_SESSION['error'] ?? '';
+$lista_de_errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
 ?>
@@ -29,82 +27,82 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
     <a href="verDirectores.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if (isset($mensaje_error)) { ?>
-    <div class="mensaje-error"><?php echo $mensaje_error; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/directores/actualizar.php" method="POST">
-        <input type="hidden" name="idDirector" value="<?php echo $id_director; ?>">
+    <form action="../../../controladores/admin/directores/actualizar.php" method="POST">
+        <input type="hidden" name="idDirector" value="<?= $id_director ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
-                <input type="text" name="nombreDirector" value="<?php echo $director['nombreDirector']; ?>">
-                <?php if (isset($lista_de_errores['nombreDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['nombreDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="nombreDirector" value="<?= $director['nombreDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['nombreDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['nombreDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Email *</label>
-                <input type="text" name="emailDirector" value="<?php echo $director['emailDirector']; ?>">
-                <?php if (isset($lista_de_errores['emailDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['emailDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="emailDirector" value="<?= $director['emailDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['emailDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['emailDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>DNI *</label>
-                <input type="text" name="dniDirector" value="<?php echo $director['dniDirector']; ?>">
-                <?php if (isset($lista_de_errores['dniDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['dniDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="dniDirector" value="<?= $director['dniDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['dniDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['dniDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Teléfono *</label>
-                <input type="text" name="telefonoDirector" value="<?php echo $director['telefonoDirector']; ?>">
-                <?php if (isset($lista_de_errores['telefonoDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['telefonoDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="telefonoDirector" value="<?= $director['telefonoDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['telefonoDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['telefonoDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Nacimiento *</label>
-                <input type="date" name="fechaNacimientoDirector" value="<?php echo $director['fechaNacimientoDirector']; ?>">
-                <?php if (isset($lista_de_errores['fechaNacimientoDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaNacimientoDirector']; ?></p>
-                <?php } ?>
+                <input type="date" name="fechaNacimientoDirector" value="<?= $director['fechaNacimientoDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['fechaNacimientoDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['fechaNacimientoDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Ciudad *</label>
-                <input type="text" name="ciudadDirector" value="<?php echo $director['ciudadDirector']; ?>">
-                <?php if (isset($lista_de_errores['ciudadDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['ciudadDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="ciudadDirector" value="<?= $director['ciudadDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['ciudadDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['ciudadDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Código Postal *</label>
-                <input type="text" name="codigoPostalDirector" value="<?php echo $director['codigoPostalDirector']; ?>">
-                <?php if (isset($lista_de_errores['codigoPostalDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['codigoPostalDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="codigoPostalDirector" value="<?= $director['codigoPostalDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['codigoPostalDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['codigoPostalDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Dirección Completa *</label>
-                <input type="text" name="direccionDirector" value="<?php echo $director['direccionDirector']; ?>">
-                <?php if (isset($lista_de_errores['direccionDirector'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['direccionDirector']; ?></p>
-                <?php } ?>
+                <input type="text" name="direccionDirector" value="<?= $director['direccionDirector'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['direccionDirector'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['direccionDirector'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Observaciones / Notas Internas</label>
-                <textarea name="observacionesDirector" rows="3"><?php echo $director['observacionesDirector']; ?></textarea>
+                <textarea name="observacionesDirector" rows="3"><?= $director['observacionesDirector'] ?? '' ?></textarea>
             </div>
         </div>
 
@@ -117,4 +115,3 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

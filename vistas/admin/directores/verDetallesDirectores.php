@@ -6,23 +6,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-$id = 0;
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-}
-
+$id = $_GET['id'] ?? 0;
 $director = obtenerDirectorPorId($id);
 
-if (!$director) {
-    echo "<div class='mensaje-error'>Director no encontrado.</div>";
-    include '../comunes/footer.php';
+if (!$director) : ?>
+    <div class='mensaje-error'>Director no encontrado.</div>
+    <?php include '../comunes/footer.php';
     exit;
-}
+endif;
 ?>
 
 <div class="encabezado-pagina">
     <h1>Ficha del Director</h1>
-    <a href="/pfc/vistas/admin/directores/verDirectores.php" class="boton-secundario">
+    <a href="verDirectores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
     </a>
 </div>
@@ -34,48 +30,44 @@ if (!$director) {
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?php echo $director['nombreDirector']; ?></div>
+        <div class="valor-detalle texto-negrita"><?= $director['nombreDirector'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Email</div>
-        <div class="valor-detalle"><?php echo $director['emailDirector']; ?></div>
+        <div class="valor-detalle"><?= $director['emailDirector'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">DNI</div>
         <div class="valor-detalle">
-            <?php 
-                if (isset($director['dniDirector']) && !empty($director['dniDirector'])) {
-                    echo $director['dniDirector'];
-                } else {
-                    echo '<span class="texto-atenuado">No especificado</span>';
-                }
-            ?>
+            <?php if (!empty($director['dniDirector'])) : ?>
+                <?= $director['dniDirector'] ?>
+            <?php else : ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Teléfono</div>
-        <div class="valor-detalle"><?php echo $director['telefonoDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+        <div class="valor-detalle"><?= $director['telefonoDirector'] ?: '<span class="texto-atenuado">No especificado</span>' ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha de Nacimiento</div>
         <div class="valor-detalle">
-            <?php 
-                if (isset($director['fechaNacimientoDirector']) && $director['fechaNacimientoDirector'] != '0000-00-00') {
-                    echo date('d/m/Y', strtotime($director['fechaNacimientoDirector']));
-                } else {
-                    echo '<span class="texto-atenuado">No especificado</span>';
-                }
-            ?>
+            <?php if (isset($director['fechaNacimientoDirector']) && $director['fechaNacimientoDirector'] != '0000-00-00') : ?>
+                <?= date('d/m/Y', strtotime($director['fechaNacimientoDirector'])) ?>
+            <?php else : ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha Alta</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y', strtotime($director['fechaAltaDirector'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y', strtotime($director['fechaAltaDirector'])) ?></div>
     </div>
 </div>
 
@@ -86,17 +78,17 @@ if (!$director) {
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Dirección</div>
-        <div class="valor-detalle"><?php echo $director['direccionDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+        <div class="valor-detalle"><?= $director['direccionDirector'] ?: '<span class="texto-atenuado">No especificado</span>' ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Ciudad</div>
-        <div class="valor-detalle"><?php echo $director['ciudadDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+        <div class="valor-detalle"><?= $director['ciudadDirector'] ?: '<span class="texto-atenuado">No especificado</span>' ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Código Postal</div>
-        <div class="valor-detalle"><?php echo $director['codigoPostalDirector'] ?: '<span class="texto-atenuado">No especificado</span>'; ?></div>
+        <div class="valor-detalle"><?= $director['codigoPostalDirector'] ?: '<span class="texto-atenuado">No especificado</span>' ?></div>
     </div>
 </div>
 
@@ -105,9 +97,8 @@ if (!$director) {
         <h3>Observaciones</h3>
     </div>
     <div class="tarjeta-gris-suave p-20 pre-wrap">
-        <?php echo $director['observacionesDirector'] ?: '<span class="texto-atenuado">Sin observaciones.</span>'; ?>
+        <?= $director['observacionesDirector'] ?: '<span class="texto-atenuado">Sin observaciones.</span>' ?>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

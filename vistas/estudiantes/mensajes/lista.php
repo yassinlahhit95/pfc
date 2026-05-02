@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -14,25 +18,21 @@ $listaDeMensajes = listarMensajesDeEstudiante($idEstudiante);
 $tituloDelPagina = "Mis Mensajes - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
-
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
-unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>MIS MENSAJES</h1>
-    <a href="/pfc/vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
+    <a href="agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO MENSAJE
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -48,46 +48,46 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aÃºn.</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { 
+                <?php if (empty($listaDeMensajes)) : ?>
+                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
+                <?php else : ?>
+                    <?php foreach ($listaDeMensajes as $mensaje) : 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
                     ?>
-                    <tr class="<?php echo $claseFila; ?>">
+                    <tr class="<?= $claseFila ?>">
                         <td>
                             <strong><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
                                     echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
                                 } else {
-                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÃ“N (ADMIN)';
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
                                 }
                             ?></strong>
                         </td>
-                        <td><p class="texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></p></td>
+                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?php echo substr($mensaje['descripcion'], 0, 80); ?>...
+                                <?= substr($mensaje['descripcion'], 0, 80) ?>...
                             </div>
                         </td>
-                        <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
+                        <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
-                            <?php if ($mensaje['leido']) { ?>
+                            <?php if ($mensaje['leido']) : ?>
                                 <span class="estado-bolita activo-verde">VISTO</span>
-                            <?php } else { ?>
+                            <?php else : ?>
                                 <span class="estado-bolita inactivo-rojo">ENVIADO</span>
-                            <?php } ?>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/estudiantes/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                <a href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

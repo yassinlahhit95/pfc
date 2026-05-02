@@ -1,7 +1,11 @@
 <?php
 session_start();
 
-// ValidaciÃ³n de sesiÃ³n simple
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
+// Validación de sesión simple
 if (empty($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -23,22 +27,29 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Consulta tu historial de pagos y estado financiero</p>
 </div>
 
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
+
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
     <div class="info-estadistica">
-        <h3><?php echo number_format($datosEstadoFinanciero['totalPagado'], 2); ?> â‚¬</h3>
+        <h3><?= number_format($datosEstadoFinanciero['totalPagado'], 2) ?> €</h3>
         <p>TOTAL PAGADO</p>
     </div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica">
-        <h3><?php echo number_format($datosEstadoFinanciero['precioCiclo'], 2); ?> â‚¬</h3>
+        <h3><?= number_format($datosEstadoFinanciero['precioCiclo'], 2) ?> €</h3>
         <p>PRECIO DEL CICLO</p>
     </div>
   </div>
-  <div class="tarjeta-estadistica <?php if ($datosEstadoFinanciero['restante'] > 0) { echo 'tarjeta-estadistica-naranja'; } else { echo 'tarjeta-estadistica-cian'; } ?>">
+  <div class="tarjeta-estadistica <?= ($datosEstadoFinanciero['restante'] > 0) ? 'tarjeta-estadistica-naranja' : 'tarjeta-estadistica-cian' ?>">
     <div class="info-estadistica">
-        <h3><?php echo number_format($datosEstadoFinanciero['restante'], 2); ?> â‚¬</h3>
+        <h3><?= number_format($datosEstadoFinanciero['restante'], 2) ?> €</h3>
         <p>PENDIENTE DE PAGO</p>
     </div>
   </div>
@@ -56,34 +67,34 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>FECHA</th>
                     <th>CONCEPTO / TIPO</th>
                     <th>MONTO</th>
-                    <th>PRÃ“XIMO PAGO</th>
+                    <th>PRÓXIMO PAGO</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaMisPagos)) { ?>
+                <?php if (empty($listaMisPagos)) : ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay pagos registrados en su historial.</td>
                     </tr>
-                <?php } else { ?>
-                    <?php foreach ($listaMisPagos as $pagoIndividual) { ?>
+                <?php else : ?>
+                    <?php foreach ($listaMisPagos as $pagoIndividual) : ?>
                     <tr>
-                        <td><?php echo date('d/m/Y', strtotime($pagoIndividual['fechaPago'])); ?></td>
+                        <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?php echo strtoupper($pagoIndividual['tipoPago']); ?></span>
+                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
-                        <td class="texto-negrita"><?php echo number_format($pagoIndividual['monto'], 2); ?> â‚¬</td>
+                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td>
                             <?php 
-                                if ($pagoIndividual['tipoPago'] == 'unico') {
+                                if ($pagoIndividual['tipoPago'] == 'unico') :
                                     echo '<span class="texto-gris">N/A (PAGO FINALIZADO)</span>';
-                                } else {
+                                else :
                                     echo date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])); 
-                                }
+                                endif;
                             ?>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

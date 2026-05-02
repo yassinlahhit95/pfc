@@ -1,35 +1,31 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Retos - Super Admin";
-$seccion = 'retos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/retos.php";
 
 $todos_los_retos = listarRetos();
 
-$error = "";
-if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
-
-$exito = "";
-if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
-
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
+
+$titulo_pagina = "Gestión de Retos - Super Admin";
+$seccion = 'retos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Retos / Proyectos</h1>
-    <a href="/pfc/vistas/admin/retos/agregarRetos.php" class="boton-primario">
+    <a href="agregarRetos.php" class="boton-primario">
         <i class="fas fa-plus"></i> Nuevo Reto
     </a>
 </div>
 
-<?php if (!empty($exito)) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -45,27 +41,27 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_retos)) { ?>
+                <?php if (empty($todos_los_retos)) : ?>
                     <tr><td colspan="6" class="sin-datos">No hay retos configurados</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($todos_los_retos as $reto) { 
+                <?php else : ?>
+                    <?php foreach ($todos_los_retos as $reto) : 
                         $modulos = obtenerModulosDeReto($reto['idReto']);
                         $nombresModulos = array_column($modulos, 'nombreModulo');
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
                     ?>
                     <tr>
-                        <td><strong><?php echo $reto['nombreReto']; ?></strong></td>
-                        <td><?php echo $textoModulos; ?></td>
-                        <td><?php echo $reto['horasReto']; ?>h</td>
-                        <td><?php echo date('d/m/Y', strtotime($reto['fechaInicio'])); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($reto['fechaFin'])); ?></td>
+                        <td><strong><?= $reto['nombreReto'] ?></strong></td>
+                        <td><?= $textoModulos ?></td>
+                        <td><?= $reto['horasReto'] ?>h</td>
+                        <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
+                        <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/retos/modificarRetos.php?idReto=<?php echo $reto['idReto']; ?>" class="btn-accion btn-editar">
+                                <a href="modificarRetos.php?idReto=<?= $reto['idReto'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/retos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este reto?')">
-                                    <input type="hidden" name="idReto" value="<?php echo $reto['idReto']; ?>">
+                                <form action="../../../controladores/admin/retos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este reto?')">
+                                    <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -73,12 +69,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             </div>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

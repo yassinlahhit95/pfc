@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -20,6 +24,13 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
     <h1>Mis Calificaciones en Retos</h1>
 </div>
 
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos">
@@ -32,22 +43,22 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($mis_notas_retos)) { ?>
+                <?php if (empty($mis_notas_retos)) : ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">AÃºn no tienes calificaciones registradas en retos.</td>
+                        <td colspan="4" class="sin-datos">Aún no tienes calificaciones registradas en retos.</td>
                     </tr>
-                <?php } else { ?>
-                    <?php foreach ($mis_notas_retos as $nota) { ?>
+                <?php else : ?>
+                    <?php foreach ($mis_notas_retos as $nota) : ?>
                     <tr>
-                        <td><strong><?php echo $nota['nombreReto']; ?></strong></td>
-                        <td><?php echo $nota['fechaInicio']; ?></td>
-                        <td><?php echo $nota['fechaFin']; ?></td>
+                        <td><strong><?= $nota['nombreReto'] ?></strong></td>
+                        <td><?= $nota['fechaInicio'] ?></td>
+                        <td><?= $nota['fechaFin'] ?></td>
                         <td class="texto-negrita color-primario font-size-11">
-                            <?php echo $nota['nota']; ?>
+                            <?= $nota['nota'] ?>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

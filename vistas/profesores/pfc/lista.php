@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../../index.php");
     exit;
@@ -11,14 +15,21 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 $idProfesor = $_SESSION['idProfesor'];
 $tfgs = listarTFGsPorProfesor($idProfesor);
 
-$tituloDelPagina = "GestiÃ³n de TFGs - Portal Profesores";
+$tituloDelPagina = "Gestión de TFGs - Portal Profesores";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>GestiÃ³n de TFGs Entregados</h1>
+    <h1>Gestión de TFGs Entregados</h1>
 </div>
+
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -32,26 +43,26 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($tfgs) { ?>
-                    <?php foreach ($tfgs as $tfg) { 
+                <?php if ($tfgs) : ?>
+                    <?php foreach ($tfgs as $tfg) : 
                         $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
                         $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";
                     ?>
                         <tr>
-                            <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
-                            <td><?php echo $tfg['nombreCiclo']; ?></td>
-                            <td><?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?></td>
+                            <td><strong><?= $tfg['nombreEstudiante'] ?></strong></td>
+                            <td><?= $tfg['nombreCiclo'] ?></td>
+                            <td><?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></td>
                             <td>
-                                <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="btn-accion btn-ver" download="<?php echo $nombreDescarga; ?>"><i class="fas fa-download"></i></a>
-                                <a href="/pfc/controladores/profesores/pfc/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>"><i class="fas fa-download"></i></a>
+                                <a href="../../../controladores/profesores/pfc/borrar.php?id=<?= $tfg['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavÃ­a.</td>
+                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavía.</td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

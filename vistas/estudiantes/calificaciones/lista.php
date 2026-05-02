@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -21,53 +25,60 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Mis Calificaciones</h1>
 </div>
 
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
+
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Calificaciones por MÃ³dulo</h3>
+        <h3>Calificaciones por Módulo</h3>
     </div>
     
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>MÃ³dulo</th>
-                    <th>1Âª Ev</th>
-                    <th>1Âª Final</th>
-                    <th>2Âª Ev</th>
-                    <th>2Âª Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Estado</th>
                     <th>Observaciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($notas) { ?>
-                    <?php foreach ($notas as $nota) { 
+                <?php if ($notas) : ?>
+                    <?php foreach ($notas as $nota) : 
                         $nFinal = $nota['nota_2final'] > 0 ? $nota['nota_2final'] : $nota['nota_1final'];
                         $aprobado = ($nFinal >= 5);
                     ?>
                         <tr>
-                            <td><strong><?php echo $nota['nombreModulo']; ?></strong></td>
-                            <td><?php echo $nota['nota_1ev']; ?></td>
-                            <td><?php echo $nota['nota_1final']; ?></td>
-                            <td><?php echo $nota['nota_2ev']; ?></td>
-                            <td><?php echo $nota['nota_2final']; ?></td>
+                            <td><strong><?= $nota['nombreModulo'] ?></strong></td>
+                            <td><?= $nota['nota_1ev'] ?></td>
+                            <td><?= $nota['nota_1final'] ?></td>
+                            <td><?= $nota['nota_2ev'] ?></td>
+                            <td><?= $nota['nota_2final'] ?></td>
                             <td>
-                                <?php if ($aprobado) { ?>
+                                <?php if ($aprobado) : ?>
                                     <span class="texto-verde texto-negrita">Aprobado</span>
-                                <?php } else { ?>
+                                <?php else : ?>
                                     <span class="texto-rojo texto-negrita">Suspenso</span>
-                                <?php } ?>
+                                <?php endif; ?>
                             </td>
-                            <td><small><?php echo $nota['observaciones']; ?></small></td>
+                            <td><small><?= $nota['observaciones'] ?></small></td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="7" class="sin-datos">
                             <i class="fas fa-inbox"></i> No hay calificaciones registradas.
                         </td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

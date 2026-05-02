@@ -11,7 +11,7 @@ $idEvento = $_GET['idEvento'] ?? 0;
 $evento = obtenerEventoPorId($idEvento);
 
 if (!$evento) {
-    header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
+    header("Location: gestionEventos.php");
     exit;
 }
 
@@ -22,37 +22,37 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Modificar Evento</h1>
-    <a href="gestionEventos.php" class="boton-secundario">â† Volver</a>
+    <a href="gestionEventos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="/pfc/controladores/admin/eventos/actualizar.php">
-        <input type="hidden" name="idEvento" value="<?php echo $idEvento; ?>">
+    <form method="POST" action="../../../controladores/admin/eventos/actualizar.php">
+        <input type="hidden" name="idEvento" value="<?= $idEvento ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>TÃ­tulo del Evento *</label>
-                <input type="text" name="tituloEvento" value="<?php echo $evento['tituloEvento']; ?>">
+                <label>Título del Evento *</label>
+                <input type="text" name="tituloEvento" value="<?= $evento['tituloEvento'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>UbicaciÃ³n</label>
-                <input type="text" name="ubicacionEvento" value="<?php echo $evento['ubicacionEvento']; ?>">
+                <label>Ubicación</label>
+                <input type="text" name="ubicacionEvento" value="<?= $evento['ubicacionEvento'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha *</label>
-                <input type="date" name="fechaEvento" value="<?php echo $evento['fechaEvento']; ?>">
+                <input type="date" name="fechaEvento" value="<?= $evento['fechaEvento'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Hora</label>
-                <input type="time" name="horaEvento" value="<?php echo date('H:i', strtotime($evento['horaEvento'])); ?>">
+                <input type="time" name="horaEvento" value="<?= date('H:i', strtotime($evento['horaEvento'] ?? 'now')) ?>">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label>DescripciÃ³n</label>
-                <textarea name="descripcionEvento" rows="3"><?php echo $evento['descripcionEvento']; ?></textarea>
+                <label>Descripción</label>
+                <textarea name="descripcionEvento" rows="3"><?= $evento['descripcionEvento'] ?? '' ?></textarea>
             </div>
         </div>
 
@@ -65,4 +65,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

@@ -8,35 +8,28 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$error = "";
-if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
-
-$exito = "";
-if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
-
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
-
-$datos = [];
-if (isset($_SESSION['datos_ciclos'])) { $datos = $_SESSION['datos_ciclos']; }
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_ciclos'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>Ciclos Formativos</h1>
-    <a href="/pfc/vistas/admin/ciclos/agregarCiclos.php" class="boton-primario">
+    <a href="agregarCiclos.php" class="boton-primario">
         <i class="fas fa-plus"></i> Nuevo Ciclo
     </a>
 </div>
 
-<?php if (!empty($exito)) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -50,21 +43,21 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_ciclos)) { ?>
+                <?php if (empty($todos_los_ciclos)) : ?>
                     <tr><td colspan="4" class="sin-datos">No hay ciclos configurados</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                <?php else : ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) : ?>
                     <tr>
-                        <td><?php echo $ciclo['idCiclo']; ?></td>
-                        <td><strong><?php echo $ciclo['nombreCiclo']; ?></strong></td>
-                        <td><?php echo $ciclo['nombreNivel']; ?></td>
+                        <td><?= $ciclo['idCiclo'] ?></td>
+                        <td><strong><?= $ciclo['nombreCiclo'] ?></strong></td>
+                        <td><?= $ciclo['nombreNivel'] ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=<?php echo $ciclo['idCiclo']; ?>" class="btn-accion btn-editar">
+                                <a href="modificarCiclos.php?idCiclo=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/ciclos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este ciclo?')">
-                                    <input type="hidden" name="idCiclo" value="<?php echo $ciclo['idCiclo']; ?>">
+                                <form action="../../../controladores/admin/ciclos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este ciclo?')">
+                                    <input type="hidden" name="idCiclo" value="<?= $ciclo['idCiclo'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -72,12 +65,11 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </div>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

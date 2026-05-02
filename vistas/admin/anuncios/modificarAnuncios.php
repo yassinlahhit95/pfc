@@ -14,14 +14,12 @@ if (!$anuncio) {
     exit;
 }
 
-if (isset($_SESSION['datos_anuncio'])) {
-    $anuncio = $_SESSION['datos_anuncio'];
-}
+$anuncio = ($_SESSION['datos_anuncio'] ?? 0);
 
 $error = $_SESSION['error'] ?? "";
 
 $lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$lista_de_errores = ($_SESSION['errores'] ?? 0);
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 ?>
@@ -32,26 +30,26 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 </div>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="/pfc/controladores/admin/anuncios/actualizar.php">
-        <input type="hidden" name="idAnuncio" value="<?php echo $id_anuncio; ?>">
+    <form method="POST" action="../../../controladores/admin/anuncios/actualizar.php">
+        <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
         
         <div class="campo-formulario">
             <label>Título del Anuncio *</label>
-            <input type="text" name="tituloAnuncio" value="<?php echo $anuncio['tituloAnuncio']; ?>">
+            <input type="text" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
             <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['tituloAnuncio']; ?></p>
+                <p class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></p>
             <?php } ?>
         </div>
 
         <div class="campo-formulario margen-arriba">
             <label>Contenido del Anuncio *</label>
-            <textarea name="contenidoAnuncio" rows="6"><?php echo $anuncio['contenidoAnuncio']; ?></textarea>
+            <textarea name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
             <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['contenidoAnuncio']; ?></p>
+                <p class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></p>
             <?php } ?>
         </div>
 

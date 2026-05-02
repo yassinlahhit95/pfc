@@ -6,6 +6,10 @@ if (!isset($_SESSION['idProfesor'])) {
     exit;
 }
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
@@ -30,15 +34,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Redactar Mensaje</h1>
-    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">â† Volver</a>
+    <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
-<?php if (isset($_SESSION['error'])) { ?>
-    <div class="mensaje-error"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
-<?php } ?>
-<?php if (isset($_SESSION['exito'])) { ?>
-    <div class="mensaje-exito"><?php echo $_SESSION['exito']; unset($_SESSION['exito']); ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     
@@ -49,11 +53,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Filtrar Estudiantes por Ciclo:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos mis alumnos --</option>
-                    <?php foreach ($listaDeCiclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php echo ($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : ''); ?>>
-                            <?php echo $ciclo['nombreCiclo']; ?>
+                    <?php foreach ($listaDeCiclos as $ciclo) : ?>
+                        <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : '') ?>>
+                            <?= $ciclo['nombreCiclo'] ?>
                         </option>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div>
@@ -64,8 +68,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="titulo-tarjeta mt-30"><h3>Nuevo Mensaje</h3></div>
 
-    <form action="/pfc/controladores/profesores/mensajes/insertar.php" method="POST" class="form-estandar">
-        <input type="hidden" name="idProfesor" value="<?php echo $idProfesor; ?>">
+    <form action="../../../controladores/profesores/mensajes/insertar.php" method="POST" class="form-estandar">
+        <input type="hidden" name="idProfesor" value="<?= $idProfesor ?>">
         
         <div class="campo-formulario">
             <label>Destinatario (Estudiante o DirecciÃ³n)</label>
@@ -73,11 +77,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <option value="">-- Seleccionar Destinatario --</option>
                 <option value="1">DirecciÃ³n (AdministraciÃ³n)</option>
                 <optgroup label="Estudiantes">
-                    <?php foreach ($listaDeEstudiantes as $estudiante) { ?>
-                        <option value="<?php echo $estudiante['idEstudiante']; ?>">
-                            <?php echo $estudiante['nombreEstudiante']; ?> (<?php echo $estudiante['nombreCiclo']; ?>)
+                    <?php foreach ($listaDeEstudiantes as $estudiante) : ?>
+                        <option value="<?= $estudiante['idEstudiante'] ?>">
+                            <?= $estudiante['nombreEstudiante'] ?> (<?= $estudiante['nombreCiclo'] ?>)
                         </option>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </optgroup>
             </select>
         </div>
@@ -96,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="enviarMensaje" class="boton-primario">
                 <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
             </button>
-            <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario ml-10">CANCELAR</a>
+            <a href="lista.php" class="boton-secundario ml-10">CANCELAR</a>
         </div>
     </form>
 </div>

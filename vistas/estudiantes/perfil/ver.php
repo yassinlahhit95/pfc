@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -18,52 +22,59 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>MI PERFIL</h1>
-    <a href="/pfc/vistas/estudiantes/dashboard.php" class="boton-secundario">
+    <a href="../dashboard.php" class="boton-secundario">
         <i class="fas fa-home"></i> VOLVER AL INICIO
     </a>
 </div>
+
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
 
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Nombre completo</div>
-        <div class="valor-detalle"><?php echo $estudiante['nombreEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['nombreEstudiante'] ?></div>
     </div> 
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Ciclo </div>
-        <div class="valor-detalle"><?php echo $estudiante['nombreCiclo']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['nombreCiclo'] ?></div>
     </div>
 
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Email</div>
-        <div class="valor-detalle"><?php echo $estudiante['emailEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['emailEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">TelÃ©fono</div>
-        <div class="valor-detalle"><?php echo $estudiante['telefonoEstudiante']; ?></div>
+        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">DNI</div>
-        <div class="valor-detalle"><?php echo $estudiante['dniEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Ciudad</div>
-        <div class="valor-detalle"><?php echo $estudiante['ciudadEstudiante']; ?></div>
+        <div class="valor-detalle"><?= $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">DirecciÃ³n</div>
-        <div class="valor-detalle"><?php echo $estudiante['direccionEstudiante']; ?></div>
+        <div class="etiqueta-detalle">Dirección</div>
+        <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] ?></div>
     </div>
 
          <div>
-            <a href="/pfc/vistas/estudiantes/perfil/editar.php" class="boton-primario">
+            <a href="editar.php" class="boton-primario">
                 <i class="fas fa-edit"></i> Editar mi Perfil
             </a>
         </div>

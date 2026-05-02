@@ -13,7 +13,7 @@ $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
     $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO.");
-    header("Location: ../../../vistas/profesores/mensajes/lista.php");
+    header("Location: lista.php");
     exit;
 }
 
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">â† Volver</a>
+    <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -46,41 +46,41 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)'; ?>
+            <?= ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'DirecciÃ³n') : $nombreProfeParaVista . ' (Profesor)'; ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'DirecciÃ³n') : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y H:i', strtotime($mensaje['fecha'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
-            <?php if ($mensaje['leido']) { ?>
+            <?php if ($mensaje['leido']) : ?>
                 <span class="estado-bolita activo-verde">LEÃDO / VISTO</span>
-            <?php } else { ?>
+            <?php else : ?>
                 <span class="estado-bolita inactivo-rojo">PENDIENTE / NUEVO</span>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="margen-arriba p-20 bg-gris-suave rounded-8 break-word ancho-completo">
         <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
-        <div class="line-height-16 pre-wrap max-ancho-completo"><?php echo $mensaje['descripcion']; ?></div>
+        <div class="line-height-16 pre-wrap max-ancho-completo"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

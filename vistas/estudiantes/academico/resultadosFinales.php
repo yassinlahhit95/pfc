@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -21,15 +25,22 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Mis Resultados Finales</h1>
-    <p class="subtitulo">Ciclo: <?php echo $resumenFinal['nombreCiclo']; ?></p>
+    <p class="subtitulo">Ciclo: <?= $resumenFinal['nombreCiclo'] ?></p>
 </div>
+
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>MÃ³dulo</th>
+                    <th>Módulo</th>
                     <th>Media Notas (75%)</th>
                     <th>Media Retos (25%)</th>
                     <th>Nota Final</th>
@@ -37,23 +48,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($resumenFinal['detalles_modulos'])) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay mÃ³dulos registrados en su ciclo.</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { 
+                <?php if (empty($resumenFinal['detalles_modulos'])) : ?>
+                    <tr><td colspan="5" class="sin-datos">No hay módulos registrados en su ciclo.</td></tr>
+                <?php else : ?>
+                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) : 
                         $clase = "texto-rojo";
                         if ($fila['estado'] == "Aprobado") { $clase = "texto-verde"; }
                         if ($fila['estado'] == "Pendiente") { $clase = "texto-gris"; }
                     ?>
                     <tr>
-                        <td class="texto-negrita"><?php echo $fila['nombreModulo']; ?></td>
-                        <td><?php echo $fila['media_notas']; ?></td>
-                        <td><?php echo $fila['media_retos']; ?></td>
-                        <td class="texto-negrita"><?php echo $fila['nota_final']; ?></td>
-                        <td class="<?php echo $clase; ?> texto-negrita"><?php echo $fila['estado']; ?></td>
+                        <td class="texto-negrita"><?= $fila['nombreModulo'] ?></td>
+                        <td><?= $fila['media_notas'] ?></td>
+                        <td><?= $fila['media_retos'] ?></td>
+                        <td class="texto-negrita"><?= $fila['nota_final'] ?></td>
+                        <td class="<?= $clase ?> texto-negrita"><?= $fila['estado'] ?></td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
@@ -64,12 +75,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
         <div>
             <p class="texto-atenuado">Promedio General:</p>
-            <h2 class="color-primario"><?php echo $resumenFinal['promedio_global']; ?></h2>
+            <h2 class="color-primario"><?= $resumenFinal['promedio_global'] ?></h2>
         </div>
         <div class="text-right">
             <p class="texto-atenuado">Estado AcadÃ©mico:</p>
-            <span class="estado-bolita <?php echo ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo'); ?>">
-                <?php echo $resumenFinal['estado_global']; ?>
+            <span class="estado-bolita <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
+                <?= $resumenFinal['estado_global'] ?>
             </span>
         </div>
     </div>

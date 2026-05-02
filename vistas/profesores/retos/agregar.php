@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../../index.php");
     exit;
@@ -13,11 +17,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Nuevo Reto</h1>
-    <a href="/pfc/vistas/profesores/retos/lista.php" class="boton-secundario">â† Volver</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/profesores/retos/insertar.php" method="POST">
+    <form action="../../../controladores/profesores/retos/insertar.php" method="POST">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Reto *</label>

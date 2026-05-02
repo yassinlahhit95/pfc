@@ -8,17 +8,10 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $todos_los_anuncios = listarTodosLosAnuncios();
 
-$error = "";
-if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
-
-$exito = "";
-if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
-
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
-
-$datos = [];
-if (isset($_SESSION['datos_anuncio'])) { $datos = $_SESSION['datos_anuncio']; }
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_anuncio'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 ?>
@@ -27,26 +20,26 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Anuncios del Sistema</h1>
 </div>
 
-<?php if (!empty($exito)) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
         <h3>Publicar Nuevo Anuncio</h3>
     </div>
-    <form method="POST" action="/pfc/controladores/admin/anuncios/insertar.php">
+    <form method="POST" action="../../../controladores/admin/anuncios/insertar.php">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Título del Anuncio *</label>
-                <input type="text" name="tituloAnuncio" value="<?php if(isset($datos['tituloAnuncio'])) echo $datos['tituloAnuncio']; ?>" placeholder="Ej: Mantenimiento de la plataforma">
-                <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['tituloAnuncio']; ?></p>
-                <?php } ?>
+                <input type="text" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">
+                <?php if (isset($lista_de_errores['tituloAnuncio'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
@@ -60,10 +53,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Contenido del Anuncio *</label>
-                <textarea name="contenidoAnuncio" rows="4" placeholder="Escriba aquí el mensaje..."><?php if(isset($datos['contenidoAnuncio'])) echo $datos['contenidoAnuncio']; ?></textarea>
-                <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['contenidoAnuncio']; ?></p>
-                <?php } ?>
+                <textarea name="contenidoAnuncio" rows="4" placeholder="Escriba aquí el mensaje..."><?= $datos['contenidoAnuncio'] ?? '' ?></textarea>
+                <?php if (isset($lista_de_errores['contenidoAnuncio'])) : ?>
+                    <p class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></p>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -90,24 +83,24 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_anuncios)) { ?>
+                <?php if (empty($todos_los_anuncios)) : ?>
                     <tr><td colspan="4" class="sin-datos">No hay anuncios publicados</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($todos_los_anuncios as $anuncio) { ?>
+                <?php else : ?>
+                    <?php foreach ($todos_los_anuncios as $anuncio) : ?>
                     <tr>
-                        <td><strong><?php echo $anuncio['tituloAnuncio']; ?></strong></td>
-                        <td><small><?php echo substr($anuncio['contenidoAnuncio'], 0, 100); ?>...</small></td>
-                        <td><?php echo date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])); ?></td>
+                        <td><strong><?= $anuncio['tituloAnuncio'] ?></strong></td>
+                        <td><small><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</small></td>
+                        <td><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/anuncios/detallesAnuncio.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="btn-accion btn-ver" title="Ver detalles">
+                                <a href="detallesAnuncio.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-ver" title="Ver detalles">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/anuncios/modificarAnuncios.php?idAnuncio=<?php echo $anuncio['idAnuncio']; ?>" class="btn-accion btn-editar">
+                                <a href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este anuncio?')">
-                                    <input type="hidden" name="idAnuncio" value="<?php echo $anuncio['idAnuncio']; ?>">
+                                <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este anuncio?')">
+                                    <input type="hidden" name="idAnuncio" value="<?= $anuncio['idAnuncio'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -115,12 +108,11 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </div>
                         </td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

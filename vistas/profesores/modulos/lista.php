@@ -31,23 +31,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($modulos) { ?>
-                    <?php foreach ($modulos as $mod) { ?>
+                <?php if ($modulos) : ?>
+                    <?php foreach ($modulos as $mod) : ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $mod['nombreModulo']; ?></td>
-                            <td><?php echo $mod['horasMaximas']; ?> h</td>
-                            <td><?php echo $mod['nombreCiclo']; ?></td>
+                            <td class="texto-negrita"><?= $mod['nombreModulo'] ?></td>
+                            <td><?= $mod['horasMaximas'] ?> h</td>
+                            <td><?= $mod['nombreCiclo'] ?></td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="3" class="sin-datos">No hay mÃ³dulos registrados.</td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

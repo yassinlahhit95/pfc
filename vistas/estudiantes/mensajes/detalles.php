@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -13,11 +17,11 @@ $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
     $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.");
-    header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
+    header("Location: lista.php");
     exit;
 }
 
-// Marcar como leÃ­do automÃ¡ticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'estudiante' && $mensaje['idEstudiante'] == $_SESSION['idEstudiante']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
@@ -30,45 +34,52 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="boton-secundario">â† Volver</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
+
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> InformaciÃ³n del Mensaje</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> Información del Mensaje</h3>
     </div>
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'AdministraciÃ³n (Sistema)'; ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administración (Sistema)' ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Enviado el</div>
-        <div class="valor-detalle"><?php echo date('d/m/Y H:i', strtotime($mensaje['fecha'])); ?></div>
+        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
-            <?php if ($mensaje['leido']) { ?>
+            <?php if ($mensaje['leido']) : ?>
                 <span class="estado-bolita activo-verde">VISTO</span>
-            <?php } else { ?>
+            <?php else : ?>
                 <span class="estado-bolita inactivo-rojo">NUEVO / SIN LEER</span>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="margen-arriba p-20 bg-gris-suave rounded-8">
         <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
-        <div class="line-height-16 pre-wrap"><?php echo $mensaje['descripcion']; ?></div>
+        <div class="line-height-16 pre-wrap"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

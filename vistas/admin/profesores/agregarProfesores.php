@@ -24,14 +24,10 @@ foreach ($todosLosModulos as $m) {
 }
 
 $lista_de_errores = [];
-if (isset($_SESSION['errores'])) {
-    $lista_de_errores = $_SESSION['errores'];
-}
+$lista_de_errores = ($_SESSION['errores'] ?? 0);
 
 $datos = [];
-if (isset($_SESSION['datos_profesor'])) {
-    $datos = $_SESSION['datos_profesor'];
-}
+$datos = ($_SESSION['datos_profesor'] ?? 0);
 
 $ciclosElegidos = (isset($datos['ciclos']) && is_array($datos['ciclos'])) ? $datos['ciclos'] : [];
 $modulosElegidos = (isset($datos['modulos']) && is_array($datos['modulos'])) ? $datos['modulos'] : [];
@@ -41,18 +37,18 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
 <div class="encabezado-pagina">
     <h1>Nuevo Profesor</h1>
-    <a href="/pfc/vistas/admin/profesores/verProfesores.php" class="boton-secundario">← Volver</a>
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/profesores/insertar.php" method="POST">
+    <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
         <div class="formulario-cuadricula">
             <!-- (Same profile fields as before) -->
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['nombreProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['nombreProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['nombreProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -60,7 +56,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Email *</label>
                 <input type="text" name="emailProfesor" value="<?php if(isset($datos['emailProfesor'])) { echo $datos['emailProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['emailProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['emailProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['emailProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -68,7 +64,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>DNI *</label>
                 <input type="text" name="dniProfesor" value="<?php if(isset($datos['dniProfesor'])) { echo $datos['dniProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['dniProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['dniProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['dniProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -76,7 +72,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Teléfono *</label>
                 <input type="text" name="telefonoProfesor" value="<?php if(isset($datos['telefonoProfesor'])) { echo $datos['telefonoProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['telefonoProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['telefonoProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['telefonoProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -84,7 +80,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Dirección *</label>
                 <input type="text" name="direccionProfesor" value="<?php if(isset($datos['direccionProfesor'])) { echo $datos['direccionProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['direccionProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['direccionProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['direccionProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -92,7 +88,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Ciudad *</label>
                 <input type="text" name="ciudadProfesor" value="<?php if(isset($datos['ciudadProfesor'])) { echo $datos['ciudadProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['ciudadProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['ciudadProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['ciudadProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -100,7 +96,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Código Postal *</label>
                 <input type="text" name="codigoPostalProfesor" value="<?php if(isset($datos['codigoPostalProfesor'])) { echo $datos['codigoPostalProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['codigoPostalProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['codigoPostalProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['codigoPostalProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -108,7 +104,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <label>Fecha de Nacimiento *</label>
                 <input type="date" name="fechaNacimientoProfesor" value="<?php if(isset($datos['fechaNacimientoProfesor'])) { echo $datos['fechaNacimientoProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoProfesor'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaNacimientoProfesor']; ?></p>
+                    <p class="error-campo"><?= $lista_de_errores['fechaNacimientoProfesor'] ?></p>
                 <?php } ?>
             </div>
 
@@ -124,9 +120,9 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <div class="lista-checkboxes scroll-vertical-200">
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="item-checkbox">
-                            <input type="checkbox" name="ciclos[]" value="<?php echo $ciclo['idCiclo']; ?>" class="check-ciclo" data-id="<?php echo $ciclo['idCiclo']; ?>"
+                            <input type="checkbox" name="ciclos[]" value="<?= $ciclo['idCiclo'] ?>" class="check-ciclo" data-id="<?= $ciclo['idCiclo'] ?>"
                                 <?php if (in_array($ciclo['idCiclo'], $ciclosElegidos)) { echo 'checked'; } ?>>
-                            <span><?php echo $ciclo['nombreCiclo']; ?></span>
+                            <span><?= $ciclo['nombreCiclo'] ?></span>
                         </label>
                     <?php } ?>
                 </div>
@@ -139,15 +135,15 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos mb-15 d-none" data-ciclo-id="<?php echo $idCiclo; ?>">
+                        <div class="grupo-modulos mb-15 d-none" data-ciclo-id="<?= $idCiclo ?>">
                             <p class="texto-negrita color-primario borde-abajo-gris mb-10 pb-3">
-                                <?php echo $grupo['nombre']; ?>
+                                <?= $grupo['nombre'] ?>
                             </p>
                             <?php foreach ($grupo['modulos'] as $mod) { ?>
                                 <label class="item-checkbox pl-10">
-                                    <input type="checkbox" name="modulos[]" value="<?php echo $mod['idModulo']; ?>"
+                                    <input type="checkbox" name="modulos[]" value="<?= $mod['idModulo'] ?>"
                                         <?php if (in_array($mod['idModulo'], $modulosElegidos)) { echo 'checked'; } ?>>
-                                    <span><?php echo $mod['nombreModulo']; ?></span>
+                                    <span><?= $mod['nombreModulo'] ?></span>
                                 </label>
                             <?php } ?>
                         </div>

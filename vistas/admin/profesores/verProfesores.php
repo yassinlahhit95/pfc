@@ -17,15 +17,9 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $listaDeTodosLosProfesores = listarProfesores();
 
 // Captura de mensajes de sesiÃ³n para alertas
-$mensajeDeError = "";
-if (isset($_SESSION['error'])) { 
-    $mensajeDeError = $_SESSION['error']; 
-}
+$mensajeDeError = $_SESSION['error'] ?? '';
 
-$mensajeDeExito = "";
-if (isset($_SESSION['exito'])) { 
-    $mensajeDeExito = $_SESSION['exito']; 
-}
+$mensajeDeExito = $_SESSION['exito'] ?? '';
 
 // Limpiamos la sesiÃ³n despuÃ©s de capturar
 unset($_SESSION['error'], $_SESSION['exito']);
@@ -33,17 +27,17 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
 <div class="encabezado-pagina">
     <h1>PROFESORES DEL CENTRO</h1>
-    <a href="/pfc/vistas/admin/profesores/agregarProfesores.php" class="boton-primario">
+    <a href="../../../vistas/admin/profesores/agregarProfesores.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO PROFESOR
     </a>
 </div>
 
 <?php if (!empty($mensajeDeExito)) { ?>
-    <div class="mensaje-exito"><?php echo $mensajeDeExito; ?></div>
+    <div class="mensaje-exito"><?= $mensajeDeExito ?></div>
 <?php } ?>
 
 <?php if (!empty($mensajeDeError)) { ?>
-    <div class="mensaje-error"><?php echo $mensajeDeError; ?></div>
+    <div class="mensaje-error"><?= $mensajeDeError ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -65,25 +59,25 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <?php } else { ?>
                     <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
                     <tr>
-                        <td><?php echo $profesorIndividual['idProfesor']; ?></td>
-                        <td><strong><?php echo strtoupper($profesorIndividual['nombreProfesor']); ?></strong></td>
-                        <td><?php echo $profesorIndividual['emailProfesor']; ?></td>
+                        <td><?= $profesorIndividual['idProfesor'] ?></td>
+                        <td><strong><?= strtoupper($profesorIndividual['nombreProfesor']) ?></strong></td>
+                        <td><?= $profesorIndividual['emailProfesor'] ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
+                                <a href="../../../vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
                                    class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
+                                <a href="../../../vistas/admin/profesores/asignarModulos.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
                                    class="btn-accion btn-ver" title="Asignar MÃ³dulos especÃ­ficos">
                                     <i class="fas fa-book"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
+                                <a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
                                    class="btn-accion btn-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿EstÃ¡s seguro de eliminar a este profesor?')">
-                                    <input type="hidden" name="idProfesor" value="<?php echo $profesorIndividual['idProfesor']; ?>">
+                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿EstÃ¡s seguro de eliminar a este profesor?')">
+                                    <input type="hidden" name="idProfesor" value="<?= $profesorIndividual['idProfesor'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Eliminar del sistema">
                                         <i class="fas fa-trash"></i>
                                     </button>

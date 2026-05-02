@@ -8,37 +8,37 @@ if (!isset($_SESSION['idAdmin'])) {
 
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
-$idArticulo = isset($_GET['idArticulo']) ? intval($_GET['idArticulo']) : 0;
-$articulo = obtenerArticuloPorId($idArticulo);
+$idArticulo = $_GET['idArticulo'] ?? 0;
+$articulo = obtenerArticuloPorId(intval($idArticulo));
 
 if (!$articulo) {
     header("Location: verInventario.php");
     exit;
 }
 
-$titulo_pagina = "Modificar ArtÃ­culo - Super Admin";
+$titulo_pagina = "Modificar Artículo - Super Admin";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar ArtÃ­culo: <?php echo $articulo['nombreArticulo']; ?></h1>
-    <a href="verInventario.php" class="boton-secundario">â† Volver</a>
+    <h1>Modificar Artículo: <?= $articulo['nombreArticulo'] ?></h1>
+    <a href="verInventario.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/inventario/actualizar.php" method="POST">
-        <input type="hidden" name="idArticulo" value="<?php echo $articulo['idArticulo']; ?>">
-        
+    <form action="../../../controladores/admin/inventario/actualizar.php" method="POST">
+        <input type="hidden" name="idArticulo" value="<?= $articulo['idArticulo'] ?>">
+
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Nombre del ArtÃ­culo *</label>
-                <input type="text" name="nombreArticulo" value="<?php echo $articulo['nombreArticulo']; ?>">
+                <label>Nombre del Artículo *</label>
+                <input type="text" name="nombreArticulo" value="<?= $articulo['nombreArticulo'] ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>NÃºmero de Serie *</label>
-                <input type="text" name="numeroSerie" value="<?php echo $articulo['numeroSerie']; ?>">
+                <label>Número de Serie *</label>
+                <input type="text" name="numeroSerie" value="<?= $articulo['numeroSerie'] ?>">
             </div>
         </div>
 
@@ -51,4 +51,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

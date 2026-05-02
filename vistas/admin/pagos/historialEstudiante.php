@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$idEstudiante = isset($_GET['idEstudiante']) ? $_GET['idEstudiante'] : '';
+$idEstudiante = $_GET['idEstudiante'] ?? '';
 if (empty($idEstudiante)) {
     header("Location: verPagosGeneral.php");
     exit;
@@ -12,15 +12,26 @@ if (empty($idEstudiante)) {
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 $pagos = obtenerPagosPorEstudiante($idEstudiante);
 
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['error'], $_SESSION['exito']);
+
 $titulo_pagina = "Historial de Pagos - Super Admin";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Historial de Pagos: <?php echo $estudiante['nombreEstudiante']; ?></h1>
+    <h1>Historial de Pagos: <?= $estudiante['nombreEstudiante'] ?></h1>
     <a href="verPagosGeneral.php" class="boton-secundario">Volver a General</a>
 </div>
+
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -34,18 +45,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($pagos)) { ?>
+                <?php if (empty($pagos)) : ?>
                     <tr><td colspan="4" class="sin-datos">No hay registros de pagos para este estudiante</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($pagos as $p) { ?>
+                <?php else : ?>
+                    <?php foreach ($pagos as $p) : ?>
                     <tr>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaPago'])); ?></td>
-                        <td><span class="etiqueta-pago"><?php echo ucfirst($p['tipoPago']); ?></span></td>
-                        <td><?php echo number_format($p['monto'], 2); ?> €</td>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaProximoPago'])); ?></td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
+                        <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
+                        <td><?= number_format($p['monto'], 2) ?> €</td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

@@ -4,26 +4,25 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$id_del_modulo = $_GET['idModulo'];
-$modulo = obtenerModuloPorId($id_del_modulo);
+$id_del_modulo = $_GET['idModulo'] ?? 0;
+$modulo = obtenerModuloPorId(intval($id_del_modulo));
 
 if (!$modulo) {
     header("Location: verModulos.php");
     exit;
 }
 
-if (isset($_SESSION['datos_modulo'])) {
-    $modulo = $_SESSION['datos_modulo'];
-}
-
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
-
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_modulo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
+
+if (!empty($datos)) {
+    $modulo = array_merge($modulo, $datos);
+}
 
 $titulo_pagina = "Modificar Módulo - Super Admin";
 $seccion = 'modulos';
@@ -31,49 +30,49 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Módulo: <?php echo $modulo['nombreModulo']; ?></h1>
-    <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">
+    <h1>Modificar Módulo: <?= $modulo['nombreModulo'] ?></h1>
+    <a href="verModulos.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
     </a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/modulos/actualizar.php" method="POST">
-        <input type="hidden" name="idModulo" value="<?php echo $id_del_modulo; ?>">
-        
+    <form action="../../../controladores/admin/modulos/actualizar.php" method="POST">
+        <input type="hidden" name="idModulo" value="<?= $id_del_modulo ?>">
+
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre del Módulo *</label>
-                <input type="text" name="nombreModulo" value="<?php echo $modulo['nombreModulo']; ?>">
-                <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                    <p class="texto-rojo texto-pequeno mt-5"><?php echo $lista_de_errores['nombreModulo']; ?></p>
-                <?php } ?>
+                <input type="text" name="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
+                <?php if (isset($lista_de_errores['nombreModulo'])) : ?>
+                    <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['nombreModulo'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Ciclo Formativo *</label>
                 <select name="idCiclo">
-                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
-                            <?php echo $ciclo['nombreCiclo']; ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) : ?>
+                        <option value="<?= $ciclo['idCiclo'] ?>" <?= ($modulo['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                            <?= $ciclo['nombreCiclo'] ?>
                         </option>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </select>
-                <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <p class="texto-rojo texto-pequeno mt-5"><?php echo $lista_de_errores['idCiclo']; ?></p>
-                <?php } ?>
+                <?php if (isset($lista_de_errores['idCiclo'])) : ?>
+                    <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['idCiclo'] ?></p>
+                <?php endif; ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Horas Totales *</label>
-                <input type="text" name="horasMaximas" value="<?php echo $modulo['horasMaximas']; ?>">
-                <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                    <p class="texto-rojo texto-pequeno mt-5"><?php echo $lista_de_errores['horasMaximas']; ?></p>
-                <?php } ?>
+                <input type="text" name="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
+                <?php if (isset($lista_de_errores['horasMaximas'])) : ?>
+                    <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['horasMaximas'] ?></p>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -86,4 +85,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

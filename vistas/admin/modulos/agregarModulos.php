@@ -5,16 +5,8 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
-
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { 
-    $lista_de_errores = $_SESSION['errores']; 
-}
-
-$datos = [];
-if (isset($_SESSION['datos_modulo'])) { 
-    $datos = $_SESSION['datos_modulo']; 
-}
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_modulo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
@@ -25,45 +17,45 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Módulo</h1>
-    <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">← Volver</a>
+    <a href="verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/modulos/insertar.php" method="POST" class="form-estandar">
-        
+    <form action="../../../controladores/admin/modulos/insertar.php" method="POST" class="form-estandar">
+
         <div class="campo-formulario">
             <label>Nombre del Módulo *</label>
-            <input type="text" name="nombreModulo" value="<?php if(isset($datos['nombreModulo'])) { echo $datos['nombreModulo']; } ?>">
-            <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                <span class="error-campo"><?php echo $lista_de_errores['nombreModulo']; ?></span>
-            <?php } ?>
+            <input type="text" name="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
+            <?php if (isset($lista_de_errores['nombreModulo'])) : ?>
+                <span class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></span>
+            <?php endif; ?>
         </div>
 
         <div class="campo-formulario">
             <label>Ciclo Formativo Asociado *</label>
             <select name="idCiclo">
                 <option value="">Seleccione un ciclo</option>
-                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                    <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
-                        <?php echo $ciclo['nombreCiclo']; ?>
+                <?php foreach ($todos_los_ciclos as $ciclo) : ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= (isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= $ciclo['nombreCiclo'] ?>
                     </option>
-                <?php } ?>
+                <?php endforeach; ?>
             </select>
-            <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                <span class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></span>
-            <?php } ?>
+            <?php if (isset($lista_de_errores['idCiclo'])) : ?>
+                <span class="error-campo"><?= $lista_de_errores['idCiclo'] ?></span>
+            <?php endif; ?>
         </div>
 
         <div class="campo-formulario">
             <label>Horas Máximas *</label>
-            <input type="text" name="horasMaximas" value="<?php if(isset($datos['horasMaximas'])) { echo $datos['horasMaximas']; } ?>">
-            <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                <span class="error-campo"><?php echo $lista_de_errores['horasMaximas']; ?></span>
-            <?php } ?>
+            <input type="text" name="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
+            <?php if (isset($lista_de_errores['horasMaximas'])) : ?>
+                <span class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></span>
+            <?php endif; ?>
         </div>
 
         <div class="margen-arriba pt-20">
@@ -75,4 +67,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../../index.php");
     exit;
@@ -17,9 +21,16 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>GestiÃ³n de Retos</h1>
-    <a href="/pfc/vistas/profesores/retos/agregar.php" class="boton-primario">Nuevo Reto</a>
+    <h1>Gestión de Retos</h1>
+    <a href="agregar.php" class="boton-primario">Nuevo Reto</a>
 </div>
+
+<?php if ($error) : ?>
+    <div class="alerta-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito) : ?>
+    <div class="alerta-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -34,24 +45,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($retos) { ?>
-                    <?php foreach ($retos as $reto) { ?>
+                <?php if ($retos) : ?>
+                    <?php foreach ($retos as $reto) : ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $reto['nombreReto']; ?></td>
-                            <td><?php echo $reto['fechaInicio']; ?></td>
-                            <td><?php echo $reto['fechaFin']; ?></td>
-                            <td><?php echo $reto['horasReto']; ?> h</td>
+                            <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
+                            <td><?= $reto['fechaInicio'] ?></td>
+                            <td><?= $reto['fechaFin'] ?></td>
+                            <td><?= $reto['horasReto'] ?> h</td>
                             <td>
-                                <a href="/pfc/vistas/profesores/retos/editar.php?id=<?php echo $reto['idReto']; ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/controladores/profesores/retos/borrar.php?id=<?php echo $reto['idReto']; ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                <a href="../../../controladores/profesores/retos/borrar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                    <?php } ?>
-                <?php } else { ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="5" class="sin-datos">No hay retos registrados.</td>
                     </tr>
-                <?php } ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

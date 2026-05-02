@@ -7,7 +7,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "MI PERFIL - ADMINISTRACIÃ“N";
+$titulo_pagina = "MI PERFIL - ADMINISTRACIÓN";
 $seccion = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -16,14 +16,9 @@ require_once __DIR__ . "/../../../modelos/directores.php";
 $idLogueado = $_SESSION['idAdmin'];
 $datosAdmin = obtenerDirectorPorId($idLogueado);
 
-// Captura de mensajes de sesiÃ³n
-$mensajeError = "";
-if (isset($_SESSION['error'])) { $mensajeError = $_SESSION['error']; }
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 
-$mensajeExito = "";
-if (isset($_SESSION['exito'])) { $mensajeExito = $_SESSION['exito']; }
-
-// Limpiar sesiÃ³n
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -31,46 +26,46 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <h1>MI PERFIL Y SEGURIDAD</h1>
 </div>
 
-<?php if (!empty($mensajeExito)) { ?>
-    <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
-<?php } ?>
+<?php if ($exito) : ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
-<?php if (!empty($mensajeError)) { ?>
-    <div class="mensaje-error"><?php echo $mensajeError; ?></div>
-<?php } ?>
+<?php if ($error) : ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/directores/actualizar_perfil.php" method="POST">
-        <input type="hidden" name="idDirector" value="<?php echo $idLogueado; ?>">
+    <form action="../../../controladores/admin/directores/actualizar_perfil.php" method="POST">
+        <input type="hidden" name="idDirector" value="<?= $idLogueado ?>">
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Nombre Completo</label>
-                <input type="text" name="nombreDirector" value="<?php echo $datosAdmin['nombreDirector']; ?>">
+                <input type="text" name="nombreDirector" value="<?= $datosAdmin['nombreDirector'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Correo ElectrÃ³nico</label>
-                <input type="text" name="emailDirector" value="<?php echo $datosAdmin['emailDirector']; ?>">
+                <label>Correo Electrónico</label>
+                <input type="text" name="emailDirector" value="<?= $datosAdmin['emailDirector'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>NÃºmero de TelÃ©fono</label>
-                <input type="text" name="telefonoDirector" value="<?php echo $datosAdmin['telefonoDirector']; ?>">
+                <label>Número de Teléfono</label>
+                <input type="text" name="telefonoDirector" value="<?= $datosAdmin['telefonoDirector'] ?? '' ?>">
             </div>
         </div>
 
-        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÃ‘A (OPCIONAL)</h3>
+        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÑA (OPCIONAL)</h3>
         <p class="texto-atenuado texto-pequeno">Solo rellene si desea actualizar su clave de acceso.</p>
 
         <div class="formulario-cuadricula mt-10">
             <div class="campo-formulario">
-                <label>CONTRASEÃ‘A ACTUAL:</label>
+                <label>CONTRASEÑA ACTUAL:</label>
                 <input type="password" name="current_password" placeholder="Validar cambios">
             </div>
 
             <div class="campo-formulario">
-                <label>NUEVA CONTRASEÃ‘A:</label>
-                <input type="password" name="new_password" placeholder="MÃ­nimo 6 caracteres">
+                <label>NUEVA CONTRASEÑA:</label>
+                <input type="password" name="new_password" placeholder="Mínimo 6 caracteres">
             </div>
         </div>
 
@@ -83,4 +78,3 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
