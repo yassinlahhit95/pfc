@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -22,7 +22,7 @@ if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emiso
     $mensaje['leido'] = 1;
 }
 
-$titulo_pagina = "Detalle del Mensaje - Super Admin";
+$titulo_pagina = "Detalle del Mensaje - Admin";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

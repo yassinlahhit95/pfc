@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 
@@ -8,7 +8,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Gestión de Retos - Super Admin";
+$titulo_pagina = "Gestión de Retos - Admin";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

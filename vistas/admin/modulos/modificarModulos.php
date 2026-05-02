@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -24,7 +24,7 @@ if (!empty($datos)) {
     $modulo = array_merge($modulo, $datos);
 }
 
-$titulo_pagina = "Modificar Módulo - Super Admin";
+$titulo_pagina = "Modificar Módulo - Admin";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

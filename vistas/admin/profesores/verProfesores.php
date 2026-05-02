@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 // ValidaciÃ³n de sesiÃ³n simple
@@ -7,7 +7,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "GESTIÃ“N DE PROFESORES - SUPER ADMIN";
+$titulo_pagina = "GESTIÃ“N DE PROFESORES - ADMIN";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 

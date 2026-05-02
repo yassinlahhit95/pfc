@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Asignar Profesor a Módulo - Super Admin";
+$titulo_pagina = "Asignar Profesor a Módulo - Admin";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 

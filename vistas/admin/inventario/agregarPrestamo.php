@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Nuevo Préstamo - Super Admin";
+$titulo_pagina = "Nuevo Préstamo - Admin";
 $seccion = 'prestamos';
 include_once __DIR__ . "/../comunes/nav.php";
 

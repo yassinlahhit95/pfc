@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -23,7 +23,7 @@ $mensajeError = $_SESSION['error'] ?? '';
 $mensajeExito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "GESTIÓN DE PAGOS - SUPER ADMIN";
+$titulo_pagina = "GESTIÓN DE PAGOS - ADMIN";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

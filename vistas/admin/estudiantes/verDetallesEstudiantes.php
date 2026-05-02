@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -14,7 +14,7 @@ if (!$estudiante) {
     exit;
 }
 
-$titulo_pagina = "Detalle del Estudiante - Super Admin";
+$titulo_pagina = "Detalle del Estudiante - Admin";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Registrar Director - Super Admin";
+$titulo_pagina = "Registrar Director - Admin";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 

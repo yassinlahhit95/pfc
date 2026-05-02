@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Inventario del Centro - Super Admin";
+$titulo_pagina = "Inventario del Centro - Admin";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 

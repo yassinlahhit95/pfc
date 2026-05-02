@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "Gestión de Eventos - Super Admin";
+$titulo_pagina = "Gestión de Eventos - Admin";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 

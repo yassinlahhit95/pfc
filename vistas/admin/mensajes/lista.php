@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $listaDeMensajes = listarTodosLosMensajes();
 
-$titulo_pagina = "Gestión de Mensajería - Super Admin";
+$titulo_pagina = "Gestión de Mensajería - Admin";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 

@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Gestión de Anuncios - Super Admin";
+$titulo_pagina = "Gestión de Anuncios - Admin";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 

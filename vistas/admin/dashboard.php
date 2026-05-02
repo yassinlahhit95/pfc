@@ -1,7 +1,6 @@
-﻿<?php
+<?php
 session_start();
 
-// Control de acceso para administradores
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../index.php");
     exit;
@@ -15,33 +14,26 @@ require_once __DIR__ . "/../../modelos/retos.php";
 require_once __DIR__ . "/../../modelos/modulos.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 
-// Obtener estadísticas generales
+// Estadísticas resumidas
 $totalEstudiantesRegistrados = contarEstudiantes();
 $totalProfesoresRegistrados = contarProfesores();
 $totalRetosAcademicos = (int)contarRetos();
 $totalModulosProfesionales = (int)contarModulos();
 $porcentajeGlobalAprobados = obtenerPorcentajeAprobadosGlobal();
-
 $cantidadTotalRecaudada = obtenerTotalRecaudado();
 $totalOperacionesDePago = contarPagosRealizados();
 
-// Lógica simple para paginación de anuncios
+// Paginación de anuncios simplificada
 $anunciosAMostrarPorPagina = 5;
-$numeroPaginaActual = (int)($_GET['p_anuncios'] ?? 1);
-
-if ($numeroPaginaActual < 1) {
-    $numeroPaginaActual = 1;
-}
-
+$numeroPaginaActual = max(1, (int)($_GET['p_anuncios'] ?? 1));
 $totalAnunciosActivos = (int)contarAnunciosQueEstanActivos();
 $totalPaginasAnuncios = ceil($totalAnunciosActivos / $anunciosAMostrarPorPagina);
 $listaAnunciosSistema = listarAnunciosPaginados($numeroPaginaActual, $anunciosAMostrarPorPagina);
 
-// Obtener eventos próximos
 $listaEventosProximos = listarEventosProximos();
-
-$titulo_pagina = "PANEL DE CONTROL - SUPER ADMIN";
+$titulo_pagina = "PANEL DE CONTROL - ADMIN";
 $seccion = 'inicio';
+
 include __DIR__ . '/comunes/nav.php';
 ?>
 

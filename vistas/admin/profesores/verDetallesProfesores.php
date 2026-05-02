@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Detalles Profesor - Super Admin";
+$titulo_pagina = "Detalles Profesor - Admin";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 

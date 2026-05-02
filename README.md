@@ -31,7 +31,7 @@ Sistema de gestión académica completo que permite administrar de forma central
 ## 📂 Estructura del Proyecto
 ```
 tfg/
-├── 📁 admin/                 # Panel Super Administración
+├── 📁 admin/                 # Panel Administración
 │   ├── dashboardAdmin.php    # Panel principal
 │   ├── 📁 controladores/     # Lógica de negocio (MVC)
 │   ├── 📁 modelos/           # Acceso a datos y BD
@@ -86,7 +86,7 @@ Acceder en navegador: `http://localhost/pfc/landing/`
 
 | Perfil | Ruta de Acceso | Funcionalidades |
 |--------|----------------|-----------------|
-| Super Admin | `/admin/dashboardAdmin.php` | Gestión completa sistema |
+| Admin | `/admin/dashboardAdmin.php` | Gestión completa sistema |
 | Director | `/directores/` | Gestión centro educativo |
 | Profesor | `/profesores/` | Gestión alumnos, notas, retos |
 | Estudiante | `/estudiantes/` | Consultar información personal |

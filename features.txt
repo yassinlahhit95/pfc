@@ -1,7 +1,7 @@
 ## Características del Proyecto - Sistema de Gestión Académica
 
 ### Gestión de Usuarios y Roles
-- **Super Admin**: Control total sobre estudiantes, profesores, cursos y ciclos.
+- **Admin**: Control total sobre estudiantes, profesores, cursos y ciclos.
 - **Profesores**: Gestión de sus módulos, retos y calificaciones.
 - **Estudiantes**: Consulta de sus notas, retos y pagos.
 

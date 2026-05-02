@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -16,7 +16,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Historial de Pagos - Super Admin";
+$titulo_pagina = "Historial de Pagos - Admin";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

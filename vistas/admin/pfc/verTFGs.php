@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -10,7 +10,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Gestión de TFGs - Super Admin";
+$titulo_pagina = "Gestión de TFGs - Admin";
 $seccion = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

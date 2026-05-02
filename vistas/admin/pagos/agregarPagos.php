@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -30,7 +30,7 @@ $esDespuesDeJunio = ($hoy > $fechaLimite);
 $lista_de_errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['errores']);
 
-$titulo_pagina = "Registrar Pago - Super Admin";
+$titulo_pagina = "Registrar Pago - Admin";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

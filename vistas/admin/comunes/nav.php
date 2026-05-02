@@ -56,7 +56,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <h3>SUPER ADMIN</h3>
+            <h3>ADMIN</h3>
         </div>
 
         <nav class="menu-navegacion">

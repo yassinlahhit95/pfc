@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
@@ -40,7 +40,7 @@ $lista_de_errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 
-$titulo_pagina = "Modificar Ciclo - Super Admin";
+$titulo_pagina = "Modificar Ciclo - Admin";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

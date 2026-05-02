@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -29,7 +29,7 @@ if ($tipoDeDestinatario == 'profesor') {
     }
 }
 
-$titulo_pagina = "Redactar Mensaje Oficial - Super Admin";
+$titulo_pagina = "Redactar Mensaje Oficial - Admin";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

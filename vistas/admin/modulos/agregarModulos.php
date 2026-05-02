@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
@@ -10,7 +10,7 @@ $datos = $_SESSION['datos_modulo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
-$titulo_pagina = "Registrar Módulo - Super Admin";
+$titulo_pagina = "Registrar Módulo - Admin";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

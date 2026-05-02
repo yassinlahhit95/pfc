@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -16,7 +16,7 @@ if (!$articulo) {
     exit;
 }
 
-$titulo_pagina = "Modificar Artículo - Super Admin";
+$titulo_pagina = "Modificar Artículo - Admin";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

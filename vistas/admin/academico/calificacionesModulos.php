@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Notas de Módulos - Super Admin";
+$titulo_pagina = "Notas de Módulos - Admin";
 $seccion = 'notas_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 

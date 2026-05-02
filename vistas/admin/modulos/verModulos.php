@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 // Validación de sesión simple
@@ -7,7 +7,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE MÓDULOS - SUPER ADMIN";
+$titulo_pagina = "GESTIÓN DE MÓDULOS - ADMIN";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 

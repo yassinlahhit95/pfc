@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 session_start();
-$titulo_pagina = "Modificar Reclamación - Super Admin";
+$titulo_pagina = "Modificar Reclamación - Admin";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 

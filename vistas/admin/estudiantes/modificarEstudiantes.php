@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -21,7 +21,7 @@ $lista_de_errores = ($_SESSION['errores'] ?? 0);
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
-$titulo_pagina = "Modificar Estudiante - Super Admin";
+$titulo_pagina = "Modificar Estudiante - Admin";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
