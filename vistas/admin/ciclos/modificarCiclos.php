@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/niveles.php";
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $id_ciclo = $_GET['idCiclo'];
 $ciclo = obtenerCicloPorId($id_ciclo);
@@ -19,11 +19,11 @@ $listaAulas = listarAulas();
 
 // Get current assignments
 $profesoresAsignadosRaw = obtenerProfesoresDeUnCiclo($id_ciclo);
-$profesoresAsignados = array();
+$profesoresAsignados = [];
 foreach ($profesoresAsignadosRaw as $p) { $profesoresAsignados[] = $p['idProfesor']; }
 
 $aulasAsignadasRaw = obtenerAulasDeUnCiclo($id_ciclo);
-$aulasAsignadas = array();
+$aulasAsignadas = [];
 foreach ($aulasAsignadasRaw as $a) { $aulasAsignadas[] = $a['idAula']; }
 
 if (isset($_SESSION['datos_ciclos'])) {
@@ -36,14 +36,14 @@ if (isset($_SESSION['datos_ciclos'])) {
 $error = "";
 if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 
 $titulo_pagina = "Modificar Ciclo - Super Admin";
 $seccion = 'ciclos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

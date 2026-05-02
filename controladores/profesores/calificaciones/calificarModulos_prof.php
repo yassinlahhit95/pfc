@@ -1,68 +1,66 @@
 <?php
 session_start();
-require_once "../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
 if (isset($_POST['guardarNotas'])) {
-    $idMod = $_POST['idModulo'];
-    $idCiclo = $_POST['idCiclo']; 
+    $idModulo = trim($_POST['idModulo']);
+    $idCiclo = trim($_POST['idCiclo']); 
     $estudiantes = $_POST['estudiantes'];
-    $n1ev = $_POST['notas_1ev'];
-    $n1f = $_POST['notas_1final'];
-    $n2ev = $_POST['notas_2ev'];
-    $n2f = $_POST['notas_2final'];
-    $obs = $_POST['observaciones'];
+    
+    // Recogemos los arrays de notas del formulario con nombres claros
+    $notas_1ra_evaluacion = $_POST['notas_1ev'];
+    $notas_1ra_final      = $_POST['notas_1final'];
+    $notas_2da_evaluacion = $_POST['notas_2ev'];
+    $notas_2da_final      = $_POST['notas_2final'];
+    $todas_las_observaciones = $_POST['observaciones'];
 
-    $error = false;
-    $total = count($estudiantes);
+    $hayError = false;
 
-    for ($i = 0; $i < $total; $i++) {
-        $idEst = $estudiantes[$i];
-        $nota1 = $n1ev[$i];
-        $nota2 = $n1f[$i];
-        $nota3 = $n2ev[$i];
-        $nota4 = $n2f[$i];
-        $comentario = $obs[$i];
+    // Recorremos los alumnos para guardar sus notas
+    foreach ($estudiantes as $indice => $idEstudiante) {
+        $idEstudiante = trim($idEstudiante);
+        $nota1 = trim($notas_1ra_evaluacion[$indice]);
+        $nota2 = trim($notas_1ra_final[$indice]);
+        $nota3 = trim($notas_2da_evaluacion[$indice]);
+        $nota4 = trim($notas_2da_final[$indice]);
+        $comentario = trim($todas_las_observaciones[$indice]);
 
-        // Mirar si son numeros
-        if (!empty($nota1) && !is_numeric($nota1)) { $error = true; }
-        if (!empty($nota2) && !is_numeric($nota2)) { $error = true; }
-        if (!empty($nota3) && !is_numeric($nota3)) { $error = true; }
-        if (!empty($nota4) && !is_numeric($nota4)) { $error = true; }
-
-        if ($error == false) {
-            // Entre 0 y 10
-            if (is_numeric($nota1) && ($nota1 < 0 || $nota1 > 10)) { $error = true; }
-            if (is_numeric($nota2) && ($nota2 < 0 || $nota2 > 10)) { $error = true; }
-            if (is_numeric($nota3) && ($nota3 < 0 || $nota3 > 10)) { $error = true; }
-            if (is_numeric($nota4) && ($nota4 < 0 || $nota4 > 10)) { $error = true; }
+        // Validamos que si hay nota, sea un nÃºmero entre 0 y 10
+        $notas_del_alumno = [$nota1, $nota2, $nota3, $nota4];
+        foreach ($notas_del_alumno as $nota) {
+            if (!empty($nota) && (!is_numeric($nota) || $nota < 0 || $nota > 10)) {
+                $hayError = true;
+                break;
+            }
         }
-if (!$error) {
-...
-if (!$error) {
-    if (!$res) {
-        $error = true;
-    }
-}
-}
 
-if (!$error) {
-        require_once "../../comunes/notificaciones_grades.php";
+        if (!$hayError) {
+            $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1, $nota2, $nota3, $nota4, $comentario);
+            if (!$resultado) {
+                $hayError = true;
+            }
+        }
+
+        if ($hayError) break;
+    }
+
+    if (!$hayError) {
+        // Enviar correos si se marca la opciÃ³n
         if (isset($_POST['notificarEstudiantes']) && !empty($_POST['notificarEstudiantes'])) {
-            for ($j = 0; $j < $total; $j++) {
-                $idEnvio = $estudiantes[$j];
-                enviarEmailNotasEstudiante($idEnvio);
+            require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
+            foreach ($estudiantes as $idParaEnvio) {
+                enviarEmailNotasEstudiante(trim($idParaEnvio));
             }
         }
         $_SESSION['exito'] = "Listo! Ya se han guardado todas las notas.";
     } else {
-        $_SESSION['error'] = "Vaya, parece que hay algun error en las notas. Revisa que sean numeros entre 0 y 10.";
+        $_SESSION['error'] = "Vaya, parece que hay algun error. Revisa que las notas sean nÃºmeros entre 0 y 10.";
     }
 
-    header("Location: /pfc/vistas/profesores/calificaciones/agregar.php?idCiclo=$idCiclo&idModulo=$idMod");
+    header("Location: ../../../vistas/profesores/calificaciones/agregar.php?idCiclo=$idCiclo&idModulo=$idModulo");
     exit;
 }
 
-header("Location: /pfc/vistas/profesores/calificaciones/agregar.php");
+header("Location: ../../../vistas/profesores/calificaciones/agregar.php");
 exit;
 ?>
-

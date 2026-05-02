@@ -1,70 +1,62 @@
 <?php
 session_start();
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['actualizarPerfil'])) {
-    $idEstudianteEnviado = $_POST['idEstudiante'];
-    $nombreEnviado = trim($_POST['nombreEstudiante']);
-    $emailEnviado = strtolower(trim($_POST['emailEstudiante']));
-    $telefonoEnviado = $_POST['telefonoEstudiante'];
+    $idEstudiante = trim($_POST['idEstudiante']);
+    $nombre = trim($_POST['nombreEstudiante']);
+    $email = strtolower(trim($_POST['emailEstudiante']));
+    $telefono = trim($_POST['telefonoEstudiante']);
     
     // Captura de datos de seguridad
-    $passwordActualIngresada = $_POST['current_password'];
-    $passwordNuevaIngresada = $_POST['new_password'];
+    $passwordActual = $_POST['current_password'];
+    $passwordNueva = $_POST['new_password'];
 
     $hayError = false;
 
-    // Comprobaciones iniciales
-    if (empty($idEstudianteEnviado)) {
-        header("Location: /pfc/vistas/estudiantes/perfil/ver.php");
+    if (empty($idEstudiante)) {
+        header("Location: ../../../vistas/estudiantes/perfil/ver.php");
         exit;
     }
 
-    if (empty($nombreEnviado)) {
-        $_SESSION['error'] = strtoupper("EL NOMBRE NO PUEDE ESTAR VACÍO.");
-        $hayError = true;
-    } else if (empty($emailEnviado)) {
-        $_SESSION['error'] = strtoupper("EL CORREO ELECTRÓNICO NO PUEDE ESTAR VACÍO.");
+    if (empty($nombre) || empty($email)) {
+        $_SESSION['error'] = "Vaya, el nombre y el correo electrÃ³nico son obligatorios.";
         $hayError = true;
     }
 
-    // Proceso de cambio de contraseña
-    if ($hayError == false && !empty($passwordNuevaIngresada)) {
-        if (empty($passwordActualIngresada)) {
-            $_SESSION['error'] = strtoupper("POR SEGURIDAD, INGRESE SU CONTRASEÑA ACTUAL.");
+    // Proceso de cambio de contraseÃ±a
+    if (!$hayError && !empty($passwordNueva)) {
+        if (empty($passwordActual)) {
+            $_SESSION['error'] = "Vaya, por seguridad debes ingresar tu contraseÃ±a actual.";
             $hayError = true;
         } else {
-            // Verificar contra la base de datos
-            $datosDelEstudiante = obtenerEstudiantePorId($idEstudianteEnviado);
+            $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
             
-            if ($datosDelEstudiante['password'] == $passwordActualIngresada) {
-                // Actualización de clave permitida
-                actualizarPasswordEstudiante($idEstudianteEnviado, $passwordNuevaIngresada);
+            if ($datosEstudiante['password'] == $passwordActual) {
+                actualizarPasswordEstudiante($idEstudiante, $passwordNueva);
             } else {
-                $_SESSION['error'] = strtoupper("LA CONTRASEÑA ACTUAL NO ES CORRECTA.");
+                $_SESSION['error'] = "Vaya, la contraseÃ±a actual no es correcta.";
                 $hayError = true;
             }
         }
     }
 
-    // Si todo va bien, actualizamos los datos básicos
-    if ($hayError == false) {
-        $seActualizoCorrectamente = actualizarPerfilEstudiante($idEstudianteEnviado, $nombreEnviado, $emailEnviado, $telefonoEnviado);
+    if (!$hayError) {
+        $resultado = actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono);
         
-        if ($seActualizoCorrectamente == true) {
-            $_SESSION['exito'] = strtoupper("LOS DATOS SE HAN GUARDADO CORRECTAMENTE.");
-            header("Location: /pfc/vistas/estudiantes/perfil/ver.php");
+        if ($resultado) {
+            $_SESSION['exito'] = "Listo! Los datos se han guardado correctamente.";
+            header("Location: ../../../vistas/estudiantes/perfil/ver.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("ERROR AL GUARDAR EN LA BASE DE DATOS.");
+            $_SESSION['error'] = "Vaya, ha habido un error al guardar los datos.";
         }
     }
 
-    header("Location: /pfc/vistas/estudiantes/perfil/editar.php");
+    header("Location: ../../../vistas/estudiantes/perfil/editar.php");
     exit;
 }
 
-header("Location: /pfc/vistas/estudiantes/perfil/ver.php");
+header("Location: ../../../vistas/estudiantes/perfil/ver.php");
 exit;
 ?>
-

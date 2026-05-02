@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,12 +13,12 @@ $reto = obtenerRetoPorId($id);
 
 $tituloDelPagina = "Editar Reto - Portal Profesores";
 $seccionActual = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Editar Reto</h1>
-    <a href="/pfc/vistas/profesores/retos/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/retos/lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

@@ -2,10 +2,10 @@
 session_start();
 $titulo_pagina = "Modificar Reto - Super Admin";
 $seccion = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $id_reto = $_GET['idReto'];
 $reto = obtenerRetoPorId($id_reto);
@@ -38,7 +38,7 @@ if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 $exito = "";
 if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reto']);

@@ -2,7 +2,7 @@
 session_start();
 $titulo_pagina = "Registrar Director - Super Admin";
 $seccion = 'directores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
 $lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }

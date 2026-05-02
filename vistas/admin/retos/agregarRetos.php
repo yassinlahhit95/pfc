@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Nuevo Reto - Super Admin";
 $seccion = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $todos_los_modulos = listarModulos();
 

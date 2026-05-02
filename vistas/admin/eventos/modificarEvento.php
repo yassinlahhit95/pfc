@@ -1,28 +1,28 @@
 <?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-require_once "../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $idEvento = $_GET['idEvento'] ?? 0;
 $evento = obtenerEventoPorId($idEvento);
 
 if (!$evento) {
-    header("Location: /pfc/vistas/admin/eventos/gestionEventos.php");
+    header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
     exit;
 }
 
 $titulo_pagina = "Modificar Evento - Super Admin";
 $seccion = 'eventos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Evento</h1>
-    <a href="gestionEventos.php" class="boton-secundario">← Volver</a>
+    <a href="gestionEventos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -31,12 +31,12 @@ include_once "../comunes/nav.php";
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Título del Evento *</label>
+                <label>TÃ­tulo del Evento *</label>
                 <input type="text" name="tituloEvento" value="<?php echo $evento['tituloEvento']; ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Ubicación</label>
+                <label>UbicaciÃ³n</label>
                 <input type="text" name="ubicacionEvento" value="<?php echo $evento['ubicacionEvento']; ?>">
             </div>
 
@@ -51,7 +51,7 @@ include_once "../comunes/nav.php";
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label>Descripción</label>
+                <label>DescripciÃ³n</label>
                 <textarea name="descripcionEvento" rows="3"><?php echo $evento['descripcionEvento']; ?></textarea>
             </div>
         </div>

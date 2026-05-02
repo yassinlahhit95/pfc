@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,7 +13,7 @@ $estudiante = obtenerEstudiantePorId($id);
 
 $tituloDelPagina = "Mi Perfil - Portal Estudiantes";
 $seccionActual = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -43,7 +43,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="etiqueta-detalle">TelÃ©fono</div>
         <div class="valor-detalle"><?php echo $estudiante['telefonoEstudiante']; ?></div>
     </div>
 
@@ -58,7 +58,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Dirección</div>
+        <div class="etiqueta-detalle">DirecciÃ³n</div>
         <div class="valor-detalle"><?php echo $estudiante['direccionEstudiante']; ?></div>
     </div>
 

@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -11,13 +11,13 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $idProfesor = $_SESSION['idProfesor'];
 $modulos = obtenerModulosDeProfesor($idProfesor);
 
-$tituloDelPagina = "Módulos - Portal Profesores";
+$tituloDelPagina = "MÃ³dulos - Portal Profesores";
 $seccionActual = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Lista de Módulos</h1>
+    <h1>Lista de MÃ³dulos</h1>
 </div>
 
 <div class="tarjeta-blanca">
@@ -41,7 +41,7 @@ include_once "../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="3" class="sin-datos">No hay módulos registrados.</td>
+                        <td colspan="3" class="sin-datos">No hay mÃ³dulos registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>

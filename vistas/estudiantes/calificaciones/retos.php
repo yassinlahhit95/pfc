@@ -2,15 +2,15 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 $tituloDelPagina = "Mis Notas de Retos - Portal Estudiantes";
 $seccionActual = 'notas_retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $id_estudiante = $_SESSION['idEstudiante'];
 $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
@@ -34,7 +34,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
             <tbody>
                 <?php if (empty($mis_notas_retos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">Aún no tienes calificaciones registradas en retos.</td>
+                        <td colspan="4" class="sin-datos">AÃºn no tienes calificaciones registradas en retos.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($mis_notas_retos as $nota) { ?>
@@ -55,7 +55,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 
 <div class="margen-arriba tarjeta-gris-suave">
     <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
-    <p>Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
+    <p>Estas notas son finales y contribuyen al 25% de la calificaciÃ³n global del mÃ³dulo asociado.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

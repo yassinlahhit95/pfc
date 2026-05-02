@@ -1,25 +1,25 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 if (isset($_POST['idEstudiante'])) {
-    $id = $_POST['idEstudiante'];
+    $idEstudiante = trim($_POST['idEstudiante']);
     
-    // Obtenemos los datos antes de borrar de la base de datos para tener el nombre del archivo
-    $tfg = obtenerTFGporEstudiante($id);
-    $nombreArchivo = $tfg['archivoTFG'];
+    $datosTFG = obtenerTFGporEstudiante($idEstudiante);
+    $nombreArchivo = $datosTFG['archivoTFG'];
     
-    if (eliminarTFG($id)) {
-        $rutaArchivo = "../../../public/uploads/pfc/" . $nombreArchivo;
+    $resultado = eliminarTFG($idEstudiante);
+    if ($resultado) {
+        $rutaArchivo = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
         if (!empty($nombreArchivo) && file_exists($rutaArchivo)) {
             unlink($rutaArchivo);
         }
-        $_SESSION['exito'] = "TFG eliminado correctamente.";
+        $_SESSION['exito'] = "Listo! TFG eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el TFG.";
+        $_SESSION['error'] = "Vaya, ha habido un error al eliminar el TFG.";
     }
 }
 
-header("Location: /pfc/vistas/estudiantes/pfc/subir.php");
+header("Location: ../../../vistas/estudiantes/pfc/subir.php");
 exit;
 ?>

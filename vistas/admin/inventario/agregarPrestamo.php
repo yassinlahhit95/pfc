@@ -2,11 +2,11 @@
 session_start();
 $titulo_pagina = "Nuevo Préstamo - Super Admin";
 $seccion = 'prestamos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/inventario.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $articulos_disponibles = listarArticulos();
 $todos_los_estudiantes = listarEstudiantes();

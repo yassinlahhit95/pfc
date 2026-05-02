@@ -2,13 +2,13 @@
 session_start();
 
 if (isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/vistas/admin/dashboard.php");
+    header("Location: vistas/admin/dashboard.php");
     exit;
 } else if (isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/vistas/profesores/dashboard.php");
+    header("Location: vistas/profesores/dashboard.php");
     exit;
 } else if (isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/vistas/estudiantes/dashboard.php");
+    header("Location: vistas/estudiantes/dashboard.php");
     exit;
 }
 
@@ -25,6 +25,8 @@ unset($_SESSION['error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema de Gestión Escolar</title>
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
+        <link rel="icon" href="/pfc/public/imagenes/favicon.ico">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {

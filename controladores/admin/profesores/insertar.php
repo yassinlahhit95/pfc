@@ -1,76 +1,78 @@
 <?php
 session_start();
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
-if (isset($_POST['guardarProfesor'])) {
-    $nombre = trim($_POST['nombreProfesor']);
-    $email = trim($_POST['emailProfesor']);
-    $dni = trim($_POST['dniProfesor']);
-    $telefono = trim($_POST['telefonoProfesor']);
-    $direccion = trim($_POST['direccionProfesor']);
+$hayError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarProfesor'])) {
+    $nombreNuevoProfesor = trim($_POST['nombreProfesor']);
+    $emailNuevoProfesor = trim($_POST['emailProfesor']);
+    $dniNuevoProfesor = trim($_POST['dniProfesor']);
+    $telefonoNuevoProfesor = trim($_POST['telefonoProfesor']);
+    $direccionNuevoProfesor = trim($_POST['direccionProfesor']);
     
-    $fechaNacimiento = $_POST['fechaNacimientoProfesor'] ?? '1980-01-01';
-    $fechaAlta = date('Y-m-d');
-    $ciudad = trim($_POST['ciudadProfesor'] ?? '');
-    $codigoPostal = trim($_POST['codigoPostalProfesor'] ?? '');
-    $observaciones = trim($_POST['observacionesProfesor'] ?? '');
+    $fechaNacimientoNuevoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '1980-01-01');
+    $fechaAltaNuevoProfesor = date('Y-m-d');
+    $ciudadNuevoProfesor = trim($_POST['ciudadProfesor'] ?? '');
+    $codigoPostalNuevoProfesor = trim($_POST['codigoPostalProfesor'] ?? '');
+    $observacionesNuevoProfesor = trim($_POST['observacionesProfesor'] ?? '');
 
-    $lista_de_errores = array();
+    $listaErroresValidacion = [];
 
-    if (empty($nombre)) {
-        $lista_de_errores['nombreProfesor'] = "El nombre es obligatorio.";
+    if (empty($nombreNuevoProfesor)) {
+        $listaErroresValidacion['nombreProfesor'] = "Vaya, el nombre es obligatorio.";
     }
-    if (empty($email)) {
-        $lista_de_errores['emailProfesor'] = "El email es obligatorio.";
-    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
-        $lista_de_errores['emailProfesor'] = "El formato del email no es válido.";
+    if (empty($emailNuevoProfesor)) {
+        $listaErroresValidacion['emailProfesor'] = "Vaya, el email es obligatorio.";
+    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $emailNuevoProfesor)) {
+        $listaErroresValidacion['emailProfesor'] = "Vaya, el formato del email no es vÃ¡lido.";
     }
-    if (empty($dni)) {
-        $lista_de_errores['dniProfesor'] = "El DNI es obligatorio.";
+    if (empty($dniNuevoProfesor)) {
+        $listaErroresValidacion['dniProfesor'] = "Vaya, el DNI es obligatorio.";
     }
-    if (empty($telefono)) {
-        $lista_de_errores['telefonoProfesor'] = "El teléfono es obligatorio.";
-    } else if (!is_numeric($telefono)) {
-        $lista_de_errores['telefonoProfesor'] = "El teléfono debe ser numérico.";
+    if (empty($telefonoNuevoProfesor)) {
+        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono es obligatorio.";
+    } else if (!is_numeric($telefonoNuevoProfesor)) {
+        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono debe ser numÃ©rico.";
     }
-    if (empty($direccion)) {
-        $lista_de_errores['direccionProfesor'] = "La dirección es obligatoria.";
+    if (empty($direccionNuevoProfesor)) {
+        $listaErroresValidacion['direccionProfesor'] = "Vaya, la direcciÃ³n es obligatoria.";
     }
 
-    if (empty($lista_de_errores)) {
-        // Signature: insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
-        $idNuevoProfesor = insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
+    if (empty($listaErroresValidacion)) {
+        $idNuevoProfesorInsertado = insertarProfesor($nombreNuevoProfesor, $emailNuevoProfesor, $telefonoNuevoProfesor, $dniNuevoProfesor, $direccionNuevoProfesor, $fechaNacimientoNuevoProfesor, $fechaAltaNuevoProfesor, $ciudadNuevoProfesor, $codigoPostalNuevoProfesor, $observacionesNuevoProfesor);
         
-        if ($idNuevoProfesor) {
+        if ($idNuevoProfesorInsertado) {
             // Asignar Ciclos
             if (isset($_POST['ciclos']) && is_array($_POST['ciclos'])) {
-                foreach ($_POST['ciclos'] as $idCiclo) {
-                    asociarCicloProfesor($idCiclo, $idNuevoProfesor);
+                foreach ($_POST['ciclos'] as $idCicloParaAsignar) {
+                    asociarCicloProfesor($idCicloParaAsignar, $idNuevoProfesorInsertado);
                 }
             }
 
-            // Asignar Módulos
+            // Asignar MÃ³dulos
             if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
-                foreach ($_POST['modulos'] as $idModulo) {
-                    asociarModuloProfesor($idModulo, $idNuevoProfesor);
+                foreach ($_POST['modulos'] as $idModuloParaAsignar) {
+                    asociarModuloProfesor($idModuloParaAsignar, $idNuevoProfesorInsertado);
                 }
             }
 
-            $_SESSION['exito'] = "Profesor registrado y asignado correctamente.";
-            header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
+            $_SESSION['exito'] = "Listo! Profesor registrado y asignado correctamente.";
+            header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $hayError = true;
+            $_SESSION['error'] = "Vaya, hubo un error al guardar en la base de datos.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
+        $hayError = true;
+        $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_profesor'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/profesores/agregarProfesores.php");
+    header("Location: ../../../vistas/admin/profesores/agregarProfesores.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
+header("Location: ../../../vistas/admin/profesores/verProfesores.php");
 exit;
-?>

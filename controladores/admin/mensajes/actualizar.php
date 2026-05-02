@@ -1,26 +1,29 @@
 <?php
 session_start();
-require_once "../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-if (isset($_POST['idReclamacion'])) {
-    $idReclamacion = $_POST['idReclamacion'];
+$hayError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idReclamacion'])) {
+    $idReclamacion = trim($_POST['idReclamacion']);
     
     if (isset($_POST['guardarCambios'])) {
-        $respuesta = trim($_POST['respuesta']);
-        if (responderMensaje($idReclamacion, $respuesta)) {
-            $_SESSION['exito'] = "Cambios guardados correctamente.";
+        $respuestaAdmin = trim($_POST['respuesta']);
+        if (responderMensaje($idReclamacion, $respuestaAdmin)) {
+            $_SESSION['exito'] = "Listo! Respuesta guardada con Ã©xito.";
         } else {
-            $_SESSION['error'] = "Error al guardar los cambios.";
+            $hayError = true;
+            $_SESSION['error'] = "Vaya, no pudimos guardar la respuesta.";
         }
     } else if (isset($_POST['marcarLeido'])) {
         if (marcarMensajeComoLeido($idReclamacion)) {
-            $_SESSION['exito'] = "Mensaje marcado como revisado.";
+            $_SESSION['exito'] = "Listo! El mensaje ha sido marcado como revisado.";
         } else {
-            $_SESSION['error'] = "Error al actualizar estado.";
+            $hayError = true;
+            $_SESSION['error'] = "Vaya, hubo un problema al actualizar el estado.";
         }
     }
 }
 
-header("Location: /pfc/vistas/admin/mensajes/lista.php");
+header("Location: ../../../vistas/admin/mensajes/lista.php");
 exit;
-?>

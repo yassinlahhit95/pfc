@@ -1,26 +1,36 @@
 <?php
 session_start();
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 if (isset($_POST['insertarReto'])) {
-    $n = trim($_POST['nombreReto']);
-    $fi = $_POST['fechaInicio'];
-    $ff = $_POST['fechaFin'];
-    $h = $_POST['horasReto'];
+    $nombreReto = trim($_POST['nombreReto']);
+    $fechaInicio = trim($_POST['fechaInicio']);
+    $fechaFin = trim($_POST['fechaFin']);
+    $horasReto = trim($_POST['horasReto']);
+    $listaDeModulos = isset($_POST['modulos']) ? $_POST['modulos'] : [];
 
-    if (empty($n)) {
-        $_SESSION['error'] = "El nombre es obligatorio.";
-    } else if (insertarReto($n, $fi, $ff, $h)) {
-        $_SESSION['exito'] = "Reto insertado.";
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
-        exit;
-    } else {
-        $_SESSION['error'] = "Error al insertar.";
+    $hayError = false;
+
+    if (empty($nombreReto)) {
+        $_SESSION['error'] = "Vaya, el nombre del reto es obligatorio.";
+        $hayError = true;
     }
-    header("Location: /pfc/vistas/profesores/retos/agregar.php");
+
+    if (!$hayError) {
+        $resultado = insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaDeModulos);
+        if ($resultado) {
+            $_SESSION['exito'] = "Listo! Reto insertado correctamente.";
+            header("Location: ../../../vistas/profesores/retos/lista.php");
+            exit;
+        } else {
+            $_SESSION['error'] = "Vaya, ha habido un error al insertar el reto.";
+        }
+    }
+
+    header("Location: ../../../vistas/profesores/retos/agregar.php");
     exit;
 }
-header("Location: /pfc/vistas/profesores/retos/lista.php");
+
+header("Location: ../../../vistas/profesores/retos/lista.php");
 exit;
 ?>
-

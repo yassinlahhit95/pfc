@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Detalles Director - Super Admin";
 $seccion = 'directores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 $id = 0;
 if (isset($_GET['id'])) {

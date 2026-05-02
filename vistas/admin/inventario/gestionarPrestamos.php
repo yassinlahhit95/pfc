@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Gestión de Préstamos - Super Admin";
 $seccion = 'prestamos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $todos_los_prestamos = listarTodosLosPrestamos();
 

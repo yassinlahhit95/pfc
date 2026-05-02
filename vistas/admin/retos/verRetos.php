@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Gestión de Retos - Super Admin";
 $seccion = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $todos_los_retos = listarRetos();
 

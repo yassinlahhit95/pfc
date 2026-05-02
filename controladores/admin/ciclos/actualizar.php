@@ -1,49 +1,44 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 if (isset($_POST['actualizarCiclo'])) {
-    $id = $_POST['idCiclo'];
+    $idCiclo = trim($_POST['idCiclo']);
     $nombre = trim($_POST['nombreCiclo']);
     $abreviatura = trim($_POST['abreviaturaCiclo']);
-    $idNivel = $_POST['idNivel'];
-    $precio = $_POST['precioCiclo'];
-    
-    $profesores = array();
-    if (isset($_POST['profesores'])) { $profesores = $_POST['profesores']; }
-    
-    $aulas = array();
-    if (isset($_POST['aulas'])) { $aulas = $_POST['aulas']; }
+    $idNivelEducativo = trim($_POST['idNivel']);
+    $precioCiclo = trim($_POST['precioCiclo']);
 
-    $lista_de_errores = array();
+    $profesores = isset($_POST['profesores']) ? $_POST['profesores'] : [];
+    $aulas = isset($_POST['aulas']) ? $_POST['aulas'] : [];
+
+    $hayError = false;
 
     if (empty($nombre)) {
-        $lista_de_errores['nombreCiclo'] = "El nombre del ciclo es obligatorio.";
-    }
-    
-    if (empty($abreviatura)) {
-        $lista_de_errores['abreviaturaCiclo'] = "La abreviatura es obligatoria.";
+        $hayError = true;
+        $_SESSION['error'] = "El nombre del ciclo es obligatorio.";
+    } elseif (empty($abreviatura)) {
+        $hayError = true;
+        $_SESSION['error'] = "La abreviatura es obligatoria.";
     }
 
-    if (empty($lista_de_errores)) {
-        // Signature updated: actualizarCicloExistente($id, $nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio)
-        $resultado = actualizarCicloExistente($id, $nombre, $abreviatura, $idNivel, $profesores, $aulas, $precio);
+    if (!$hayError) {
+        $resultado = actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo actualizado correctamente.";
-            header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
+            header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         } else {
             $_SESSION['error'] = "Error al actualizar en la base de datos.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_ciclos'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $id);
+    header("Location: ../../../vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $idCiclo);
     exit;
 }
 
-header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
+header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
 ?>

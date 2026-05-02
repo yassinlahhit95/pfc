@@ -1,15 +1,15 @@
 <?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "Gestión de Eventos - Super Admin";
+$titulo_pagina = "GestiÃ³n de Eventos - Super Admin";
 $seccion = 'eventos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $todos_los_eventos = listarEventosProximos();
 
@@ -23,7 +23,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Próximos Eventos</h1>
+    <h1>PrÃ³ximos Eventos</h1>
 </div>
 
 <?php if (!empty($exito)) { ?>
@@ -40,13 +40,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <form method="POST" action="/pfc/controladores/admin/eventos/insertar.php">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Título del Evento *</label>
-                <input type="text" name="tituloEvento" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <label>TÃ­tulo del Evento *</label>
+                <input type="text" name="tituloEvento" placeholder="Ej: Examen Final, ReuniÃ³n de Profesores...">
             </div>
 
             <div class="campo-formulario">
-                <label>Ubicación</label>
-                <input type="text" name="ubicacionEvento" placeholder="Ej: Aula 101, Salón de Actos...">
+                <label>UbicaciÃ³n</label>
+                <input type="text" name="ubicacionEvento" placeholder="Ej: Aula 101, SalÃ³n de Actos...">
             </div>
 
             <div class="campo-formulario">
@@ -60,7 +60,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label>Descripción</label>
+                <label>DescripciÃ³n</label>
                 <textarea name="descripcionEvento" rows="3" placeholder="Detalles del evento..."></textarea>
             </div>
         </div>
@@ -83,13 +83,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <tr>
                     <th>Fecha y Hora</th>
                     <th>Evento</th>
-                    <th>Ubicación</th>
+                    <th>UbicaciÃ³n</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($todos_los_eventos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay eventos próximos programados</td></tr>
+                    <tr><td colspan="4" class="sin-datos">No hay eventos prÃ³ximos programados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_eventos as $evento) { ?>
                     <tr>
@@ -107,7 +107,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarEvento.php?idEvento=<?php echo $evento['idEvento']; ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/eventos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este evento?')">
+                                <form action="/pfc/controladores/admin/eventos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿Eliminar este evento?')">
                                     <input type="hidden" name="idEvento" value="<?php echo $evento['idEvento']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

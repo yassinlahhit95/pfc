@@ -1,16 +1,16 @@
 <?php
 session_start();
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['idEstudiante'])) {
-    $id = $_POST['idEstudiante'];
-    if (eliminarEstudiante($id)) {
+    $idEstudiante = trim($_POST['idEstudiante']);
+    
+    if (eliminarEstudiante($idEstudiante)) {
         $_SESSION['exito'] = "Estudiante eliminado correctamente.";
     } else {
         $_SESSION['error'] = "Error al eliminar el estudiante.";
     }
 }
-header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
-exit;
-?>
 
+header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
+exit;

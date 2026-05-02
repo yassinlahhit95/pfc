@@ -3,19 +3,19 @@ session_start();
 
 // Control de acceso para administradores
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../index.php");
     exit;
 }
 
-require_once "../../modelos/conectar.php";
-require_once "../../modelos/panelDeControl.php";
-require_once "../../modelos/anuncios.php";
-require_once "../../modelos/eventos.php";
-require_once "../../modelos/retos.php";
-require_once "../../modelos/modulos.php";
-require_once "../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../modelos/conectar.php";
+require_once __DIR__ . "/../../modelos/panelDeControl.php";
+require_once __DIR__ . "/../../modelos/anuncios.php";
+require_once __DIR__ . "/../../modelos/eventos.php";
+require_once __DIR__ . "/../../modelos/retos.php";
+require_once __DIR__ . "/../../modelos/modulos.php";
+require_once __DIR__ . "/../../modelos/estudiantes.php";
 
-// Obtener estadísticas generales
+// Obtener estadÃ­sticas generales
 $totalEstudiantesRegistrados = contarEstudiantes();
 $totalProfesoresRegistrados = contarProfesores();
 $totalRetosAcademicos = (int)contarRetos();
@@ -25,7 +25,7 @@ $porcentajeGlobalAprobados = obtenerPorcentajeAprobadosGlobal();
 $cantidadTotalRecaudada = obtenerTotalRecaudado();
 $totalOperacionesDePago = contarPagosRealizados();
 
-// Lógica simple para paginación de anuncios
+// LÃ³gica simple para paginaciÃ³n de anuncios
 $anunciosAMostrarPorPagina = 5;
 $numeroPaginaActual = 1;
 
@@ -39,14 +39,14 @@ if ($numeroPaginaActual < 1) {
 
 $totalAnunciosActivos = (int)contarAnunciosQueEstanActivos();
 $totalPaginasAnuncios = ceil($totalAnunciosActivos / $anunciosAMostrarPorPagina);
-$listaAnunciosSistema = listarAnunciosConPaginas($anunciosAMostrarPorPagina);
+$listaAnunciosSistema = listarAnunciosPaginados($numeroPaginaActual, $anunciosAMostrarPorPagina);
 
-// Obtener eventos próximos
+// Obtener eventos prÃ³ximos
 $listaEventosProximos = listarEventosProximos();
 
 $titulo_pagina = "PANEL DE CONTROL - SUPER ADMIN";
 $seccion = 'inicio';
-include 'comunes/nav.php';
+include __DIR__ . '/comunes/nav.php';
 ?>
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
@@ -55,7 +55,7 @@ include 'comunes/nav.php';
   </div>
 </div>
 
-<h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
+<h2 class="margen-abajo texto-oscuro">ANÃLISIS ACADÃ‰MICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?php echo $totalEstudiantesRegistrados; ?></h3><p>Estudiantes</p></div>
@@ -64,7 +64,7 @@ include 'comunes/nav.php';
     <div class="info-estadistica"><h3><?php echo $totalProfesoresRegistrados; ?></h3><p>Profesores</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?php echo $totalModulosProfesionales; ?></h3><p>Módulos</p></div>
+    <div class="info-estadistica"><h3><?php echo $totalModulosProfesionales; ?></h3><p>MÃ³dulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
     <div class="info-estadistica"><h3><?php echo $totalRetosAcademicos; ?></h3><p>Retos</p></div>
@@ -76,7 +76,7 @@ include 'comunes/nav.php';
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica">
-    <div class="info-estadistica"><h3><?php echo number_format($cantidadTotalRecaudada, 2); ?> €</h3><p>Total Recaudado</p></div>
+    <div class="info-estadistica"><h3><?php echo number_format($cantidadTotalRecaudada, 2); ?> â‚¬</h3><p>Total Recaudado</p></div>
   </div>
   <div class="tarjeta-estadistica">
     <div class="info-estadistica"><h3><?php echo $totalOperacionesDePago; ?></h3><p>Cobros Realizados</p></div>
@@ -87,19 +87,19 @@ include 'comunes/nav.php';
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     
     <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta"><h3>ACCIONES RÁPIDAS</h3></div>
+      <div class="titulo-tarjeta"><h3>ACCIONES RÃPIDAS</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="/pfc/vistas/admin/estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="/pfc/vistas/admin/profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="/pfc/vistas/admin/pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos y Push</span></a>
+        <a href="/pfc/vistas/admin/anuncios/gestionAnuncios.php" class="accion-rapida"><span>ðŸ”” Avisos y Push</span></a>
         <a href="/pfc/vistas/admin/eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
+        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÃ“N DE ANUNCIOS</h3>
       </div>
       <?php if ($listaAnunciosSistema) { ?>
         <div class="lista-anuncios-dashboard">
@@ -137,11 +137,11 @@ include 'comunes/nav.php';
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PRÓXIMOS EVENTOS</h3>
+        <h3>PRÃ“XIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventosProximos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
+            <p class="texto-atenuado">No hay eventos prÃ³ximos.</p>
         <?php } else { ?>
             <?php 
             $contadorEventosMostrados = 0;
@@ -170,5 +170,5 @@ include 'comunes/nav.php';
   </div>
 </div>
 
-<?php include 'comunes/footer.php'; ?>
+<?php include __DIR__ . '/comunes/footer.php'; ?>
 

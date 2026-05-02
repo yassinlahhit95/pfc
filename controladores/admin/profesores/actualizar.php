@@ -1,62 +1,63 @@
 <?php
 session_start();
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
-if (isset($_POST['actualizarProfesor'])) {
-    $id_profesor = $_POST['idProfesor'];
-    $nombre = trim($_POST['nombreProfesor']);
-    $email = trim($_POST['emailProfesor']);
-    $dni = trim($_POST['dniProfesor']);
-    $telefono = trim($_POST['telefonoProfesor']);
-    $direccion = trim($_POST['direccionProfesor']);
+$hayError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarProfesor'])) {
+    $idProfesorActualizar = trim($_POST['idProfesor']);
+    $nombreProfesorActualizar = trim($_POST['nombreProfesor']);
+    $emailProfesorActualizar = trim($_POST['emailProfesor']);
+    $dniProfesorActualizar = trim($_POST['dniProfesor']);
+    $telefonoProfesorActualizar = trim($_POST['telefonoProfesor']);
+    $direccionProfesorActualizar = trim($_POST['direccionProfesor']);
     
-    $fechaNacimiento = $_POST['fechaNacimientoProfesor'] ?? '1980-01-01';
-    $fechaAlta = $_POST['fechaAltaProfesor'] ?? '2026-01-01';
-    $ciudad = trim($_POST['ciudadProfesor'] ?? '');
-    $codigoPostal = trim($_POST['codigoPostalProfesor'] ?? '');
-    $observaciones = trim($_POST['observacionesProfesor'] ?? '');
+    $fechaNacimientoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '1980-01-01');
+    $fechaAltaProfesor = trim($_POST['fechaAltaProfesor'] ?? '2026-01-01');
+    $ciudadProfesor = trim($_POST['ciudadProfesor'] ?? '');
+    $codigoPostalProfesor = trim($_POST['codigoPostalProfesor'] ?? '');
+    $observacionesProfesor = trim($_POST['observacionesProfesor'] ?? '');
 
-    $lista_de_errores = array();
+    $listaErroresValidacion = [];
 
-    if (empty($nombre)) {
-        $lista_de_errores['nombreProfesor'] = "El nombre es obligatorio.";
+    if (empty($nombreProfesorActualizar)) {
+        $listaErroresValidacion['nombreProfesor'] = "Vaya, el nombre es obligatorio.";
     }
-    if (empty($email)) {
-        $lista_de_errores['emailProfesor'] = "El email es obligatorio.";
-    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
-        $lista_de_errores['emailProfesor'] = "El formato del email no es válido.";
+    if (empty($emailProfesorActualizar)) {
+        $listaErroresValidacion['emailProfesor'] = "Vaya, el email es obligatorio.";
+    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $emailProfesorActualizar)) {
+        $listaErroresValidacion['emailProfesor'] = "Vaya, el formato del email no es vÃ¡lido.";
     }
-    if (empty($dni)) {
-        $lista_de_errores['dniProfesor'] = "El DNI es obligatorio.";
+    if (empty($dniProfesorActualizar)) {
+        $listaErroresValidacion['dniProfesor'] = "Vaya, el DNI es obligatorio.";
     }
-    if (empty($telefono)) {
-        $lista_de_errores['telefonoProfesor'] = "El teléfono es obligatorio.";
-    } else if (!is_numeric($telefono)) {
-        $lista_de_errores['telefonoDirector'] = "El teléfono debe ser numérico.";
+    if (empty($telefonoProfesorActualizar)) {
+        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono es obligatorio.";
+    } else if (!is_numeric($telefonoProfesorActualizar)) {
+        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono debe ser numÃ©rico.";
     }
-    if (empty($direccion)) {
-        $lista_de_errores['direccionProfesor'] = "La dirección es obligatoria.";
+    if (empty($direccionProfesorActualizar)) {
+        $listaErroresValidacion['direccionProfesor'] = "Vaya, la direcciÃ³n es obligatoria.";
     }
 
-    if (empty($lista_de_errores)) {
-        // Signature: actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)
-        $resultado = actualizarProfesor($id_profesor, $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
-        if ($resultado) {
-            $_SESSION['exito'] = "Profesor actualizado correctamente.";
-            header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
+    if (empty($listaErroresValidacion)) {
+        if (actualizarProfesor($idProfesorActualizar, $nombreProfesorActualizar, $emailProfesorActualizar, $telefonoProfesorActualizar, $dniProfesorActualizar, $direccionProfesorActualizar, $fechaNacimientoProfesor, $fechaAltaProfesor, $ciudadProfesor, $codigoPostalProfesor, $observacionesProfesor)) {
+            $_SESSION['exito'] = "Listo! Profesor actualizado correctamente.";
+            header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+            $hayError = true;
+            $_SESSION['error'] = "Vaya, hubo un error al actualizar en la base de datos.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
+        $hayError = true;
+        $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_profesor'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=$id_profesor");
+    header("Location: ../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=$idProfesorActualizar");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
+header("Location: ../../../vistas/admin/profesores/verProfesores.php");
 exit;
-?>

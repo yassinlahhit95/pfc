@@ -1,23 +1,23 @@
 <?php
 session_start();
 
-// Validación de sesión simple
+// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE ESTUDIANTES - SUPER ADMIN";
+$titulo_pagina = "GESTIÃ“N DE ESTUDIANTES - SUPER ADMIN";
 $seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Obtenemos todos los estudiantes de la base de datos
 $listaDeEstudiantesActuales = listarEstudiantes();
 
-// Captura de mensajes de sesión para mostrar alertas
+// Captura de mensajes de sesiÃ³n para mostrar alertas
 $mensajeExitoAMostrar = "";
 if (isset($_SESSION['exito'])) {
     $mensajeExitoAMostrar = $_SESSION['exito'];
@@ -75,7 +75,7 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE COMPLETO</th>
-                    <th>CORREO ELECTRÓNICO</th>
+                    <th>CORREO ELECTRÃ“NICO</th>
                     <th>CICLO ASIGNADO</th>
                     <th>ACCIONES</th>
                 </tr>
@@ -99,10 +99,10 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                                     <i class="fas fa-id-card"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
-                                   class="btn-accion btn-editar" title="Editar información">
+                                   class="btn-accion btn-editar" title="Editar informaciÃ³n">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
+                                <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" class="d-inline" onsubmit="return confirm('Â¿EstÃ¡ seguro de eliminar a este estudiante?')">
                                     <input type="hidden" name="idEstudiante" value="<?php echo $estudianteIndividual['idEstudiante']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Borrar registro">
                                         <i class="fas fa-trash"></i>

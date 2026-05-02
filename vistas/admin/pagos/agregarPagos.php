@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idCicloElegido = isset($_GET['idCiclo']) ? $_GET['idCiclo'] : '';
 $idEstudianteElegido = isset($_GET['idEstudiante']) ? $_GET['idEstudiante'] : '';
@@ -27,13 +27,13 @@ $hoy = date('Y-m-d');
 $fechaLimite = date('Y') . '-06-30';
 $esDespuesDeJunio = ($hoy > $fechaLimite);
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 unset($_SESSION['errores']);
 
 $titulo_pagina = "Registrar Pago - Super Admin";
 $seccion = 'pagos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

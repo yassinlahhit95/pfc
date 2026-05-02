@@ -1,29 +1,29 @@
 <?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-require_once "../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $idAnuncio = $_GET['idAnuncio'] ?? 0;
 $anuncio = obtenerAnuncioPorId($idAnuncio);
 
 if (!$anuncio) {
     $_SESSION['error'] = "El anuncio solicitado no existe.";
-    header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+    header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
     exit;
 }
 
 $titulo_pagina = "Detalles del Anuncio - Super Admin";
 $seccion = 'anuncios';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Anuncio</h1>
-    <a href="gestionAnuncios.php" class="boton-secundario">← Volver a la lista</a>
+    <a href="gestionAnuncios.php" class="boton-secundario">â† Volver a la lista</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -60,7 +60,7 @@ include_once "../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar definitivamente este anuncio?')">
+        <form action="/pfc/controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿Eliminar definitivamente este anuncio?')">
             <input type="hidden" name="idAnuncio" value="<?php echo $idAnuncio; ?>">
             <button type="submit" class="boton-secundario color-error border-error">
                 <i class="fas fa-trash"></i> Eliminar

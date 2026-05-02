@@ -2,10 +2,10 @@
 session_start();
 $titulo_pagina = "Modificar Pago - Super Admin";
 $seccion = 'pagos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/pagos.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $id_pago = $_GET['idPago'];
 $pago = obtenerPagoPorId($id_pago);

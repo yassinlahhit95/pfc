@@ -1,34 +1,33 @@
 <?php
 session_start();
-require_once "../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 if (isset($_POST['actualizarAula'])) {
-    $id_aula = $_POST['idAula'];
-    $nombre_aula = trim($_POST['nombreAula']);
+    $idAula = trim($_POST['idAula']);
+    $nombreAula = trim($_POST['nombreAula']);
 
-    $lista_de_errores = array();
-    if (empty($nombre_aula)) {
-        $lista_de_errores['nombreAula'] = "El nombre del aula no puede estar vacío.";
+    $hayError = false;
+    if (empty($nombreAula)) {
+        $hayError = true;
+        $_SESSION['error'] = "El nombre del aula es obligatorio.";
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = actualizarAula($id_aula, $nombre_aula);
+    if (!$hayError) {
+        $resultado = actualizarAula($idAula, $nombreAula);
         if ($resultado) {
-            $_SESSION['exito'] = "Aula actualizada correctamente.";
-            header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+            $_SESSION['exito'] = "Aula actualizada.";
+            header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
         } else {
             $_SESSION['error'] = "Error al actualizar el aula.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_aulas'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/aulas/modificarAulas.php?idAula=$id_aula");
+    header("Location: ../../../vistas/admin/aulas/modificarAulas.php?idAula=$idAula");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
-

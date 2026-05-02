@@ -2,10 +2,10 @@
 session_start();
 $titulo_pagina = "Asignar Profesor a Módulo - Super Admin";
 $seccion = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
 if (!isset($_GET['idModulo'])) {
     header("Location: verModulos.php");

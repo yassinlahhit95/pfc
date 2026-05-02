@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once "../../../modelos/niveles.php";
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
@@ -42,7 +42,7 @@ if (isset($datos['aulas'])) {
 
 $titulo_pagina = "Agregar Ciclo - Super Admin";
 $seccion = 'ciclos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

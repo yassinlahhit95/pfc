@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -28,7 +28,7 @@ $calificaciones = listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo,
 
 $tituloDelPagina = "Calificaciones - Portal Profesores";
 $seccionActual = 'calificaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
@@ -50,9 +50,9 @@ include_once "../comunes/nav.php";
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por Módulo:</label>
+            <label>Filtrar por MÃ³dulo:</label>
             <select name="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis Módulos --</option>
+                <option value="0">-- Todos mis MÃ³dulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?php echo $m['idModulo']; ?>" <?php if($idModulo == $m['idModulo']) echo "selected"; ?>>
                         <?php echo $m['nombreModulo']; ?>
@@ -72,11 +72,11 @@ include_once "../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>Módulo</th>
-                    <th>1ª Ev</th>
-                    <th>1ª Final</th>
-                    <th>2ª Ev</th>
-                    <th>2ª Final</th>
+                    <th>MÃ³dulo</th>
+                    <th>1Âª Ev</th>
+                    <th>1Âª Final</th>
+                    <th>2Âª Ev</th>
+                    <th>2Âª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>

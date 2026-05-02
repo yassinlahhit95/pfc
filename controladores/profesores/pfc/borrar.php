@@ -1,16 +1,18 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    if (eliminarArchivoTFG($id)) {
-        $_SESSION['exito'] = "Archivo eliminado correctamente.";
+    $idEstudiante = trim($_GET['id']);
+    
+    $resultado = eliminarArchivoTFG($idEstudiante);
+    if ($resultado) {
+        $_SESSION['exito'] = "Listo! El archivo ha sido eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el archivo.";
+        $_SESSION['error'] = "Vaya, no se ha podido eliminar el archivo.";
     }
 }
-header("Location: /pfc/vistas/profesores/pfc/lista.php");
+
+header("Location: ../../../vistas/profesores/pfc/lista.php");
 exit;
 ?>
-

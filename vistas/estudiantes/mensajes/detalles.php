@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,11 +13,11 @@ $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
     $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.");
-    header("Location: /pfc/vistas/estudiantes/mensajes/lista.php");
+    header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
     exit;
 }
 
-// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+// Marcar como leÃ­do automÃ¡ticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'estudiante' && $mensaje['idEstudiante'] == $_SESSION['idEstudiante']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
@@ -25,23 +25,23 @@ if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'estudiante' && $mensaje['id
 
 $tituloDelPagina = "Detalles del Mensaje - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> Información del Mensaje</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> InformaciÃ³n del Mensaje</h3>
     </div>
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administración (Sistema)'; ?>
+            <?php echo ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'AdministraciÃ³n (Sistema)'; ?>
         </div>
     </div>
 

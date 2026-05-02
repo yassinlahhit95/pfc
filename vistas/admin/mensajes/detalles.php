@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -12,11 +12,11 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
-    header("Location: /pfc/vistas/admin/mensajes/lista.php");
+    header("Location: ../../../vistas/admin/mensajes/lista.php");
     exit;
 }
 
-// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (Administración)
+// Marcar como leÃ­do automÃ¡ticamente SOLO si el que abre el mensaje es el receptor (AdministraciÃ³n)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] === NULL) || ($mensaje['emisor_rol'] == 'profesor' && $mensaje['idEstudiante'] === NULL))) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
@@ -24,24 +24,24 @@ if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emiso
 
 $titulo_pagina = "Detalle del Mensaje - Super Admin";
 $seccion = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/admin/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/admin/mensajes/lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope"></i> Información del Mensaje</h3>
+        <h3><i class="fas fa-envelope"></i> InformaciÃ³n del Mensaje</h3>
     </div>
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?php 
-                if ($mensaje['emisor_rol'] == 'admin') echo 'Tú (Administración)';
+                if ($mensaje['emisor_rol'] == 'admin') echo 'TÃº (AdministraciÃ³n)';
                 else if ($mensaje['emisor_rol'] == 'profesor') echo $mensaje['nombreProfesor'] . ' (Profesor)';
                 else echo $mensaje['nombreEstudiante'] . ' (Estudiante)';
             ?>
@@ -57,7 +57,7 @@ include_once "../comunes/nav.php";
                     else if ($mensaje['idProfesor'] > 0) echo $mensaje['nombreProfesor'] . ' (Profesor)';
                     else echo 'General';
                 } else {
-                    echo 'Tú (Administración)';
+                    echo 'TÃº (AdministraciÃ³n)';
                 }
             ?>
         </div>
@@ -72,7 +72,7 @@ include_once "../comunes/nav.php";
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">Leído</span>
+                <span class="estado-bolita activo-verde">LeÃ­do</span>
             <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">Pendiente</span>
             <?php } ?>

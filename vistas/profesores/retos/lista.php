@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,11 +13,11 @@ $retos = obtenerRetosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Retos - Portal Profesores";
 $seccionActual = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Gestión de Retos</h1>
+    <h1>GestiÃ³n de Retos</h1>
     <a href="/pfc/vistas/profesores/retos/agregar.php" class="boton-primario">Nuevo Reto</a>
 </div>
 

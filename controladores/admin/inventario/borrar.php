@@ -1,16 +1,14 @@
 <?php
 session_start();
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['idArticulo'])) {
-    $id = $_POST['idArticulo'];
-    if (eliminarArticulo($id)) {
-        $_SESSION['exito'] = "Artículo eliminado correctamente.";
+    $idArticulo = trim($_POST['idArticulo']);
+    if (eliminarArticulo($idArticulo)) {
+        $_SESSION['exito'] = "Listo! ArtÃ­culo eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el artículo.";
+        $_SESSION['error'] = "Vaya, ha ocurrido un error al intentar eliminar el artÃ­culo.";
     }
 }
-header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
-?>
-

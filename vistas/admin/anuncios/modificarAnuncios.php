@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Modificar Anuncio - Super Admin";
 $seccion = 'anuncios';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $id_anuncio = $_GET['idAnuncio'];
 $anuncio = obtenerAnuncioPorId($id_anuncio);

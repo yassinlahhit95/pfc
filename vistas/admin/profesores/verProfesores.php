@@ -1,22 +1,22 @@
 <?php
 session_start();
 
-// Validación de sesión simple
+// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE PROFESORES - SUPER ADMIN";
+$titulo_pagina = "GESTIÃ“N DE PROFESORES - SUPER ADMIN";
 $seccion = 'profesores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
 // Obtenemos la lista completa de profesores
 $listaDeTodosLosProfesores = listarProfesores();
 
-// Captura de mensajes de sesión para alertas
+// Captura de mensajes de sesiÃ³n para alertas
 $mensajeDeError = "";
 if (isset($_SESSION['error'])) { 
     $mensajeDeError = $_SESSION['error']; 
@@ -27,7 +27,7 @@ if (isset($_SESSION['exito'])) {
     $mensajeDeExito = $_SESSION['exito']; 
 }
 
-// Limpiamos la sesión después de capturar
+// Limpiamos la sesiÃ³n despuÃ©s de capturar
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -53,7 +53,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE COMPLETO</th>
-                    <th>CORREO ELECTRÓNICO</th>
+                    <th>CORREO ELECTRÃ“NICO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -75,14 +75,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                     <i class="fas fa-search"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/profesores/asignarModulos.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
-                                   class="btn-accion btn-ver" title="Asignar Módulos específicos">
+                                   class="btn-accion btn-ver" title="Asignar MÃ³dulos especÃ­ficos">
                                     <i class="fas fa-book"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/profesores/modificarProfesores.php?idProfesor=<?php echo $profesorIndividual['idProfesor']; ?>" 
                                    class="btn-accion btn-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
+                                <form action="/pfc/controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿EstÃ¡s seguro de eliminar a este profesor?')">
                                     <input type="hidden" name="idProfesor" value="<?php echo $profesorIndividual['idProfesor']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Eliminar del sistema">
                                         <i class="fas fa-trash"></i>

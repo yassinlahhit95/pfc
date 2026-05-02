@@ -3,27 +3,27 @@ session_start();
 
 // Control de acceso para administradores
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "MI PERFIL - ADMINISTRACIÓN";
+$titulo_pagina = "MI PERFIL - ADMINISTRACIÃ“N";
 $seccion = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 $idLogueado = $_SESSION['idAdmin'];
 $datosAdmin = obtenerDirectorPorId($idLogueado);
 
-// Captura de mensajes de sesión
+// Captura de mensajes de sesiÃ³n
 $mensajeError = "";
 if (isset($_SESSION['error'])) { $mensajeError = $_SESSION['error']; }
 
 $mensajeExito = "";
 if (isset($_SESSION['exito'])) { $mensajeExito = $_SESSION['exito']; }
 
-// Limpiar sesión
+// Limpiar sesiÃ³n
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -49,28 +49,28 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
 
             <div class="campo-formulario">
-                <label>Correo Electrónico</label>
+                <label>Correo ElectrÃ³nico</label>
                 <input type="text" name="emailDirector" value="<?php echo $datosAdmin['emailDirector']; ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Número de Teléfono</label>
+                <label>NÃºmero de TelÃ©fono</label>
                 <input type="text" name="telefonoDirector" value="<?php echo $datosAdmin['telefonoDirector']; ?>">
             </div>
         </div>
 
-        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÑA (OPCIONAL)</h3>
+        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÃ‘A (OPCIONAL)</h3>
         <p class="texto-atenuado texto-pequeno">Solo rellene si desea actualizar su clave de acceso.</p>
 
         <div class="formulario-cuadricula mt-10">
             <div class="campo-formulario">
-                <label>CONTRASEÑA ACTUAL:</label>
+                <label>CONTRASEÃ‘A ACTUAL:</label>
                 <input type="password" name="current_password" placeholder="Validar cambios">
             </div>
 
             <div class="campo-formulario">
-                <label>NUEVA CONTRASEÑA:</label>
-                <input type="password" name="new_password" placeholder="Mínimo 6 caracteres">
+                <label>NUEVA CONTRASEÃ‘A:</label>
+                <input type="password" name="new_password" placeholder="MÃ­nimo 6 caracteres">
             </div>
         </div>
 

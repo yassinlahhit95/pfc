@@ -1,16 +1,18 @@
 <?php
 session_start();
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
-if (isset($_POST['idModulo'])) {
-    $id = $_POST['idModulo'];
-    if (eliminarModulo($id)) {
-        $_SESSION['exito'] = "Módulo eliminado correctamente.";
+$hayError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idModulo'])) {
+    $idModuloParaBorrar = trim($_POST['idModulo']);
+    if (eliminarModulo($idModuloParaBorrar)) {
+        $_SESSION['exito'] = "Listo! MÃ³dulo eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el módulo.";
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, no se pudo eliminar el mÃ³dulo.";
     }
 }
-header("Location: /pfc/vistas/admin/modulos/verModulos.php");
-exit;
-?>
 
+header("Location: ../../../vistas/admin/modulos/verModulos.php");
+exit;

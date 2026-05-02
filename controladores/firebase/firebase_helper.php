@@ -3,6 +3,10 @@
  * Helper para la gestión de notificaciones push a través de Firebase Cloud Messaging (FCM) V1.
  */
 
+require_once __DIR__ . "/../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../modelos/profesores.php";
+require_once __DIR__ . "/../../modelos/directores.php";
+
 /**
  * Obtiene el Access Token de Google para autenticar las peticiones de FCM.
  * @return string|null Token de acceso o null si no se puede obtener (falta config).
@@ -19,27 +23,27 @@ function obtenerAccessToken() {
     $contenido = file_get_contents($rutaConfig);
     if (!$contenido) return null;
 
-    $json = json_decode($contenido, true);
-    if (!$json || !isset($json['client_email']) || !isset($json['private_key'])) {
+    $datosJson = json_decode($contenido, true);
+    if (!$datosJson || !isset($datosJson['client_email']) || !isset($datosJson['private_key'])) {
         error_log("Firebase Error: service-account.json tiene un formato inválido.");
         return null;
     }
 
-    $email = $json['client_email'];
-    $clavePrivada = $json['private_key'];
+    $email = $datosJson['client_email'];
+    $clavePrivada = $datosJson['private_key'];
 
-    $header = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
-    $ahora = time();
-    $payload = json_encode([
+    $cabecera = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
+    $momentoActual = time();
+    $cuerpoCarga = json_encode([
         'iss' => $email,
         'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
         'aud' => 'https://oauth2.googleapis.com/token',
-        'exp' => $ahora + 3600,
-        'iat' => $ahora
+        'exp' => $momentoActual + 3600,
+        'iat' => $momentoActual
     ]);
 
-    $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
-    $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+    $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($cabecera));
+    $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($cuerpoCarga));
 
     $firma = '';
     if (!openssl_sign($base64UrlHeader . "." . $base64UrlPayload, $firma, $clavePrivada, OPENSSL_ALGO_SHA256)) {
@@ -63,10 +67,10 @@ function obtenerAccessToken() {
     ]);
 
     $resultado = curl_exec($ch);
-    $datos = json_decode($resultado, true);
+    $datosRespuesta = json_decode($resultado, true);
     curl_close($ch);
 
-    return $datos['access_token'] ?? null;
+    return $datosRespuesta['access_token'] ?? null;
 }
 
 /**
@@ -79,8 +83,8 @@ function obtenerAccessToken() {
 function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     if (empty($token)) return false;
 
-    $projectId = "pfc1-5c23c"; // ID del proyecto en Firebase Console
-    $url = "https://fcm.googleapis.com/v1/projects/$projectId/messages:send";
+    $idProyecto = "pfc1-5c23c"; // ID del proyecto en Firebase Console
+    $urlFCM = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
     
     $accessToken = obtenerAccessToken();
     if (!$accessToken) {
@@ -88,7 +92,7 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
         return false;
     }
 
-    $payload = [
+    $cuerpoCarga = [
         'message' => [
             'token' => $token,
             'notification' => [
@@ -108,64 +112,44 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
         ]
     ];
 
-    $json = json_encode($payload);
-    $headers = [
+    $datosJson = json_encode($cuerpoCarga);
+    $cabeceras = [
         'Authorization: Bearer ' . $accessToken,
         'Content-Type: application/json'
     ];
 
     $ch = curl_init();
     curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
+        CURLOPT_URL => $urlFCM,
         CURLOPT_POST => true,
-        CURLOPT_HTTPHEADER => $headers,
+        CURLOPT_HTTPHEADER => $cabeceras,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_POSTFIELDS => $json
+        CURLOPT_POSTFIELDS => $datosJson
     ]);
 
-    $result = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $resultadoEnvio = curl_exec($ch);
+    $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     
-    if ($httpCode !== 200) {
-        error_log("FCM Error ($httpCode): " . $result);
-        // No guardamos el error en SESSION aquí para no ensuciar la UI general
-        // si falla un envío puntual de red.
+    if ($codigoHttp !== 200) {
+        error_log("FCM Error ($codigoHttp): " . $resultadoEnvio);
     }
     
-    return $result;
+    return $resultadoEnvio;
 }
 
 /**
- * Obtiene el token FCM de un usuario desde la base de datos.
+ * Obtiene el token FCM de un usuario desde los modelos.
  */
-function obtenerTokenUsuario($userId, $userRole) {
-    require_once __DIR__ . "/../../modelos/conectar.php";
-    $conexion = obtenerConexion();
-    
-    $tabla = "";
-    $columnaId = "";
-
-    switch ($userRole) {
-        case 'estudiante': $tabla = "estudiantes"; $columnaId = "idEstudiante"; break;
-        case 'profesor': $tabla = "profesores"; $columnaId = "idProfesor"; break;
-        case 'admin': $tabla = "directores"; $columnaId = "idDirector"; break;
+function obtenerTokenUsuario($idUsuario, $rolUsuario) {
+    switch ($rolUsuario) {
+        case 'estudiante': 
+            return obtenerTokenFCMEstudiante($idUsuario);
+        case 'profesor': 
+            return obtenerTokenFCMProfesor($idUsuario);
+        case 'admin': 
+            return obtenerTokenFCMDirector($idUsuario);
     }
-
-    if (!empty($tabla)) {
-        $stmt = mysqli_prepare($conexion, "SELECT fcm_token FROM $tabla WHERE $columnaId = ?");
-        mysqli_stmt_bind_param($stmt, "i", $userId);
-        mysqli_stmt_execute($stmt);
-        $resultado = mysqli_stmt_get_result($stmt);
-        
-        if ($fila = mysqli_fetch_assoc($resultado)) {
-            $token = $fila['fcm_token'];
-            mysqli_close($conexion);
-            return $token;
-        }
-    }
-    mysqli_close($conexion);
     return null;
 }
-

@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -25,12 +25,12 @@ if (!empty($idCicloSeleccionado)) {
 
 $tituloDelPagina = "Nuevo Mensaje - Portal Profesores";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Redactar Mensaje</h1>
-    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if (isset($_SESSION['error'])) { ?>
@@ -68,10 +68,10 @@ include_once "../comunes/nav.php";
         <input type="hidden" name="idProfesor" value="<?php echo $idProfesor; ?>">
         
         <div class="campo-formulario">
-            <label>Destinatario (Estudiante o Dirección)</label>
+            <label>Destinatario (Estudiante o DirecciÃ³n)</label>
             <select name="idEstudiante">
                 <option value="">-- Seleccionar Destinatario --</option>
-                <option value="1">Dirección (Administración)</option>
+                <option value="1">DirecciÃ³n (AdministraciÃ³n)</option>
                 <optgroup label="Estudiantes">
                     <?php foreach ($listaDeEstudiantes as $estudiante) { ?>
                         <option value="<?php echo $estudiante['idEstudiante']; ?>">
@@ -89,7 +89,7 @@ include_once "../comunes/nav.php";
 
         <div class="campo-formulario">
             <label>Mensaje</label>
-            <textarea name="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250"></textarea>
+            <textarea name="descripcion" rows="6" placeholder="Escribe aquÃ­ tu mensaje (mÃ¡ximo 250 caracteres)..." maxlength="250"></textarea>
         </div>
 
         <div class="form-acciones">

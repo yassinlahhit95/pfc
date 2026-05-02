@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Modificar Aula - Super Admin";
 $seccion = 'aulas';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $id_aula = $_GET['idAula'];
 $la_aula = obtenerAulaPorId($id_aula);
@@ -20,7 +20,7 @@ if (isset($_SESSION['datos_aulas'])) {
 
 $error = $_SESSION['error'] ?? "";
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_aulas']);

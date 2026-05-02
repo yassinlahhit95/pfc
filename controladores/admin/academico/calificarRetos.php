@@ -1,54 +1,46 @@
 <?php
 session_start();
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+
+$hayError = false;
 
 if (isset($_POST['guardarNotasReto'])) {
-    $id_reto = $_POST['idReto'];
-    $id_ciclo = $_POST['idCiclo'];
-    $id_modulo = $_POST['idModulo'];
+    $idReto = trim($_POST['idReto'] ?? '');
+    $idCiclo = trim($_POST['idCiclo'] ?? '');
+    $idModulo = trim($_POST['idModulo'] ?? '');
     
-    $ids_estudiantes = $_POST['estudiantes'];
-    $notas = $_POST['notas'];
+    $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
+    $listaNotas = $_POST['notas'] ?? [];
 
-    $error_al_guardar = false;
+    for ($i = 0; $i < count($listaIdsEstudiantes); $i++) {
+        $idEstudiante = trim($listaIdsEstudiantes[$i]);
+        $nota = trim($listaNotas[$i]);
 
-    for ($i = 0; $i < count($ids_estudiantes); $i++) {
-        $id_est = $ids_estudiantes[$i];
-        $nota = $notas[$i];
-
-        // Validar que sea numérico o vacío
         if (!empty($nota)) {
-            if (!is_numeric($nota)) {
-                $error_al_guardar = true;
-            } else {
-                if ($nota < 0 || $nota > 10) {
-                    $error_al_guardar = true;
-                }
+            if (!is_numeric($nota) || $nota < 0 || $nota > 10) {
+                $hayError = true;
             }
         }
 
-        if (!$error_al_guardar) {
-            // calificarReto($idEstudiante, $idReto, $nota)
-            // Si la nota es vacía, podemos decidir no guardarla o guardar un 0
-            $nota_final = $nota;
-            if (empty($nota_final)) { $nota_final = 0; }
-            
-            if (!calificarReto($id_est, $id_reto, $nota_final)) {
-                $error_al_guardar = true;
+        if (!$hayError) {
+            $notaFinal = empty($nota) ? 0 : $nota;
+            if (!calificarReto($idEstudiante, $idReto, $notaFinal)) {
+                $hayError = true;
             }
         }
+        
+        if ($hayError) break;
     }
 
-    if ($error_al_guardar == true) {
-        $_SESSION['error'] = strtoupper("HUBO ERRORES AL PROCESAR ALGUNAS NOTAS. LAS CALIFICACIONES DEBEN ESTAR ENTRE 0.00 Y 10.00.");
+    if ($hayError) {
+        $_SESSION['error'] = "Error al procesar las notas. Deben estar entre 0 y 10.";
     } else {
-        $_SESSION['exito'] = strtoupper("CALIFICACIONES DEL RETO GUARDADAS CON ÉXITO.");
+        $_SESSION['exito'] = "Calificaciones del reto guardadas.";
     }
 
-    header("Location: /pfc/vistas/admin/academico/calificacionesRetos.php?idCiclo=" . $id_ciclo . "&idModulo=" . $id_modulo . "&idReto=" . $id_reto);
+    header("Location: ../../../vistas/admin/academico/calificacionesRetos.php?idCiclo=$idCiclo&idModulo=$idModulo&idReto=$idReto");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/academico/calificacionesRetos.php");
+header("Location: ../../../vistas/admin/academico/calificacionesRetos.php");
 exit;
-

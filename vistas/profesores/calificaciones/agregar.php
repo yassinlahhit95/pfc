@@ -3,7 +3,7 @@ session_start();
 
 // Validar que sea profesor
 if (empty($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -27,7 +27,7 @@ if (!empty($_GET['idModulo'])) {
 
 // Listas para los selects
 $listaMisCiclos = obtenerCiclosDeProfesor($idProfLogueado);
-$listaModulosFiltrados = array();
+$listaModulosFiltrados = [];
 
 if (!empty($idCicloSeleccionado)) {
     $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCicloSeleccionado);
@@ -42,7 +42,7 @@ if (!empty($idCicloSeleccionado)) {
 }
 
 // Sacar alumnos si ya eligio modulo
-$listaAlumnos = array();
+$listaAlumnos = [];
 if (!empty($idModuloSeleccionado)) {
     $listaAlumnos = listarCalificacionesPorModulo($idModuloSeleccionado);
 }
@@ -58,11 +58,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
 $tituloDelPagina = "Calificaciones - Portal Profesores";
 $seccionActual = 'calificaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificaciones por Módulo</h1>
+    <h1>Calificaciones por MÃ³dulo</h1>
     <p class="subtitulo">Aqui puedes poner las notas de todos tus alumnos a la vez</p>
 </div>
 
@@ -81,7 +81,7 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Selecciona el Módulo:</label>
+            <label>2. Selecciona el MÃ³dulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?php if(empty($idCicloSeleccionado)) { echo "disabled"; } ?>>
                 <option value="">-- Elige un modulo --</option>
                 <?php foreach ($listaModulosFiltrados as $m) { ?>
@@ -112,10 +112,10 @@ include_once "../comunes/nav.php";
                     <thead>
                         <tr>
                             <th>Alumno</th>
-                            <th>1ª Ev</th>
-                            <th>1ª Final</th>
-                            <th>2ª Ev</th>
-                            <th>2ª Final</th>
+                            <th>1Âª Ev</th>
+                            <th>1Âª Final</th>
+                            <th>2Âª Ev</th>
+                            <th>2Âª Final</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>

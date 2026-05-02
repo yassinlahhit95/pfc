@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once "../../../modelos/conectar.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idDelEstudiante = 0;
 if (isset($_GET['idEstudiante'])) {
@@ -12,13 +12,13 @@ if (isset($_GET['idEstudiante'])) {
 $estudiante = obtenerEstudiantePorId($idDelEstudiante);
 
 if (!$estudiante) {
-    header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
+    header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
     exit;
 }
 
 $titulo_pagina = "Detalle del Estudiante - Super Admin";
 $seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -35,7 +35,7 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Información Personal</h3>
+        <h3>InformaciÃ³n Personal</h3>
     </div>
     
     <div class="fila-detalle">
@@ -54,7 +54,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="etiqueta-detalle">TelÃ©fono</div>
         <div class="valor-detalle"><?php echo $estudiante['telefonoEstudiante']; ?></div>
     </div>
 
@@ -69,7 +69,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Ciudad / Dirección</div>
+        <div class="etiqueta-detalle">Ciudad / DirecciÃ³n</div>
         <div class="valor-detalle"><?php echo $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante']; ?></div>
     </div>
 
@@ -86,7 +86,7 @@ include_once "../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3>Situación del TFG</h3>
+        <h3>SituaciÃ³n del TFG</h3>
     </div>
     <div class="disposicion-flexible alinear-centro espacio-entre-elementos">
         <div>

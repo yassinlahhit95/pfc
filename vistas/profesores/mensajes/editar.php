@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -12,18 +12,18 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
-    header("Location: /pfc/vistas/profesores/mensajes/lista.php");
+    header("Location: ../../../vistas/profesores/mensajes/lista.php");
     exit;
 }
 
 $tituloDelPagina = "Gestionar Mensaje - Portal Profesores";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -48,8 +48,8 @@ include_once "../comunes/nav.php";
         <input type="hidden" name="idReclamacion" value="<?php echo $idReclamacion; ?>">
         
         <div class="campo-formulario">
-            <label>Tu Respuesta / Explicación:</label>
-            <textarea name="respuesta" rows="4" placeholder="Escribe aquí tu respuesta..."><?php echo $mensaje['respuesta']; ?></textarea>
+            <label>Tu Respuesta / ExplicaciÃ³n:</label>
+            <textarea name="respuesta" rows="4" placeholder="Escribe aquÃ­ tu respuesta..."><?php echo $mensaje['respuesta']; ?></textarea>
         </div>
 
         <div class="disposicion-flexible separacion-grande margen-arriba">
@@ -57,7 +57,7 @@ include_once "../comunes/nav.php";
                 <i class="fas fa-save"></i> Guardar Respuesta
             </button>
             <button type="submit" name="marcarLeido" class="boton-secundario">
-                <i class="fas fa-check"></i> Solo marcar como Leído
+                <i class="fas fa-check"></i> Solo marcar como LeÃ­do
             </button>
         </div>
     </form>

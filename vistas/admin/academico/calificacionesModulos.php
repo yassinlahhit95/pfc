@@ -2,12 +2,12 @@
 session_start();
 $titulo_pagina = "Notas de Módulos - Super Admin";
 $seccion = 'notas_modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/calificaciones.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $id_ciclo_elegido = 0;
 if (isset($_GET['idCiclo'])) {
@@ -21,12 +21,12 @@ if (isset($_GET['idModulo'])) {
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$modulos_filtrados = array();
+$modulos_filtrados = [];
 if (!empty($id_ciclo_elegido)) {
     $modulos_filtrados = obtenerModulosPorCiclo($id_ciclo_elegido);
 }
 
-$estudiantes_calificados = array();
+$estudiantes_calificados = [];
 if ($id_modulo_elegido != 0) {
     $estudiantes_calificados = listarCalificacionesPorModulo($id_modulo_elegido);
 }

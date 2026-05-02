@@ -1,20 +1,20 @@
 <?php
 session_start();
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-require_once "../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
 $eventos = listarEventosProximos();
 
 $tituloDelPagina = "Calendario de Eventos - Portal Profesores";
 $seccionActual = 'eventos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Próximos Eventos del Centro</h1>
+    <h1>PrÃ³ximos Eventos del Centro</h1>
 </div>
 
 <div class="tarjeta-blanca">
@@ -25,7 +25,7 @@ include_once "../comunes/nav.php";
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Evento</th>
-                    <th>Ubicación</th>
+                    <th>UbicaciÃ³n</th>
                 </tr>
             </thead>
             <tbody>

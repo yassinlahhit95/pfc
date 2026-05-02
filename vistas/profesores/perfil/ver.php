@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,12 +13,12 @@ $profesor = obtenerProfesorPorId($id);
 
 $tituloDelPagina = "Mi Perfil - Portal Profesores";
 $seccionActual = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Mi Perfil</h1>
-    <a href="/pfc/vistas/profesores/dashboard.php" class="boton-secundario">← Inicio</a>
+    <a href="/pfc/vistas/profesores/dashboard.php" class="boton-secundario">â† Inicio</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -28,7 +28,7 @@ include_once "../comunes/nav.php";
         </div>
         <div>
             <a href="/pfc/vistas/profesores/perfil/editar.php" class="boton-primario">
-                <i class="fas fa-edit"></i> Editar Información
+                <i class="fas fa-edit"></i> Editar InformaciÃ³n
             </a>
         </div>
     </div>
@@ -43,7 +43,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Teléfono de Contacto</div>
+        <div class="etiqueta-detalle">TelÃ©fono de Contacto</div>
         <div class="valor-detalle"><?php echo $profesor['telefonoProfesor']; ?></div>
     </div>
 
@@ -53,7 +53,7 @@ include_once "../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Dirección</div>
+        <div class="etiqueta-detalle">DirecciÃ³n</div>
         <div class="valor-detalle"><?php echo $profesor['direccionProfesor']; ?></div>
     </div>
 </div>

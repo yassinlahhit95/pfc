@@ -1,18 +1,18 @@
 <?php
 session_start();
 
-// Validación de sesión simple
+// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 $titulo_pagina = "RESULTADOS FINALES - SUPER ADMIN";
 $seccion = 'resultados_modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/calificaciones.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Captura del ciclo seleccionado
 $idCicloElegidoParaVer = 0;
@@ -21,14 +21,14 @@ if (isset($_GET['idCiclo'])) {
 }
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
-$listaDeDatosFinalesAMostrar = array();
+$listaDeDatosFinalesAMostrar = [];
 
 if (!empty($idCicloElegidoParaVer)) {
     // Obtenemos los datos procesados desde el Modelo (MVC)
     $listaDeDatosFinalesAMostrar = obtenerResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
 
-// Mensajes de sesión
+// Mensajes de sesiÃ³n
 $mensajeExito = ""; if (isset($_SESSION['exito'])) { $mensajeExito = $_SESSION['exito']; }
 $mensajeError = ""; if (isset($_SESSION['error'])) { $mensajeError = $_SESSION['error']; }
 unset($_SESSION['exito'], $_SESSION['error']);
@@ -36,7 +36,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <div class="encabezado-pagina">
     <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
-    <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
+    <p class="subtitulo">Promedio global del ciclo (75% MÃ³dulos / 25% Retos)</p>
 </div>
 
 <?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?php echo $mensajeExito; ?></div> <?php } ?>
@@ -59,7 +59,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Está seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?php echo $idCicloElegidoParaVer; ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
@@ -76,7 +76,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Global Módulos (75%)</th>
+                        <th>Media Global MÃ³dulos (75%)</th>
                         <th>Media Global Retos (25%)</th>
                         <th>Nota Final Ciclo</th>
                         <th>Estado Final</th>
@@ -94,12 +94,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <tr>
                             <td><strong><?php echo $fila['nombreEstudiante']; ?></strong></td>
                             <td><?php echo $fila['promedio_global']; ?> (Notas)</td> 
-                            <td>-</td> <!-- En el modelo calculamos el global, podríamos desglosar si fuera necesario -->
+                            <td>-</td> <!-- En el modelo calculamos el global, podrÃ­amos desglosar si fuera necesario -->
                             <td class="texto-negrita"><?php echo $fila['promedio_global']; ?></td>
                             <td class="<?php echo $claseDelColor; ?> texto-negrita">
                                 <?php echo $fila['estado_global']; ?>
                                 <?php if($fila['tiene_suspensos'] == true && $fila['estado_global'] != "PENDIENTE") { 
-                                    echo " <small title='Tiene módulos suspensos'>(!)</small>"; 
+                                    echo " <small title='Tiene mÃ³dulos suspensos'>(!)</small>"; 
                                 } ?>
                             </td>
                         </tr>
@@ -110,8 +110,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </div>
         
         <div class="tarjeta-alerta-info">
-            <p><i class="fas fa-info-circle"></i> <strong>Cálculo Global:</strong> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
-            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
+            <p><i class="fas fa-info-circle"></i> <strong>CÃ¡lculo Global:</strong> Se promedian todas las calificaciones de todos los mÃ³dulos (75%) y todos los retos (25%).</p>
+            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin mÃ³dulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
         </div>
     </div>
 <?php } ?>

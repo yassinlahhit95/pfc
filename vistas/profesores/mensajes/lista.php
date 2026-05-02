@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -14,9 +14,9 @@ $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 // Nota: listarMensajesParaProfesor en el modelo actual solo saca los recibidos. 
 // Vamos a unificar para que vea ambos en la misma tabla como admin.
 
-$tituloDelPagina = "Buzón de Mensajes - Portal Profesores";
+$tituloDelPagina = "BuzÃ³n de Mensajes - Portal Profesores";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
@@ -24,7 +24,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Buzón de Mensajes</h1>
+    <h1>BuzÃ³n de Mensajes</h1>
     <a href="/pfc/vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> Redactar Mensaje
     </a>
@@ -53,7 +53,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aún.</td></tr>
+                    <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aÃºn.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
@@ -61,7 +61,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     ?>
                     <tr class="<?php echo $claseFila; ?>">
                         <td>
-                            <strong><?php echo $esMio ? 'Tú (Profesor)' : $mensaje['nombreEstudiante']; ?></strong>
+                            <strong><?php echo $esMio ? 'TÃº (Profesor)' : $mensaje['nombreEstudiante']; ?></strong>
                         </td>
                         <td><?php echo $mensaje['nombreCiclo'] ?: '-'; ?></td>
                         <td><p class="texto-negrita"><?php echo strtoupper($mensaje['asunto']); ?></p></td>
@@ -76,7 +76,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="estado-bolita activo-verde">Leído</span>
+                                <span class="estado-bolita activo-verde">LeÃ­do</span>
                             <?php } else { ?>
                                 <span class="estado-bolita inactivo-rojo">Nuevo</span>
                             <?php } ?>
@@ -86,7 +86,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="/pfc/vistas/profesores/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Ver mensaje">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="/pfc/controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
+                                <form action="/pfc/controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('Â¿Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?php echo $mensaje['idReclamacion']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

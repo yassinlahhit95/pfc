@@ -1,73 +1,70 @@
 <?php
 session_start();
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+
+$hayError = false;
 
 if (isset($_POST['actualizarPerfil'])) {
-    $idProfesorRecibido = $_POST['idProfesor'];
+    $idProfesorRecibido = trim($_POST['idProfesor']);
     $nombreRecibido = trim($_POST['nombreProfesor']);
     $emailRecibido = strtolower(trim($_POST['emailProfesor']));
-    $telefonoRecibido = $_POST['telefonoProfesor'];
+    $telefonoRecibido = trim($_POST['telefonoProfesor']);
     
-    // Campos de contraseña
-    $passwordActualRecibida = $_POST['current_password'];
-    $passwordNuevaRecibida = $_POST['new_password'];
+    // Campos de contraseÃ±a
+    $passwordActualRecibida = trim($_POST['current_password'] ?? '');
+    $passwordNuevaRecibida = trim($_POST['new_password'] ?? '');
 
-    $errorDetectado = false;
-
-    // Validaciones básicas de perfil
+    // Validaciones bÃ¡sicas de perfil
     if (empty($idProfesorRecibido)) {
-        header("Location: /pfc/vistas/profesores/perfil/ver.php");
+        header("Location: ../../../vistas/profesores/perfil/ver.php");
         exit;
     }
 
     if (empty($nombreRecibido)) {
-        $_SESSION['error'] = strtoupper("EL NOMBRE NO PUEDE ESTAR VACÍO.");
-        $errorDetectado = true;
+        $_SESSION['error'] = "Vaya, el nombre no puede estar vacÃ­o.";
+        $hayError = true;
     } else if (empty($emailRecibido)) {
-        $_SESSION['error'] = strtoupper("EL CORREO ELECTRÓNICO NO PUEDE ESTAR VACÍO.");
-        $errorDetectado = true;
+        $_SESSION['error'] = "Vaya, el correo electrÃ³nico no puede estar vacÃ­o.";
+        $hayError = true;
     } else if (!is_numeric($telefonoRecibido)) {
-        $_SESSION['error'] = strtoupper("EL TELÉFONO DEBE SER UN NÚMERO.");
-        $errorDetectado = true;
+        $_SESSION['error'] = "Vaya, el telÃ©fono debe ser un nÃºmero.";
+        $hayError = true;
     }
 
-    // Lógica de cambio de contraseña (si se proporcionan datos)
-    if ($errorDetectado == false && !empty($passwordNuevaRecibida)) {
+    // LÃ³gica de cambio de contraseÃ±a
+    if (!$hayError && !empty($passwordNuevaRecibida)) {
         if (empty($passwordActualRecibida)) {
-            $_SESSION['error'] = strtoupper("DEBE INGRESAR LA CONTRASEÑA ACTUAL PARA VALIDAR EL CAMBIO.");
-            $errorDetectado = true;
+            $_SESSION['error'] = "Vaya, debes ingresar la contraseÃ±a actual para validar el cambio.";
+            $hayError = true;
         } else {
-            // Obtener datos actuales para verificar la clave
             $datosProfesorActual = obtenerProfesorPorId($idProfesorRecibido);
             
-            if ($datosProfesorActual['password'] == $passwordActualRecibida) {
-                // La clave actual es correcta, procedemos a actualizarla
+            if ($datosProfesorActual && $datosProfesorActual['password'] === $passwordActualRecibida) {
                 actualizarPasswordProfesor($idProfesorRecibido, $passwordNuevaRecibida);
             } else {
-                $_SESSION['error'] = strtoupper("LA CONTRASEÑA ACTUAL ES INCORRECTA.");
-                $errorDetectado = true;
+                $_SESSION['error'] = "Vaya, la contraseÃ±a actual es incorrecta.";
+                $hayError = true;
             }
         }
     }
 
     // Si no hay errores, actualizamos el resto del perfil
-    if ($errorDetectado == false) {
+    if (!$hayError) {
         $resultadoActualizacion = actualizarPerfilProfesor($idProfesorRecibido, $nombreRecibido, $emailRecibido, $telefonoRecibido);
         
-        if ($resultadoActualizacion == true) {
-            $_SESSION['exito'] = strtoupper("PERFIL ACTUALIZADO CON ÉXITO.");
-            header("Location: /pfc/vistas/profesores/perfil/ver.php");
+        if ($resultadoActualizacion) {
+            $_SESSION['exito'] = "Listo! Perfil actualizado con Ã©xito.";
+            header("Location: ../../../vistas/profesores/perfil/ver.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("ERROR AL ACTUALIZAR LOS DATOS EN EL SISTEMA.");
+            $_SESSION['error'] = "Vaya, no se pudieron actualizar los datos.";
+            $hayError = true;
         }
     }
 
-    header("Location: /pfc/vistas/profesores/perfil/editar.php");
+    header("Location: ../../../vistas/profesores/perfil/editar.php");
     exit;
 }
 
-header("Location: /pfc/vistas/profesores/perfil/ver.php");
+header("Location: ../../../vistas/profesores/perfil/ver.php");
 exit;
-?>
-

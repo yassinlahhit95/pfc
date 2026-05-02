@@ -1,39 +1,47 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['subirTFG'])) {
-    $idEstudiante = $_POST['idEstudiante'];
-    $archivo = $_FILES['archivoTFG'];
+    $idEstudiante = trim($_POST['idEstudiante']);
+    $archivoTFG = $_FILES['archivoTFG'];
     
+    $hayError = false;
+
     if (empty($idEstudiante)) {
-        $_SESSION['error'] = "ID de estudiante obligatorio.";
-    } else if (!empty($archivo['error'])) {
-        $_SESSION['error'] = "Error al subir el archivo.";
-    } else {
-        $estudiante = obtenerEstudiantePorId($idEstudiante);
-        $nombreLimpio = str_replace(' ', '_', $estudiante['nombreEstudiante']);
+        $_SESSION['error'] = "Vaya, el ID del estudiante es obligatorio.";
+        $hayError = true;
+    } else if (!empty($archivoTFG['error'])) {
+        $_SESSION['error'] = "Vaya, ha habido un error al subir el archivo.";
+        $hayError = true;
+    }
+
+    if (!$hayError) {
+        $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+        $nombreLimpio = str_replace(' ', '_', $datosEstudiante['nombreEstudiante']);
         $timestamp = date('d-m-Y_H-i-s');
         $nombreArchivo = "TFG_" . $nombreLimpio . "_" . $timestamp . ".pdf";
         
-        $rutaDestino = "../../../public/uploads/pfc/" . $nombreArchivo;
+        $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
 
-        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+        if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {
-                $_SESSION['exito'] = "TFG subido correctamente.";
-                header("Location: /pfc/vistas/estudiantes/pfc/subir.php");
+                $_SESSION['exito'] = "Listo! TFG subido correctamente.";
+                header("Location: ../../../vistas/estudiantes/pfc/subir.php");
                 exit;
             } else {
-                $_SESSION['error'] = "Error al actualizar en la base de datos.";
+                $_SESSION['error'] = "Vaya, ha habido un error al actualizar la base de datos.";
             }
         } else {
-            $_SESSION['error'] = "No se pudo mover el archivo al servidor.";
+            $_SESSION['error'] = "Vaya, no se ha podido guardar el archivo en el servidor.";
         }
     }
-    header("Location: /pfc/vistas/estudiantes/pfc/subir.php");
+    
+    header("Location: ../../../vistas/estudiantes/pfc/subir.php");
     exit;
 }
-header("Location: /pfc/vistas/estudiantes/dashboard.php");
+
+header("Location: ../../../vistas/estudiantes/dashboard.php");
 exit;
 ?>

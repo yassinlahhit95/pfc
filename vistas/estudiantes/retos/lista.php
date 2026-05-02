@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -12,7 +12,7 @@ $retos = listarRetos();
 
 $tituloDelPagina = "Mis Retos - Portal Estudiantes";
 $seccionActual = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

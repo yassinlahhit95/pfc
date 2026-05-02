@@ -2,10 +2,10 @@
 session_start();
 $titulo_pagina = "Agregar Profesor - Super Admin";
 $seccion = 'profesores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();

@@ -2,18 +2,18 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 $tituloDelPagina = "Notas de Retos - Portal Profesores";
 $seccionActual = 'notas_retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $id_ciclo_elegido = 0;
 if (isset($_GET['idCiclo'])) { $id_ciclo_elegido = $_GET['idCiclo']; }
@@ -27,17 +27,17 @@ if (isset($_GET['idReto'])) { $id_reto_elegido = $_GET['idReto']; }
 $idProfesor = $_SESSION['idProfesor'];
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
-$modulos_filtrados = array();
+$modulos_filtrados = [];
 if (!empty($id_ciclo_elegido)) {
     $modulos_filtrados = obtenerModulosDeProfesorPorCiclo($idProfesor, $id_ciclo_elegido);
 }
 
-$retos_filtrados = array();
+$retos_filtrados = [];
 if (!empty($id_modulo_elegido)) {
     $retos_filtrados = listarRetosFiltrados($id_modulo_elegido);
 }
 
-$estudiantes_lista = array();
+$estudiantes_lista = [];
 if (!empty($id_reto_elegido)) {
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
 }
@@ -70,7 +70,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Seleccione Módulo:</label>
+            <label>2. Seleccione MÃ³dulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?php if(empty($id_ciclo_elegido)) echo "disabled"; ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>

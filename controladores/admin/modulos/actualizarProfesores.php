@@ -1,30 +1,30 @@
 <?php
 session_start();
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
-if (isset($_POST['actualizarProfesores'])) {
-    $idModulo = intval($_POST['idModulo']);
-    $idProfesor = !empty($_POST['idProfesor']) ? intval($_POST['idProfesor']) : 0;
+$hayError = false;
 
-    // 1. Limpiar asociaciones previas del módulo
-    limpiarProfesoresModulo($idModulo);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarProfesores'])) {
+    $idModuloAsignar = intval(trim($_POST['idModulo']));
+    $idProfesorAsignar = !empty($_POST['idProfesor']) ? intval(trim($_POST['idProfesor'])) : 0;
 
-    // 2. Insertar la nueva asociación (si se seleccionó un profesor)
-    $error = false;
-    if ($idProfesor > 0) {
-        if (!asociarModuloProfesor($idModulo, $idProfesor)) {
-            $error = true;
+    // 1. Limpiar asociaciones previas del mÃ³dulo
+    limpiarProfesoresModulo($idModuloAsignar);
+
+    // 2. Insertar la nueva asociaciÃ³n (si se seleccionÃ³ un profesor)
+    if ($idProfesorAsignar > 0) {
+        if (!asociarModuloProfesor($idModuloAsignar, $idProfesorAsignar)) {
+            $hayError = true;
         }
     }
 
-    if (!$error) {
-        $_SESSION['exito'] = strtoupper("PROFESOR ASIGNADO AL MÓDULO CORRECTAMENTE.");
+    if (!$hayError) {
+        $_SESSION['exito'] = "Listo! Profesor asignado al mÃ³dulo correctamente.";
     } else {
-        $_SESSION['error'] = strtoupper("HUBO UN ERROR AL ASIGNAR EL PROFESOR.");
+        $_SESSION['error'] = "Vaya, hubo un error al asignar el profesor.";
     }
 }
 
-header("Location: /pfc/vistas/admin/modulos/verModulos.php");
+header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-?>

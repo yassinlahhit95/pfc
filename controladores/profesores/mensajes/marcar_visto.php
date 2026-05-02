@@ -1,20 +1,22 @@
 <?php
 session_start();
-require_once "../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+
+$hayError = false;
 
 if (isset($_POST['marcarVisto'])) {
-    $id = $_POST['idReclamacion'];
+    $idReclamacion = trim($_POST['idReclamacion']);
     
-    if (marcarMensajeComoLeido($id)) {
-        $_SESSION['exito'] = strtoupper("MENSAJE MARCADO COMO LEÍDO.");
+    if (marcarMensajeComoLeido($idReclamacion)) {
+        $_SESSION['exito'] = "Listo! El mensaje ha sido marcado como visto.";
     } else {
-        $_SESSION['error'] = strtoupper("ERROR AL ACTUALIZAR EL ESTADO DEL MENSAJE.");
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, no se pudo actualizar el estado del mensaje.";
     }
     
-    header("Location: /pfc/vistas/profesores/mensajes/detalles.php?id=" . $id);
+    header("Location: ../../../vistas/profesores/mensajes/detalles.php?id=" . $idReclamacion);
     exit;
 }
 
-header("Location: /pfc/vistas/profesores/mensajes/lista.php");
+header("Location: ../../../vistas/profesores/mensajes/lista.php");
 exit;
-?>

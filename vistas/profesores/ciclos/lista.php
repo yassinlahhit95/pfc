@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,7 +13,7 @@ $ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Mis Ciclos Formativos - Portal Profesores";
 $seccionActual = 'ciclos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

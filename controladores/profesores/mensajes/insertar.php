@@ -1,49 +1,58 @@
 <?php
 session_start();
-require_once "../../../modelos/reclamaciones.php";
-require_once "../../firebase/firebase_helper.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (isset($_POST['insertarReclamacion']) || isset($_POST['enviarMensaje'])) {
-    $idEstudiante = !empty($_POST['idEstudiante']) ? (int)$_POST['idEstudiante'] : 0;
-    $idProfesor = (int)$_POST['idProfesor'];
+    // Limpiamos los datos de entrada
+    $idEstudiante = !empty($_POST['idEstudiante']) ? (int)trim($_POST['idEstudiante']) : 0;
+    $idProfesor = (int)trim($_POST['idProfesor']);
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
     $fechaActual = date('Y-m-d');
 
+    $hayError = false;
+
     if (empty($asunto) || empty($descripcion)) {
-        $_SESSION['error'] = strtoupper("EL ASUNTO Y EL MENSAJE SON OBLIGATORIOS.");
+        $_SESSION['error'] = "Vaya, el asunto y el mensaje son obligatorios.";
+        $hayError = true;
     } else if (strlen($descripcion) > 250) {
-        $_SESSION['error'] = strtoupper("EL MENSAJE NO PUEDE SUPERAR LOS 250 CARACTERES.");
-    } else {
-        if (insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'profesor')) {
-            // Lógica de notificaciones
-            if ($idEstudiante > 1) { // 1 es para Dirección en este contexto o mayor a 0 para alumnos
-                $token = obtenerTokenUsuario($idEstudiante, "estudiante");
-                if ($token) {
-                    enviarNotificacionFirebase($token, "Mensaje del Profesor: " . $asunto, $descripcion);
+        $_SESSION['error'] = "El mensaje es demasiado largo (mÃ¡ximo 250 caracteres).";
+        $hayError = true;
+    }
+
+    if (!$hayError) {
+        $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'profesor');
+        
+        if ($resultado) {
+            // LÃ³gica de notificaciones
+            if ($idEstudiante > 1) { 
+                // Notificar al estudiante
+                $tokenEstudiante = obtenerTokenUsuario($idEstudiante, "estudiante");
+                if ($tokenEstudiante) {
+                    enviarNotificacionFirebase($tokenEstudiante, "Mensaje del Profesor: " . $asunto, $descripcion);
                 }
             } else {
-                // Notificar a administración (directores) si el destino es 0 o 1 (según tu lógica de vista)
-                $conexion = obtenerConexion();
-                $res = mysqli_query($conexion, "SELECT fcm_token FROM directores WHERE fcm_token IS NOT NULL AND fcm_token != ''");
-                while ($row = mysqli_fetch_assoc($res)) {
-                    if ($row['fcm_token']) {
-                        enviarNotificacionFirebase($row['fcm_token'], "Mensaje del Profesor a Dirección: " . $asunto, $descripcion);
-                    }
+                // Notificar a administraciÃ³n (directores)
+                $tokensDirectores = obtenerTokensDirectores();
+                foreach ($tokensDirectores as $tokenDirector) {
+                    enviarNotificacionFirebase($tokenDirector, "Mensaje del Profesor a DirecciÃ³n: " . $asunto, $descripcion);
                 }
-                mysqli_close($conexion);
             }
-            $_SESSION['exito'] = strtoupper("MENSAJE ENVIADO CON ÉXITO.");
-            header("Location: /pfc/vistas/profesores/mensajes/lista.php");
+            
+            $_SESSION['exito'] = "Listo! El mensaje se ha enviado correctamente.";
+            header("Location: ../../../vistas/profesores/mensajes/lista.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("ERROR AL ENVIAR EL MENSAJE A LA BASE DE DATOS.");
+            $_SESSION['error'] = "Vaya, ha habido un error al guardar el mensaje.";
         }
     }
-    header("Location: /pfc/vistas/profesores/mensajes/agregar.php");
+    
+    header("Location: ../../../vistas/profesores/mensajes/agregar.php");
     exit;
 }
-header("Location: /pfc/vistas/profesores/mensajes/lista.php");
+
+header("Location: ../../../vistas/profesores/mensajes/lista.php");
 exit;
 ?>
-

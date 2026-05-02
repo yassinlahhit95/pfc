@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once "../../../modelos/pagos.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $idEstudiante = isset($_GET['idEstudiante']) ? $_GET['idEstudiante'] : '';
 if (empty($idEstudiante)) {
@@ -14,7 +14,7 @@ $pagos = obtenerPagosPorEstudiante($idEstudiante);
 
 $titulo_pagina = "Historial de Pagos - Super Admin";
 $seccion = 'pagos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

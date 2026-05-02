@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Modificar Profesor - Super Admin";
 $seccion = 'profesores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $id_profesor = $_GET['idProfesor'];
 $profesor = obtenerProfesorPorId($id_profesor);

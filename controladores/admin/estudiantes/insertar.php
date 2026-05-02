@@ -1,85 +1,83 @@
 <?php
 session_start();
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['guardarEstudiante'])) {
-    $nombre = trim($_POST['nombreEstudiante']);
-    $email = trim($_POST['emailEstudiante']);
-    $dni = trim($_POST['dniEstudiante']);
-    $telefono = trim($_POST['telefonoEstudiante']);
-    $fecha_nacimiento = $_POST['fechaNacimientoEstudiante'];
-    $fecha_alta = $_POST['fechaAltaEstudiante'];
-    $direccion = trim($_POST['direccionEstudiante']);
-    $ciudad = trim($_POST['ciudadEstudiante']);
-    $codigo_postal = trim($_POST['codigoPostalEstudiante']);
-    $observaciones = "";
-    if (isset($_POST['observacionesEstudiante'])) {
-        $observaciones = trim($_POST['observacionesEstudiante']);
-    }
-    $id_ciclo = $_POST['idCiclo'];
+    $nombre = trim($_POST['nombreEstudiante'] ?? '');
+    $email = trim($_POST['emailEstudiante'] ?? '');
+    $dni = trim($_POST['dniEstudiante'] ?? '');
+    $telefono = trim($_POST['telefonoEstudiante'] ?? '');
+    $fechaNacimiento = trim($_POST['fechaNacimientoEstudiante'] ?? '');
+    $fechaAlta = trim($_POST['fechaAltaEstudiante'] ?? '');
+    $direccion = trim($_POST['direccionEstudiante'] ?? '');
+    $ciudad = trim($_POST['ciudadEstudiante'] ?? '');
+    $codigoPostal = trim($_POST['codigoPostalEstudiante'] ?? '');
+    $observaciones = trim($_POST['observacionesEstudiante'] ?? '');
+    $idCiclo = trim($_POST['idCiclo'] ?? '');
 
-    $lista_de_errores = array();
+    $hayError = false;
+    $errores = [];
 
     if (empty($nombre)) {
-        $lista_de_errores['nombreEstudiante'] = "El nombre es obligatorio.";
+        $errores['nombreEstudiante'] = "El nombre es obligatorio.";
+        $hayError = true;
     }
     if (empty($email)) {
-        $lista_de_errores['emailEstudiante'] = "El email es obligatorio.";
-    } else {
-        if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
-            $lista_de_errores['emailEstudiante'] = "El formato del email no es válido.";
-        }
+        $errores['emailEstudiante'] = "El email es obligatorio.";
+        $hayError = true;
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errores['emailEstudiante'] = "El formato del email no es vÃ¡lido.";
+        $hayError = true;
     }
     if (empty($dni)) {
-        $lista_de_errores['dniEstudiante'] = "El DNI es obligatorio.";
+        $errores['dniEstudiante'] = "El DNI es obligatorio.";
+        $hayError = true;
     }
     if (empty($telefono)) {
-        $lista_de_errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
+        $errores['telefonoEstudiante'] = "El telÃ©fono es obligatorio.";
+        $hayError = true;
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
-        $lista_de_errores['telefonoEstudiante'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
+        $errores['telefonoEstudiante'] = "El telÃ©fono debe ser numÃ©rico y tener exactamente 9 dÃ­gitos.";
+        $hayError = true;
     }
-    if (empty($fecha_nacimiento)) {
-        $lista_de_errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
+    if (empty($fechaNacimiento)) {
+        $errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
+        $hayError = true;
     }
     if (empty($direccion)) {
-        $lista_de_errores['direccionEstudiante'] = "La dirección es obligatoria.";
+        $errores['direccionEstudiante'] = "La direcciÃ³n es obligatoria.";
+        $hayError = true;
     }
     if (empty($ciudad)) {
-        $lista_de_errores['ciudadEstudiante'] = "La ciudad es obligatoria.";
+        $errores['ciudadEstudiante'] = "La ciudad es obligatoria.";
+        $hayError = true;
     }
-    if (empty($codigo_postal)) {
-        $lista_de_errores['codigoPostalEstudiante'] = "El código postal es obligatorio.";
+    if (empty($codigoPostal)) {
+        $errores['codigoPostalEstudiante'] = "El cÃ³digo postal es obligatorio.";
+        $hayError = true;
     }
-    if (empty($id_ciclo)) {
-        $lista_de_errores['idCiclo'] = "Debe seleccionar un ciclo.";
+    if (empty($idCiclo)) {
+        $errores['idCiclo'] = "Debe seleccionar un ciclo.";
+        $hayError = true;
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = insertarEstudiante($nombre, $email, $telefono, $fecha_nacimiento, $dni, $fecha_alta, $direccion, $ciudad, $codigo_postal, $observaciones, $id_ciclo);
+    if (!$hayError) {
+        $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Estudiante registrado con éxito.";
-            header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
+            $_SESSION['exito'] = "Listo! Estudiante registrado con Ã©xito.";
+            header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $_SESSION['error'] = "Vaya, ha ocurrido un error al guardar el estudiante.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_estudiante'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/estudiantes/agregarEstudiantes.php");
+    header("Location: ../../../vistas/admin/estudiantes/agregarEstudiantes.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
+header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
 exit;
-?>
-tes.php");
-    exit;
-}
-
-header("Location: /pfc/vistas/admin/estudiantes/verEstudiantes.php");
-exit;
-?>
-

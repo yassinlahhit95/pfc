@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -10,9 +10,9 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $listaDeMensajes = listarTodosLosMensajes();
 
-$titulo_pagina = "Gestión de Mensajería - Super Admin";
+$titulo_pagina = "GestiÃ³n de MensajerÃ­a - Super Admin";
 $seccion = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
 $error = "";
 if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
@@ -24,7 +24,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Buzón Central de Mensajes</h1>
+    <h1>BuzÃ³n Central de Mensajes</h1>
     <a href="/pfc/vistas/admin/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> Redactar Mensaje
     </a>
@@ -57,7 +57,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <?php foreach ($listaDeMensajes as $mensaje) { ?>
                     <tr>
                         <td><strong><?php echo $mensaje['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></td>
+                        <td><?php echo $mensaje['nombreProfesor'] ?: 'DirecciÃ³n (Admin)'; ?></td>
                         <td>
                             <p class="texto-negrita"><?php echo $mensaje['asunto']; ?></p>
                             <small class="texto-atenuado"><?php echo substr($mensaje['descripcion'], 0, 40); ?>...</small>
@@ -65,7 +65,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="estado-bolita activo-verde">Leído</span>
+                                <span class="estado-bolita activo-verde">LeÃ­do</span>
                             <?php } else { ?>
                                 <span class="estado-bolita inactivo-rojo">Nuevo</span>
                             <?php } ?>
@@ -75,7 +75,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="/pfc/vistas/admin/mensajes/detalles.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="btn-accion btn-ver" title="Ver y Gestionar">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
+                                <form action="/pfc/controladores/admin/mensajes/borrar.php" method="POST" onsubmit="return confirm('Â¿Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?php echo $mensaje['idReclamacion']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

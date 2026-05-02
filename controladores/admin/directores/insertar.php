@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 if (isset($_POST['guardarDirector'])) {
     $nombre = trim($_POST['nombreDirector']);
@@ -9,13 +9,13 @@ if (isset($_POST['guardarDirector'])) {
     $telefono = trim($_POST['telefonoDirector']);
     $fechaAlta = date('Y-m-d');
     
-    $fechaNacimiento = $_POST['fechaNacimientoDirector'] ?? '2000-01-01';
+    $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '2000-01-01');
     $direccion = trim($_POST['direccionDirector'] ?? '');
     $ciudad = trim($_POST['ciudadDirector'] ?? '');
     $codigoPostal = trim($_POST['codigoPostalDirector'] ?? '');
     $observaciones = trim($_POST['observacionesDirector'] ?? '');
 
-    $lista_de_errores = array();
+    $lista_de_errores = [];
 
     if (empty($nombre)) {
         $lista_de_errores['nombreDirector'] = "El nombre es obligatorio.";
@@ -23,23 +23,22 @@ if (isset($_POST['guardarDirector'])) {
     if (empty($email)) {
         $lista_de_errores['emailDirector'] = "El email es obligatorio.";
     } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
-        $lista_de_errores['emailDirector'] = "El formato del email no es válido.";
+        $lista_de_errores['emailDirector'] = "El formato del email no es vÃ¡lido.";
     }
     if (empty($dni)) {
         $lista_de_errores['dniDirector'] = "El DNI es obligatorio.";
     }
     if (empty($telefono)) {
-        $lista_de_errores['telefonoDirector'] = "El teléfono es obligatorio.";
+        $lista_de_errores['telefonoDirector'] = "El telÃ©fono es obligatorio.";
     } else if (!is_numeric($telefono)) {
-        $lista_de_errores['telefonoDirector'] = "El teléfono debe ser numérico.";
+        $lista_de_errores['telefonoDirector'] = "El telÃ©fono debe ser numÃ©rico.";
     }
 
     if (empty($lista_de_errores)) {
-        // Signature: insertarDirector($nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)
         $resultado = insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
         if ($resultado) {
             $_SESSION['exito'] = "Director registrado correctamente.";
-            header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+            header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
         } else {
             $_SESSION['error'] = "Error al guardar en la base de datos.";
@@ -49,10 +48,10 @@ if (isset($_POST['guardarDirector'])) {
         $_SESSION['datos_director'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/directores/agregarDirectores.php");
+    header("Location: ../../../vistas/admin/directores/agregarDirectores.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
 ?>

@@ -1,35 +1,36 @@
 <?php
 session_start();
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['actualizarArticulo'])) {
-    $idArticuloRecibido = $_POST['idArticulo'];
-    $nombreNuevo = trim($_POST['nombreArticulo']);
-    $serieNueva = trim($_POST['numeroSerie']);
+    $idArticulo = trim($_POST['idArticulo'] ?? '');
+    $nombreArticulo = trim($_POST['nombreArticulo'] ?? '');
+    $numeroSerie = trim($_POST['numeroSerie'] ?? '');
 
-    if (empty($nombreNuevo) || empty($serieNueva)) {
-        $_SESSION['error'] = strtoupper("TODOS LOS CAMPOS SON OBLIGATORIOS.");
-    } else {
-        // Obtenemos el artículo para mantener su estado actual
-        $datosArticuloActual = obtenerArticuloPorId($idArticuloRecibido);
-        $estadoActual = $datosArticuloActual['estado'];
+    $hayError = false;
 
-        $resultado = actualizarArticulo($idArticuloRecibido, $nombreNuevo, $serieNueva, $estadoActual);
-        
-        if ($resultado == true) {
-            $_SESSION['exito'] = strtoupper("ARTÍCULO ACTUALIZADO CORRECTAMENTE.");
-            header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+    if (empty($nombreArticulo) || empty($numeroSerie)) {
+        $_SESSION['error'] = "Vaya, todos los campos son obligatorios.";
+        $hayError = true;
+    }
+
+    if (!$hayError) {
+        // Obtenemos el artÃ­culo para mantener su estado actual
+        $datosArticuloActual = obtenerArticuloPorId($idArticulo);
+        $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
+
+        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
+            $_SESSION['exito'] = "Listo! ArtÃ­culo actualizado correctamente.";
+            header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("ERROR AL ACTUALIZAR EN LA BASE DE DATOS.");
+            $_SESSION['error'] = "Vaya, ha ocurrido un error al actualizar el artÃ­culo.";
         }
     }
     
-    header("Location: /pfc/vistas/admin/inventario/modificarArticulo.php?idArticulo=" . $idArticuloRecibido);
+    header("Location: ../../../vistas/admin/inventario/modificarArticulo.php?idArticulo=" . $idArticulo);
     exit;
 }
 
-header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
-?>
-

@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Modificar Reclamación - Super Admin";
 $seccion = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $id_reclamacion = $_GET['idReclamacion'];
 $reclamacion = obtenerReclamacionPorId($id_reclamacion);

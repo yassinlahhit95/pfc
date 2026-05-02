@@ -1,41 +1,46 @@
 <?php
 session_start();
-require_once "../../../modelos/reclamaciones.php";
-require_once "../../firebase/firebase_helper.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
-if (isset($_POST['enviarMensaje'])) {
-    $idEstudiante = $_POST['idEstudiante'] ?? null;
-    $idProfesor = $_POST['idProfesor'] ?? null;
-    $emisor_rol = $_POST['emisor_rol'] ?? 'admin';
-    $asunto = trim($_POST['asunto']);
-    $descripcion = trim($_POST['descripcion']);
-    $fechaActual = date('Y-m-d');
+$hayError = false;
 
-    if (empty($asunto) || empty($descripcion)) {
-        $_SESSION['error'] = "Asunto y contenido son obligatorios.";
-    } else {
-        if (insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, $emisor_rol)) {
-            // Notificar al destinatario si existe
-            $destId = $idEstudiante ?: $idProfesor;
-            $destRol = $idEstudiante ? 'estudiante' : 'profesor';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviarMensaje'])) {
+    $idEstudianteDestino = isset($_POST['idEstudiante']) ? trim($_POST['idEstudiante']) : null;
+    $idProfesorDestino = isset($_POST['idProfesor']) ? trim($_POST['idProfesor']) : null;
+    $rolEmisorMensaje = isset($_POST['emisor_rol']) ? trim($_POST['emisor_rol']) : 'admin';
+    $asuntoMensaje = trim($_POST['asunto']);
+    $descripcionMensaje = trim($_POST['descripcion']);
+    $fechaDeEnvio = date('Y-m-d');
 
-            if ($destId) {
-                $token = obtenerTokenUsuario($destId, $destRol);
-                if ($token) {
-                    enviarNotificacionFirebase($token, "Nuevo Mensaje: " . $asunto, $descripcion);
-                }
-            }
-            $_SESSION['exito'] = "Mensaje enviado con éxito.";
-            header("Location: /pfc/vistas/admin/mensajes/lista.php");
-            exit;
-        } else {
-            $_SESSION['error'] = "Error al guardar el mensaje en la base de datos.";
-        }
+    if (empty($asuntoMensaje) || empty($descripcionMensaje)) {
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, el asunto y el contenido son obligatorios.";
+        header("Location: ../../../vistas/admin/mensajes/agregar.php");
+        exit;
     }
-    header("Location: /pfc/vistas/admin/mensajes/agregar.php");
-    exit;
-}
-header("Location: /pfc/vistas/admin/mensajes/lista.php");
-exit;
-?>
 
+    if (insertarNuevoMensaje($idEstudianteDestino, $idProfesorDestino, $asuntoMensaje, $descripcionMensaje, $fechaDeEnvio, $rolEmisorMensaje)) {
+        // Notificar al destinatario si existe
+        $idDestinatarioFinal = $idEstudianteDestino ?: $idProfesorDestino;
+        $rolDestinatarioFinal = $idEstudianteDestino ? 'estudiante' : 'profesor';
+
+        if ($idDestinatarioFinal) {
+            $tokenDispositivo = obtenerTokenUsuario($idDestinatarioFinal, $rolDestinatarioFinal);
+            if ($tokenDispositivo) {
+                enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje);
+            }
+        }
+        $_SESSION['exito'] = "Listo! Mensaje enviado correctamente.";
+        header("Location: ../../../vistas/admin/mensajes/lista.php");
+        exit;
+    } else {
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, hubo un error al guardar el mensaje.";
+        header("Location: ../../../vistas/admin/mensajes/agregar.php");
+        exit;
+    }
+}
+
+header("Location: ../../../vistas/admin/mensajes/lista.php");
+exit;

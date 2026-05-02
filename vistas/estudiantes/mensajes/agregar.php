@@ -3,7 +3,7 @@ session_start();
 
 $tituloDelPagina = "Nuevo Mensaje - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);

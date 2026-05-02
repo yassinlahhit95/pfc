@@ -2,10 +2,10 @@
 session_start();
 $titulo_pagina = "Gestión de TFGs - Super Admin";
 $seccion = 'tfg';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/tfg.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_tfgs = listarTodosLosTFGs();
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();

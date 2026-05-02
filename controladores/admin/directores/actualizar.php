@@ -1,63 +1,62 @@
 <?php
 session_start();
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 if (isset($_POST['actualizarDirector'])) {
-    $id_director = $_POST['idDirector'];
+    $idDirector = trim($_POST['idDirector']);
     $nombre = trim($_POST['nombreDirector']);
     $email = trim($_POST['emailDirector']);
     $dni = trim($_POST['dniDirector']);
     $telefono = trim($_POST['telefonoDirector']);
-    
-    // Recuperamos la fecha de alta original o la mantenemos si no se cambia
-    // En este caso, el formulario no la pide, así que la recuperamos del objeto actual
-    $director_original = obtenerDirectorPorId($id_director);
-    $fechaAlta = $director_original['fechaAltaDirector'];
 
-    $fechaNacimiento = $_POST['fechaNacimientoDirector'] ?? '2000-01-01';
+    $directorOriginal = obtenerDirectorPorId($idDirector);
+    $fechaAlta = $directorOriginal['fechaAltaDirector'];
+
+    $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '2000-01-01');
     $direccion = trim($_POST['direccionDirector'] ?? '');
     $ciudad = trim($_POST['ciudadDirector'] ?? '');
     $codigoPostal = trim($_POST['codigoPostalDirector'] ?? '');
     $observaciones = trim($_POST['observacionesDirector'] ?? '');
 
-    $lista_de_errores = array();
+    $hayError = false;
 
     if (empty($nombre)) {
-        $lista_de_errores['nombreDirector'] = "El nombre es obligatorio.";
-    }
-    if (empty($email)) {
-        $lista_de_errores['emailDirector'] = "El email es obligatorio.";
-    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
-        $lista_de_errores['emailDirector'] = "El formato del email no es válido.";
-    }
-    if (empty($dni)) {
-        $lista_de_errores['dniDirector'] = "El DNI es obligatorio.";
-    }
-    if (empty($telefono)) {
-        $lista_de_errores['telefonoDirector'] = "El teléfono es obligatorio.";
-    } else if (!is_numeric($telefono)) {
-        $lista_de_errores['telefonoDirector'] = "El teléfono debe ser numérico.";
+        $hayError = true;
+        $_SESSION['error'] = "El nombre es obligatorio.";
+    } elseif (empty($email)) {
+        $hayError = true;
+        $_SESSION['error'] = "El email es obligatorio.";
+    } elseif (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
+        $hayError = true;
+        $_SESSION['error'] = "El formato del email no es válido.";
+    } elseif (empty($dni)) {
+        $hayError = true;
+        $_SESSION['error'] = "El DNI es obligatorio.";
+    } elseif (empty($telefono)) {
+        $hayError = true;
+        $_SESSION['error'] = "El teléfono es obligatorio.";
+    } elseif (!is_numeric($telefono)) {
+        $hayError = true;
+        $_SESSION['error'] = "El teléfono debe ser numérico.";
     }
 
-    if (empty($lista_de_errores)) {
-        // Signature: actualizarDirector($idDirector, $nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)
-        $resultado = actualizarDirector($id_director, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
+    if (!$hayError) {
+        $resultado = actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
         if ($resultado) {
             $_SESSION['exito'] = "Director actualizado correctamente.";
-            header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+            header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
         } else {
             $_SESSION['error'] = "Error al actualizar en la base de datos.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_director'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/directores/modificarDirectores.php?idDirector=$id_director");
+    header("Location: ../../../vistas/admin/directores/modificarDirectores.php?idDirector=$idDirector");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
 ?>

@@ -2,12 +2,12 @@
 session_start();
 $titulo_pagina = "Detalles Profesor - Super Admin";
 $seccion = 'profesores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $id = 0;
 if (isset($_GET['idProfesor'])) {

@@ -1,76 +1,59 @@
 <?php
 session_start();
-require_once "../../../modelos/anuncios.php";
-require_once "../../firebase/firebase_helper.php";
-require_once "../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (isset($_POST['guardarAnuncio'])) {
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
-    $dirigidoA = $_POST['dirigidoA'];
+    $dirigidoA = trim($_POST['dirigidoA']);
 
-    $lista_de_errores = array();
+    $hayError = false;
 
-    if (empty($titulo)) {
-        $lista_de_errores['tituloAnuncio'] = "El título es obligatorio.";
-    }
-    if (empty($contenido)) {
-        $lista_de_errores['contenidoAnuncio'] = "El contenido es obligatorio.";
+    if (empty($titulo) || empty($contenido)) {
+        $_SESSION['error'] = "El título y el contenido son obligatorios.";
+        $hayError = true;
     }
 
-    if (empty($lista_de_errores)) {
-        // insertarAnuncio($titulo, $mensaje, $dirigidoA = 'todos')
+    if (!$hayError) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
+        
         if ($resultado) {
-            // Obtener tokens según destinatario
-            $conexion = obtenerConexion();
-            $tokens = array();
+            // Obtener tokens segÃºn destinatario de forma limpia desde modelos
+            $tokens = [];
             
-            $tablas = array();
+            if ($dirigidoA == 'todos' || $dirigidoA == 'estudiantes') {
+                $tokens = array_merge($tokens, obtenerTokensEstudiantes());
+            }
+            if ($dirigidoA == 'todos' || $dirigidoA == 'profesores') {
+                $tokens = array_merge($tokens, obtenerTokensProfesores());
+            }
             if ($dirigidoA == 'todos') {
-                $tablas = array('estudiantes', 'profesores', 'directores');
-            } else if ($dirigidoA == 'estudiantes') {
-                $tablas = array('estudiantes');
-            } else if ($dirigidoA == 'profesores') {
-                $tablas = array('profesores');
+                $tokens = array_merge($tokens, obtenerTokensDirectores());
             }
-
-            foreach ($tablas as $tabla) {
-                $res = mysqli_query($conexion, "SELECT fcm_token FROM $tabla WHERE fcm_token IS NOT NULL AND fcm_token != ''");
-                if ($res) {
-                    while ($row = mysqli_fetch_assoc($res)) {
-                        $tokens[] = $row['fcm_token'];
-                    }
-                }
-            }
-            mysqli_close($conexion);
             
-            // Enviar notificaciones push
+            // Enviar notificaciones push si hay tokens
             if (!empty($tokens)) {
-                $tokenAcceso = obtenerAccessToken();
-                if ($tokenAcceso) {
-                    foreach ($tokens as $t) {
-                        enviarNotificacionFirebase($t, "Nuevo Anuncio: " . $titulo, $contenido);
-                    }
+                foreach ($tokens as $tokenDestinatario) {
+                    enviarNotificacionFirebase($tokenDestinatario, "Nuevo Anuncio: " . $titulo, $contenido);
                 }
             }
 
-            $_SESSION['exito'] = "Anuncio publicado correctamente y notificación enviada a " . count($tokens) . " dispositivos.";
-            header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+            $_SESSION['exito'] = "Anuncio publicado y notificado.";
+            header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $_SESSION['error'] = "Error al guardar el anuncio.";
         }
-    } else {
-        $_SESSION['errores'] = $lista_de_errores;
-        $_SESSION['datos_anuncio'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+    header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/anuncios/gestionAnuncios.php");
+header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
 exit;
 ?>
-

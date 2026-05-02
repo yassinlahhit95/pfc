@@ -1,29 +1,32 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
-if (isset($_POST['idEstudiante'])) {
-    $id_estudiante = $_POST['idEstudiante'];
-    $nombre_archivo = $_POST['nombreArchivo'];
+$hayError = false;
 
-    if (empty($id_estudiante)) {
-        $_SESSION['error'] = "ID del estudiante no proporcionado.";
-        header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idEstudiante'])) {
+    $idEstudiantePfc = trim($_POST['idEstudiante']);
+    $nombreFicheroPfc = trim($_POST['nombreArchivo']);
+
+    if (empty($idEstudiantePfc)) {
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, el ID del estudiante no ha sido proporcionado.";
+        header("Location: ../../../vistas/admin/pfc/verTFGs.php");
         exit;
     }
 
-    $ruta_archivo = "../../../public/uploads/pfc/" . $nombre_archivo;
+    $rutaDelArchivo = __DIR__ . "/../../../public/uploads/pfc/" . $nombreFicheroPfc;
 
-    if (eliminarTFG($id_estudiante)) {
-        if (file_exists($ruta_archivo)) {
-            unlink($ruta_archivo);
+    if (eliminarTFG($idEstudiantePfc)) {
+        if (file_exists($rutaDelArchivo)) {
+            unlink($rutaDelArchivo);
         }
-        $_SESSION['exito'] = "TFG eliminado correctamente.";
+        $_SESSION['exito'] = "Listo! TFG eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el registro de la base de datos.";
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, hubo un problema al eliminar el registro de la base de datos.";
     }
 }
 
-header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
+header("Location: ../../../vistas/admin/pfc/verTFGs.php");
 exit;
-

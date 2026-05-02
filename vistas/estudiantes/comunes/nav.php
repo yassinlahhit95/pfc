@@ -1,6 +1,6 @@
 <?php
 if (empty($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -29,6 +29,8 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
     <link rel="stylesheet" href="/pfc/public/css/responsive.css">
     <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
+        <link rel="icon" href="/pfc/public/imagenes/favicon.ico">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -87,7 +89,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
                 </a>
 
                 <a href="/pfc/vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
-                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÃA</span>
                     <span class="etiqueta-contador <?php echo ($cantMensajesNoLeidosEst > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantMensajesEst; ?></span>
                 </a>
 
@@ -109,7 +111,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÃ“N</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified

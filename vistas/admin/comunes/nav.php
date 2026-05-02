@@ -1,7 +1,7 @@
 <?php
-// Comprobación de seguridad: Solo administradores pueden ver esta navegación
+// ComprobaciÃ³n de seguridad: Solo administradores pueden ver esta navegaciÃ³n
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-// Obtenemos todos los contadores para las etiquetas del menú
+// Obtenemos todos los contadores para las etiquetas del menÃº
 $cantidadAlumnosMenu = contarEstudiantes();
 $cantidadProfesoresMenu = contarProfesores();
 $cantidadDirectoresMenu = contarDirectores();
@@ -33,6 +33,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $titulo_pagina; ?></title>
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
+    <link rel="icon" href="/pfc/public/imagenes/favicon.ico">
     <link rel="stylesheet" href="/pfc/public/css/responsive.css">
     <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -56,7 +57,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
+                <p class="titulo-de-seccion">GESTIÃ“N ACADÃ‰MICA</p>
                 
                 <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?php if ($seccion == 'estudiantes') { echo 'activo'; } ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
@@ -69,7 +70,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="/pfc/vistas/admin/modulos/verModulos.php" class="enlace-menu <?php if ($seccion == 'modulos') { echo 'activo'; } ?>">
-                    <i class="fas fa-book"></i> <span>MÓDULOS</span>
+                    <i class="fas fa-book"></i> <span>MÃ“DULOS</span>
                     <span class="etiqueta-contador"><?php echo $cantidadModulosMenu; ?></span>
                 </a>
 
@@ -79,7 +80,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="/pfc/vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?php if ($seccion == 'notas_modulos') { echo 'activo'; } ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÃ“DULOS</span>
                 </a>
 
                 <a href="/pfc/vistas/admin/academico/calificacionesRetos.php" class="enlace-menu <?php if ($seccion == 'notas_retos') { echo 'activo'; } ?>">
@@ -91,7 +92,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="/pfc/vistas/admin/pfc/verTFGs.php" class="enlace-menu <?php if ($seccion == 'tfg') { echo 'activo'; } ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
+                    <i class="fas fa-file-pdf"></i> <span>GESTIÃ“N TFG</span>
                     <span class="etiqueta-contador"><?php echo $cantidadTFGMenu; ?></span>
                 </a>
             </div>
@@ -124,7 +125,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="/pfc/vistas/admin/mensajes/lista.php" class="enlace-menu <?php if ($seccion == 'reclamaciones') { echo 'activo'; } ?>">
-                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÃA</span>
                     <span class="etiqueta-contador <?php echo ($cantidadMensajesNoLeidosAdmin > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantidadMensajesMenu; ?></span>
                 </a>
             </div>
@@ -143,7 +144,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                 </a>
 
                 <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?php if ($seccion == 'prestamos') { echo 'activo'; } ?>">
-                    <i class="fas fa-hand-holding"></i> <span>PRÉSTAMOS</span>
+                    <i class="fas fa-hand-holding"></i> <span>PRÃ‰STAMOS</span>
                     <span class="etiqueta-contador"><?php echo $cantidadPrestamosMenu; ?></span>
                 </a>
             </div>
@@ -156,7 +157,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÃ“N</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified

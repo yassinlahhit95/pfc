@@ -1,147 +1,162 @@
 <?php
-require_once("conectar.php");
+require_once __DIR__ . "/conectar.php";
 
-// Ver todos los TFGs
+// Obtener la lista de todos los Trabajos de Fin de Grado (TFG) subidos
 function listarTodosLosTFGs() {
-    $db = obtenerConexion();
-    $sql = "SELECT estudiantes.idEstudiante, estudiantes.nombreEstudiante, estudiantes.archivoTFG, estudiantes.fechaSubidaTFG, ciclos.nombreCiclo, ciclos.idCiclo 
-            FROM estudiantes 
-            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
-            WHERE estudiantes.archivoTFG != '' 
-            ORDER BY estudiantes.nombreEstudiante ASC";
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            WHERE e.archivoTFG != '' 
+            ORDER BY e.nombreEstudiante ASC";
             
-    $resultado = mysqli_query($db, $sql);
-    $lista = [];
+    $resultado = mysqli_query($con, $sql);
+    $listaTFGs = [];
     while ($fila = mysqli_fetch_assoc($resultado)) { 
-        $lista[] = $fila; 
+        $listaTFGs[] = $fila; 
     }
-    mysqli_close($db);
-    return $lista;
+    mysqli_close($con);
+    return $listaTFGs;
 }
 
-// Filtrar por ciclo
-function listarTFGsFiltrados($id) {
-    $db = obtenerConexion();
-    $sql = "SELECT estudiantes.idEstudiante, estudiantes.nombreEstudiante, estudiantes.archivoTFG, estudiantes.fechaSubidaTFG, ciclos.nombreCiclo, ciclos.idCiclo 
-            FROM estudiantes 
-            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
-            WHERE estudiantes.archivoTFG != '' AND estudiantes.idCiclo = $id 
-            ORDER BY estudiantes.nombreEstudiante ASC";
+// Listar TFGs filtrados por un ciclo formativo específico
+function listarTFGsFiltrados($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            WHERE e.archivoTFG != '' AND e.idCiclo = $idCiclo 
+            ORDER BY e.nombreEstudiante ASC";
             
-    $resultado = mysqli_query($db, $sql);
-    $lista = [];
+    $resultado = mysqli_query($con, $sql);
+    $listaFiltrada = [];
     while ($fila = mysqli_fetch_assoc($resultado)) { 
-        $lista[] = $fila; 
+        $listaFiltrada[] = $fila; 
     }
-    mysqli_close($db);
-    return $lista;
+    mysqli_close($con);
+    return $listaFiltrada;
 }
 
-// Ver por alumno
-function obtenerTFGporEstudiante($id) {
-    $db = obtenerConexion();
+// Obtener los datos del TFG de un estudiante concreto
+function obtenerTFGporEstudiante($idEstudiante) {
+    $con = obtenerConexion();
     $sql = "SELECT idEstudiante, nombreEstudiante, archivoTFG, fechaSubidaTFG 
             FROM estudiantes 
-            WHERE idEstudiante = $id";
+            WHERE idEstudiante = $idEstudiante";
             
-    $resultado = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($db);
-    return $fila;
+    $resultado = mysqli_query($con, $sql);
+    $datosTFG = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return $datosTFG;
 }
 
-// Subir archivo
-function actualizarTFG($id, $file) {
-    $db = obtenerConexion();
-    $now = date('Y-m-d H:i:s');
-    $sql = "UPDATE estudiantes SET archivoTFG = '$file', fechaSubidaTFG = '$now' WHERE idEstudiante = $id";
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
+// Subir o actualizar el archivo de un TFG
+function actualizarTFG($idEstudiante, $nombreArchivo) {
+    $con = obtenerConexion();
+    $fechaHoraActual = date('Y-m-d H:i:s');
+    $sql = "UPDATE estudiantes 
+            SET archivoTFG = '$nombreArchivo', fechaSubidaTFG = '$fechaHoraActual' 
+            WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
     return $resultado;
 }
 
-// Quitar archivo
-function eliminarTFG($id) {
-    $db = obtenerConexion();
-    $sql = "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = $id";
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
-    return $resultado;
-}
-
-// Ver cuantos hay
-function contarTFGsSubidos() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != ''";
-    $resultado = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
+// Actualizar tanto el título como el archivo (opcional) de un TFG
+function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
+    $con = obtenerConexion();
+    $fechaHoraActual = date('Y-m-d H:i:s');
     
-    $total = 0;
-    if (isset($fila)) {
-        $total = $fila['total'];
+    if (!empty($nombreArchivo)) {
+        $sql = "UPDATE estudiantes 
+                SET tituloTFG = '$tituloTFG', archivoTFG = '$nombreArchivo', fechaSubidaTFG = '$fechaHoraActual' 
+                WHERE idEstudiante = $idEstudiante";
+    } else {
+        $sql = "UPDATE estudiantes SET tituloTFG = '$tituloTFG' WHERE idEstudiante = $idEstudiante";
     }
-    mysqli_close($db);
-    return $total;
+    
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
 
-function contarTFGsDeProfesor($idProf) {
-    $db = obtenerConexion();
+// Eliminar el archivo del TFG de un estudiante (limpiar campos)
+function eliminarTFG($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "UPDATE estudiantes 
+            SET archivoTFG = '', fechaSubidaTFG = NULL 
+            WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
+}
+
+// Contar cuántos TFGs han sido subidos en total
+function contarTFGsSubidos() {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != ''";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
+}
+
+// Contar los TFGs subidos por estudiantes de los ciclos de un profesor
+function contarTFGsDeProfesor($idProfesor) {
+    $con = obtenerConexion();
     $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
             FROM estudiantes e 
             JOIN ciclos c ON e.idCiclo = c.idCiclo 
             JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            WHERE cp.idProfesor = $idProf AND e.archivoTFG != ''";
-    $resultado = mysqli_query($db, $sql);
+            WHERE cp.idProfesor = $idProfesor AND e.archivoTFG != ''";
+    $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
-    
-    $total = 0;
-    if (isset($fila)) {
-        $total = $fila['total'];
-    }
-    mysqli_close($db);
-    return $total;
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
-// Ver TFGs de un profesor
-function listarTFGsPorProfesor($idProf) {
-    $db = obtenerConexion();
+// Listar los TFGs de los estudiantes vinculados a un profesor
+function listarTFGsPorProfesor($idProfesor) {
+    $con = obtenerConexion();
     $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
             FROM estudiantes e 
             JOIN ciclos c ON e.idCiclo = c.idCiclo 
             JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            WHERE cp.idProfesor = $idProf AND e.archivoTFG != '' 
+            WHERE cp.idProfesor = $idProfesor AND e.archivoTFG != '' 
             ORDER BY e.nombreEstudiante ASC";
             
-    $resultado = mysqli_query($db, $sql);
-    $lista = [];
+    $resultado = mysqli_query($con, $sql);
+    $listaTFGs = [];
     while ($fila = mysqli_fetch_assoc($resultado)) { 
-        $lista[] = $fila; 
+        $listaTFGs[] = $fila; 
     }
-    mysqli_close($db);
-    return $lista;
+    mysqli_close($con);
+    return $listaTFGs;
 }
 
-// Eliminar archivo TFG de un alumno
-function eliminarArchivoTFG($idEst) {
-    $db = obtenerConexion();
+// Eliminar el archivo físico y limpiar el registro del TFG
+function eliminarArchivoTFG($idEstudiante) {
+    $con = obtenerConexion();
     
-    // Primero obtenemos el nombre del archivo para borrarlo del disco
-    $sql = "SELECT archivoTFG FROM tfg WHERE idEstudiante = $idEst";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
+    // 1. Localizamos el archivo en la base de datos
+    $sqlBusqueda = "SELECT archivoTFG FROM estudiantes WHERE idEstudiante = $idEstudiante";
+    $resultadoBusqueda = mysqli_query($con, $sqlBusqueda);
+    $fila = mysqli_fetch_assoc($resultadoBusqueda);
     
     if ($fila && !empty($fila['archivoTFG'])) {
-        $ruta = "../../../public/uploads/pfc/" . $fila['archivoTFG'];
-        if (file_exists($ruta)) {
-            unlink($ruta);
+        $rutaFisica = __DIR__ . "/../public/uploads/pfc/" . $fila['archivoTFG'];
+        if (file_exists($rutaFisica)) {
+            unlink($rutaFisica); // Borramos el archivo real del disco
         }
     }
     
-    // Ahora limpiamos el registro en la base de datos
-    $sqlDelete = "UPDATE tfg SET archivoTFG = NULL, fechaSubidaTFG = NULL WHERE idEstudiante = $idEst";
-    $resultado = mysqli_query($db, $sqlDelete);
+    // 2. Limpiamos los campos en la base de datos (está en la tabla estudiantes)
+    $sql = "UPDATE estudiantes 
+                    SET archivoTFG = '', fechaSubidaTFG = NULL 
+                    WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
     
-    mysqli_close($db);
+    mysqli_close($con);
     return $resultado;
 }
 ?>

@@ -1,20 +1,20 @@
 <?php
 session_start();
 if (empty($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 $idProfesor = $_SESSION['idProfesor'];
 $tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
 $seccionActual = 'resultados_finales';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/calificaciones.php";
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Obtenemos solo los ciclos del profesor
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
@@ -38,13 +38,13 @@ if (!empty($_GET['idCiclo'])) {
     }
 }
 
-$datos_finales = array();
+$datos_finales = [];
 
 if (!empty($id_ciclo_elegido)) {
     // 1. Obtener todos los estudiantes del ciclo
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
     
-    // 2. Obtener todos los módulos del ciclo
+    // 2. Obtener todos los mÃ³dulos del ciclo
     $lista_modulos = obtenerModulosPorCiclo($id_ciclo_elegido);
     
     foreach ($estudiantes_lista as $estudianteIndividual) {
@@ -118,7 +118,7 @@ if (!empty($id_ciclo_elegido)) {
 
 <div class="encabezado-pagina">
     <h1>RESULTADOS FINALES DE MIS ALUMNOS</h1>
-    <p class="subtitulo">Resumen global (75% Módulos / 25% Retos)</p>
+    <p class="subtitulo">Resumen global (75% MÃ³dulos / 25% Retos)</p>
 </div>
 
 <div class="tarjeta-blanca">
@@ -138,7 +138,7 @@ if (!empty($id_ciclo_elegido)) {
         </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
-            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Enviar resultados por email a todos los alumnos de este ciclo?')">
+            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿Enviar resultados por email a todos los alumnos de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo_elegido; ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> NOTIFICAR A TODOS
@@ -155,7 +155,7 @@ if (!empty($id_ciclo_elegido)) {
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Módulos (75%)</th>
+                        <th>Media MÃ³dulos (75%)</th>
                         <th>Media Retos (25%)</th>
                         <th>Nota Final</th>
                         <th>Estado</th>
@@ -177,7 +177,7 @@ if (!empty($id_ciclo_elegido)) {
                             <td class="texto-negrita"><?php echo $filaIndividual['nota_final']; ?></td>
                             <td class="<?php echo $clase_estado; ?> texto-negrita">
                                 <?php echo $filaIndividual['estado']; ?>
-                                <?php if($filaIndividual['alert'] == true) { echo " <small title='Tiene módulos suspensos'>(!)</small>"; } ?>
+                                <?php if($filaIndividual['alert'] == true) { echo " <small title='Tiene mÃ³dulos suspensos'>(!)</small>"; } ?>
                             </td>
                         </tr>
                         <?php } ?>

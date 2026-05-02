@@ -1,29 +1,36 @@
 <?php
 session_start();
-require_once "../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
 
 if (isset($_POST['actualizarEvento'])) {
-    $id = $_POST['idEvento'];
-    $titulo = trim($_POST['tituloEvento']);
-    $descripcion = trim($_POST['descripcionEvento']);
-    $fecha = $_POST['fechaEvento'];
-    $hora = $_POST['horaEvento'];
-    $ubicacion = trim($_POST['ubicacionEvento']);
+    $idEvento = trim($_POST['idEvento'] ?? '');
+    $titulo = trim($_POST['tituloEvento'] ?? '');
+    $descripcion = trim($_POST['descripcionEvento'] ?? '');
+    $fechaEvento = trim($_POST['fechaEvento'] ?? '');
+    $horaEvento = trim($_POST['horaEvento'] ?? '');
+    $ubicacionEvento = trim($_POST['ubicacionEvento'] ?? '');
 
-    if (empty($titulo) || empty($fecha)) {
-        $_SESSION['error'] = "El título y la fecha son obligatorios.";
-        header("Location: /pfc/vistas/admin/eventos/modificarEvento.php?idEvento=" . $id);
-        exit;
-    } else {
-        $resultado = actualizarEvento($id, $titulo, $descripcion, $fecha, $hora, $ubicacion);
+    $hayError = false;
+
+    if (empty($titulo) || empty($fechaEvento)) {
+        $_SESSION['error'] = "Vaya, el tÃ­tulo y la fecha son obligatorios.";
+        $hayError = true;
+    }
+
+    if (!$hayError) {
+        $resultado = actualizarEvento($idEvento, $titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento);
         if ($resultado) {
-            $_SESSION['exito'] = "Evento actualizado correctamente.";
+            $_SESSION['exito'] = "Listo! Evento actualizado correctamente.";
+            header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
+            exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar el evento.";
+            $_SESSION['error'] = "Vaya, ha ocurrido un error al actualizar el evento.";
         }
     }
+    
+    header("Location: ../../../vistas/admin/eventos/modificarEvento.php?idEvento=" . $idEvento);
+    exit;
 }
 
-header("Location: /pfc/vistas/admin/eventos/gestionEventos.php");
+header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
 exit;
-?>

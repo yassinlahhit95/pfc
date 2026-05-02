@@ -1,71 +1,65 @@
 <?php
 session_start();
-require_once "../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+
+$hayError = false;
 
 if (isset($_POST['guardarNotas'])) {
-    $idModuloRecibido = $_POST['idModulo'];
-    $listaIdsEstudiantes = $_POST['estudiantes'];
-    $listaNotas1Ev = $_POST['notas_1ev'];
-    $listaNotas1Final = $_POST['notas_1final'];
-    $listaNotas2Ev = $_POST['notas_2ev'];
-    $listaNotas2Final = $_POST['notas_2final'];
-    $listaObservaciones = $_POST['observaciones'];
+    $idModulo = trim($_POST['idModulo'] ?? '');
+    $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
+    $listaNotas1Ev = $_POST['notas_1ev'] ?? [];
+    $listaNotas1Final = $_POST['notas_1final'] ?? [];
+    $listaNotas2Ev = $_POST['notas_2ev'] ?? [];
+    $listaNotas2Final = $_POST['notas_2final'] ?? [];
+    $listaObservaciones = $_POST['observaciones'] ?? [];
 
-    $errorDetectadoAlGuardar = false;
-    $cantidadEstudiantesAProcesar = count($listaIdsEstudiantes);
+    $cantidadEstudiantes = count($listaIdsEstudiantes);
 
-    for ($i = 0; $i < $cantidadEstudiantesAProcesar; $i++) {
-        $idDeEsteEstudiante = $listaIdsEstudiantes[$i];
-        $nota1EvAProcesar = $listaNotas1Ev[$i];
-        $nota1FinalAProcesar = $listaNotas1Final[$i];
-        $nota2EvAProcesar = $listaNotas2Ev[$i];
-        $nota2FinalAProcesar = $listaNotas2Final[$i];
-        $observacionAProcesar = $listaObservaciones[$i];
+    for ($i = 0; $i < $cantidadEstudiantes; $i++) {
+        $idEstudiante = trim($listaIdsEstudiantes[$i]);
+        $nota1Ev = trim($listaNotas1Ev[$i]);
+        $nota1Final = trim($listaNotas1Final[$i]);
+        $nota2Ev = trim($listaNotas2Ev[$i]);
+        $nota2Final = trim($listaNotas2Final[$i]);
+        $observacion = trim($listaObservaciones[$i]);
 
-        // Validar que cada nota sea numérica o esté vacía
-        $arrayTemporalNotas = array($nota1EvAProcesar, $nota1FinalAProcesar, $nota2EvAProcesar, $nota2FinalAProcesar);
+        $arrayTemporalNotas = [$nota1Ev, $nota1Final, $nota2Ev, $nota2Final];
         
-        foreach ($arrayTemporalNotas as $notaIndividualAChequear) {
-            if (!empty($notaIndividualAChequear)) {
-                if (!is_numeric($notaIndividualAChequear)) {
-                    $errorDetectadoAlGuardar = true;
-                } else {
-                    if ($notaIndividualAChequear < 0 || $notaIndividualAChequear > 10) {
-                        $errorDetectadoAlGuardar = true;
-                    }
+        foreach ($arrayTemporalNotas as $notaIndividual) {
+            if (!empty($notaIndividual)) {
+                if (!is_numeric($notaIndividual) || $notaIndividual < 0 || $notaIndividual > 10) {
+                    $hayError = true;
+                    break;
                 }
             }
         }
 
-        // Si no hay errores de validación, guardamos en base de datos
-        if ($errorDetectadoAlGuardar == false) {
-            $resultadoOperacion = actualizarOCrearNotaCompleta($idDeEsteEstudiante, $idModuloRecibido, $nota1EvAProcesar, $nota1FinalAProcesar, $nota2EvAProcesar, $nota2FinalAProcesar, $observacionAProcesar);
-            if ($resultadoOperacion == false) {
-                $errorDetectadoAlGuardar = true;
+        if (!$hayError) {
+            $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1Ev, $nota1Final, $nota2Ev, $nota2Final, $observacion);
+            if (!$resultado) {
+                $hayError = true;
             }
         }
-    }
-
-    // Si todo salió bien, procesamos notificaciones si se solicitaron
-    if ($errorDetectadoAlGuardar == false) {
-        require_once "../../comunes/notificaciones_grades.php";
         
-        if (isset($_POST['notificarEstudiantes']) && !empty($_POST['notificarEstudiantes'])) {
-            for ($i = 0; $i < $cantidadEstudiantesAProcesar; $i++) {
-                $idEstudianteANotificar = $listaIdsEstudiantes[$i];
-                enviarEmailNotasEstudiante($idEstudianteANotificar);
-            }
-        }
-        $_SESSION['exito'] = strtoupper("Calificaciones guardadas con éxito.");
-    } else {
-        $_SESSION['error'] = strtoupper("Hubo errores al procesar algunas notas. Asegúrese de que sean números entre 0 y 10.");
+        if ($hayError) break;
     }
 
-    $urlRedireccion = "/pfc/vistas/admin/academico/calificacionesModulos.php?idModulo=" . $idModuloRecibido;
-    header("Location: " . $urlRedireccion);
+    if (!$hayError) {
+        require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
+        
+        if (!empty($_POST['notificarEstudiantes'])) {
+            for ($i = 0; $i < $cantidadEstudiantes; $i++) {
+                enviarEmailNotasEstudiante($listaIdsEstudiantes[$i]);
+            }
+        }
+        $_SESSION['exito'] = "Calificaciones guardadas.";
+    } else {
+        $_SESSION['error'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
+    }
+
+    header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idModulo=" . $idModulo);
     exit;
 }
 
-header("Location: /pfc/vistas/admin/academico/calificacionesModulos.php");
+header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
 exit;
-

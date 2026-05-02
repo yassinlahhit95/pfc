@@ -1,48 +1,50 @@
 <?php
 session_start();
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
-if (isset($_POST['guardarModulo'])) {
-    $nombre_modulo = $_POST['nombreModulo'];
-    $id_del_ciclo = $_POST['idCiclo'];
-    $horas_maximas = $_POST['horasMaximas'];
+$hayError = false;
 
-    $lista_de_errores = array();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarModulo'])) {
+    $nombreNuevoModulo = trim($_POST['nombreModulo']);
+    $idCicloNuevoModulo = trim($_POST['idCiclo']);
+    $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
 
-    if (empty($nombre_modulo)) {
-        $lista_de_errores['nombreModulo'] = "El nombre del módulo es obligatorio.";
+    $listaErroresValidacion = [];
+
+    if (empty($nombreNuevoModulo)) {
+        $listaErroresValidacion['nombreModulo'] = "Vaya, el nombre del mÃ³dulo es obligatorio.";
     }
     
-    if (empty($id_del_ciclo)) {
-        $lista_de_errores['idCiclo'] = "Debe seleccionar un ciclo formativo.";
+    if (empty($idCicloNuevoModulo)) {
+        $listaErroresValidacion['idCiclo'] = "Vaya, debes seleccionar un ciclo formativo.";
     }
     
-    if (empty($horas_maximas)) {
-        $lista_de_errores['horasMaximas'] = "Las horas máximas son obligatorias.";
+    if (empty($horasMaximasNuevoModulo)) {
+        $listaErroresValidacion['horasMaximas'] = "Vaya, las horas mÃ¡ximas son obligatorias.";
     } else {
-        if (!is_numeric($horas_maximas)) {
-            $lista_de_errores['horasMaximas'] = "Las horas deben ser un valor numérico.";
+        if (!is_numeric($horasMaximasNuevoModulo)) {
+            $listaErroresValidacion['horasMaximas'] = "Vaya, las horas deben ser un valor numÃ©rico.";
         }
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = insertarModulo($nombre_modulo, $id_del_ciclo, $horas_maximas);
-        if ($resultado) {
-            $_SESSION['exito'] = "Módulo registrado correctamente.";
-            header("Location: /pfc/vistas/admin/modulos/verModulos.php");
+    if (empty($listaErroresValidacion)) {
+        if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
+            $_SESSION['exito'] = "Listo! MÃ³dulo registrado correctamente.";
+            header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al insertar el módulo en la base de datos.";
+            $hayError = true;
+            $_SESSION['error'] = "Vaya, hubo un error al insertar el mÃ³dulo.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
+        $hayError = true;
+        $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_modulo'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/modulos/agregarModulos.php");
+    header("Location: ../../../vistas/admin/modulos/agregarModulos.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/modulos/verModulos.php");
+header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-

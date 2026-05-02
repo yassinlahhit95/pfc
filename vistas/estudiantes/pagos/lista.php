@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Validación de sesión simple
+// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -15,7 +15,7 @@ $datosEstadoFinanciero = obtenerEstadoFinancieroEstudiante($idDeEsteEstudiante);
 
 $tituloDelPagina = "MIS PAGOS - PORTAL ESTUDIANTES";
 $seccionActual = 'pagos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -26,19 +26,19 @@ include_once "../comunes/nav.php";
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
     <div class="info-estadistica">
-        <h3><?php echo number_format($datosEstadoFinanciero['totalPagado'], 2); ?> €</h3>
+        <h3><?php echo number_format($datosEstadoFinanciero['totalPagado'], 2); ?> â‚¬</h3>
         <p>TOTAL PAGADO</p>
     </div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica">
-        <h3><?php echo number_format($datosEstadoFinanciero['precioCiclo'], 2); ?> €</h3>
+        <h3><?php echo number_format($datosEstadoFinanciero['precioCiclo'], 2); ?> â‚¬</h3>
         <p>PRECIO DEL CICLO</p>
     </div>
   </div>
   <div class="tarjeta-estadistica <?php if ($datosEstadoFinanciero['restante'] > 0) { echo 'tarjeta-estadistica-naranja'; } else { echo 'tarjeta-estadistica-cian'; } ?>">
     <div class="info-estadistica">
-        <h3><?php echo number_format($datosEstadoFinanciero['restante'], 2); ?> €</h3>
+        <h3><?php echo number_format($datosEstadoFinanciero['restante'], 2); ?> â‚¬</h3>
         <p>PENDIENTE DE PAGO</p>
     </div>
   </div>
@@ -56,7 +56,7 @@ include_once "../comunes/nav.php";
                     <th>FECHA</th>
                     <th>CONCEPTO / TIPO</th>
                     <th>MONTO</th>
-                    <th>PRÓXIMO PAGO</th>
+                    <th>PRÃ“XIMO PAGO</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,7 +71,7 @@ include_once "../comunes/nav.php";
                         <td>
                             <span class="etiqueta-pago"><?php echo strtoupper($pagoIndividual['tipoPago']); ?></span>
                         </td>
-                        <td class="texto-negrita"><?php echo number_format($pagoIndividual['monto'], 2); ?> €</td>
+                        <td class="texto-negrita"><?php echo number_format($pagoIndividual['monto'], 2); ?> â‚¬</td>
                         <td>
                             <?php 
                                 if ($pagoIndividual['tipoPago'] == 'unico') {
@@ -90,7 +90,7 @@ include_once "../comunes/nav.php";
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><i class="fas fa-info-circle"></i> Si detectas algún error en tus pagos, por favor contacta con administración a través de la sección de mensajería.</p>
+    <p><i class="fas fa-info-circle"></i> Si detectas algÃºn error en tus pagos, por favor contacta con administraciÃ³n a travÃ©s de la secciÃ³n de mensajerÃ­a.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

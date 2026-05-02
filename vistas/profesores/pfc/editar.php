@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,12 +13,12 @@ $tfg = obtenerTFGporEstudiante($id);
 
 $tituloDelPagina = "Editar TFG - Portal Profesores";
 $seccionActual = 'tfg';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Editar Datos TFG</h1>
-    <a href="/pfc/vistas/profesores/pfc/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/pfc/lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -31,7 +31,7 @@ include_once "../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Título del TFG *</label>
+                <label>TÃ­tulo del TFG *</label>
                 <input type="text" name="tituloTFG" value="<?php echo $tfg['tituloTFG']; ?>">
             </div>
         </div>

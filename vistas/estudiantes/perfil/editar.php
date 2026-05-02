@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -17,12 +17,12 @@ $telefono = $estudiante['telefonoEstudiante'];
 
 $tituloDelPagina = "Editar Mi Perfil - Portal Estudiantes";
 $seccionActual = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Editar Mi Perfil</h1>
-    <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/estudiantes/perfil/ver.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if (isset($_SESSION['error'])) { ?>
@@ -41,25 +41,25 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="campo-formulario">
-            <label>Correo Electrónico</label>
+            <label>Correo ElectrÃ³nico</label>
             <input type="text" name="emailEstudiante" value="<?php echo $email; ?>">
         </div>
 
         <div class="campo-formulario">
-            <label>Número de Teléfono</label>
+            <label>NÃºmero de TelÃ©fono</label>
             <input type="tel" name="telefonoEstudiante" value="<?php echo $telefono; ?>">
         </div>
 
-        <div class="titulo-tarjeta mt-30"><h3>Seguridad y Contraseña</h3></div>
-        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
+        <div class="titulo-tarjeta mt-30"><h3>Seguridad y ContraseÃ±a</h3></div>
+        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseÃ±a de acceso.</p>
 
         <div class="campo-formulario">
-            <label>Contraseña Actual</label>
-            <input type="password" name="current_password" placeholder="Escriba su contraseña para validar los cambios">
+            <label>ContraseÃ±a Actual</label>
+            <input type="password" name="current_password" placeholder="Escriba su contraseÃ±a para validar los cambios">
         </div>
 
         <div class="campo-formulario">
-            <label>Nueva Contraseña</label>
+            <label>Nueva ContraseÃ±a</label>
             <input type="password" name="new_password" placeholder="Debe tener al menos 6 caracteres">
         </div>
 

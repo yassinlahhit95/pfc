@@ -2,11 +2,11 @@
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $idArticulo = isset($_GET['idArticulo']) ? intval($_GET['idArticulo']) : 0;
 $articulo = obtenerArticuloPorId($idArticulo);
@@ -16,14 +16,14 @@ if (!$articulo) {
     exit;
 }
 
-$titulo_pagina = "Modificar Artículo - Super Admin";
+$titulo_pagina = "Modificar ArtÃ­culo - Super Admin";
 $seccion = 'inventario';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Artículo: <?php echo $articulo['nombreArticulo']; ?></h1>
-    <a href="verInventario.php" class="boton-secundario">← Volver</a>
+    <h1>Modificar ArtÃ­culo: <?php echo $articulo['nombreArticulo']; ?></h1>
+    <a href="verInventario.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -32,12 +32,12 @@ include_once "../comunes/nav.php";
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Nombre del Artículo *</label>
+                <label>Nombre del ArtÃ­culo *</label>
                 <input type="text" name="nombreArticulo" value="<?php echo $articulo['nombreArticulo']; ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Número de Serie *</label>
+                <label>NÃºmero de Serie *</label>
                 <input type="text" name="numeroSerie" value="<?php echo $articulo['numeroSerie']; ?>">
             </div>
         </div>

@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
-$datos = array();
+$datos = [];
 if (isset($_SESSION['datos_estudiante'])) { $datos = $_SESSION['datos_estudiante']; }
 
 $error = $_SESSION['error'] ?? "";

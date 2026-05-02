@@ -1,22 +1,22 @@
 <?php
 session_start();
 
-// Validación de sesión simple
+// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE MÓDULOS - SUPER ADMIN";
+$titulo_pagina = "GESTIÃ“N DE MÃ“DULOS - SUPER ADMIN";
 $seccion = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
-// Obtenemos la lista de todos los módulos registrados
+// Obtenemos la lista de todos los mÃ³dulos registrados
 $listaDeModulosActuales = listarModulos();
 
-// Captura de mensajes de éxito o error
+// Captura de mensajes de Ã©xito o error
 $mensajeExito = "";
 if (isset($_SESSION['exito'])) {
     $mensajeExito = $_SESSION['exito'];
@@ -27,17 +27,17 @@ if (isset($_SESSION['error'])) {
     $mensajeError = $_SESSION['error'];
 }
 
-// Limpiamos los mensajes de la sesión
+// Limpiamos los mensajes de la sesiÃ³n
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
     <div>
-        <h1>MÓDULOS PROFESIONALES</h1>
+        <h1>MÃ“DULOS PROFESIONALES</h1>
     </div>
     <div class="acciones-pagina">
         <a href="/pfc/vistas/admin/modulos/agregarModulos.php" class="boton-primario">
-            <i class="fas fa-plus"></i> NUEVO MÓDULO
+            <i class="fas fa-plus"></i> NUEVO MÃ“DULO
         </a>
     </div>
 </div>
@@ -56,7 +56,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>NOMBRE DEL MÓDULO</th>
+                    <th>NOMBRE DEL MÃ“DULO</th>
                     <th>CICLO FORMATIVO</th>
                     <th>PROFESORES ASIGNADOS</th>
                     <th>HORAS TOTALES</th>
@@ -66,11 +66,11 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <tbody>
                 <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
-                        <td colspan="6" class="sin-datos">No hay módulos registrados en el sistema.</td>
+                        <td colspan="6" class="sin-datos">No hay mÃ³dulos registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeModulosActuales as $moduloIndividual) { 
-                        // Lógica simple para obtener los nombres de los profesores de este módulo
+                        // LÃ³gica simple para obtener los nombres de los profesores de este mÃ³dulo
                         $conexionTemporal = obtenerConexion();
                         $idModuloActual = $moduloIndividual['idModulo'];
                         
@@ -80,7 +80,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                           WHERE profesor_modulo.idModulo = $idModuloActual";
                                           
                         $resultadoProfesores = mysqli_query($conexionTemporal, $sqlProfesores);
-                        $nombresProfesores = array();
+                        $nombresProfesores = [];
                         
                         while($datosProfesor = mysqli_fetch_assoc($resultadoProfesores)) { 
                             $nombresProfesores[] = strtoupper($datosProfesor['nombreProfesor']); 
@@ -117,10 +117,10 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
                                 <a href="/pfc/vistas/admin/modulos/modificarModulos.php?idModulo=<?php echo $moduloIndividual['idModulo']; ?>" 
-                                   class="btn-accion btn-editar" title="Editar módulo">
+                                   class="btn-accion btn-editar" title="Editar mÃ³dulo">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="/pfc/controladores/admin/modulos/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar este módulo?')">
+                                <form method="POST" action="/pfc/controladores/admin/modulos/borrar.php" class="d-inline" onsubmit="return confirm('Â¿Eliminar este mÃ³dulo?')">
                                     <input type="hidden" name="idModulo" value="<?php echo $moduloIndividual['idModulo']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Borrar">
                                         <i class="fas fa-trash"></i>

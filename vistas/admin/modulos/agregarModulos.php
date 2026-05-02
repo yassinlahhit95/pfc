@@ -1,17 +1,17 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { 
     $lista_de_errores = $_SESSION['errores']; 
 }
 
-$datos = array();
+$datos = [];
 if (isset($_SESSION['datos_modulo'])) { 
     $datos = $_SESSION['datos_modulo']; 
 }
@@ -20,7 +20,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
 $titulo_pagina = "Registrar Módulo - Super Admin";
 $seccion = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

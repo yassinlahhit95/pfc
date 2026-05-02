@@ -2,10 +2,10 @@
 session_start();
 $titulo_pagina = "Calificar Reto - Super Admin";
 $seccion = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $id = $_GET['id'];
 $retoActual = obtenerDetallesReto($id);

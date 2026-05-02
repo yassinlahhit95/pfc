@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Gestión de Directores - Super Admin";
 $seccion = 'directores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 $todos_los_directores = listarDirectores();
 

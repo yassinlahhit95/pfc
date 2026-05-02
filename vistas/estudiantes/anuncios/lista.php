@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -12,11 +12,11 @@ $anuncios = listarAnunciosPorRol('estudiantes');
 
 $tituloDelPagina = "Anuncios - Portal Estudiantes";
 $seccionActual = 'anuncios';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Tablón de Anuncios</h1>
+    <h1>TablÃ³n de Anuncios</h1>
 </div>
 
 <div class="tarjeta-blanca">
@@ -25,7 +25,7 @@ include_once "../comunes/nav.php";
             <?php foreach ($anuncios as $anuncio) { ?>
                 <div class="anuncio-item-completo">
                     <div class="mb-10">
-                        <label class="texto-negrita">Título del Anuncio:</label> 
+                        <label class="texto-negrita">TÃ­tulo del Anuncio:</label> 
                         <span class="color-primario texto-negrita"><?php echo strtoupper($anuncio['titulo']); ?></span>
                     </div>
                     

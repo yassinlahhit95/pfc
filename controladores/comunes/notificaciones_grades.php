@@ -1,33 +1,22 @@
 <?php
-require_once "email_helper.php";
-require_once __DIR__ . "/../../modelos/conectar.php";
+require_once __DIR__ . "/email_helper.php";
+require_once __DIR__ . "/../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../modelos/retos.php";
 
 /**
  * Genera el HTML de la tabla de notas con nombres de variables claros
  */
 function generarTablaNotasHTML($idEstudianteRecibido) {
-    $conexionBaseDatos = obtenerConexion();
-    
-    // Obtener información del estudiante y su ciclo
-    $consultaEstudiante = "SELECT estudiantes.nombreEstudiante, estudiantes.emailEstudiante, ciclos.nombreCiclo 
-                           FROM estudiantes 
-                           LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
-                           WHERE estudiantes.idEstudiante = $idEstudianteRecibido";
-    
-    $resultadoEstudiante = mysqli_query($conexionBaseDatos, $consultaEstudiante);
-    $datosEstudiante = mysqli_fetch_assoc($resultadoEstudiante);
+    // Obtener información del estudiante y su ciclo desde el modelo
+    $datosEstudiante = obtenerEstudiantePorId($idEstudianteRecibido);
     
     if (empty($datosEstudiante)) {
         return false;
     }
 
-    // Obtener todas las calificaciones del estudiante
-    $consultaNotas = "SELECT modulos.nombreModulo, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final 
-                      FROM calificaciones_modulos cm
-                      JOIN modulos ON cm.idModulo = modulos.idModulo
-                      WHERE cm.idEstudiante = $idEstudianteRecibido";
-    
-    $resultadoNotas = mysqli_query($conexionBaseDatos, $consultaNotas);
+    // Obtener todas las calificaciones del estudiante desde el modelo
+    $listaCalificaciones = listarCalificacionesPorEstudiante($idEstudianteRecibido);
 
     $nombreEstudianteMayusculas = strtoupper($datosEstudiante['nombreEstudiante']);
     $nombreCicloMayusculas = strtoupper($datosEstudiante['nombreCiclo']);
@@ -54,7 +43,7 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
     $contadorTotalModulos = 0;
     $existeAlgundoSuspenso = false;
 
-    while ($datosDelModulo = mysqli_fetch_assoc($resultadoNotas)) {
+    foreach ($listaCalificaciones as $datosDelModulo) {
         $listaNotasTemporales = [];
         if (is_numeric($datosDelModulo['nota_1ev']) && $datosDelModulo['nota_1ev'] > 0) { $listaNotasTemporales[] = $datosDelModulo['nota_1ev']; }
         if (is_numeric($datosDelModulo['nota_1final']) && $datosDelModulo['nota_1final'] > 0) { $listaNotasTemporales[] = $datosDelModulo['nota_1final']; }
@@ -96,15 +85,8 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
         $promedioFinalModulos = $sumaTotalNotasModulos / $contadorTotalModulos;
     }
     
-    // Obtener promedio de retos
-    $consultaRetos = "SELECT AVG(nota) as promedio_retos FROM calificaciones_retos WHERE idEstudiante = $idEstudianteRecibido";
-    $resultadoRetos = mysqli_query($conexionBaseDatos, $consultaRetos);
-    $datosRetos = mysqli_fetch_assoc($resultadoRetos);
-    
-    $promedioRetos = 0;
-    if (isset($datosRetos['promedio_retos']) && is_numeric($datosRetos['promedio_retos'])) {
-        $promedioRetos = $datosRetos['promedio_retos'];
-    }
+    // Obtener promedio de retos desde el modelo
+    $promedioRetos = obtenerPromedioRetosEstudiante($idEstudianteRecibido);
 
     $notaFinalCalculada = ($promedioFinalModulos * 0.75) + ($promedioRetos * 0.25);
     $notaFinalFormateada = round($notaFinalCalculada, 2);
@@ -131,8 +113,6 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
         <p style='font-size: 12px; color: #7f8c8d; margin-top: 20px;'>Este es un mensaje automático, por favor no respondas a este correo.</p>
     </div>";
 
-    mysqli_close($conexionBaseDatos);
-    
     $datosParaEnviar = [];
     $datosParaEnviar['html'] = $contenidoCorreoHTML;
     $datosParaEnviar['email'] = $datosEstudiante['emailEstudiante'];
@@ -160,19 +140,16 @@ function enviarEmailNotasEstudiante($idEstudianteAEnviar) {
  * Envía las notas a todos los estudiantes de un ciclo
  */
 function enviarEmailNotasClase($idDelCicloElegido) {
-    $conexionBaseDatos = obtenerConexion();
-    $consultaTodosAlumnos = "SELECT idEstudiante FROM estudiantes WHERE idCiclo = $idDelCicloElegido";
-    $resultadoAlumnos = mysqli_query($conexionBaseDatos, $consultaTodosAlumnos);
+    $listaEstudiantes = listarEstudiantesPorCiclo($idDelCicloElegido);
     
     $contadorCorreosEnviados = 0;
-    while ($datosAlumnoIndividual = mysqli_fetch_assoc($resultadoAlumnos)) {
+    foreach ($listaEstudiantes as $datosAlumnoIndividual) {
         $idDeEsteAlumno = $datosAlumnoIndividual['idEstudiante'];
         if (enviarEmailNotasEstudiante($idDeEsteAlumno)) {
             $contadorCorreosEnviados++;
         }
     }
     
-    mysqli_close($conexionBaseDatos);
     return $contadorCorreosEnviados;
 }
 ?>

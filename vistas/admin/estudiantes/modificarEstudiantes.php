@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once "../../../modelos/conectar.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $id_del_estudiante = $_GET['idEstudiante'];
 $estudiante = obtenerEstudiantePorId($id_del_estudiante);
@@ -18,14 +18,14 @@ if (isset($_SESSION['datos_estudiante'])) {
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
 $titulo_pagina = "Modificar Estudiante - Super Admin";
 $seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

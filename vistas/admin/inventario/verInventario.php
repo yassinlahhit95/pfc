@@ -2,9 +2,9 @@
 session_start();
 $titulo_pagina = "Inventario del Centro - Super Admin";
 $seccion = 'inventario';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $todos_los_articulos = listarArticulos();
 
@@ -14,10 +14,10 @@ if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
 $exito = "";
 if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
-$datos = array();
+$datos = [];
 if (isset($_SESSION['datos_inventario'])) { $datos = $_SESSION['datos_inventario']; }
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_inventario']);

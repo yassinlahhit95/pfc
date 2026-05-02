@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../index.php");
     exit;
 }
 
@@ -37,14 +37,14 @@ include_once __DIR__ . "/comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>¡HOLA, <?php echo strtoupper($estudianteActual['nombreEstudiante']); ?>!</h1>
+    <h1>Â¡HOLA, <?php echo strtoupper($estudianteActual['nombreEstudiante']); ?>!</h1>
     <p class="texto-atenuado"><?php echo strtoupper($estudianteActual['nombreCiclo']); ?></p>
 </div>
 
-<!-- ESTADÍSTICAS EN FLEX -->
+<!-- ESTADÃSTICAS EN FLEX -->
 <div class="disposicion-flexible envoltura-flexible separacion-grande margen-abajo">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul flexible-rellenar">
-        <div class="info-estadistica"><h3><?php echo count($listaModulos); ?></h3><p>Módulos</p></div>
+        <div class="info-estadistica"><h3><?php echo count($listaModulos); ?></h3><p>MÃ³dulos</p></div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-verde flexible-rellenar">
         <div class="info-estadistica"><h3><?php echo count($listaRetos); ?></h3><p>Retos</p></div>
@@ -63,7 +63,7 @@ include_once __DIR__ . "/comunes/nav.php";
     
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
+        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÃ“N DE ANUNCIOS</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">
@@ -97,11 +97,11 @@ include_once __DIR__ . "/comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PRÓXIMOS EVENTOS</h3>
+        <h3>PRÃ“XIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventosProximos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
+            <p class="texto-atenuado">No hay eventos prÃ³ximos.</p>
         <?php } else { ?>
             <?php 
             $cest = 0;

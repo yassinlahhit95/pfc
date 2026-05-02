@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-// Filtros para la selección de destinatarios
+// Filtros para la selecciÃ³n de destinatarios
 $tipoDeDestinatario = $_GET['tipoDestinatario'] ?? "profesor"; // 'profesor' o 'estudiante'
 $idCicloSeleccionado = $_GET['idCiclo'] ?? "";
 
@@ -31,13 +31,13 @@ if ($tipoDeDestinatario == 'profesor') {
 
 $titulo_pagina = "Redactar Mensaje Oficial - Super Admin";
 $seccion = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Redactar Nuevo Mensaje</h1>
     <a href="/pfc/vistas/admin/mensajes/lista.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver al Buzón
+        <i class="fas fa-arrow-left"></i> Volver al BuzÃ³n
     </a>
 </div>
 
@@ -80,7 +80,7 @@ include_once "../comunes/nav.php";
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>3. Destinatario Específico *</label>
+                <label>3. Destinatario EspecÃ­fico *</label>
                 <select name="<?php echo ($tipoDeDestinatario == 'profesor' ? 'idProfesor' : 'idEstudiante'); ?>">
                     <option value="">-- Seleccionar Nombre --</option>
                     
@@ -102,12 +102,12 @@ include_once "../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label>Asunto del Mensaje *</label>
-                <input type="text" name="asunto" placeholder="Ej: Convocatoria de reunión, Aviso importante...">
+                <input type="text" name="asunto" placeholder="Ej: Convocatoria de reuniÃ³n, Aviso importante...">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Cuerpo del Mensaje *</label>
-                <textarea name="descripcion" rows="6" placeholder="Escribe aquí el contenido detallado del mensaje..."></textarea>
+                <textarea name="descripcion" rows="6" placeholder="Escribe aquÃ­ el contenido detallado del mensaje..."></textarea>
             </div>
         </div>
 

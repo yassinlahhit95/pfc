@@ -1,18 +1,18 @@
 <?php
 session_start();
 
-// Validación de sesión simple
+// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE PAGOS - SUPER ADMIN";
+$titulo_pagina = "GESTIÃ“N DE PAGOS - SUPER ADMIN";
 $seccion = 'pagos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/pagos.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Captura de filtros
 $idDelCicloParaFiltrar = "";
@@ -20,7 +20,7 @@ if (isset($_GET['idCiclo'])) {
     $idDelCicloParaFiltrar = $_GET['idCiclo'];
 }
 
-// Obtener datos según el filtro
+// Obtener datos segÃºn el filtro
 if (!empty($idDelCicloParaFiltrar)) {
     $listaDePagosAMostrar = listarPagosFiltrados($idDelCicloParaFiltrar);
 } else {
@@ -29,7 +29,7 @@ if (!empty($idDelCicloParaFiltrar)) {
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
 
-// Manejo de mensajes de sesión
+// Manejo de mensajes de sesiÃ³n
 $mensajeError = "";
 if (isset($_SESSION['error'])) { 
     $mensajeError = $_SESSION['error']; 
@@ -45,7 +45,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>GESTIÓN DE PAGOS</h1>
+    <h1>GESTIÃ“N DE PAGOS</h1>
     <a href="/pfc/vistas/admin/pagos/agregarPagos.php" class="boton-primario">
         <i class="fas fa-plus"></i> REGISTRAR NUEVO PAGO
     </a>
@@ -90,14 +90,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <th>TIPO</th>
                     <th>CANTIDAD</th>
                     <th>FECHA PAGO</th>
-                    <th>PRÓXIMO PAGO</th>
+                    <th>PRÃ“XIMO PAGO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDePagosAMostrar)) { ?>
                     <tr>
-                        <td colspan="7" class="sin-datos">No hay registros de pagos que coincidan con la búsqueda.</td>
+                        <td colspan="7" class="sin-datos">No hay registros de pagos que coincidan con la bÃºsqueda.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDePagosAMostrar as $pagoIndividual) { ?>
@@ -107,12 +107,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td>
                             <span class="etiqueta-pago"><?php echo strtoupper($pagoIndividual['tipoPago']); ?></span>
                         </td>
-                        <td class="texto-negrita"><?php echo number_format($pagoIndividual['monto'], 2); ?> €</td>
+                        <td class="texto-negrita"><?php echo number_format($pagoIndividual['monto'], 2); ?> â‚¬</td>
                         <td><?php echo date('d/m/Y', strtotime($pagoIndividual['fechaPago'])); ?></td>
                         <td>
                             <?php 
                                 if ($pagoIndividual['tipoPago'] == 'unico') {
-                                    echo '<span class="texto-gris">N/A (PAGO ÚNICO)</span>';
+                                    echo '<span class="texto-gris">N/A (PAGO ÃšNICO)</span>';
                                 } else {
                                     echo date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])); 
                                 }
@@ -128,7 +128,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                    class="btn-accion btn-editar" title="Editar este pago">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/pagos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este registro de pago?')">
+                                <form action="/pfc/controladores/admin/pagos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿EstÃ¡ seguro de eliminar este registro de pago?')">
                                     <input type="hidden" name="idPago" value="<?php echo $pagoIndividual['idPago']; ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

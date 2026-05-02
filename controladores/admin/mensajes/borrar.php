@@ -1,16 +1,19 @@
 <?php
 session_start();
-require_once "../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-if (isset($_POST['idReclamacion'])) {
-    $id = $_POST['idReclamacion'];
-    if (eliminarReclamacion($id)) {
-        $_SESSION['exito'] = "Reclamación eliminada correctamente.";
+$hayError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idReclamacion'])) {
+    $idReclamacionParaBorrar = trim($_POST['idReclamacion']);
+    
+    if (eliminarMensaje($idReclamacionParaBorrar)) {
+        $_SESSION['exito'] = "Listo! ReclamaciÃ³n eliminada sin problemas.";
     } else {
-        $_SESSION['error'] = "Error al eliminar la reclamación.";
+        $hayError = true;
+        $_SESSION['error'] = "Vaya, no se pudo eliminar la reclamaciÃ³n.";
     }
 }
-header("Location: /pfc/vistas/admin/reclamaciones/verReclamaciones.php");
-exit;
-?>
 
+header("Location: ../../../vistas/admin/reclamaciones/verReclamaciones.php");
+exit;

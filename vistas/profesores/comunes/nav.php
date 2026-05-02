@@ -1,6 +1,6 @@
 <?php
 if (empty($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -26,6 +26,8 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
     <link rel="stylesheet" href="/pfc/public/css/admin.css">
     <link rel="stylesheet" href="/pfc/public/css/responsive.css">
     <link rel="stylesheet" href="/pfc/public/css/notificaciones.css">
+        <link rel="icon" href="/pfc/public/imagenes/favicon.ico">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -51,7 +53,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
+                <p class="titulo-de-seccion">GESTIÃ“N ACADÃ‰MICA</p>
                 
                 <a href="/pfc/vistas/profesores/estudiantes/lista.php" class="enlace-menu <?php if ($seccionActual == 'estudiantes') { echo 'activo'; } ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
@@ -64,7 +66,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="/pfc/vistas/profesores/modulos/lista.php" class="enlace-menu <?php if ($seccionActual == 'modulos') { echo 'activo'; } ?>">
-                    <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
+                    <i class="fas fa-cubes"></i> <span>MÃ“DULOS</span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/retos/lista.php" class="enlace-menu <?php if ($seccionActual == 'retos') { echo 'activo'; } ?>">
@@ -72,7 +74,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="/pfc/vistas/profesores/calificaciones/lista.php" class="enlace-menu <?php if ($seccionActual == 'calificaciones') { echo 'activo'; } ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÃ“DULOS</span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/calificaciones/retos.php" class="enlace-menu <?php if ($seccionActual == 'notas_retos') { echo 'activo'; } ?>">
@@ -84,20 +86,20 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="/pfc/vistas/profesores/pfc/lista.php" class="enlace-menu <?php if ($seccionActual == 'tfg') { echo 'activo'; } ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
+                    <i class="fas fa-file-pdf"></i> <span>GESTIÃ“N TFG</span>
                     <span class="etiqueta-contador"><?php echo $cantTFGs; ?></span>
                 </a>
             </div>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">COMUNICACIÓN</p>
+                <p class="titulo-de-seccion">COMUNICACIÃ“N</p>
 
                 <a href="/pfc/vistas/profesores/anuncios/lista.php" class="enlace-menu <?php if ($seccionActual == 'anuncios') { echo 'activo'; } ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
                 </a>
 
                 <a href="/pfc/vistas/profesores/mensajes/lista.php" class="enlace-menu <?php if ($seccionActual == 'reclamaciones') { echo 'activo'; } ?>">
-                    <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
+                    <i class="fas fa-paper-plane"></i> <span>MENSAJERÃA</span>
                     <span class="etiqueta-contador <?php echo ($cantMensajesNoLeidosProf > 0) ? 'alerta-roja' : ''; ?>"><?php echo $cantMensajes; ?></span>
                 </a>
 
@@ -114,7 +116,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="/pfc/controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÃ“N</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?php echo date('Y'); ?> Yassin Lahhit<br>Fingerprint Verified

@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -15,11 +15,11 @@ $listaDeCiclosParaFiltro = obtenerCiclosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Lista de Estudiantes - Portal Profesores";
 $seccionActual = 'estudiantes';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Estudiantes</h1>
+    <h1>GestiÃ³n de Estudiantes</h1>
 </div>
 
 <div class="tarjeta-blanca margen-abajo">

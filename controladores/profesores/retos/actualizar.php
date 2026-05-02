@@ -1,24 +1,36 @@
 <?php
 session_start();
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 if (isset($_POST['actualizarReto'])) {
-    $id = $_POST['idReto'];
-    $n = trim($_POST['nombreReto']);
-    $fi = $_POST['fechaInicio'];
-    $ff = $_POST['fechaFin'];
-    $h = $_POST['horasReto'];
+    $idReto = trim($_POST['idReto']);
+    $nombreReto = trim($_POST['nombreReto']);
+    $fechaInicio = trim($_POST['fechaInicio']);
+    $fechaFin = trim($_POST['fechaFin']);
+    $horasReto = trim($_POST['horasReto']);
 
-    if (empty($id)) {
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
+    $hayError = false;
+
+    if (empty($idReto)) {
+        header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
-    } else if (actualizarReto($id, $n, $fi, $ff, $h)) {
-        $_SESSION['exito'] = "Reto actualizado.";
-    } else {
-        $_SESSION['error'] = "Error al actualizar.";
+    }
+
+    if (empty($nombreReto)) {
+        $_SESSION['error'] = "Vaya, el nombre del reto es obligatorio.";
+        $hayError = true;
+    }
+
+    if (!$hayError) {
+        $resultado = actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto);
+        if ($resultado) {
+            $_SESSION['exito'] = "Listo! Reto actualizado correctamente.";
+        } else {
+            $_SESSION['error'] = "Vaya, ha habido un error al actualizar el reto.";
+        }
     }
 }
-header("Location: /pfc/vistas/profesores/retos/lista.php");
+
+header("Location: ../../../vistas/profesores/retos/lista.php");
 exit;
 ?>
-

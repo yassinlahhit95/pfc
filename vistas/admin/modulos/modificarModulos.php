@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once "../../../modelos/conectar.php";
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $id_del_modulo = $_GET['idModulo'];
 $modulo = obtenerModuloPorId($id_del_modulo);
@@ -20,14 +20,14 @@ $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
 
-$lista_de_errores = array();
+$lista_de_errores = [];
 if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
 $titulo_pagina = "Modificar Módulo - Super Admin";
 $seccion = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">

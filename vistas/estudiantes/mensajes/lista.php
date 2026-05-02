@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,7 +13,7 @@ $listaDeMensajes = listarMensajesDeEstudiante($idEstudiante);
 
 $tituloDelPagina = "Mis Mensajes - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
@@ -49,7 +49,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aÃºn.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
@@ -60,7 +60,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 if ($mensaje['emisor_rol'] == 'profesor') {
                                     echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
                                 } else {
-                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÃ“N (ADMIN)';
                                 }
                             ?></strong>
                         </td>
