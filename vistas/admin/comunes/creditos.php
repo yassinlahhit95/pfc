@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Huella Digital - Yassin Lahhit";
 $seccion = 'creditos';
@@ -47,3 +47,5 @@ include_once __DIR__ . "/nav.php";
 </div>
 
 <?php include __DIR__ . '/footer.php'; ?>
+
+

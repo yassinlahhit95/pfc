@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -30,12 +30,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -52,10 +52,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDeMensajes)) : ?>
+                <?php if (empty($listaDeMensajes)) { ?>
                     <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aÃºn.</td></tr>
-                <?php else : ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) : 
+                <?php } else { ?>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
                         $claseFila = $esMio ? 'fila-propia' : '';
                     ?>
@@ -75,11 +75,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <small class="texto-atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></small>
                         </td>
                         <td>
-                            <?php if ($mensaje['leido']) : ?>
+                            <?php if ($mensaje['leido']) { ?>
                                 <span class="estado-bolita activo-verde">LeÃ­do</span>
-                            <?php else : ?>
+                            <?php } else { ?>
                                 <span class="estado-bolita inactivo-rojo">Nuevo</span>
-                            <?php endif; ?>
+                            <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
@@ -95,11 +95,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

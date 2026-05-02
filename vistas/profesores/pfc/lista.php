@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -24,12 +24,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Gestión de TFGs Entregados</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -43,8 +43,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($tfgs) : ?>
-                    <?php foreach ($tfgs as $tfg) : 
+                <?php if ($tfgs) { ?>
+                    <?php foreach ($tfgs as $tfg) { 
                         $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
                         $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";
                     ?>
@@ -57,16 +57,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="../../../controladores/profesores/pfc/borrar.php?id=<?= $tfg['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay TFGs subidos todavía.</td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

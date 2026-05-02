@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Modificar Aula - Super Admin";
 $seccion = 'aulas';
@@ -27,9 +27,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <a href="verAulas.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form method="POST" action="../../../controladores/admin/aulas/actualizar.php">
@@ -37,9 +37,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         <div class="campo-formulario">
             <label>Nombre del Aula</label>
             <input type="text" name="nombreAula" value="<?= $la_aula['nombreAula'] ?? '' ?>">
-            <?php if (isset($lista_de_errores['nombreAula'])) : ?>
+            <?php if (isset($lista_de_errores['nombreAula'])) { ?>
                 <span class="error-campo"><?= $lista_de_errores['nombreAula'] ?></span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
         <div class="margen-arriba">
             <button type="submit" name="actualizarAula" class="boton-primario">
@@ -50,3 +50,5 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

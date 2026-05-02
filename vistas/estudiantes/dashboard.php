@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -66,12 +66,12 @@ include_once __DIR__ . "/comunes/nav.php";
       <div class="titulo-tarjeta">
         <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
       </div>
-      <?php if (!empty($listaAnuncios)) : ?>
+      <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">
             <?php 
             $canu = 0;
-            foreach ($listaAnuncios as $anu) :
-                if ($canu < 4) :
+            foreach ($listaAnuncios as $anu) {
+                if ($canu < 4) {
             ?>
             <div class="anuncio-item">
                 <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
@@ -85,12 +85,12 @@ include_once __DIR__ . "/comunes/nav.php";
             </div>
             <?php 
                 $canu++;
-                endif;
-            endforeach; ?>
+                }
+            } ?>
         </div>
-      <?php else : ?>
+      <?php } else { ?>
         <p class="texto-atenuado">No hay anuncios activos actualmente.</p>
-      <?php endif; ?>
+      <?php } ?>
     </div>
   </div>
 
@@ -101,13 +101,13 @@ include_once __DIR__ . "/comunes/nav.php";
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
-        <?php if (empty($listaEventosProximos)) : ?>
+        <?php if (empty($listaEventosProximos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
-        <?php else : ?>
+        <?php } else { ?>
             <?php 
             $cest = 0;
-            foreach ($listaEventosProximos as $ev) :
-                if ($cest < 4) :
+            foreach ($listaEventosProximos as $ev) {
+                if ($cest < 4) {
                     $d = date('d', strtotime($ev['fechaEvento']));
                     $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
             ?>
@@ -120,9 +120,9 @@ include_once __DIR__ . "/comunes/nav.php";
             </div>
             <?php 
                     $cest++;
-                endif;
-            endforeach; ?>
-        <?php endif; ?>
+                }
+            } ?>
+        <?php } ?>
       </div>
 
     </div>
@@ -130,3 +130,5 @@ include_once __DIR__ . "/comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/comunes/footer.php'; ?>
+
+

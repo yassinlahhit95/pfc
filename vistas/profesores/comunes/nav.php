@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (empty($_SESSION['idProfesor'])) {
     header("Location: ../../../index.php");
     exit;
@@ -142,3 +142,5 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="d-none"></div>
         <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
+
+

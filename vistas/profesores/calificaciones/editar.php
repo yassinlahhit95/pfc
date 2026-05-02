@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -44,12 +44,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/profesores/calificaciones/actualizar.php" method="POST">
@@ -58,9 +58,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label>Estudiante *</label>
                 <select name="idEstudiante" disabled>
-                    <?php foreach ($estudiantes as $est) : ?>
+                    <?php foreach ($estudiantes as $est) { ?>
                         <option value="<?= $est['idEstudiante'] ?>" <?= $est['idEstudiante'] == $nota['idEstudiante'] ? 'selected' : '' ?>><?= $est['nombreEstudiante'] ?></option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
                 <input type="hidden" name="idEstudiante" value="<?= $nota['idEstudiante'] ?? '' ?>">
             </div>
@@ -68,9 +68,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label>Módulo *</label>
                 <select name="idModulo" disabled>
-                    <?php foreach ($modulos as $mod) : ?>
+                    <?php foreach ($modulos as $mod) { ?>
                         <option value="<?= $mod['idModulo'] ?>" <?= $mod['idModulo'] == $nota['idModulo'] ? 'selected' : '' ?>><?= $mod['nombreModulo'] ?></option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
                 <input type="hidden" name="idModulo" value="<?= $nota['idModulo'] ?? '' ?>">
             </div>
@@ -106,3 +106,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

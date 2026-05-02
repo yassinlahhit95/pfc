@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Gestión de Aulas - Super Admin";
 $seccion = 'aulas';
@@ -20,13 +20,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Aulas del Centro</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -36,9 +36,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         <div class="campo-formulario flexible-rellenar">
             <label>Nombre del Aula</label>
             <input type="text" name="nombreAula" value="<?= $datos['nombreAula'] ?? '' ?>" placeholder="Aula 101">
-            <?php if (isset($lista_de_errores['nombreAula'])) : ?>
+            <?php if (isset($lista_de_errores['nombreAula'])) { ?>
                 <p class="error-campo"><?= $lista_de_errores['nombreAula'] ?></p>
-            <?php endif; ?>
+            <?php } ?>
         </div>
         <div class="mt-25">
             <button type="submit" name="guardarAula" class="boton-primario">
@@ -59,10 +59,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todas_las_aulas)) : ?>
+                <?php if (empty($todas_las_aulas)) { ?>
                     <tr><td colspan="3" class="sin-datos">No hay aulas configuradas</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todas_las_aulas as $aula) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todas_las_aulas as $aula) { ?>
                     <tr>
                         <td><?= $aula['idAula'] ?></td>
                         <td><strong><?= $aula['nombreAula'] ?></strong></td>
@@ -80,11 +80,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

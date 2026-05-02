@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -33,12 +33,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form method="POST" action="../../../controladores/admin/pagos/actualizar.php">
@@ -48,15 +48,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label>Estudiante *</label>
                 <select name="idEstudiante">
-                    <?php foreach ($todos_los_estudiantes as $estudiante) : ?>
+                    <?php foreach ($todos_los_estudiantes as $estudiante) { ?>
                         <option value="<?= $estudiante['idEstudiante'] ?>" <?= $pago['idEstudiante'] == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
                             <?= $estudiante['nombreEstudiante'] ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idEstudiante'])) : ?>
+                <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
@@ -72,17 +72,17 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label>Cantidad (Monto) *</label>
                 <input type="number" name="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>">
-                <?php if (isset($lista_de_errores['cantidadPago'])) : ?>
+                <?php if (isset($lista_de_errores['cantidadPago'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['cantidadPago'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Pago *</label>
                 <input type="date" name="fechaPago" value="<?= $pago['fechaPago'] ?>">
-                <?php if (isset($lista_de_errores['fechaPago'])) : ?>
+                <?php if (isset($lista_de_errores['fechaPago'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['fechaPago'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
@@ -100,3 +100,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Comprobación de seguridad: Solo administradores pueden ver esta navegación
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../../index.php");
@@ -186,3 +186,5 @@ $cantidadTFGMenu = contarTFGsSubidos();
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="d-none"></div>
         <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
+
+

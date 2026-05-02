@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -40,30 +40,30 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?php if ($mensaje['emisor_rol'] == 'admin') : ?>
+            <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
                 Tú (Administración)
-            <?php elseif ($mensaje['emisor_rol'] == 'profesor') : ?>
+            <?php } elseif ($mensaje['emisor_rol'] == 'profesor') { ?>
                 <?= $mensaje['nombreProfesor'] ?> (Profesor)
-            <?php else : ?>
+            <?php } else { ?>
                 <?= $mensaje['nombreEstudiante'] ?> (Estudiante)
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?php if ($mensaje['emisor_rol'] == 'admin') : ?>
-                <?php if ($mensaje['idEstudiante'] > 0) : ?>
+            <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
+                <?php if ($mensaje['idEstudiante'] > 0) { ?>
                     <?= $mensaje['nombreEstudiante'] ?> (Estudiante)
-                <?php elseif ($mensaje['idProfesor'] > 0) : ?>
+                <?php } elseif ($mensaje['idProfesor'] > 0) { ?>
                     <?= $mensaje['nombreProfesor'] ?> (Profesor)
-                <?php else : ?>
+                <?php } else { ?>
                     General
-                <?php endif; ?>
-            <?php else : ?>
+                <?php } ?>
+            <?php } else { ?>
                 Tú (Administración)
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
@@ -75,11 +75,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
-            <?php if ($mensaje['leido']) : ?>
+            <?php if ($mensaje['leido']) { ?>
                 <span class="estado-bolita activo-verde">Leído</span>
-            <?php else : ?>
+            <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">Pendiente</span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
@@ -90,3 +90,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

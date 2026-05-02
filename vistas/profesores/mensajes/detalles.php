@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -70,11 +70,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
-            <?php if ($mensaje['leido']) : ?>
+            <?php if ($mensaje['leido']) { ?>
                 <span class="estado-bolita activo-verde">LEÃDO / VISTO</span>
-            <?php else : ?>
+            <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">PENDIENTE / NUEVO</span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
@@ -85,3 +85,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

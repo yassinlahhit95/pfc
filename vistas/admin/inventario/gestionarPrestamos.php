@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Gestión de Préstamos - Super Admin";
 $seccion = 'prestamos';
@@ -21,13 +21,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -43,20 +43,20 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_prestamos)) : ?>
+                <?php if (empty($todos_los_prestamos)) { ?>
                     <tr><td colspan="6" class="sin-datos">No hay registros de préstamos</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_prestamos as $p) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_prestamos as $p) { ?>
                     <tr>
                         <td><strong><?= $p['nombreEstudiante'] ?></strong></td>
                         <td><?= $p['nombreArticulo'] ?></td>
                         <td><?= date('d/m/Y', strtotime($p['fechaPrestamo'])) ?></td>
                         <td>
-                            <?php if (!empty($p['fechaDevolucion'])) : ?>
+                            <?php if (!empty($p['fechaDevolucion'])) { ?>
                                 <?= date('d/m/Y', strtotime($p['fechaDevolucion'])) ?>
-                            <?php else : ?>
+                            <?php } else { ?>
                                 -
-                            <?php endif; ?>
+                            <?php } ?>
                         </td>
                         <td>
                             <?php
@@ -69,7 +69,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <?php if ($p['estadoPrestamo'] == 'en curso') : ?>
+                                <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
                                     <form action="../../../controladores/admin/inventario/devolver.php" method="POST" class="d-inline">    
                                         <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
                                         <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
@@ -77,15 +77,17 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                             <i class="fas fa-undo"></i> Devolver
                                         </button>
                                     </form>
-                                <?php endif; ?>
+                                <?php } ?>
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

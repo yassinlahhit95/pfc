@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -28,9 +28,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="ver.php" class="boton-secundario">â† Volver</a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/profesores/perfil/actualizar.php" method="POST" class="form-estandar">
@@ -76,3 +76,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

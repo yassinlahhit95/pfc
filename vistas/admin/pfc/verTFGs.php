@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -19,23 +19,23 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Gestión de Trabajos Fin de Grado</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
         <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
         <select id="selectFiltroCicloTFG" onchange="filtrarTabla('selectFiltroCicloTFG', 'tablaTFGs')">
             <option value="">-- Todos los Ciclos --</option>
-            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) : ?>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                 <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
                     <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                 </option>
-            <?php endforeach; ?>
+            <?php } ?>
         </select>
     </div>
 </div>
@@ -52,10 +52,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_tfgs)) : ?>
+                <?php if (empty($todos_los_tfgs)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay TFGs registrados</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_tfgs as $tfg) : 
+                <?php } else { ?>
+                    <?php foreach ($todos_los_tfgs as $tfg) { 
                         $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
                         $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";
                     ?>
@@ -69,11 +69,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td><?= date('d/m/Y', strtotime($tfg['fechaSubidaTFG'])) ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

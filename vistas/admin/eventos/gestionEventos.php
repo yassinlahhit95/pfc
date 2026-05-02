@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../../index.php");
@@ -23,12 +23,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <h1>Próximos Eventos</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -85,10 +85,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_eventos)) : ?>
+                <?php if (empty($todos_los_eventos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay eventos próximos programados</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_eventos as $evento) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_eventos as $evento) { ?>
                     <tr>
                         <td>
                             <strong><?= date('d/m/Y', strtotime($evento['fechaEvento'])) ?></strong><br>
@@ -113,11 +113,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

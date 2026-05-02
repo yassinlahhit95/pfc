@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -24,12 +24,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Mis Ciclos Formativos</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -42,22 +42,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($ciclos)) : ?>
-                    <?php foreach ($ciclos as $ciclo) : ?>
+                <?php if (!empty($ciclos)) { ?>
+                    <?php foreach ($ciclos as $ciclo) { ?>
                         <tr>
                             <td class="texto-negrita"><?= $ciclo['nombreCiclo'] ?></td>
                             <td><?= $ciclo['abreviaturaCiclo'] ?></td>
                             <td><?= $ciclo['nombreNivel'] ?? 'N/A' ?></td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="3" class="sin-datos">No tiene ciclos asignados.</td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

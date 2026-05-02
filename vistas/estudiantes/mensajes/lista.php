@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -27,12 +27,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -48,10 +48,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDeMensajes)) : ?>
+                <?php if (empty($listaDeMensajes)) { ?>
                     <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
-                <?php else : ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) : 
+                <?php } else { ?>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
                     ?>
                     <tr class="<?= $claseFila ?>">
@@ -72,11 +72,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
-                            <?php if ($mensaje['leido']) : ?>
+                            <?php if ($mensaje['leido']) { ?>
                                 <span class="estado-bolita activo-verde">VISTO</span>
-                            <?php else : ?>
+                            <?php } else { ?>
                                 <span class="estado-bolita inactivo-rojo">ENVIADO</span>
-                            <?php endif; ?>
+                            <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
@@ -86,11 +86,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

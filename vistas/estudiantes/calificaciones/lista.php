@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -25,12 +25,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Mis Calificaciones</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -51,8 +51,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($notas) : ?>
-                    <?php foreach ($notas as $nota) : 
+                <?php if ($notas) { ?>
+                    <?php foreach ($notas as $nota) { 
                         $nFinal = $nota['nota_2final'] > 0 ? $nota['nota_2final'] : $nota['nota_1final'];
                         $aprobado = ($nFinal >= 5);
                     ?>
@@ -63,26 +63,28 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $nota['nota_2ev'] ?></td>
                             <td><?= $nota['nota_2final'] ?></td>
                             <td>
-                                <?php if ($aprobado) : ?>
+                                <?php if ($aprobado) { ?>
                                     <span class="texto-verde texto-negrita">Aprobado</span>
-                                <?php else : ?>
+                                <?php } else { ?>
                                     <span class="texto-rojo texto-negrita">Suspenso</span>
-                                <?php endif; ?>
+                                <?php } ?>
                             </td>
                             <td><small><?= $nota['observaciones'] ?></small></td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">
                             <i class="fas fa-inbox"></i> No hay calificaciones registradas.
                         </td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

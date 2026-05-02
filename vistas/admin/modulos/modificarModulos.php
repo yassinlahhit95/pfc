@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -36,9 +36,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/modulos/actualizar.php" method="POST">
@@ -48,31 +48,31 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label>Nombre del Módulo *</label>
                 <input type="text" name="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
-                <?php if (isset($lista_de_errores['nombreModulo'])) : ?>
+                <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
                     <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['nombreModulo'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Ciclo Formativo *</label>
                 <select name="idCiclo">
-                    <?php foreach ($todos_los_ciclos as $ciclo) : ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
                         <option value="<?= $ciclo['idCiclo'] ?>" <?= ($modulo['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idCiclo'])) : ?>
+                <?php if (isset($lista_de_errores['idCiclo'])) { ?>
                     <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['idCiclo'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Horas Totales *</label>
                 <input type="text" name="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
-                <?php if (isset($lista_de_errores['horasMaximas'])) : ?>
+                <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
                     <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['horasMaximas'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -85,3 +85,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

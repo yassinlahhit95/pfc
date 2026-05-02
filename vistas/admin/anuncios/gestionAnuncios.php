@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Gestión de Anuncios - Super Admin";
 $seccion = 'anuncios';
@@ -20,13 +20,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Anuncios del Sistema</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -37,9 +37,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <div class="campo-formulario">
                 <label>Título del Anuncio *</label>
                 <input type="text" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">
-                <?php if (isset($lista_de_errores['tituloAnuncio'])) : ?>
+                <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
@@ -54,9 +54,9 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <div class="campo-formulario campo-ancho-total">
                 <label>Contenido del Anuncio *</label>
                 <textarea name="contenidoAnuncio" rows="4" placeholder="Escriba aquí el mensaje..."><?= $datos['contenidoAnuncio'] ?? '' ?></textarea>
-                <?php if (isset($lista_de_errores['contenidoAnuncio'])) : ?>
+                <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -83,10 +83,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_anuncios)) : ?>
+                <?php if (empty($todos_los_anuncios)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay anuncios publicados</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_anuncios as $anuncio) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_anuncios as $anuncio) { ?>
                     <tr>
                         <td><strong><?= $anuncio['tituloAnuncio'] ?></strong></td>
                         <td><small><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</small></td>
@@ -108,11 +108,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

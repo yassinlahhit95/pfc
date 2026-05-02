@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -26,23 +26,23 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Gestión de Estudiantes</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
         <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
         <select id="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
-            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) : ?>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                 <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
                     <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                 </option>
-            <?php endforeach; ?>
+            <?php } ?>
         </select>
     </div>
 </div>
@@ -63,23 +63,25 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($estudiantes) : ?>
-                    <?php foreach ($estudiantes as $est) : ?>
+                <?php if ($estudiantes) { ?>
+                    <?php foreach ($estudiantes as $est) { ?>
                         <tr>
                             <td class="texto-negrita"><?= $est['nombreEstudiante'] ?></td>
                             <td><?= $est['emailEstudiante'] ?></td>
                             <td><?= $est['dniEstudiante'] ?></td>
                             <td><?= $est['nombreCiclo'] ?></td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay estudiantes registrados.</td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

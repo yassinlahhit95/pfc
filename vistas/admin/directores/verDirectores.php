@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Gestión de Directores - Super Admin";
 $seccion = 'directores';
@@ -21,12 +21,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -41,10 +41,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_directores)) : ?>
+                <?php if (empty($todos_los_directores)) { ?>
                     <tr><td colspan="5" class="sin-datos">No hay directores registrados</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_directores as $director) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_directores as $director) { ?>
                     <tr>
                         <td><?= $director['idDirector'] ?></td>
                         <td><strong><?= $director['nombreDirector'] ?></strong></td>
@@ -67,11 +67,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

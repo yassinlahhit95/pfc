@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -23,12 +23,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Mis Retos</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -46,26 +46,28 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($retos) : ?>
-                    <?php foreach ($retos as $reto) : ?>
+                <?php if ($retos) { ?>
+                    <?php foreach ($retos as $reto) { ?>
                         <tr>
                             <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
                             <td><?= $reto['fechaInicio'] ?></td>
                             <td><?= $reto['fechaFin'] ?></td>
                             <td><?= $reto['horasReto'] ?> h</td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">
                             <i class="fas fa-tasks"></i> No hay retos asignados actualmente.
                         </td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

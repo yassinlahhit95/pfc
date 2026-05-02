@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 // ValidaciÃ³n de sesiÃ³n simple
@@ -93,4 +93,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

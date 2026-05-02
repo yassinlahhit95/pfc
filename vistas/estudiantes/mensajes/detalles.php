@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -37,12 +37,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -69,11 +69,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
-            <?php if ($mensaje['leido']) : ?>
+            <?php if ($mensaje['leido']) { ?>
                 <span class="estado-bolita activo-verde">VISTO</span>
-            <?php else : ?>
+            <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">NUEVO / SIN LEER</span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
@@ -84,3 +84,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

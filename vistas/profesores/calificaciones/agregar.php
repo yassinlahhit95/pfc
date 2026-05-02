@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 // Validar que sea profesor
@@ -21,22 +21,22 @@ $idModuloSeleccionado = intval($_GET['idModulo'] ?? 0);
 $listaMisCiclos = obtenerCiclosDeProfesor($idProfLogueado);
 $listaModulosFiltrados = [];
 
-if ($idCicloSeleccionado) :
+if ($idCicloSeleccionado) {
     $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCicloSeleccionado);
     $misModulosAsignados = obtenerIdsModulosDeProfesor($idProfLogueado);
     
-    foreach ($todosLosModulosDelCiclo as $moduloItem) :
-        if (in_array($moduloItem['idModulo'], $misModulosAsignados)) :
+    foreach ($todosLosModulosDelCiclo as $moduloItem) {
+        if (in_array($moduloItem['idModulo'], $misModulosAsignados)) {
             $listaModulosFiltrados[] = $moduloItem;
-        endif;
-    endforeach;
-endif;
+        }
+    }
+}
 
 // Sacar alumnos si ya eligio modulo
 $listaAlumnos = [];
-if ($idModuloSeleccionado) :
+if ($idModuloSeleccionado) {
     $listaAlumnos = listarCalificacionesPorModulo($idModuloSeleccionado);
-endif;
+}
 
 // Mensajes de la sesion
 $error = $_SESSION['error'] ?? '';
@@ -59,11 +59,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>1. Selecciona el Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Elige un ciclo --</option>
-                <?php foreach ($listaMisCiclos as $c) : ?>
+                <?php foreach ($listaMisCiclos as $c) { ?>
                     <option value="<?= $c['idCiclo'] ?>" <?= $idCicloSeleccionado == $c['idCiclo'] ? 'selected' : '' ?>>
                         <?= $c['nombreCiclo'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
 
@@ -71,24 +71,24 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>2. Selecciona el Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloSeleccionado) ? 'disabled' : '' ?>>
                 <option value="">-- Elige un modulo --</option>
-                <?php foreach ($listaModulosFiltrados as $m) : ?>
+                <?php foreach ($listaModulosFiltrados as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModuloSeleccionado == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
     </form>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($idModuloSeleccionado) : ?>
+<?php if ($idModuloSeleccionado) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <form action="../../../controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
             <input type="hidden" name="idModulo" value="<?= $idModuloSeleccionado ?>">
@@ -107,10 +107,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($listaAlumnos)) : ?>
+                        <?php if (empty($listaAlumnos)) { ?>
                             <tr><td colspan="6" class="sin-datos">No hay alumnos en este ciclo todavia.</td></tr>
-                        <?php else : ?>
-                            <?php foreach ($listaAlumnos as $alu) : 
+                        <?php } else { ?>
+                            <?php foreach ($listaAlumnos as $alu) { 
                                 $idA = $alu['idEstudiante'];
                                 $notas = obtenerNotasModulo($idA, $idModuloSeleccionado);
                                 
@@ -141,13 +141,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <input type="text" name="observaciones[]" value="<?= $vobs ?>" class="ancho-total">
                                 </td>
                             </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                            <?php } ?>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
             
-            <?php if (!empty($listaAlumnos)) : ?>
+            <?php if (!empty($listaAlumnos)) { ?>
                 <div class="margen-arriba disposicion-flexible alinear-centro">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar todas las Notas
@@ -157,9 +157,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <i class="fas fa-envelope"></i> Enviar aviso por email
                     </label>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
         </form>
     </div>
-<?php endif; ?>
+<?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
+

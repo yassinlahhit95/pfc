@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 // Control de acceso para administradores
@@ -26,13 +26,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <h1>MI PERFIL Y SEGURIDAD</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/directores/actualizar_perfil.php" method="POST">
         <input type="hidden" name="idDirector" value="<?= $idLogueado ?>">
@@ -78,3 +78,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

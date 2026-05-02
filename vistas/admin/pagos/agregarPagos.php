@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -10,17 +10,17 @@ $idEstudianteElegido = $_GET['idEstudiante'] ?? '';
 $todos_los_ciclos = listarTodosLosCiclos();
 
 // Filtrar estudiantes por ciclo si se ha seleccionado uno
-if (!empty($idCicloElegido)) :
+if (!empty($idCicloElegido)) {
     $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloElegido);
-else :
+} else {
     $todos_los_estudiantes = listarEstudiantes();
-endif;
+}
 
 // Obtener info financiera si hay estudiante seleccionado
 $infoFinanciera = null;
-if (!empty($idEstudianteElegido)) :
+if (!empty($idEstudianteElegido)) {
     $infoFinanciera = obtenerEstadoFinancieroEstudiante($idEstudianteElegido);
-endif;
+}
 
 // Regla: No se permiten pagos después del 30 de Junio
 $hoy = date('Y-m-d');
@@ -40,11 +40,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verPagosGeneral.php" class="boton-secundario">Volver</a>
 </div>
 
-<?php if ($esDespuesDeJunio) : ?>
+<?php if ($esDespuesDeJunio) { ?>
     <div class="mensaje-error">
         <i class="fas fa-exclamation-triangle"></i> No se pueden registrar pagos después del 30 de Junio del año en curso.
     </div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <form method="GET" action="">
@@ -53,11 +53,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>1. Filtrar por Ciclo:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
-                    <?php foreach ($todos_los_ciclos as $ciclo) : ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
                         <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>  
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
             </div>
 
@@ -65,18 +65,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>2. Seleccionar Estudiante:</label>
                 <select name="idEstudiante" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Estudiante --</option>
-                    <?php foreach ($todos_los_estudiantes as $est) : ?>
+                    <?php foreach ($todos_los_estudiantes as $est) { ?>
                         <option value="<?= $est['idEstudiante'] ?>" <?= ($idEstudianteElegido == $est['idEstudiante']) ? 'selected' : '' ?>>
                             <?= $est['nombreEstudiante'] ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
             </div>
         </div>
     </form>
 </div>
 
-<?php if ($infoFinanciera) : ?>
+<?php if ($infoFinanciera) { ?>
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
         <h3>Estado Financiero de Estudiante</h3>
@@ -98,11 +98,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <hr class="separador">
 
-    <?php if ($infoFinanciera['restante'] <= 0) : ?>
+    <?php if ($infoFinanciera['restante'] <= 0) { ?>
         <p class="mensaje-exito">Este estudiante ya ha completado todos los pagos del ciclo.</p>
-    <?php elseif ($esDespuesDeJunio) : ?>
+    <?php } elseif ($esDespuesDeJunio) { ?>
         <p class="mensaje-error">Periodo de pagos finalizado (30/06 superado).</p>
-    <?php else : ?>
+    <?php } else { ?>
         <form action="../../../controladores/admin/pagos/insertar.php" method="POST">
             <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
             <input type="hidden" name="fechaPago" value="<?= $hoy ?>">
@@ -132,7 +132,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </button>
             </div>
         </form>
-    <?php endif; ?>
+    <?php } ?>
 </div>
 
 <script>
@@ -153,6 +153,9 @@ function actualizarMontoRapido() {
     document.getElementById('montoInput').value = cuota.toFixed(2);
 }
 </script>
-<?php endif; ?>
+<?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
+
+

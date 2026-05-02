@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -23,17 +23,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Tablón de Anuncios</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
-    <?php if ($anuncios) : ?>
+    <?php if ($anuncios) { ?>
         <div class="lista-anuncios-completa">
-            <?php foreach ($anuncios as $anuncio) : ?>
+            <?php foreach ($anuncios as $anuncio) { ?>
                 <div class="anuncio-item-completo">
                     <div class="mb-10">
                         <label class="texto-negrita">Título del Anuncio:</label> 
@@ -50,12 +50,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                        <span class="color-primario texto-negrita"><?= date('d/m/Y', strtotime($anuncio['fechaExpiracion'])) ?></span>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php } ?>
         </div>
-    <?php else : ?>
+    <?php } else { ?>
         <p class="texto-atenuado text-center p-20">No hay anuncios publicados en este momento.</p>
-    <?php endif; ?>
+    <?php } ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

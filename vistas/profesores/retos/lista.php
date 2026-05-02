@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -25,12 +25,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="agregar.php" class="boton-primario">Nuevo Reto</a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -45,8 +45,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($retos) : ?>
-                    <?php foreach ($retos as $reto) : ?>
+                <?php if ($retos) { ?>
+                    <?php foreach ($retos as $reto) { ?>
                         <tr>
                             <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
                             <td><?= $reto['fechaInicio'] ?></td>
@@ -57,16 +57,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="../../../controladores/profesores/retos/borrar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="5" class="sin-datos">No hay retos registrados.</td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

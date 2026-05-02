@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -27,11 +27,11 @@ $listaRetos = obtenerRetosDeProfesor($idProfesor);
 
 // Conteo de mensajes pendientes
 $mensajesPendientes = 0;
-foreach ($listaMensajes as $mensaje) :
-    if ($mensaje['estadoReclamacion'] === 'pendiente') :
+foreach ($listaMensajes as $mensaje) {
+    if ($mensaje['estadoReclamacion'] === 'pendiente') {
         $mensajesPendientes++;
-    endif;
-endforeach;
+    }
+}
 
 $tituloDelPagina = "Panel de Control - Profesor";
 $seccionActual = 'inicio';
@@ -44,12 +44,12 @@ include_once __DIR__ . "/comunes/nav.php";
   </div>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <h2 class="margen-abajo texto-oscuro">Resumen de Actividad</h2>
 <div class="cuadricula-estadisticas">
@@ -89,12 +89,12 @@ include_once __DIR__ . "/comunes/nav.php";
             <option value="">Seleccione un ciclo...</option>
             <?php 
             $ciclosVistos = [];
-            foreach ($listaModulos as $m) :
-                if (!in_array($m['idCiclo'], $ciclosVistos)) :
+            foreach ($listaModulos as $m) {
+                if (!in_array($m['idCiclo'], $ciclosVistos)) {
                     $ciclosVistos[] = $m['idCiclo'];
             ?>
                 <option value="<?= $m['idCiclo'] ?>"><?= $m['nombreCiclo'] ?></option>
-            <?php endif; endforeach; ?>
+            <?php } } ?>
           </select>
           <button type="submit" class="boton-primario ancho-total bg-secundario">Enviar a todos los alumnos</button>
         </form>
@@ -105,25 +105,25 @@ include_once __DIR__ . "/comunes/nav.php";
       <div class="titulo-tarjeta">
         <h3><i class="fas fa-bullhorn"></i> Últimos Avisos</h3>
       </div>
-      <?php if (!empty($listaAnuncios)) : ?>
+      <?php if (!empty($listaAnuncios)) { ?>
         <div>
             <?php 
             $c = 0;
-            foreach ($listaAnuncios as $anuncio) :
-                if ($c < 4) :
+            foreach ($listaAnuncios as $anuncio) {
+                if ($c < 4) {
             ?>
             <div class="anuncio-item">
                 <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
                 <p class="texto-pequeno sin-margen"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
             </div>
             <?php 
-                endif;
+                }
                 $c++;
-            endforeach; ?>
+            } ?>
         </div>
-      <?php else : ?>
+      <?php } else { ?>
         <p class="texto-atenuado">No hay anuncios activos.</p>
-      <?php endif; ?>
+      <?php } ?>
     </div>
   </div>
 
@@ -133,13 +133,13 @@ include_once __DIR__ . "/comunes/nav.php";
         <h3>Próximos Eventos</h3>
       </div>
       <div class="lista-eventos">
-        <?php if (empty($listaEventos)) : ?>
+        <?php if (empty($listaEventos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
-        <?php else : ?>
+        <?php } else { ?>
             <?php 
             $ce = 0;
-            foreach ($listaEventos as $ev) :
-                if ($ce < 4) :
+            foreach ($listaEventos as $ev) {
+                if ($ce < 4) {
                     $d = date('d', strtotime($ev['fechaEvento']));
                     $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
             ?>
@@ -151,10 +151,10 @@ include_once __DIR__ . "/comunes/nav.php";
               </div>
             </div>
             <?php 
-                endif;
+                }
                 $ce++;
-            endforeach; ?>
-        <?php endif; ?>
+            } ?>
+        <?php } ?>
       </div>
     </div>
 
@@ -172,3 +172,5 @@ include_once __DIR__ . "/comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/comunes/footer.php'; ?>
+
+

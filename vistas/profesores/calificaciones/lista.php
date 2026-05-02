@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -17,11 +17,11 @@ $idModulo = intval($_GET['idModulo'] ?? 0);
 // Filtros disponibles para el profesor
 $mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
 $mis_modulos = [];
-if ($idCiclo > 0) :
+if ($idCiclo > 0) {
     $mis_modulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
-else :
+} else {
     $mis_modulos = obtenerModulosDeProfesor($idProfesor);
-endif;
+}
 
 $calificaciones = listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo, $idModulo);
 
@@ -39,12 +39,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="agregar.php" class="boton-primario">Asignar Nota</a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <form method="GET" action="" class="disposicion-flexible alinear-fin separacion-grande">
@@ -52,22 +52,22 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Filtrar por Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Ciclos --</option>
-                <?php foreach ($mis_ciclos as $c) : ?>
+                <?php foreach ($mis_ciclos as $c) { ?>
                     <option value="<?= $c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
                         <?= $c['nombreCiclo'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
             <label>Filtrar por Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Módulos --</option>
-                <?php foreach ($mis_modulos as $m) : ?>
+                <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
         <div class="mb-15">
@@ -91,8 +91,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($calificaciones) : ?>
-                    <?php foreach ($calificaciones as $nota) : ?>
+                <?php if ($calificaciones) { ?>
+                    <?php foreach ($calificaciones as $nota) { ?>
                         <tr>
                             <td><?= $nota['nombreEstudiante'] ?></td>
                             <td class="texto-negrita"><?= $nota['nombreModulo'] ?></td>
@@ -106,15 +106,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                    <?php } ?>
+                <?php } else { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">No hay calificaciones que coincidan con los filtros.</td>
                     </tr>
-                <?php endif; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

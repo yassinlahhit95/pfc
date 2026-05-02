@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -26,12 +26,12 @@ $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
     <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/estudiantes/mensajes/insertar.php" method="POST" class="form-estandar">
@@ -41,11 +41,11 @@ $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
             <label>Destinatario (Profesor o Dirección)</label>
             <select name="idProfesor">
                 <option value="">-- Dirección (Administración) --</option>
-                <?php foreach ($listaDeProfesores as $profesor) : ?>
+                <?php foreach ($listaDeProfesores as $profesor) { ?>
                     <option value="<?= $profesor['idProfesor'] ?>">
                         <?= $profesor['nombreProfesor'] . " (" . $profesor['nombreModulo'] . ")" ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
             <small class="texto-atenuado">Selecciona a quién quieres dirigir tu consulta.</small>
         </div>
@@ -70,3 +70,5 @@ $listaDeProfesores = obtenerProfesoresConModulosParaEstudiante($idEstudiante);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

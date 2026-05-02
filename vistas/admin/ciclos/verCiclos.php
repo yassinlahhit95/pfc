@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Gestión de Ciclos - Super Admin";
 $seccion = 'ciclos';
@@ -23,13 +23,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     </a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -43,10 +43,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_ciclos)) : ?>
+                <?php if (empty($todos_los_ciclos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay ciclos configurados</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_ciclos as $ciclo) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
                     <tr>
                         <td><?= $ciclo['idCiclo'] ?></td>
                         <td><strong><?= $ciclo['nombreCiclo'] ?></strong></td>
@@ -65,11 +65,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

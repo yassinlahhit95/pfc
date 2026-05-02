@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -26,12 +26,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verPagosGeneral.php" class="boton-secundario">Volver a General</a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -45,21 +45,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($pagos)) : ?>
+                <?php if (empty($pagos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay registros de pagos para este estudiante</td></tr>
-                <?php else : ?>
-                    <?php foreach ($pagos as $p) : ?>
+                <?php } else { ?>
+                    <?php foreach ($pagos as $p) { ?>
                     <tr>
                         <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
                         <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
                         <td><?= number_format($p['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

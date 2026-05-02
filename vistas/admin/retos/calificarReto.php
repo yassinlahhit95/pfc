@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -27,12 +27,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verRetos.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="contenedor-tabla">
     <form action="../../../controladores/admin/retos/calificar.php" method="POST">
@@ -48,12 +48,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaEstudiantes)) : ?>
+                <?php if (empty($listaEstudiantes)) { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay estudiantes registrados</td>
                     </tr>
-                <?php else : ?>
-                    <?php foreach ($listaEstudiantes as $estudiante) : 
+                <?php } else { ?>
+                    <?php foreach ($listaEstudiantes as $estudiante) { 
                         $notaActual = obtenerCalificacion($estudiante['idEstudiante'], $id);
                     ?>
                     <tr>
@@ -70,8 +70,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                                    class="p-5 w-80 br-4 border-ddd">
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
         
@@ -82,3 +82,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

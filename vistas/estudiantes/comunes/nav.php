@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (empty($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -138,3 +138,5 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idEstudiante'] ?>" data-user-role="estudiante" class="d-none"></div>
         <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
+
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 
@@ -20,12 +20,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -41,10 +41,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_retos)) : ?>
+                <?php if (empty($todos_los_retos)) { ?>
                     <tr><td colspan="6" class="sin-datos">No hay retos configurados</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_retos as $reto) : 
+                <?php } else { ?>
+                    <?php foreach ($todos_los_retos as $reto) { 
                         $modulos = obtenerModulosDeReto($reto['idReto']);
                         $nombresModulos = array_column($modulos, 'nombreModulo');
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
@@ -69,11 +69,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

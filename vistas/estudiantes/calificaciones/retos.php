@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -24,12 +24,12 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
     <h1>Mis Calificaciones en Retos</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -43,12 +43,12 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($mis_notas_retos)) : ?>
+                <?php if (empty($mis_notas_retos)) { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">Aún no tienes calificaciones registradas en retos.</td>
                     </tr>
-                <?php else : ?>
-                    <?php foreach ($mis_notas_retos as $nota) : ?>
+                <?php } else { ?>
+                    <?php foreach ($mis_notas_retos as $nota) { ?>
                     <tr>
                         <td><strong><?= $nota['nombreReto'] ?></strong></td>
                         <td><?= $nota['fechaInicio'] ?></td>
@@ -57,8 +57,8 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
                             <?= $nota['nota'] ?>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
@@ -70,4 +70,6 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

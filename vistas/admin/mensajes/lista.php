@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -27,13 +27,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -49,10 +49,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDeMensajes)) : ?>
+                <?php if (empty($listaDeMensajes)) { ?>
                     <tr><td colspan="6" class="sin-datos">No hay mensajes registrados.</td></tr>
-                <?php else : ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) : ?>
+                <?php } else { ?>
+                    <?php foreach ($listaDeMensajes as $mensaje) { ?>
                     <tr>
                         <td><strong><?= $mensaje['nombreEstudiante'] ?></strong></td>
                         <td><?= $mensaje['nombreProfesor'] ?: 'Dirección (Admin)' ?></td>
@@ -62,11 +62,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
-                            <?php if ($mensaje['leido']) : ?>
+                            <?php if ($mensaje['leido']) { ?>
                                 <span class="estado-bolita activo-verde">Leído</span>
-                            <?php else : ?>
+                            <?php } else { ?>
                                 <span class="estado-bolita inactivo-rojo">Nuevo</span>
-                            <?php endif; ?>
+                            <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
@@ -82,11 +82,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

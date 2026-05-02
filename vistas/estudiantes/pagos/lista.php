@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -27,12 +27,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Consulta tu historial de pagos y estado financiero</p>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
@@ -71,12 +71,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaMisPagos)) : ?>
+                <?php if (empty($listaMisPagos)) { ?>
                     <tr>
                         <td colspan="4" class="sin-datos">No hay pagos registrados en su historial.</td>
                     </tr>
-                <?php else : ?>
-                    <?php foreach ($listaMisPagos as $pagoIndividual) : ?>
+                <?php } else { ?>
+                    <?php foreach ($listaMisPagos as $pagoIndividual) { ?>
                     <tr>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
@@ -85,16 +85,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td>
                             <?php 
-                                if ($pagoIndividual['tipoPago'] == 'unico') :
+                                if ($pagoIndividual['tipoPago'] == 'unico') {
                                     echo '<span class="texto-gris">N/A (PAGO FINALIZADO)</span>';
-                                else :
+                                } else {
                                     echo date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])); 
-                                endif;
+                                }
                             ?>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
@@ -105,4 +105,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

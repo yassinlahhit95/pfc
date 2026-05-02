@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Modificar Reclamación - Super Admin";
 $seccion = 'reclamaciones';
@@ -29,13 +29,13 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
     <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form method="POST" action="../../../controladores/admin/mensajes/actualizar.php">
@@ -45,9 +45,9 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
             <div class="campo-formulario">
                 <label>Asunto *</label>
                 <input type="text" name="asuntoReclamacion" value="<?= $reclamacion['asuntoReclamacion'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['asuntoReclamacion'])) : ?>
+                <?php if (isset($lista_de_errores['asuntoReclamacion'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['asuntoReclamacion'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
@@ -62,9 +62,9 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
             <div class="campo-formulario campo-ancho-total">
                 <label>Descripción *</label>
                 <textarea name="descripcionReclamacion" rows="6"><?= $reclamacion['descripcionReclamacion'] ?? '' ?></textarea>
-                <?php if (isset($lista_de_errores['descripcionReclamacion'])) : ?>
+                <?php if (isset($lista_de_errores['descripcionReclamacion'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['descripcionReclamacion'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -77,3 +77,5 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

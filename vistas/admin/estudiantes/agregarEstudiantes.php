@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
@@ -119,4 +119,6 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

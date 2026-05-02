@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -28,12 +28,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Ciclo: <?= $resumenFinal['nombreCiclo'] ?></p>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -48,10 +48,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($resumenFinal['detalles_modulos'])) : ?>
+                <?php if (empty($resumenFinal['detalles_modulos'])) { ?>
                     <tr><td colspan="5" class="sin-datos">No hay módulos registrados en su ciclo.</td></tr>
-                <?php else : ?>
-                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) : 
+                <?php } else { ?>
+                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { 
                         $clase = "texto-rojo";
                         if ($fila['estado'] == "Aprobado") { $clase = "texto-verde"; }
                         if ($fila['estado'] == "Pendiente") { $clase = "texto-gris"; }
@@ -63,8 +63,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td class="texto-negrita"><?= $fila['nota_final'] ?></td>
                         <td class="<?= $clase ?> texto-negrita"><?= $fila['estado'] ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
@@ -92,3 +92,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -18,16 +18,16 @@ $listaDeProfesores = [];
 $listaDeEstudiantes = [];
 $listaDeCiclos = listarTodosLosCiclos();
 
-if ($tipoDeDestinatario == 'profesor') :
+if ($tipoDeDestinatario == 'profesor') {
     $listaDeProfesores = listarProfesores();
-else :
+} else {
     // Si queremos escribir a estudiantes, podemos filtrar por ciclo
-    if (!empty($idCicloSeleccionado)) :
+    if (!empty($idCicloSeleccionado)) {
         $listaDeEstudiantes = listarEstudiantesPorCiclo($idCicloSeleccionado);
-    else :
+    } else {
         $listaDeEstudiantes = listarEstudiantes();
-    endif;
-endif;
+    }
+}
 
 $titulo_pagina = "Redactar Mensaje Oficial - Super Admin";
 $seccion = 'reclamaciones';
@@ -55,22 +55,22 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <?php if ($tipoDeDestinatario == 'estudiante') : ?>
+        <?php if ($tipoDeDestinatario == 'estudiante') { ?>
         <form method="GET" class="flexible-rellenar">
             <input type="hidden" name="tipoDestinatario" value="estudiante">
             <div class="campo-formulario">
                 <label>2. Filtrar Estudiantes por Ciclo (Opcional):</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los ciclos y estudiantes --</option>
-                    <?php foreach ($listaDeCiclos as $cicloItem) : ?>
+                    <?php foreach ($listaDeCiclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= ($idCicloSeleccionado == $cicloItem['idCiclo'] ? 'selected' : '') ?>>
                             <?= $cicloItem['nombreCiclo'] ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
             </div>
         </form>
-        <?php endif; ?>
+        <?php } ?>
     </div>
 
     <hr class="margen-abajo">
@@ -84,19 +84,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="<?= ($tipoDeDestinatario == 'profesor' ? 'idProfesor' : 'idEstudiante') ?>">
                     <option value="">-- Seleccionar Nombre --</option>
 
-                    <?php if ($tipoDeDestinatario == 'profesor') : ?>
-                        <?php foreach ($listaDeProfesores as $profesorItem) : ?>
+                    <?php if ($tipoDeDestinatario == 'profesor') { ?>
+                        <?php foreach ($listaDeProfesores as $profesorItem) { ?>
                             <option value="<?= $profesorItem['idProfesor'] ?>">
                                 <?= $profesorItem['nombreProfesor'] ?>
                             </option>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <?php foreach ($listaDeEstudiantes as $estudianteItem) : ?>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
                             <option value="<?= $estudianteItem['idEstudiante'] ?>">
                                 <?= $estudianteItem['nombreEstudiante'] ?> (<?= $estudianteItem['nombreCiclo'] ?>)
                             </option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                        <?php } ?>
+                    <?php } ?>
                 </select>
             </div>
 
@@ -120,3 +120,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

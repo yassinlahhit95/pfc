@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 // Validación de sesión simple
@@ -36,13 +36,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -58,12 +58,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDeModulosActuales)) : ?>
+                <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
                         <td colspan="6" class="sin-datos">No hay módulos registrados en el sistema.</td>
                     </tr>
-                <?php else : ?>
-                    <?php foreach ($listaDeModulosActuales as $moduloIndividual) : ?>
+                <?php } else { ?>
+                    <?php foreach ($listaDeModulosActuales as $moduloIndividual) { ?>
                     <?php
                         // Lógica simple para obtener los nombres de los profesores de este módulo
                         $conexionTemporal = obtenerConexion();
@@ -86,21 +86,21 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td><?= $moduloIndividual['idModulo'] ?></td>
                         <td><strong><?= strtoupper($moduloIndividual['nombreModulo']) ?></strong></td>
                         <td>
-                            <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) : ?>
+                            <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
                                 <strong>[<?= $moduloIndividual['abreviaturaCiclo'] ?>]</strong> 
-                            <?php endif; ?>
+                            <?php } ?>
                             <?= strtoupper($moduloIndividual['nombreCiclo']) ?>
                         </td>
                         <td>
-                            <?php if (empty($nombresProfesores)) : ?>
+                            <?php if (empty($nombresProfesores)) { ?>
                                 <span class="texto-rojo texto-pequeno">
                                     <i class="fas fa-exclamation-triangle"></i> SIN PROFESOR
                                 </span>
-                            <?php else : ?>
+                            <?php } else { ?>
                                 <div class="texto-pequeno">
                                     <?= implode(", ", $nombresProfesores) ?>
                                 </div>
-                            <?php endif; ?>
+                            <?php } ?>
                         </td>
                         <td><?= $moduloIndividual['horasMaximas'] ?> H</td>
                         <td>
@@ -122,11 +122,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

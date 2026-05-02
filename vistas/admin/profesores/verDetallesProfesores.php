@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Detalles Profesor - Super Admin";
 $seccion = 'profesores';
@@ -133,3 +133,5 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

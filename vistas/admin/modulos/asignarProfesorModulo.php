@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Asignar Profesor a Módulo - Super Admin";
 $seccion = 'modulos';
@@ -32,9 +32,9 @@ unset($_SESSION['error']);
     </a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -48,11 +48,11 @@ unset($_SESSION['error']);
             <label>Profesor Asignado:</label>
             <select name="idProfesor">
                 <option value="">-- Sin Profesor Asignado --</option>
-                <?php foreach ($todos_los_profesores as $prof) : ?>
+                <?php foreach ($todos_los_profesores as $prof) { ?>
                     <option value="<?= $prof['idProfesor'] ?>" <?= ($prof['idProfesor'] == $idProfesorActual ? 'selected' : '') ?>>    
                         <?= $prof['nombreProfesor'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
             <small class="texto-atenuado">Un módulo solo puede tener un profesor responsable.</small>
         </div>
@@ -67,3 +67,5 @@ unset($_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

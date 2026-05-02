@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
@@ -22,12 +22,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Próximos Eventos del Centro</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -41,10 +41,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($eventos)) : ?>
+                <?php if (empty($eventos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay eventos programados.</td></tr>
-                <?php else : ?>
-                    <?php foreach ($eventos as $ev) : ?>
+                <?php } else { ?>
+                    <?php foreach ($eventos as $ev) { ?>
                     <tr>
                         <td class="texto-negrita"><?= date('d/m/Y', strtotime($ev['fechaEvento'])) ?></td>
                         <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
@@ -54,11 +54,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

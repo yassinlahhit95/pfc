@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -29,17 +29,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>MI TRABAJO FIN DE GRADO (TFG)</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error">
         <i class="fas fa-exclamation-circle"></i> <?= $error ?>
     </div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito">
         <i class="fas fa-check-circle"></i> <?= $exito ?>
     </div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -49,15 +49,15 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
-            <?php if (!empty($tfg['archivoTFG'])) : ?>
+            <?php if (!empty($tfg['archivoTFG'])) { ?>
                 <span class="estado-bolita activo-verde">ENTREGADO</span>
-            <?php else : ?>
+            <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">NO ENTREGADO</span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
-    <?php if (!empty($tfg['archivoTFG'])) : ?>
+    <?php if (!empty($tfg['archivoTFG'])) { ?>
         <div class="fila-detalle">
             <div class="etiqueta-detalle">Archivo subido</div>
             <div class="valor-detalle">
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </div>
             </div>
         </div>
-    <?php endif; ?>
+    <?php } ?>
 
     <!-- INTEGRACIÓN DEL FORMULARIO DE SUBIDA -->
     <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data">
@@ -104,3 +104,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

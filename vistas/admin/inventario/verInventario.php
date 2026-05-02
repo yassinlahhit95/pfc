@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Inventario del Centro - Super Admin";
 $seccion = 'inventario';
@@ -20,13 +20,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
     <h1>Gestión de Inventario</h1>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -37,17 +37,17 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <div class="campo-formulario">
                 <label>Nombre del Artículo *</label>
                 <input type="text" name="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? '' ?>" placeholder="Ej: Portátil HP ProBook">
-                <?php if (isset($lista_de_errores['nombreArticulo'])) : ?>
+                <?php if (isset($lista_de_errores['nombreArticulo'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['nombreArticulo'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Número de Serie *</label>
                 <input type="text" name="numeroSerie" value="<?= $datos['numeroSerie'] ?? '' ?>" placeholder="Ej: SN-12345678">
-                <?php if (isset($lista_de_errores['numeroSerie'])) : ?>
+                <?php if (isset($lista_de_errores['numeroSerie'])) { ?>
                     <p class="error-campo"><?= $lista_de_errores['numeroSerie'] ?></p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -71,10 +71,10 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_articulos)) : ?>
+                <?php if (empty($todos_los_articulos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay artículos en el inventario</td></tr>
-                <?php else : ?>
-                    <?php foreach ($todos_los_articulos as $art) : ?>
+                <?php } else { ?>
+                    <?php foreach ($todos_los_articulos as $art) { ?>
                     <tr>
                         <td><strong><?= $art['nombreArticulo'] ?></strong></td>
                         <td><?= $art['numeroSerie'] ?></td>
@@ -101,11 +101,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

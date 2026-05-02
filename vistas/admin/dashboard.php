@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 // Control de acceso para administradores
@@ -97,9 +97,9 @@ include __DIR__ . '/comunes/nav.php';
       <div class="titulo-tarjeta">
         <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
       </div>
-      <?php if ($listaAnunciosSistema) : ?>
+      <?php if ($listaAnunciosSistema) { ?>
         <div class="lista-anuncios-dashboard">
-            <?php foreach ($listaAnunciosSistema as $anuncioIndividual) : ?>
+            <?php foreach ($listaAnunciosSistema as $anuncioIndividual) { ?>
             <div class="anuncio-item">
                 <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
                     <strong class="anuncio-titulo"><?= strtoupper($anuncioIndividual['titulo']) ?></strong>
@@ -107,26 +107,26 @@ include __DIR__ . '/comunes/nav.php';
                 </div>
                 <p class="texto-pequeno sin-margen mt-5"><?= $anuncioIndividual['mensaje'] ?></p>
             </div>
-            <?php endforeach; ?>
+            <?php } ?>
         </div>
 
-        <?php if ($totalPaginasAnuncios > 1) : ?>
+        <?php if ($totalPaginasAnuncios > 1) { ?>
         <div class="paginacion">
-            <?php if ($numeroPaginaActual > 1) : ?>
+            <?php if ($numeroPaginaActual > 1) { ?>
                 <a href="dashboard.php?p_anuncios=<?= $numeroPaginaActual - 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-left"></i></a>
-            <?php endif; ?>
+            <?php } ?>
             
             <span class="boton-paginacion activo"><?= $numeroPaginaActual ?> / <?= $totalPaginasAnuncios ?></span>
 
-            <?php if ($numeroPaginaActual < $totalPaginasAnuncios) : ?>
+            <?php if ($numeroPaginaActual < $totalPaginasAnuncios) { ?>
                 <a href="dashboard.php?p_anuncios=<?= $numeroPaginaActual + 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-right"></i></a>
-            <?php endif; ?>
+            <?php } ?>
         </div>
-        <?php endif; ?>
+        <?php } ?>
 
-      <?php else : ?>
+      <?php } else { ?>
         <p class="texto-atenuado">No hay anuncios activos actualmente.</p>
-      <?php endif; ?>
+      <?php } ?>
     </div>
   </div>
 
@@ -136,13 +136,13 @@ include __DIR__ . '/comunes/nav.php';
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
-        <?php if (empty($listaEventosProximos)) : ?>
+        <?php if (empty($listaEventosProximos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
-        <?php else : ?>
+        <?php } else { ?>
             <?php 
             $contadorEventosMostrados = 0;
-            foreach ($listaEventosProximos as $eventoIndividual) : 
-                if ($contadorEventosMostrados < 4) :
+            foreach ($listaEventosProximos as $eventoIndividual) { 
+                if ($contadorEventosMostrados < 4) {
                     $diaEvento = date('d', strtotime($eventoIndividual['fechaEvento']));
                     $mesEvento = strtoupper(date('M', strtotime($eventoIndividual['fechaEvento'])));
             ?>
@@ -155,9 +155,9 @@ include __DIR__ . '/comunes/nav.php';
             </div>
             <?php 
                     $contadorEventosMostrados++;
-                endif;
-            endforeach; ?>
-        <?php endif; ?>
+                }
+            } ?>
+        <?php } ?>
       </div>
       <div class="margen-arriba">
           <a href="eventos/gestionEventos.php" class="boton-secundario ancho-total">Gestionar Calendario</a>
@@ -167,3 +167,7 @@ include __DIR__ . '/comunes/nav.php';
 </div>
 
 <?php include __DIR__ . '/comunes/footer.php'; ?>
+
+
+
+

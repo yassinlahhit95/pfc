@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -22,12 +22,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Próximos Eventos y Fechas Clave</h1>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="alerta-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="alerta-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -42,10 +42,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($eventos)) : ?>
+                <?php if (empty($eventos)) { ?>
                     <tr><td colspan="5" class="sin-datos">No hay eventos programados próximamente.</td></tr>
-                <?php else : ?>
-                    <?php foreach ($eventos as $ev) : ?>
+                <?php } else { ?>
+                    <?php foreach ($eventos as $ev) { ?>
                     <tr>
                         <td class="texto-negrita"><?= date('d/m/Y', strtotime($ev['fechaEvento'])) ?></td>
                         <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
@@ -53,12 +53,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><p class="texto-pequeno"><?= $ev['descripcionEvento'] ?></p></td>
                         <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

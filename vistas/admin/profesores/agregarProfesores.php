@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Agregar Profesor - Super Admin";
 $seccion = 'profesores';
@@ -199,4 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -37,12 +37,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito) : ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     
@@ -53,11 +53,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Filtrar Estudiantes por Ciclo:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos mis alumnos --</option>
-                    <?php foreach ($listaDeCiclos as $ciclo) : ?>
+                    <?php foreach ($listaDeCiclos as $ciclo) { ?>
                         <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : '') ?>>
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
             </div>
             <div>
@@ -77,11 +77,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <option value="">-- Seleccionar Destinatario --</option>
                 <option value="1">DirecciÃ³n (AdministraciÃ³n)</option>
                 <optgroup label="Estudiantes">
-                    <?php foreach ($listaDeEstudiantes as $estudiante) : ?>
+                    <?php foreach ($listaDeEstudiantes as $estudiante) { ?>
                         <option value="<?= $estudiante['idEstudiante'] ?>">
                             <?= $estudiante['nombreEstudiante'] ?> (<?= $estudiante['nombreCiclo'] ?>)
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </optgroup>
             </select>
         </div>
@@ -106,3 +106,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

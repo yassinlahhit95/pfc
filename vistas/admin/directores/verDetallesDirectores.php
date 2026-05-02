@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Detalles Director - Super Admin";
 $seccion = 'directores';
@@ -9,11 +9,11 @@ require_once __DIR__ . "/../../../modelos/directores.php";
 $id = $_GET['id'] ?? 0;
 $director = obtenerDirectorPorId($id);
 
-if (!$director) : ?>
+if (!$director) { ?>
     <div class='mensaje-error'>Director no encontrado.</div>
     <?php include '../comunes/footer.php';
     exit;
-endif;
+}
 ?>
 
 <div class="encabezado-pagina">
@@ -41,11 +41,11 @@ endif;
     <div class="fila-detalle">
         <div class="etiqueta-detalle">DNI</div>
         <div class="valor-detalle">
-            <?php if (!empty($director['dniDirector'])) : ?>
+            <?php if (!empty($director['dniDirector'])) { ?>
                 <?= $director['dniDirector'] ?>
-            <?php else : ?>
+            <?php } else { ?>
                 <span class="texto-atenuado">No especificado</span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
@@ -57,11 +57,11 @@ endif;
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Fecha de Nacimiento</div>
         <div class="valor-detalle">
-            <?php if (isset($director['fechaNacimientoDirector']) && $director['fechaNacimientoDirector'] != '0000-00-00') : ?>
+            <?php if (isset($director['fechaNacimientoDirector']) && $director['fechaNacimientoDirector'] != '0000-00-00') { ?>
                 <?= date('d/m/Y', strtotime($director['fechaNacimientoDirector'])) ?>
-            <?php else : ?>
+            <?php } else { ?>
                 <span class="texto-atenuado">No especificado</span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
 
@@ -102,3 +102,5 @@ endif;
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

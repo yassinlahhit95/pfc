@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "Asignar Módulos a Profesor - Super Admin";
 $seccion = 'profesores';
@@ -75,4 +75,6 @@ foreach ($todos_los_modulos as $m) {
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

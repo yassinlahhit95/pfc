@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -35,13 +35,13 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($mensajeExito) : ?>
+<?php if ($mensajeExito) { ?>
     <div class="mensaje-exito"><?= $mensajeExito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($mensajeError) : ?>
+<?php if ($mensajeError) { ?>
     <div class="mensaje-error"><?= $mensajeError ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
     <form method="GET" action="verPagosGeneral.php">
@@ -50,11 +50,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>FILTRAR POR CICLO FORMATIVO:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
-                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) : ?>
+                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $idDelCicloParaFiltrar == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
                             <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
             </div>
             <div>
@@ -79,12 +79,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDePagosAMostrar)) : ?>
+                <?php if (empty($listaDePagosAMostrar)) { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">No hay registros de pagos que coincidan con la búsqueda.</td>
                     </tr>
-                <?php else : ?>
-                    <?php foreach ($listaDePagosAMostrar as $pagoIndividual) : ?>
+                <?php } else { ?>
+                    <?php foreach ($listaDePagosAMostrar as $pagoIndividual) { ?>
                     <tr>
                         <td><strong><?= strtoupper($pagoIndividual['nombreEstudiante']) ?></strong></td>
                         <td><?= strtoupper($pagoIndividual['nombreCiclo']) ?></td>
@@ -94,11 +94,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
-                            <?php if ($pagoIndividual['tipoPago'] == 'unico') : ?>
+                            <?php if ($pagoIndividual['tipoPago'] == 'unico') { ?>
                                 <span class="texto-gris">N/A (PAGO ÚNICO)</span>
-                            <?php else : ?>
+                            <?php } else { ?>
                                 <?= date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])) ?>
-                            <?php endif; ?>
+                            <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
@@ -119,11 +119,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

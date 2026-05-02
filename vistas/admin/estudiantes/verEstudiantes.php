@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 // Validación de sesión simple
@@ -36,13 +36,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($error) : ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <?php 
 $listaDeCiclosParaFiltro = listarTodosLosCiclos(); 
@@ -52,11 +52,11 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
         <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
         <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaEstudiantes')">
             <option value="">-- Todos los Ciclos --</option>
-            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) : ?>
+            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                 <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
                     <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                 </option>
-            <?php endforeach; ?>
+            <?php } ?>
         </select>
     </div>
 </div>
@@ -74,12 +74,12 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaDeEstudiantesActuales)) : ?>
+                <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
                         <td colspan="5" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
                     </tr>
-                <?php else : ?>
-                    <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) : ?>
+                <?php } else { ?>
+                    <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
                     <tr>
                         <td><?= $estudianteIndividual['idEstudiante'] ?></td>
                         <td><strong><?= strtoupper($estudianteIndividual['nombreEstudiante']) ?></strong></td>
@@ -104,11 +104,13 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

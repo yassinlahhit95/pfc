@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -23,19 +23,19 @@ $id_reto_elegido = intval($_GET['idReto'] ?? 0);
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $modulos_filtrados = [];
-if ($id_ciclo_elegido) :
+if ($id_ciclo_elegido) {
     $modulos_filtrados = obtenerModulosDeProfesorPorCiclo($idProfesor, $id_ciclo_elegido);
-endif;
+}
 
 $retos_filtrados = [];
-if ($id_modulo_elegido) :
+if ($id_modulo_elegido) {
     $retos_filtrados = listarRetosFiltrados($id_modulo_elegido);
-endif;
+}
 
 $estudiantes_lista = [];
-if ($id_reto_elegido) :
+if ($id_reto_elegido) {
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
-endif;
+}
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -52,11 +52,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <label>1. Seleccione Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($todos_los_ciclos as $cicItem) : ?>
+                <?php foreach ($todos_los_ciclos as $cicItem) { ?>
                     <option value="<?= $cicItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicItem['idCiclo'] ? 'selected' : '' ?>>
                         <?= $cicItem['nombreCiclo'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
 
@@ -64,11 +64,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <label>2. Seleccione Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($id_ciclo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($modulos_filtrados as $modItem) : ?>
+                <?php foreach ($modulos_filtrados as $modItem) { ?>
                     <option value="<?= $modItem['idModulo'] ?>" <?= $id_modulo_elegido == $modItem['idModulo'] ? 'selected' : '' ?>>
                         <?= $modItem['nombreModulo'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
 
@@ -76,24 +76,24 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <label>3. Seleccione Reto:</label>
             <select name="idReto" onchange="this.form.submit()" <?= empty($id_modulo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($retos_filtrados as $retoItem) : ?>
+                <?php foreach ($retos_filtrados as $retoItem) { ?>
                     <option value="<?= $retoItem['idReto'] ?>" <?= $id_reto_elegido == $retoItem['idReto'] ? 'selected' : '' ?>>
                         <?= $retoItem['nombreReto'] ?>
                     </option>
-                <?php endforeach; ?>
+                <?php } ?>
             </select>
         </div>
     </form>
 </div>
 
-<?php if ($exito) : ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error) : ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
-<?php if ($id_reto_elegido) : ?>
+<?php if ($id_reto_elegido) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <form action="../../../controladores/profesores/calificaciones/calificarRetos.php" method="POST">
             <input type="hidden" name="idReto" value="<?= $id_reto_elegido ?>">
@@ -109,10 +109,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($estudiantes_lista)) : ?>
+                        <?php if (empty($estudiantes_lista)) { ?>
                             <tr><td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
-                        <?php else : ?>
-                            <?php foreach ($estudiantes_lista as $estudianteItem) : 
+                        <?php } else { ?>
+                            <?php foreach ($estudiantes_lista as $estudianteItem) { 
                                 $idEstudianteFila = $estudianteItem['idEstudiante'];
                                 $notaRetoActual = obtenerCalificacion($idEstudianteFila, $id_reto_elegido);
                             ?>
@@ -125,21 +125,23 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                     <input type="text" name="notas[]" value="<?= $notaRetoActual ?>" class="ancho-ajustable-nota">
                                 </td>
                             </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                            <?php } ?>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
             
-            <?php if (!empty($estudiantes_lista)) : ?>
+            <?php if (!empty($estudiantes_lista)) { ?>
                 <div class="margen-arriba">
                     <button type="submit" name="guardarNotasReto" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar Notas del Reto
                     </button>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
         </form>
     </div>
-<?php endif; ?>
+<?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
+
