@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/admin/retos/actualizar.php">
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Reto *</label>
                 <input type="text" name="nombreReto" value="<?= $reto['nombreReto'] ?>">
@@ -89,7 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-estandar-botones">
             <label><strong>Vincular Módulos *</strong></label>
             <div class="tarjeta-gris-suave scroll-vertical mt-5">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
@@ -105,7 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-estandar-botones">
             <button type="submit" name="actualizarReto" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>

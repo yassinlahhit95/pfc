@@ -36,7 +36,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
         <input type="hidden" name="idAula" value="<?= $id_aula ?>">
         <div class="campo-formulario">
             <label>Nombre del Aula</label>
-            <input type="text" name="nombreAula" value="<?= $aula['nombreAula'] ?>" required>
+            <input type="text" name="nombreAula" value="<?= $aula['nombreAula'] ?>">
             <?php if (isset($lista_de_errores['nombreAula'])) { ?>
                 <strong class="error-campo"><?= $lista_de_errores['nombreAula'] ?></strong>
             <?php } ?>
@@ -45,7 +45,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <button type="submit" name="actualizarAula" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

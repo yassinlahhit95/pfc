@@ -57,7 +57,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
             <button type="submit" name="actualizarAnuncio" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

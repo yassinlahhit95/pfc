@@ -1127,3 +1127,19 @@ body {
         align-items: stretch;
     }
 }
+
+
+/* ============================================
+   ESTILOS BOTONES FORMULARIO COLUMNA
+   ============================================ */
+.form-estandar-botones {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.form-estandar-botones button {
+    flex: 1;
+    justify-content: center;
+}

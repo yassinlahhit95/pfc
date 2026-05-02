@@ -152,4 +152,3 @@ function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoD
     mysqli_close($con);
     return $resultado;
 }
-?>

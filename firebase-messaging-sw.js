@@ -16,10 +16,12 @@ messaging.onBackgroundMessage((payload) => {
   console.log('[SW] Mensaje recibido en segundo plano:', payload);
   
   const notificationTitle = payload.data.title || payload.notification.title;
+  const iconPath = new URL('./public/img/logoSuperAdmin.png', self.location.href).pathname;
+
   const notificationOptions = {
     body: payload.data.body || payload.notification.body,
-    icon: '/pfc/public/img/logoSuperAdmin.png',
-    badge: '/pfc/public/img/logoSuperAdmin.png'
+    icon: iconPath,
+    badge: iconPath
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);

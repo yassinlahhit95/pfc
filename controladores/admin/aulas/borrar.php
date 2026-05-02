@@ -14,4 +14,3 @@ if (isset($_POST['idAula'])) {
 
 header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
-?>

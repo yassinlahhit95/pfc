@@ -15,4 +15,3 @@ if (isset($_GET['id'])) {
 
 header("Location: ../../../vistas/profesores/pfc/lista.php");
 exit;
-?>

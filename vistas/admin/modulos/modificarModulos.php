@@ -44,7 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/modulos/actualizar.php" method="POST">
         <input type="hidden" name="idModulo" value="<?= $id_del_modulo ?>">
 
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Módulo *</label>
                 <input type="text" name="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-estandar-botones">
             <button type="submit" name="guardarModulo" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>

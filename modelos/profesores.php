@@ -201,4 +201,3 @@ function obtenerTokenFCMProfesor($id) {
     mysqli_close($con);
     return $token;
 }
-?>

@@ -152,4 +152,3 @@ function enviarEmailNotasClase($idDelCicloElegido) {
     
     return $contadorCorreosEnviados;
 }
-?>

@@ -115,4 +115,3 @@ function listarAnunciosPaginados($paginaActual, $limitePorPagina) {
     mysqli_close($con);
     return $listaAnuncios;
 }
-?>

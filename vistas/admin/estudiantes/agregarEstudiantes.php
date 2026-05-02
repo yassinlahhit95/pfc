@@ -39,7 +39,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/estudiantes/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreEstudiante" value="<?php if(isset($datos['nombreEstudiante'])) { echo $datos['nombreEstudiante']; } ?>">
@@ -120,9 +120,9 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-estandar-botones">
             <button type="submit" name="guardarEstudiante" class="boton-primario">Registrar Estudiante</button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

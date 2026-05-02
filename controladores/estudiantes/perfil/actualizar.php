@@ -59,4 +59,3 @@ if (isset($_POST['actualizarPerfil'])) {
 
 header("Location: ../../../vistas/estudiantes/perfil/ver.php");
 exit;
-?>

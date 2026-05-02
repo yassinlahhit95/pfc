@@ -17,4 +17,3 @@ if (isset($_POST['marcarVisto'])) {
 
 header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
 exit;
-?>

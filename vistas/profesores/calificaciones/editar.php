@@ -98,7 +98,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="margen-arriba disposicion-flexible alinear-centro separacion-media">
             <button type="submit" name="actualizarNota" class="boton-primario">Actualizar Calificacin</button>
-            <button type="reset" class="boton-secundario px-25">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
             <label class="etiqueta-notificacion">

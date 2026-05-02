@@ -131,4 +131,3 @@ function obtenerTokenFCMDirector($idDirector) {
     mysqli_close($con);
     return $token;
 }
-?>

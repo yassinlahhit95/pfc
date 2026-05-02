@@ -33,4 +33,3 @@ if (isset($_POST['insertarReto'])) {
 
 header("Location: ../../../vistas/profesores/retos/lista.php");
 exit;
-?>

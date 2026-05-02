@@ -79,6 +79,8 @@ function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExclui
     $datosModulo = mysqli_fetch_assoc($resultado);
     $limiteMaximo = (int)($datosModulo['horasMaximas'] ?? 0);
 
+    $idRetoAExcluir = (int)$idRetoAExcluir;
+
     // Sumamos las horas de los retos ya existentes (excluyendo el que estamos editando si aplica)
     $sql = "SELECT SUM(r.horasReto) as total 
                 FROM retos r 
@@ -171,6 +173,15 @@ function calificarReto($idEstudiante, $idReto, $notaObtenida) {
                 VALUES ($idEstudiante, $idReto, $notaObtenida)";
     }
     
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
+}
+
+// Eliminar la nota de un estudiante en un reto
+function eliminarCalificacionReto($idEstudiante, $idReto) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM calificaciones_retos WHERE idEstudiante = $idEstudiante AND idReto = $idReto";
     $resultado = mysqli_query($con, $sql);
     mysqli_close($con);
     return $resultado;
@@ -274,4 +285,3 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     mysqli_close($con);
     return $promedio;
 }
-?>

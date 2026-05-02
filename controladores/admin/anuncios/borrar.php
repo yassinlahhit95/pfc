@@ -14,4 +14,3 @@ if (isset($_POST['idAnuncio'])) {
 
 header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
 exit;
-?>

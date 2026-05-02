@@ -55,4 +55,3 @@ if (isset($_POST['insertarReclamacion']) || isset($_POST['enviarMensaje'])) {
 
 header("Location: ../../../vistas/profesores/mensajes/lista.php");
 exit;
-?>

@@ -150,4 +150,3 @@ function comprobarNombreEnOtroCiclo($nombreCiclo, $idCicloActual) {
     
     return ($totalCoincidencias > 0);
 }
-?>

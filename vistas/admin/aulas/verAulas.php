@@ -44,7 +44,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
             <button type="submit" name="guardarAula" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

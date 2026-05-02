@@ -31,7 +31,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">
         <input type="hidden" name="idProfesor" value="<?= $id_profesor ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" value="<?= $profesor['nombreProfesor'] ?>">
@@ -107,7 +107,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-estandar-botones">
             <button type="submit" name="actualizarProfesor" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>

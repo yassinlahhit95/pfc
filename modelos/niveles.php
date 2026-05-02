@@ -23,4 +23,3 @@ function borrarNivelPorNombre($nombreNivel) {
     mysqli_close($con);
     return $resultado;
 }
-?>

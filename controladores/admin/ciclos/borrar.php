@@ -14,4 +14,3 @@ if (isset($_POST['idCiclo'])) {
 
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
-?>

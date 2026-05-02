@@ -33,4 +33,3 @@ if (isset($_POST['actualizarTFG'])) {
 
 header("Location: ../../../vistas/profesores/pfc/lista.php");
 exit;
-?>

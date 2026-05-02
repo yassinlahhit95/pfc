@@ -62,6 +62,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="tarjeta-blanca margen-arriba">
         <form action="../../../controladores/admin/academico/calificarModulos.php" method="POST">
             <input type="hidden" name="idModulo" value="<?= $idModuloElegido ?>">
+            <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
@@ -100,11 +101,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
             
             <?php if (!empty($listaEstudiantes)) { ?>
-                <div class="margen-arriba disposicion-flexible alinear-centro">
+                <div class="form-estandar-botones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> GUARDAR TODAS LAS NOTAS
                     </button>
-                    <label class="etiqueta-notificacion">
+                    <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesModulos.php';">
+                        <i class="fas fa-eraser"></i> Limpiar
+                    </button>
+                    <label class="etiqueta-notificacion" style="align-self: center;">
                         <input type="checkbox" name="notificarEstudiantes" value="1"> 
                         <i class="fas fa-envelope"></i> NOTIFICAR POR EMAIL
                     </label>

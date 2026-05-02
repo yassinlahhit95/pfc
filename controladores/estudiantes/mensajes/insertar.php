@@ -54,4 +54,3 @@ if (isset($_POST['enviarMensaje'])) {
 
 header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
 exit;
-?>

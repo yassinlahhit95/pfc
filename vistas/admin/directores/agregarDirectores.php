@@ -17,7 +17,7 @@ unset($_SESSION['errores'], $_SESSION['datos_director']);
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/directores/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreDirector" value="<?= $datos['nombreDirector'] ?? '' ?>">
@@ -88,11 +88,11 @@ unset($_SESSION['errores'], $_SESSION['datos_director']);
             </div>
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-estandar-botones">
             <button type="submit" name="guardarDirector" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Director
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

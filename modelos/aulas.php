@@ -52,4 +52,3 @@ function obtenerAulaPorId($idAula) {
     mysqli_close($con);
     return $datosAula;
 }
-?>

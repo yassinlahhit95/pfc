@@ -33,7 +33,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/ciclos/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Ciclo *</label>
                 <input type="text" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= $datos['nombreCiclo'] ?? '' ?>">
@@ -99,11 +99,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-estandar-botones">
             <button type="submit" name="guardarCiclo" class="boton-primario">
                 <i class="fas fa-save"></i> Crear Ciclo Formativo
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

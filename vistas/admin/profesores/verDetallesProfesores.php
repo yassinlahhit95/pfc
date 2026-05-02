@@ -9,8 +9,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$id = 0;
-$id = ($_GET['idProfesor'] ?? 0); else $id = ($_GET['id'] ?? 0);
+$id = $_GET['idProfesor'] ?? $_GET['id'] ?? 0;
 
 $profesor = obtenerProfesorPorId($id);
 

@@ -24,4 +24,3 @@ if (isset($_POST['guardarNotas'])) {
 
 header("Location: ../../../vistas/admin/retos/verRetos.php");
 exit;
-?>

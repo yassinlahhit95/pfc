@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/retos/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Reto *</label>
                 <input type="text" name="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
@@ -80,9 +80,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-estandar-botones">
             <button type="submit" name="guardarReto" class="boton-primario">
                 <i class="fas fa-save"></i> Crear Reto
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

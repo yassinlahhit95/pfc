@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/estudiantes/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?= $id_del_estudiante ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
@@ -121,11 +121,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="fechaAltaEstudiante" value="<?= $estudiante['fechaAltaEstudiante'] ?>">
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-estandar-botones">
             <button type="submit" name="actualizarEstudiante" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="marcarLeido" class="boton-secundario">
                 <i class="fas fa-check"></i> Solo marcar como Leído
             </button>
-            <button type="reset" class="boton-secundario px-25">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

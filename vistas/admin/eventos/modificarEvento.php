@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="margen-arriba-grande disposicion-flexible" style="justify-content: flex-end; gap: 15px;">
-            <button type="reset" class="boton-secundario px-25">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
             <button type="submit" name="actualizarEvento" class="boton-primario px-30">

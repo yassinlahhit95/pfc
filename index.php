@@ -24,8 +24,8 @@ unset($_SESSION['error']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema de Gestión Escolar</title>
-    <link rel="stylesheet" href="/pfc/public/css/admin.css">
-        <link rel="icon" href="/pfc/public/imagenes/favicon.ico">
+    <link rel="stylesheet" href="./public/css/admin.css">
+        <link rel="icon" href="./public/imagenes/favicon.ico">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -62,7 +62,7 @@ unset($_SESSION['error']);
         <div class="mensaje-error-login"><?php echo $mensajeError; ?></div>
         <?php } ?>
         
-        <form action="/pfc/controladores/validacion.php" method="POST" class="formulario-login">
+        <form action="./controladores/validacion.php" method="POST" class="formulario-login">
             <div class="campo-login">
                 <label>Email:</label>
                 <input type="text" name="usuario" placeholder="ejemplo@email.com">

@@ -44,4 +44,3 @@ if (isset($_POST['guardarNotasReto'])) {
 
 header("Location: ../../../vistas/profesores/calificaciones/retos.php");
 exit;
-?>

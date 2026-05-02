@@ -37,4 +37,3 @@ if (isset($_POST['actualizarPago'])) {
 
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
-?>

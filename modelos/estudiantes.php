@@ -172,4 +172,3 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     mysqli_close($con);
     return $token;
 }
-?>

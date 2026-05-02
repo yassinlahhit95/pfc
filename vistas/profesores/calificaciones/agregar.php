@@ -152,7 +152,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar todas las Notas
                     </button>
-                    <button type="reset" class="boton-secundario px-25">
+                    <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                         <i class="fas fa-eraser"></i> Limpiar
                     </button>
                     <label class="etiqueta-notificacion">

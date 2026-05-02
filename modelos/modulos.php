@@ -142,4 +142,3 @@ function obtenerHorasTotalesRetosModulo($idModulo) {
     mysqli_close($con);
     return (int)($datosSuma['total'] ?? 0);
 }
-?>

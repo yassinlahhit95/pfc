@@ -65,4 +65,3 @@ function actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubic
     mysqli_close($con);
     return $resultado;
 }
-?>

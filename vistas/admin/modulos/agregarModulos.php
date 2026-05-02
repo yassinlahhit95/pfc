@@ -58,9 +58,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="margen-arriba pt-20">
-            <button type="submit" name="guardarModulo" class="boton-primario ancho-total">
+        <div class="form-estandar-botones">
+            <button type="submit" name="guardarModulo" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Módulo
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>

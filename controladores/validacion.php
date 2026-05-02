@@ -51,4 +51,3 @@ if (isset($_POST["enviar"])) {
 
 header("Location: ../index.php");
 exit;
-?>

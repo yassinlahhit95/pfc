@@ -164,4 +164,3 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
     mysqli_close($con);
     return (int)($fila['total'] ?? 0);
 }
-?>

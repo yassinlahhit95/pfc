@@ -3,7 +3,8 @@ session_start();
 
 $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
-unset($_SESSION['error'], $_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
@@ -31,19 +32,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php if ($error) { ?>
     <div class="mensaje-error">
-        <i class="fas fa-exclamation-circle"></i> <?= $error ?>
+        <?= $error ?>
     </div>
 <?php } ?>
 
 <?php if ($exito) { ?>
     <div class="mensaje-exito">
-        <i class="fas fa-check-circle"></i> <?= $exito ?>
+        <?= $exito ?>
     </div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>ESTADO DE LA ENTREGA Y GESTI�N</h3>
+        <h3>ESTADO DE LA ENTREGA Y GESTIÓN</h3>
     </div>
 
     <div class="fila-detalle">
@@ -73,7 +74,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario" download="<?= $nombreDescarga ?>">
                         <i class="fas fa-download"></i> DESCARGAR PDF
                     </a>
-                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('�Est�s seguro de eliminar el archivo entregado?')">
+                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
                         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
                         <button type="submit" name="borrarTFG" class="boton-secundario color-error">
                             <i class="fas fa-trash-alt"></i> ELIMINAR ENTREGA
@@ -84,14 +85,17 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     <?php } ?>
 
-    <!-- INTEGRACI�N DEL FORMULARIO DE SUBIDA -->
+    <!-- INTEGRACIÓN DEL FORMULARIO DE SUBIDA -->
     <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
         <div class="fila-detalle">
             <div class="etiqueta-detalle"><?= empty($tfg['archivoTFG']) ? 'Subir Trabajo' : 'Actualizar Archivo' ?></div>
             <div class="valor-detalle">
-                <input type="file" name="archivoTFG">
+                <input type="file" name="archivoTFG" class="ancho-total">
+                <?php if (isset($errores['archivoTFG'])) { ?>
+                    <strong class="error-campo"><?= $errores['archivoTFG'] ?></strong>
+                <?php } ?>
             </div>
         </div>
 
@@ -99,7 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="subirTFG" class="boton-primario">
                 <i class="fas fa-upload"></i> <?= empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG' ?>
             </button>
-            <button type="reset" class="boton-secundario px-25">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
@@ -107,4 +111,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

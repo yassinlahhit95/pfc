@@ -17,12 +17,14 @@ const messaging = getMessaging(app);
 
 export async function requestPermissionAndGetToken(userId, userRole) {
     try {
+        const swPath = new URL('../../../firebase-messaging-sw.js', import.meta.url).pathname;
+
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
             const registrations = await navigator.serviceWorker.getRegistrations();
             for (let reg of registrations) { await reg.unregister(); }
 
-            const registration = await navigator.serviceWorker.register('/pfc/firebase-messaging-sw.js');
+            const registration = await navigator.serviceWorker.register(swPath);
             await navigator.serviceWorker.ready;
 
             const token = await getToken(messaging, { 
@@ -31,7 +33,8 @@ export async function requestPermissionAndGetToken(userId, userRole) {
             });
 
             if (token) {
-                const response = await fetch('/pfc/controladores/firebase/guardar_token.php', {
+                const tokenPath = new URL('../../../controladores/firebase/guardar_token.php', import.meta.url).pathname;
+                const response = await fetch(tokenPath, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token, userId, userRole })
@@ -54,9 +57,10 @@ onMessage(messaging, (payload) => {
 
     // Intentar mostrar notificación nativa
     if (Notification.permission === 'granted') {
+        const iconPath = new URL('../../../public/img/logoSuperAdmin.png', import.meta.url).pathname;
         new Notification(titulo, {
             body: mensaje,
-            icon: '/pfc/public/img/logoSuperAdmin.png'
+            icon: iconPath
         });
     }
     

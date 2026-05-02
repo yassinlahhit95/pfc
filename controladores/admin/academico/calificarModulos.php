@@ -57,7 +57,8 @@ if (isset($_POST['guardarNotas'])) {
         $_SESSION['error'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
     }
 
-    header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idModulo=" . $idModulo);
+    $idCiclo = trim($_POST['idCiclo'] ?? '');
+    header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idCiclo=" . $idCiclo . "&idModulo=" . $idModulo);
     exit;
 }
 

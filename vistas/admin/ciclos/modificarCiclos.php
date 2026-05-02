@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/admin/ciclos/actualizar.php">
         <input type="hidden" name="idCiclo" value="<?= $id_ciclo ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Ciclo *</label>
                 <input type="text" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
@@ -133,11 +133,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-estandar-botones">
             <button type="submit" name="actualizarCiclo" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
-            <button type="reset" class="boton-secundario">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
