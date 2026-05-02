@@ -17,16 +17,16 @@ if (isset($_POST['actualizarReto'])) {
     }
 
     if (empty($nombreReto)) {
-        $_SESSION['error'] = "Vaya, el nombre del reto es obligatorio.";
+        $_SESSION['error'] = "El nombre del reto es obligatorio.";
         $hayError = true;
     }
 
     if (!$hayError) {
         $resultado = actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto);
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! Reto actualizado correctamente.";
+            $_SESSION['exito'] = "Reto actualizado.";
         } else {
-            $_SESSION['error'] = "Vaya, ha habido un error al actualizar el reto.";
+            $_SESSION['error'] = "Error al actualizar el reto.";
         }
     }
 }

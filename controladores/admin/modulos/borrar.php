@@ -7,10 +7,10 @@ $hayError = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idModulo'])) {
     $idModuloParaBorrar = trim($_POST['idModulo']);
     if (eliminarModulo($idModuloParaBorrar)) {
-        $_SESSION['exito'] = "Listo! MÃ³dulo eliminado correctamente.";
+        $_SESSION['exito'] = "Módulo eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo eliminar el mÃ³dulo.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

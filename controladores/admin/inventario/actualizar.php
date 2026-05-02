@@ -10,7 +10,7 @@ if (isset($_POST['actualizarArticulo'])) {
     $hayError = false;
 
     if (empty($nombreArticulo) || empty($numeroSerie)) {
-        $_SESSION['error'] = "Vaya, todos los campos son obligatorios.";
+        $_SESSION['error'] = "Faltan datos.";
         $hayError = true;
     }
 
@@ -20,11 +20,11 @@ if (isset($_POST['actualizarArticulo'])) {
         $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
 
         if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
-            $_SESSION['exito'] = "Listo! ArtÃ­culo actualizado correctamente.";
+            $_SESSION['exito'] = "Artículo actualizado.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha ocurrido un error al actualizar el artÃ­culo.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     }
     

@@ -15,28 +15,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarReto'])) {
     $listaErroresValidacion = [];
 
     if (empty($nombreRetoActualizar)) {
-        $listaErroresValidacion['nombreReto'] = "Vaya, el nombre es obligatorio.";
+        $listaErroresValidacion['nombreReto'] = "El nombre es obligatorio.";
     }
     if (empty($horasDelReto)) {
-        $listaErroresValidacion['horasReto'] = "Vaya, las horas son obligatorias.";
+        $listaErroresValidacion['horasReto'] = "Las horas son obligatorias.";
     } else {
         if (!is_numeric($horasDelReto)) {
-            $listaErroresValidacion['horasReto'] = "Vaya, las horas deben ser un nÃºmero.";
+            $listaErroresValidacion['horasReto'] = "Las horas deben ser un número.";
         }
     }
     if (empty($fechaInicioDelReto)) {
-        $listaErroresValidacion['fechaInicioReto'] = "Vaya, la fecha de inicio es obligatoria.";
+        $listaErroresValidacion['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
     }
     if (empty($fechaFinDelReto)) {
-        $listaErroresValidacion['fechaFinReto'] = "Vaya, la fecha de fin es obligatoria.";
+        $listaErroresValidacion['fechaFinReto'] = "La fecha de fin es obligatoria.";
     }
     if (empty($listaModulosAsociados)) {
-        $listaErroresValidacion['modulosReto'] = "Vaya, debes seleccionar al menos un mÃ³dulo.";
+        $listaErroresValidacion['modulosReto'] = "Debe seleccionar al menos un módulo.";
     } else if (is_numeric($horasDelReto)) {
-        // Validar que el mÃ³dulo tenga suficientes horas disponibles
+        // Validar que el módulo tenga suficientes horas disponibles
         foreach ($listaModulosAsociados as $idModuloParaValidar) {
             if (!comprobarHorasDisponiblesModulo($idModuloParaValidar, $horasDelReto, $idRetoActualizar)) {
-                $listaErroresValidacion['modulosReto'] = "Vaya, uno de los mÃ³dulos seleccionados no tiene suficientes horas disponibles.";
+                $listaErroresValidacion['modulosReto'] = "Un módulo seleccionado no tiene suficientes horas.";
                 break;
             }
         }
@@ -44,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarReto'])) {
 
     if (empty($listaErroresValidacion)) {
         if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, $listaModulosAsociados)) {
-            $_SESSION['exito'] = "Listo! Reto actualizado correctamente.";
+            $_SESSION['exito'] = "Reto actualizado.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, hubo un error al actualizar en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar en la base de datos.";
         }
     } else {
         $hayError = true;

@@ -7,10 +7,10 @@ $hayError = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idProfesor'])) {
     $idProfesorBorrar = trim($_POST['idProfesor']);
     if (eliminarProfesor($idProfesorBorrar)) {
-        $_SESSION['exito'] = "Listo! Profesor eliminado correctamente.";
+        $_SESSION['exito'] = "Profesor eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo eliminar el profesor.";
+        $_SESSION['error'] = "Error al eliminar el profesor.";
     }
 }
 

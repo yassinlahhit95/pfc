@@ -10,31 +10,31 @@ if (isset($_POST['actualizarPerfil'])) {
     $emailRecibido = strtolower(trim($_POST['emailProfesor']));
     $telefonoRecibido = trim($_POST['telefonoProfesor']);
     
-    // Campos de contraseÃ±a
+    // Campos de contraseña
     $passwordActualRecibida = trim($_POST['current_password'] ?? '');
     $passwordNuevaRecibida = trim($_POST['new_password'] ?? '');
 
-    // Validaciones bÃ¡sicas de perfil
+    // Validaciones básicas de perfil
     if (empty($idProfesorRecibido)) {
         header("Location: ../../../vistas/profesores/perfil/ver.php");
         exit;
     }
 
     if (empty($nombreRecibido)) {
-        $_SESSION['error'] = "Vaya, el nombre no puede estar vacÃ­o.";
+        $_SESSION['error'] = "El nombre es obligatorio.";
         $hayError = true;
     } else if (empty($emailRecibido)) {
-        $_SESSION['error'] = "Vaya, el correo electrÃ³nico no puede estar vacÃ­o.";
+        $_SESSION['error'] = "El correo electrónico es obligatorio.";
         $hayError = true;
     } else if (!is_numeric($telefonoRecibido)) {
-        $_SESSION['error'] = "Vaya, el telÃ©fono debe ser un nÃºmero.";
+        $_SESSION['error'] = "El teléfono debe ser un número.";
         $hayError = true;
     }
 
-    // LÃ³gica de cambio de contraseÃ±a
+    // Lógica de cambio de contraseña
     if (!$hayError && !empty($passwordNuevaRecibida)) {
         if (empty($passwordActualRecibida)) {
-            $_SESSION['error'] = "Vaya, debes ingresar la contraseÃ±a actual para validar el cambio.";
+            $_SESSION['error'] = "Debes ingresar la contraseña actual.";
             $hayError = true;
         } else {
             $datosProfesorActual = obtenerProfesorPorId($idProfesorRecibido);
@@ -42,7 +42,7 @@ if (isset($_POST['actualizarPerfil'])) {
             if ($datosProfesorActual && $datosProfesorActual['password'] === $passwordActualRecibida) {
                 actualizarPasswordProfesor($idProfesorRecibido, $passwordNuevaRecibida);
             } else {
-                $_SESSION['error'] = "Vaya, la contraseÃ±a actual es incorrecta.";
+                $_SESSION['error'] = "La contraseña actual es incorrecta.";
                 $hayError = true;
             }
         }
@@ -53,11 +53,11 @@ if (isset($_POST['actualizarPerfil'])) {
         $resultadoActualizacion = actualizarPerfilProfesor($idProfesorRecibido, $nombreRecibido, $emailRecibido, $telefonoRecibido);
         
         if ($resultadoActualizacion) {
-            $_SESSION['exito'] = "Listo! Perfil actualizado con Ã©xito.";
+            $_SESSION['exito'] = "Perfil actualizado.";
             header("Location: ../../../vistas/profesores/perfil/ver.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, no se pudieron actualizar los datos.";
+            $_SESSION['error'] = "Error al actualizar los datos.";
             $hayError = true;
         }
     }
@@ -68,3 +68,4 @@ if (isset($_POST['actualizarPerfil'])) {
 
 header("Location: ../../../vistas/profesores/perfil/ver.php");
 exit;
+?>

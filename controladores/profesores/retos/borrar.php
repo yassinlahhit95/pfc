@@ -7,9 +7,9 @@ if (isset($_GET['id'])) {
     
     $resultado = eliminarReto($idReto);
     if ($resultado) {
-        $_SESSION['exito'] = "Listo! Reto eliminado correctamente.";
+        $_SESSION['exito'] = "Reto eliminado.";
     } else {
-        $_SESSION['error'] = "Vaya, no se ha podido eliminar el reto.";
+        $_SESSION['error'] = "Error al eliminar el reto.";
     }
 }
 

@@ -8,10 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idReclamacion'])) {
     $idReclamacionParaBorrar = trim($_POST['idReclamacion']);
     
     if (eliminarMensaje($idReclamacionParaBorrar)) {
-        $_SESSION['exito'] = "Listo! ReclamaciÃ³n eliminada sin problemas.";
+        $_SESSION['exito'] = "Reclamación eliminada.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo eliminar la reclamaciÃ³n.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

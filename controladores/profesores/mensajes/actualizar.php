@@ -10,17 +10,17 @@ if (isset($_POST['idReclamacion'])) {
     if (isset($_POST['guardarRespuesta'])) {
         $respuesta = trim($_POST['respuesta'] ?? '');
         if (responderMensaje($idReclamacion, $respuesta)) {
-            $_SESSION['exito'] = "Listo! La respuesta ha sido guardada.";
+            $_SESSION['exito'] = "Respuesta guardada.";
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, no se pudo guardar la respuesta.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     } else if (isset($_POST['marcarLeido'])) {
         if (marcarMensajeComoLeido($idReclamacion)) {
-            $_SESSION['exito'] = "Listo! Mensaje marcado como leÃ­do.";
+            $_SESSION['exito'] = "Mensaje leído.";
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, no se pudo actualizar el estado.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     }
 }

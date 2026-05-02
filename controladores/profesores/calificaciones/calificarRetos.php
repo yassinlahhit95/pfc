@@ -33,9 +33,9 @@ if (isset($_POST['guardarNotasReto'])) {
     }
 
     if ($hayError) {
-        $_SESSION['error'] = "Vaya, parece que hay errores en las notas. Deben ser nÃºmeros entre 0 y 10.";
+        $_SESSION['error'] = "Las notas deben ser números entre 0 y 10.";
     } else {
-        $_SESSION['exito'] = "Listo! Las calificaciones del reto se han guardado.";
+        $_SESSION['exito'] = "Calificaciones guardadas.";
     }
 
     header("Location: ../../../vistas/profesores/calificaciones/retos.php?idCiclo=$idCiclo&idModulo=$idModulo&idReto=$idReto");
@@ -44,3 +44,4 @@ if (isset($_POST['guardarNotasReto'])) {
 
 header("Location: ../../../vistas/profesores/calificaciones/retos.php");
 exit;
+?>

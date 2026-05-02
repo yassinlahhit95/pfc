@@ -23,8 +23,8 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
 
     $contenidoCorreoHTML = "
     <div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;'>
-        <h2 style='color: #2c3e50;'>Hola, " . $nombreEstudianteMayusculas . "</h2>
-        <p>A continuación te enviamos tus calificaciones finales para el ciclo: <strong>" . $nombreCicloMayusculas . "</strong></p>
+        <h2 style='color: #2c3e50;'>" . $nombreEstudianteMayusculas . "</h2>
+        <p>Calificaciones finales para el ciclo: <strong>" . $nombreCicloMayusculas . "</strong></p>
         
         <table style='width: 100%; border-collapse: collapse; margin-top: 20px;'>
             <thead>

@@ -12,18 +12,18 @@ if (isset($_POST['insertarReto'])) {
     $hayError = false;
 
     if (empty($nombreReto)) {
-        $_SESSION['error'] = "Vaya, el nombre del reto es obligatorio.";
+        $_SESSION['error'] = "El nombre del reto es obligatorio.";
         $hayError = true;
     }
 
     if (!$hayError) {
         $resultado = insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaDeModulos);
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! Reto insertado correctamente.";
+            $_SESSION['exito'] = "Reto insertado.";
             header("Location: ../../../vistas/profesores/retos/lista.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha habido un error al insertar el reto.";
+            $_SESSION['error'] = "Error al insertar el reto.";
         }
     }
 

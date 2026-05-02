@@ -10,10 +10,10 @@ if (isset($_POST['subirTFG'])) {
     $hayError = false;
 
     if (empty($idEstudiante)) {
-        $_SESSION['error'] = "Vaya, el ID del estudiante es obligatorio.";
+        $_SESSION['error'] = "ID de estudiante obligatorio.";
         $hayError = true;
     } else if (!empty($archivoTFG['error'])) {
-        $_SESSION['error'] = "Vaya, ha habido un error al subir el archivo.";
+        $_SESSION['error'] = "Error al subir el archivo.";
         $hayError = true;
     }
 
@@ -27,14 +27,14 @@ if (isset($_POST['subirTFG'])) {
 
         if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {
-                $_SESSION['exito'] = "Listo! TFG subido correctamente.";
+                $_SESSION['exito'] = "TFG subido.";
                 header("Location: ../../../vistas/estudiantes/pfc/subir.php");
                 exit;
             } else {
-                $_SESSION['error'] = "Vaya, ha habido un error al actualizar la base de datos.";
+                $_SESSION['error'] = "Error al actualizar la base de datos.";
             }
         } else {
-            $_SESSION['error'] = "Vaya, no se ha podido guardar el archivo en el servidor.";
+            $_SESSION['error'] = "Error al guardar el archivo.";
         }
     }
     

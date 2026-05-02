@@ -116,7 +116,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <?php } else { ?>
                             <?php foreach ($estudiantes_lista as $estudianteItem) { 
                                 $idEstudianteFila = $estudianteItem['idEstudiante'];
-                                $notaRetoActual = obtenerCalificacion($idEstudianteFila, $id_reto_elegido);
+                                $notaRetoActual = obtenerCalificacionReto($idEstudianteFila, $id_reto_elegido);
                             ?>
                             <tr>
                                 <td>
@@ -145,4 +145,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 

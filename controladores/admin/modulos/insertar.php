@@ -12,29 +12,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarModulo'])) {
     $listaErroresValidacion = [];
 
     if (empty($nombreNuevoModulo)) {
-        $listaErroresValidacion['nombreModulo'] = "Vaya, el nombre del mÃ³dulo es obligatorio.";
+        $listaErroresValidacion['nombreModulo'] = "Nombre de módulo obligatorio.";
     }
     
     if (empty($idCicloNuevoModulo)) {
-        $listaErroresValidacion['idCiclo'] = "Vaya, debes seleccionar un ciclo formativo.";
+        $listaErroresValidacion['idCiclo'] = "Seleccione un ciclo.";
     }
     
     if (empty($horasMaximasNuevoModulo)) {
-        $listaErroresValidacion['horasMaximas'] = "Vaya, las horas mÃ¡ximas son obligatorias.";
+        $listaErroresValidacion['horasMaximas'] = "Horas máximas obligatorias.";
     } else {
         if (!is_numeric($horasMaximasNuevoModulo)) {
-            $listaErroresValidacion['horasMaximas'] = "Vaya, las horas deben ser un valor numÃ©rico.";
+            $listaErroresValidacion['horasMaximas'] = "Las horas deben ser numéricas.";
         }
     }
 
     if (empty($listaErroresValidacion)) {
         if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
-            $_SESSION['exito'] = "Listo! MÃ³dulo registrado correctamente.";
+            $_SESSION['exito'] = "Módulo registrado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, hubo un error al insertar el mÃ³dulo.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     } else {
         $hayError = true;

@@ -25,11 +25,11 @@ if (isset($_POST['registrarPrestamo'])) {
 
     if (!$hayError) {
         if (registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo)) {
-            $_SESSION['exito'] = "Listo! PrÃ©stamo registrado correctamente.";
+            $_SESSION['exito'] = "Préstamo registrado.";
             header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha ocurrido un error al registrar el prÃ©stamo.";
+            $_SESSION['error'] = "Error al registrar.";
         }
     } else {
         $_SESSION['errores'] = $errores;

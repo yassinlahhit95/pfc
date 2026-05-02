@@ -6,9 +6,9 @@ if (isset($_POST['idEstudiante'])) {
     $idEstudiante = trim($_POST['idEstudiante']);
     
     if (eliminarEstudiante($idEstudiante)) {
-        $_SESSION['exito'] = "Estudiante eliminado correctamente.";
+        $_SESSION['exito'] = "Estudiante eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el estudiante.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

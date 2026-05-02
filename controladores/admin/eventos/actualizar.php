@@ -13,18 +13,18 @@ if (isset($_POST['actualizarEvento'])) {
     $hayError = false;
 
     if (empty($titulo) || empty($fechaEvento)) {
-        $_SESSION['error'] = "Vaya, el tÃ­tulo y la fecha son obligatorios.";
+        $_SESSION['error'] = "Faltan datos.";
         $hayError = true;
     }
 
     if (!$hayError) {
         $resultado = actualizarEvento($idEvento, $titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento);
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! Evento actualizado correctamente.";
+            $_SESSION['exito'] = "Evento actualizado.";
             header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha ocurrido un error al actualizar el evento.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     }
     

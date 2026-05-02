@@ -64,11 +64,11 @@ if (isset($_POST['guardarEstudiante'])) {
     if (!$hayError) {
         $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! Estudiante registrado con Ã©xito.";
+            $_SESSION['exito'] = "Estudiante registrado.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha ocurrido un error al guardar el estudiante.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     } else {
         $_SESSION['errores'] = $errores;

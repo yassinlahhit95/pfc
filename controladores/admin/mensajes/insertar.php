@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviarMensaje'])) {
 
     if (empty($asuntoMensaje) || empty($descripcionMensaje)) {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, el asunto y el contenido son obligatorios.";
+        $_SESSION['error'] = "Faltan datos.";
         header("Location: ../../../vistas/admin/mensajes/agregar.php");
         exit;
     }
@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviarMensaje'])) {
                 enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje);
             }
         }
-        $_SESSION['exito'] = "Listo! Mensaje enviado correctamente.";
+        $_SESSION['exito'] = "Mensaje enviado.";
         header("Location: ../../../vistas/admin/mensajes/lista.php");
         exit;
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, hubo un error al guardar el mensaje.";
+        $_SESSION['error'] = "Error al enviar.";
         header("Location: ../../../vistas/admin/mensajes/agregar.php");
         exit;
     }

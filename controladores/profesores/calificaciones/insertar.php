@@ -14,7 +14,7 @@ if (isset($_POST['insertarNota'])) {
 
     if (!is_numeric($nota1Ev) || !is_numeric($nota1Final) || !is_numeric($nota2Ev) || !is_numeric($nota2Final)) {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, todos los campos de nota deben ser nÃºmeros.";
+        $_SESSION['error'] = "Notas deben ser números.";
     } 
     
     if (!$hayError) {
@@ -25,12 +25,12 @@ if (isset($_POST['insertarNota'])) {
                 require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
                 enviarEmailNotasEstudiante($idEstudiante);
             }
-            $_SESSION['exito'] = "Listo! CalificaciÃ³n guardada.";
+            $_SESSION['exito'] = "Calificación guardada.";
             header("Location: ../../../vistas/profesores/calificaciones/lista.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, hubo un error al guardar en la base de datos.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     }
 }

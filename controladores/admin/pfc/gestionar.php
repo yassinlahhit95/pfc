@@ -17,16 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarTFG'])) {
         
         if (!move_uploaded_file($archivoSubido['tmp_name'], $rutaDestino)) {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, no pudimos mover el archivo subido.";
+            $_SESSION['error'] = "Error al guardar archivo.";
         }
     }
 
     if (!$hayError) {
         if (actualizarDatosTFG($idEstudiantePfc, $tituloNuevoTFG, $nombreArchivoFinal)) {
-            $_SESSION['exito'] = "Listo! TFG actualizado correctamente.";
+            $_SESSION['exito'] = "TFG actualizado.";
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, error al actualizar el TFG en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     }
 }

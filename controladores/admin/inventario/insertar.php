@@ -20,11 +20,11 @@ if (isset($_POST['guardarArticulo'])) {
 
     if (!$hayError) {
         if (insertarArticulo($nombre, $numeroSerie)) {
-            $_SESSION['exito'] = "Listo! ArtÃ­culo aÃ±adido correctamente.";
+            $_SESSION['exito'] = "Artículo añadido.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha ocurrido un error al guardar el artÃ­culo.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     } else {
         $_SESSION['errores'] = $errores;

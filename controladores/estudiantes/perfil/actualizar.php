@@ -20,14 +20,14 @@ if (isset($_POST['actualizarPerfil'])) {
     }
 
     if (empty($nombre) || empty($email)) {
-        $_SESSION['error'] = "Vaya, el nombre y el correo electrÃ³nico son obligatorios.";
+        $_SESSION['error'] = "Nombre y correo obligatorios.";
         $hayError = true;
     }
 
-    // Proceso de cambio de contraseÃ±a
+    // Proceso de cambio de contraseña
     if (!$hayError && !empty($passwordNueva)) {
         if (empty($passwordActual)) {
-            $_SESSION['error'] = "Vaya, por seguridad debes ingresar tu contraseÃ±a actual.";
+            $_SESSION['error'] = "Ingresa tu contraseña actual.";
             $hayError = true;
         } else {
             $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
@@ -35,7 +35,7 @@ if (isset($_POST['actualizarPerfil'])) {
             if ($datosEstudiante['password'] == $passwordActual) {
                 actualizarPasswordEstudiante($idEstudiante, $passwordNueva);
             } else {
-                $_SESSION['error'] = "Vaya, la contraseÃ±a actual no es correcta.";
+                $_SESSION['error'] = "Contraseña actual incorrecta.";
                 $hayError = true;
             }
         }
@@ -45,11 +45,11 @@ if (isset($_POST['actualizarPerfil'])) {
         $resultado = actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono);
         
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! Los datos se han guardado correctamente.";
+            $_SESSION['exito'] = "Datos guardados.";
             header("Location: ../../../vistas/estudiantes/perfil/ver.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha habido un error al guardar los datos.";
+            $_SESSION['error'] = "Error al guardar los datos.";
         }
     }
 

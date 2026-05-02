@@ -7,9 +7,9 @@ if (isset($_GET['id'])) {
     
     $resultado = eliminarArchivoTFG($idEstudiante);
     if ($resultado) {
-        $_SESSION['exito'] = "Listo! El archivo ha sido eliminado.";
+        $_SESSION['exito'] = "Archivo eliminado.";
     } else {
-        $_SESSION['error'] = "Vaya, no se ha podido eliminar el archivo.";
+        $_SESSION['error'] = "Error al eliminar el archivo.";
     }
 }
 

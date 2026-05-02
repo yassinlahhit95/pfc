@@ -16,20 +16,20 @@ if (isset($_POST['actualizarCiclo'])) {
 
     if (empty($nombre)) {
         $hayError = true;
-        $_SESSION['error'] = "El nombre del ciclo es obligatorio.";
+        $_SESSION['error'] = "Nombre obligatorio.";
     } elseif (empty($abreviatura)) {
         $hayError = true;
-        $_SESSION['error'] = "La abreviatura es obligatoria.";
+        $_SESSION['error'] = "Abreviatura obligatoria.";
     }
 
     if (!$hayError) {
         $resultado = actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Ciclo actualizado correctamente.";
+            $_SESSION['exito'] = "Ciclo actualizado.";
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     } else {
         $_SESSION['datos_ciclos'] = $_POST;

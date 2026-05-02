@@ -14,9 +14,9 @@ if (isset($_POST['idEstudiante'])) {
         if (!empty($nombreArchivo) && file_exists($rutaArchivo)) {
             unlink($rutaArchivo);
         }
-        $_SESSION['exito'] = "Listo! TFG eliminado correctamente.";
+        $_SESSION['exito'] = "TFG eliminado.";
     } else {
-        $_SESSION['error'] = "Vaya, ha habido un error al eliminar el TFG.";
+        $_SESSION['error'] = "Error al eliminar el TFG.";
     }
 }
 

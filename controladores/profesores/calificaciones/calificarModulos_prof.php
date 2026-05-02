@@ -25,7 +25,7 @@ if (isset($_POST['guardarNotas'])) {
         $nota4 = trim($notas_2da_final[$indice]);
         $comentario = trim($todas_las_observaciones[$indice]);
 
-        // Validamos que si hay nota, sea un nÃºmero entre 0 y 10
+        // Validamos que si hay nota, sea un número entre 0 y 10
         $notas_del_alumno = [$nota1, $nota2, $nota3, $nota4];
         foreach ($notas_del_alumno as $nota) {
             if (!empty($nota) && (!is_numeric($nota) || $nota < 0 || $nota > 10)) {
@@ -45,16 +45,16 @@ if (isset($_POST['guardarNotas'])) {
     }
 
     if (!$hayError) {
-        // Enviar correos si se marca la opciÃ³n
+        // Enviar correos si se marca la opción
         if (isset($_POST['notificarEstudiantes']) && !empty($_POST['notificarEstudiantes'])) {
             require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
             foreach ($estudiantes as $idParaEnvio) {
                 enviarEmailNotasEstudiante(trim($idParaEnvio));
             }
         }
-        $_SESSION['exito'] = "Listo! Ya se han guardado todas las notas.";
+        $_SESSION['exito'] = "Notas guardadas.";
     } else {
-        $_SESSION['error'] = "Vaya, parece que hay algun error. Revisa que las notas sean nÃºmeros entre 0 y 10.";
+        $_SESSION['error'] = "Las notas deben ser números entre 0 y 10.";
     }
 
     header("Location: ../../../vistas/profesores/calificaciones/agregar.php?idCiclo=$idCiclo&idModulo=$idModulo");

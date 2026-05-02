@@ -12,16 +12,16 @@ if (isset($_POST['guardarEvento'])) {
     $hayError = false;
 
     if (empty($titulo) || empty($fechaEvento)) {
-        $_SESSION['error'] = "Vaya, el tÃ­tulo y la fecha son obligatorios.";
+        $_SESSION['error'] = "Faltan datos.";
         $hayError = true;
     }
 
     if (!$hayError) {
         $resultado = insertarEvento($titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento);
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! Evento publicado correctamente.";
+            $_SESSION['exito'] = "Evento publicado.";
         } else {
-            $_SESSION['error'] = "Vaya, ha ocurrido un error al guardar el evento.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     }
 }

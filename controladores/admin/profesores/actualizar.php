@@ -21,33 +21,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarProfesor'])
     $listaErroresValidacion = [];
 
     if (empty($nombreProfesorActualizar)) {
-        $listaErroresValidacion['nombreProfesor'] = "Vaya, el nombre es obligatorio.";
+        $listaErroresValidacion['nombreProfesor'] = "El nombre es obligatorio.";
     }
     if (empty($emailProfesorActualizar)) {
-        $listaErroresValidacion['emailProfesor'] = "Vaya, el email es obligatorio.";
+        $listaErroresValidacion['emailProfesor'] = "El email es obligatorio.";
     } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $emailProfesorActualizar)) {
-        $listaErroresValidacion['emailProfesor'] = "Vaya, el formato del email no es vÃ¡lido.";
+        $listaErroresValidacion['emailProfesor'] = "El formato del email no es válido.";
     }
     if (empty($dniProfesorActualizar)) {
-        $listaErroresValidacion['dniProfesor'] = "Vaya, el DNI es obligatorio.";
+        $listaErroresValidacion['dniProfesor'] = "El DNI es obligatorio.";
     }
     if (empty($telefonoProfesorActualizar)) {
-        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono es obligatorio.";
+        $listaErroresValidacion['telefonoProfesor'] = "El teléfono es obligatorio.";
     } else if (!is_numeric($telefonoProfesorActualizar)) {
-        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono debe ser numÃ©rico.";
+        $listaErroresValidacion['telefonoProfesor'] = "El teléfono debe ser numérico.";
     }
     if (empty($direccionProfesorActualizar)) {
-        $listaErroresValidacion['direccionProfesor'] = "Vaya, la direcciÃ³n es obligatoria.";
+        $listaErroresValidacion['direccionProfesor'] = "La dirección es obligatoria.";
     }
 
     if (empty($listaErroresValidacion)) {
         if (actualizarProfesor($idProfesorActualizar, $nombreProfesorActualizar, $emailProfesorActualizar, $telefonoProfesorActualizar, $dniProfesorActualizar, $direccionProfesorActualizar, $fechaNacimientoProfesor, $fechaAltaProfesor, $ciudadProfesor, $codigoPostalProfesor, $observacionesProfesor)) {
-            $_SESSION['exito'] = "Listo! Profesor actualizado correctamente.";
+            $_SESSION['exito'] = "Profesor actualizado.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, hubo un error al actualizar en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar en la base de datos.";
         }
     } else {
         $hayError = true;

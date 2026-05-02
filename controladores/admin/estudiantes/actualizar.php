@@ -54,11 +54,11 @@ if (isset($_POST['actualizarEstudiante'])) {
     if (!$hayError) {
         $resultado = actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Estudiante actualizado correctamente.";
+            $_SESSION['exito'] = "Estudiante actualizado.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         } else {
-            $_SESSION['error'] = "No se ha podido actualizar el estudiante.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     } else {
         $_SESSION['errores'] = $errores;

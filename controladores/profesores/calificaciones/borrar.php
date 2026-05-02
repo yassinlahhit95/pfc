@@ -7,14 +7,14 @@ $hayError = false;
 if (isset($_GET['id'])) {
     $idCalificacion = trim($_GET['id']);
     if (eliminarCalificacion($idCalificacion)) {
-        $_SESSION['exito'] = "Listo! CalificaciÃ³n eliminada.";
+        $_SESSION['exito'] = "Calificación eliminada.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo eliminar la calificaciÃ³n.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 } else {
     $hayError = true;
-    $_SESSION['error'] = "Vaya, no se especificÃ³ quÃ© calificaciÃ³n borrar.";
+    $_SESSION['error'] = "Falta ID.";
 }
 
 header("Location: ../../../vistas/profesores/calificaciones/lista.php");

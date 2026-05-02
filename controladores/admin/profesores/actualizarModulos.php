@@ -19,9 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarModulos']))
     }
 
     if (!$hayError) {
-        $_SESSION['exito'] = "Listo! MÃ³dulos asignados correctamente.";
+        $_SESSION['exito'] = "Módulos asignados.";
     } else {
-        $_SESSION['error'] = "Vaya, hubo un problema al asignar algunos mÃ³dulos.";
+        $_SESSION['error'] = "Error al asignar módulos.";
     }
 }
 

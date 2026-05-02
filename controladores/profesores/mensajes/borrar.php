@@ -8,10 +8,10 @@ if (isset($_GET['id'])) {
     $idReclamacion = trim($_GET['id']);
     
     if (eliminarMensaje($idReclamacion)) {
-        $_SESSION['exito'] = "Listo! El mensaje ha sido eliminado.";
+        $_SESSION['exito'] = "Mensaje eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo eliminar el mensaje.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

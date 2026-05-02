@@ -8,9 +8,9 @@ if (isset($_POST['idPago'])) {
     $resultado = eliminarPago($idPago);
     
     if ($resultado) {
-        $_SESSION['exito'] = "Listo! El pago ha sido eliminado.";
+        $_SESSION['exito'] = "Pago eliminado.";
     } else {
-        $_SESSION['error'] = "Vaya, no se ha podido eliminar el pago.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

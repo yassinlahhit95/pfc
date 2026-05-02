@@ -12,10 +12,10 @@ if (isset($_POST['guardarNotas'])) {
         foreach ($notas as $idEstudiante => $nota) {
             calificarReto(trim($idEstudiante), $idReto, trim($nota));
         }
-        $_SESSION['exito'] = "Listo! Las notas han sido guardadas.";
+        $_SESSION['exito'] = "Notas guardadas.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, parece que faltan datos para calificar.";
+        $_SESSION['error'] = "Faltan datos para calificar.";
     }
     
     header("Location: ../../../vistas/admin/retos/verRetos.php");
@@ -24,3 +24,4 @@ if (isset($_POST['guardarNotas'])) {
 
 header("Location: ../../../vistas/admin/retos/verRetos.php");
 exit;
+?>

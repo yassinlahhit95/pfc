@@ -20,7 +20,7 @@ if (isset($_POST['guardarPago'])) {
 
     // Fecha tope para pagos
     if ($hoy > $fechaLimite) {
-        $_SESSION['error'] = "Vaya, parece que el periodo de pagos ya ha terminado (30 de Junio).";
+        $_SESSION['error'] = "Periodo terminado.";
         header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
         exit;
     }
@@ -30,7 +30,7 @@ if (isset($_POST['guardarPago'])) {
         $estadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
         if ($monto > ($estadoFinanciero['restante'] + 0.05)) {
             $hayError = true;
-            $_SESSION['error'] = "Esa cantidad es mayor a lo que el estudiante debe.";
+            $_SESSION['error'] = "Cantidad excedida.";
         }
     }
 
@@ -56,7 +56,7 @@ if (isset($_POST['guardarPago'])) {
         $resultado = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
 
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! El pago se ha guardado correctamente.";
+            $_SESSION['exito'] = "Pago registrado.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         } else {
@@ -65,7 +65,7 @@ if (isset($_POST['guardarPago'])) {
     }
 
     if ($hayError && empty($_SESSION['error'])) {
-        $_SESSION['error'] = "Revisa los datos, parece que falta algo o la cantidad no es correcta.";
+        $_SESSION['error'] = "Error en datos.";
     }
 
     header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
@@ -74,4 +74,4 @@ if (isset($_POST['guardarPago'])) {
 
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
-?>
+?>>

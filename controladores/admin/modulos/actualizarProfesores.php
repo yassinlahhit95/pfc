@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarProfesores'
     }
 
     if (!$hayError) {
-        $_SESSION['exito'] = "Listo! Profesor asignado al mÃ³dulo correctamente.";
+        $_SESSION['exito'] = "Profesor asignado.";
     } else {
-        $_SESSION['error'] = "Vaya, hubo un error al asignar el profesor.";
+        $_SESSION['error'] = "Error al asignar.";
     }
 }
 

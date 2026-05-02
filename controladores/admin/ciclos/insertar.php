@@ -15,23 +15,23 @@ if (isset($_POST['guardarCiclo'])) {
 
     if (empty($nombre)) {
         $hayError = true;
-        $_SESSION['error'] = "El nombre del ciclo es obligatorio.";
+        $_SESSION['error'] = "Nombre obligatorio.";
     } elseif (empty($abreviatura)) {
         $hayError = true;
-        $_SESSION['error'] = "La abreviatura es obligatoria.";
+        $_SESSION['error'] = "Abreviatura obligatoria.";
     } elseif (empty($idNivelEducativo)) {
         $hayError = true;
-        $_SESSION['error'] = "El nivel es obligatorio.";
+        $_SESSION['error'] = "Nivel obligatorio.";
     }
 
     if (!$hayError) {
         $resultado = insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Ciclo registrado correctamente.";
+            $_SESSION['exito'] = "Ciclo registrado.";
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al insertar en la base de datos.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     } else {
         $_SESSION['datos_ciclo'] = $_POST;

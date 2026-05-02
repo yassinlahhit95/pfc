@@ -9,12 +9,12 @@ if (isset($_POST["enviar"])) {
     $passwordUsuarioRecibida = trim($_POST["contrasena"]);
 
     if (empty($emailUsuarioRecibido) || empty($passwordUsuarioRecibida)) {
-        $_SESSION["error"] = "Vaya, todos los campos son obligatorios.";
+        $_SESSION["error"] = "Campos obligatorios.";
         header("Location: ../index.php");
         exit;
     }
 
-    // Limpiamos cualquier sesiÃ³n anterior para empezar de cero
+    // Limpiamos cualquier sesión anterior para empezar de cero
     unset($_SESSION['idAdmin']);
     unset($_SESSION['idProfesor']);
     unset($_SESSION['idEstudiante']);
@@ -43,8 +43,8 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    // 4. Si llegamos aquÃ­, es que no existe en ninguna tabla con esos datos
-    $_SESSION["error"] = "Los datos introducidos no son correctos o el usuario no existe.";
+    // 4. Si llegamos aquí, es que no existe en ninguna tabla con esos datos
+    $_SESSION["error"] = "Datos incorrectos.";
     header("Location: ../index.php");
     exit;
 }

@@ -15,10 +15,10 @@ if (isset($_POST['enviarMensaje'])) {
     $hayError = false;
 
     if (empty($asunto) || empty($descripcion)) {
-        $_SESSION['error'] = "Vaya, todos los campos son obligatorios.";
+        $_SESSION['error'] = "Todos los campos son obligatorios.";
         $hayError = true;
     } else if (strlen($descripcion) > 250) {
-        $_SESSION['error'] = "El mensaje es demasiado largo (mÃ¡ximo 250 caracteres).";
+        $_SESSION['error'] = "El mensaje es demasiado largo (máximo 250 caracteres).";
         $hayError = true;
     }
 
@@ -33,18 +33,18 @@ if (isset($_POST['enviarMensaje'])) {
                     enviarNotificacionFirebase($tokenProfesor, "Mensaje de Estudiante: " . $asunto, $descripcion);
                 }
             } else {
-                // Notificar a administraciÃ³n (directores)
+                // Notificar a administración (directores)
                 $tokensDirectores = obtenerTokensDirectores();
                 foreach ($tokensDirectores as $tokenDirector) {
-                    enviarNotificacionFirebase($tokenDirector, "Mensaje de Estudiante a DirecciÃ³n: " . $asunto, $descripcion);
+                    enviarNotificacionFirebase($tokenDirector, "Mensaje de Estudiante a Dirección: " . $asunto, $descripcion);
                 }
             }
             
-            $_SESSION['exito'] = "Listo! El mensaje se ha enviado correctamente.";
+            $_SESSION['exito'] = "Mensaje enviado.";
             header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
             exit;
         } else {
-            $_SESSION['error'] = "Vaya, ha habido un error al guardar el mensaje.";
+            $_SESSION['error'] = "Error al guardar el mensaje.";
         }
     }
     

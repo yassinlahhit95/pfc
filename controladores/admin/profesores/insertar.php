@@ -20,23 +20,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarProfesor'])) {
     $listaErroresValidacion = [];
 
     if (empty($nombreNuevoProfesor)) {
-        $listaErroresValidacion['nombreProfesor'] = "Vaya, el nombre es obligatorio.";
+        $listaErroresValidacion['nombreProfesor'] = "El nombre es obligatorio.";
     }
     if (empty($emailNuevoProfesor)) {
-        $listaErroresValidacion['emailProfesor'] = "Vaya, el email es obligatorio.";
+        $listaErroresValidacion['emailProfesor'] = "El email es obligatorio.";
     } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $emailNuevoProfesor)) {
-        $listaErroresValidacion['emailProfesor'] = "Vaya, el formato del email no es vÃ¡lido.";
+        $listaErroresValidacion['emailProfesor'] = "El formato del email no es válido.";
     }
     if (empty($dniNuevoProfesor)) {
-        $listaErroresValidacion['dniProfesor'] = "Vaya, el DNI es obligatorio.";
+        $listaErroresValidacion['dniProfesor'] = "El DNI es obligatorio.";
     }
     if (empty($telefonoNuevoProfesor)) {
-        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono es obligatorio.";
+        $listaErroresValidacion['telefonoProfesor'] = "El teléfono es obligatorio.";
     } else if (!is_numeric($telefonoNuevoProfesor)) {
-        $listaErroresValidacion['telefonoProfesor'] = "Vaya, el telÃ©fono debe ser numÃ©rico.";
+        $listaErroresValidacion['telefonoProfesor'] = "El teléfono debe ser numérico.";
     }
     if (empty($direccionNuevoProfesor)) {
-        $listaErroresValidacion['direccionProfesor'] = "Vaya, la direcciÃ³n es obligatoria.";
+        $listaErroresValidacion['direccionProfesor'] = "La dirección es obligatoria.";
     }
 
     if (empty($listaErroresValidacion)) {
@@ -50,19 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarProfesor'])) {
                 }
             }
 
-            // Asignar MÃ³dulos
+            // Asignar Módulos
             if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
                 foreach ($_POST['modulos'] as $idModuloParaAsignar) {
                     asociarModuloProfesor($idModuloParaAsignar, $idNuevoProfesorInsertado);
                 }
             }
 
-            $_SESSION['exito'] = "Listo! Profesor registrado y asignado correctamente.";
+            $_SESSION['exito'] = "Profesor registrado.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, hubo un error al guardar en la base de datos.";
+            $_SESSION['error'] = "Error al guardar en la base de datos.";
         }
     } else {
         $hayError = true;

@@ -19,7 +19,7 @@ if (isset($_POST['actualizarPago'])) {
     if (!$hayError) {
         $resultado = actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
         if ($resultado) {
-            $_SESSION['exito'] = "Listo! El pago se ha actualizado correctamente.";
+            $_SESSION['exito'] = "Pago actualizado.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         } else {
@@ -28,7 +28,7 @@ if (isset($_POST['actualizarPago'])) {
     }
 
     if ($hayError) {
-        $_SESSION['error'] = "Vaya, parece que hay algÃºn error. Revisa que los campos no estÃ©n vacÃ­os.";
+        $_SESSION['error'] = "Error al actualizar.";
     }
 
     header("Location: ../../../vistas/admin/pagos/modificarPagos.php?idPago=$idPago");

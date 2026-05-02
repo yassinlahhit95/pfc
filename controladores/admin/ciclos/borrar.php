@@ -6,9 +6,9 @@ if (isset($_POST['idCiclo'])) {
     $idCiclo = trim($_POST['idCiclo']);
     
     if (eliminarCiclo($idCiclo)) {
-        $_SESSION['exito'] = "Ciclo eliminado correctamente.";
+        $_SESSION['exito'] = "Ciclo eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el ciclo.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

@@ -6,9 +6,9 @@ if (isset($_POST['idEvento'])) {
     $idEvento = trim($_POST['idEvento']);
     
     if (eliminarEvento($idEvento)) {
-        $_SESSION['exito'] = "Listo! Evento eliminado correctamente.";
+        $_SESSION['exito'] = "Evento eliminado.";
     } else {
-        $_SESSION['error'] = "Vaya, ha ocurrido un error al intentar eliminar el evento.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

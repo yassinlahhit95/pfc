@@ -25,7 +25,7 @@ if (isset($_POST['actualizarNota'])) {
         if (!empty($nota)) {
             if (!is_numeric($nota) || $nota < 0 || $nota > 10) {
                 $hayError = true;
-                $_SESSION['error'] = "Vaya, las notas deben ser nÃºmeros entre 0 y 10.";
+                $_SESSION['error'] = "Notas deben estar entre 0 y 10.";
                 break;
             }
         }
@@ -39,12 +39,12 @@ if (isset($_POST['actualizarNota'])) {
                 require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
                 enviarEmailNotasEstudiante($idEstudiante);
             }
-            $_SESSION['exito'] = "Listo! La calificaciÃ³n ha sido actualizada.";
+            $_SESSION['exito'] = "Calificación actualizada.";
             header("Location: ../../../vistas/profesores/calificaciones/lista.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, hubo un problema al guardar los cambios.";
+            $_SESSION['error'] = "Error al guardar.";
         }
     }
 

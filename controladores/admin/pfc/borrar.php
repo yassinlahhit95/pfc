@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idEstudiante'])) {
 
     if (empty($idEstudiantePfc)) {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, el ID del estudiante no ha sido proporcionado.";
+        $_SESSION['error'] = "Falta ID estudiante.";
         header("Location: ../../../vistas/admin/pfc/verTFGs.php");
         exit;
     }
@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idEstudiante'])) {
         if (file_exists($rutaDelArchivo)) {
             unlink($rutaDelArchivo);
         }
-        $_SESSION['exito'] = "Listo! TFG eliminado correctamente.";
+        $_SESSION['exito'] = "TFG eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, hubo un problema al eliminar el registro de la base de datos.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
 

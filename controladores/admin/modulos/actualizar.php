@@ -13,29 +13,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarModulo'])) {
     $listaErroresValidacion = [];
 
     if (empty($nombreModuloActualizar)) {
-        $listaErroresValidacion['nombreModulo'] = "Vaya, el nombre del mÃ³dulo es obligatorio.";
+        $listaErroresValidacion['nombreModulo'] = "Nombre de módulo obligatorio.";
     }
     
     if (empty($idCicloAsociado)) {
-        $listaErroresValidacion['idCiclo'] = "Vaya, debes seleccionar un ciclo formativo.";
+        $listaErroresValidacion['idCiclo'] = "Seleccione un ciclo.";
     }
     
     if (empty($horasMaximasModulo)) {
-        $listaErroresValidacion['horasMaximas'] = "Vaya, las horas mÃ¡ximas son obligatorias.";
+        $listaErroresValidacion['horasMaximas'] = "Horas máximas obligatorias.";
     } else {
         if (!is_numeric($horasMaximasModulo)) {
-            $listaErroresValidacion['horasMaximas'] = "Vaya, las horas deben ser un valor numÃ©rico.";
+            $listaErroresValidacion['horasMaximas'] = "Las horas deben ser numéricas.";
         }
     }
 
     if (empty($listaErroresValidacion)) {
         if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
-            $_SESSION['exito'] = "Listo! MÃ³dulo actualizado correctamente.";
+            $_SESSION['exito'] = "Módulo actualizado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Vaya, error al actualizar el mÃ³dulo en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     } else {
         $hayError = true;

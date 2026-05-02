@@ -8,10 +8,10 @@ if (isset($_POST['marcarVisto'])) {
     $idReclamacion = trim($_POST['idReclamacion']);
     
     if (marcarMensajeComoLeido($idReclamacion)) {
-        $_SESSION['exito'] = "Listo! El mensaje ha sido marcado como visto.";
+        $_SESSION['exito'] = "Mensaje visto.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo actualizar el estado del mensaje.";
+        $_SESSION['error'] = "Error al actualizar.";
     }
     
     header("Location: ../../../vistas/profesores/mensajes/detalles.php?id=" . $idReclamacion);

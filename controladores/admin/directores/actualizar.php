@@ -22,32 +22,32 @@ if (isset($_POST['actualizarDirector'])) {
 
     if (empty($nombre)) {
         $hayError = true;
-        $_SESSION['error'] = "El nombre es obligatorio.";
+        $_SESSION['error'] = "Nombre obligatorio.";
     } elseif (empty($email)) {
         $hayError = true;
-        $_SESSION['error'] = "El email es obligatorio.";
+        $_SESSION['error'] = "Email obligatorio.";
     } elseif (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
         $hayError = true;
-        $_SESSION['error'] = "El formato del email no es válido.";
+        $_SESSION['error'] = "Email no válido.";
     } elseif (empty($dni)) {
         $hayError = true;
-        $_SESSION['error'] = "El DNI es obligatorio.";
+        $_SESSION['error'] = "DNI obligatorio.";
     } elseif (empty($telefono)) {
         $hayError = true;
-        $_SESSION['error'] = "El teléfono es obligatorio.";
+        $_SESSION['error'] = "Teléfono obligatorio.";
     } elseif (!is_numeric($telefono)) {
         $hayError = true;
-        $_SESSION['error'] = "El teléfono debe ser numérico.";
+        $_SESSION['error'] = "Teléfono numérico.";
     }
 
     if (!$hayError) {
         $resultado = actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
         if ($resultado) {
-            $_SESSION['exito'] = "Director actualizado correctamente.";
+            $_SESSION['exito'] = "Director actualizado.";
             header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+            $_SESSION['error'] = "Error al actualizar.";
         }
     } else {
         $_SESSION['datos_director'] = $_POST;

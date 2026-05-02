@@ -8,14 +8,14 @@ if (isset($_POST['idReto'])) {
     $idReto = trim($_POST['idReto']);
     
     if (eliminarReto($idReto)) {
-        $_SESSION['exito'] = "Listo! El reto ha sido eliminado.";
+        $_SESSION['exito'] = "Reto eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Vaya, no se pudo eliminar el reto.";
+        $_SESSION['error'] = "Error al eliminar el reto.";
     }
 } else {
     $hayError = true;
-    $_SESSION['error'] = "Vaya, no se especificÃ³ quÃ© reto borrar.";
+    $_SESSION['error'] = "No se especificó el reto.";
 }
 
 header("Location: ../../../vistas/admin/retos/verRetos.php");
