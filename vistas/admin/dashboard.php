@@ -80,14 +80,14 @@ include __DIR__ . '/comunes/nav.php';
         <a href="estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos y Push</span></a>
+        <a href="anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos</span></a>
         <a href="eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
+        <h3>TABLÓN DE ANUNCIOS</h3>
       </div>
       <?php if ($listaAnunciosSistema) { ?>
         <div class="lista-anuncios-dashboard">

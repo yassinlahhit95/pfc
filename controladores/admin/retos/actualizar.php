@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarReto'])) {
+if (isset($_POST['actualizarReto'])) {
     $idRetoActualizar = trim($_POST['idReto']);
     $nombreRetoActualizar = trim($_POST['nombreReto']);
     $horasDelReto = trim($_POST['horasReto']);

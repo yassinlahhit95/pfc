@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarTFG'])) {
+if (isset($_POST['guardarTFG'])) {
     $idEstudiantePfc = trim($_POST['idEstudiante']);
     $tituloNuevoTFG = trim($_POST['tituloTFG']);
     $archivoSubido = $_FILES['archivoTFG'];

@@ -5,7 +5,7 @@ $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
 unset($_SESSION['error'], $_SESSION['exito']);
 
-// Validaci�n de sesi�n simple
+// Validación de sesión simple
 if (empty($_SESSION['idEstudiante'])) {
     header("Location: ../../../index.php");
     exit;
@@ -37,19 +37,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
     <div class="info-estadistica">
-        <h3><?= number_format($datosEstadoFinanciero['totalPagado'], 2) ?> �</h3>
+        <h3><?= number_format($datosEstadoFinanciero['totalPagado'], 2) ?> €</h3>
         <p>TOTAL PAGADO</p>
     </div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica">
-        <h3><?= number_format($datosEstadoFinanciero['precioCiclo'], 2) ?> �</h3>
+        <h3><?= number_format($datosEstadoFinanciero['precioCiclo'], 2) ?> €</h3>
         <p>PRECIO DEL CICLO</p>
     </div>
   </div>
   <div class="tarjeta-estadistica <?= ($datosEstadoFinanciero['restante'] > 0) ? 'tarjeta-estadistica-naranja' : 'tarjeta-estadistica-cian' ?>">
     <div class="info-estadistica">
-        <h3><?= number_format($datosEstadoFinanciero['restante'], 2) ?> �</h3>
+        <h3><?= number_format($datosEstadoFinanciero['restante'], 2) ?> €</h3>
         <p>PENDIENTE DE PAGO</p>
     </div>
   </div>
@@ -67,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>FECHA</th>
                     <th>CONCEPTO / TIPO</th>
                     <th>MONTO</th>
-                    <th>PR�XIMO PAGO</th>
+                    <th>PRÓXIMO PAGO</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
-                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> �</td>
+                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td>
                             <?php 
                                 if ($pagoIndividual['tipoPago'] == 'unico') {
@@ -101,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><i class="fas fa-info-circle"></i> Si detectas algún error en tus pagos, por favor contacta con administración a través de la sección de mensajería.</p>
+    <p>Si detectas algún error en tus pagos, por favor contacta con administración a través de la sección de mensajería.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

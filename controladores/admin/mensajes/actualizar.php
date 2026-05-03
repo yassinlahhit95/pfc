@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idReclamacion'])) {
+if (isset($_POST['idReclamacion'])) {
     $idReclamacion = trim($_POST['idReclamacion']);
     
     if (isset($_POST['guardarCambios'])) {

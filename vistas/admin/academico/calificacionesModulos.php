@@ -101,7 +101,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
             
             <?php if (!empty($listaEstudiantes)) { ?>
-                <div class="form-estandar-botones">
+                <div class="form-acciones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> GUARDAR TODAS LAS NOTAS
                     </button>

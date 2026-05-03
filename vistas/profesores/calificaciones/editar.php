@@ -9,7 +9,8 @@ if (!$idProfesor) {
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -18,7 +19,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $id = $_GET['id'] ?? null;
 
 if (!$id || !is_numeric($id)) {
-    $_SESSION['error'] = strtoupper("ID DE CALIFICACI�N NO V�LIDO.");
+    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
     header("Location: lista.php");
     exit;
 }
@@ -26,7 +27,7 @@ if (!$id || !is_numeric($id)) {
 $nota = obtenerCalificacionPorId($id);
 
 if (!$nota) {
-    $_SESSION['error'] = strtoupper("NO SE ENCONTR� LA CALIFICACI�N SOLICITADA.");
+    $_SESSION['error'] = strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.");
     header("Location: lista.php");
     exit;
 }
@@ -40,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Editar Calificaci�n</h1>
+    <h1>Editar Calificación</h1>
     <a href="lista.php" class="boton-secundario">? Volver</a>
 </div>
 
@@ -66,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>M�dulo *</label>
+                <label>Módulo *</label>
                 <select name="idModulo" disabled>
                     <?php foreach ($modulos as $mod) { ?>
                         <option value="<?= $mod['idModulo'] ?>" <?= $mod['idModulo'] == $nota['idModulo'] ? 'selected' : '' ?>><?= $mod['nombreModulo'] ?></option>
@@ -76,23 +77,35 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>1� Evaluaci�n</label>
-                <input type="text" name="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>">
+                <label>1 Evaluacin</label>
+                <input type="text" name="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>" class="<?= isset($errores['nota_1ev']) ? 'input-error' : '' ?>">
+                <?php if (isset($errores['nota_1ev'])) { ?>
+                    <strong class="error-campo"><?= $errores['nota_1ev'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>1� Final</label>
-                <input type="text" name="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>">
+                <label>1 Final</label>
+                <input type="text" name="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>" class="<?= isset($errores['nota_1final']) ? 'input-error' : '' ?>">
+                <?php if (isset($errores['nota_1final'])) { ?>
+                    <strong class="error-campo"><?= $errores['nota_1final'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>2� Evaluaci�n</label>
-                <input type="text" name="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>">
+                <label>2 Evaluacin</label>
+                <input type="text" name="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>" class="<?= isset($errores['nota_2ev']) ? 'input-error' : '' ?>">
+                <?php if (isset($errores['nota_2ev'])) { ?>
+                    <strong class="error-campo"><?= $errores['nota_2ev'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>2� Final</label>
-                <input type="text" name="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>">
+                <label>2 Final</label>
+                <input type="text" name="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>" class="<?= isset($errores['nota_2final']) ? 'input-error' : '' ?>">
+                <?php if (isset($errores['nota_2final'])) { ?>
+                    <strong class="error-campo"><?= $errores['nota_2final'] ?></strong>
+                <?php } ?>
             </div>
         </div>
 

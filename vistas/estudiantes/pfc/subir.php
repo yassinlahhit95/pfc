@@ -31,15 +31,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error">
-        <?= $error ?>
-    </div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
-
 <?php if ($exito) { ?>
-    <div class="mensaje-exito">
-        <?= $exito ?>
-    </div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -68,16 +63,16 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="fila-detalle">
-            <div class="etiqueta-detalle">Acciones del Archivo</div>
+            <div class="etiqueta-detalle">Acciones</div>
             <div class="valor-detalle">
                 <div class="disposicion-flexible separacion-media">
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario" download="<?= $nombreDescarga ?>">
-                        <i class="fas fa-download"></i> DESCARGAR PDF
+                        <i class="fas fa-download"></i> DESCARGAR
                     </a>
                     <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
                         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
                         <button type="submit" name="borrarTFG" class="boton-secundario color-error">
-                            <i class="fas fa-trash-alt"></i> ELIMINAR ENTREGA
+                            <i class="fas fa-trash-alt"></i> ELIMINAR
                         </button>
                     </form>
                 </div>
@@ -85,25 +80,27 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     <?php } ?>
 
-    <!-- INTEGRACIÓN DEL FORMULARIO DE SUBIDA -->
-    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data">
+    <div class="titulo-tarjeta mt-30">
+        <h3>SUBIR DOCUMENTACIÓN</h3>
+        <p class="subtitulo">Formatos aceptados: PDF, Word (.doc, .docx)</p>
+    </div>
+
+    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
-        <div class="fila-detalle">
-            <div class="etiqueta-detalle"><?= empty($tfg['archivoTFG']) ? 'Subir Trabajo' : 'Actualizar Archivo' ?></div>
-            <div class="valor-detalle">
-                <input type="file" name="archivoTFG" class="ancho-total">
-                <?php if (isset($errores['archivoTFG'])) { ?>
-                    <strong class="error-campo"><?= $errores['archivoTFG'] ?></strong>
-                <?php } ?>
-            </div>
+        <div class="campo-formulario">
+            <label><?= empty($tfg['archivoTFG']) ? 'Seleccionar Archivo' : 'Sustituir Archivo' ?></label>
+            <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx" class="<?= isset($errores['archivoTFG']) ? 'input-error' : '' ?>">
+            <?php if (isset($errores['archivoTFG'])) { ?>
+                <strong class="error-campo"><?= $errores['archivoTFG'] ?></strong>
+            <?php } ?>
         </div>
 
         <div class="form-acciones">
             <button type="submit" name="subirTFG" class="boton-primario">
                 <i class="fas fa-upload"></i> <?= empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG' ?>
             </button>
-            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = 'subir.php';">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarProfesor'])) {
+if (isset($_POST['actualizarProfesor'])) {
     $idProfesorActualizar = trim($_POST['idProfesor']);
     $nombreProfesorActualizar = trim($_POST['nombreProfesor']);
     $emailProfesorActualizar = trim($_POST['emailProfesor']);

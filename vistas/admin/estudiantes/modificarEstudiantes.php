@@ -121,7 +121,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="fechaAltaEstudiante" value="<?= $estudiante['fechaAltaEstudiante'] ?>">
         </div>
 
-        <div class="form-estandar-botones">
+        <div class="form-acciones">
             <button type="submit" name="actualizarEstudiante" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>

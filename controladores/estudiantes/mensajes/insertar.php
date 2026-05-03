@@ -1,55 +1,49 @@
 <?php
 session_start();
-require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-require_once __DIR__ . "/../../../modelos/directores.php";
-require_once __DIR__ . "/../../firebase/firebase_helper.php";
+require_once "../../../modelos/reclamaciones.php";
+require_once "../../../modelos/directores.php";
+require_once "../../firebase/firebase_helper.php";
 
 if (isset($_POST['enviarMensaje'])) {
-    // Saneamos las entradas
-    $idEstudiante = trim($_POST['idEstudiante']);
-    $idProfesor = trim($_POST['idProfesor']);
-    $asunto = trim($_POST['asunto']);
-    $descripcion = trim($_POST['descripcion']);
-    $fechaActual = date('Y-m-d');
+    $idEst = trim($_POST['idEstudiante']);
+    $idProf = trim($_POST['idProfesor']);
+    $asu = trim($_POST['asunto']);
+    $desc = trim($_POST['descripcion']);
+    $hoy = date('Y-m-d');
 
-    $hayError = false;
+    $errs = [];
 
-    if (empty($asunto) || empty($descripcion)) {
-        $_SESSION['error'] = "Todos los campos son obligatorios.";
-        $hayError = true;
-    } else if (strlen($descripcion) > 250) {
-        $_SESSION['error'] = "El mensaje es demasiado largo (máximo 250 caracteres).";
-        $hayError = true;
+    if (empty($asu)) $errs['asunto'] = "El asunto es obligatorio.";
+    if (empty($desc)) $errs['descripcion'] = "El mensaje es obligatorio.";
+    else if (strlen($desc) > 250) $errs['descripcion'] = "Máximo 250 caracteres.";
+
+    if (!empty($errs)) {
+        $_SESSION['errores'] = $errs;
+        $_SESSION['datos_mensaje'] = $_POST;
+        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
+        exit;
     }
 
-    if (!$hayError) {
-        $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'estudiante');
-        
-        if ($resultado) {
-            if (!empty($idProfesor)) {
-                // Notificar al profesor
-                $tokenProfesor = obtenerTokenUsuario($idProfesor, "profesor");
-                if ($tokenProfesor) {
-                    enviarNotificacionFirebase($tokenProfesor, "Mensaje de Estudiante: " . $asunto, $descripcion);
-                }
-            } else {
-                // Notificar a administración (directores)
-                $tokensDirectores = obtenerTokensDirectores();
-                foreach ($tokensDirectores as $tokenDirector) {
-                    enviarNotificacionFirebase($tokenDirector, "Mensaje de Estudiante a Dirección: " . $asunto, $descripcion);
-                }
-            }
-            
-            $_SESSION['exito'] = "Mensaje enviado.";
-            header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
-            exit;
-        } else {
-            $_SESSION['error'] = "Error al guardar el mensaje.";
-        }
-    }
+    $res = insertarNuevoMensaje($idEst, $idProf, $asu, $desc, $hoy, 'estudiante');
     
-    header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
-    exit;
+    if ($res) {
+        if (!empty($idProf)) {
+            $tokProf = obtenerTokenUsuario($idProf, "profesor");
+            if ($tokProf) enviarNotificacionFirebase($tokProf, "Mensaje de Estudiante: $asu", $desc);
+        } else {
+            $toksDirs = obtenerTokensDirectores();
+            foreach ($toksDirs as $tok) enviarNotificacionFirebase($tok, "Mensaje de Estudiante a Dirección: $asu", $desc);
+        }
+        
+        $_SESSION['exito'] = "Mensaje enviado.";
+        header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Error al guardar el mensaje.";
+        $_SESSION['datos_mensaje'] = $_POST;
+        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
+        exit;
+    }
 }
 
 header("Location: ../../../vistas/estudiantes/mensajes/lista.php");

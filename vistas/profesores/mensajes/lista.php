@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../../index.php");
+    header("Location: /pfc/index.php");
     exit;
 }
 
@@ -15,27 +15,25 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idProfesor = $_SESSION['idProfesor'];
 // Obtenemos los mensajes donde el profesor es emisor o destinatario
 $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
-// Nota: listarMensajesParaProfesor en el modelo actual solo saca los recibidos. 
-// Vamos a unificar para que vea ambos en la misma tabla como admin.
 
-$tituloDelPagina = "Buzón de Mensajes - Portal Profesores";
+$tituloPagina = "Buzón de Mensajes - Portal Profesores";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Buzón de Mensajes</h1>
-    <a href="agregar.php" class="boton-primario">
+    <a href="/pfc/vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> Redactar Mensaje
     </a>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito): ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-<?php if ($error) { ?>
+<?php endif; ?>
+<?php if ($error): ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php } ?>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -61,13 +59,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?= $esMio ? 'Tú (Profesor)' : $mensaje['nombreEstudiante'] ?></strong>
+                            <strong><?= $esMio ? 'Tú (Profesor)' : htmlspecialchars($mensaje['nombreEstudiante'] ?? '') ?></strong>
                         </td>
-                        <td><?= $mensaje['nombreCiclo'] ?: '-' ?></td>
-                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
+                        <td><?= htmlspecialchars($mensaje['nombreCiclo'] ?? '-') ?></td>
+                        <td><p class="texto-negrita"><?= htmlspecialchars(strtoupper($mensaje['asunto'])) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?= substr($mensaje['descripcion'], 0, 40) ?>...
+                                <?= htmlspecialchars(substr($mensaje['descripcion'], 0, 40)) ?>...
                             </div>
                         </td>
                         <td>
@@ -83,10 +81,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Ver mensaje">
+                                <a href="/pfc/vistas/profesores/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Ver mensaje">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
+                                <form action="/pfc/controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?= $mensaje['idReclamacion'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
@@ -102,6 +100,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 

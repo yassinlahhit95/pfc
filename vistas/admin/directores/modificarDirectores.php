@@ -106,7 +106,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
             </div>
         </div>
 
-        <div class="form-estandar-botones">
+        <div class="form-acciones">
             <button type="submit" name="actualizarDirector" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>

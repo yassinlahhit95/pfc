@@ -6,7 +6,7 @@ $exito = $_SESSION['exito'] ?? null;
 unset($_SESSION['error'], $_SESSION['exito']);
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../../index.php");
+    header("Location: /pfc/index.php");
     exit;
 }
 
@@ -15,24 +15,24 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idEstudiante = $_SESSION['idEstudiante'];
 $listaDeMensajes = listarMensajesDeEstudiante($idEstudiante);
 
-$tituloDelPagina = "Mis Mensajes - Portal Estudiantes";
+$tituloPagina = "Mis Mensajes - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>MIS MENSAJES</h1>
-    <a href="agregar.php" class="boton-primario">
+    <a href="/pfc/vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO MENSAJE
     </a>
 </div>
 
-<?php if ($error) { ?>
+<?php if ($error): ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
+<?php endif; ?>
+<?php if ($exito): ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aÃºn.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
@@ -58,16 +58,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <strong><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
-                                    echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
+                                    echo '(PROFESOR) ' . htmlspecialchars($mensaje['nombreProfesor']); 
                                 } else {
-                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . htmlspecialchars($mensaje['nombreProfesor']) : 'DIRECCIÃ“N (ADMIN)';
                                 }
                             ?></strong>
                         </td>
-                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
+                        <td><p class="texto-negrita"><?= htmlspecialchars(strtoupper($mensaje['asunto'])) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?= substr($mensaje['descripcion'], 0, 80) ?>...
+                                <?= htmlspecialchars(substr($mensaje['descripcion'], 0, 80)) ?>...
                             </div>
                         </td>
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                <a href="/pfc/vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -93,6 +93,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 

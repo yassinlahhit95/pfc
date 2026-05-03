@@ -1,10 +1,9 @@
 <?php
 session_start();
 
-// Validar que sea profesor
-$idProfLogueado = $_SESSION['idProfesor'] ?? '';
-if (!$idProfLogueado) {
-    header("Location: ../../../index.php");
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
+    header("Location: /pfc/index.php");
     exit;
 }
 
@@ -12,68 +11,66 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
-// Coger filtros de la URL
-$idCicloSeleccionado = intval($_GET['idCiclo'] ?? 0);
-$idModuloSeleccionado = intval($_GET['idModulo'] ?? 0);
+$idCiclo = intval($_GET['idCiclo'] ?? 0);
+$idModulo = intval($_GET['idModulo'] ?? 0);
 
-// Listas para los selects
-$listaMisCiclos = obtenerCiclosDeProfesor($idProfLogueado);
-$listaModulosFiltrados = [];
+$listaDeCiclos = obtenerCiclosDeProfesor($idProfesor);
+$listaDeModulos = [];
 
-if ($idCicloSeleccionado) {
-    $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCicloSeleccionado);
-    $misModulosAsignados = obtenerIdsModulosDeProfesor($idProfLogueado);
+if ($idCiclo) {
+    $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCiclo);
+    $misModulosAsignados = obtenerIdsModulosDeProfesor($idProfesor);
     
     foreach ($todosLosModulosDelCiclo as $moduloItem) {
         if (in_array($moduloItem['idModulo'], $misModulosAsignados)) {
-            $listaModulosFiltrados[] = $moduloItem;
+            $listaDeModulos[] = $moduloItem;
         }
     }
 }
 
-// Sacar alumnos si ya eligio modulo
-$listaAlumnos = [];
-if ($idModuloSeleccionado) {
-    $listaAlumnos = listarCalificacionesPorModulo($idModuloSeleccionado);
+$listaDeEstudiantes = [];
+if ($idModulo) {
+    $listaDeEstudiantes = listarCalificacionesPorModulo($idModulo);
 }
 
-// Mensajes de la sesion
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 
-$tituloDelPagina = "Calificaciones - Portal Profesores";
+$tituloPagina = "Calificaciones - Portal Profesores";
 $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificaciones por M�dulo</h1>
-    <p class="subtitulo">Aqui puedes poner las notas de todos tus alumnos a la vez</p>
+    <h1>Calificaciones por Módulo</h1>
+    <p class="subtitulo">Aquí puedes poner las notas de todos tus alumnos a la vez</p>
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="GET" action="agregar.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="GET" action="/pfc/vistas/profesores/calificaciones/agregar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>1. Selecciona el Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Elige un ciclo --</option>
-                <?php foreach ($listaMisCiclos as $c) { ?>
-                    <option value="<?= $c['idCiclo'] ?>" <?= $idCicloSeleccionado == $c['idCiclo'] ? 'selected' : '' ?>>
-                        <?= $c['nombreCiclo'] ?>
+                <?php foreach ($listaDeCiclos as $ciclo) { ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= $idCiclo == $ciclo['idCiclo'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($ciclo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Selecciona el M�dulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloSeleccionado) ? 'disabled' : '' ?>>
-                <option value="">-- Elige un modulo --</option>
-                <?php foreach ($listaModulosFiltrados as $m) { ?>
-                    <option value="<?= $m['idModulo'] ?>" <?= $idModuloSeleccionado == $m['idModulo'] ? 'selected' : '' ?>>
-                        <?= $m['nombreModulo'] ?>
+            <label>2. Selecciona el Módulo:</label>
+            <select name="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
+                <option value="">-- Elige un módulo --</option>
+                <?php foreach ($listaDeModulos as $modulo) { ?>
+                    <option value="<?= $modulo['idModulo'] ?>" <?= $idModulo == $modulo['idModulo'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($modulo['nombreModulo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -81,38 +78,38 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito): ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-<?php if ($error) { ?>
+<?php endif; ?>
+<?php if ($error): ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php } ?>
+<?php endif; ?>
 
-<?php if ($idModuloSeleccionado) { ?>
+<?php if ($idModulo) { ?>
     <div class="tarjeta-blanca margen-arriba">
-        <form action="../../../controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
-            <input type="hidden" name="idModulo" value="<?= $idModuloSeleccionado ?>">
-            <input type="hidden" name="idCiclo" value="<?= $idCicloSeleccionado ?>">
+        <form action="/pfc/controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
+            <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
+            <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
                             <th>Alumno</th>
-                            <th>1� Ev</th>
-                            <th>1� Final</th>
-                            <th>2� Ev</th>
-                            <th>2� Final</th>
+                            <th>1ª Ev</th>
+                            <th>1ª Final</th>
+                            <th>2ª Ev</th>
+                            <th>2ª Final</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($listaAlumnos)) { ?>
-                            <tr><td colspan="6" class="sin-datos">No hay alumnos en este ciclo todavia.</td></tr>
+                        <?php if (empty($listaDeEstudiantes)) { ?>
+                            <tr><td colspan="6" class="sin-datos">No hay alumnos en este ciclo todavía.</td></tr>
                         <?php } else { ?>
-                            <?php foreach ($listaAlumnos as $alu) { 
-                                $idA = $alu['idEstudiante'];
-                                $notas = obtenerNotasModulo($idA, $idModuloSeleccionado);
+                            <?php foreach ($listaDeEstudiantes as $estudiante) { 
+                                $idEstudiante = $estudiante['idEstudiante'];
+                                $notas = obtenerNotasModulo($idEstudiante, $idModulo);
                                 
                                 $v1 = $notas['nota_1ev'] ?? '';
                                 $v1f = $notas['nota_1final'] ?? '';
@@ -122,23 +119,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?= $alu['nombreEstudiante'] ?></strong>
-                                    <input type="hidden" name="estudiantes[]" value="<?= $idA ?>">
+                                    <strong><?= htmlspecialchars($estudiante['nombreEstudiante']) ?></strong>
+                                    <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1ev[]" value="<?= $v1 ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_1ev[]" value="<?= htmlspecialchars($v1) ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1final[]" value="<?= $v1f ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_1final[]" value="<?= htmlspecialchars($v1f) ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2ev[]" value="<?= $v2 ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_2ev[]" value="<?= htmlspecialchars($v2) ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2final[]" value="<?= $v2f ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_2final[]" value="<?= htmlspecialchars($v2f) ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="observaciones[]" value="<?= $vobs ?>" class="ancho-total">
+                                    <input type="text" name="observaciones[]" value="<?= htmlspecialchars($vobs) ?>" class="ancho-total">
                                 </td>
                             </tr>
                             <?php } ?>
@@ -147,15 +144,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </table>
             </div>
             
-            <?php if (!empty($listaAlumnos)) { ?>
-                <div class="margen-arriba disposicion-flexible alinear-centro separacion-media">
+            <?php if (!empty($listaDeEstudiantes)) { ?>
+                <div class="form-acciones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar todas las Notas
                     </button>
-                    <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
-                        <i class="fas fa-eraser"></i> Limpiar
-                    </button>
-                    <label class="etiqueta-notificacion">
+                    <label class="etiqueta-notificacion ml-auto">
                         <input type="checkbox" name="notificarEstudiantes" value="1"> 
                         <i class="fas fa-envelope"></i> Enviar aviso por email
                     </label>
@@ -165,6 +159,4 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 <?php } ?>
 
-<?php include '../comunes/footer.php'; ?>
-
-
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

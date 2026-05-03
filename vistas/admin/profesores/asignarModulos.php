@@ -69,7 +69,6 @@ foreach ($todos_los_modulos as $m) {
             <button type="submit" name="actualizarModulos" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Asignaciones
             </button>
-            <a href="verProfesores.php" class="boton-secundario ml-10">Cancelar</a>
         </div>
     </form>
 </div>

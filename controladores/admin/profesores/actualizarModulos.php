@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarModulos'])) {
+if (isset($_POST['actualizarModulos'])) {
     $idProfesorAsignacion = intval(trim($_POST['idProfesor']));
     $listaModulosSeleccionados = isset($_POST['modulos']) ? $_POST['modulos'] : [];
 

@@ -1,8 +1,13 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
+
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../../index.php");
+    header("Location: /pfc/index.php");
     exit;
 }
 
@@ -12,25 +17,32 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
-    header("Location: lista.php");
+    header("Location: /pfc/vistas/profesores/mensajes/lista.php");
     exit;
 }
 
-$tituloDelPagina = "Gestionar Mensaje - Portal Profesores";
+$tituloPagina = "Gestionar Mensaje - Portal Profesores";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
 </div>
+
+<?php if ($error): ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito): ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible espacio-entre-elementos margen-abajo">
         <div>
             <p class="texto-atenuado">Enviado por:</p>
-            <h3><?= $mensaje['nombreEstudiante'] ?></h3>
+            <h3><?= htmlspecialchars($mensaje['nombreEstudiante']) ?></h3>
         </div>
         <div>
             <p class="texto-atenuado">Fecha:</p>
@@ -39,33 +51,33 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="tarjeta-gris-suave margen-abajo">
-        <p class="texto-negrita"><?= $mensaje['asunto'] ?></p>
+        <p class="texto-negrita"><?= htmlspecialchars($mensaje['asunto']) ?></p>
         <hr class="mt-5 margen-abajo">
-        <p><?= nl2br($mensaje['descripcion']) ?></p>
+        <p><?= nl2br(htmlspecialchars($mensaje['descripcion'])) ?></p>
     </div>
 
-    <form action="../../../controladores/profesores/mensajes/actualizar.php" method="POST">
+    <form action="/pfc/controladores/profesores/mensajes/actualizar.php" method="POST">
         <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
         
         <div class="campo-formulario">
             <label>Tu Respuesta / Explicación:</label>
-            <textarea name="respuesta" rows="4" placeholder="Escribe aquí tu respuesta..."><?= $mensaje['respuesta'] ?></textarea>
+            <textarea name="respuesta" rows="4" placeholder="Escribe aquí tu respuesta..." class="<?= isset($errores['respuesta']) ? 'input-error' : '' ?>"><?= htmlspecialchars($mensaje['respuesta']) ?></textarea>
+            <?php if (isset($errores['respuesta'])): ?>
+                <strong class="error-campo"><?= $errores['respuesta'] ?></strong>
+            <?php endif; ?>
         </div>
 
-        <div class="disposicion-flexible separacion-grande margen-arriba">
+        <div class="form-acciones">
             <button type="submit" name="guardarRespuesta" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Respuesta
             </button>
             <button type="submit" name="marcarLeido" class="boton-secundario">
                 <i class="fas fa-check"></i> Solo marcar como Leído
             </button>
-            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
-            </button>
         </div>
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 

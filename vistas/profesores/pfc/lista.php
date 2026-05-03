@@ -15,13 +15,13 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 $idProfesor = $_SESSION['idProfesor'];
 $tfgs = listarTFGsPorProfesor($idProfesor);
 
-$tituloDelPagina = "Gestión de TFGs - Portal Profesores";
+$tituloDelPagina = "GestiÃ³n de TFGs - Portal Profesores";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Gestión de TFGs Entregados</h1>
+    <h1>GestiÃ³n de TFGs Entregados</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavía.</td>
+                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavia.</td>
                     </tr>
                 <?php } ?>
             </tbody>

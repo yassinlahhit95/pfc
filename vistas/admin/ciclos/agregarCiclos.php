@@ -99,7 +99,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="form-estandar-botones">
+        <div class="form-acciones">
             <button type="submit" name="guardarCiclo" class="boton-primario">
                 <i class="fas fa-save"></i> Crear Ciclo Formativo
             </button>

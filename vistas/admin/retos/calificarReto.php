@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaEstudiantes as $estudiante) { 
-                        $notaActual = obtenerCalificacion($estudiante['idEstudiante'], $id);
+                        $notaActual = obtenerCalificacionReto($estudiante['idEstudiante'], $id);
                     ?>
                     <tr>
                         <td><?= $estudiante['nombreEstudiante'] ?></td>

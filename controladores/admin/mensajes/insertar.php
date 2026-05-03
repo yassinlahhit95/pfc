@@ -6,7 +6,7 @@ require_once __DIR__ . "/../../firebase/firebase_helper.php";
 $hayError = false;
 $errores = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviarMensaje'])) {
+if (isset($_POST['enviarMensaje'])) {
     $idEstudianteDestino = isset($_POST['idEstudiante']) ? trim($_POST['idEstudiante']) : null;
     $idProfesorDestino = isset($_POST['idProfesor']) ? trim($_POST['idProfesor']) : null;
     $rolEmisorMensaje = isset($_POST['emisor_rol']) ? trim($_POST['emisor_rol']) : 'admin';

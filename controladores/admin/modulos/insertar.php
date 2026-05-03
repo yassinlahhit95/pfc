@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarModulo'])) {
+if (isset($_POST['guardarModulo'])) {
     $nombreNuevoModulo = trim($_POST['nombreModulo']);
     $idCicloNuevoModulo = trim($_POST['idCiclo']);
     $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);

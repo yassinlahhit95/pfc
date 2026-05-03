@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $hayError = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idEstudiante'])) {
+if (isset($_POST['idEstudiante'])) {
     $idEstudiantePfc = trim($_POST['idEstudiante']);
     $nombreFicheroPfc = trim($_POST['nombreArchivo']);
 

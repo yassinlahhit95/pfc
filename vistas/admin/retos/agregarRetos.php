@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="form-estandar-botones">
+        <div class="form-acciones">
             <button type="submit" name="guardarReto" class="boton-primario">
                 <i class="fas fa-save"></i> Crear Reto
             </button>

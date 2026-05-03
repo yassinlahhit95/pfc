@@ -120,7 +120,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
         </div>
 
-        <div class="form-estandar-botones">
+        <div class="form-acciones">
             <button type="submit" name="guardarEstudiante" class="boton-primario">Registrar Estudiante</button>
             <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar

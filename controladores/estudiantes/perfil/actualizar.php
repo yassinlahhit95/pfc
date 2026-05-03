@@ -1,61 +1,65 @@
 <?php
 session_start();
-require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once "../../../modelos/estudiantes.php";
 
 if (isset($_POST['actualizarPerfil'])) {
-    $idEstudiante = trim($_POST['idEstudiante']);
-    $nombre = trim($_POST['nombreEstudiante']);
-    $email = strtolower(trim($_POST['emailEstudiante']));
-    $telefono = trim($_POST['telefonoEstudiante']);
-    
-    // Captura de datos de seguridad
-    $passwordActual = $_POST['current_password'];
-    $passwordNueva = $_POST['new_password'];
+    $idEst = trim($_POST['idEstudiante']);
+    $nom = trim($_POST['nombreEstudiante']);
+    $eml = strtolower(trim($_POST['emailEstudiante']));
+    $tel = trim($_POST['telefonoEstudiante']);
 
-    $hayError = false;
+    $pwdAct = $_POST['current_password'] ?? '';
+    $pwdNva = $_POST['new_password'] ?? '';
 
-    if (empty($idEstudiante)) {
+    $errs = [];
+
+    if (empty($idEst)) {
         header("Location: ../../../vistas/estudiantes/perfil/ver.php");
         exit;
     }
 
-    if (empty($nombre) || empty($email)) {
-        $_SESSION['error'] = "Nombre y correo obligatorios.";
-        $hayError = true;
-    }
+    if (empty($nom)) $errs['nombreEstudiante'] = "El nombre es obligatorio.";
+    if (empty($eml)) $errs['emailEstudiante'] = "El correo es obligatorio.";
+    else if (!filter_var($eml, FILTER_VALIDATE_EMAIL)) $errs['emailEstudiante'] = "Formato de correo inválido.";
 
-    // Proceso de cambio de contraseña
-    if (!$hayError && !empty($passwordNueva)) {
-        if (empty($passwordActual)) {
-            $_SESSION['error'] = "Ingresa tu contraseña actual.";
-            $hayError = true;
+    if (!empty($pwdNva)) {
+        if (empty($pwdAct)) {
+            $errs['current_password'] = "Ingresa tu contraseña actual.";
         } else {
-            $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
-            
-            if ($datosEstudiante['password'] == $passwordActual) {
-                actualizarPasswordEstudiante($idEstudiante, $passwordNueva);
-            } else {
-                $_SESSION['error'] = "Contraseña actual incorrecta.";
-                $hayError = true;
+            $est = obtenerEstudiantePorId($idEst);
+            if ($est['password'] !== $pwdAct) {
+                $errs['current_password'] = "Contraseña actual incorrecta.";
+            } else if (strlen($pwdNva) < 6) {
+                $errs['new_password'] = "Mínimo 6 caracteres.";
             }
         }
     }
 
-    if (!$hayError) {
-        $resultado = actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono);
-        
-        if ($resultado) {
-            $_SESSION['exito'] = "Datos guardados.";
-            header("Location: ../../../vistas/estudiantes/perfil/ver.php");
-            exit;
-        } else {
-            $_SESSION['error'] = "Error al guardar los datos.";
-        }
+    if (!empty($errs)) {
+        $_SESSION['errores'] = $errs;
+        $_SESSION['datos_perfil'] = $_POST;
+        header("Location: ../../../vistas/estudiantes/perfil/editar.php");
+        exit;
     }
 
-    header("Location: ../../../vistas/estudiantes/perfil/editar.php");
-    exit;
+    if (!empty($pwdNva)) {
+        actualizarPasswordEstudiante($idEst, $pwdNva);
+    }
+
+    $res = actualizarPerfilEstudiante($idEst, $nom, $eml, $tel);
+
+    if ($res) {
+        $_SESSION['exito'] = "Perfil actualizado correctamente.";
+        header("Location: ../../../vistas/estudiantes/perfil/ver.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Error al guardar los datos.";
+        $_SESSION['datos_perfil'] = $_POST;
+        header("Location: ../../../vistas/estudiantes/perfil/editar.php");
+        exit;
+    }
 }
 
 header("Location: ../../../vistas/estudiantes/perfil/ver.php");
 exit;
+

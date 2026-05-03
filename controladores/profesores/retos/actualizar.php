@@ -1,33 +1,41 @@
 <?php
 session_start();
-require_once __DIR__ . "/../../../modelos/retos.php";
+require_once "../../../modelos/retos.php";
 
 if (isset($_POST['actualizarReto'])) {
     $idReto = trim($_POST['idReto']);
-    $nombreReto = trim($_POST['nombreReto']);
-    $fechaInicio = trim($_POST['fechaInicio']);
-    $fechaFin = trim($_POST['fechaFin']);
-    $horasReto = trim($_POST['horasReto']);
+    $nom = trim($_POST['nombreReto']);
+    $fIni = trim($_POST['fechaInicio']);
+    $fFin = trim($_POST['fechaFin']);
+    $hrs = trim($_POST['horasReto']);
 
-    $hayError = false;
+    $errs = [];
 
     if (empty($idReto)) {
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
     }
 
-    if (empty($nombreReto)) {
-        $_SESSION['error'] = "El nombre del reto es obligatorio.";
-        $hayError = true;
+    if (empty($nom)) $errs['nombreReto'] = "El nombre del reto es obligatorio.";
+    if (empty($fIni)) $errs['fechaInicio'] = "La fecha de inicio es obligatoria.";
+    if (empty($fFin)) $errs['fechaFin'] = "La fecha de fin es obligatoria.";
+    if (empty($hrs)) $errs['horasReto'] = "Las horas son obligatorias.";
+
+    if (!empty($errs)) {
+        $_SESSION['errores'] = $errs;
+        header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
+        exit;
     }
 
-    if (!$hayError) {
-        $resultado = actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto);
-        if ($resultado) {
-            $_SESSION['exito'] = "Reto actualizado.";
-        } else {
-            $_SESSION['error'] = "Error al actualizar el reto.";
-        }
+    $res = actualizarReto($idReto, $nom, $fIni, $fFin, $hrs);
+    if ($res) {
+        $_SESSION['exito'] = "Reto actualizado correctamente.";
+        header("Location: ../../../vistas/profesores/retos/lista.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Error al actualizar el reto.";
+        header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
+        exit;
     }
 }
 

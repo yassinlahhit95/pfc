@@ -34,18 +34,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Calificaciones por Módulo</h3>
+        <h3>Calificaciones por MÃ³dulo</h3>
     </div>
     
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Módulo</th>
-                    <th>1ª Ev</th>
-                    <th>1ª Final</th>
-                    <th>2ª Ev</th>
-                    <th>2ª Final</th>
+                    <th>MÃ³dulo</th>
+                    <th>1Âº Ev</th>
+                    <th>1Âº Final</th>
+                    <th>2Âº Ev</th>
+                    <th>2Âº Final</th>
                     <th>Estado</th>
                     <th>Observaciones</th>
                 </tr>
@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">
-                            <i class="fas fa-inbox"></i> No hay calificaciones registradas.
+                            No hay calificaciones registradas.
                         </td>
                     </tr>
                 <?php } ?>

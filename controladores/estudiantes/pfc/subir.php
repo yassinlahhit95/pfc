@@ -17,13 +17,22 @@ if (isset($_POST['subirTFG'])) {
         } else {
             $listaErrores['archivoTFG'] = "Error al subir el archivo (Código: " . $archivoTFG['error'] . ").";
         }
+    } else {
+        // Validar extensión (PDF o Word)
+        $ext = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
+        $permitidos = ['pdf', 'doc', 'docx'];
+        
+        if (!in_array($ext, $permitidos)) {
+            $listaErrores['archivoTFG'] = "Solo se permiten archivos PDF o Word (.doc, .docx).";
+        }
     }
 
     if (empty($listaErrores)) {
         $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
         $nombreLimpio = str_replace(' ', '_', $datosEstudiante['nombreEstudiante']);
         $timestamp = date('d-m-Y_H-i-s');
-        $nombreArchivo = "TFG_" . $nombreLimpio . "_" . $timestamp . ".pdf";
+        $extOriginal = pathinfo($archivoTFG['name'], PATHINFO_EXTENSION);
+        $nombreArchivo = "TFG_" . $nombreLimpio . "_" . $timestamp . "." . $extOriginal;
         
         $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
 

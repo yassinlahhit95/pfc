@@ -19,7 +19,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Pr髕imos Eventos y Fechas Clave</h1>
+    <h1>Pr贸ximos Eventos y Fechas Clave</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -36,14 +36,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <tr>
                     <th>Fecha</th>
                     <th>Hora</th>
-                    <th>T韙ulo</th>
-                    <th>Descripci髇</th>
-                    <th>Ubicaci髇</th>
+                    <th>T铆tulo</th>
+                    <th>Descripci贸n</th>
+                    <th>Ubicaci贸n</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($eventos)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay eventos programados pr髕imamente.</td></tr>
+                    <tr><td colspan="5" class="sin-datos">No hay eventos programados pr贸ximamente.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($eventos as $ev) { ?>
                     <tr>

@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="etiqueta-detalle">TelÃ©fono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
@@ -69,7 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Dirección</div>
+        <div class="etiqueta-detalle">DirecciÃ³n</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] ?></div>
     </div>
 

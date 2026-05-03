@@ -3,11 +3,11 @@ session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
-    header("Location: ../../../index.php");
+    header("Location: /pfc/index.php");
     exit;
 }
 
-$tituloDelPagina = "Notas de Retos - Portal Profesores";
+$tituloPagina = "Notas de Retos - Portal Profesores";
 $seccionActual = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -16,30 +16,30 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$id_ciclo_elegido = intval($_GET['idCiclo'] ?? 0);
-$id_modulo_elegido = intval($_GET['idModulo'] ?? 0);
-$id_reto_elegido = intval($_GET['idReto'] ?? 0);
+$idCiclo = intval($_GET['idCiclo'] ?? 0);
+$idModulo = intval($_GET['idModulo'] ?? 0);
+$idReto = intval($_GET['idReto'] ?? 0);
 
-$todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
-
-$modulos_filtrados = [];
-if ($id_ciclo_elegido) {
-    $modulos_filtrados = obtenerModulosDeProfesorPorCiclo($idProfesor, $id_ciclo_elegido);
+$listaDeCiclos = obtenerCiclosDeProfesor($idProfesor);
+$listaDeModulos = [];
+if ($idCiclo) {
+    $listaDeModulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
 }
 
-$retos_filtrados = [];
-if ($id_modulo_elegido) {
-    $retos_filtrados = listarRetosFiltrados($id_modulo_elegido);
+$listaDeRetos = [];
+if ($idModulo) {
+    $listaDeRetos = listarRetosFiltrados($idModulo);
 }
 
-$estudiantes_lista = [];
-if ($id_reto_elegido) {
-    $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
+$listaDeEstudiantes = [];
+if ($idReto) {
+    $listaDeEstudiantes = listarEstudiantesPorCiclo($idCiclo);
 }
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 ?>
 
 <div class="encabezado-pagina">
@@ -47,26 +47,26 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="GET" action="retos.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="GET" action="/pfc/vistas/profesores/calificaciones/retos.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>1. Seleccione Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($todos_los_ciclos as $cicItem) { ?>
-                    <option value="<?= $cicItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicItem['idCiclo'] ? 'selected' : '' ?>>
-                        <?= $cicItem['nombreCiclo'] ?>
+                <?php foreach ($listaDeCiclos as $ciclo) { ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= $idCiclo == $ciclo['idCiclo'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($ciclo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Seleccione Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?= empty($id_ciclo_elegido) ? 'disabled' : '' ?>>
+            <label>2. Seleccione MÃ³dulo:</label>
+            <select name="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($modulos_filtrados as $modItem) { ?>
-                    <option value="<?= $modItem['idModulo'] ?>" <?= $id_modulo_elegido == $modItem['idModulo'] ? 'selected' : '' ?>>
-                        <?= $modItem['nombreModulo'] ?>
+                <?php foreach ($listaDeModulos as $modulo) { ?>
+                    <option value="<?= $modulo['idModulo'] ?>" <?= $idModulo == $modulo['idModulo'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($modulo['nombreModulo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -74,11 +74,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
         <div class="campo-formulario flexible-rellenar">
             <label>3. Seleccione Reto:</label>
-            <select name="idReto" onchange="this.form.submit()" <?= empty($id_modulo_elegido) ? 'disabled' : '' ?>>
+            <select name="idReto" onchange="this.form.submit()" <?= empty($idModulo) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($retos_filtrados as $retoItem) { ?>
-                    <option value="<?= $retoItem['idReto'] ?>" <?= $id_reto_elegido == $retoItem['idReto'] ? 'selected' : '' ?>>
-                        <?= $retoItem['nombreReto'] ?>
+                <?php foreach ($listaDeRetos as $reto) { ?>
+                    <option value="<?= $reto['idReto'] ?>" <?= $idReto == $reto['idReto'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($reto['nombreReto']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -86,19 +86,19 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </form>
 </div>
 
-<?php if ($exito) { ?>
+<?php if ($exito): ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-<?php if ($error) { ?>
+<?php endif; ?>
+<?php if ($error): ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php } ?>
+<?php endif; ?>
 
-<?php if ($id_reto_elegido) { ?>
+<?php if ($idReto) { ?>
     <div class="tarjeta-blanca margen-arriba">
-        <form action="../../../controladores/profesores/calificaciones/calificarRetos.php" method="POST">
-            <input type="hidden" name="idReto" value="<?= $id_reto_elegido ?>">
-            <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
-            <input type="hidden" name="idModulo" value="<?= $id_modulo_elegido ?>">
+        <form action="/pfc/controladores/profesores/calificaciones/calificarRetos.php" method="POST">
+            <input type="hidden" name="idReto" value="<?= $idReto ?>">
+            <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
+            <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
             
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
@@ -109,20 +109,20 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($estudiantes_lista)) { ?>
+                        <?php if (empty($listaDeEstudiantes)) { ?>
                             <tr><td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                         <?php } else { ?>
-                            <?php foreach ($estudiantes_lista as $estudianteItem) { 
-                                $idEstudianteFila = $estudianteItem['idEstudiante'];
-                                $notaRetoActual = obtenerCalificacion($idEstudianteFila, $id_reto_elegido);
+                            <?php foreach ($listaDeEstudiantes as $estudiante) { 
+                                $idEstudiante = $estudiante['idEstudiante'];
+                                $notaRetoActual = obtenerCalificacionReto($idEstudiante, $idReto);
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?= strtoupper($estudianteItem['nombreEstudiante']) ?></strong>
-                                    <input type="hidden" name="estudiantes[]" value="<?= $idEstudianteFila ?>">
+                                    <strong><?= htmlspecialchars(strtoupper($estudiante['nombreEstudiante'])) ?></strong>
+                                    <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas[]" value="<?= $notaRetoActual ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas[]" value="<?= htmlspecialchars($notaRetoActual) ?>" class="ancho-ajustable-nota">
                                 </td>
                             </tr>
                             <?php } ?>
@@ -131,8 +131,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </table>
             </div>
             
-            <?php if (!empty($estudiantes_lista)) { ?>
-                <div class="margen-arriba">
+            <?php if (!empty($listaDeEstudiantes)) { ?>
+                <div class="form-acciones">
                     <button type="submit" name="guardarNotasReto" class="boton-primario">
                         <i class="fas fa-save"></i> Guardar Notas del Reto
                     </button>
@@ -142,6 +142,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </div>
 <?php } ?>
 
-<?php include '../comunes/footer.php'; ?>
-
-
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

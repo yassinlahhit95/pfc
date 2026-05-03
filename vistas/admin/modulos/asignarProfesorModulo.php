@@ -61,7 +61,6 @@ unset($_SESSION['error']);
             <button type="submit" name="actualizarProfesores" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
-            <a href="verModulos.php" class="boton-secundario ml-10">Cancelar</a>
         </div>
     </form>
 </div>

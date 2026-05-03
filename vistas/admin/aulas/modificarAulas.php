@@ -1,25 +1,37 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Aula - Admin";
-$seccion = 'aulas';
-include_once __DIR__ . "/../comunes/nav.php";
+
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../index.php");
+    exit;
+}
 
 require_once __DIR__ . "/../../../modelos/aulas.php";
 
-$id_aula = $_GET['idAula'] ?? '';
-$la_aula = obtenerAulaPorId($id_aula);
+$id = $_GET['idAula'] ?? '';
+$aula = obtenerAulaPorId($id);
 
-if (!$la_aula) {
+if (!$aula) {
     header("Location: verAulas.php");
     exit;
 }
 
-$la_aula = ($_SESSION['datos_aulas'] ?? 0);
+// Si hay datos de un intento previo fallido, los usamos
+$datosForm = $_SESSION['datos_aulas'] ?? [];
+if (!empty($datosForm)) {
+    foreach ($datosForm as $k => $v) {
+        $aula[$k] = $v;
+    }
+}
 
 $error = $_SESSION['error'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errs = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_aulas']);
+
+$titulo_pagina = "Modificar Aula - Admin";
+$seccion = 'aulas';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -32,20 +44,22 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="../../../controladores/admin/aulas/actualizar.php">
-        <input type="hidden" name="idAula" value="<?= $id_aula ?>">
+    <form method="POST" action="../../../controladores/admin/aulas/actualizar.php" class="form-estandar">
+        <input type="hidden" name="idAula" value="<?= $id ?>">
+        
         <div class="campo-formulario">
             <label>Nombre del Aula</label>
-            <input type="text" name="nombreAula" value="<?= $aula['nombreAula'] ?>">
-            <?php if (isset($lista_de_errores['nombreAula'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['nombreAula'] ?></strong>
+            <input type="text" name="nombreAula" value="<?= $aula['nombreAula'] ?>" class="<?= isset($errs['nombreAula']) ? 'input-error' : '' ?>">
+            <?php if (isset($errs['nombreAula'])) { ?>
+                <strong class="error-campo"><?= $errs['nombreAula'] ?></strong>
             <?php } ?>
         </div>
-        <div class="margen-arriba disposicion-flexible separacion-media">
+
+        <div class="form-acciones">
             <button type="submit" name="actualizarAula" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Cambios
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
@@ -53,5 +67,3 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
