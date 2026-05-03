@@ -20,18 +20,6 @@
         z-index: 2000;
     }
 
-    .barra-lateral {
-        width: 260px;
-        left: -260px;
-        transition: all 0.3s ease;
-        top: 0;
-        height: 100vh;
-    }
-
-    .barra-lateral.activo {
-        left: 0;
-    }
-
     .contenido-derecha,
     .contenido-principal {
         margin-left: 0 !important;
@@ -39,6 +27,7 @@
         padding: 15px;
         padding-top: 85px; /* ESPACIO PARA NAVBAR SUPERIOR */
     }
+}
 
 
 @media (max-width: 576px) {

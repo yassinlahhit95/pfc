@@ -1,12 +1,11 @@
 <?php
-// Comprobaci�n de seguridad: Solo administradores pueden ver esta navegaci�n
+// Comprobación de seguridad: Solo administradores pueden ver esta navegación
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../../index.php");
     exit;
 }
 
-// Calculamos la ruta base de forma din�mica para que los estilos carguen siempre bien
-// Contamos cu�ntas carpetas hay entre este archivo y la ra�z de 'vistas'
+// Calculamos la ruta base de forma dinámica para que los estilos carguen siempre bien
 $URL_ACTUAL = $_SERVER['PHP_SELF'];
 $partesRuta = explode('/vistas/', $URL_ACTUAL);
 $rutaRelativaVistas = $partesRuta[1] ?? '';
@@ -18,7 +17,7 @@ require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-// Obtenemos todos los contadores para las etiquetas del men�
+// Obtenemos todos los contadores para las etiquetas del menú
 $cantidadAlumnosMenu = contarEstudiantes();
 $cantidadProfesoresMenu = contarProfesores();
 $cantidadDirectoresMenu = contarDirectores();
@@ -53,7 +52,8 @@ $cantidadTFGMenu = contarTFGsSubidos();
 
 <header class="navbar-superior">
     <div class="logo-navbar-contenedor">
-        <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar">
+        <img src="/pfc/public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar logo-navbar-png">
+        <img src="/pfc/public/imagenes/aulapro.jpeg" alt="Logo AulaPro" class="logo-navbar logo-navbar-jpeg">
     </div>
     <div class="menu-superior">
         <ul class="navbar-nav">
@@ -69,7 +69,8 @@ $cantidadTFGMenu = contarTFGsSubidos();
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo">
+            <img src="/pfc/public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo sidebar-logo-png">
+            <img src="/pfc/public/imagenes/aulapro.jpeg" alt="Logo AulaPro" class="sidebar-logo sidebar-logo-jpeg">
             <div class="titulo-panel-sidebar">ADMIN PANEL</div>
         </div>
 
@@ -192,6 +193,7 @@ $cantidadTFGMenu = contarTFGsSubidos();
     function toggleMenu() {
         var sidebar = document.getElementById('barraLateral');
         sidebar.classList.toggle('activo');
+        document.body.classList.toggle('menu-abierto');
     }
     </script>
 
@@ -200,5 +202,3 @@ $cantidadTFGMenu = contarTFGsSubidos();
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="d-none"></div>
         <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
-
-

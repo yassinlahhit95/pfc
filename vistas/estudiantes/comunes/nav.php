@@ -4,7 +4,7 @@ if (empty($_SESSION['idEstudiante'])) {
     exit;
 }
 
-// Calculamos la ruta base de forma din�mica
+// Calculamos la ruta base de forma dinámica
 $URL_ACTUAL = $_SERVER['PHP_SELF'];
 $partesRuta = explode('/vistas/', $URL_ACTUAL);
 $rutaRelativaVistas = $partesRuta[1] ?? '';
@@ -44,7 +44,8 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
 
 <header class="navbar-superior">
     <div class="logo-navbar-contenedor">
-        <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar">
+        <img src="/pfc/public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar logo-navbar-png">
+        <img src="/pfc/public/imagenes/aulapro.jpeg" alt="Logo AulaPro" class="logo-navbar logo-navbar-jpeg">
     </div>
     <div class="menu-superior">
         <ul class="navbar-nav">
@@ -60,7 +61,8 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo">
+            <img src="/pfc/public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo sidebar-logo-png">
+            <img src="/pfc/public/imagenes/aulapro.jpeg" alt="Logo AulaPro" class="sidebar-logo sidebar-logo-jpeg">
             <div class="titulo-panel-sidebar">ESTUDIANTES PANEL</div>
         </div>
 
@@ -103,7 +105,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
-                    <i class="fas fa-envelope"></i> <span>MENSAJER�A</span>
+                    <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
                     <span class="etiqueta-contador <?= ($cantMensajesNoLeidosEst > 0) ? 'alerta-roja' : '' ?>"><?= $cantMensajesEst ?></span>
                 </a>
 
@@ -125,7 +127,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="<?= $ruta_base ?>controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESI�N</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?= date('Y') ?> Yassin Lahhit<br>Fingerprint Verified
@@ -138,6 +140,7 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
     function toggleMenu() {
         var sidebar = document.getElementById('barraLateral');
         sidebar.classList.toggle('activo');
+        document.body.classList.toggle('menu-abierto');
     }
     </script>
 
@@ -146,5 +149,3 @@ $cantRetosEst = count(listarCalificacionesRetoPorEstudiante($idEstMenu));
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idEstudiante'] ?>" data-user-role="estudiante" class="d-none"></div>
         <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
-
-

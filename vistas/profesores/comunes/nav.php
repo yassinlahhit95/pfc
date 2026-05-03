@@ -4,7 +4,7 @@ if (empty($_SESSION['idProfesor'])) {
     exit;
 }
 
-// Calculamos la ruta base de forma din�mica
+// Calculamos la ruta base de forma dinámica
 $URL_ACTUAL = $_SERVER['PHP_SELF'];
 $partesRuta = explode('/vistas/', $URL_ACTUAL);
 $rutaRelativaVistas = $partesRuta[1] ?? '';
@@ -41,7 +41,8 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
 
 <header class="navbar-superior">
     <div class="logo-navbar-contenedor">
-        <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar">
+        <img src="/pfc/public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar logo-navbar-png">
+        <img src="/pfc/public/imagenes/aulapro.jpeg" alt="Logo AulaPro" class="logo-navbar logo-navbar-jpeg">
     </div>
     <div class="menu-superior">
         <ul class="navbar-nav">
@@ -57,7 +58,8 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo">
+            <img src="/pfc/public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo sidebar-logo-png">
+            <img src="/pfc/public/imagenes/aulapro.jpeg" alt="Logo AulaPro" class="sidebar-logo sidebar-logo-jpeg">
             <div class="titulo-panel-sidebar">PROFESORES PANEL</div>
         </div>
 
@@ -67,7 +69,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
             </a>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">GESTI�N ACAD�MICA</p>
+                <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
                 
                 <a href="<?= $ruta_base ?>vistas/profesores/estudiantes/lista.php" class="enlace-menu <?= ($seccionActual == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
@@ -80,7 +82,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
-                    <i class="fas fa-cubes"></i> <span>M�DULOS</span>
+                    <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
@@ -88,7 +90,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>NOTAS M�DULOS</span>
+                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/calificaciones/retos.php" class="enlace-menu <?= ($seccionActual == 'notas_retos') ? 'activo' : '' ?>">
@@ -100,20 +102,20 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/pfc/lista.php" class="enlace-menu <?= ($seccionActual == 'tfg') ? 'activo' : '' ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTI�N TFG</span>
+                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
                     <span class="etiqueta-contador"><?= $cantTFGs ?></span>
                 </a>
             </div>
 
             <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">COMUNICACI�N</p>
+                <p class="titulo-de-seccion">COMUNICACIÓN</p>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
                 </a>
 
                 <a href="<?= $ruta_base ?>vistas/profesores/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
-                    <i class="fas fa-paper-plane"></i> <span>MENSAJER�A</span>
+                    <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
                     <span class="etiqueta-contador <?= ($cantMensajesNoLeidosProf > 0) ? 'alerta-roja' : '' ?>"><?= $cantMensajes ?></span>
                 </a>
 
@@ -130,7 +132,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
                 <a href="<?= $ruta_base ?>controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESI�N</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?= date('Y') ?> Yassin Lahhit<br>Fingerprint Verified
@@ -143,6 +145,7 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
     function toggleMenu() {
         var sidebar = document.getElementById('barraLateral');
         sidebar.classList.toggle('activo');
+        document.body.classList.toggle('menu-abierto');
     }
     </script>
 
@@ -151,5 +154,3 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="d-none"></div>
         <script type="module" src="<?= $ruta_base ?>public/js/firebase/firebase-init.js"></script>
     <?php } ?>
-
-
