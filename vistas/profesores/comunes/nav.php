@@ -39,17 +39,26 @@ $cantTFGs = contarTFGsDeProfesor($idProfMenu);
 </head>
 <body>
 
-<button class="menu-toggle solo-movil" onclick="toggleMenu()">
-    <i class="fas fa-bars"></i>
-</button>
+<header class="navbar-superior">
+    <div class="logo-navbar-contenedor">
+        <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="logo-navbar">
+    </div>
+    <div class="menu-superior">
+        <ul class="navbar-nav">
+            <li><a href="<?= $ruta_base ?>vistas/profesores/perfil/ver.php"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
+            <li><a href="<?= $ruta_base ?>controladores/logout.php"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+        </ul>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+</header>
 
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <div class="logo-sistema">
-                <span class="logo-icono">P</span>
-                <span class="texto-negrita">PORTAL PROFESORES</span>
-            </div>
+            <img src="<?= $ruta_base ?>public/imagenes/aulapro.png" alt="Logo AulaPro" class="sidebar-logo">
+            <div class="titulo-panel-sidebar">PROFESORES PANEL</div>
         </div>
 
         <nav class="menu-navegacion">

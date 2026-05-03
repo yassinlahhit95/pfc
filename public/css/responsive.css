@@ -4,14 +4,31 @@
 
 
 @media (max-width: 992px) {
+    .navbar-superior {
+        display: flex; /* MOSTRAR EN MÓVIL/TABLET */
+        left: 0;
+        padding: 0 15px;
+    }
+
+    .menu-superior {
+        display: none; /* OCULTAR LINKS DE TEXTO EN MÓVIL PARA USAR HAMBURGUESA O SIDEBAR */
+    }
+
+    .menu-toggle {
+        display: block !important;
+        position: static;
+        z-index: 2000;
+    }
+
     .barra-lateral {
-        width: 0;
+        width: 260px;
         left: -260px;
         transition: all 0.3s ease;
+        top: 0;
+        height: 100vh;
     }
 
     .barra-lateral.activo {
-        width: 260px;
         left: 0;
     }
 
@@ -20,55 +37,8 @@
         margin-left: 0 !important;
         width: 100%;
         padding: 15px;
+        padding-top: 85px; /* ESPACIO PARA NAVBAR SUPERIOR */
     }
-
-    .disposicion-flexible {
-        flex-direction: column;
-    }
-
-    .ancho-fijo-300, 
-    .ancho-fijo-400 {
-        width: 100% !important;
-        flex: none !important;
-    }
-
-    .formulario-cuadricula {
-        grid-template-columns: 1fr;
-    }
-
-    .encabezado-pagina {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .acciones-pagina {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .boton-primario, 
-    .boton-secundario {
-        width: 100%;
-        justify-content: center;
-    }
-
-    
-    .menu-toggle {
-        display: block !important;
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        z-index: 2000;
-        background: #1a1c2e;
-        color: white;
-        padding: 10px;
-        border: none;
-        cursor: pointer;
-    }
-}
 
 
 @media (max-width: 576px) {

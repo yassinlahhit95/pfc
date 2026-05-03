@@ -44,7 +44,7 @@ include_once __DIR__ . "/nav.php";
     <div class="contenedor-about">
         <div class="about-imagen-izq">
             <div class="silhueta-contenedor">
-                <img src="../../../public/imagenes/aulapro.jpeg" alt="Imagen del aula del proyecto" class="silhueta-imagen">
+                <img src="../../../public/imagenes/aulapro.png" alt="Imagen del aula del proyecto" class="silhueta-imagen">
             </div>
         </div>
 
