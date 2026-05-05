@@ -16,3 +16,5 @@ if (isset($_POST['idPago'])) {
 
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
+
+

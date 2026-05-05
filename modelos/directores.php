@@ -18,8 +18,8 @@ function listarDirectores() {
 // Comprobar si ya existe un director con el mismo DNI o Email
 function checkDirectorExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
-    $dniEscapado = mysqli_real_escape_string($con, $dni);
-    $emailEscapado = mysqli_real_escape_string($con, $email);
+    $dniEscapado = $dni;
+    $emailEscapado = $email;
     
     $sql = "SELECT idDirector FROM directores WHERE (dniDirector = '$dniEscapado' OR emailDirector = '$emailEscapado')";
     if ($idExcluir) {
@@ -124,8 +124,8 @@ function obtenerTokensDirectores() {
 // Validar las credenciales de acceso de un director (login)
 function validarLoginDirector($email, $password) {
     $con = obtenerConexion();
-    $emailEscapado = mysqli_real_escape_string($con, $email);
-    $passEscapada = mysqli_real_escape_string($con, $password);
+    $emailEscapado = $email;
+    $passEscapada = $password;
     $sql = "SELECT * FROM directores 
             WHERE emailDirector = '$emailEscapado' AND password = '$passEscapada'";
             
@@ -154,3 +154,4 @@ function obtenerTokenFCMDirector($idDirector) {
     mysqli_close($con);
     return $token;
 }
+

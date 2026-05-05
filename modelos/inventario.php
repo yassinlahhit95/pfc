@@ -61,7 +61,7 @@ function listarPrestamosActivos() {
 // Comprobar si ya existe un artículo con el mismo número de serie
 function checkArticuloExistente($numeroSerie, $idExcluir = null) {
     $con = obtenerConexion();
-    $serieEscapada = mysqli_real_escape_string($con, strtoupper($numeroSerie));
+    $serieEscapada = strtoupper($numeroSerie);
     
     $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '$serieEscapada'";
     if ($idExcluir) {
@@ -174,3 +174,4 @@ function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoD
     mysqli_close($con);
     return $resultado;
 }
+

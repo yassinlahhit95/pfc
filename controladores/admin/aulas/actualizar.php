@@ -17,7 +17,7 @@ if (isset($_POST['actualizarAula'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
 
-        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . mysqli_real_escape_string($con, $nuevoNombre) . "' AND idAula != $idAula";
+        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . $nuevoNombre . "' AND idAula != $idAula";
         $resNombre = mysqli_query($con, $sqlNombre);
         if (mysqli_num_rows($resNombre) > 0) {
             $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya está en uso.";
@@ -45,3 +45,5 @@ if (isset($_POST['actualizarAula'])) {
 
 header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
+
+

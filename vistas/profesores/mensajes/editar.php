@@ -28,7 +28,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="/pfc/vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <a href="../../../vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error): ?>
@@ -56,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <p><?= nl2br(htmlspecialchars($mensaje['descripcion'])) ?></p>
     </div>
 
-    <form action="/pfc/controladores/profesores/mensajes/actualizar.php" method="POST">
+    <form action="../../../controladores/profesores/mensajes/actualizar.php" method="POST">
         <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
         
         <div class="campo-formulario">
@@ -79,5 +79,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 

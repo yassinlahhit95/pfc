@@ -70,7 +70,7 @@ function obtenerModulosPorCiclo($idCiclo) {
 // Comprobar si ya existe un módulo con el mismo nombre en el mismo ciclo
 function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = null) {
     $con = obtenerConexion();
-    $nombreEscapado = mysqli_real_escape_string($con, $nombreModulo);
+    $nombreEscapado = $nombreModulo;
     
     $sql = "SELECT idModulo FROM modulos WHERE nombreModulo = '$nombreEscapado' AND idCiclo = $idCiclo";
     if ($idExcluir) {
@@ -164,3 +164,4 @@ function obtenerHorasTotalesRetosModulo($idModulo) {
     mysqli_close($con);
     return (int)($datosSuma['total'] ?? 0);
 }
+

@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Datos TFG</h1>
-    <a href="/pfc/vistas/profesores/pfc/lista.php" class="boton-secundario">← VOLVER</a>
+    <a href="../../../vistas/profesores/pfc/lista.php" class="boton-secundario">← VOLVER</a>
 </div>
 
 <?php if ($error): ?>
@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/profesores/pfc/actualizar.php" method="POST">
+    <form action="../../../controladores/profesores/pfc/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?= htmlspecialchars($idEstudiante) ?>">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
@@ -60,6 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 
 

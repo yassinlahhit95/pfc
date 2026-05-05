@@ -31,14 +31,14 @@ if (isset($_POST['guardarCiclo'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlNombre = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '" . mysqli_real_escape_string($con, $nombre) . "'";
+        $sqlNombre = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '" . $nombre . "'";
         $resNombre = mysqli_query($con, $sqlNombre);
         if (mysqli_num_rows($resNombre) > 0) {
             $errores_campos['nombreCiclo'] = "Este nombre de ciclo ya existe.";
             $hayError = true;
         }
 
-        $sqlAbr = "SELECT idCiclo FROM ciclos WHERE abreviaturaCiclo = '" . mysqli_real_escape_string($con, $abreviatura) . "'";
+        $sqlAbr = "SELECT idCiclo FROM ciclos WHERE abreviaturaCiclo = '" . $abreviatura . "'";
         $resAbr = mysqli_query($con, $sqlAbr);
         if (mysqli_num_rows($resAbr) > 0) {
             $errores_campos['abreviaturaCiclo'] = "Esta abreviatura ya está en uso.";
@@ -67,3 +67,5 @@ if (isset($_POST['guardarCiclo'])) {
 
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
+
+

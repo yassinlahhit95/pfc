@@ -32,7 +32,7 @@ if (isset($_POST['guardarModulo'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDup = "SELECT idModulo FROM modulos WHERE nombreModulo = '" . mysqli_real_escape_string($con, $nombreModuloActualizar) . "' AND idCiclo = $idCicloAsociado AND idModulo != $idModuloActualizar";
+        $sqlDup = "SELECT idModulo FROM modulos WHERE nombreModulo = '" . $nombreModuloActualizar . "' AND idCiclo = $idCicloAsociado AND idModulo != $idModuloActualizar";
         $resDup = mysqli_query($con, $sqlDup);
         if (mysqli_num_rows($resDup) > 0) {
             $listaErroresValidacion['nombreModulo'] = "Este módulo ya existe en este ciclo.";
@@ -61,3 +61,5 @@ if (isset($_POST['guardarModulo'])) {
 
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
+
+

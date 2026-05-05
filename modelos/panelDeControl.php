@@ -194,3 +194,4 @@ function contarPagosRealizados() {
 function contarPagos() {
     return contarPagosRealizados();
 }
+

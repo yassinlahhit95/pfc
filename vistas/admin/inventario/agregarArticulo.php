@@ -60,3 +60,4 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

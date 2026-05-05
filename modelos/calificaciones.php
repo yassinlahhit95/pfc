@@ -269,3 +269,4 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
 
     return $resumenEstudiante;
 }
+

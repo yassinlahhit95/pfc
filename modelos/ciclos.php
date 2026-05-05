@@ -39,8 +39,8 @@ function obtenerCiclosDeProfesor($idProfesor) {
 // Comprobar si ya existe un ciclo con el mismo nombre o abreviatura
 function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = null) {
     $con = obtenerConexion();
-    $nombreEscapado = mysqli_real_escape_string($con, $nombreCiclo);
-    $abreviaturaEscapada = mysqli_real_escape_string($con, $abreviaturaCiclo);
+    $nombreEscapado = $nombreCiclo;
+    $abreviaturaEscapada = $abreviaturaCiclo;
     
     $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = '$nombreEscapado' OR abreviaturaCiclo = '$abreviaturaEscapada')";
     if ($idExcluir) {
@@ -173,3 +173,4 @@ function comprobarNombreEnOtroCiclo($nombreCiclo, $idCicloActual) {
     
     return ($totalCoincidencias > 0);
 }
+

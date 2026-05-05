@@ -16,7 +16,7 @@ if (isset($_POST['guardarAula'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . mysqli_real_escape_string($con, $nombreAula) . "'";
+        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . $nombreAula . "'";
         $resNombre = mysqli_query($con, $sqlNombre);
         if (mysqli_num_rows($resNombre) > 0) {
             $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya existe.";
@@ -44,3 +44,5 @@ if (isset($_POST['guardarAula'])) {
 
 header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
+
+

@@ -47,7 +47,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="GET" action="/pfc/vistas/profesores/calificaciones/retos.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="GET" action="../../../vistas/profesores/calificaciones/retos.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>1. Seleccione Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
@@ -95,7 +95,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 
 <?php if ($idReto) { ?>
     <div class="tarjeta-blanca margen-arriba">
-        <form action="/pfc/controladores/profesores/calificaciones/calificarRetos.php" method="POST">
+        <form action="../../../controladores/profesores/calificaciones/calificarRetos.php" method="POST">
             <input type="hidden" name="idReto" value="<?= $idReto ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
@@ -143,3 +143,4 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+

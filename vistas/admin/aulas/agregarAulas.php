@@ -52,3 +52,4 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

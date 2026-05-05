@@ -12,3 +12,5 @@ if (isset($_POST['idArticulo'])) {
 }
 header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
+
+

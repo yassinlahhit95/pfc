@@ -56,14 +56,14 @@ if (isset($_POST['actualizarEstudiante'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDni = "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = '" . mysqli_real_escape_string($con, $dni) . "' AND idEstudiante != $idEstudiante";
+        $sqlDni = "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = '" . $dni . "' AND idEstudiante != $idEstudiante";
         $resDni = mysqli_query($con, $sqlDni);
         if (mysqli_num_rows($resDni) > 0) {
             $errores['dniEstudiante'] = "Este DNI ya está registrado por otro estudiante.";
             $hayError = true;
         }
 
-        $sqlEmail = "SELECT idEstudiante FROM estudiantes WHERE emailEstudiante = '" . mysqli_real_escape_string($con, $email) . "' AND idEstudiante != $idEstudiante";
+        $sqlEmail = "SELECT idEstudiante FROM estudiantes WHERE emailEstudiante = '" . $email . "' AND idEstudiante != $idEstudiante";
         $resEmail = mysqli_query($con, $sqlEmail);
         if (mysqli_num_rows($resEmail) > 0) {
             $errores['emailEstudiante'] = "Este Email ya está registrado por otro estudiante.";
@@ -92,3 +92,5 @@ if (isset($_POST['actualizarEstudiante'])) {
 
 header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
 exit;
+
+

@@ -88,3 +88,4 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 <?php include '../comunes/footer.php'; ?>
 
 
+

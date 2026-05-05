@@ -11,3 +11,4 @@ function obtenerConexion() {
     mysqli_query($conexion, "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_spanish_ci'");
     return $conexion;
 }
+

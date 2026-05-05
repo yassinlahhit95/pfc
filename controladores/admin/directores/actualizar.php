@@ -49,14 +49,14 @@ if (isset($_POST['actualizarDirector'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDni = "SELECT idDirector FROM directores WHERE dniDirector = '" . mysqli_real_escape_string($con, $dni) . "' AND idDirector != $idDirector";
+        $sqlDni = "SELECT idDirector FROM directores WHERE dniDirector = '" . $dni . "' AND idDirector != $idDirector";
         $resDni = mysqli_query($con, $sqlDni);
         if (mysqli_num_rows($resDni) > 0) {
             $errores_campos['dniDirector'] = "Este DNI ya está registrado por otro director.";
             $hayError = true;
         }
 
-        $sqlEmail = "SELECT idDirector FROM directores WHERE emailDirector = '" . mysqli_real_escape_string($con, $email) . "' AND idDirector != $idDirector";
+        $sqlEmail = "SELECT idDirector FROM directores WHERE emailDirector = '" . $email . "' AND idDirector != $idDirector";
         $resEmail = mysqli_query($con, $sqlEmail);
         if (mysqli_num_rows($resEmail) > 0) {
             $errores_campos['emailDirector'] = "Este Email ya está registrado por otro director.";
@@ -85,3 +85,5 @@ if (isset($_POST['actualizarDirector'])) {
 
 header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
+
+

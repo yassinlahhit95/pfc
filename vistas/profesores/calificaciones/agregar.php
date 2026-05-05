@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="GET" action="/pfc/vistas/profesores/calificaciones/agregar.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="GET" action="../../../vistas/profesores/calificaciones/agregar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
             <label>1. Selecciona el Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
@@ -87,7 +87,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php if ($idModulo) { ?>
     <div class="tarjeta-blanca margen-arriba">
-        <form action="/pfc/controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
+        <form action="../../../controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
             <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             
@@ -160,3 +160,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+

@@ -23,8 +23,8 @@ function listarEstudiantes() {
 // Comprobar si ya existe un estudiante con el mismo DNI o Email
 function checkEstudianteExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
-    $dniEscapado = mysqli_real_escape_string($con, $dni);
-    $emailEscapado = mysqli_real_escape_string($con, $email);
+    $dniEscapado = $dni;
+    $emailEscapado = $email;
     
     $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = '$dniEscapado' OR emailEstudiante = '$emailEscapado')";
     if ($idExcluir) {
@@ -166,8 +166,8 @@ function obtenerTokensEstudiantes() {
 // Validar las credenciales de acceso de un estudiante
 function validarLoginEstudiante($email, $password) {
     $con = obtenerConexion();
-    $emailEscapado = mysqli_real_escape_string($con, $email);
-    $passEscapada = mysqli_real_escape_string($con, $password);
+    $emailEscapado = $email;
+    $passEscapada = $password;
     $sql = "SELECT * FROM estudiantes 
             WHERE emailEstudiante = '$emailEscapado' AND password = '$passEscapada'";
     $resultado = mysqli_query($con, $sql);
@@ -195,3 +195,4 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     mysqli_close($con);
     return $token;
 }
+

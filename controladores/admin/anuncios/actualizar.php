@@ -43,3 +43,5 @@ if (isset($_POST['actualizarAnuncio'])) {
 
 header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
 exit;
+
+

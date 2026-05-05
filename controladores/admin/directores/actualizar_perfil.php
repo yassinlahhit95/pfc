@@ -60,3 +60,5 @@ if (isset($_POST['actualizarPerfilBtn'])) {
 
 header("Location: ../../../vistas/admin/dashboard.php");
 exit;
+
+

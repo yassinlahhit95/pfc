@@ -66,14 +66,14 @@ if (isset($_POST['guardarEstudiante'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDni = "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = '" . mysqli_real_escape_string($con, $dni) . "'";
+        $sqlDni = "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = '" . $dni . "'";
         $resDni = mysqli_query($con, $sqlDni);
         if (mysqli_num_rows($resDni) > 0) {
             $errores['dniEstudiante'] = "Este DNI ya está registrado.";
             $hayError = true;
         }
 
-        $sqlEmail = "SELECT idEstudiante FROM estudiantes WHERE emailEstudiante = '" . mysqli_real_escape_string($con, $email) . "'";
+        $sqlEmail = "SELECT idEstudiante FROM estudiantes WHERE emailEstudiante = '" . $email . "'";
         $resEmail = mysqli_query($con, $sqlEmail);
         if (mysqli_num_rows($resEmail) > 0) {
             $errores['emailEstudiante'] = "Este Email ya está registrado.";
@@ -102,3 +102,5 @@ if (isset($_POST['guardarEstudiante'])) {
 
 header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
 exit;
+
+

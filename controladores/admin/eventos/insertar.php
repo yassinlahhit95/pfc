@@ -28,3 +28,5 @@ if (isset($_POST['guardarEvento'])) {
 
 header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
 exit;
+
+

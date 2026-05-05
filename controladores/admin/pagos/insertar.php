@@ -9,7 +9,7 @@ if (isset($_POST['guardarPago'])) {
     $fechaPago = trim($_POST['fechaPago']);
 
     $hoy = date('Y-m-d');
-    $fechaLimite = date('Y') . '-06-30';
+    $fechaLimite = date('Y''-06-30';
 
     $hayError = false;
 
@@ -38,11 +38,11 @@ if (isset($_POST['guardarPago'])) {
         // Calcular la fecha del prÃ³ximo pago de forma sencilla
         $proximaFecha = "";
         if ($tipoPago == 'mensual') {
-            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 1 month'));
+            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 1 month');
         } else if ($tipoPago == 'trimestral') {
-            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 3 months'));
+            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 3 months');
         } else if ($tipoPago == 'semestral') {
-            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 6 months'));
+            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 6 months');
         } else {
             // Si es pago Ãºnico, la prÃ³xima fecha es el fin del curso
             $proximaFecha = $fechaLimite;
@@ -75,3 +75,4 @@ if (isset($_POST['guardarPago'])) {
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
 ?>>
+

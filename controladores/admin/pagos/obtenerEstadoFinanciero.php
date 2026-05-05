@@ -10,3 +10,5 @@ if (isset($_GET['idEstudiante'])) {
     // Se evita el uso de JSON por petición del usuario
     echo $estado['totalPagado'] . "," . $estado['precioCiclo'] . "," . $estado['restante'];
 }
+
+

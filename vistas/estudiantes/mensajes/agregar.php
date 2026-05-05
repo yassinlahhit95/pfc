@@ -82,3 +82,4 @@ $profs = obtenerProfesoresConModulosParaEstudiante($idEst);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

@@ -94,3 +94,4 @@ include_once __DIR__ . "/nav.php";
 </div>
 
 <?php include __DIR__ . '/footer.php'; ?>
+

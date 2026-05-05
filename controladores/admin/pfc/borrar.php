@@ -30,3 +30,5 @@ if (isset($_POST['idEstudiante'])) {
 
 header("Location: ../../../vistas/admin/pfc/verTFGs.php");
 exit;
+
+

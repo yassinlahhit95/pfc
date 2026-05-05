@@ -17,8 +17,8 @@ function listarProfesores() {
 // Comprobar si ya existe un profesor con el mismo DNI o Email
 function checkProfesorExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
-    $dniEscapado = mysqli_real_escape_string($con, $dni);
-    $emailEscapado = mysqli_real_escape_string($con, $email);
+    $dniEscapado = $dni;
+    $emailEscapado = $email;
     
     $sql = "SELECT idProfesor FROM profesores WHERE (dniProfesor = '$dniEscapado' OR emailProfesor = '$emailEscapado')";
     if ($idExcluir) {
@@ -196,8 +196,8 @@ function obtenerTokensProfesores() {
 // Validar login de profesor
 function validarLoginProfesor($email, $pass) {
     $con = obtenerConexion();
-    $emailEscapado = mysqli_real_escape_string($con, $email);
-    $passEscapada = mysqli_real_escape_string($con, $pass);
+    $emailEscapado = $email;
+    $passEscapada = $pass;
     $sql = "SELECT * FROM profesores WHERE emailProfesor = '$emailEscapado' AND password = '$passEscapada'";
     $resultado = mysqli_query($con, $sql);
     $datos = mysqli_fetch_assoc($resultado);
@@ -224,3 +224,4 @@ function obtenerTokenFCMProfesor($id) {
     mysqli_close($con);
     return $token;
 }
+

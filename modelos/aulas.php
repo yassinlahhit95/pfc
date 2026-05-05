@@ -19,7 +19,7 @@ function listarAulas() {
 // Comprobar si ya existe un aula con el mismo nombre
 function checkAulaExistente($nombreAula, $idExcluir = null) {
     $con = obtenerConexion();
-    $nombreEscapado = mysqli_real_escape_string($con, $nombreAula);
+    $nombreEscapado = $nombreAula;
     
     $sql = "SELECT idAula FROM aulas WHERE nombreAula = '$nombreEscapado'";
     if ($idExcluir) {
@@ -74,3 +74,4 @@ function obtenerAulaPorId($idAula) {
     mysqli_close($con);
     return $datosAula;
 }
+

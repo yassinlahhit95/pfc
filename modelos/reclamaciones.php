@@ -52,7 +52,7 @@ function marcarMensajeComoLeido($idReclamacion) {
 // Responder a un mensaje y marcarlo como atendido
 function responderMensaje($idReclamacion, $contenidoRespuesta) {
     $con = obtenerConexion();
-    $respuestaEscapada = mysqli_real_escape_string($con, $contenidoRespuesta);
+    $respuestaEscapada = $contenidoRespuesta;
     $sql = "UPDATE reclamaciones 
             SET respuesta = '$respuestaEscapada', estadoReclamacion = 'atendido', leido = 1 
             WHERE idReclamacion = $idReclamacion";
@@ -164,3 +164,4 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
     mysqli_close($con);
     return (int)($fila['total'] ?? 0);
 }
+

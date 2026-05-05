@@ -44,13 +44,13 @@ if (isset($_POST['guardarProfesor'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDni = "SELECT idProfesor FROM profesores WHERE dniProfesor = '" . mysqli_real_escape_string($con, $dniNuevoProfesor) . "'";
+        $sqlDni = "SELECT idProfesor FROM profesores WHERE dniProfesor = '" . $dniNuevoProfesor . "'";
         $resDni = mysqli_query($con, $sqlDni);
         if (mysqli_num_rows($resDni) > 0) {
             $listaErroresValidacion['dniProfesor'] = "Este DNI ya está registrado.";
         }
 
-        $sqlEmail = "SELECT idProfesor FROM profesores WHERE emailProfesor = '" . mysqli_real_escape_string($con, $emailNuevoProfesor) . "'";
+        $sqlEmail = "SELECT idProfesor FROM profesores WHERE emailProfesor = '" . $emailNuevoProfesor . "'";
         $resEmail = mysqli_query($con, $sqlEmail);
         if (mysqli_num_rows($resEmail) > 0) {
             $listaErroresValidacion['emailProfesor'] = "Este Email ya está registrado.";
@@ -82,3 +82,5 @@ if (isset($_POST['guardarProfesor'])) {
 
 header("Location: ../../../vistas/admin/profesores/verProfesores.php");
 exit;
+
+

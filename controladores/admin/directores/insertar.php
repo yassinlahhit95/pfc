@@ -39,13 +39,13 @@ if (isset($_POST['guardarDirector'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
 
-        $sqlDni = "SELECT idDirector FROM directores WHERE dniDirector = '" . mysqli_real_escape_string($con, $dni) . "'";
+        $sqlDni = "SELECT idDirector FROM directores WHERE dniDirector = '" . $dni . "'";
         $resDni = mysqli_query($con, $sqlDni);
         if (mysqli_num_rows($resDni) > 0) {
             $lista_de_errores['dniDirector'] = "Este DNI ya está registrado.";
         }
 
-        $sqlEmail = "SELECT idDirector FROM directores WHERE emailDirector = '" . mysqli_real_escape_string($con, $email) . "'";
+        $sqlEmail = "SELECT idDirector FROM directores WHERE emailDirector = '" . $email . "'";
         $resEmail = mysqli_query($con, $sqlEmail);
         if (mysqli_num_rows($resEmail) > 0) {
             $lista_de_errores['emailDirector'] = "Este Email ya está registrado.";
@@ -73,3 +73,5 @@ if (isset($_POST['guardarDirector'])) {
 
 header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
+
+

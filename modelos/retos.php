@@ -285,3 +285,4 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     mysqli_close($con);
     return $promedio;
 }
+

@@ -22,7 +22,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>MIS MENSAJES</h1>
-    <a href="/pfc/vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
+    <a href="../../../vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO MENSAJE
     </a>
 </div>
@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                <a href="../../../vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -94,5 +94,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 

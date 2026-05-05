@@ -23,7 +23,7 @@ if (isset($_POST['guardarArticulo'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . mysqli_real_escape_string($con, strtoupper($numeroSerie)) . "'";
+        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . strtoupper($numeroSerie) . "'";
         $resDup = mysqli_query($con, $sqlDup);
         if (mysqli_num_rows($resDup) > 0) {
             $errores['numeroSerie'] = "Este número de serie ya está registrado.";
@@ -51,3 +51,5 @@ if (isset($_POST['guardarArticulo'])) {
 
 header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
+
+

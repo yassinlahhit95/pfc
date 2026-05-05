@@ -20,3 +20,5 @@ if (isset($_POST['idReto'])) {
 
 header("Location: ../../../vistas/admin/retos/verRetos.php");
 exit;
+
+

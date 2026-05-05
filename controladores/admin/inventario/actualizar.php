@@ -20,7 +20,7 @@ if (isset($_POST['actualizarArticulo'])) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
         $con = obtenerConexion();
         
-        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . mysqli_real_escape_string($con, strtoupper($numeroSerie)) . "' AND idDispositivo != $idArticulo";
+        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . strtoupper($numeroSerie) . "' AND idDispositivo != $idArticulo";
         $resDup = mysqli_query($con, $sqlDup);
         if (mysqli_num_rows($resDup) > 0) {
             $errores_campos['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
@@ -52,3 +52,5 @@ if (isset($_POST['actualizarArticulo'])) {
 
 header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
+
+
