@@ -3,8 +3,21 @@
  * Función para enviar correos electrónicos usando la API REST de Brevo (Sendinblue)
  */
 function sendEmail($to, $subject, $htmlContent) {
-    // Reemplaza con tu clave de API de Brevo
-    $apiKey = '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';
+    // CARGAR CLAVE DE API DESDE CONFIGURACIÓN SEGURA
+    // Nota: Crea un archivo config/secrets.php con: <?php $brevo_api_key = 'TU_CLAVE_AQUÍ';
+    $pathSecrets = __DIR__ . '/../../config/secrets.php';
+    if (file_exists($pathSecrets)) {
+        include $pathSecrets;
+        $apiKey = $brevo_api_key ?? '';
+    } else {
+        // Fallback para desarrollo o si no se ha configurado
+        $apiKey = 'TU_CLAVE_API_DEBE_IR_EN_CONFIG_SECRETS_PHP';
+    }
+    
+    if (empty($apiKey) || $apiKey === 'TU_CLAVE_API_DEBE_IR_EN_CONFIG_SECRETS_PHP') {
+        error_log("Error: Brevo API Key no configurada en $pathSecrets");
+        return false;
+    }
     
     $url = 'https://api.brevo.com/v3/smtp/email';
     

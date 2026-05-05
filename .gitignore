@@ -1,0 +1,19 @@
+# Configuración de Git - TFG PFC
+# Ignorar archivos sensibles y temporales
+
+# Credenciales y Secretos
+.env
+config/secrets.php
+config/service-account.json
+
+# Directorios de XAMPP/Local
+/nbproject/
+/vendor/
+
+# Archivos de Sistema
+Thumbs.db
+.DS_Store
+
+# Temporales de PHP
+sess_*
+*.log

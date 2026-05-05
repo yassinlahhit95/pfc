@@ -78,6 +78,13 @@ cd tfg
 > **XAMPP/WAMP**: Colocar carpeta `pfc` dentro de `htdocs`  
 > **Permisos**: Asegurar permisos de escritura en carpeta `public/uploads/`
 
+### 🔒 Configuración de Seguridad (Importante)
+Para que el envío de correos funcione y proteger tus claves:
+1. Ve a la carpeta `config/`.
+2. Renombra o copia `secrets.php.example` como `secrets.php`.
+3. Abre `secrets.php` y pega tu nueva **Clave API de Brevo**.
+4. El archivo `secrets.php` está en el `.gitignore` y no se subirá al repositorio público.
+
 ---
 
 ## 🎨 Estándares de Interfaz (UI)
