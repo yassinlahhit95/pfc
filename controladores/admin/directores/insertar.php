@@ -60,7 +60,7 @@ if (isset($_POST['guardarDirector'])) {
             header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "No se pudo registrar el director.";
         }
     } else {
         $_SESSION['errores'] = $lista_de_errores;

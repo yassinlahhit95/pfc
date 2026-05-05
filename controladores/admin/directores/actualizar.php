@@ -20,27 +20,30 @@ if (isset($_POST['actualizarDirector'])) {
 
     $hayError = false;
 
+    $errores_campos = [];
     if (empty($nombre)) {
         $hayError = true;
-        $_SESSION['error'] = "Nombre obligatorio.";
-    } elseif (empty($email)) {
+        $errores_campos['nombreDirector'] = "Nombre obligatorio.";
+    } 
+    if (empty($email)) {
         $hayError = true;
-        $_SESSION['error'] = "Email obligatorio.";
-    } elseif (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
+        $errores_campos['emailDirector'] = "Email obligatorio.";
+    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
         $hayError = true;
-        $_SESSION['error'] = "Email no válido.";
-    } elseif (empty($dni)) {
+        $errores_campos['emailDirector'] = "Email no válido.";
+    } 
+    if (empty($dni)) {
         $hayError = true;
-        $_SESSION['error'] = "DNI obligatorio.";
-    } elseif (empty($telefono)) {
+        $errores_campos['dniDirector'] = "DNI obligatorio.";
+    } 
+    if (empty($telefono)) {
         $hayError = true;
-        $_SESSION['error'] = "Teléfono obligatorio.";
-    } elseif (!is_numeric($telefono)) {
+        $errores_campos['telefonoDirector'] = "Teléfono obligatorio.";
+    } else if (!is_numeric($telefono)) {
         $hayError = true;
-        $_SESSION['error'] = "Teléfono numérico.";
+        $errores_campos['telefonoDirector'] = "Teléfono numérico.";
     }
 
-    $errores_campos = [];
     // Comprobamos duplicados
     if (!$hayError) {
         require_once __DIR__ . "/../../../modelos/conectar.php";
@@ -69,7 +72,7 @@ if (isset($_POST['actualizarDirector'])) {
             header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "No se pudo actualizar el director.";
         }
     } else {
         $_SESSION['errores'] = $errores_campos;

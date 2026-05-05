@@ -56,7 +56,7 @@ if (isset($_POST['enviarMensaje'])) {
         header("Location: ../../../vistas/admin/mensajes/lista.php");
         exit;
     } else {
-        $_SESSION['error'] = "Ocurrió un error técnico al intentar enviar el mensaje.";
+        $_SESSION['error'] = "No se pudo enviar el mensaje.";
         header("Location: ../../../vistas/admin/mensajes/agregar.php");
         exit;
     }

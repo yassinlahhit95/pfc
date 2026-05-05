@@ -55,7 +55,7 @@ if (isset($_POST['guardarReto'])) {
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error al guardar el reto.";
+            $_SESSION['error'] = "No se pudo crear el reto.";
         }
     } else {
         $hayError = true;

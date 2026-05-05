@@ -38,7 +38,7 @@ if (isset($_POST['guardarArticulo'])) {
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "No se pudo añadir el artículo.";
         }
     } else {
         $_SESSION['errores'] = $errores;

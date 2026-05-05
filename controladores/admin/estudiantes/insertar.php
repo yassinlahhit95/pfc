@@ -89,7 +89,7 @@ if (isset($_POST['guardarEstudiante'])) {
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "Hubo un problema técnico al intentar guardar el estudiante en la base de datos.";
         }
     } else {
         $_SESSION['errores'] = $errores;

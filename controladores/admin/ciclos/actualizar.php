@@ -52,7 +52,7 @@ if (isset($_POST['actualizarCiclo'])) {
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "No se pudo actualizar el ciclo.";
         }
     } else {
         $_SESSION['errores'] = $errores_campos;

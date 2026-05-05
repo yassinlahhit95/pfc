@@ -32,7 +32,7 @@ if (isset($_POST['guardarAula'])) {
             header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "No se pudo registrar el aula.";
         }
     } else {
         $_SESSION['datos_aulas'] = $_POST;

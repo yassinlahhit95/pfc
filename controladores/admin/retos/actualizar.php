@@ -49,7 +49,7 @@ if (isset($_POST['actualizarReto'])) {
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+            $_SESSION['error'] = "No se pudo actualizar el reto.";
         }
     } else {
         $hayError = true;

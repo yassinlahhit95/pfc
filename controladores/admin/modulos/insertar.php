@@ -46,7 +46,7 @@ if (isset($_POST['guardarModulo'])) {
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "No se pudo registrar el módulo.";
         }
     } else {
         $hayError = true;

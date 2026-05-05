@@ -33,7 +33,7 @@ if (isset($_POST['actualizarAula'])) {
             header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "No se pudo actualizar el aula.";
         }
     } else {
         $_SESSION['datos_aulas'] = $_POST;

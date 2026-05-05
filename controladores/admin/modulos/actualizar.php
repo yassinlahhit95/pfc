@@ -47,7 +47,7 @@ if (isset($_POST['guardarModulo'])) {
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "No se pudo actualizar el módulo.";
         }
     } else {
         $hayError = true;

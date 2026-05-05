@@ -54,7 +54,7 @@ if (isset($_POST['guardarCiclo'])) {
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "No se pudo registrar el ciclo.";
         }
     } else {
         $_SESSION['errores'] = $errores_campos;

@@ -39,7 +39,7 @@ if (isset($_POST['actualizarArticulo'])) {
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "No se pudo actualizar el artículo.";
         }
     } else {
         $_SESSION['errores'] = $errores_campos;

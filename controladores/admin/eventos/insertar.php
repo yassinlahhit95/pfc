@@ -21,7 +21,7 @@ if (isset($_POST['guardarEvento'])) {
         if ($resultado) {
             $_SESSION['exito'] = "Evento publicado.";
         } else {
-            $_SESSION['error'] = "Error al guardar.";
+            $_SESSION['error'] = "No se pudo guardar el evento.";
         }
     }
 }

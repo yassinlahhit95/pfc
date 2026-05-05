@@ -66,7 +66,7 @@ if (isset($_POST['actualizarProfesor'])) {
             exit;
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "No se pudo actualizar el profesor.";
         }
     } else {
         $hayError = true;

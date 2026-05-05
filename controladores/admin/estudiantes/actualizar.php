@@ -79,7 +79,7 @@ if (isset($_POST['actualizarEstudiante'])) {
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al actualizar.";
+            $_SESSION['error'] = "Hubo un problema técnico al intentar actualizar los datos del estudiante.";
         }
     } else {
         $_SESSION['errores'] = $errores;
