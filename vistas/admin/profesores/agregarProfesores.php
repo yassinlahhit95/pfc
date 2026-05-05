@@ -135,7 +135,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos mb-15 d-none" data-ciclo-id="<?= $idCiclo ?>">
+                        <div class="grupo-modulos mb-15" data-ciclo-id="<?= $idCiclo ?>" style="display: none;">
                             <p class="texto-negrita color-primario borde-abajo-gris mb-10 pb-3">
                                 <?= $grupo['nombre'] ?>
                             </p>
@@ -163,7 +163,6 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const checkCiclos = document.querySelectorAll('.check-ciclo');
-    const gruposModulos = document.querySelectorAll('.grupo-modulos');
     const msgVacio = document.getElementById('msg-seleccionar-ciclo');
 
     function actualizarModulos() {
@@ -180,13 +179,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     grupo.style.display = 'none';
                     // Opcional: desmarcar módulos si el ciclo se deselecciona
-                    const inputsModulo = grupo.querySelectorAll('input[type="checkbox"]');
-                    inputsModulo.forEach(i => i.checked = false);
+                    // const inputsModulo = grupo.querySelectorAll('input[type="checkbox"]');
+                    // inputsModulo.forEach(i => i.checked = false);
                 }
             }
         });
 
-        msgVacio.style.display = algunoSeleccionado ? 'none' : 'block';
+        if (msgVacio) {
+            msgVacio.style.display = algunoSeleccionado ? 'none' : 'block';
+        }
     }
 
     checkCiclos.forEach(check => {
