@@ -19,12 +19,11 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
     $_SESSION['error'] = "No se proporcionó el ID del ciclo.";
 }
 
-$urlRetorno = "../../dashboard.php";
 if (isset($_SESSION['idProfesor'])) {
-    $urlRetorno = "../../../vistas/profesores/dashboard.php";
+    header("Location: ../../../vistas/profesores/dashboard.php");
+} else {
+    header("Location: ../../dashboard.php");
 }
-
-header("Location: " . $urlRetorno);
 exit;
 
 
