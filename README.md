@@ -103,9 +103,9 @@ Para que el envío de correos funcione y proteger tus claves:
 - Los controladores deben manejar estas excepciones y devolver mensajes específicos al usuario.
 
 ### ✅ Seguridad
-- ✅ OBLIGATORIO usar `htmlspecialchars()` en TODAS las salidas de datos dinámicos.
-- ✅ OBLIGATORIO usar `mysqli_real_escape_string()` o Prepared Statements para consultas SQL.
 - ✅ Los formularios deben mantener el estado de los datos (`datos_estudiante`, etc.) tras un error de validación.
+- ✅ OBLIGATORIO usar `mysqli_real_escape_string()` o Prepared Statements para consultas SQL.
+- ❌ No es obligatorio usar `htmlspecialchars()` en todas las páginas, pero se recomienda en salidas sensibles.
 
 ---
 

@@ -9,12 +9,14 @@ if (isset($_POST['actualizarAnuncio'])) {
 
     $hayError = false;
 
+    $listaErrores = [];
     if (empty($titulo)) {
         $hayError = true;
-        $_SESSION['error'] = "El título es obligatorio.";
-    } elseif (empty($contenido)) {
+        $listaErrores['tituloAnuncio'] = "El título es obligatorio.";
+    }
+    if (empty($contenido)) {
         $hayError = true;
-        $_SESSION['error'] = "El contenido es obligatorio.";
+        $listaErrores['contenidoAnuncio'] = "El contenido es obligatorio.";
     }
 
     if (!$hayError) {
@@ -28,9 +30,10 @@ if (isset($_POST['actualizarAnuncio'])) {
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar en la base de datos.";
+            $_SESSION['error'] = "Error inesperado al actualizar.";
         }
     } else {
+        $_SESSION['errores'] = $listaErrores;
         $_SESSION['datos_anuncio'] = $_POST;
     }
 
