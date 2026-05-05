@@ -14,16 +14,10 @@ if (isset($_POST['actualizarAula'])) {
 
     // Comprobamos duplicados
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-
-        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . $nuevoNombre . "' AND idAula != $idAula";
-        $resNombre = mysqli_query($con, $sqlNombre);
-        if (mysqli_num_rows($resNombre) > 0) {
+        if (checkAulaExistente($nuevoNombre, $idAula)) {
             $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya está en uso.";
             $hayError = true;
         }
-        mysqli_close($con);
     }
 
     if (!$hayError) {

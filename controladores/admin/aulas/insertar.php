@@ -13,16 +13,10 @@ if (isset($_POST['guardarAula'])) {
 
     // Comprobamos duplicados
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . $nombreAula . "'";
-        $resNombre = mysqli_query($con, $sqlNombre);
-        if (mysqli_num_rows($resNombre) > 0) {
+        if (checkAulaExistente($nombreAula)) {
             $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya existe.";
             $hayError = true;
         }
-        mysqli_close($con);
     }
 
     if (!$hayError) {

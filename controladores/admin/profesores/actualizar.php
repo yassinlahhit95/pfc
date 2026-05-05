@@ -42,21 +42,9 @@ if (isset($_POST['actualizarProfesor'])) {
 
     // Comprobamos duplicados
     if (empty($listaErroresValidacion)) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDni = "SELECT idProfesor FROM profesores WHERE dniProfesor = '" . $dniProfesorActualizar . "' AND idProfesor != $idProfesorActualizar";
-        $resDni = mysqli_query($con, $sqlDni);
-        if (mysqli_num_rows($resDni) > 0) {
-            $listaErroresValidacion['dniProfesor'] = "Este DNI ya está registrado por otro profesor.";
+        if (checkProfesorExistente($dniProfesorActualizar, $emailProfesorActualizar, $idProfesorActualizar)) {
+            $listaErroresValidacion['dniProfesor'] = "El DNI o Email ya están registrados por otro profesor.";
         }
-
-        $sqlEmail = "SELECT idProfesor FROM profesores WHERE emailProfesor = '" . $emailProfesorActualizar . "' AND idProfesor != $idProfesorActualizar";
-        $resEmail = mysqli_query($con, $sqlEmail);
-        if (mysqli_num_rows($resEmail) > 0) {
-            $listaErroresValidacion['emailProfesor'] = "Este Email ya está registrado por otro profesor.";
-        }
-        mysqli_close($con);
     }
 
     if (empty($listaErroresValidacion)) {

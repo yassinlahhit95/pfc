@@ -63,23 +63,10 @@ if (isset($_POST['guardarEstudiante'])) {
 
     // Comprobamos duplicados antes de insertar
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDni = "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = '" . $dni . "'";
-        $resDni = mysqli_query($con, $sqlDni);
-        if (mysqli_num_rows($resDni) > 0) {
-            $errores['dniEstudiante'] = "Este DNI ya está registrado.";
+        if (checkEstudianteExistente($dni, $email)) {
+            $errores['dniEstudiante'] = "El DNI o Email ya están registrados.";
             $hayError = true;
         }
-
-        $sqlEmail = "SELECT idEstudiante FROM estudiantes WHERE emailEstudiante = '" . $email . "'";
-        $resEmail = mysqli_query($con, $sqlEmail);
-        if (mysqli_num_rows($resEmail) > 0) {
-            $errores['emailEstudiante'] = "Este Email ya está registrado.";
-            $hayError = true;
-        }
-        mysqli_close($con);
     }
 
     if (!$hayError) {

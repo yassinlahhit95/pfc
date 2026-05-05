@@ -27,12 +27,12 @@ if (isset($_POST['guardarAnuncio'])) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
         
         if ($resultado) {
-            // ... rest of tokens and push logic ...
+            // ... (rest of logic)
             $_SESSION['exito'] = "Anuncio publicado y notificado.";
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error inesperado al guardar.";
+            $_SESSION['error'] = "No se pudo publicar el anuncio.";
         }
     } else {
         $_SESSION['errores'] = $listaErrores;

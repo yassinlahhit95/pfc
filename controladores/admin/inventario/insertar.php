@@ -20,16 +20,10 @@ if (isset($_POST['guardarArticulo'])) {
 
     // Comprobamos duplicados
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . strtoupper($numeroSerie) . "'";
-        $resDup = mysqli_query($con, $sqlDup);
-        if (mysqli_num_rows($resDup) > 0) {
+        if (checkArticuloExistente($numeroSerie)) {
             $errores['numeroSerie'] = "Este número de serie ya está registrado.";
             $hayError = true;
         }
-        mysqli_close($con);
     }
 
     if (!$hayError) {

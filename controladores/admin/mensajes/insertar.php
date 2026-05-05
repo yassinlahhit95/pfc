@@ -35,7 +35,7 @@ if (isset($_POST['enviarMensaje'])) {
     if ($hayError) {
         $_SESSION['errores'] = $errores;
         $_SESSION['error'] = "Por favor, corrija los errores en el formulario.";
-        header("Location: ../../../vistas/admin/mensajes/agregar.php?tipoDestinatario=" . ($idEstudianteDestino ? 'estudiante' : 'profesor');
+        header("Location: ../../../vistas/admin/mensajes/agregar.php?tipoDestinatario=" . ($idEstudianteDestino ? 'estudiante' : 'profesor'));
         exit;
     }
 

@@ -26,23 +26,10 @@ if (isset($_POST['actualizarCiclo'])) {
 
     // Comprobamos duplicados
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlNombre = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = '" . $nombre . "' AND idCiclo != $idCiclo";
-        $resNombre = mysqli_query($con, $sqlNombre);
-        if (mysqli_num_rows($resNombre) > 0) {
-            $errores_campos['nombreCiclo'] = "Este nombre de ciclo ya está en uso.";
+        if (checkCicloExistente($nombre, $abreviatura, $idCiclo)) {
+            $errores_campos['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";
             $hayError = true;
         }
-
-        $sqlAbr = "SELECT idCiclo FROM ciclos WHERE abreviaturaCiclo = '" . $abreviatura . "' AND idCiclo != $idCiclo";
-        $resAbr = mysqli_query($con, $sqlAbr);
-        if (mysqli_num_rows($resAbr) > 0) {
-            $errores_campos['abreviaturaCiclo'] = "Esta abreviatura ya está en uso.";
-            $hayError = true;
-        }
-        mysqli_close($con);
     }
 
     if (!$hayError) {

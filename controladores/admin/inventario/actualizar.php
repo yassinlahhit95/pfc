@@ -17,16 +17,10 @@ if (isset($_POST['actualizarArticulo'])) {
 
     // Comprobamos duplicados
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . strtoupper($numeroSerie) . "' AND idDispositivo != $idArticulo";
-        $resDup = mysqli_query($con, $sqlDup);
-        if (mysqli_num_rows($resDup) > 0) {
+        if (checkArticuloExistente($numeroSerie, $idArticulo)) {
             $errores_campos['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
             $hayError = true;
         }
-        mysqli_close($con);
     }
 
     if (!$hayError) {

@@ -29,15 +29,9 @@ if (isset($_POST['guardarModulo'])) {
     }
 
     if (empty($listaErroresValidacion)) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDup = "SELECT idModulo FROM modulos WHERE nombreModulo = '" . $nombreModuloActualizar . "' AND idCiclo = $idCicloAsociado AND idModulo != $idModuloActualizar";
-        $resDup = mysqli_query($con, $sqlDup);
-        if (mysqli_num_rows($resDup) > 0) {
+        if (checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
             $listaErroresValidacion['nombreModulo'] = "Este módulo ya existe en este ciclo.";
         }
-        mysqli_close($con);
     }
 
     if (empty($listaErroresValidacion)) {

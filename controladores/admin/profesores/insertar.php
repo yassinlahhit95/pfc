@@ -41,21 +41,9 @@ if (isset($_POST['guardarProfesor'])) {
 
     // Comprobamos duplicados
     if (empty($listaErroresValidacion)) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDni = "SELECT idProfesor FROM profesores WHERE dniProfesor = '" . $dniNuevoProfesor . "'";
-        $resDni = mysqli_query($con, $sqlDni);
-        if (mysqli_num_rows($resDni) > 0) {
-            $listaErroresValidacion['dniProfesor'] = "Este DNI ya está registrado.";
+        if (checkProfesorExistente($dniNuevoProfesor, $emailNuevoProfesor)) {
+            $listaErroresValidacion['dniProfesor'] = "El DNI o Email ya están registrados.";
         }
-
-        $sqlEmail = "SELECT idProfesor FROM profesores WHERE emailProfesor = '" . $emailNuevoProfesor . "'";
-        $resEmail = mysqli_query($con, $sqlEmail);
-        if (mysqli_num_rows($resEmail) > 0) {
-            $listaErroresValidacion['emailProfesor'] = "Este Email ya está registrado.";
-        }
-        mysqli_close($con);
     }
 
     if (empty($listaErroresValidacion)) {

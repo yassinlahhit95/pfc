@@ -46,23 +46,10 @@ if (isset($_POST['actualizarDirector'])) {
 
     // Comprobamos duplicados
     if (!$hayError) {
-        require_once __DIR__ . "/../../../modelos/conectar.php";
-        $con = obtenerConexion();
-        
-        $sqlDni = "SELECT idDirector FROM directores WHERE dniDirector = '" . $dni . "' AND idDirector != $idDirector";
-        $resDni = mysqli_query($con, $sqlDni);
-        if (mysqli_num_rows($resDni) > 0) {
-            $errores_campos['dniDirector'] = "Este DNI ya está registrado por otro director.";
+        if (checkDirectorExistente($dni, $email, $idDirector)) {
+            $errores_campos['dniDirector'] = "El DNI o Email ya están registrados por otro director.";
             $hayError = true;
         }
-
-        $sqlEmail = "SELECT idDirector FROM directores WHERE emailDirector = '" . $email . "' AND idDirector != $idDirector";
-        $resEmail = mysqli_query($con, $sqlEmail);
-        if (mysqli_num_rows($resEmail) > 0) {
-            $errores_campos['emailDirector'] = "Este Email ya está registrado por otro director.";
-            $hayError = true;
-        }
-        mysqli_close($con);
     }
 
     if (!$hayError) {
