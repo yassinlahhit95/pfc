@@ -1,13 +1,9 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Reto - Super Admin";
-$seccion = 'retos';
-include_once "../comunes/nav.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/modulos.php";
-
-$id_reto = $_GET['idReto'];
+$id_reto = $_GET['idReto'] ?? '';
 $reto = obtenerRetoPorId($id_reto);
 
 if (!$reto) {
@@ -32,11 +28,15 @@ if (isset($_SESSION['datos_reto'])) {
 
 $todos_los_modulos = listarModulos();
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 $lista_de_errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reto']);
+
+$titulo_pagina = "Modificar Reto - Admin";
+$seccion = 'retos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -45,67 +45,67 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="/pfc/controladores/admin/retos/actualizar.php">
-        <input type="hidden" name="idReto" value="<?php echo $id_reto; ?>">
+    <form method="POST" action="../../../controladores/admin/retos/actualizar.php">
+        <input type="hidden" name="idReto" value="<?= $id_reto ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Reto *</label>
-                <input type="text" name="nombreReto" value="<?php echo $reto['nombreReto']; ?>">
+                <input type="text" name="nombreReto" value="<?= $reto['nombreReto'] ?>">
                 <?php if (isset($lista_de_errores['nombreReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['nombreReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Horas Totales Estimadas *</label>
-                <input type="text" name="horasReto" value="<?php echo $reto['horasReto']; ?>">
+                <input type="text" name="horasReto" value="<?= $reto['horasReto'] ?>">
                 <?php if (isset($lista_de_errores['horasReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['horasReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicioReto" value="<?php echo $reto['fechaInicioReto']; ?>">
+                <input type="date" name="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>">
                 <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaInicioReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Fin *</label>
-                <input type="date" name="fechaFinReto" value="<?php echo $reto['fechaFinReto']; ?>">
+                <input type="date" name="fechaFinReto" value="<?= $reto['fechaFin'] ?>">
                 <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaFinReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones">
             <label><strong>Vincular Módulos *</strong></label>
             <div class="tarjeta-gris-suave scroll-vertical mt-5">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <div class="item-seleccionable">
-                        <input type="checkbox" name="modulosReto[]" value="<?php echo $modulo['idModulo']; ?>" 
-                            <?php if(in_array($modulo['idModulo'], $ids_modulos_viculados)) echo "checked"; ?>>
-                        <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
+                        <input type="checkbox" name="modulosReto[]" value="<?= $modulo['idModulo'] ?>" 
+                            <?= in_array($modulo['idModulo'], $ids_modulos_viculados) ? 'checked' : '' ?>>
+                        <span><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</span>
                     </div>
                 <?php } ?>
             </div>
             <?php if (isset($lista_de_errores['modulosReto'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['modulosReto']; ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['modulosReto'] ?></strong>
             <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones">
             <button type="submit" name="actualizarReto" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
@@ -114,4 +114,5 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

@@ -13,7 +13,9 @@ if (botonMenu) {
 }
 </script>
 
-<script src="/pfc/public/js/filtros.js"></script>
+<script src="../../../public/js/filtros.js"></script>
 </body>
 </html>
+
+
 

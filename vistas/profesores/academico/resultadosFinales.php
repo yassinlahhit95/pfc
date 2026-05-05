@@ -1,46 +1,48 @@
 <?php
 session_start();
-if (isset($_SESSION['idProfesor']) == false || $_SESSION['idProfesor'] == "") {
-    header("Location: /pfc/index.php");
+
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
+    header("Location: ../../../index.php");
     exit;
 }
 
-$idProfesor = $_SESSION['idProfesor'];
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['error'], $_SESSION['exito']);
+
 $tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
 $seccionActual = 'resultados_finales';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/calificaciones.php";
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Obtenemos solo los ciclos del profesor
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
-$id_ciclo_elegido = 0;
-if (isset($_GET['idCiclo']) && $_GET['idCiclo'] != "") {
-    $id_ciclo_elegido = intval($_GET['idCiclo']);
-    
+$id_ciclo_elegido = intval($_GET['idCiclo'] ?? 0);
+if ($id_ciclo_elegido) {
     // Verificar que el profesor tiene acceso a este ciclo
     $tieneAcceso = false;
-    $cantidad_ciclos = count($todos_los_ciclos);
-    for ($indiceCiclo = 0; $indiceCiclo < $cantidad_ciclos; $indiceCiclo = $indiceCiclo + 1) {
-        $cicloIndividual = $todos_los_ciclos[$indiceCiclo];
+    foreach ($todos_los_ciclos as $cicloIndividual) {
         if ($cicloIndividual['idCiclo'] == $id_ciclo_elegido) {
             $tieneAcceso = true;
+            break;
         }
     }
     
-    if ($tieneAcceso == false) {
+    if (!$tieneAcceso) {
         $id_ciclo_elegido = 0;
     }
 }
 
-$datos_finales = array();
+$datos_finales = [];
 
-if ($id_ciclo_elegido != 0) {
+if ($id_ciclo_elegido) {
     // 1. Obtener todos los estudiantes del ciclo
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
     
@@ -67,10 +69,10 @@ if ($id_ciclo_elegido != 0) {
             if (isset($notas_mod['nota_2ev']) && is_numeric($notas_mod['nota_2ev']) && $notas_mod['nota_2ev'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_2ev']; }
             if (isset($notas_mod['nota_2final']) && is_numeric($notas_mod['nota_2final']) && $notas_mod['nota_2final'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_2final']; }
             
-            if (count($notasDeEsteModulo) > 0) {
+            if (!empty($notasDeEsteModulo)) {
                 $mediaMod = array_sum($notasDeEsteModulo) / count($notasDeEsteModulo);
-                $suma_total_modulos = $suma_total_modulos + $mediaMod;
-                $contador_total_notas_modulos = $contador_total_notas_modulos + 1;
+                $suma_total_modulos += $mediaMod;
+                $contador_total_notas_modulos++;
                 if ($mediaMod < 5) {
                     $hayModuloSuspenso = true;
                 }
@@ -78,8 +80,8 @@ if ($id_ciclo_elegido != 0) {
             
             $medias_retos_del_modulo = listarCalificacionesRetoPorModulo($id_mod);
             if (isset($medias_retos_del_modulo[$id_est])) {
-                $suma_total_retos = $suma_total_retos + $medias_retos_del_modulo[$id_est];
-                $contador_modulos_con_reto = $contador_modulos_con_reto + 1;
+                $suma_total_retos += $medias_retos_del_modulo[$id_est];
+                $contador_modulos_con_reto++;
             }
         }
         
@@ -96,10 +98,10 @@ if ($id_ciclo_elegido != 0) {
         $nota_final = ($media_global_modulo * 0.75) + ($media_global_reto * 0.25);
         
         $estado = "SUSPENSO";
-        if ($contador_total_notas_modulos == 0) {
+        if (!$contador_total_notas_modulos) {
             $estado = "PENDIENTE";
         } else {
-            if ($nota_final >= 5.00 && $hayModuloSuspenso == false) {
+            if ($nota_final >= 5.00 && !$hayModuloSuspenso) {
                 $estado = "APROBADO";
             }
         }
@@ -121,6 +123,13 @@ if ($id_ciclo_elegido != 0) {
     <p class="subtitulo">Resumen global (75% Módulos / 25% Retos)</p>
 </div>
 
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro separacion-grande">
         <form method="GET" action="" class="flexible-rellenar disposicion-flexible alinear-centro">
@@ -129,17 +138,17 @@ if ($id_ciclo_elegido != 0) {
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
-                        <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($id_ciclo_elegido == $cicloItem['idCiclo']) echo "selected"; ?>>
-                            <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
+                        <option value="<?= $cicloItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
+                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
         </form>
 
-        <?php if ($id_ciclo_elegido != 0 && $datos_finales) { ?>
-            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Enviar resultados por email a todos los alumnos de este ciclo?')">
-                <input type="hidden" name="idCiclo" value="<?php echo $id_ciclo_elegido; ?>">
+        <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Enviar resultados por email a todos los alumnos de este ciclo?')">
+                <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> NOTIFICAR A TODOS
                 </button>
@@ -148,7 +157,7 @@ if ($id_ciclo_elegido != 0) {
     </div>
 </div>
 
-<?php if ($id_ciclo_elegido != 0) { ?>
+<?php if ($id_ciclo_elegido) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <div class="contenedor-tabla">
             <table class="tabla-datos">
@@ -162,7 +171,7 @@ if ($id_ciclo_elegido != 0) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($datos_finales == false || count($datos_finales) == 0) { ?>
+                    <?php if (empty($datos_finales)) { ?>
                         <tr><td colspan="5" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($datos_finales as $filaIndividual) { 
@@ -171,13 +180,15 @@ if ($id_ciclo_elegido != 0) {
                             if ($filaIndividual['estado'] == "PENDIENTE") { $clase_estado = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><strong><?php echo $filaIndividual['nombre']; ?></strong></td>
-                            <td><?php echo $filaIndividual['media_modulo']; ?></td>
-                            <td><?php echo $filaIndividual['media_reto']; ?></td>
-                            <td class="texto-negrita"><?php echo $filaIndividual['nota_final']; ?></td>
-                            <td class="<?php echo $clase_estado; ?> texto-negrita">
-                                <?php echo $filaIndividual['estado']; ?>
-                                <?php if($filaIndividual['alert'] == true) { echo " <small title='Tiene módulos suspensos'>(!)</small>"; } ?>
+                            <td><strong><?= $filaIndividual['nombre'] ?></strong></td>
+                            <td><?= $filaIndividual['media_modulo'] ?></td>
+                            <td><?= $filaIndividual['media_reto'] ?></td>
+                            <td class="texto-negrita"><?= $filaIndividual['nota_final'] ?></td>
+                            <td class="<?= $clase_estado ?> texto-negrita">
+                                <?= $filaIndividual['estado'] ?>
+                                <?php if ($filaIndividual['alert'] == true) { ?>
+                                    <small title='Tiene módulos suspensos'>(!)</small>
+                                <?php } ?>
                             </td>
                         </tr>
                         <?php } ?>
@@ -189,4 +200,5 @@ if ($id_ciclo_elegido != 0) {
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 

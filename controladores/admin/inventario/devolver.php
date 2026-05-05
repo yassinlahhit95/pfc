@@ -1,20 +1,23 @@
 <?php
 session_start();
-require_once "../../../modelos/inventario.php";
-$id = $_POST['idPrestamo'];
-if (empty($id)) {
-    $id = $_GET['id'];
+require_once __DIR__ . "/../../../modelos/inventario.php";
+
+$idPrestamo = trim($_POST['idPrestamo'] ?? $_GET['id'] ?? '');
+
+$hayError = false;
+
+if (empty($idPrestamo)) {
+    $_SESSION['error'] = "Falta ID préstamo.";
+    $hayError = true;
 }
-if (empty($id)) {
-    $_SESSION['error'] = "ID obligatorio";
-} else if (devolverPrestamo($id)) {
-    $_SESSION['exito'] = "Ok";
-    header("Location: /pfc/vistas/admin/inventario/gestionarPrestamos.php");
-    exit;
-} else {
-    $_SESSION['error'] = "Error BD";
+
+if (!$hayError) {
+    if (devolverPrestamo($idPrestamo)) {
+        $_SESSION['exito'] = "Préstamo devuelto.";
+    } else {
+        $_SESSION['error'] = "Error al devolver.";
+    }
 }
-header("Location: /pfc/vistas/admin/inventario/gestionarPrestamos.php");
+
+header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
 exit;
-
-

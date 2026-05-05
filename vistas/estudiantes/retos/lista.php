@@ -1,8 +1,12 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -12,12 +16,19 @@ $retos = listarRetos();
 
 $tituloDelPagina = "Mis Retos - Portal Estudiantes";
 $seccionActual = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Mis Retos</h1>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -38,10 +49,10 @@ include_once "../comunes/nav.php";
                 <?php if ($retos) { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $reto['nombreReto']; ?></td>
-                            <td><?php echo $reto['fechaInicio']; ?></td>
-                            <td><?php echo $reto['fechaFin']; ?></td>
-                            <td><?php echo $reto['horasReto']; ?> h</td>
+                            <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
+                            <td><?= $reto['fechaInicio'] ?></td>
+                            <td><?= $reto['fechaFin'] ?></td>
+                            <td><?= $reto['horasReto'] ?> h</td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
@@ -57,4 +68,6 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

@@ -1,64 +1,69 @@
 <?php
 session_start();
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+
+$hayError = false;
 
 if (isset($_POST['actualizarReto'])) {
-    $id_reto = $_POST['idReto'];
-    $nombre = trim($_POST['nombreReto']);
-    $horas = $_POST['horasReto'];
-    $inicio = $_POST['fechaInicioReto'];
-    $fin = $_POST['fechaFinReto'];
-    $modulos = [];
-    if (isset($_POST['modulosReto'])) { $modulos = $_POST['modulosReto']; }
+    $idRetoActualizar = trim($_POST['idReto']);
+    $nombreRetoActualizar = trim($_POST['nombreReto']);
+    $horasDelReto = trim($_POST['horasReto']);
+    $fechaInicioDelReto = trim($_POST['fechaInicioReto']);
+    $fechaFinDelReto = trim($_POST['fechaFinReto']);
+    $listaModulosAsociados = isset($_POST['modulosReto']) ? $_POST['modulosReto'] : [];
 
-    $lista_de_errores = [];
+    $listaErroresValidacion = [];
 
-    if (empty($nombre)) {
-        $lista_de_errores['nombreReto'] = "El nombre es obligatorio.";
+    if (empty($nombreRetoActualizar)) {
+        $listaErroresValidacion['nombreReto'] = "El nombre es obligatorio.";
     }
-    if (empty($horas)) {
-        $lista_de_errores['horasReto'] = "Las horas son obligatorias.";
+    if (empty($horasDelReto)) {
+        $listaErroresValidacion['horasReto'] = "Las horas son obligatorias.";
     } else {
-        if (!is_numeric($horas)) {
-            $lista_de_errores['horasReto'] = "Las horas deben ser un número.";
+        if (!is_numeric($horasDelReto)) {
+            $listaErroresValidacion['horasReto'] = "Las horas deben ser un número.";
         }
     }
-    if (empty($inicio)) {
-        $lista_de_errores['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
+    if (empty($fechaInicioDelReto)) {
+        $listaErroresValidacion['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
     }
-    if (empty($fin)) {
-        $lista_de_errores['fechaFinReto'] = "La fecha de fin es obligatoria.";
+    if (empty($fechaFinDelReto)) {
+        $listaErroresValidacion['fechaFinReto'] = "La fecha de fin es obligatoria.";
     }
-    if (empty($modulos)) {
-        $lista_de_errores['modulosReto'] = "Debe seleccionar al menos un módulo.";
-    } else if (is_numeric($horas)) {
+    if (empty($listaModulosAsociados)) {
+        $listaErroresValidacion['modulosReto'] = "Debe seleccionar al menos un módulo.";
+    } else if (is_numeric($horasDelReto)) {
         // Validar que el módulo tenga suficientes horas disponibles
-        foreach ($modulos as $idModulo) {
-            if (!comprobarHorasDisponiblesModulo($idModulo, $horas, $id_reto)) {
-                $lista_de_errores['modulosReto'] = "Uno de los módulos seleccionados no tiene suficientes horas disponibles (sobrepasa el límite del módulo).";
+        foreach ($listaModulosAsociados as $idModuloParaValidar) {
+            if (!comprobarHorasDisponiblesModulo($idModuloParaValidar, $horasDelReto, $idRetoActualizar)) {
+                $listaErroresValidacion['modulosReto'] = "Un módulo seleccionado no tiene suficientes horas.";
                 break;
             }
         }
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = actualizarReto($id_reto, $nombre, $inicio, $fin, $horas, $modulos);
-        if ($resultado) {
-            $_SESSION['exito'] = "Reto actualizado correctamente.";
-            header("Location: /pfc/vistas/admin/retos/verRetos.php");
+    if (empty($listaErroresValidacion)) {
+        if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, $listaModulosAsociados)) {
+            $_SESSION['exito'] = "Reto actualizado.";
+            header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;
         } else {
+            $hayError = true;
             $_SESSION['error'] = "Error al actualizar en la base de datos.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
-        $_SESSION['datos_reto'] = $_POST;
+        $hayError = true;
+        $_SESSION['errores'] = $listaErroresValidacion;
+        
+        $datosParaSesion = $_POST;
+        $datosParaSesion['fechaInicio'] = $_POST['fechaInicioReto'];
+        $datosParaSesion['fechaFin'] = $_POST['fechaFinReto'];
+        $_SESSION['datos_reto'] = $datosParaSesion;
     }
 
-    header("Location: /pfc/vistas/admin/retos/modificarRetos.php?idReto=$id_reto");
+    header("Location: ../../../vistas/admin/retos/modificarRetos.php?idReto=$idRetoActualizar");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/retos/verRetos.php");
+header("Location: ../../../vistas/admin/retos/verRetos.php");
 exit;
-

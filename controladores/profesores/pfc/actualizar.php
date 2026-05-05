@@ -1,27 +1,35 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 if (isset($_POST['actualizarTFG'])) {
-    $id = $_POST['idEstudiante'];
-    $titulo = trim($_POST['tituloTFG']);
+    $idEstudiante = trim($_POST['idEstudiante']);
+    $tituloTFG = trim($_POST['tituloTFG']);
 
-    if (empty($id)) {
-        header("Location: /pfc/vistas/profesores/pfc/lista.php");
-    } else if (empty($titulo)) {
+    $hayError = false;
+
+    if (empty($idEstudiante)) {
+        header("Location: ../../../vistas/profesores/pfc/lista.php");
+        exit;
+    }
+
+    if (empty($tituloTFG)) {
         $_SESSION['error'] = "El título del TFG es obligatorio.";
-        header("Location: /pfc/vistas/profesores/pfc/lista.php");
-    } else {
-        if (actualizarDatosTFG($id, $titulo)) {
-            $_SESSION['exito'] = "Datos del TFG actualizados correctamente.";
+        $hayError = true;
+    }
+
+    if (!$hayError) {
+        $resultado = actualizarDatosTFG($idEstudiante, $tituloTFG);
+        if ($resultado) {
+            $_SESSION['exito'] = "Datos del TFG actualizados.";
         } else {
-            $_SESSION['error'] = "Error al actualizar los datos del TFG.";
+            $_SESSION['error'] = "Error al actualizar el TFG.";
         }
     }
+
+    header("Location: ../../../vistas/profesores/pfc/lista.php");
     exit;
 }
 
-header("Location: /pfc/vistas/profesores/pfc/lista.php");
+header("Location: ../../../vistas/profesores/pfc/lista.php");
 exit;
-?>
-

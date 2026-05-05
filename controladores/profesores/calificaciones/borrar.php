@@ -1,16 +1,21 @@
 <?php
 session_start();
-require_once "../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+
+$hayError = false;
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    if (eliminarCalificacion($id)) {
-        $_SESSION['exito'] = "Calificación eliminada correctamente.";
+    $idCalificacion = trim($_GET['id']);
+    if (eliminarCalificacion($idCalificacion)) {
+        $_SESSION['exito'] = "Calificación eliminada.";
     } else {
-        $_SESSION['error'] = "Error al eliminar la calificación.";
+        $hayError = true;
+        $_SESSION['error'] = "Error al eliminar.";
     }
+} else {
+    $hayError = true;
+    $_SESSION['error'] = "Falta ID.";
 }
-header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
-exit;
-?>
 
+header("Location: ../../../vistas/profesores/calificaciones/lista.php");
+exit;

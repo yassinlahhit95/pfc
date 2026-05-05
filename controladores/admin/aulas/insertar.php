@@ -1,33 +1,46 @@
 <?php
 session_start();
-require_once "../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 if (isset($_POST['guardarAula'])) {
-    $nombre_aula = $_POST['nombreAula'];
+    $nombreAula = trim($_POST['nombreAula']);
 
-    $lista_de_errores = array();
-    if (empty($nombre_aula)) {
-        $lista_de_errores['nombreAula'] = "El nombre del aula es obligatorio.";
+    $hayError = false;
+    if (empty($nombreAula)) {
+        $hayError = true;
+        $_SESSION['errores']['nombreAula'] = "El nombre del aula es obligatorio.";
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = insertarAula($nombre_aula);
+    // Comprobamos duplicados
+    if (!$hayError) {
+        require_once __DIR__ . "/../../../modelos/conectar.php";
+        $con = obtenerConexion();
+        
+        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . mysqli_real_escape_string($con, $nombreAula) . "'";
+        $resNombre = mysqli_query($con, $sqlNombre);
+        if (mysqli_num_rows($resNombre) > 0) {
+            $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya existe.";
+            $hayError = true;
+        }
+        mysqli_close($con);
+    }
+
+    if (!$hayError) {
+        $resultado = insertarAula($nombreAula);
         if ($resultado) {
-            $_SESSION['exito'] = "Aula registrada correctamente.";
-            header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+            $_SESSION['exito'] = "Aula registrada.";
+            header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al insertar el aula en la base de datos.";
+            $_SESSION['error'] = "Error inesperado al guardar.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_aulas'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+    header("Location: ../../../vistas/admin/aulas/verAulas.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
-

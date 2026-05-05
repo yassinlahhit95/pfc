@@ -1,29 +1,29 @@
 <?php
 session_start();
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+
+$hayError = false;
 
 if (isset($_POST['actualizarModulos'])) {
-    $idProfesor = intval($_POST['idProfesor']);
-    $modulos = isset($_POST['modulos']) ? $_POST['modulos'] : [];
+    $idProfesorAsignacion = intval(trim($_POST['idProfesor']));
+    $listaModulosSeleccionados = isset($_POST['modulos']) ? $_POST['modulos'] : [];
 
     // 1. Limpiar asignaciones previas
-    limpiarModulosProfesor($idProfesor);
+    limpiarModulosProfesor($idProfesorAsignacion);
 
     // 2. Insertar nuevas asignaciones
-    $error = false;
-    foreach ($modulos as $idMod) {
-        if (!asociarModuloProfesor(intval($idMod), $idProfesor)) {
-            $error = true;
+    foreach ($listaModulosSeleccionados as $idModuloParaAsociar) {
+        if (!asociarModuloProfesor(intval($idModuloParaAsociar), $idProfesorAsignacion)) {
+            $hayError = true;
         }
     }
 
-    if (!$error) {
-        $_SESSION['exito'] = "Módulos asignados correctamente.";
+    if (!$hayError) {
+        $_SESSION['exito'] = "Módulos asignados.";
     } else {
-        $_SESSION['error'] = "Hubo un problema al asignar algunos módulos.";
+        $_SESSION['error'] = "Error al asignar módulos.";
     }
 }
 
-header("Location: /pfc/vistas/admin/profesores/verProfesores.php");
+header("Location: ../../../vistas/admin/profesores/verProfesores.php");
 exit;
-

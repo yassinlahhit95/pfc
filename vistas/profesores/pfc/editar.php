@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
+
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: /pfc/index.php");
     exit;
@@ -8,39 +13,53 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
-$id = $_GET['id'];
-$tfg = obtenerTFGporEstudiante($id);
+$idEstudiante = $_GET['id'] ?? '';
+$datosTFG = obtenerTFGporEstudiante($idEstudiante);
 
-$tituloDelPagina = "Editar TFG - Portal Profesores";
+$tituloPagina = "Editar TFG - Portal Profesores";
 $seccionActual = 'tfg';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Editar Datos TFG</h1>
-    <a href="/pfc/vistas/profesores/pfc/lista.php" class="boton-secundario">← Volver</a>
+    <a href="/pfc/vistas/profesores/pfc/lista.php" class="boton-secundario">← VOLVER</a>
 </div>
+
+<?php if ($error): ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito): ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <form action="/pfc/controladores/profesores/pfc/actualizar.php" method="POST">
-        <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
+        <input type="hidden" name="idEstudiante" value="<?= htmlspecialchars($idEstudiante) ?>">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label>Estudiante</label>
-                <input type="text" value="<?php echo $tfg['nombreEstudiante']; ?>" disabled>
+                <input type="text" value="<?= htmlspecialchars($datosTFG['nombreEstudiante'] ?? '') ?>" disabled>
             </div>
 
             <div class="campo-formulario">
                 <label>Título del TFG *</label>
-                <input type="text" name="tituloTFG" value="<?php echo $tfg['tituloTFG']; ?>">
+                <input type="text" name="tituloTFG" value="<?= htmlspecialchars($datosTFG['tituloTFG'] ?? '') ?>" class="<?= isset($errores['tituloTFG']) ? 'input-error' : '' ?>">
+                <?php if (isset($errores['tituloTFG'])): ?>
+                    <strong class="error-campo"><?= $errores['tituloTFG'] ?></strong>
+                <?php endif; ?>
             </div>
         </div>
 
-        <div class="margen-arriba">
-            <button type="submit" name="actualizarTFG" class="boton-primario">Actualizar TFG</button>
+        <div class="form-acciones">
+            <button type="submit" name="actualizarTFG" class="boton-primario">
+                <i class="fas fa-save"></i> ACTUALIZAR TFG
+            </button>
         </div>
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

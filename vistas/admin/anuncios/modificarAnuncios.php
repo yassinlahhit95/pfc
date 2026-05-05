@@ -1,10 +1,10 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Anuncio - Super Admin";
+$titulo_pagina = "Modificar Anuncio - Admin";
 $seccion = 'anuncios';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $id_anuncio = $_GET['idAnuncio'];
 $anuncio = obtenerAnuncioPorId($id_anuncio);
@@ -14,14 +14,12 @@ if (!$anuncio) {
     exit;
 }
 
-if (isset($_SESSION['datos_anuncio'])) {
-    $anuncio = $_SESSION['datos_anuncio'];
-}
+$anuncio = ($_SESSION['datos_anuncio'] ?? 0);
 
 $error = $_SESSION['error'] ?? "";
 
 $lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$lista_de_errores = ($_SESSION['errores'] ?? 0);
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 ?>
@@ -32,36 +30,41 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 </div>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="/pfc/controladores/admin/anuncios/actualizar.php">
-        <input type="hidden" name="idAnuncio" value="<?php echo $id_anuncio; ?>">
+    <form method="POST" action="../../../controladores/admin/anuncios/actualizar.php">
+        <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
         
         <div class="campo-formulario">
             <label>Título del Anuncio *</label>
-            <input type="text" name="tituloAnuncio" value="<?php echo $anuncio['tituloAnuncio']; ?>">
+            <input type="text" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
             <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['tituloAnuncio']; ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo-formulario margen-arriba">
             <label>Contenido del Anuncio *</label>
-            <textarea name="contenidoAnuncio" rows="6"><?php echo $anuncio['contenidoAnuncio']; ?></textarea>
+            <textarea name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
             <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['contenidoAnuncio']; ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="actualizarAnuncio" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

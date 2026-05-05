@@ -1,10 +1,9 @@
 /**
  * Filtros dinámicos para tablas usando jQuery
- * CPS IBAIONDO
  */
 
 function filtrarTabla(inputId, tablaId) {
-    // Obtenemos el texto del input en mayúsculas
+    // Obtenemos el valor del select o input
     var texto = $("#" + inputId).val().toLowerCase();
 
     // Filtramos las filas de la tabla

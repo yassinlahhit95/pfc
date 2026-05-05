@@ -1,143 +1,196 @@
 <?php
-require_once("conectar.php");
+require_once __DIR__ . "/conectar.php";
 
-// Contadores simples
+// --- CONTADORES ESTADÍSTICOS DEL SISTEMA ---
+
+// Contar el total de estudiantes registrados
 function contarEstudiantes() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM estudiantes";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM estudiantes";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de profesores registrados
 function contarProfesores() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM profesores";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM profesores";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de directores/administradores registrados
 function contarDirectores() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM directores";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM directores";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de anuncios publicados
 function contarAnuncios() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM anuncios";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM anuncios";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de reclamaciones o mensajes registrados
 function contarReclamaciones() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM reclamaciones";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de ciclos formativos registrados
 function contarCiclos() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM ciclos";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM ciclos";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar cuántos estudiantes están vinculados a un profesor concreto
+function contarEstudiantesDeProfesor($idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            WHERE cp.idProfesor = $idProfesor";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
+}
+
+// Contar cuántos ciclos formativos tiene asignados un profesor
+function contarCiclosDeProfesor($idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM ciclo_profesor WHERE idProfesor = $idProfesor";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
+}
+
+// Contar el total de módulos profesionales registrados
 function contarModulos() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM modulos";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM modulos";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de retos académicos registrados
 function contarRetos() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM retos";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM retos";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de aulas físicas registradas
 function contarAulas() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM aulas";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM aulas";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar el total de dispositivos registrados en el inventario
 function contarInventario() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM dispositivos";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM dispositivos";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Contar cuántos préstamos de dispositivos están actualmente 'en curso'
 function contarPrestamosActivos() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM prestamos WHERE estadoPrestamo = 'en curso'";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM prestamos WHERE estadoPrestamo = 'en curso'";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
-// Dinero
+// --- LÓGICA FINANCIERA ---
+
+// Calcular la cantidad total recaudada a través de todos los pagos realizados
 function obtenerTotalRecaudado() {
-    $db = obtenerConexion();
-    $sql = "SELECT SUM(monto) as sum FROM pagos";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['sum']) ? $fila['sum'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT SUM(monto) as acumulado FROM pagos";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (float)($fila['acumulado'] ?? 0);
 }
 
+// --- ANÁLISIS ACADÉMICO ---
+
+// Calcular el porcentaje global de módulos aprobados (nota final >= 5)
 function obtenerPorcentajeAprobadosGlobal() {
-    $db = obtenerConexion();
-    $sql1 = "SELECT COUNT(*) as t FROM calificaciones_modulos";
-    $fT = mysqli_fetch_assoc(mysqli_query($db, $sql1));
-    $total = $fT['t'];
+    $con = obtenerConexion();
+    
+    // 1. Contamos el total de calificaciones registradas
+    $sql = "SELECT COUNT(*) as conteo FROM calificaciones_modulos";
+    $resultado = mysqli_query($con, $sql);
+    $filaTotal = mysqli_fetch_assoc($resultado);
+    $totalRegistros = (int)$filaTotal['conteo'];
 
-    if ($total == 0) { mysqli_close($db); return 0; }
+    if ($totalRegistros === 0) { 
+        mysqli_close($con); 
+        return 0; 
+    }
 
-    $sql2 = "SELECT COUNT(*) as a FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5";
-    $fA = mysqli_fetch_assoc(mysqli_query($db, $sql2));
-    $aprob = $fA['a'];
+    // 2. Contamos cuántas de esas calificaciones son aprobadas (en 1ª o 2ª final)
+    $sql = "SELECT COUNT(*) as conteo 
+                     FROM calificaciones_modulos 
+                     WHERE nota_1final >= 5 OR nota_2final >= 5";
+    $resultado = mysqli_query($con, $sql);
+    $filaAprobados = mysqli_fetch_assoc($resultado);
+    $totalAprobados = (int)$filaAprobados['conteo'];
 
-    $porc = ($aprob / $total) * 100;
-    mysqli_close($db);
-    return round($porc, 1);
+    // 3. Calculamos el porcentaje
+    $porcentaje = ($totalAprobados / $totalRegistros) * 100;
+    mysqli_close($con);
+    return round($porcentaje, 1);
 }
 
+// Contar cuántas operaciones de pago se han realizado
 function contarPagosRealizados() {
-    $db = obtenerConexion();
-    $sql = "SELECT COUNT(*) as t FROM pagos";
-    $res = mysqli_query($db, $sql);
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return isset($fila['t']) ? $fila['t'] : 0;
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM pagos";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
 }
 
+// Alias para compatibilidad
 function contarPagos() {
     return contarPagosRealizados();
 }
-?>

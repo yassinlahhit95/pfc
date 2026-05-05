@@ -2,31 +2,24 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
-    header("Location: /pfc/index.php");
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE ESTUDIANTES - SUPER ADMIN";
+$titulo_pagina = "GESTIÓN DE ESTUDIANTES - ADMIN";
 $seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Obtenemos todos los estudiantes de la base de datos
 $listaDeEstudiantesActuales = listarEstudiantes();
 
 // Captura de mensajes de sesión para mostrar alertas
-$mensajeExitoAMostrar = "";
-if (isset($_SESSION['exito'])) {
-    $mensajeExitoAMostrar = $_SESSION['exito'];
-}
-
-$mensajeErrorAMostrar = "";
-if (isset($_SESSION['error'])) {
-    $mensajeErrorAMostrar = $_SESSION['error'];
-}
+$exito = $_SESSION['exito'] ?? '';
+$error = $_SESSION['error'] ?? '';
 
 // Limpiamos los mensajes para que no se repitan al recargar
 unset($_SESSION['exito'], $_SESSION['error']);
@@ -37,18 +30,18 @@ unset($_SESSION['exito'], $_SESSION['error']);
         <h1>LISTADO DE ESTUDIANTES</h1>
     </div>
     <div class="acciones-pagina">
-        <a href="/pfc/vistas/admin/estudiantes/agregarEstudiantes.php" class="boton-primario">
-            <i class="fas fa-user-plus"></i> NUEVO ESTUDIANTE
+        <a href="agregarEstudiantes.php" class="boton-primario">
+            <i class="fas fa-plus"></i> NUEVO ESTUDIANTE
         </a>
     </div>
 </div>
 
-<?php if ($mensajeExitoAMostrar != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensajeExitoAMostrar; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($mensajeErrorAMostrar != "") { ?>
-    <div class="mensaje-error"><?php echo $mensajeErrorAMostrar; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <?php 
@@ -60,8 +53,8 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
         <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaEstudiantes')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>">
-                    <?php echo strtoupper($cicloFiltro['nombreCiclo']); ?>
+                <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
+                    <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                 </option>
             <?php } ?>
         </select>
@@ -81,30 +74,30 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDeEstudiantesActuales == false || count($listaDeEstudiantesActuales) == 0) { ?>
+                <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
                         <td colspan="5" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
                     <tr>
-                        <td><?php echo $estudianteIndividual['idEstudiante']; ?></td>
-                        <td><strong><?php echo strtoupper($estudianteIndividual['nombreEstudiante']); ?></strong></td>
-                        <td><?php echo $estudianteIndividual['emailEstudiante']; ?></td>
-                        <td><?php echo strtoupper($estudianteIndividual['nombreCiclo']); ?></td>
+                        <td><?= $estudianteIndividual['idEstudiante'] ?></td>
+                        <td><strong><?= strtoupper($estudianteIndividual['nombreEstudiante']) ?></strong></td>
+                        <td><?= $estudianteIndividual['emailEstudiante'] ?></td>
+                        <td><?= strtoupper($estudianteIndividual['nombreCiclo']) ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver ficha completa">
+                                <a href="verDetallesEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 
+                                   class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-id-card"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?php echo $estudianteIndividual['idEstudiante']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar información">
+                                <a href="modificarEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 
+                                   class="btn-accion btn-editar" title="Editar información">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="/pfc/controladores/admin/estudiantes/borrar.php" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
-                                    <input type="hidden" name="idEstudiante" value="<?php echo $estudianteIndividual['idEstudiante']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" title="Borrar registro">
+                                <form method="POST" action="../../../controladores/admin/estudiantes/borrar.php" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
+                                    <input type="hidden" name="idEstudiante" value="<?= $estudianteIndividual['idEstudiante'] ?>">
+                                    <button type="submit" class="btn-accion btn-eliminar" title="Borrar registro">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -119,4 +112,5 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

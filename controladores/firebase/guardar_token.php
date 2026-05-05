@@ -1,41 +1,39 @@
 <?php
 session_start();
-require_once "../../modelos/conectar.php";
+require_once __DIR__ . "/../../modelos/directores.php";
+require_once __DIR__ . "/../../modelos/profesores.php";
+require_once __DIR__ . "/../../modelos/estudiantes.php";
 
 header('Content-Type: application/json');
 
-$data = json_decode(file_get_contents('php://input'), true);
+// Obtenemos los datos del cuerpo de la petición (JSON)
+$datosRecibidos = json_decode(file_get_contents('php://input'), true);
 
-if (isset($data['token'], $data['userId'], $data['userRole'])) {
-    $token = $data['token'];
-    $userId = (int)$data['userId'];
-    $userRole = $data['userRole'];
+if (isset($datosRecibidos['token'], $datosRecibidos['userId'], $datosRecibidos['userRole'])) {
+    $tokenFCM = trim($datosRecibidos['token']);
+    $idUsuario = (int)trim($datosRecibidos['userId']);
+    $rolUsuario = trim($datosRecibidos['userRole']);
 
-    $conexion = obtenerConexion();
-    $tabla = "";
-    $columnaId = "";
+    $resultado = false;
 
-    switch ($userRole) {
-        case 'estudiante': $tabla = "estudiantes"; $columnaId = "idEstudiante"; break;
-        case 'profesor': $tabla = "profesores"; $columnaId = "idProfesor"; break;
-        case 'admin': $tabla = "directores"; $columnaId = "idDirector"; break;
+    // Llamamos al modelo correspondiente según el rol
+    switch ($rolUsuario) {
+        case 'estudiante': 
+            $resultado = actualizarTokenFCMEstudiante($idUsuario, $tokenFCM); 
+            break;
+        case 'profesor': 
+            $resultado = actualizarTokenFCMProfesor($idUsuario, $tokenFCM); 
+            break;
+        case 'admin': 
+            $resultado = actualizarTokenFCMDirector($idUsuario, $tokenFCM); 
+            break;
     }
 
-    if ($tabla != "") {
-        $stmt = mysqli_prepare($conexion, "UPDATE $tabla SET fcm_token = ? WHERE $columnaId = ?");
-        mysqli_stmt_bind_param($stmt, "si", $token, $userId);
-        
-        if (mysqli_stmt_execute($stmt)) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'error' => mysqli_error($conexion)]);
-        }
-        mysqli_stmt_close($stmt);
+    if ($resultado) {
+        echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Rol inválido']);
+        echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el token']);
     }
-    mysqli_close($conexion);
 } else {
     echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
 }
-?>

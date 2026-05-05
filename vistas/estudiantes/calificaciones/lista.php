@@ -1,8 +1,12 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -14,12 +18,19 @@ $notas = listarCalificacionesPorEstudiante($id);
 
 $tituloDelPagina = "Mis Calificaciones - Portal Estudiantes";
 $seccionActual = 'calificaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Mis Calificaciones</h1>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
@@ -31,10 +42,10 @@ include_once "../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Módulo</th>
-                    <th>1ª Ev</th>
-                    <th>1ª Final</th>
-                    <th>2ª Ev</th>
-                    <th>2ª Final</th>
+                    <th>1º Ev</th>
+                    <th>1º Final</th>
+                    <th>2º Ev</th>
+                    <th>2º Final</th>
                     <th>Estado</th>
                     <th>Observaciones</th>
                 </tr>
@@ -46,11 +57,11 @@ include_once "../comunes/nav.php";
                         $aprobado = ($nFinal >= 5);
                     ?>
                         <tr>
-                            <td><strong><?php echo $nota['nombreModulo']; ?></strong></td>
-                            <td><?php echo $nota['nota_1ev']; ?></td>
-                            <td><?php echo $nota['nota_1final']; ?></td>
-                            <td><?php echo $nota['nota_2ev']; ?></td>
-                            <td><?php echo $nota['nota_2final']; ?></td>
+                            <td><strong><?= $nota['nombreModulo'] ?></strong></td>
+                            <td><?= $nota['nota_1ev'] ?></td>
+                            <td><?= $nota['nota_1final'] ?></td>
+                            <td><?= $nota['nota_2ev'] ?></td>
+                            <td><?= $nota['nota_2final'] ?></td>
                             <td>
                                 <?php if ($aprobado) { ?>
                                     <span class="texto-verde texto-negrita">Aprobado</span>
@@ -58,13 +69,13 @@ include_once "../comunes/nav.php";
                                     <span class="texto-rojo texto-negrita">Suspenso</span>
                                 <?php } ?>
                             </td>
-                            <td><small><?php echo $nota['observaciones']; ?></small></td>
+                            <td><small><?= $nota['observaciones'] ?></small></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">
-                            <i class="fas fa-inbox"></i> No hay calificaciones registradas.
+                            No hay calificaciones registradas.
                         </td>
                     </tr>
                 <?php } ?>
@@ -74,4 +85,6 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

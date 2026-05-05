@@ -1,42 +1,32 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Directores - Super Admin";
+$titulo_pagina = "Gestión de Directores - Admin";
 $seccion = 'directores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 $todos_los_directores = listarDirectores();
 
-$error = "";
-if (isset($_SESSION['error'])) { $error = $_SESSION['error']; }
-
-$exito = "";
-if (isset($_SESSION['exito'])) { $exito = $_SESSION['exito']; }
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>Directores de Ciclo</h1>
-    <a href="/pfc/vistas/admin/directores/agregarDirectores.php" class="boton-primario">
-        <i class="fas fa-plus"></i> Nuevo Director
+    <a href="agregarDirectores.php" class="boton-primario">
+        <i class="fas fa-plus"></i> NUEVO DIRECTOR
     </a>
 </div>
 
-<?php if ($exito != "") { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error != "") { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
-
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-search"></i> BUSCAR DIRECTOR:</label>
-        <input type="text" id="inputBuscarDirector" placeholder="Busque por nombre o email..." onkeyup="filtrarTabla('inputBuscarDirector', 'tablaDirectores')">
-    </div>
-</div>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -56,21 +46,21 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <?php } else { ?>
                     <?php foreach ($todos_los_directores as $director) { ?>
                     <tr>
-                        <td><?php echo $director['idDirector']; ?></td>
-                        <td><strong><?php echo $director['nombreDirector']; ?></strong></td>
-                        <td><?php echo $director['emailDirector']; ?></td>
-                        <td><?php echo $director['telefonoDirector']; ?></td>
+                        <td><?= $director['idDirector'] ?></td>
+                        <td><strong><?= $director['nombreDirector'] ?></strong></td>
+                        <td><?= $director['emailDirector'] ?></td>
+                        <td><?= $director['telefonoDirector'] ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/directores/verDetallesDirectores.php?id=<?php echo $director['idDirector']; ?>" class="boton-icono boton-ver" title="Ver ficha completa">
+                                <a href="verDetallesDirectores.php?id=<?= $director['idDirector'] ?>" class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/directores/modificarDirectores.php?idDirector=<?php echo $director['idDirector']; ?>" class="boton-icono boton-editar">
+                                <a href="modificarDirectores.php?idDirector=<?= $director['idDirector'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/directores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este director?')">
-                                    <input type="hidden" name="idDirector" value="<?php echo $director['idDirector']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                <form action="../../../controladores/admin/directores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este director?')">
+                                    <input type="hidden" name="idDirector" value="<?= $director['idDirector'] ?>">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -85,4 +75,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

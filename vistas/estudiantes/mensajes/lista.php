@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: /pfc/index.php");
     exit;
@@ -11,28 +15,24 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idEstudiante = $_SESSION['idEstudiante'];
 $listaDeMensajes = listarMensajesDeEstudiante($idEstudiante);
 
-$tituloDelPagina = "Mis Mensajes - Portal Estudiantes";
+$tituloPagina = "Mis Mensajes - Portal Estudiantes";
 $seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
-
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
-unset($_SESSION['error'], $_SESSION['exito']);
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Mis Mensajes</h1>
+<div class="encabezado-pagina">
+    <h1>MIS MENSAJES</h1>
     <a href="/pfc/vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
-        <i class="fas fa-plus"></i> Nuevo Mensaje
+        <i class="fas fa-plus"></i> NUEVO MENSAJE
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($error): ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
+<?php if ($exito): ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -41,41 +41,49 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <tr>
                     <th>Destinatario</th>
                     <th>Asunto</th>
+                    <th>Mensaje</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Visto</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No has enviado mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { ?>
-                    <tr>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
+                        $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
+                    ?>
+                    <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></strong>
+                            <strong><?php 
+                                if ($mensaje['emisor_rol'] == 'profesor') {
+                                    echo '(PROFESOR) ' . htmlspecialchars($mensaje['nombreProfesor']); 
+                                } else {
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . htmlspecialchars($mensaje['nombreProfesor']) : 'DIRECCIÓN (ADMIN)';
+                                }
+                            ?></strong>
                         </td>
+                        <td><p class="texto-negrita"><?= htmlspecialchars(strtoupper($mensaje['asunto'])) ?></p></td>
                         <td>
-                            <p class="texto-negrita"><?php echo $mensaje['asunto']; ?></p>
-                            <small class="texto-atenuado"><?php echo substr($mensaje['descripcion'], 0, 50); ?>...</small>
-                            <?php if (!empty($mensaje['respuesta'])) { ?>
-                                <div class="tarjeta-gris-suave mt-5">
-                                    <small><strong>Respuesta:</strong> <?php echo $mensaje['respuesta']; ?></small>
-                                </div>
-                            <?php } ?>
+                            <div class="cuerpo-mensaje-tabla">
+                                <?= htmlspecialchars(substr($mensaje['descripcion'], 0, 80)) ?>...
+                            </div>
                         </td>
-                        <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
-                        <td>
-                            <span class="estado-bolita <?php echo ($mensaje['estadoReclamacion'] == 'atendido' ? 'activo-verde' : 'inactivo-rojo'); ?>">
-                                <?php echo ucfirst($mensaje['estadoReclamacion']); ?>
-                            </span>
-                        </td>
+                        <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <i class="fas fa-check-double" style="color: #667eea;" title="Leído por el destinatario"></i>
+                                <span class="estado-bolita activo-verde">VISTO</span>
                             <?php } else { ?>
-                                <i class="fas fa-check" class="texto-atenuado" title="Enviado"></i>
+                                <span class="estado-bolita inactivo-rojo">ENVIADO</span>
                             <?php } ?>
+                        </td>
+                        <td>
+                            <div class="botones-accion">
+                                <a href="/pfc/vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <?php } ?>
@@ -85,4 +93,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

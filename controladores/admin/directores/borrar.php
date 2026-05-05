@@ -1,16 +1,16 @@
 <?php
 session_start();
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 if (isset($_POST['idDirector'])) {
-    $id = $_POST['idDirector'];
-    if (eliminarDirector($id)) {
+    $idDirector = trim($_POST['idDirector']);
+    
+    if (eliminarDirector($idDirector)) {
         $_SESSION['exito'] = "Director eliminado correctamente.";
     } else {
         $_SESSION['error'] = "Error al eliminar el director.";
     }
 }
-header("Location: /pfc/vistas/admin/directores/verDirectores.php");
-exit;
-?>
 
+header("Location: ../../../vistas/admin/directores/verDirectores.php");
+exit;

@@ -3,22 +3,41 @@ session_start();
 require_once "../../../modelos/retos.php";
 
 if (isset($_POST['actualizarReto'])) {
-    $id = $_POST['idReto'];
-    $n = trim($_POST['nombreReto']);
-    $fi = $_POST['fechaInicio'];
-    $ff = $_POST['fechaFin'];
-    $h = $_POST['horasReto'];
+    $idReto = trim($_POST['idReto']);
+    $nom = trim($_POST['nombreReto']);
+    $fIni = trim($_POST['fechaInicio']);
+    $fFin = trim($_POST['fechaFin']);
+    $hrs = trim($_POST['horasReto']);
 
-    if (empty($id)) {
-        header("Location: /pfc/vistas/profesores/retos/lista.php");
+    $errs = [];
+
+    if (empty($idReto)) {
+        header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
-    } else if (actualizarReto($id, $n, $fi, $ff, $h)) {
-        $_SESSION['exito'] = "Reto actualizado.";
+    }
+
+    if (empty($nom)) $errs['nombreReto'] = "El nombre del reto es obligatorio.";
+    if (empty($fIni)) $errs['fechaInicio'] = "La fecha de inicio es obligatoria.";
+    if (empty($fFin)) $errs['fechaFin'] = "La fecha de fin es obligatoria.";
+    if (empty($hrs)) $errs['horasReto'] = "Las horas son obligatorias.";
+
+    if (!empty($errs)) {
+        $_SESSION['errores'] = $errs;
+        header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
+        exit;
+    }
+
+    $res = actualizarReto($idReto, $nom, $fIni, $fFin, $hrs);
+    if ($res) {
+        $_SESSION['exito'] = "Reto actualizado correctamente.";
+        header("Location: ../../../vistas/profesores/retos/lista.php");
+        exit;
     } else {
-        $_SESSION['error'] = "Error al actualizar.";
+        $_SESSION['error'] = "Error al actualizar el reto.";
+        header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
+        exit;
     }
 }
-header("Location: /pfc/vistas/profesores/retos/lista.php");
-exit;
-?>
 
+header("Location: ../../../vistas/profesores/retos/lista.php");
+exit;

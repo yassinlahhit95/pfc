@@ -1,86 +1,46 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 $idEstudiante = $_SESSION['idEstudiante'];
 
-// Obtener info del estudiante para saber su ciclo
-require_once "../../../modelos/estudiantes.php";
-$est_info = obtenerEstudiantePorId($idEstudiante);
-$idCiclo = $est_info['idCiclo'];
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+
+// Obtenemos los datos finales procesados desde el Modelo (MVC)
+$resumenFinal = obtenerResultadosFinalesEstudiante($idEstudiante);
 
 $tituloDelPagina = "Mis Resultados Finales - Portal Estudiantes";
 $seccionActual = 'resultados_finales';
-include_once "../comunes/nav.php";
-
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/calificaciones.php";
-require_once "../../../modelos/retos.php";
-
-$lista_modulos = obtenerModulosPorCiclo($idCiclo);
-$datos_finales = array();
-
-foreach ($lista_modulos as $mod_item) {
-    $id_mod = $mod_item['idModulo'];
-    $nombre_mod = $mod_item['nombreModulo'];
-    
-    // Media M贸dulo
-    $notas_mod = obtenerNotasModulo($idEstudiante, $id_mod);
-    $suma_mod = 0; $cont_mod = 0;
-    $campos = array('nota_1ev', 'nota_1final', 'nota_2ev', 'nota_2final');
-    foreach ($campos as $c) {
-        if (isset($notas_mod[$c]) && $notas_mod[$c] > 0) {
-            $suma_mod = $suma_mod + $notas_mod[$c];
-            $cont_mod = $cont_mod + 1;
-        }
-    }
-    $media_modulo = 0;
-    if ($cont_mod > 0) { $media_modulo = $suma_mod / $cont_mod; }
-    
-    // Media Retos
-    $medias_retos = listarCalificacionesRetoPorModulo($id_mod);
-    $media_reto = 0;
-    if (isset($medias_retos[$idEstudiante])) {
-        $media_reto = $medias_retos[$idEstudiante];
-    }
-    
-    // Final
-    $nota_final = ($media_modulo * 0.75) + ($media_reto * 0.25);
-    
-    $estado = "Suspenso";
-    if ($cont_mod == 0) {
-        $estado = "Pendiente";
-    } else {
-        if ($nota_final >= 5) {
-            $estado = "Aprobado";
-        }
-    }
-    
-    $datos_finales[] = array(
-        'modulo' => $nombre_mod,
-        'media_modulo' => round($media_modulo, 2),
-        'media_reto' => round($media_reto, 2),
-        'nota_final' => round($nota_final, 2),
-        'estado' => $estado
-    );
-}
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Mis Resultados Finales</h1>
-    <p class="subtitulo">Ciclo: <?php echo $est_info['nombreCiclo']; ?></p>
+    <p class="subtitulo">Ciclo: <?= $resumenFinal['nombreCiclo'] ?></p>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>M贸dulo</th>
+                    <th>M骴ulo</th>
                     <th>Media Notas (75%)</th>
                     <th>Media Retos (25%)</th>
                     <th>Nota Final</th>
@@ -88,20 +48,20 @@ foreach ($lista_modulos as $mod_item) {
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($datos_finales)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay m贸dulos registrados en su ciclo.</td></tr>
+                <?php if (empty($resumenFinal['detalles_modulos'])) { ?>
+                    <tr><td colspan="5" class="sin-datos">No hay m骴ulos registrados en su ciclo.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($datos_finales as $fila) { 
+                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { 
                         $clase = "texto-rojo";
                         if ($fila['estado'] == "Aprobado") { $clase = "texto-verde"; }
                         if ($fila['estado'] == "Pendiente") { $clase = "texto-gris"; }
                     ?>
                     <tr>
-                        <td class="texto-negrita"><?php echo $fila['modulo']; ?></td>
-                        <td><?php echo $fila['media_modulo']; ?></td>
-                        <td><?php echo $fila['media_reto']; ?></td>
-                        <td class="texto-negrita"><?php echo $fila['nota_final']; ?></td>
-                        <td class="<?php echo $clase; ?> texto-negrita"><?php echo $fila['estado']; ?></td>
+                        <td class="texto-negrita"><?= $fila['nombreModulo'] ?></td>
+                        <td><?= $fila['media_notas'] ?></td>
+                        <td><?= $fila['media_retos'] ?></td>
+                        <td class="texto-negrita"><?= $fila['nota_final'] ?></td>
+                        <td class="<?= $clase ?> texto-negrita"><?= $fila['estado'] ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>
@@ -110,10 +70,27 @@ foreach ($lista_modulos as $mod_item) {
     </div>
 </div>
 
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta"><h3>RESUMEN GLOBAL DEL CICLO</h3></div>
+    <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
+        <div>
+            <p class="texto-atenuado">Promedio General:</p>
+            <h2 class="color-primario"><?= $resumenFinal['promedio_global'] ?></h2>
+        </div>
+        <div class="text-right">
+            <p class="texto-atenuado">Estado Acad茅mico:</p>
+            <span class="estado-bolita <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
+                <?= $resumenFinal['estado_global'] ?>
+            </span>
+        </div>
+    </div>
+</div>
+
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><i class="fas fa-info-circle"></i> <strong>Nota:</strong> El c谩lculo se basa en el 75% de las notas de evaluaci贸n y el 25% de la media de los retos del m贸dulo.</p>
-    <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
+    <p><strong>Nota:</strong> El c谩lculo se basa en el 75% de las notas de evaluaci贸n y el 25% de la media de los retos del m贸dulo.</p>
+    <p><strong>Estados:</strong> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

@@ -1,35 +1,50 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+
+$titulo_pagina = "Nuevo Estudiante - Admin";
+$seccion = 'estudiantes';
+include_once __DIR__ . "/../comunes/nav.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = array();
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_estudiante'] ?? [];
 
-$datos = array();
-if (isset($_SESSION['datos_estudiante'])) { $datos = $_SESSION['datos_estudiante']; }
+if (!is_array($lista_de_errores)) {
+    $lista_de_errores = [];
+}
+if (!is_array($datos)) {
+    $datos = [];
+}
 
-unset($_SESSION['errores'], $_SESSION['datos_estudiante']);
+$error = $_SESSION['error'] ?? "";
+$exito = $_SESSION['exito'] ?? "";
 
-$titulo_pagina = "Agregar Estudiante - Super Admin";
-$seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>Nuevo Estudiante</h1>
-    <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">Volver</a>
+    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">VOLVER</a>
 </div>
 
+<?php if (!empty($exito)) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/estudiantes/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+    <form action="../../../controladores/admin/estudiantes/insertar.php" method="POST">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
                 <input type="text" name="nombreEstudiante" value="<?php if(isset($datos['nombreEstudiante'])) { echo $datos['nombreEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['nombreEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['nombreEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -37,7 +52,7 @@ include_once "../comunes/nav.php";
                 <label>Email *</label>
                 <input type="text" name="emailEstudiante" value="<?php if(isset($datos['emailEstudiante'])) { echo $datos['emailEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['emailEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['emailEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -45,7 +60,7 @@ include_once "../comunes/nav.php";
                 <label>DNI *</label>
                 <input type="text" name="dniEstudiante" value="<?php if(isset($datos['dniEstudiante'])) { echo $datos['dniEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['dniEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['dniEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -53,7 +68,7 @@ include_once "../comunes/nav.php";
                 <label>Teléfono *</label>
                 <input type="text" name="telefonoEstudiante" value="<?php if(isset($datos['telefonoEstudiante'])) { echo $datos['telefonoEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['telefonoEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -61,7 +76,7 @@ include_once "../comunes/nav.php";
                 <label>Fecha Nacimiento *</label>
                 <input type="date" name="fechaNacimientoEstudiante" value="<?php if(isset($datos['fechaNacimientoEstudiante'])) { echo $datos['fechaNacimientoEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaNacimientoEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -69,7 +84,7 @@ include_once "../comunes/nav.php";
                 <label>Dirección *</label>
                 <input type="text" name="direccionEstudiante" value="<?php if(isset($datos['direccionEstudiante'])) { echo $datos['direccionEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['direccionEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['direccionEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['direccionEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -77,7 +92,7 @@ include_once "../comunes/nav.php";
                 <label>Ciudad *</label>
                 <input type="text" name="ciudadEstudiante" value="<?php if(isset($datos['ciudadEstudiante'])) { echo $datos['ciudadEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['ciudadEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['ciudadEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['ciudadEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -85,7 +100,7 @@ include_once "../comunes/nav.php";
                 <label>Código Postal *</label>
                 <input type="text" name="codigoPostalEstudiante" value="<?php if(isset($datos['codigoPostalEstudiante'])) { echo $datos['codigoPostalEstudiante']; } ?>">
                 <?php if (isset($lista_de_errores['codigoPostalEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['codigoPostalEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['codigoPostalEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -94,22 +109,27 @@ include_once "../comunes/nav.php";
                 <select name="idCiclo">
                     <option value="">-- Seleccionar --</option>
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
-                            <?php echo $ciclo['nombreCiclo']; ?>
+                        <option value="<?= $ciclo['idCiclo'] ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
+                            <?= $ciclo['nombreCiclo'] ?>
                         </option>
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="margen-arriba">
-            <button type="submit" name="guardarEstudiante" class="boton-primario">Registrar Estudiante</button>
+        <div class="form-acciones">
+            <button type="submit" name="guardarEstudiante" class="boton-primario">REGISTRAR ESTUDIANTE</button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> LIMPIAR
+            </button>
         </div>
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

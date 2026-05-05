@@ -1,45 +1,37 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
-
-$lista_de_errores = array();
-if (isset($_SESSION['errores'])) { 
-    $lista_de_errores = $_SESSION['errores']; 
-}
-
-$datos = array();
-if (isset($_SESSION['datos_modulo'])) { 
-    $datos = $_SESSION['datos_modulo']; 
-}
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_modulo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
-$titulo_pagina = "Registrar Módulo - Super Admin";
+$titulo_pagina = "Registrar Módulo - Admin";
 $seccion = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Módulo</h1>
-    <a href="/pfc/vistas/admin/modulos/verModulos.php" class="boton-secundario">← Volver</a>
+    <a href="verModulos.php" class="boton-secundario">← VOLVER</a>
 </div>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/modulos/insertar.php" method="POST" style="max-width: 600px; margin: 0 auto;">
-        
+    <form action="../../../controladores/admin/modulos/insertar.php" method="POST" class="form-estandar">
+
         <div class="campo-formulario">
             <label>Nombre del Módulo *</label>
-            <input type="text" name="nombreModulo" value="<?php if(isset($datos['nombreModulo'])) { echo $datos['nombreModulo']; } ?>">
+            <input type="text" name="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
             <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                <span class="error-campo"><?php echo $lista_de_errores['nombreModulo']; ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></strong>
             <?php } ?>
         </div>
 
@@ -48,31 +40,35 @@ include_once "../comunes/nav.php";
             <select name="idCiclo">
                 <option value="">Seleccione un ciclo</option>
                 <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                    <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
-                        <?php echo $ciclo['nombreCiclo']; ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= (isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= $ciclo['nombreCiclo'] ?>
                     </option>
                 <?php } ?>
             </select>
             <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                <span class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo-formulario">
             <label>Horas Máximas *</label>
-            <input type="text" name="horasMaximas" value="<?php if(isset($datos['horasMaximas'])) { echo $datos['horasMaximas']; } ?>">
+            <input type="text" name="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
             <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                <span class="error-campo"><?php echo $lista_de_errores['horasMaximas']; ?></span>
+                <strong class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></strong>
             <?php } ?>
         </div>
 
-        <div class="margen-arriba pt-20">
-            <button type="submit" name="guardarModulo" class="boton-primario ancho-total">
-                <i class="fas fa-save"></i> Registrar Módulo
+        <div class="form-acciones">
+            <button type="submit" name="guardarModulo" class="boton-primario">
+                <i class="fas fa-save"></i> REGISTRAR MÓDULO
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

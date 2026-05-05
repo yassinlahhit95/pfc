@@ -1,49 +1,63 @@
 <?php
 session_start();
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+
+$hayError = false;
 
 if (isset($_POST['guardarModulo'])) {
-    $id_modulo = $_POST['idModulo'];
-    $nombre_modulo = $_POST['nombreModulo'];
-    $id_del_ciclo = $_POST['idCiclo'];
-    $horas_maximas = $_POST['horasMaximas'];
+    $idModuloActualizar = trim($_POST['idModulo']);
+    $nombreModuloActualizar = trim($_POST['nombreModulo']);
+    $idCicloAsociado = trim($_POST['idCiclo']);
+    $horasMaximasModulo = trim($_POST['horasMaximas']);
 
-    $lista_de_errores = array();
+    $listaErroresValidacion = [];
 
-    if (empty($nombre_modulo)) {
-        $lista_de_errores['nombreModulo'] = "El nombre del módulo es obligatorio.";
+    if (empty($nombreModuloActualizar)) {
+        $listaErroresValidacion['nombreModulo'] = "Nombre de módulo obligatorio.";
     }
     
-    if (empty($id_del_ciclo)) {
-        $lista_de_errores['idCiclo'] = "Debe seleccionar un ciclo formativo.";
+    if (empty($idCicloAsociado)) {
+        $listaErroresValidacion['idCiclo'] = "Seleccione un ciclo.";
     }
     
-    if (empty($horas_maximas)) {
-        $lista_de_errores['horasMaximas'] = "Las horas máximas son obligatorias.";
+    if (empty($horasMaximasModulo)) {
+        $listaErroresValidacion['horasMaximas'] = "Horas máximas obligatorias.";
     } else {
-        if (!is_numeric($horas_maximas)) {
-            $lista_de_errores['horasMaximas'] = "Las horas deben ser un valor numérico.";
+        if (!is_numeric($horasMaximasModulo)) {
+            $listaErroresValidacion['horasMaximas'] = "Las horas deben ser numéricas.";
         }
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = actualizarModulo($id_modulo, $nombre_modulo, $id_del_ciclo, $horas_maximas);
-        if ($resultado) {
-            $_SESSION['exito'] = "Módulo actualizado correctamente.";
-            header("Location: /pfc/vistas/admin/modulos/verModulos.php");
+    if (empty($listaErroresValidacion)) {
+        require_once __DIR__ . "/../../../modelos/conectar.php";
+        $con = obtenerConexion();
+        
+        $sqlDup = "SELECT idModulo FROM modulos WHERE nombreModulo = '" . mysqli_real_escape_string($con, $nombreModuloActualizar) . "' AND idCiclo = $idCicloAsociado AND idModulo != $idModuloActualizar";
+        $resDup = mysqli_query($con, $sqlDup);
+        if (mysqli_num_rows($resDup) > 0) {
+            $listaErroresValidacion['nombreModulo'] = "Este módulo ya existe en este ciclo.";
+        }
+        mysqli_close($con);
+    }
+
+    if (empty($listaErroresValidacion)) {
+        if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
+            $_SESSION['exito'] = "Módulo actualizado.";
+            header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar el módulo en la base de datos.";
+            $hayError = true;
+            $_SESSION['error'] = "Error inesperado al actualizar.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
+        $hayError = true;
+        $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_modulo'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/modulos/modificarModulos.php?idModulo=$id_modulo");
+    header("Location: ../../../vistas/admin/modulos/modificarModulos.php?idModulo=$idModuloActualizar");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/modulos/verModulos.php");
+header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-

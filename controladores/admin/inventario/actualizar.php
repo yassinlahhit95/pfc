@@ -1,35 +1,54 @@
 <?php
 session_start();
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['actualizarArticulo'])) {
-    $idArticuloRecibido = $_POST['idArticulo'];
-    $nombreNuevo = trim($_POST['nombreArticulo']);
-    $serieNueva = trim($_POST['numeroSerie']);
+    $idArticulo = trim($_POST['idArticulo'] ?? '');
+    $nombreArticulo = trim($_POST['nombreArticulo'] ?? '');
+    $numeroSerie = trim($_POST['numeroSerie'] ?? '');
 
-    if (empty($nombreNuevo) || empty($serieNueva)) {
-        $_SESSION['error'] = strtoupper("TODOS LOS CAMPOS SON OBLIGATORIOS.");
-    } else {
-        // Obtenemos el artículo para mantener su estado actual
-        $datosArticuloActual = obtenerArticuloPorId($idArticuloRecibido);
-        $estadoActual = $datosArticuloActual['estado'];
+    $hayError = false;
 
-        $resultado = actualizarArticulo($idArticuloRecibido, $nombreNuevo, $serieNueva, $estadoActual);
+    $errores_campos = [];
+    if (empty($nombreArticulo) || empty($numeroSerie)) {
+        $_SESSION['error'] = "Faltan datos.";
+        $hayError = true;
+    }
+
+    // Comprobamos duplicados
+    if (!$hayError) {
+        require_once __DIR__ . "/../../../modelos/conectar.php";
+        $con = obtenerConexion();
         
-        if ($resultado == true) {
-            $_SESSION['exito'] = strtoupper("ARTÍCULO ACTUALIZADO CORRECTAMENTE.");
-            header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . mysqli_real_escape_string($con, strtoupper($numeroSerie)) . "' AND idDispositivo != $idArticulo";
+        $resDup = mysqli_query($con, $sqlDup);
+        if (mysqli_num_rows($resDup) > 0) {
+            $errores_campos['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
+            $hayError = true;
+        }
+        mysqli_close($con);
+    }
+
+    if (!$hayError) {
+        // Obtenemos el artÃ­culo para mantener su estado actual
+        $datosArticuloActual = obtenerArticuloPorId($idArticulo);
+        $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
+
+        if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
+            $_SESSION['exito'] = "Artículo actualizado.";
+            header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("ERROR AL ACTUALIZAR EN LA BASE DE DATOS.");
+            $_SESSION['error'] = "Error inesperado al actualizar.";
         }
+    } else {
+        $_SESSION['errores'] = $errores_campos;
+        $_SESSION['datos_inventario'] = $_POST;
     }
     
-    header("Location: /pfc/vistas/admin/inventario/modificarArticulo.php?idArticulo=" . $idArticuloRecibido);
+    header("Location: ../../../vistas/admin/inventario/modificarArticulo.php?idArticulo=" . $idArticulo);
     exit;
 }
 
-header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
-?>
-

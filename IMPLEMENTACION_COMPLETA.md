@@ -159,7 +159,6 @@ $nombreCompleto         // Nombre y apellidos
 $correoElectronico      // Email
 $numeroTelefono         // Teléfono
 $numeroDocumento        // DNI/NIF
-$especialidadDocente    // Especialidad del profesor
 $direccionFisica        // Dirección domiciliaria
 $ciudadResidencia       // Ciudad de residencia
 $codigoPostal           // Código postal

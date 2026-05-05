@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,18 +13,11 @@ $modulos = obtenerModulosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Módulos - Portal Profesores";
 $seccionActual = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Lista de Módulos</h1>
-</div>
-
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-search"></i> BUSCAR MÓDULO:</label>
-        <input type="text" id="inputBuscarMod" placeholder="Busque por nombre o ciclo..." onkeyup="filtrarTabla('inputBuscarMod', 'tablaModulosProf')">
-    </div>
 </div>
 
 <div class="tarjeta-blanca">
@@ -41,9 +34,9 @@ include_once "../comunes/nav.php";
                 <?php if ($modulos) { ?>
                     <?php foreach ($modulos as $mod) { ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $mod['nombreModulo']; ?></td>
-                            <td><?php echo $mod['horasMaximas']; ?> h</td>
-                            <td><?php echo $mod['nombreCiclo']; ?></td>
+                            <td class="texto-negrita"><?= $mod['nombreModulo'] ?></td>
+                            <td><?= $mod['horasMaximas'] ?> h</td>
+                            <td><?= $mod['nombreCiclo'] ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
@@ -57,4 +50,5 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

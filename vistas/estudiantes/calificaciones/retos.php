@@ -1,16 +1,20 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 $tituloDelPagina = "Mis Notas de Retos - Portal Estudiantes";
 $seccionActual = 'notas_retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $id_estudiante = $_SESSION['idEstudiante'];
 $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
@@ -18,8 +22,14 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 
 <div class="encabezado-pagina">
     <h1>Mis Calificaciones en Retos</h1>
-    <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -40,11 +50,11 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
                 <?php } else { ?>
                     <?php foreach ($mis_notas_retos as $nota) { ?>
                     <tr>
-                        <td><strong><?php echo $nota['nombreReto']; ?></strong></td>
-                        <td><?php echo $nota['fechaInicio']; ?></td>
-                        <td><?php echo $nota['fechaFin']; ?></td>
-                        <td class="texto-negrita" style="font-size: 1.1em; color: var(--color-primario);">
-                            <?php echo $nota['nota']; ?>
+                        <td><strong><?= $nota['nombreReto'] ?></strong></td>
+                        <td><?= $nota['fechaInicio'] ?></td>
+                        <td><?= $nota['fechaFin'] ?></td>
+                        <td class="texto-negrita color-primario font-size-11">
+                            <?= $nota['nota'] ?>
                         </td>
                     </tr>
                     <?php } ?>
@@ -55,8 +65,11 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><i class="fas fa-info-circle"></i> Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
+    <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
+    <p>Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

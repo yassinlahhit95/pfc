@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once "../../../modelos/pagos.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$idEstudiante = isset($_GET['idEstudiante']) ? $_GET['idEstudiante'] : '';
+$idEstudiante = $_GET['idEstudiante'] ?? '';
 if (empty($idEstudiante)) {
     header("Location: verPagosGeneral.php");
     exit;
@@ -12,15 +12,26 @@ if (empty($idEstudiante)) {
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 $pagos = obtenerPagosPorEstudiante($idEstudiante);
 
-$titulo_pagina = "Historial de Pagos - Super Admin";
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['error'], $_SESSION['exito']);
+
+$titulo_pagina = "Historial de Pagos - Admin";
 $seccion = 'pagos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Historial de Pagos: <?php echo $estudiante['nombreEstudiante']; ?></h1>
+    <h1>Historial de Pagos: <?= $estudiante['nombreEstudiante'] ?></h1>
     <a href="verPagosGeneral.php" class="boton-secundario">Volver a General</a>
 </div>
+
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -39,10 +50,10 @@ include_once "../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($pagos as $p) { ?>
                     <tr>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaPago'])); ?></td>
-                        <td><span class="etiqueta-pago"><?php echo ucfirst($p['tipoPago']); ?></span></td>
-                        <td><?php echo number_format($p['monto'], 2); ?> €</td>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaProximoPago'])); ?></td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
+                        <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
+                        <td><?= number_format($p['monto'], 2) ?> €</td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>
@@ -52,3 +63,5 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

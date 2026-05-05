@@ -1,59 +1,65 @@
 <?php
 session_start();
-$titulo_pagina = "Nuevo Reto - Super Admin";
-$seccion = 'retos';
-include_once "../comunes/nav.php";
-
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $todos_los_modulos = listarModulos();
 
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_reto'] ?? [];
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 
-$datos = [];
-if (isset($_SESSION['datos_reto'])) { $datos = $_SESSION['datos_reto']; }
+unset($_SESSION['errores'], $_SESSION['datos_reto'], $_SESSION['error'], $_SESSION['exito']);
 
-unset($_SESSION['errores'], $_SESSION['datos_reto']);
+$titulo_pagina = "Nuevo Reto - Admin";
+$seccion = 'retos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Crear Nuevo Reto</h1>
-    <a href="/pfc/vistas/admin/retos/verRetos.php" class="boton-secundario">← Volver</a>
+    <a href="verRetos.php" class="boton-secundario">← Volver</a>
 </div>
 
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/retos/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+    <form action="../../../controladores/admin/retos/insertar.php" method="POST">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre del Reto *</label>
-                <input type="text" name="nombreReto" value="<?php if(isset($datos['nombreReto'])) echo $datos['nombreReto']; ?>">
+                <input type="text" name="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['nombreReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['nombreReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Horas Totales Estimadas *</label>
-                <input type="text" name="horasReto" value="<?php if(isset($datos['horasReto'])) echo $datos['horasReto']; ?>">
+                <input type="text" name="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['horasReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['horasReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicioReto" min="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($datos['fechaInicioReto'])) echo $datos['fechaInicioReto']; ?>">
+                <input type="date" name="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaInicioReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaInicioReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Fin *</label>
-                <input type="date" name="fechaFinReto" min="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($datos['fechaFinReto'])) echo $datos['fechaFinReto']; ?>">
+                <input type="date" name="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaFinReto'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaFinReto']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
         </div>
@@ -63,24 +69,28 @@ unset($_SESSION['errores'], $_SESSION['datos_reto']);
             <div class="tarjeta-gris-suave scroll-vertical mt-5">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <div class="item-seleccionable">
-                        <input type="checkbox" name="modulosReto[]" value="<?php echo $modulo['idModulo']; ?>" 
-                            <?php if(isset($datos['modulosReto']) && in_array($modulo['idModulo'], $datos['modulosReto'])) echo "checked"; ?>>
-                        <span><?php echo $modulo['nombreModulo']; ?> (<?php echo $modulo['nombreCiclo']; ?>)</span>
+                        <input type="checkbox" name="modulosReto[]" value="<?= $modulo['idModulo'] ?>" 
+                            <?= (isset($datos['modulosReto']) && in_array($modulo['idModulo'], $datos['modulosReto'])) ? 'checked' : '' ?>>
+                        <span><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</span>
                     </div>
                 <?php } ?>
             </div>
             <?php if (isset($lista_de_errores['modulosReto'])) { ?>
-                <p class="error-campo"><?php echo $lista_de_errores['modulosReto']; ?></p>
+                <strong class="error-campo"><?= $lista_de_errores['modulosReto'] ?></strong>
             <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones">
             <button type="submit" name="guardarReto" class="boton-primario">
                 <i class="fas fa-save"></i> Crear Reto
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

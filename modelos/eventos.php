@@ -1,47 +1,67 @@
 <?php
-require_once("conectar.php");
+require_once __DIR__ . "/conectar.php";
 
-// Proximos eventos
+// Obtener los próximos eventos (a partir de hoy)
 function listarEventosProximos() {
-    $db = obtenerConexion();
+    $con = obtenerConexion();
     $hoy = date('Y-m-d');
-    $res = mysqli_query($db, "SELECT * FROM eventos WHERE fechaEvento >= '$hoy' ORDER BY fechaEvento ASC, horaEvento ASC");
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
-    mysqli_close($db);
-    return $lista;
+    
+    $sql = "SELECT * FROM eventos 
+            WHERE fechaEvento >= '$hoy' 
+            ORDER BY fechaEvento ASC, horaEvento ASC";
+            
+    $resultado = mysqli_query($con, $sql);
+    $listaEventos = [];
+    
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $listaEventos[] = $fila; 
+    }
+    
+    mysqli_close($con);
+    return $listaEventos;
 }
 
-// Meter evento
-function insertarEvento($tit, $desc, $fec, $hora, $ubi) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "INSERT INTO eventos (tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento) VALUES ('$tit', '$desc', '$fec', '$hora', '$ubi')");
-    mysqli_close($db);
-    return $res;
+// Insertar un nuevo evento en el calendario
+function insertarEvento($titulo, $descripcion, $fecha, $hora, $ubicacion) {
+    $con = obtenerConexion();
+    
+    $sql = "INSERT INTO eventos (tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento) 
+            VALUES ('$titulo', '$descripcion', '$fecha', '$hora', '$ubicacion')";
+            
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
 
-// Borrar
-function eliminarEvento($id) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "DELETE FROM eventos WHERE idEvento = $id");
-    mysqli_close($db);
-    return $res;
+// Eliminar un evento por su ID
+function eliminarEvento($idEvento) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM eventos WHERE idEvento = $idEvento";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
 
-// Coger por ID
-function obtenerEventoPorId($id) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "SELECT * FROM eventos WHERE idEvento = $id");
-    $fila = mysqli_fetch_assoc($res);
-    mysqli_close($db);
-    return $fila;
+// Obtener los datos de un evento específico
+function obtenerEventoPorId($idEvento) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM eventos WHERE idEvento = $idEvento";
+    $resultado = mysqli_query($con, $sql);
+    $evento = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return $evento;
 }
 
-// Actualizar
-function actualizarEvento($id, $tit, $desc, $fec, $hora, $ubi) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "UPDATE eventos SET tituloEvento='$tit', descripcionEvento='$desc', fechaEvento='$fec', horaEvento='$hora', ubicacionEvento='$ubi' WHERE idEvento=$id");
-    mysqli_close($db);
-    return $res;
+// Actualizar los datos de un evento existente
+function actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubicacion) {
+    $con = obtenerConexion();
+    
+    $sql = "UPDATE eventos 
+            SET tituloEvento='$titulo', descripcionEvento='$descripcion', fechaEvento='$fecha', 
+                horaEvento='$hora', ubicacionEvento='$ubicacion' 
+            WHERE idEvento=$idEvento";
+            
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
-?>

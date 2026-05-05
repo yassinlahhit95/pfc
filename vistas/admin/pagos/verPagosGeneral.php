@@ -1,27 +1,17 @@
 <?php
 session_start();
 
-// Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
-    header("Location: /pfc/index.php");
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE PAGOS - SUPER ADMIN";
-$seccion = 'pagos';
-include_once "../comunes/nav.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-require_once "../../../modelos/pagos.php";
-require_once "../../../modelos/ciclos.php";
+$idDelCicloParaFiltrar = $_GET['idCiclo'] ?? '';
 
-// Captura de filtros
-$idDelCicloParaFiltrar = "";
-if (isset($_GET['idCiclo'])) {
-    $idDelCicloParaFiltrar = $_GET['idCiclo'];
-}
-
-// Obtener datos según el filtro
-if ($idDelCicloParaFiltrar != "") {
+if (!empty($idDelCicloParaFiltrar)) {
     $listaDePagosAMostrar = listarPagosFiltrados($idDelCicloParaFiltrar);
 } else {
     $listaDePagosAMostrar = listarTodosLosPagos();
@@ -29,34 +19,28 @@ if ($idDelCicloParaFiltrar != "") {
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
 
-// Manejo de mensajes de sesión
-$mensajeError = "";
-if (isset($_SESSION['error'])) { 
-    $mensajeError = $_SESSION['error']; 
-}
-
-$mensajeExito = "";
-if (isset($_SESSION['exito'])) { 
-    $mensajeExito = $_SESSION['exito']; 
-}
-
-// Limpiar mensajes
+$mensajeError = $_SESSION['error'] ?? '';
+$mensajeExito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
+
+$titulo_pagina = "GESTIÓN DE PAGOS - ADMIN";
+$seccion = 'pagos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>GESTIÓN DE PAGOS</h1>
-    <a href="/pfc/vistas/admin/pagos/agregarPagos.php" class="boton-primario">
-        <i class="fas fa-plus"></i> REGISTRAR NUEVO PAGO
+    <a href="agregarPagos.php" class="boton-primario">
+        <i class="fas fa-plus"></i> NUEVO PAGO
     </a>
 </div>
 
-<?php if ($mensajeExito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
+<?php if ($mensajeExito) { ?>
+    <div class="mensaje-exito"><?= $mensajeExito ?></div>
 <?php } ?>
 
-<?php if ($mensajeError != "") { ?>
-    <div class="mensaje-error"><?php echo $mensajeError; ?></div>
+<?php if ($mensajeError) { ?>
+    <div class="mensaje-error"><?= $mensajeError ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
@@ -67,8 +51,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
                     <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                        <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($idDelCicloParaFiltrar == $cicloItem['idCiclo']) { echo "selected"; } ?>>
-                            <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
+                        <option value="<?= $cicloItem['idCiclo'] ?>" <?= $idDelCicloParaFiltrar == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
+                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -95,42 +79,40 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDePagosAMostrar == false || count($listaDePagosAMostrar) == 0) { ?>
+                <?php if (empty($listaDePagosAMostrar)) { ?>
                     <tr>
                         <td colspan="7" class="sin-datos">No hay registros de pagos que coincidan con la búsqueda.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDePagosAMostrar as $pagoIndividual) { ?>
                     <tr>
-                        <td><strong><?php echo strtoupper($pagoIndividual['nombreEstudiante']); ?></strong></td>
-                        <td><?php echo strtoupper($pagoIndividual['nombreCiclo']); ?></td>
+                        <td><strong><?= strtoupper($pagoIndividual['nombreEstudiante']) ?></strong></td>
+                        <td><?= strtoupper($pagoIndividual['nombreCiclo']) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?php echo strtoupper($pagoIndividual['tipoPago']); ?></span>
+                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
-                        <td class="texto-negrita"><?php echo number_format($pagoIndividual['monto'], 2); ?> €</td>
-                        <td><?php echo date('d/m/Y', strtotime($pagoIndividual['fechaPago'])); ?></td>
+                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
+                        <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
-                            <?php 
-                                if ($pagoIndividual['tipoPago'] == 'unico') {
-                                    echo '<span class="texto-gris">N/A (PAGO ÚNICO)</span>';
-                                } else {
-                                    echo date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])); 
-                                }
-                            ?>
+                            <?php if ($pagoIndividual['tipoPago'] == 'unico') { ?>
+                                <span class="texto-gris">N/A (PAGO ÚNICO)</span>
+                            <?php } else { ?>
+                                <?= date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])) ?>
+                            <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="historialEstudiante.php?idEstudiante=<?php echo $pagoIndividual['idEstudiante']; ?>" 
-                                   class="boton-icono boton-ver" title="Ver historial completo">
+                                <a href="historialEstudiante.php?idEstudiante=<?= $pagoIndividual['idEstudiante'] ?>" 
+                                   class="btn-accion btn-ver" title="Ver historial completo">
                                     <i class="fas fa-history"></i>
                                 </a>
-                                <a href="modificarPagos.php?idPago=<?php echo $pagoIndividual['idPago']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar este pago">
+                                <a href="modificarPagos.php?idPago=<?= $pagoIndividual['idPago'] ?>" 
+                                   class="btn-accion btn-editar" title="Editar este pago">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/pfc/controladores/admin/pagos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este registro de pago?')">
-                                    <input type="hidden" name="idPago" value="<?php echo $pagoIndividual['idPago']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar">
+                                <form action="../../../controladores/admin/pagos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este registro de pago?')">
+                                    <input type="hidden" name="idPago" value="<?= $pagoIndividual['idPago'] ?>">
+                                    <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -145,4 +127,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

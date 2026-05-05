@@ -1,16 +1,16 @@
 <?php
 session_start();
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 if (isset($_POST['idCiclo'])) {
-    $id = $_POST['idCiclo'];
-    if (eliminarCiclo($id)) {
-        $_SESSION['exito'] = "Ciclo eliminado correctamente.";
+    $idCiclo = trim($_POST['idCiclo']);
+    
+    if (eliminarCiclo($idCiclo)) {
+        $_SESSION['exito'] = "Ciclo eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el ciclo.";
+        $_SESSION['error'] = "Error al eliminar.";
     }
 }
-header("Location: /pfc/vistas/admin/ciclos/verCiclos.php");
-exit;
-?>
 
+header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
+exit;

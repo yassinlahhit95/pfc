@@ -2,28 +2,23 @@
 session_start();
 
 // Control de acceso para administradores
-if (isset($_SESSION['idAdmin']) == false) {
-    header("Location: /pfc/index.php");
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "MI PERFIL - ADMINISTRACIÓN";
+$titulo_pagina = "MI PERFIL - ADMINISTRACI�N";
 $seccion = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 $idLogueado = $_SESSION['idAdmin'];
 $datosAdmin = obtenerDirectorPorId($idLogueado);
 
-// Captura de mensajes de sesión
-$mensajeError = "";
-if (isset($_SESSION['error'])) { $mensajeError = $_SESSION['error']; }
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 
-$mensajeExito = "";
-if (isset($_SESSION['exito'])) { $mensajeExito = $_SESSION['exito']; }
-
-// Limpiar sesión
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -31,57 +26,60 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <h1>MI PERFIL Y SEGURIDAD</h1>
 </div>
 
-<?php if ($mensajeExito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($mensajeError != "") { ?>
-    <div class="mensaje-error"><?php echo $mensajeError; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
-
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/directores/actualizar_perfil.php" method="POST">
-        <input type="hidden" name="idDirector" value="<?php echo $idLogueado; ?>">
+    <form action="../../../controladores/admin/directores/actualizar_perfil.php" method="POST">
+        <input type="hidden" name="idDirector" value="<?= $idLogueado ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo</label>
-                <input type="text" name="nombreDirector" value="<?php echo $datosAdmin['nombreDirector']; ?>">
+                <input type="text" name="nombreDirector" value="<?= $datosAdmin['nombreDirector'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Correo Electrónico</label>
-                <input type="text" name="emailDirector" value="<?php echo $datosAdmin['emailDirector']; ?>">
+                <label>Correo Electr�nico</label>
+                <input type="text" name="emailDirector" value="<?= $datosAdmin['emailDirector'] ?? '' ?>">
             </div>
 
             <div class="campo-formulario">
-                <label>Número de Teléfono</label>
-                <input type="text" name="telefonoDirector" value="<?php echo $datosAdmin['telefonoDirector']; ?>">
+                <label>N�mero de Tel�fono</label>
+                <input type="text" name="telefonoDirector" value="<?= $datosAdmin['telefonoDirector'] ?? '' ?>">
             </div>
         </div>
 
-        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASEÑA (OPCIONAL)</h3>
+        <h3 class="margen-arriba mt-20"><i class="fas fa-lock"></i> CAMBIAR CONTRASE�A (OPCIONAL)</h3>
         <p class="texto-atenuado texto-pequeno">Solo rellene si desea actualizar su clave de acceso.</p>
 
         <div class="formulario-cuadricula mt-10">
             <div class="campo-formulario">
-                <label>CONTRASEÑA ACTUAL:</label>
+                <label>CONTRASE�A ACTUAL:</label>
                 <input type="password" name="current_password" placeholder="Validar cambios">
             </div>
 
             <div class="campo-formulario">
-                <label>NUEVA CONTRASEÑA:</label>
-                <input type="password" name="new_password" placeholder="Mínimo 6 caracteres">
+                <label>NUEVA CONTRASE�A:</label>
+                <input type="password" name="new_password" placeholder="M�nimo 6 caracteres">
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones">
             <button type="submit" name="actualizarPerfilBtn" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR MIS DATOS
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

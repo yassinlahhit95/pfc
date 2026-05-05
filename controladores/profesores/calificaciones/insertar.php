@@ -1,40 +1,39 @@
 <?php
 session_start();
-require_once "../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+
+$hayError = false;
 
 if (isset($_POST['insertarNota'])) {
-    $idEstudianteRecibido = $_POST['idEstudiante'];
-    $idModuloRecibido = $_POST['idModulo'];
-    $notaEv1Recibida = $_POST['nota_1ev'];
-    $notaFinal1Recibida = $_POST['nota_1final'];
-    $notaEv2Recibida = $_POST['nota_2ev'];
-    $notaFinal2Recibida = $_POST['nota_2final'];
+    $idEstudiante = trim($_POST['idEstudiante'] ?? '');
+    $idModulo = trim($_POST['idModulo'] ?? '');
+    $nota1Ev = trim($_POST['nota_1ev'] ?? '');
+    $nota1Final = trim($_POST['nota_1final'] ?? '');
+    $nota2Ev = trim($_POST['nota_2ev'] ?? '');
+    $nota2Final = trim($_POST['nota_2final'] ?? '');
 
-    $errorDetectado = false;
-
-    if (!is_numeric($notaEv1Recibida) || !is_numeric($notaFinal1Recibida) || !is_numeric($notaEv2Recibida) || !is_numeric($notaFinal2Recibida)) {
-        $_SESSION['error'] = strtoupper("TODOS LOS CAMPOS DE NOTA DEBEN SER NÚMEROS.");
-        $errorDetectado = true;
+    if (!is_numeric($nota1Ev) || !is_numeric($nota1Final) || !is_numeric($nota2Ev) || !is_numeric($nota2Final)) {
+        $hayError = true;
+        $_SESSION['error'] = "Notas deben ser números.";
     } 
     
-    if ($errorDetectado == false) {
-        $resultado = actualizarOCrearNotaCompleta($idEstudianteRecibido, $idModuloRecibido, $notaEv1Recibida, $notaFinal1Recibida, $notaEv2Recibida, $notaFinal2Recibida, "");
+    if (!$hayError) {
+        $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1Ev, $nota1Final, $nota2Ev, $nota2Final, "");
         
-        if ($resultado == true) {
-            if (isset($_POST['notificarEstudiante']) && !empty($_POST['notificarEstudiante'])) {
-                require_once "../../comunes/notificaciones_grades.php";
-                enviarEmailNotasEstudiante($idEstudianteRecibido);
+        if ($resultado) {
+            if (!empty($_POST['notificarEstudiante'])) {
+                require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
+                enviarEmailNotasEstudiante($idEstudiante);
             }
-            $_SESSION['exito'] = strtoupper("CALIFICACIÓN GUARDADA CON ÉXITO.");
-            header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
+            $_SESSION['exito'] = "Calificación guardada.";
+            header("Location: ../../../vistas/profesores/calificaciones/lista.php");
             exit;
         } else {
-            $_SESSION['error'] = strtoupper("HUBO UN ERROR AL GUARDAR EN LA BASE DE DATOS.");
+            $hayError = true;
+            $_SESSION['error'] = "Error al guardar.";
         }
     }
 }
 
-header("Location: /pfc/vistas/profesores/calificaciones/lista.php");
+header("Location: ../../../vistas/profesores/calificaciones/lista.php");
 exit;
-?>
-

@@ -1,81 +1,77 @@
 <?php
 session_start();
-require_once "../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
 
 if (isset($_POST['guardarPago'])) {
-    $idEstudiante = $_POST['idEstudiante'];
-    $tipoPago = $_POST['tipoPago'];
-    $monto = $_POST['monto'];
-    $fechaPago = $_POST['fechaPago'];
+    $idEstudiante = trim($_POST['idEstudiante']);
+    $tipoPago = trim($_POST['tipoPago']);
+    $monto = trim($_POST['monto']);
+    $fechaPago = trim($_POST['fechaPago']);
 
     $hoy = date('Y-m-d');
     $fechaLimite = date('Y') . '-06-30';
 
+    $hayError = false;
+
+    // Validaciones bÃ¡sicas
+    if (empty($idEstudiante) || empty($tipoPago) || empty($monto) || $monto <= 0) {
+        $hayError = true;
+    }
+
+    // Fecha tope para pagos
     if ($hoy > $fechaLimite) {
-        $_SESSION['error'] = "Error: El periodo de pagos para este año ha finalizado (30 de Junio).";
-        header("Location: /pfc/vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
+        $_SESSION['error'] = "Periodo terminado.";
+        header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
         exit;
     }
 
-    $lista_de_errores = [];
-
-    if (empty($idEstudiante)) {
-        $lista_de_errores['idEstudiante'] = "Debe seleccionar un estudiante.";
-    }
-    if (empty($tipoPago)) {
-        $lista_de_errores['tipoPago'] = "El tipo de pago es obligatorio.";
-    }
-    if (empty($monto) || $monto <= 0) {
-        $lista_de_errores['monto'] = "La cantidad debe ser mayor a 0.";
-    }
-
-    if (empty($lista_de_errores)) {
-        // Verificar balance en servidor (Seguridad extra)
-        $estado = obtenerEstadoFinancieroEstudiante($idEstudiante);
-        if ($monto > ($estado['restante'] + 0.05)) { // Tolerancia pequeña por redondeos
-            $_SESSION['error'] = "Error: El pago supera la cantidad pendiente del estudiante.";
-            header("Location: /pfc/vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
-            exit;
+    if (!$hayError) {
+        // Comprobar que no se pague mÃ¡s de lo debido
+        $estadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
+        if ($monto > ($estadoFinanciero['restante'] + 0.05)) {
+            $hayError = true;
+            $_SESSION['error'] = "Cantidad excedida.";
         }
+    }
 
-        // Calcular fechaProximoPago basado en tipoPago
-        $fechaObj = new DateTime($fechaPago);
+    if (!$hayError) {
+        // Calcular la fecha del prÃ³ximo pago de forma sencilla
+        $proximaFecha = "";
         if ($tipoPago == 'mensual') {
-            $fechaObj->modify('+1 month');
+            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 1 month'));
         } else if ($tipoPago == 'trimestral') {
-            $fechaObj->modify('+3 months');
+            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 3 months'));
         } else if ($tipoPago == 'semestral') {
-            $fechaObj->modify('+6 months');
+            $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 6 months'));
         } else {
-            // Unico - Marcamos como fin de ciclo
-            $fechaObj = new DateTime($fechaLimite);
+            // Si es pago Ãºnico, la prÃ³xima fecha es el fin del curso
+            $proximaFecha = $fechaLimite;
         }
-        
-        $fechaProximo = $fechaObj->format('Y-m-d');
-        
-        // Capped at June 30th
-        if ($fechaProximo > $fechaLimite) {
-            $fechaProximo = $fechaLimite;
+
+        // Ajustar si se pasa de Junio
+        if ($proximaFecha > $fechaLimite) {
+            $proximaFecha = $fechaLimite;
         }
-        
-        $resultado = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo);
-        
+
+        $resultado = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
+
         if ($resultado) {
-            $_SESSION['exito'] = "Pago registrado correctamente.";
-            header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
+            $_SESSION['exito'] = "Pago registrado.";
+            header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $hayError = true;
         }
-    } else {
-        $_SESSION['errores'] = $lista_de_errores;
-        $_SESSION['datos_pago'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
+    if ($hayError && empty($_SESSION['error'])) {
+        $_SESSION['error'] = "Error en datos.";
+    }
+
+    header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/pagos/verPagosGeneral.php");
+header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
-
+?>>

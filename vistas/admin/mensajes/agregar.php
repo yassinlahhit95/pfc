@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -29,42 +29,57 @@ if ($tipoDeDestinatario == 'profesor') {
     }
 }
 
-$titulo_pagina = "Redactar Mensaje Oficial - Super Admin";
+// Mensajes y errores de la sesión
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos_form = $_SESSION['datos_mensaje'] ?? [];
+
+unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_mensaje']);
+
+$titulo_pagina = "Redactar Mensaje Oficial - Admin";
 $seccion = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Redactar Nuevo Mensaje</h1>
-    <a href="/pfc/vistas/admin/mensajes/lista.php" class="boton-secundario">
+    <a href="lista.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver al Buzón
     </a>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="disposicion-flexible separacion-grande margen-abajo alinear-centro">
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+
+<div class="tarjeta-blanca p-25">
+    <div class="disposicion-flexible separacion-grande margen-abajo alinear-centro" style="padding: 10px 0;">
         <div class="campo-formulario">
-            <label>1. Seleccionar Grupo de Destino:</label>
-            <div class="disposicion-flexible separacion-pequena mt-5">
-                <a href="?tipoDestinatario=profesor" class="boton-<?php echo ($tipoDeDestinatario == 'profesor' ? 'primario' : 'secundario'); ?>">
+            <label class="texto-negrita">1. Seleccionar Grupo de Destino:</label>
+            <div class="disposicion-flexible separacion-pequena mt-10">
+                <a href="?tipoDestinatario=profesor" class="boton-<?= ($tipoDeDestinatario == 'profesor' ? 'primario' : 'secundario') ?> py-10 px-20">
                     <i class="fas fa-chalkboard-teacher"></i> Profesores
                 </a>
-                <a href="?tipoDestinatario=estudiante" class="boton-<?php echo ($tipoDeDestinatario == 'estudiante' ? 'primario' : 'secundario'); ?>">
+                <a href="?tipoDestinatario=estudiante" class="boton-<?= ($tipoDeDestinatario == 'estudiante' ? 'primario' : 'secundario') ?> py-10 px-20">
                     <i class="fas fa-user-graduate"></i> Estudiantes
                 </a>
             </div>
         </div>
 
         <?php if ($tipoDeDestinatario == 'estudiante') { ?>
-        <form method="GET" class="flexible-rellenar">
+        <form method="GET" class="flexible-rellenar mt-10">
             <input type="hidden" name="tipoDestinatario" value="estudiante">
             <div class="campo-formulario">
-                <label>2. Filtrar Estudiantes por Ciclo (Opcional):</label>
-                <select name="idCiclo" onchange="this.form.submit()">
+                <label class="texto-negrita">2. Filtrar Estudiantes por Ciclo (Opcional):</label>
+                <select name="idCiclo" onchange="this.form.submit()" class="mt-5">
                     <option value="">-- Todos los ciclos y estudiantes --</option>
                     <?php foreach ($listaDeCiclos as $cicloItem) { ?>
-                        <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php echo ($idCicloSeleccionado == $cicloItem['idCiclo'] ? 'selected' : ''); ?>>
-                            <?php echo $cicloItem['nombreCiclo']; ?>
+                        <option value="<?= $cicloItem['idCiclo'] ?>" <?= ($idCicloSeleccionado == $cicloItem['idCiclo'] ? 'selected' : '') ?>>
+                            <?= $cicloItem['nombreCiclo'] ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -73,46 +88,62 @@ include_once "../comunes/nav.php";
         <?php } ?>
     </div>
 
-    <hr class="margen-abajo">
+    <hr class="margen-abajo" style="opacity: 0.2;">
 
-    <form action="/pfc/controladores/admin/mensajes/insertar.php" method="POST">
+    <form action="../../../controladores/admin/mensajes/insertar.php" method="POST" class="p-10">
         <input type="hidden" name="emisor_rol" value="admin">
-        
-        <div class="formulario-cuadricula">
+
+        <div class="disposicion-flexible direccion-columna separacion-grande">
             <div class="campo-formulario">
-                <label>3. Destinatario Específico *</label>
-                <select name="<?php echo ($tipoDeDestinatario == 'profesor' ? 'idProfesor' : 'idEstudiante'); ?>" required>
+                <label class="texto-negrita">3. Destinatario Específico *</label>
+                <select name="<?= ($tipoDeDestinatario == 'profesor' ? 'idProfesor' : 'idEstudiante') ?>" class="mt-5 ancho-total">
                     <option value="">-- Seleccionar Nombre --</option>
-                    
+
                     <?php if ($tipoDeDestinatario == 'profesor') { ?>
-                        <?php foreach ($listaDeProfesores as $profesorItem) { ?>
-                            <option value="<?php echo $profesorItem['idProfesor']; ?>">
-                                <?php echo $profesorItem['nombreProfesor']; ?>
+                        <?php foreach ($listaDeProfesores as $profesorItem) { 
+                            $selected = (isset($datos_form['idProfesor']) && $datos_form['idProfesor'] == $profesorItem['idProfesor']) ? 'selected' : '';
+                        ?>
+                            <option value="<?= $profesorItem['idProfesor'] ?>" <?= $selected ?>>
+                                <?= $profesorItem['nombreProfesor'] ?>
                             </option>
                         <?php } ?>
                     <?php } else { ?>
-                        <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
-                            <option value="<?php echo $estudianteItem['idEstudiante']; ?>">
-                                <?php echo $estudianteItem['nombreEstudiante']; ?> (<?php echo $estudianteItem['nombreCiclo']; ?>)
+                        <?php foreach ($listaDeEstudiantes as $estudianteItem) { 
+                            $selected = (isset($datos_form['idEstudiante']) && $datos_form['idEstudiante'] == $estudianteItem['idEstudiante']) ? 'selected' : '';
+                        ?>
+                            <option value="<?= $estudianteItem['idEstudiante'] ?>" <?= $selected ?>>
+                                <?= $estudianteItem['nombreEstudiante'] ?> (<?= $estudianteItem['nombreCiclo'] ?>)
                             </option>
                         <?php } ?>
                     <?php } ?>
                 </select>
+                <?php if (isset($lista_de_errores['destinatario'])) { ?>
+                    <strong class="error-campo"><?= $lista_de_errores['destinatario'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Asunto del Mensaje *</label>
-                <input type="text" name="asunto" required placeholder="Ej: Convocatoria de reunión, Aviso importante...">
+                <label class="texto-negrita">Asunto del Mensaje *</label>
+                <input type="text" name="asunto" class="mt-5 ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
+                <?php if (isset($lista_de_errores['asunto'])) { ?>
+                    <strong class="error-campo"><?= $lista_de_errores['asunto'] ?></strong>
+                <?php } ?>
             </div>
 
-            <div class="campo-formulario campo-ancho-total">
-                <label>Cuerpo del Mensaje *</label>
-                <textarea name="descripcion" rows="6" required placeholder="Escribe aquí el contenido detallado del mensaje..."></textarea>
+            <div class="campo-formulario">
+                <label class="texto-negrita">Cuerpo del Mensaje *</label>
+                <textarea name="descripcion" rows="6" class="mt-5 ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
+                <?php if (isset($lista_de_errores['descripcion'])) { ?>
+                    <strong class="error-campo"><?= $lista_de_errores['descripcion'] ?></strong>
+                <?php } ?>
             </div>
         </div>
 
-        <div class="margen-arriba">
-            <button type="submit" name="enviarMensaje" class="boton-primario">
+        <div class="margen-arriba-grande disposicion-flexible" style="justify-content: flex-end; gap: 15px;">
+            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
+            </button>
+            <button type="submit" name="enviarMensaje" class="boton-primario px-30">
                 <i class="fas fa-paper-plane"></i> Enviar Mensaje Oficial
             </button>
         </div>
@@ -120,3 +151,5 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

@@ -1,57 +1,51 @@
 <?php
 session_start();
-$titulo_pagina = "Nuevo Préstamo - Super Admin";
+$titulo_pagina = "Nuevo Préstamo - Admin";
 $seccion = 'prestamos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/inventario.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $articulos_disponibles = listarArticulos();
 $todos_los_estudiantes = listarEstudiantes();
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
-
-$lista_de_errores = [];
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
-
-$datos = [];
-if (isset($_SESSION['datos_prestamo'])) { $datos = $_SESSION['datos_prestamo']; }
+$lista_de_errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_prestamo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Préstamo</h1>
-    <a href="/pfc/vistas/admin/inventario/gestionarPrestamos.php" class="boton-secundario">← Volver</a>
+    <a href="gestionarPrestamos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="/pfc/controladores/admin/inventario/prestar.php">
+    <form method="POST" action="../../../controladores/admin/inventario/prestar.php">
         <div class="formulario-cuadricula">
-            
+
             <div class="campo-formulario">
                 <label>Recurso (Solo disponibles) *</label>
                 <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
-                    <?php foreach ($articulos_disponibles as $art) { 
-                        if ($art['estado'] == 'disponible') {
-                            ?>
-                            <option value="<?php echo $art['idArticulo']; ?>" <?php if(isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) echo "selected"; ?>>
-                                <?php echo $art['nombreArticulo']; ?> (<?php echo $art['numeroSerie']; ?>)
+                    <?php foreach ($articulos_disponibles as $art) { ?>
+                        <?php if ($art['estado'] == 'disponible') { ?>
+                            <option value="<?= $art['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) ? 'selected' : '' ?>>
+                                <?= $art['nombreArticulo'] ?> (<?= $art['numeroSerie'] ?>)
                             </option>
-                            <?php
-                        }
-                    } ?>
+                        <?php } ?>
+                    <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idArticulo'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['idArticulo']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idArticulo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -60,33 +54,37 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
                     <?php foreach ($todos_los_estudiantes as $est) { ?>
-                        <option value="<?php echo $est['idEstudiante']; ?>" <?php if(isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) echo "selected"; ?>>
-                            <?php echo $est['nombreEstudiante']; ?>
+                        <option value="<?= $est['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= $est['nombreEstudiante'] ?>
                         </option>
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['idEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Préstamo *</label>
-                <input type="date" name="fechaPrestamo" value="<?php if(isset($datos['fechaPrestamo'])) echo $datos['fechaPrestamo']; ?>">
+                <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['fechaPrestamo'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['fechaPrestamo']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['fechaPrestamo'] ?></strong>
                 <?php } ?>
             </div>
 
         </div>
 
-        <div class="margen-arriba">
+        <div class="margen-arriba disposicion-flexible separacion-media">
             <button type="submit" name="registrarPrestamo" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Préstamo
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

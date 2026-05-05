@@ -1,39 +1,59 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['subirTFG'])) {
-    $idEstudiante = $_POST['idEstudiante'];
-    $archivo = $_FILES['archivoTFG'];
+    $idEstudiante = trim($_POST['idEstudiante']);
+    $archivoTFG = $_FILES['archivoTFG'];
     
-    if (empty($idEstudiante)) {
-        $_SESSION['error'] = "ID de estudiante obligatorio.";
-    } else if ($archivo['error'] != 0) {
-        $_SESSION['error'] = "Error al subir el archivo.";
-    } else {
-        $estudiante = obtenerEstudiantePorId($idEstudiante);
-        $nombreLimpio = str_replace(' ', '_', $estudiante['nombreEstudiante']);
-        $fechaActual = date('d-m-Y');
-        $nombreArchivo = "TFG_" . $nombreLimpio . "_" . $fechaActual . ".pdf";
-        
-        $rutaDestino = "../../../public/uploads/pfc/" . $nombreArchivo;
+    $listaErrores = [];
 
-        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-            if (actualizarTFG($idEstudiante, $nombreArchivo)) {
-                $_SESSION['exito'] = "TFG subido correctamente.";
-                header("Location: /pfc/vistas/estudiantes/pfc/lista.php");
-                exit;
-            } else {
-                $_SESSION['error'] = "Error al actualizar en la base de datos.";
-            }
+    if (empty($idEstudiante)) {
+        $listaErrores['idEstudiante'] = "ID de estudiante obligatorio.";
+    } else if (!empty($archivoTFG['error'])) {
+        if ($archivoTFG['error'] == 4) {
+            $listaErrores['archivoTFG'] = "Debes seleccionar un archivo.";
         } else {
-            $_SESSION['error'] = "No se pudo mover el archivo al servidor.";
+            $listaErrores['archivoTFG'] = "Error al subir el archivo (Código: " . $archivoTFG['error'] . ").";
+        }
+    } else {
+        // Validar extensión (PDF o Word)
+        $ext = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
+        $permitidos = ['pdf', 'doc', 'docx'];
+        
+        if (!in_array($ext, $permitidos)) {
+            $listaErrores['archivoTFG'] = "Solo se permiten archivos PDF o Word (.doc, .docx).";
         }
     }
-    header("Location: /pfc/vistas/estudiantes/pfc/lista.php");
+
+    if (empty($listaErrores)) {
+        $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+        $nombreLimpio = str_replace(' ', '_', $datosEstudiante['nombreEstudiante']);
+        $timestamp = date('d-m-Y_H-i-s');
+        $extOriginal = pathinfo($archivoTFG['name'], PATHINFO_EXTENSION);
+        $nombreArchivo = "TFG_" . $nombreLimpio . "_" . $timestamp . "." . $extOriginal;
+        
+        $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
+
+        if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
+            if (actualizarTFG($idEstudiante, $nombreArchivo)) {
+                $_SESSION['exito'] = "TFG subido correctamente.";
+                header("Location: ../../../vistas/estudiantes/pfc/subir.php");
+                exit;
+            } else {
+                $_SESSION['error'] = "Error al actualizar la base de datos.";
+            }
+        } else {
+            $_SESSION['error'] = "Error al guardar el archivo en el servidor.";
+        }
+    } else {
+        $_SESSION['errores'] = $listaErrores;
+    }
+    
+    header("Location: ../../../vistas/estudiantes/pfc/subir.php");
     exit;
 }
-header("Location: /pfc/vistas/estudiantes/dashboard.php");
+
+header("Location: ../../../vistas/estudiantes/dashboard.php");
 exit;
-?>

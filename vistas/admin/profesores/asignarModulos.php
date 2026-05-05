@@ -1,12 +1,12 @@
 <?php
 session_start();
-$titulo_pagina = "Asignar Módulos a Profesor - Super Admin";
+$titulo_pagina = "Asignar Módulos a Profesor - Admin";
 $seccion = 'profesores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 if (!isset($_GET['idProfesor'])) {
     header("Location: verProfesores.php");
@@ -33,7 +33,7 @@ foreach ($todos_los_modulos as $m) {
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Asignar Módulos: <?php echo $profesor['nombreProfesor']; ?></h1>
+    <h1>Asignar Módulos: <?= $profesor['nombreProfesor'] ?></h1>
     <a href="verProfesores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver
     </a>
@@ -44,21 +44,21 @@ foreach ($todos_los_modulos as $m) {
         <h3>Seleccione los módulos que impartirá este profesor</h3>
     </div>
 
-    <form action="/pfc/controladores/admin/profesores/actualizarModulos.php" method="POST">
-        <input type="hidden" name="idProfesor" value="<?php echo $idProfesor; ?>">
+    <form action="../../../controladores/admin/profesores/actualizarModulos.php" method="POST">
+        <input type="hidden" name="idProfesor" value="<?= $idProfesor ?>">
         
         <?php foreach ($modulos_por_ciclo as $nombreCiclo => $modulos) { ?>
             <div class="seccion-asignacion margen-abajo">
-                <h4 style="border-bottom: 2px solid var(--color-primario); padding-bottom: 5px; color: var(--color-primario);">
-                    <i class="fas fa-layer-group"></i> <?php echo $nombreCiclo; ?>
+                <h4 class="borde-abajo-primario color-primario">
+                    <i class="fas fa-layer-group"></i> <?= $nombreCiclo ?>
                 </h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; padding: 10px;">
+                <div class="cuadricula-asignacion">
                     <?php foreach ($modulos as $mod) { 
                         $checked = in_array($mod['idModulo'], $modulos_asignados) ? "checked" : "";
                     ?>
-                        <label style="display: flex; align-items: center; cursor: pointer; padding: 5px; border-radius: 4px; background: #f9f9f9;">
-                            <input type="checkbox" name="modulos[]" value="<?php echo $mod['idModulo']; ?>" <?php echo $checked; ?> style="margin-right: 10px; width: 18px; height: 18px;">
-                            <span><?php echo $mod['nombreModulo']; ?></span>
+                        <label class="elemento-asignacion">
+                            <input type="checkbox" name="modulos[]" value="<?= $mod['idModulo'] ?>" <?= $checked ?> class="checkbox-grande">
+                            <span><?= $mod['nombreModulo'] ?></span>
                         </label>
                     <?php } ?>
                 </div>
@@ -69,10 +69,11 @@ foreach ($todos_los_modulos as $m) {
             <button type="submit" name="actualizarModulos" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Asignaciones
             </button>
-            <a href="verProfesores.php" class="boton-secundario" style="margin-left: 10px;">Cancelar</a>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

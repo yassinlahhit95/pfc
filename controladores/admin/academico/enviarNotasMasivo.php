@@ -1,27 +1,28 @@
 <?php
 session_start();
-require_once "../../comunes/notificaciones_grades.php";
+require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
+
+$hayError = false;
 
 if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
-    $idCiclo = intval($_POST['idCiclo']);
+    $idCiclo = intval(trim($_POST['idCiclo']));
     $enviados = enviarEmailNotasClase($idCiclo);
     
     if ($enviados > 0) {
-        $_SESSION['exito'] = strtoupper("Se han enviado $enviados correos electrónicos con éxito.");
+        $_SESSION['exito'] = "Se han enviado $enviados correos electrónicos.";
     } else {
-        $_SESSION['error'] = strtoupper("No se pudieron enviar los correos o no hay estudiantes en este ciclo.");
+        $hayError = true;
+        $_SESSION['error'] = "Error al enviar correos o no hay estudiantes en este ciclo.";
     }
 } else {
-    $_SESSION['error'] = strtoupper("ID de ciclo no proporcionado.");
+    $hayError = true;
+    $_SESSION['error'] = "No se proporcionó el ID del ciclo.";
 }
 
-$url_retorno = "/pfc/vistas/admin/dashboard.php";
-// Evitamos $_SERVER['HTTP_REFERER'] si es posible, o lo usamos con isset y empty
-if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
-    $url_retorno = $_SERVER['HTTP_REFERER'];
+$urlRetorno = "/pfc/vistas/admin/dashboard.php";
+if (isset($_SESSION['idProfesor'])) {
+    $urlRetorno = "/pfc/vistas/profesores/dashboard.php";
 }
 
-header("Location: " . $url_retorno);
+header("Location: " . $urlRetorno);
 exit;
-?>
-

@@ -1,23 +1,35 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
-$tfgs = listarTodosLosTFGs();
+$idProfesor = $_SESSION['idProfesor'];
+$tfgs = listarTFGsPorProfesor($idProfesor);
 
 $tituloDelPagina = "Gestión de TFGs - Portal Profesores";
 $seccionActual = 'tfg';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Gestión de TFGs Entregados</h1>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -32,20 +44,23 @@ include_once "../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($tfgs) { ?>
-                    <?php foreach ($tfgs as $tfg) { ?>
+                    <?php foreach ($tfgs as $tfg) { 
+                        $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
+                        $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";
+                    ?>
                         <tr>
-                            <td><strong><?php echo $tfg['nombreEstudiante']; ?></strong></td>
-                            <td><?php echo $tfg['nombreCiclo']; ?></td>
-                            <td><?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?></td>
+                            <td><strong><?= $tfg['nombreEstudiante'] ?></strong></td>
+                            <td><?= $tfg['nombreCiclo'] ?></td>
+                            <td><?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></td>
                             <td>
-                                <a href="/pfc/public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="enlace-icono azul"><i class="fas fa-download"></i></a>
-                                <a href="/pfc/controladores/profesores/pfc/borrar.php?id=<?php echo $tfg['idEstudiante']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>"><i class="fas fa-download"></i></a>
+                                <a href="../../../controladores/profesores/pfc/borrar.php?id=<?= $tfg['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavía.</td>
+                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavia.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -54,4 +69,6 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

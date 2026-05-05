@@ -1,34 +1,47 @@
 <?php
 session_start();
-require_once "../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 if (isset($_POST['actualizarAula'])) {
-    $id_aula = $_POST['idAula'];
-    $nombre_aula = trim($_POST['nombreAula']);
+    $idAula = trim($_POST['idAula']);
+    $nuevoNombre = trim($_POST['nombreAula']);
 
-    $lista_de_errores = array();
-    if (empty($nombre_aula)) {
-        $lista_de_errores['nombreAula'] = "El nombre del aula no puede estar vacío.";
+    $hayError = false;
+    if (empty($nuevoNombre)) {
+        $hayError = true;
+        $_SESSION['errores']['nombreAula'] = "El nombre del aula es obligatorio.";
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = actualizarAula($id_aula, $nombre_aula);
+    // Comprobamos duplicados
+    if (!$hayError) {
+        require_once __DIR__ . "/../../../modelos/conectar.php";
+        $con = obtenerConexion();
+
+        $sqlNombre = "SELECT idAula FROM aulas WHERE nombreAula = '" . mysqli_real_escape_string($con, $nuevoNombre) . "' AND idAula != $idAula";
+        $resNombre = mysqli_query($con, $sqlNombre);
+        if (mysqli_num_rows($resNombre) > 0) {
+            $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya está en uso.";
+            $hayError = true;
+        }
+        mysqli_close($con);
+    }
+
+    if (!$hayError) {
+        $resultado = actualizarAula($idAula, $nuevoNombre);
         if ($resultado) {
-            $_SESSION['exito'] = "Aula actualizada correctamente.";
-            header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+            $_SESSION['exito'] = "Aula actualizada.";
+            header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al actualizar el aula.";
+            $_SESSION['error'] = "Error inesperado al actualizar.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_aulas'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/aulas/modificarAulas.php?idAula=$id_aula");
+    header("Location: ../../../vistas/admin/aulas/modificarAulas.php?idAula=$idAula");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/aulas/verAulas.php");
+header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
-

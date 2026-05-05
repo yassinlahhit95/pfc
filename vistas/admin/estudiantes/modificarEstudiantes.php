@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once "../../../modelos/conectar.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $id_del_estudiante = $_GET['idEstudiante'];
 $estudiante = obtenerEstudiantePorId($id_del_estudiante);
@@ -12,47 +12,54 @@ if (!$estudiante) {
     exit;
 }
 
-if (isset($_SESSION['datos_estudiante'])) {
-    $estudiante = $_SESSION['datos_estudiante'];
+$datosGuardados = $_SESSION['datos_estudiante'] ?? [];
+if (!is_array($datosGuardados)) {
+    $datosGuardados = [];
+}
+
+if (!empty($datosGuardados)) {
+    foreach ($datosGuardados as $key => $value) {
+        $estudiante[$key] = $value;
+    }
 }
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = array();
-if (isset($_SESSION['errores'])) { $lista_de_errores = $_SESSION['errores']; }
+$lista_de_errores = $_SESSION['errores'] ?? [];
+if (!is_array($lista_de_errores)) {
+    $lista_de_errores = [];
+}
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
-$titulo_pagina = "Modificar Estudiante - Super Admin";
+$titulo_pagina = "Modificar Estudiante - Admin";
 $seccion = 'estudiantes';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Modificar Estudiante: <?php echo $estudiante['nombreEstudiante']; ?></h1>
-    <a href="/pfc/vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
+<div class="encabezado-pagina">
+    <h1>Modificar Estudiante: <?= $estudiante['nombreEstudiante'] ?></h1>
+    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">← VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">
-    <form action="/pfc/controladores/admin/estudiantes/actualizar.php" method="POST">
-        <input type="hidden" name="idEstudiante" value="<?php echo $id_del_estudiante; ?>">
+    <form action="../../../controladores/admin/estudiantes/actualizar.php" method="POST">
+        <input type="hidden" name="idEstudiante" value="<?= $id_del_estudiante ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label>Nombre Completo *</label>
-                <input type="text" name="nombreEstudiante" value="<?php echo $estudiante['nombreEstudiante']; ?>">
+                <input type="text" name="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['nombreEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['nombreEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Email *</label>
-                <input type="text" name="emailEstudiante" value="<?php echo $estudiante['emailEstudiante']; ?>">
+                <input type="text" name="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['emailEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['emailEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -60,67 +67,72 @@ include_once "../comunes/nav.php";
                 <label>Ciclo Formativo *</label>
                 <select name="idCiclo">
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?php echo $ciclo['idCiclo']; ?>" <?php if ($ciclo['idCiclo'] == $estudiante['idCiclo']) { echo "selected"; } ?>>
-                            <?php echo $ciclo['nombreCiclo']; ?>
+                        <option value="<?= $ciclo['idCiclo'] ?>" <?php if ($ciclo['idCiclo'] == $estudiante['idCiclo']) { echo "selected"; } ?>>
+                            <?= $ciclo['nombreCiclo'] ?>
                         </option>
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['idCiclo']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>DNI *</label>
-                <input type="text" name="dniEstudiante" value="<?php echo $estudiante['dniEstudiante']; ?>">
+                <input type="text" name="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['dniEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['dniEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Teléfono *</label>
-                <input type="text" name="telefonoEstudiante" value="<?php echo $estudiante['telefonoEstudiante']; ?>">
+                <input type="text" name="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
                 <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
-                    <p class="error-campo"><?php echo $lista_de_errores['telefonoEstudiante']; ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha Nacimiento</label>
-                <input type="date" name="fechaNacimientoEstudiante" value="<?php echo $estudiante['fechaNacimientoEstudiante']; ?>">
+                <input type="date" name="fechaNacimientoEstudiante" value="<?= $estudiante['fechaNacimientoEstudiante'] ?>">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Dirección</label>
-                <input type="text" name="direccionEstudiante" value="<?php echo $estudiante['direccionEstudiante']; ?>">
+                <input type="text" name="direccionEstudiante" value="<?= $estudiante['direccionEstudiante'] ?>">
             </div>
             
             <div class="campo-formulario">
                 <label>Ciudad</label>
-                <input type="text" name="ciudadEstudiante" value="<?php echo $estudiante['ciudadEstudiante']; ?>">
+                <input type="text" name="ciudadEstudiante" value="<?= $estudiante['ciudadEstudiante'] ?>">
             </div>
 
             <div class="campo-formulario">
                 <label>Código Postal</label>
-                <input type="text" name="codigoPostalEstudiante" value="<?php echo $estudiante['codigoPostalEstudiante']; ?>">
+                <input type="text" name="codigoPostalEstudiante" value="<?= $estudiante['codigoPostalEstudiante'] ?>">
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label>Observaciones</label>
-                <textarea name="observacionesEstudiante"><?php echo $estudiante['observacionesEstudiante']; ?></textarea>
+                <textarea name="observacionesEstudiante"><?= $estudiante['observacionesEstudiante'] ?></textarea>
             </div>
             
-            <input type="hidden" name="fechaAltaEstudiante" value="<?php echo $estudiante['fechaAltaEstudiante']; ?>">
+            <input type="hidden" name="fechaAltaEstudiante" value="<?= $estudiante['fechaAltaEstudiante'] ?>">
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones">
             <button type="submit" name="actualizarEstudiante" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Cambios
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

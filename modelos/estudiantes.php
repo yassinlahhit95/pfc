@@ -1,116 +1,197 @@
 <?php
-require_once("conectar.php");
+require_once __DIR__ . "/conectar.php";
 
-// Funcion para sacar todos los alumnos
+// Obtener la lista de todos los estudiantes registrados
 function listarEstudiantes() {
-    $db = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
+    $con = obtenerConexion();
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo 
+            FROM estudiantes 
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
             ORDER BY estudiantes.idEstudiante ASC";
     
-    $resultado = mysqli_query($db, $sql);
-    $lista = [];
+    $resultado = mysqli_query($con, $sql);
+    $listaEstudiantes = [];
     
     while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+        $listaEstudiantes[] = $fila;
     }
     
-    mysqli_close($db);
-    return $lista;
+    mysqli_close($con);
+    return $listaEstudiantes;
 }
 
-// Meter alumno nuevo
-function insertarEstudiante($nombre, $email, $tel, $f_nac, $dni, $f_alta, $dir, $ciudad, $cp, $obs, $idCiclo) {
-    $db = obtenerConexion();
+// Comprobar si ya existe un estudiante con el mismo DNI o Email
+function checkEstudianteExistente($dni, $email, $idExcluir = null) {
+    $con = obtenerConexion();
+    $dniEscapado = mysqli_real_escape_string($con, $dni);
+    $emailEscapado = mysqli_real_escape_string($con, $email);
+    
+    $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = '$dniEscapado' OR emailEstudiante = '$emailEscapado')";
+    if ($idExcluir) {
+        $sql .= " AND idEstudiante != $idExcluir";
+    }
+    
+    $resultado = mysqli_query($con, $sql);
+    $existe = mysqli_num_rows($resultado) > 0;
+    mysqli_close($con);
+    return $existe;
+}
+
+// Registrar un nuevo estudiante en el sistema
+function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo) {
+    if (checkEstudianteExistente($dni, $email)) {
+        return false;
+    }
+    $con = obtenerConexion();
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo) 
-            VALUES ('$nombre', '$email', '$tel', '$f_nac', '$dni', '$f_alta', '$dir', '$ciudad', '$cp', '$obs', $idCiclo)";
+            VALUES ('$nombre', '$email', '$telefono', '$fechaNacimiento', '$dni', '$fechaAlta', '$direccion', '$ciudad', '$codigoPostal', '$observaciones', $idCiclo)";
     
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
     return $resultado;
 }
 
-// Actualizar alumno
-function actualizarEstudiante($id, $nombre, $email, $tel, $f_nac, $dni, $f_alta, $dir, $ciudad, $cp, $obs, $idCiclo) {
-    $db = obtenerConexion();
-    $sql = "UPDATE estudiantes SET nombreEstudiante='$nombre', emailEstudiante='$email', telefonoEstudiante='$tel', fechaNacimientoEstudiante='$f_nac', dniEstudiante='$dni', fechaAltaEstudiante='$f_alta', direccionEstudiante='$dir', ciudadEstudiante='$ciudad', codigoPostalEstudiante='$cp', observacionesEstudiante='$obs', idCiclo=$idCiclo WHERE idEstudiante=$id";
+// Actualizar todos los datos de un estudiante existente
+function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo) {
+    if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
+        return false;
+    }
+    $con = obtenerConexion();
+    $sql = "UPDATE estudiantes 
+            SET nombreEstudiante='$nombre', emailEstudiante='$email', telefonoEstudiante='$telefono', 
+                fechaNacimientoEstudiante='$fechaNacimiento', dniEstudiante='$dni', fechaAltaEstudiante='$fechaAlta', 
+                direccionEstudiante='$direccion', ciudadEstudiante='$ciudad', codigoPostalEstudiante='$codigoPostal', 
+                observacionesEstudiante='$observaciones', idCiclo=$idCiclo 
+            WHERE idEstudiante=$idEstudiante";
     
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
     return $resultado;
 }
 
-// Alumnos de un profe
-function listarEstudiantesPorProfesor($idProf) {
-    $db = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
+// Obtener los estudiantes vinculados a los ciclos que imparte un profesor
+function listarEstudiantesPorProfesor($idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo 
+            FROM estudiantes 
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
-            WHERE estudiantes.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProf) 
+            WHERE estudiantes.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = $idProfesor) 
             ORDER BY estudiantes.nombreEstudiante ASC";
     
-    $resultado = mysqli_query($db, $sql);
-    $lista = [];
+    $resultado = mysqli_query($con, $sql);
+    $listaEstudiantes = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+        $listaEstudiantes[] = $fila;
     }
-    mysqli_close($db);
-    return $lista;
+    mysqli_close($con);
+    return $listaEstudiantes;
 }
 
-// Alumnos de un ciclo
+// Listar todos los estudiantes matriculados en un ciclo específico
 function listarEstudiantesPorCiclo($idCiclo) {
-    $db = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
+    $con = obtenerConexion();
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo 
+            FROM estudiantes 
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
             WHERE estudiantes.idCiclo = $idCiclo 
             ORDER BY estudiantes.idEstudiante ASC";
     
-    $resultado = mysqli_query($db, $sql);
-    $lista = [];
+    $resultado = mysqli_query($con, $sql);
+    $listaEstudiantes = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
+        $listaEstudiantes[] = $fila;
     }
-    mysqli_close($db);
-    return $lista;
+    mysqli_close($con);
+    return $listaEstudiantes;
 }
 
-// Borrar alumno
-function eliminarEstudiante($id) {
-    $db = obtenerConexion();
-    $sql = "DELETE FROM estudiantes WHERE idEstudiante = $id";
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
+// Eliminar un estudiante por su ID
+function eliminarEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM estudiantes WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
     return $resultado;
 }
 
-// Coger alumno por ID
-function obtenerEstudiantePorId($id) {
-    $db = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes 
+// Obtener la información completa de un estudiante por su ID
+function obtenerEstudiantePorId($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo 
+            FROM estudiantes 
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
-            WHERE estudiantes.idEstudiante = $id";
+            WHERE estudiantes.idEstudiante = $idEstudiante";
     
-    $resultado = mysqli_query($db, $sql);
-    $datos = mysqli_fetch_assoc($resultado);
-    mysqli_close($db);
-    return $datos;
+    $resultado = mysqli_query($con, $sql);
+    $datosEstudiante = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return $datosEstudiante;
 }
 
-// Cambiar clave
-function actualizarPasswordEstudiante($id, $pass) {
-    $db = obtenerConexion();
-    $sql = "UPDATE estudiantes SET password = '$pass' WHERE idEstudiante = $id";
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
+// Actualizar la contraseña de un estudiante
+function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
+    $con = obtenerConexion();
+    $sql = "UPDATE estudiantes SET password = '$nuevaPassword' WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
     return $resultado;
 }
 
-// Perfil basico
-function actualizarPerfilEstudiante($id, $nombre, $email, $tel) {
-    $db = obtenerConexion();
-    $sql = "UPDATE estudiantes SET nombreEstudiante='$nombre', emailEstudiante='$email', telefonoEstudiante='$tel' WHERE idEstudiante=$id";
-    $resultado = mysqli_query($db, $sql);
-    mysqli_close($db);
+// Actualizar los datos básicos del perfil de un estudiante
+function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
+    $con = obtenerConexion();
+    $sql = "UPDATE estudiantes 
+            SET nombreEstudiante='$nombre', emailEstudiante='$email', telefonoEstudiante='$telefono' 
+            WHERE idEstudiante=$idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
     return $resultado;
 }
-?>
+
+// Obtener los tokens FCM de todos los estudiantes para notificaciones masivas
+function obtenerTokensEstudiantes() {
+    $con = obtenerConexion();
+    $sql = "SELECT fcm_token FROM estudiantes WHERE fcm_token IS NOT NULL AND fcm_token != ''";
+    $resultado = mysqli_query($con, $sql);
+    $listaTokens = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        if (!empty($fila['fcm_token'])) {
+            $listaTokens[] = $fila['fcm_token'];
+        }
+    }
+    mysqli_close($con);
+    return $listaTokens;
+}
+
+// Validar las credenciales de acceso de un estudiante
+function validarLoginEstudiante($email, $password) {
+    $con = obtenerConexion();
+    $emailEscapado = mysqli_real_escape_string($con, $email);
+    $passEscapada = mysqli_real_escape_string($con, $password);
+    $sql = "SELECT * FROM estudiantes 
+            WHERE emailEstudiante = '$emailEscapado' AND password = '$passEscapada'";
+    $resultado = mysqli_query($con, $sql);
+    $datosUsuario = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return $datosUsuario;
+}
+
+// Guardar o actualizar el token FCM de un estudiante
+function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
+    $con = obtenerConexion();
+    $sql = "UPDATE estudiantes SET fcm_token = '$nuevoToken' WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
+}
+
+// Obtener el token FCM actual de un estudiante específico
+function obtenerTokenFCMEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT fcm_token FROM estudiantes WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    $token = $fila['fcm_token'] ?? null;
+    mysqli_close($con);
+    return $token;
+}

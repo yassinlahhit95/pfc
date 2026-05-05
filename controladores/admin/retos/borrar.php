@@ -1,16 +1,22 @@
 <?php
 session_start();
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+
+$hayError = false;
 
 if (isset($_POST['idReto'])) {
-    $id = $_POST['idReto'];
-    if (eliminarReto($id)) {
-        $_SESSION['exito'] = "Reto eliminado correctamente.";
+    $idReto = trim($_POST['idReto']);
+    
+    if (eliminarReto($idReto)) {
+        $_SESSION['exito'] = "Reto eliminado.";
     } else {
+        $hayError = true;
         $_SESSION['error'] = "Error al eliminar el reto.";
     }
+} else {
+    $hayError = true;
+    $_SESSION['error'] = "No se especificó el reto.";
 }
-header("Location: /pfc/vistas/admin/retos/verRetos.php");
-exit;
-?>
 
+header("Location: ../../../vistas/admin/retos/verRetos.php");
+exit;

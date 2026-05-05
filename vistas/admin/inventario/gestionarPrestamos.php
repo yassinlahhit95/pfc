@@ -1,10 +1,10 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Préstamos - Super Admin";
+$titulo_pagina = "Gestión de Préstamos - Admin";
 $seccion = 'prestamos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $todos_los_prestamos = listarTodosLosPrestamos();
 
@@ -16,16 +16,17 @@ unset($_SESSION['error'], $_SESSION['exito']);
 
 <div class="encabezado-pagina">
     <h1>Préstamos de Material</h1>
-    <a href="/pfc/vistas/admin/inventario/agregarPrestamo.php" class="boton-primario">
-        <i class="fas fa-plus"></i> Nuevo Préstamo
+    <a href="agregarPrestamo.php" class="boton-primario">
+        <i class="fas fa-plus"></i> NUEVO PRÉSTAMO
     </a>
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
+
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -47,33 +48,31 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <?php } else { ?>
                     <?php foreach ($todos_los_prestamos as $p) { ?>
                     <tr>
-                        <td><strong><?php echo $p['nombreEstudiante']; ?></strong></td>
-                        <td><?php echo $p['nombreArticulo']; ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($p['fechaPrestamo'])); ?></td>
+                        <td><strong><?= $p['nombreEstudiante'] ?></strong></td>
+                        <td><?= $p['nombreArticulo'] ?></td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaPrestamo'])) ?></td>
                         <td>
-                            <?php 
-                            if ($p['fechaDevolucion'] != "") {
-                                echo date('d/m/Y', strtotime($p['fechaDevolucion']));
-                            } else {
-                                echo "-";
-                            }
-                            ?>
+                            <?php if (!empty($p['fechaDevolucion'])) { ?>
+                                <?= date('d/m/Y', strtotime($p['fechaDevolucion'])) ?>
+                            <?php } else { ?>
+                                -
+                            <?php } ?>
                         </td>
                         <td>
-                            <?php 
+                            <?php
                             $clase_estado = "inactivo-rojo";
                             if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
                             ?>
-                            <span class="estado-bolita <?php echo $clase_estado; ?>">
-                                <?php echo $p['estadoPrestamo']; ?>
+                            <span class="estado-bolita <?= $clase_estado ?>">
+                                <?= $p['estadoPrestamo'] ?>
                             </span>
                         </td>
                         <td>
                             <div class="botones-accion">
                                 <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
-                                    <form action="/pfc/controladores/admin/inventario/devolver.php" method="POST" class="d-inline">
-                                        <input type="hidden" name="idPrestamo" value="<?php echo $p['idPrestamo']; ?>">
-                                        <input type="hidden" name="idArticulo" value="<?php echo $p['idArticulo']; ?>">
+                                    <form action="../../../controladores/admin/inventario/devolver.php" method="POST" class="d-inline">    
+                                        <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
+                                        <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
                                         <button type="submit" class="boton-primario boton-pequeno">
                                             <i class="fas fa-undo"></i> Devolver
                                         </button>
@@ -90,4 +89,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

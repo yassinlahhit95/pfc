@@ -1,90 +1,145 @@
 <?php
-require_once("conectar.php");
+require_once __DIR__ . "/conectar.php";
 
-// Ver pagos
+// Ver todos los pagos registrados
 function listarTodosLosPagos() {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo FROM pagos JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo ORDER BY idPago DESC");
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
-    mysqli_close($db);
-    return $lista;
+    $con = obtenerConexion();
+    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo 
+            FROM pagos 
+            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante 
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
+            ORDER BY idPago DESC";
+            
+    $resultado = mysqli_query($con, $sql);
+    $listaPagos = [];
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $listaPagos[] = $fila; 
+    }
+    mysqli_close($con);
+    return $listaPagos;
 }
 
-// Pagos por ciclo
-function listarPagosFiltrados($idCic) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo FROM pagos JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = $idCic ORDER BY idPago DESC");
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
-    mysqli_close($db);
-    return $lista;
+// Listar pagos filtrados por ciclo
+function listarPagosFiltrados($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo 
+            FROM pagos 
+            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante 
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
+            WHERE estudiantes.idCiclo = $idCiclo 
+            ORDER BY idPago DESC";
+            
+    $resultado = mysqli_query($con, $sql);
+    $listaPagos = [];
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $listaPagos[] = $fila; 
+    }
+    mysqli_close($con);
+    return $listaPagos;
 }
 
-// Historial alumno
-function obtenerPagosPorEstudiante($idEst) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "SELECT * FROM pagos WHERE idEstudiante = $idEst ORDER BY fechaPago DESC");
-    $lista = [];
-    while($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
-    mysqli_close($db);
-    return $lista;
+// Obtener el historial de pagos de un alumno
+function obtenerPagosPorEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM pagos WHERE idEstudiante = $idEstudiante ORDER BY fechaPago DESC";
+    $resultado = mysqli_query($con, $sql);
+    $listaPagos = [];
+    while($fila = mysqli_fetch_assoc($resultado)) { 
+        $listaPagos[] = $fila; 
+    }
+    mysqli_close($con);
+    return $listaPagos;
 }
 
-// Meter pago
-function insertarPagoCompleto($idEst, $mon, $tipo, $fecP, $fecProx) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago) VALUES ($idEst, $mon, '$tipo', '$fecP', '$fecProx')");
-    mysqli_close($db);
-    return $res;
+// Registrar un nuevo pago
+function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago) 
+            VALUES ($idEstudiante, $monto, '$tipoPago', '$fechaPago', '$fechaProximo')";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
 
-// Actualizar pago
-function actualizarPago($id, $idEst, $mon, $tipo, $fecP, $fecProx, $comp = "") {
-    $db = obtenerConexion();
-    $sql = "UPDATE pagos SET idEstudiante=$idEst, monto=$mon, tipoPago='$tipo', fechaPago='$fecP', fechaProximoPago='$fecProx'";
-    if ($comp != "") { $sql = $sql . ", comprobante = '$comp'"; }
-    $sql = $sql . " WHERE idPago = $id";
-    $res = mysqli_query($db, $sql);
-    mysqli_close($db);
-    return $res;
+// Actualizar un pago existente
+function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante = "") {
+    $con = obtenerConexion();
+    $sql = "UPDATE pagos 
+            SET idEstudiante=$idEstudiante, monto=$monto, tipoPago='$tipoPago', 
+                fechaPago='$fechaPago', fechaProximoPago='$fechaProximo'";
+                
+    if (!empty($comprobante)) { 
+        $sql .= ", comprobante = '$comprobante'"; 
+    }
+    
+    $sql .= " WHERE idPago = $idPago";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
 
-// Mirar deuda
-function obtenerEstadoFinancieroEstudiante($idEst) {
-    $db = obtenerConexion();
-    $resP = mysqli_query($db, "SELECT SUM(monto) as sum FROM pagos WHERE idEstudiante = $idEst");
-    $fP = mysqli_fetch_assoc($resP);
-    $pagado = isset($fP['sum']) ? $fP['sum'] : 0;
+// Obtener el balance financiero (total, pagado, restante) de un estudiante
+function obtenerEstadoFinancieroEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    
+    // Suma de lo ya pagado
+    $sql = "SELECT SUM(monto) as total FROM pagos WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    $filaPagos = mysqli_fetch_assoc($resultado);
+    $pagado = (float)($filaPagos['total'] ?? 0);
 
-    $resC = mysqli_query($db, "SELECT precioCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = $idEst");
+    // Precio total del ciclo que cursa
+    $sql = "SELECT precioCiclo FROM estudiantes 
+                  JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo 
+                  WHERE estudiantes.idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
     $precio = 0;
-    if ($resC) {
-        $fC = mysqli_fetch_assoc($resC);
-        if (isset($fC['precioCiclo'])) { $precio = $fC['fC']['precioCiclo']; }
+    
+    if ($resultado) {
+        $filaPrecio = mysqli_fetch_assoc($resultado);
+        $precio = (float)($filaPrecio['precioCiclo'] ?? 0);
     }
-    mysqli_close($db);
-    return ['totalPagado' => $pagado, 'precioCiclo' => $precio, 'restante' => ($precio - $pagado)];
+    
+    mysqli_close($con);
+    return [
+        'totalPagado' => $pagado, 
+        'precioCiclo' => $precio, 
+        'restante' => ($precio - $pagado)
+    ];
 }
 
-// Borrar
-function eliminarPago($id) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "DELETE FROM pagos WHERE idPago = $id");
-    mysqli_close($db);
-    return $res;
+// Eliminar un registro de pago
+function eliminarPago($idPago) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM pagos WHERE idPago = $idPago";
+    $resultado = mysqli_query($con, $sql);
+    mysqli_close($con);
+    return $resultado;
 }
 
-// Coger por ID
-function obtenerPagoPorId($id) {
-    $db = obtenerConexion();
-    $res = mysqli_query($db, "SELECT * FROM pagos WHERE idPago = $id");
-    $fila = mysqli_fetch_assoc($res);
-    if (isset($fila)) {
-        $fila['conceptoPago'] = $fila['tipoPago'];
-        $fila['cantidadPago'] = $fila['monto'];
+// Obtener un pago por su ID
+function obtenerPagoPorId($idPago) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM pagos WHERE idPago = $idPago";
+    $resultado = mysqli_query($con, $sql);
+    $pago = mysqli_fetch_assoc($resultado);
+    
+    if ($pago) {
+        // Mantenemos alias por compatibilidad
+        $pago['conceptoPago'] = $pago['tipoPago'];
+        $pago['cantidadPago'] = $pago['monto'];
     }
-    mysqli_close($db);
-    return $fila;
+    
+    mysqli_close($con);
+    return $pago;
 }
-?>
+
+// Contar cuántos pagos ha realizado un estudiante
+function contarPagosEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM pagos WHERE idEstudiante = $idEstudiante";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return (int)($fila['total'] ?? 0);
+}

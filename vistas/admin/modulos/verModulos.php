@@ -2,30 +2,24 @@
 session_start();
 
 // Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
-    header("Location: /pfc/index.php");
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE MÓDULOS - SUPER ADMIN";
+$titulo_pagina = "GESTIÓN DE MÓDULOS - ADMIN";
 $seccion = 'modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/conectar.php";
 
 // Obtenemos la lista de todos los módulos registrados
 $listaDeModulosActuales = listarModulos();
 
 // Captura de mensajes de éxito o error
-$mensajeExito = "";
-if (isset($_SESSION['exito'])) {
-    $mensajeExito = $_SESSION['exito'];
-}
-
-$mensajeError = "";
-if (isset($_SESSION['error'])) {
-    $mensajeError = $_SESSION['error'];
-}
+$exito = $_SESSION['exito'] ?? '';
+$error = $_SESSION['error'] ?? '';
 
 // Limpiamos los mensajes de la sesión
 unset($_SESSION['exito'], $_SESSION['error']);
@@ -36,18 +30,18 @@ unset($_SESSION['exito'], $_SESSION['error']);
         <h1>MÓDULOS PROFESIONALES</h1>
     </div>
     <div class="acciones-pagina">
-        <a href="/pfc/vistas/admin/modulos/agregarModulos.php" class="boton-primario">
+        <a href="agregarModulos.php" class="boton-primario">
             <i class="fas fa-plus"></i> NUEVO MÓDULO
         </a>
     </div>
 </div>
 
-<?php if ($mensajeExito != "") { ?>
-    <div class="mensaje-exito"><?php echo $mensajeExito; ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($mensajeError != "") { ?>
-    <div class="mensaje-error"><?php echo $mensajeError; ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -64,65 +58,64 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 </tr>
             </thead>
             <tbody>
-                <?php if ($listaDeModulosActuales == false || count($listaDeModulosActuales) == 0) { ?>
+                <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
                         <td colspan="6" class="sin-datos">No hay módulos registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeModulosActuales as $moduloIndividual) { 
+                    <?php foreach ($listaDeModulosActuales as $moduloIndividual) { ?>
+                    <?php
                         // Lógica simple para obtener los nombres de los profesores de este módulo
                         $conexionTemporal = obtenerConexion();
                         $idModuloActual = $moduloIndividual['idModulo'];
-                        
-                        $sqlProfesores = "SELECT profesores.nombreProfesor 
-                                          FROM profesores 
-                                          JOIN profesor_modulo ON profesores.idProfesor = profesor_modulo.idProfesor 
+
+                        $sqlProfesores = "SELECT profesores.nombreProfesor
+                                          FROM profesores
+                                          JOIN profesor_modulo ON profesores.idProfesor = profesor_modulo.idProfesor
                                           WHERE profesor_modulo.idModulo = $idModuloActual";
-                                          
+
                         $resultadoProfesores = mysqli_query($conexionTemporal, $sqlProfesores);
-                        $nombresProfesores = array();
-                        
-                        while($datosProfesor = mysqli_fetch_assoc($resultadoProfesores)) { 
-                            $nombresProfesores[] = strtoupper($datosProfesor['nombreProfesor']); 
+                        $nombresProfesores = [];
+
+                        while($datosProfesor = mysqli_fetch_assoc($resultadoProfesores)) {
+                            $nombresProfesores[] = strtoupper($datosProfesor['nombreProfesor']);
                         }
                         mysqli_close($conexionTemporal);
                     ?>
                     <tr>
-                        <td><?php echo $moduloIndividual['idModulo']; ?></td>
-                        <td><strong><?php echo strtoupper($moduloIndividual['nombreModulo']); ?></strong></td>
+                        <td><?= $moduloIndividual['idModulo'] ?></td>
+                        <td><strong><?= strtoupper($moduloIndividual['nombreModulo']) ?></strong></td>
                         <td>
-                            <?php 
-                                if (isset($moduloIndividual['abreviaturaCiclo']) && $moduloIndividual['abreviaturaCiclo'] != "") {
-                                    echo "<strong>[" . $moduloIndividual['abreviaturaCiclo'] . "]</strong> ";
-                                }
-                                echo strtoupper($moduloIndividual['nombreCiclo']); 
-                            ?>
+                            <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
+                                <strong>[<?= $moduloIndividual['abreviaturaCiclo'] ?>]</strong> 
+                            <?php } ?>
+                            <?= strtoupper($moduloIndividual['nombreCiclo']) ?>
                         </td>
                         <td>
-                            <?php if ($nombresProfesores == false || count($nombresProfesores) == 0) { ?>
+                            <?php if (empty($nombresProfesores)) { ?>
                                 <span class="texto-rojo texto-pequeno">
                                     <i class="fas fa-exclamation-triangle"></i> SIN PROFESOR
                                 </span>
                             <?php } else { ?>
                                 <div class="texto-pequeno">
-                                    <?php echo implode(", ", $nombresProfesores); ?>
+                                    <?= implode(", ", $nombresProfesores) ?>
                                 </div>
                             <?php } ?>
                         </td>
-                        <td><?php echo $moduloIndividual['horasMaximas']; ?> H</td>
+                        <td><?= $moduloIndividual['horasMaximas'] ?> H</td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/admin/modulos/asignarProfesorModulo.php?idModulo=<?php echo $moduloIndividual['idModulo']; ?>" 
-                                   class="boton-icono boton-ver" title="Asignar o cambiar profesor">
+                                <a href="asignarProfesorModulo.php?idModulo=<?= $moduloIndividual['idModulo'] ?>"
+                                   class="btn-accion btn-ver" title="Asignar o cambiar profesor">
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
-                                <a href="/pfc/vistas/admin/modulos/modificarModulos.php?idModulo=<?php echo $moduloIndividual['idModulo']; ?>" 
-                                   class="boton-icono boton-editar" title="Editar módulo">
+                                <a href="modificarModulos.php?idModulo=<?= $moduloIndividual['idModulo'] ?>" 
+                                   class="btn-accion btn-editar" title="Editar módulo">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="/pfc/controladores/admin/modulos/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar este módulo?')">
-                                    <input type="hidden" name="idModulo" value="<?php echo $moduloIndividual['idModulo']; ?>">
-                                    <button type="submit" class="boton-icono boton-eliminar" title="Borrar">
+                                <form method="POST" action="../../../controladores/admin/modulos/borrar.php" class="d-inline" onsubmit="return confirm('¿Eliminar este módulo?')">
+                                    <input type="hidden" name="idModulo" value="<?= $moduloIndividual['idModulo'] ?>">
+                                    <button type="submit" class="btn-accion btn-eliminar" title="Borrar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -137,4 +130,5 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

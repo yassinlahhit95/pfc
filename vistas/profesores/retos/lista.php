@@ -1,8 +1,12 @@
 <?php
 session_start();
 
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,13 +17,20 @@ $retos = obtenerRetosDeProfesor($idProfesor);
 
 $tituloDelPagina = "Retos - Portal Profesores";
 $seccionActual = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
     <h1>Gestión de Retos</h1>
-    <a href="/pfc/vistas/profesores/retos/agregar.php" class="boton-primario">Nuevo Reto</a>
+    <a href="agregar.php" class="boton-primario">NUEVO RETO</a>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -37,13 +48,13 @@ include_once "../comunes/nav.php";
                 <?php if ($retos) { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?php echo $reto['nombreReto']; ?></td>
-                            <td><?php echo $reto['fechaInicio']; ?></td>
-                            <td><?php echo $reto['fechaFin']; ?></td>
-                            <td><?php echo $reto['horasReto']; ?> h</td>
+                            <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
+                            <td><?= $reto['fechaInicio'] ?></td>
+                            <td><?= $reto['fechaFin'] ?></td>
+                            <td><?= $reto['horasReto'] ?> h</td>
                             <td>
-                                <a href="/pfc/vistas/profesores/retos/editar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono azul"><i class="fas fa-edit"></i></a>
-                                <a href="/pfc/controladores/profesores/retos/borrar.php?id=<?php echo $reto['idReto']; ?>" class="enlace-icono rojo"><i class="fas fa-trash"></i></a>
+                                <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                <a href="../../../controladores/profesores/retos/borrar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
@@ -58,4 +69,6 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

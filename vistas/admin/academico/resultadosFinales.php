@@ -1,141 +1,44 @@
 <?php
 session_start();
 
-// Validación de sesión simple
-if (isset($_SESSION['idAdmin']) == false) {
-    header("Location: /pfc/index.php");
+// ValidaciÃ³n de sesiÃ³n simple
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../index.php");
     exit;
 }
 
-$titulo_pagina = "RESULTADOS FINALES - SUPER ADMIN";
+$titulo_pagina = "RESULTADOS FINALES - ADMIN";
 $seccion = 'resultados_modulos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/estudiantes.php";
-require_once "../../../modelos/calificaciones.php";
-require_once "../../../modelos/retos.php";
-require_once "../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 // Captura del ciclo seleccionado
 $idCicloElegidoParaVer = 0;
-if (isset($_GET['idCiclo'])) {
-    $idCicloElegidoParaVer = (int)$_GET['idCiclo'];
-}
+$idCicloElegidoParaVer = (int)($_GET['idCiclo'] ?? 0);
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
-$listaDeDatosFinalesAMostrar = array();
+$listaDeDatosFinalesAMostrar = [];
 
-if ($idCicloElegidoParaVer != 0) {
-    // 1. Obtener todos los estudiantes del ciclo
-    $listaEstudiantesDelCiclo = listarEstudiantesPorCiclo($idCicloElegidoParaVer);
-    
-    // 2. Obtener todos los módulos del ciclo
-    $listaModulosDelCiclo = obtenerModulosPorCiclo($idCicloElegidoParaVer);
-    
-    foreach ($listaEstudiantesDelCiclo as $estudianteIndividual) {
-        $idDeEsteEstudiante = $estudianteIndividual['idEstudiante'];
-        $nombreDelEstudiante = strtoupper($estudianteIndividual['nombreEstudiante']);
-        
-        $sumaNotasAcumuladaModulos = 0;
-        $contadorTotalDeNotasIngresadas = 0;
-        
-        $sumaMediasAcumuladaRetos = 0;
-        $contadorModulosQueTienenReto = 0;
-        $existeAlMenosUnModuloSuspenso = false;
-
-        foreach ($listaModulosDelCiclo as $moduloIndividual) {
-            $idDeEsteModulo = $moduloIndividual['idModulo'];
-            
-            // --- CÁLCULO MEDIA MÓDULO (Promedio de las notas ingresadas en los 4 slots) ---
-            $datosDeNotasDelModulo = obtenerNotasModulo($idDeEsteEstudiante, $idDeEsteModulo);
-            
-            $camposDeNotaAChequear = array('nota_1ev', 'nota_1final', 'nota_2ev', 'nota_2final');
-            $sumaNotasDeEsteModulo = 0;
-            $contadorNotasDeEsteModulo = 0;
-
-            foreach ($camposDeNotaAChequear as $nombreDelCampo) {
-                if (isset($datosDeNotasDelModulo[$nombreDelCampo])) {
-                    $valorDeLaNota = $datosDeNotasDelModulo[$nombreDelCampo];
-                    if (is_numeric($valorDeLaNota) && $valorDeLaNota > 0) {
-                        $sumaNotasDeEsteModulo = $sumaNotasDeEsteModulo + $valorDeLaNota;
-                        $contadorNotasDeEsteModulo = $contadorNotasDeEsteModulo + 1;
-                        
-                        $sumaNotasAcumuladaModulos = $sumaNotasAcumuladaModulos + $valorDeLaNota;
-                        $contadorTotalDeNotasIngresadas = $contadorTotalDeNotasIngresadas + 1;
-                    }
-                }
-            }
-            
-            // Verificamos si el módulo está suspenso
-            if ($contadorNotasDeEsteModulo > 0) {
-                $mediaDeEsteModulo = $sumaNotasDeEsteModulo / $contadorNotasDeEsteModulo;
-                if ($mediaDeEsteModulo < 5) {
-                    $existeAlMenosUnModuloSuspenso = true;
-                }
-            }
-            
-            // --- CÁLCULO MEDIA RETOS ---
-            $mapaMediasRetosPorModulo = listarCalificacionesRetoPorModulo($idDeEsteModulo);
-            if (isset($mapaMediasRetosPorModulo[$idDeEsteEstudiante])) {
-                $mediaDeRetosDeEsteModulo = $mapaMediasRetosPorModulo[$idDeEsteEstudiante];
-                $sumaMediasAcumuladaRetos = $sumaMediasAcumuladaRetos + $mediaDeRetosDeEsteModulo;
-                $contadorModulosQueTienenReto = $contadorModulosQueTienenReto + 1;
-            }
-        }
-        
-        // Calculamos promedios finales del estudiante
-        $promedioGlobalModulos = 0;
-        if ($contadorTotalDeNotasIngresadas > 0) {
-            $promedioGlobalModulos = $sumaNotasAcumuladaModulos / $contadorTotalDeNotasIngresadas;
-        }
-        
-        $promedioGlobalRetos = 0;
-        if ($contadorModulosQueTienenReto > 0) {
-            $promedioGlobalRetos = $sumaMediasAcumuladaRetos / $contadorModulosQueTienenReto;
-        }
-        
-        // Cálculo final: 75% Módulos + 25% Retos
-        $notaFinalDelCiclo = ($promedioGlobalModulos * 0.75) + ($promedioGlobalRetos * 0.25);
-        $notaFinalRedondeada = round($notaFinalDelCiclo, 2);
-        
-        // Determinamos el estado final
-        $textoEstadoFinal = "SUSPENSO";
-        if ($contadorTotalDeNotasIngresadas == 0) {
-            $textoEstadoFinal = "PENDIENTE";
-        } else {
-            // Aprobado si la nota es >= 5 y NO tiene ningún módulo suspenso
-            if ($notaFinalRedondeada >= 5.00 && $existeAlMenosUnModuloSuspenso == false) {
-                $textoEstadoFinal = "APROBADO";
-            }
-        }
-        
-        // Guardamos los datos procesados en el array de visualización
-        $datosParaLaTabla = array();
-        $datosParaLaTabla['nombreEstudiante'] = $nombreDelEstudiante;
-        $datosParaLaTabla['mediaModulos'] = round($promedioGlobalModulos, 2);
-        $datosParaLaTabla['mediaRetos'] = round($promedioGlobalRetos, 2);
-        $datosParaLaTabla['notaFinal'] = $notaFinalRedondeada;
-        $datosParaLaTabla['estado'] = $textoEstadoFinal;
-        $datosParaLaTabla['tieneAlerta'] = $existeAlMenosUnModuloSuspenso;
-        
-        $listaDeDatosFinalesAMostrar[] = $datosParaLaTabla;
-    }
+if (!empty($idCicloElegidoParaVer)) {
+    // Obtenemos los datos procesados desde el Modelo (MVC)
+    $listaDeDatosFinalesAMostrar = obtenerResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
 
-// Mensajes de sesión
-$mensajeExito = ""; if (isset($_SESSION['exito'])) { $mensajeExito = $_SESSION['exito']; }
-$mensajeError = ""; if (isset($_SESSION['error'])) { $mensajeError = $_SESSION['error']; }
+// Mensajes de sesiÃ³n
+$mensajeExito = $_SESSION['exito'] ?? '';
+$mensajeError = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
-    <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
+    <p class="subtitulo">Promedio global del ciclo (75% MÃ³dulos / 25% Retos)</p>
 </div>
 
-<?php if ($mensajeExito != "") { ?> <div class="mensaje-exito"><?php echo $mensajeExito; ?></div> <?php } ?>
-<?php if ($mensajeError != "") { ?> <div class="mensaje-error"><?php echo $mensajeError; ?></div> <?php } ?>
+<?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?= $mensajeExito ?></div> <?php } ?>
+<?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?= $mensajeError ?></div> <?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="disposicion-flexible alinear-centro separacion-grande">
@@ -145,17 +48,17 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                        <option value="<?php echo $cicloItem['idCiclo']; ?>" <?php if($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo "selected"; } ?>>
-                            <?php echo strtoupper($cicloItem['nombreCiclo']); ?>
+                        <option value="<?= $cicloItem['idCiclo'] ?>" <?php if($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo "selected"; } ?>>
+                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
         </form>
 
-        <?php if ($idCicloElegidoParaVer != 0 && $listaDeDatosFinalesAMostrar) { ?>
-            <form action="/pfc/controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Está seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
-                <input type="hidden" name="idCiclo" value="<?php echo $idCicloElegidoParaVer; ?>">
+        <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+                <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
                 </button>
@@ -164,37 +67,37 @@ unset($_SESSION['exito'], $_SESSION['error']);
     </div>
 </div>
 
-<?php if ($idCicloElegidoParaVer != 0) { ?>
+<?php if (!empty($idCicloElegidoParaVer)) { ?>
     <div class="tarjeta-blanca margen-arriba">
         <div class="contenedor-tabla">
             <table class="tabla-datos">
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Global Módulos (75%)</th>
+                        <th>Media Global MÃ³dulos (75%)</th>
                         <th>Media Global Retos (25%)</th>
                         <th>Nota Final Ciclo</th>
                         <th>Estado Final</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($listaDeDatosFinalesAMostrar == false || count($listaDeDatosFinalesAMostrar) == 0) { ?>
+                    <?php if (empty($listaDeDatosFinalesAMostrar)) { ?>
                         <tr><td colspan="5" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($listaDeDatosFinalesAMostrar as $fila) { 
                             $claseDelColor = "texto-rojo";
-                            if ($fila['estado'] == "APROBADO") { $claseDelColor = "texto-verde"; }
-                            if ($fila['estado'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
+                            if ($fila['estado_global'] == "APROBADO") { $claseDelColor = "texto-verde"; }
+                            if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><strong><?php echo $fila['nombreEstudiante']; ?></strong></td>
-                            <td><?php echo $fila['mediaModulos']; ?></td>
-                            <td><?php echo $fila['mediaRetos']; ?></td>
-                            <td class="texto-negrita"><?php echo $fila['notaFinal']; ?></td>
-                            <td class="<?php echo $claseDelColor; ?> texto-negrita">
-                                <?php echo $fila['estado']; ?>
-                                <?php if($fila['tieneAlerta'] == true && $fila['estado'] != "PENDIENTE") { 
-                                    echo " <small title='Tiene módulos suspensos'>(!)</small>"; 
+                            <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>
+                            <td><?= $fila['promedio_global'] ?> (Notas)</td> 
+                            <td>-</td> <!-- En el modelo calculamos el global, podrÃ­amos desglosar si fuera necesario -->
+                            <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
+                            <td class="<?= $claseDelColor ?> texto-negrita">
+                                <?= $fila['estado_global'] ?>
+                                <?php if($fila['tiene_suspensos'] == true && $fila['estado_global'] != "PENDIENTE") { 
+                                    echo " <small title='Tiene mÃ³dulos suspensos'>(!)</small>"; 
                                 } ?>
                             </td>
                         </tr>
@@ -205,11 +108,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </div>
         
         <div class="tarjeta-alerta-info">
-            <p><i class="fas fa-info-circle"></i> <strong>Cálculo Global:</strong> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
-            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
+            <p><i class="fas fa-info-circle"></i> <strong>CÃ¡lculo Global:</strong> Se promedian todas las calificaciones de todos los mÃ³dulos (75%) y todos los retos (25%).</p>
+            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin mÃ³dulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
         </div>
     </div>
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 

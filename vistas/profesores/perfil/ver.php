@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
@@ -13,49 +13,57 @@ $profesor = obtenerProfesorPorId($id);
 
 $tituloDelPagina = "Mi Perfil - Portal Profesores";
 $seccionActual = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
-    <h1>Mi Perfil</h1>
-    <a href="/pfc/vistas/profesores/dashboard.php" class="boton-secundario">← Inicio</a>
-</div>
-
-<div class="tarjeta-blanca">
-    <div class="disposicion-flexible alinear-centro">
-        <div class="flexible-rellenar">
-            <h2><?php echo $profesor['nombreProfesor']; ?></h2>
-            <p class="texto-secundario"><?php echo $profesor['especialidad'] ?? 'Sin especialidad'; ?></p>
-        </div>
+<div class="encabezado-pagina">
+    <div>
+        <h1>Mi Perfil</h1>
+        <p class="subtitulo">Información de tu cuenta de profesor</p>
     </div>
-
-    <div class="margen-arriba-grande">
-        <div class="formulario-cuadricula">
-            <div class="item-perfil">
-                <label>Email Corporativo</label>
-                <p><?php echo $profesor['emailProfesor']; ?></p>
-            </div>
-            <div class="item-perfil">
-                <label>Teléfono de Contacto</label>
-                <p><?php echo $profesor['telefonoProfesor']; ?></p>
-            </div>
-            <div class="item-perfil">
-                <label>DNI</label>
-                <p><?php echo $profesor['dniProfesor']; ?></p>
-            </div>
-            <div class="item-perfil">
-                <label>Dirección</label>
-                <p><?php echo $profesor['direccionProfesor']; ?></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="margen-arriba">
-        <a href="/pfc/vistas/profesores/perfil/editar.php" class="boton-primario">
-            <i class="fas fa-edit"></i> Editar Información
+    <div class="acciones-pagina">
+        <a href="editar.php" class="boton-primario">
+            <i class="fas fa-edit"></i> EDITAR INFORMACIÓN
         </a>
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-user-circle"></i> DATOS PERSONALES</h3>
+    </div>
 
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Nombre Completo</div>
+        <div class="valor-detalle"><strong><?= strtoupper($profesor['nombreProfesor']) ?></strong></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Email Corporativo</div>
+        <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="valor-detalle"><?= $profesor['telefonoProfesor'] ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">DNI / Identificación</div>
+        <div class="valor-detalle"><?= $profesor['dniProfesor'] ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Dirección</div>
+        <div class="valor-detalle"><?= $profesor['direccionProfesor'] ?></div>
+    </div>
+    
+    <?php if(!empty($profesor['observacionesProfesor'])) { ?>
+        <div class="fila-detalle">
+            <div class="etiqueta-detalle">Observaciones</div>
+            <div class="valor-detalle"><?= $profesor['observacionesProfesor'] ?></div>
+        </div>
+    <?php } ?>
+</div>
+
+<?php include '../comunes/footer.php'; ?>

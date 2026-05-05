@@ -2,76 +2,93 @@
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: /pfc/index.php");
+    header("Location: ../../../index.php");
     exit;
 }
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idReclamacion = $_GET['id'] ?? 0;
-$mensaje = obtenerMensajePorId($idReclamacion);
+$mensaje = obtenerMensajePorId(intval($idReclamacion));
 
 if (!$mensaje) {
-    header("Location: /pfc/vistas/admin/mensajes/lista.php");
+    header("Location: lista.php");
     exit;
 }
 
-$titulo_pagina = "Detalle del Mensaje - Super Admin";
+// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (Administración)
+if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] === NULL) || ($mensaje['emisor_rol'] == 'profesor' && $mensaje['idEstudiante'] === NULL))) {
+    marcarMensajeComoLeido($idReclamacion);
+    $mensaje['leido'] = 1;
+}
+
+$titulo_pagina = "Detalle del Mensaje - Admin";
 $seccion = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Mensaje</h1>
-    <a href="/pfc/vistas/admin/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <h1>Detalles del Mensaje</h1>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<div class="disposicion-flexible separacion-grande">
-    <div class="flexible-rellenar">
-        <div class="tarjeta-blanca">
-    <div class="disposicion-flexible espacio-entre-elementos margen-abajo">
-        <div>
-            <p class="texto-atenuado">De:</p>
-            <p class="texto-negrita"><?php echo $mensaje['nombreEstudiante'] ?: 'Administración (Sistema)'; ?></p>
-        </div>
-        <div>
-            <p class="texto-atenuado">Para:</p>
-            <p class="texto-negrita"><?php echo $mensaje['nombreProfesor'] ?: 'Dirección (Admin)'; ?></p>
-        </div>
-        <div>
-            <p class="texto-atenuado">Fecha:</p>
-            <p class="texto-negrita"><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></p>
-        </div>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-envelope"></i> Información del Mensaje</h3>
     </div>
 
-    <div class="tarjeta-gris-suave margen-abajo">
-        <h3 class="margen-abajo"><?php echo $mensaje['asunto']; ?></h3>
-        <p><?php echo nl2br($mensaje['descripcion']); ?></p>
-    </div>
-
-    <form action="/pfc/controladores/admin/mensajes/actualizar.php" method="POST">
-        <input type="hidden" name="idReclamacion" value="<?php echo $idReclamacion; ?>">
-        
-        <div class="campo-formulario">
-            <label>Escribir Respuesta o Nota Administrativa:</label>
-            <textarea name="respuesta" rows="5" placeholder="Escribe aquí para informar al estudiante o profesor..."><?php echo $mensaje['respuesta']; ?></textarea>
-        </div>
-
-        <div class="disposicion-flexible separacion-grande margen-arriba">
-            <button type="submit" name="guardarCambios" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar y Enviar Respuesta
-            </button>
-            <?php if (!$mensaje['leido']) { ?>
-                <button type="submit" name="marcarLeido" class="boton-secundario">
-                    <i class="fas fa-check-double"></i> Confirmar Lectura (Marcar Leído)
-                </button>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">De</div>
+        <div class="valor-detalle texto-negrita">
+            <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
+                Tú (Administración)
+            <?php } elseif ($mensaje['emisor_rol'] == 'profesor') { ?>
+                <?= $mensaje['nombreProfesor'] ?> (Profesor)
             <?php } else { ?>
-                <span class="estado-bolita activo-verde"><i class="fas fa-check-double"></i> Este mensaje ya fue marcado como leído</span>
+                <?= $mensaje['nombreEstudiante'] ?> (Estudiante)
             <?php } ?>
         </div>
-    </form>
-</div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Para</div>
+        <div class="valor-detalle texto-negrita">
+            <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
+                <?php if ($mensaje['idEstudiante'] > 0) { ?>
+                    <?= $mensaje['nombreEstudiante'] ?> (Estudiante)
+                <?php } elseif ($mensaje['idProfesor'] > 0) { ?>
+                    <?= $mensaje['nombreProfesor'] ?> (Profesor)
+                <?php } else { ?>
+                    General
+                <?php } ?>
+            <?php } else { ?>
+                Tú (Administración)
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha</div>
+        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Estado</div>
+        <div class="valor-detalle">
+            <?php if ($mensaje['leido']) { ?>
+                <span class="estado-bolita activo-verde">Leído</span>
+            <?php } else { ?>
+                <span class="estado-bolita inactivo-rojo">Pendiente</span>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="margen-arriba p-20 bg-gris-suave rounded-8">
+        <h4 class="mb-10 text-uppercase color-primario"><?= $mensaje['asunto'] ?></h4>
+        <div class="line-height-15 pre-wrap"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

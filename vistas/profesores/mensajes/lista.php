@@ -6,75 +6,90 @@ if (!isset($_SESSION['idProfesor'])) {
     exit;
 }
 
-require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-
-$idProfesor = $_SESSION['idProfesor'];
-$listaDeMensajes = listarMensajesParaProfesor($idProfesor);
-
-$tituloDelPagina = "Buzón de Mensajes - Portal Profesores";
-$seccionActual = 'reclamaciones';
-include_once "../comunes/nav.php";
-
 $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
 unset($_SESSION['error'], $_SESSION['exito']);
+
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+
+$idProfesor = $_SESSION['idProfesor'];
+// Obtenemos los mensajes donde el profesor es emisor o destinatario
+$listaDeMensajes = listarMensajesParaProfesor($idProfesor);
+
+$tituloPagina = "Buzón de Mensajes - Portal Profesores";
+$seccionActual = 'reclamaciones';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Buzón de Mensajes</h1>
     <a href="/pfc/vistas/profesores/mensajes/agregar.php" class="boton-primario">
-        <i class="fas fa-paper-plane"></i> Redactar Nuevo
+        <i class="fas fa-plus"></i> Redactar Mensaje
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
-<?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?php echo $error; ?></div>
-<?php } ?>
+<?php if ($exito): ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
+<?php endif; ?>
+<?php if ($error): ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php endif; ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Estudiante</th>
-                    <th>Asunto y Mensaje</th>
-                    <th>Fecha</th>
-                    <th>Visto</th>
+                    <th>Emisor / Receptor</th>
+                    <th>Ciclo</th>
+                    <th>Asunto</th>
+                    <th>Mensaje</th>
+                    <th>Fecha y Hora</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No has recibido mensajes aún.</td></tr>
+                    <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aún.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { ?>
-                    <tr>
-                        <td><strong><?php echo $mensaje['nombreEstudiante']; ?></strong></td>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
+                        $esMio = ($mensaje['emisor_rol'] == 'profesor');
+                        $claseFila = $esMio ? 'fila-propia' : '';
+                    ?>
+                    <tr class="<?= $claseFila ?>">
                         <td>
-                            <p class="texto-negrita"><?php echo $mensaje['asunto']; ?></p>
-                            <p class="texto-atenuado texto-pequeno"><?php echo $mensaje['descripcion']; ?></p>
-                            <?php if (!empty($mensaje['respuesta'])) { ?>
-                                <div class="tarjeta-gris-suave mt-5">
-                                    <small><strong>Tu Respuesta:</strong> <?php echo $mensaje['respuesta']; ?></small>
-                                </div>
-                            <?php } ?>
+                            <strong><?= $esMio ? 'Tú (Profesor)' : htmlspecialchars($mensaje['nombreEstudiante'] ?? '') ?></strong>
                         </td>
-                        <td><?php echo date('d/m/Y', strtotime($mensaje['fecha'])); ?></td>
-                        <td class="center-text">
+                        <td><?= htmlspecialchars($mensaje['nombreCiclo'] ?? '-') ?></td>
+                        <td><p class="texto-negrita"><?= htmlspecialchars(strtoupper($mensaje['asunto'])) ?></p></td>
+                        <td>
+                            <div class="cuerpo-mensaje-tabla">
+                                <?= htmlspecialchars(substr($mensaje['descripcion'], 0, 40)) ?>...
+                            </div>
+                        </td>
+                        <td>
+                            <?= date('d/m/Y', strtotime($mensaje['fecha'])) ?><br>
+                            <small class="texto-atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></small>
+                        </td>
+                        <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <i class="fas fa-check-double" style="color: #667eea;" title="Leído"></i>
+                                <span class="estado-bolita activo-verde">Leído</span>
                             <?php } else { ?>
-                                <i class="fas fa-envelope" style="color: #e43653;" title="Nuevo"></i>
+                                <span class="estado-bolita inactivo-rojo">Nuevo</span>
                             <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="/pfc/vistas/profesores/mensajes/editar.php?id=<?php echo $mensaje['idReclamacion']; ?>" class="boton-icono boton-ver" title="Responder o Marcar Leído">
-                                    <i class="fas fa-reply"></i>
+                                <a href="/pfc/vistas/profesores/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Ver mensaje">
+                                    <i class="fas fa-eye"></i>
                                 </a>
+                                <form action="/pfc/controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
+                                    <input type="hidden" name="idReclamacion" value="<?= $mensaje['idReclamacion'] ?>">
+                                    <button type="submit" class="btn-accion btn-eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -85,4 +100,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

@@ -1,46 +1,50 @@
 <?php
 session_start();
 require_once "../../../modelos/reclamaciones.php";
+require_once "../../../modelos/directores.php";
 require_once "../../firebase/firebase_helper.php";
 
 if (isset($_POST['enviarMensaje'])) {
-    $idEstudiante = $_POST['idEstudiante'];
-    $idProfesor = $_POST['idProfesor'];
-    $asunto = trim($_POST['asunto']);
-    $descripcion = trim($_POST['descripcion']);
-    $fechaActual = date('Y-m-d');
+    $idEst = trim($_POST['idEstudiante']);
+    $idProf = trim($_POST['idProfesor']);
+    $asu = trim($_POST['asunto']);
+    $desc = trim($_POST['descripcion']);
+    $hoy = date('Y-m-d');
 
-    if (empty($asunto) || empty($descripcion)) {
-        $_SESSION['error'] = "Todos los campos son obligatorios.";
-    } else {
-        if (insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'estudiante')) {
-            if (!empty($idProfesor)) {
-                $token = obtenerTokenUsuario($idProfesor, "profesor");
-                if ($token) {
-                    enviarNotificacionFirebase($token, "Mensaje de Estudiante: " . $asunto, $descripcion);
-                }
-            } else {
-                // Notificar a administración (directores)
-                $conexion = obtenerConexion();
-                $res = mysqli_query($conexion, "SELECT fcm_token FROM directores WHERE fcm_token IS NOT NULL AND fcm_token != ''");
-                while ($row = mysqli_fetch_assoc($res)) {
-                    if ($row['fcm_token']) {
-                        enviarNotificacionFirebase($row['fcm_token'], "Mensaje de Estudiante a Dirección: " . $asunto, $descripcion);
-                    }
-                }
-                mysqli_close($conexion);
-            }
-            $_SESSION['exito'] = "Mensaje enviado correctamente.";
-            header("Location: /pfc/vistas/estudiantes/mensajes/lista.php");
-            exit;
-        } else {
-            $_SESSION['error'] = "Error al procesar el mensaje.";
-        }
+    $errs = [];
+
+    if (empty($asu)) $errs['asunto'] = "El asunto es obligatorio.";
+    if (empty($desc)) $errs['descripcion'] = "El mensaje es obligatorio.";
+    else if (strlen($desc) > 250) $errs['descripcion'] = "Máximo 250 caracteres.";
+
+    if (!empty($errs)) {
+        $_SESSION['errores'] = $errs;
+        $_SESSION['datos_mensaje'] = $_POST;
+        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
+        exit;
     }
-    header("Location: /pfc/vistas/estudiantes/mensajes/agregar.php");
-    exit;
-}
-header("Location: /pfc/vistas/estudiantes/mensajes/lista.php");
-exit;
-?>
 
+    $res = insertarNuevoMensaje($idEst, $idProf, $asu, $desc, $hoy, 'estudiante');
+    
+    if ($res) {
+        if (!empty($idProf)) {
+            $tokProf = obtenerTokenUsuario($idProf, "profesor");
+            if ($tokProf) enviarNotificacionFirebase($tokProf, "Mensaje de Estudiante: $asu", $desc);
+        } else {
+            $toksDirs = obtenerTokensDirectores();
+            foreach ($toksDirs as $tok) enviarNotificacionFirebase($tok, "Mensaje de Estudiante a Dirección: $asu", $desc);
+        }
+        
+        $_SESSION['exito'] = "Mensaje enviado.";
+        header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Error al guardar el mensaje.";
+        $_SESSION['datos_mensaje'] = $_POST;
+        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
+        exit;
+    }
+}
+
+header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
+exit;

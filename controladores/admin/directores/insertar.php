@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
 
 if (isset($_POST['guardarDirector'])) {
     $nombre = trim($_POST['nombreDirector']);
@@ -9,13 +9,13 @@ if (isset($_POST['guardarDirector'])) {
     $telefono = trim($_POST['telefonoDirector']);
     $fechaAlta = date('Y-m-d');
     
-    $fechaNacimiento = $_POST['fechaNacimientoDirector'] ?? '2000-01-01';
+    $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '2000-01-01');
     $direccion = trim($_POST['direccionDirector'] ?? '');
     $ciudad = trim($_POST['ciudadDirector'] ?? '');
     $codigoPostal = trim($_POST['codigoPostalDirector'] ?? '');
     $observaciones = trim($_POST['observacionesDirector'] ?? '');
 
-    $lista_de_errores = array();
+    $lista_de_errores = [];
 
     if (empty($nombre)) {
         $lista_de_errores['nombreDirector'] = "El nombre es obligatorio.";
@@ -23,7 +23,7 @@ if (isset($_POST['guardarDirector'])) {
     if (empty($email)) {
         $lista_de_errores['emailDirector'] = "El email es obligatorio.";
     } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
-        $lista_de_errores['emailDirector'] = "El formato del email no es válido.";
+        $lista_de_errores['emailDirector'] = "El formato del email no es vÃ¡lido.";
     }
     if (empty($dni)) {
         $lista_de_errores['dniDirector'] = "El DNI es obligatorio.";
@@ -34,25 +34,42 @@ if (isset($_POST['guardarDirector'])) {
         $lista_de_errores['telefonoDirector'] = "El teléfono debe ser numérico.";
     }
 
+    // Comprobamos duplicados
     if (empty($lista_de_errores)) {
-        // Signature: insertarDirector($nombreDirector, $emailDirector, $dniDirector, $telefonoDirector, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)
+        require_once __DIR__ . "/../../../modelos/conectar.php";
+        $con = obtenerConexion();
+
+        $sqlDni = "SELECT idDirector FROM directores WHERE dniDirector = '" . mysqli_real_escape_string($con, $dni) . "'";
+        $resDni = mysqli_query($con, $sqlDni);
+        if (mysqli_num_rows($resDni) > 0) {
+            $lista_de_errores['dniDirector'] = "Este DNI ya está registrado.";
+        }
+
+        $sqlEmail = "SELECT idDirector FROM directores WHERE emailDirector = '" . mysqli_real_escape_string($con, $email) . "'";
+        $resEmail = mysqli_query($con, $sqlEmail);
+        if (mysqli_num_rows($resEmail) > 0) {
+            $lista_de_errores['emailDirector'] = "Este Email ya está registrado.";
+        }
+        mysqli_close($con);
+    }
+
+    if (empty($lista_de_errores)) {
         $resultado = insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
         if ($resultado) {
             $_SESSION['exito'] = "Director registrado correctamente.";
-            header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+            header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $_SESSION['error'] = "Error inesperado al guardar.";
         }
     } else {
         $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_director'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/directores/agregarDirectores.php");
+    header("Location: ../../../vistas/admin/directores/agregarDirectores.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/directores/verDirectores.php");
+header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
-?>

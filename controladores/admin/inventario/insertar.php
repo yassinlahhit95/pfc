@@ -1,39 +1,53 @@
 <?php
 session_start();
-require_once "../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['guardarArticulo'])) {
-    $nombre = trim($_POST['nombreArticulo']);
-    $serie = trim($_POST['numeroSerie']);
-    $estado = $_POST['estadoArticulo'];
+    $nombre = trim($_POST['nombreArticulo'] ?? '');
+    $numeroSerie = trim($_POST['numeroSerie'] ?? '');
 
-    $lista_de_errores = [];
+    $hayError = false;
+    $errores = [];
 
     if (empty($nombre)) {
-        $lista_de_errores['nombreArticulo'] = "El nombre es obligatorio.";
+        $errores['nombreArticulo'] = "El nombre es obligatorio.";
+        $hayError = true;
     }
-    if (empty($serie)) {
-        $lista_de_errores['numeroSerie'] = "El número de serie es obligatorio.";
+    if (empty($numeroSerie)) {
+        $errores['numeroSerie'] = "El número de serie es obligatorio.";
+        $hayError = true;
     }
 
-    if (empty($lista_de_errores)) {
-        $resultado = insertarArticulo($nombre, $serie, $estado);
-        if ($resultado) {
-            $_SESSION['exito'] = "Artículo añadido correctamente.";
-            header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+    // Comprobamos duplicados
+    if (!$hayError) {
+        require_once __DIR__ . "/../../../modelos/conectar.php";
+        $con = obtenerConexion();
+        
+        $sqlDup = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = '" . mysqli_real_escape_string($con, strtoupper($numeroSerie)) . "'";
+        $resDup = mysqli_query($con, $sqlDup);
+        if (mysqli_num_rows($resDup) > 0) {
+            $errores['numeroSerie'] = "Este número de serie ya está registrado.";
+            $hayError = true;
+        }
+        mysqli_close($con);
+    }
+
+    if (!$hayError) {
+        if (insertarArticulo($nombre, $numeroSerie)) {
+            $_SESSION['exito'] = "Artículo añadido.";
+            header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
+            $_SESSION['error'] = "Error inesperado al guardar.";
         }
     } else {
-        $_SESSION['errores'] = $lista_de_errores;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_inventario'] = $_POST;
     }
 
-    header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+    header("Location: ../../../vistas/admin/inventario/verInventario.php");
     exit;
 }
 
-header("Location: /pfc/vistas/admin/inventario/verInventario.php");
+header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
-

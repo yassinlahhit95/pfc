@@ -1,26 +1,35 @@
 <?php
 session_start();
-require_once "../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
+
+$hayError = false;
+
 if (isset($_POST['guardarTFG'])) {
-    $id = $_POST['idEstudiante'];
-    $titulo = $_POST['tituloTFG'];
-    $archivo = $_FILES['archivoTFG'];
-    $nombreArchivo = "";
-    if ($archivo['error'] === 0) {
-        $nombreArchivo = time() . "_" . $archivo['name'];
-        move_uploaded_file($archivo['tmp_name'], "../../uploads/pfc/" . $nombreArchivo);
+    $idEstudiantePfc = trim($_POST['idEstudiante']);
+    $tituloNuevoTFG = trim($_POST['tituloTFG']);
+    $archivoSubido = $_FILES['archivoTFG'];
+    $nombreArchivoFinal = "";
+
+    if (isset($archivoSubido) && $archivoSubido['error'] === UPLOAD_ERR_OK) {
+        $timestampActual = date('d-m-Y_H-i-s');
+        $nombreArchivoFinal = $timestampActual . "_" . basename($archivoSubido['name']);
+        $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivoFinal;
+        
+        if (!move_uploaded_file($archivoSubido['tmp_name'], $rutaDestino)) {
+            $hayError = true;
+            $_SESSION['error'] = "Error al guardar archivo.";
+        }
     }
-    if (actualizarDatosTFG($id, $titulo, $nombreArchivo)) {
-        $_SESSION['exito'] = "Ok";
-        header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
-        exit;
-    } else {
-        $_SESSION['error'] = "Error BD";
+
+    if (!$hayError) {
+        if (actualizarDatosTFG($idEstudiantePfc, $tituloNuevoTFG, $nombreArchivoFinal)) {
+            $_SESSION['exito'] = "TFG actualizado.";
+        } else {
+            $hayError = true;
+            $_SESSION['error'] = "Error al actualizar.";
+        }
     }
-    header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
-    exit;
 }
-header("Location: /pfc/vistas/admin/pfc/verTFGs.php");
+
+header("Location: ../../../vistas/admin/pfc/verTFGs.php");
 exit;
-
-

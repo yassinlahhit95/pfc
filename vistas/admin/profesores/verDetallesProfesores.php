@@ -1,20 +1,15 @@
 <?php
 session_start();
-$titulo_pagina = "Detalles Profesor - Super Admin";
+$titulo_pagina = "Detalles Profesor - Admin";
 $seccion = 'profesores';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
-require_once "../../../modelos/profesores.php";
-require_once "../../../modelos/ciclos.php";
-require_once "../../../modelos/modulos.php";
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
-$id = 0;
-if (isset($_GET['idProfesor'])) {
-    $id = $_GET['idProfesor'];
-} else if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-}
+$id = $_GET['idProfesor'] ?? $_GET['id'] ?? 0;
 
 $profesor = obtenerProfesorPorId($id);
 
@@ -32,7 +27,7 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 
 <div class="encabezado-pagina">
     <h1>Ficha del Profesor</h1>
-    <a href="/pfc/vistas/admin/profesores/verProfesores.php" class="boton-secundario">
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> Volver a la lista
     </a>
 </div>
@@ -43,27 +38,30 @@ $retosProfesor = obtenerRetosDeProfesor($id);
             <div class="titulo-tarjeta">
                 <h3><i class="fas fa-user-tie"></i> Información General</h3>
             </div>
-            <div class="formulario-cuadricula">
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">Nombre Completo</label>
-                    <p class="texto-negrita"><?php echo $profesor['nombreProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">Email</label>
-                    <p class="texto-negrita"><?php echo $profesor['emailProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">Teléfono</label>
-                    <p class="texto-negrita"><?php echo $profesor['telefonoProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario">
-                    <label class="texto-atenuado texto-pequeno">DNI</label>
-                    <p class="texto-negrita"><?php echo $profesor['dniProfesor']; ?></p>
-                </div>
-                <div class="campo-formulario campo-ancho-total">
-                    <label class="texto-atenuado texto-pequeno">Dirección</label>
-                    <p class="texto-negrita"><?php echo $profesor['direccionProfesor']; ?></p>
-                </div>
+            
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Nombre Completo</div>
+                <div class="valor-detalle texto-negrita"><?= $profesor['nombreProfesor'] ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Email</div>
+                <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Teléfono</div>
+                <div class="valor-detalle"><?= $profesor['telefonoProfesor'] ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">DNI</div>
+                <div class="valor-detalle"><?= $profesor['dniProfesor'] ?></div>
+            </div>
+
+            <div class="fila-detalle">
+                <div class="etiqueta-detalle">Dirección</div>
+                <div class="valor-detalle"><?= $profesor['direccionProfesor'] ?></div>
             </div>
         </div>
 
@@ -86,8 +84,8 @@ $retosProfesor = obtenerRetosDeProfesor($id);
                         <?php } else { ?>
                             <?php foreach ($modulosProfesor as $m) { ?>
                             <tr>
-                                <td><strong><?php echo $m['nombreModulo']; ?></strong></td>
-                                <td><span class="etiqueta-estado azul"><?php echo $m['abreviaturaCiclo']; ?></span></td>
+                                <td><strong><?= $m['nombreModulo'] ?></strong></td>
+                                <td><span class="etiqueta-estado azul"><?= $m['abreviaturaCiclo'] ?></span></td>
                             </tr>
                             <?php } ?>
                         <?php } ?>
@@ -106,9 +104,9 @@ $retosProfesor = obtenerRetosDeProfesor($id);
                     <p class="texto-atenuado">Sin ciclos asignados</p>
                 <?php } else { ?>
                     <?php foreach ($ciclosProfesor as $c) { ?>
-                        <div class="item-detalle-lateral" style="margin-bottom: 8px; padding: 8px; background: #fdffdf; border-radius: 4px;">
-                            <strong><?php echo $c['abreviaturaCiclo']; ?></strong><br>
-                            <small><?php echo $c['nombreCiclo']; ?></small>
+                        <div class="item-detalle-lateral item-detalle-lateral-amarillo">
+                            <strong><?= $c['abreviaturaCiclo'] ?></strong><br>
+                            <small><?= $c['nombreCiclo'] ?></small>
                         </div>
                     <?php } ?>
                 <?php } ?>
@@ -122,9 +120,9 @@ $retosProfesor = obtenerRetosDeProfesor($id);
                     <p class="texto-atenuado">Sin retos asignados</p>
                 <?php } else { ?>
                     <?php foreach ($retosProfesor as $r) { ?>
-                        <div class="item-detalle-lateral" style="margin-bottom: 8px; padding: 8px; background: #f4f8ff; border-radius: 4px;">
-                            <strong><?php echo $r['nombreReto']; ?></strong><br>
-                            <small><?php echo $r['horasReto']; ?> horas</small>
+                        <div class="item-detalle-lateral item-detalle-lateral-azul">
+                            <strong><?= $r['nombreReto'] ?></strong><br>
+                            <small><?= $r['horasReto'] ?> horas</small>
                         </div>
                     <?php } ?>
                 <?php } ?>
@@ -134,3 +132,5 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
