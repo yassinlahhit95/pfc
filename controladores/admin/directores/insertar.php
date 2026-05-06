@@ -10,10 +10,10 @@ if (isset($_POST['guardarDirector'])) {
     $fechaAlta = date('Y-m-d');
     
     $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '2000-01-01');
-    $direccion = trim($_POST['direccionDirector'] ?? '');
-    $ciudad = trim($_POST['ciudadDirector'] ?? '');
-    $codigoPostal = trim($_POST['codigoPostalDirector'] ?? '');
-    $observaciones = trim($_POST['observacionesDirector'] ?? '');
+    $direccion = trim($_POST['direccionDirector']);
+    $ciudad = trim($_POST['ciudadDirector']);
+    $codigoPostal = trim($_POST['codigoPostalDirector']);
+    $observaciones = trim($_POST['observacionesDirector']);
 
     $lista_de_errores = [];
 
@@ -47,9 +47,8 @@ if (isset($_POST['guardarDirector'])) {
             $_SESSION['exito'] = "Director registrado correctamente.";
             header("Location: ../../../vistas/admin/directores/verDirectores.php");
             exit;
-        } else {
-            $_SESSION['error'] = "No se pudo registrar el director.";
         }
+        $_SESSION['error'] = "No se pudo registrar el director.";
     } else {
         $_SESSION['errores'] = $lista_de_errores;
         $_SESSION['datos_director'] = $_POST;

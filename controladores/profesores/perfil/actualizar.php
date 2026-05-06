@@ -8,8 +8,8 @@ if (isset($_POST['actualizarPerfil'])) {
     $eml = strtolower(trim($_POST['emailProfesor']));
     $tel = trim($_POST['telefonoProfesor']);
     
-    $pwdAct = trim($_POST['current_password'] ?? '');
-    $pwdNva = trim($_POST['new_password'] ?? '');
+    $pwdAct = trim($_POST['current_password']);
+    $pwdNva = trim($_POST['new_password']);
 
     $errs = [];
 

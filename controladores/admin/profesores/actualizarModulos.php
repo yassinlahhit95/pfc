@@ -6,7 +6,7 @@ $hayError = false;
 
 if (isset($_POST['actualizarModulos'])) {
     $idProfesorAsignacion = intval(trim($_POST['idProfesor']));
-    $listaModulosSeleccionados = isset($_POST['modulos']) ? $_POST['modulos'] : [];
+    $listaModulosSeleccionados = $_POST['modulos'] ?? [];
 
     // 1. Limpiar asignaciones previas
     limpiarModulosProfesor($idProfesorAsignacion);

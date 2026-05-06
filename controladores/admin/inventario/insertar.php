@@ -3,37 +3,32 @@ session_start();
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['guardarArticulo'])) {
-    $nombre = trim($_POST['nombreArticulo'] ?? '');
-    $numeroSerie = trim($_POST['numeroSerie'] ?? '');
+    $nombre = trim($_POST['nombreArticulo']);
+    $numeroSerie = trim($_POST['numeroSerie']);
 
-    $hayError = false;
     $errores = [];
 
     if (empty($nombre)) {
         $errores['nombreArticulo'] = "El nombre es obligatorio.";
-        $hayError = true;
     }
     if (empty($numeroSerie)) {
         $errores['numeroSerie'] = "El número de serie es obligatorio.";
-        $hayError = true;
     }
 
     // Comprobamos duplicados
-    if (!$hayError) {
+    if (empty($errores)) {
         if (checkArticuloExistente($numeroSerie)) {
             $errores['numeroSerie'] = "Este número de serie ya está registrado.";
-            $hayError = true;
         }
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         if (insertarArticulo($nombre, $numeroSerie)) {
             $_SESSION['exito'] = "Artículo añadido.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
-        } else {
-            $_SESSION['error'] = "No se pudo añadir el artículo.";
         }
+        $_SESSION['error'] = "No se pudo añadir el artículo.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_inventario'] = $_POST;

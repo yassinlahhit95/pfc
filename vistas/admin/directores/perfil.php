@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 session_start();
 
 // Control de acceso para administradores
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 

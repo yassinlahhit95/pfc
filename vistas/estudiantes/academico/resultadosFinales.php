@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -6,7 +6,7 @@ $exito = $_SESSION['exito'] ?? null;
 unset($_SESSION['error'], $_SESSION['exito']);
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 
@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>Módulo</th>
+                    <th>Mï¿½dulo</th>
                     <th>Media Notas (75%)</th>
                     <th>Media Retos (25%)</th>
                     <th>Nota Final</th>
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($resumenFinal['detalles_modulos'])) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay módulos registrados en su ciclo.</td></tr>
+                    <tr><td colspan="5" class="sin-datos">No hay mï¿½dulos registrados en su ciclo.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { 
                         $clase = "texto-rojo";

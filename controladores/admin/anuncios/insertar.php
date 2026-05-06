@@ -11,29 +11,24 @@ if (isset($_POST['guardarAnuncio'])) {
     $contenido = trim($_POST['contenidoAnuncio']);
     $dirigidoA = trim($_POST['dirigidoA']);
 
-    $hayError = false;
-
     $listaErrores = [];
     if (empty($titulo)) {
         $listaErrores['tituloAnuncio'] = "El título es obligatorio.";
-        $hayError = true;
     }
     if (empty($contenido)) {
         $listaErrores['contenidoAnuncio'] = "El contenido es obligatorio.";
-        $hayError = true;
     }
 
-    if (!$hayError) {
+    if (empty($listaErrores)) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
-        
+
         if ($resultado) {
             // ... (rest of logic)
             $_SESSION['exito'] = "Anuncio publicado y notificado.";
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
-        } else {
-            $_SESSION['error'] = "No se pudo publicar el anuncio.";
         }
+        $_SESSION['error'] = "No se pudo publicar el anuncio.";
     } else {
         $_SESSION['errores'] = $listaErrores;
         $_SESSION['datos_anuncio'] = $_POST;

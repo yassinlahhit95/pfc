@@ -8,7 +8,7 @@ if (isset($_POST['idReclamacion'])) {
     $idReclamacion = trim($_POST['idReclamacion']);
     
     if (isset($_POST['guardarRespuesta'])) {
-        $respuesta = trim($_POST['respuesta'] ?? '');
+        $respuesta = trim($_POST['respuesta']);
         if (responderMensaje($idReclamacion, $respuesta)) {
             $_SESSION['exito'] = "Respuesta guardada.";
         } else {

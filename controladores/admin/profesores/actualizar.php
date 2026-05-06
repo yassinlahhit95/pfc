@@ -2,8 +2,6 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$hayError = false;
-
 if (isset($_POST['actualizarProfesor'])) {
     $idProfesorActualizar = trim($_POST['idProfesor']);
     $nombreProfesorActualizar = trim($_POST['nombreProfesor']);
@@ -14,9 +12,9 @@ if (isset($_POST['actualizarProfesor'])) {
     
     $fechaNacimientoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '1980-01-01');
     $fechaAltaProfesor = trim($_POST['fechaAltaProfesor'] ?? '2026-01-01');
-    $ciudadProfesor = trim($_POST['ciudadProfesor'] ?? '');
-    $codigoPostalProfesor = trim($_POST['codigoPostalProfesor'] ?? '');
-    $observacionesProfesor = trim($_POST['observacionesProfesor'] ?? '');
+    $ciudadProfesor = trim($_POST['ciudadProfesor']);
+    $codigoPostalProfesor = trim($_POST['codigoPostalProfesor']);
+    $observacionesProfesor = trim($_POST['observacionesProfesor']);
 
     $listaErroresValidacion = [];
 
@@ -52,12 +50,9 @@ if (isset($_POST['actualizarProfesor'])) {
             $_SESSION['exito'] = "Profesor actualizado.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
-        } else {
-            $hayError = true;
-            $_SESSION['error'] = "No se pudo actualizar el profesor.";
         }
+        $_SESSION['error'] = "No se pudo actualizar el profesor.";
     } else {
-        $hayError = true;
         $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_profesor'] = $_POST;
     }

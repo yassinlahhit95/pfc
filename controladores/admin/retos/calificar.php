@@ -6,7 +6,7 @@ $hayError = false;
 
 if (isset($_POST['guardarNotas'])) {
     $notas = $_POST['notas'] ?? [];
-    $idReto = trim($_POST['idReto'] ?? '');
+    $idReto = trim($_POST['idReto']);
     
     if (!empty($idReto) && !empty($notas)) {
         foreach ($notas as $idEstudiante => $nota) {

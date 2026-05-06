@@ -1,16 +1,23 @@
-<?php
+﻿<?php
 session_start();
-header("Location: inicio/dashboard.php");
-exit;
 
-require_once __DIR__ . "/../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../modelos/anuncios.php";
-require_once __DIR__ . "/../../modelos/calificaciones.php";
-require_once __DIR__ . "/../../modelos/modulos.php";
-require_once __DIR__ . "/../../modelos/retos.php";
-require_once __DIR__ . "/../../modelos/pagos.php";
-require_once __DIR__ . "/../../modelos/reclamaciones.php";
-require_once __DIR__ . "/../../modelos/eventos.php";
+$error = $_SESSION['error'] ?? null;
+$exito = $_SESSION['exito'] ?? null;
+unset($_SESSION['error'], $_SESSION['exito']);
+
+if (!isset($_SESSION['idEstudiante'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
@@ -27,7 +34,7 @@ $listaMensajes = listarMensajesDeEstudiante($idEstudiante);
 
 $tituloDelPagina = "Panel de Control - Estudiante";
 $seccionActual = 'inicio';
-include_once __DIR__ . "/comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
@@ -61,14 +68,14 @@ include_once __DIR__ . "/comunes/nav.php";
 <div class="cuadricula-secundaria mt-30">
   <!-- COLUMNA IZQUIERDA: ANUNCIOS -->
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    
+
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
         <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">
-            <?php 
+            <?php
             $canu = 0;
             foreach ($listaAnuncios as $anu) {
                 if ($canu < 4) {
@@ -80,10 +87,10 @@ include_once __DIR__ . "/comunes/nav.php";
                 </div>
                 <p class="texto-pequeno sin-margen mt-5"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
                 <div class="mt-10 text-right">
-                    <a href="anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
+                    <a href="../anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
                 </div>
             </div>
-            <?php 
+            <?php
                 $canu++;
                 }
             } ?>
@@ -104,7 +111,7 @@ include_once __DIR__ . "/comunes/nav.php";
         <?php if (empty($listaEventosProximos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
-            <?php 
+            <?php
             $cest = 0;
             foreach ($listaEventosProximos as $ev) {
                 if ($cest < 4) {
@@ -118,7 +125,7 @@ include_once __DIR__ . "/comunes/nav.php";
                 <p class="texto-atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
               </div>
             </div>
-            <?php 
+            <?php
                     $cest++;
                 }
             } ?>
@@ -129,7 +136,4 @@ include_once __DIR__ . "/comunes/nav.php";
   </div>
 </div>
 
-<?php include __DIR__ . '/comunes/footer.php'; ?>
-
-
-
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

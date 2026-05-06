@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Estudiantes</h1>
+    <h1>Gestiï¿½n de Estudiantes</h1>
 </div>
 
 <?php if ($exito) { ?>

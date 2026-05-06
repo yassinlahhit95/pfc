@@ -6,20 +6,18 @@ if (isset($_POST['subirTFG'])) {
     $idEstudiante = trim($_POST['idEstudiante'] ?? '');
     $archivo = $_FILES['archivoTFG'] ?? null;
     
-    $hayError = false;
+    $errores = [];
 
     if (empty($idEstudiante)) {
-        $_SESSION['error'] = "Falta ID estudiante.";
-        $hayError = true;
+        $errores['idEstudiante'] = "Falta ID estudiante.";
     } elseif (!$archivo || !empty($archivo['error'])) {
-        $_SESSION['error'] = "Error en archivo.";
-        $hayError = true;
+        $errores['archivoTFG'] = "Error en archivo.";
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         $timestamp = date('d-m-Y_H-i-s');
         $nombreArchivo = "TFG_" . $idEstudiante . "_" . $timestamp . ".pdf";
-        
+
         // Usar __DIR__ para la ruta de subida
         $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
 
@@ -28,12 +26,13 @@ if (isset($_POST['subirTFG'])) {
                 $_SESSION['exito'] = "TFG subido.";
                 header("Location: ../../../vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$idEstudiante");
                 exit;
-            } else {
-                $_SESSION['error'] = "Error al actualizar.";
             }
+            $_SESSION['error'] = "Error al actualizar.";
         } else {
             $_SESSION['error'] = "Error al guardar archivo.";
         }
+    } else {
+        $_SESSION['errores'] = $errores;
     }
     
     header("Location: ../../../vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$idEstudiante");

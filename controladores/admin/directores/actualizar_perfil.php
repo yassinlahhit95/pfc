@@ -14,7 +14,7 @@ if (isset($_POST['actualizarPerfilBtn'])) {
     $hayError = false;
 
     if (empty($idDirector)) {
-        header("Location: ../../../vistas/admin/dashboard.php");
+        header("Location: ../../../vistas/admin/inicio/dashboard.php");
         exit;
     }
 
@@ -49,16 +49,15 @@ if (isset($_POST['actualizarPerfilBtn'])) {
             $_SESSION['exito'] = "Datos actualizados correctamente.";
             header("Location: ../../../vistas/admin/directores/perfil.php");
             exit;
-        } else {
-            $_SESSION['error'] = "Error al guardar en la base de datos.";
         }
+        $_SESSION['error'] = "Error al guardar en la base de datos.";
     }
 
     header("Location: ../../../vistas/admin/directores/perfil.php");
     exit;
 }
 
-header("Location: ../../../vistas/admin/dashboard.php");
+header("Location: ../../../vistas/admin/inicio/dashboard.php");
 exit;
 
 

@@ -6,30 +6,28 @@ if (isset($_POST['actualizarAula'])) {
     $idAula = trim($_POST['idAula']);
     $nuevoNombre = trim($_POST['nombreAula']);
 
-    $hayError = false;
+    $errores = [];
     if (empty($nuevoNombre)) {
-        $hayError = true;
-        $_SESSION['errores']['nombreAula'] = "El nombre del aula es obligatorio.";
+        $errores['nombreAula'] = "El nombre del aula es obligatorio.";
     }
 
     // Comprobamos duplicados
-    if (!$hayError) {
+    if (empty($errores)) {
         if (checkAulaExistente($nuevoNombre, $idAula)) {
-            $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya está en uso.";
-            $hayError = true;
+            $errores['nombreAula'] = "Este nombre de aula ya está en uso.";
         }
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         $resultado = actualizarAula($idAula, $nuevoNombre);
         if ($resultado) {
             $_SESSION['exito'] = "Aula actualizada.";
             header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
-        } else {
-            $_SESSION['error'] = "No se pudo actualizar el aula.";
         }
+        $_SESSION['error'] = "No se pudo actualizar el aula.";
     } else {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_aulas'] = $_POST;
     }
 

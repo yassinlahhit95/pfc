@@ -2,8 +2,6 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$hayError = false;
-
 if (isset($_POST['guardarModulo'])) {
     $idModuloActualizar = trim($_POST['idModulo']);
     $nombreModuloActualizar = trim($_POST['nombreModulo']);
@@ -39,12 +37,9 @@ if (isset($_POST['guardarModulo'])) {
             $_SESSION['exito'] = "Módulo actualizado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
-        } else {
-            $hayError = true;
-            $_SESSION['error'] = "No se pudo actualizar el módulo.";
         }
+        $_SESSION['error'] = "No se pudo actualizar el módulo.";
     } else {
-        $hayError = true;
         $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_modulo'] = $_POST;
     }

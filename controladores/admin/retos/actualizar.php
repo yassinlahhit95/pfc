@@ -2,15 +2,13 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$hayError = false;
-
 if (isset($_POST['actualizarReto'])) {
     $idRetoActualizar = trim($_POST['idReto']);
     $nombreRetoActualizar = trim($_POST['nombreReto']);
     $horasDelReto = trim($_POST['horasReto']);
     $fechaInicioDelReto = trim($_POST['fechaInicioReto']);
     $fechaFinDelReto = trim($_POST['fechaFinReto']);
-    $listaModulosAsociados = isset($_POST['modulosReto']) ? $_POST['modulosReto'] : [];
+    $listaModulosAsociados = $_POST['modulosReto'] ?? [];
 
     $listaErroresValidacion = [];
 
@@ -47,12 +45,9 @@ if (isset($_POST['actualizarReto'])) {
             $_SESSION['exito'] = "Reto actualizado.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;
-        } else {
-            $hayError = true;
-            $_SESSION['error'] = "No se pudo actualizar el reto.";
         }
+        $_SESSION['error'] = "No se pudo actualizar el reto.";
     } else {
-        $hayError = true;
         $_SESSION['errores'] = $listaErroresValidacion;
         
         $datosParaSesion = $_POST;

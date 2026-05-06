@@ -2,8 +2,6 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$hayError = false;
-
 if (isset($_POST['guardarProfesor'])) {
     $nombreNuevoProfesor = trim($_POST['nombreProfesor']);
     $emailNuevoProfesor = trim($_POST['emailProfesor']);
@@ -13,9 +11,9 @@ if (isset($_POST['guardarProfesor'])) {
     
     $fechaNacimientoNuevoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '1980-01-01');
     $fechaAltaNuevoProfesor = date('Y-m-d');
-    $ciudadNuevoProfesor = trim($_POST['ciudadProfesor'] ?? '');
-    $codigoPostalNuevoProfesor = trim($_POST['codigoPostalProfesor'] ?? '');
-    $observacionesNuevoProfesor = trim($_POST['observacionesProfesor'] ?? '');
+    $ciudadNuevoProfesor = trim($_POST['ciudadProfesor']);
+    $codigoPostalNuevoProfesor = trim($_POST['codigoPostalProfesor']);
+    $observacionesNuevoProfesor = trim($_POST['observacionesProfesor']);
 
     $listaErroresValidacion = [];
 
@@ -54,12 +52,9 @@ if (isset($_POST['guardarProfesor'])) {
             $_SESSION['exito'] = "Profesor registrado.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
-        } else {
-            $hayError = true;
-            $_SESSION['error'] = "No se pudo registrar el profesor.";
         }
+        $_SESSION['error'] = "No se pudo registrar el profesor.";
     } else {
-        $hayError = true;
         $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_profesor'] = $_POST;
     }

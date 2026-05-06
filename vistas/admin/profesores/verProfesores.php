@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 session_start();
 
 // ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 

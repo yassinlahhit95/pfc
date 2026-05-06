@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 // Seguridad: Solo admin
 if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 
@@ -70,7 +70,7 @@ $_nTFG = contarTFGsSubidos();
         </div>
 
         <nav class="menu-navegacion">
-            <a href="../../../vistas/admin/dashboard.php" class="enlace-menu <?= ($seccion == 'inicio') ? 'activo' : '' ?>">
+            <a href="../../../vistas/admin/inicio/dashboard.php" class="enlace-menu <?= ($seccion == 'inicio') ? 'activo' : '' ?>">
                 <i class="fas fa-chart-line"></i> <span>DASHBOARD</span>
             </a>
 

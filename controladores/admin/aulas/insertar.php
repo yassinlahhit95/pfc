@@ -5,30 +5,28 @@ require_once __DIR__ . "/../../../modelos/aulas.php";
 if (isset($_POST['guardarAula'])) {
     $nombreAula = trim($_POST['nombreAula']);
 
-    $hayError = false;
+    $errores = [];
     if (empty($nombreAula)) {
-        $hayError = true;
-        $_SESSION['errores']['nombreAula'] = "El nombre del aula es obligatorio.";
+        $errores['nombreAula'] = "El nombre del aula es obligatorio.";
     }
 
     // Comprobamos duplicados
-    if (!$hayError) {
+    if (empty($errores)) {
         if (checkAulaExistente($nombreAula)) {
-            $_SESSION['errores']['nombreAula'] = "Este nombre de aula ya existe.";
-            $hayError = true;
+            $errores['nombreAula'] = "Este nombre de aula ya existe.";
         }
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         $resultado = insertarAula($nombreAula);
         if ($resultado) {
             $_SESSION['exito'] = "Aula registrada.";
             header("Location: ../../../vistas/admin/aulas/verAulas.php");
             exit;
-        } else {
-            $_SESSION['error'] = "No se pudo registrar el aula.";
         }
+        $_SESSION['error'] = "No se pudo registrar el aula.";
     } else {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_aulas'] = $_POST;
     }
 

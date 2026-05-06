@@ -1,18 +1,22 @@
-<?php
+﻿<?php
 session_start();
-header("Location: inicio/dashboard.php");
-exit;
+
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
+    header("Location: ../../login.php");
+    exit;
+}
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-require_once __DIR__ . "/../../modelos/profesores.php";
-require_once __DIR__ . "/../../modelos/anuncios.php";
-require_once __DIR__ . "/../../modelos/reclamaciones.php";
-require_once __DIR__ . "/../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../modelos/modulos.php";
-require_once __DIR__ . "/../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $profesorActual = obtenerProfesorPorId($idProfesor);
 $listaAnuncios = listarTodosLosAnuncios();
@@ -31,7 +35,7 @@ foreach ($listaMensajes as $mensaje) {
 
 $tituloDelPagina = "Panel de Control - Profesor";
 $seccionActual = 'inicio';
-include_once __DIR__ . "/comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
@@ -65,25 +69,25 @@ include_once __DIR__ . "/comunes/nav.php";
 
 <div class="cuadricula-secundaria">
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    
+
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
-        <a href="calificaciones/agregar.php" class="accion-rapida"><span>Poner Notas</span></a>
-        <a href="retos/insertar.php" class="accion-rapida"><span>Nuevo Reto</span></a>
-        <a href="mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
-        <a href="perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
+        <a href="../calificaciones/lista.php" class="accion-rapida"><span>Poner Notas</span></a>
+        <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
+        <a href="../mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
+        <a href="../perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
         <a href="#" class="accion-rapida color-secundario text-white" onclick="document.getElementById('formMasivo').style.display='block'; return false;">
           <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
         </a>
       </div>
-      
+
       <div id="formMasivo" class="d-none mt-20 p-15 border-secundario rounded-8">
         <h4 class="mt-0">Enviar Resultados por Email a un Ciclo</h4>
-        <form action="../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
+        <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
           <select name="idCiclo" class="ancho-total p-8 mb-10">
             <option value="">Seleccione un ciclo...</option>
-            <?php 
+            <?php
             $ciclosVistos = [];
             foreach ($listaModulos as $m) {
                 if (!in_array($m['idCiclo'], $ciclosVistos)) {
@@ -103,7 +107,7 @@ include_once __DIR__ . "/comunes/nav.php";
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div>
-            <?php 
+            <?php
             $c = 0;
             foreach ($listaAnuncios as $anuncio) {
                 if ($c < 4) {
@@ -112,7 +116,7 @@ include_once __DIR__ . "/comunes/nav.php";
                 <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
                 <p class="texto-pequeno sin-margen"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
             </div>
-            <?php 
+            <?php
                 }
                 $c++;
             } ?>
@@ -132,7 +136,7 @@ include_once __DIR__ . "/comunes/nav.php";
         <?php if (empty($listaEventos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
-            <?php 
+            <?php
             $ce = 0;
             foreach ($listaEventos as $ev) {
                 if ($ce < 4) {
@@ -146,7 +150,7 @@ include_once __DIR__ . "/comunes/nav.php";
                 <p class="texto-atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
               </div>
             </div>
-            <?php 
+            <?php
                 }
                 $ce++;
             } ?>
@@ -161,13 +165,10 @@ include_once __DIR__ . "/comunes/nav.php";
       <div class="info-adicional-perfil">
         <p><strong>Email:</strong><br><?= $profesorActual['emailProfesor'] ?></p>
         <hr class="margen-arriba">
-        <a href="perfil/ver.php" class="boton-secundario ancho-total center-text">GESTIONAR PERFIL</a>
+        <a href="../perfil/ver.php" class="boton-secundario ancho-total center-text">GESTIONAR PERFIL</a>
       </div>
     </div>
   </div>
 </div>
 
-<?php include __DIR__ . '/comunes/footer.php'; ?>
-
-
-
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

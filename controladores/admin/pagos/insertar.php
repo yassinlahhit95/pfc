@@ -11,11 +11,11 @@ if (isset($_POST['guardarPago'])) {
     $hoy = date('Y-m-d');
     $fechaLimite = date('Y''-06-30';
 
-    $hayError = false;
+    $errores = [];
 
     // Validaciones bÃ¡sicas
     if (empty($idEstudiante) || empty($tipoPago) || empty($monto) || $monto <= 0) {
-        $hayError = true;
+        $errores['datos'] = "Error en datos.";
     }
 
     // Fecha tope para pagos
@@ -25,16 +25,16 @@ if (isset($_POST['guardarPago'])) {
         exit;
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         // Comprobar que no se pague mÃ¡s de lo debido
         $estadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
         if ($monto > ($estadoFinanciero['restante'] + 0.05)) {
-            $hayError = true;
+            $errores['monto'] = "Cantidad excedida.";
             $_SESSION['error'] = "Cantidad excedida.";
         }
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         // Calcular la fecha del prÃ³ximo pago de forma sencilla
         $proximaFecha = "";
         if ($tipoPago == 'mensual') {
@@ -59,13 +59,10 @@ if (isset($_POST['guardarPago'])) {
             $_SESSION['exito'] = "Pago registrado.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
-        } else {
-            $hayError = true;
         }
-    }
-
-    if ($hayError && empty($_SESSION['error'])) {
         $_SESSION['error'] = "Error en datos.";
+    } elseif (empty($_SESSION['error'])) {
+        $_SESSION['error'] = $errores['datos'];
     }
 
     header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");

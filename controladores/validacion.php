@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../modelos/directores.php";
 require_once __DIR__ . "/../modelos/profesores.php";
@@ -10,20 +10,18 @@ if (isset($_POST["enviar"])) {
 
     if (empty($emailUsuarioRecibido) || empty($passwordUsuarioRecibida)) {
         $_SESSION["error"] = "Campos obligatorios.";
-        header("Location: ../index.php");
+        header("Location: ../vistas/login.php");
         exit;
     }
 
     // Limpiamos cualquier sesión anterior para empezar de cero
-    unset($_SESSION['idAdmin']);
-    unset($_SESSION['idProfesor']);
-    unset($_SESSION['idEstudiante']);
+    unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante']);
 
     // 1. Intentamos buscar en DIRECTORES (Administradores)
     $datosAdmin = validarLoginDirector($emailUsuarioRecibido, $passwordUsuarioRecibida);
     if (!empty($datosAdmin)) {
         $_SESSION['idAdmin'] = $datosAdmin['idDirector'];
-        header("Location: ../vistas/admin/dashboard.php");
+        header("Location: ../vistas/admin/inicio/dashboard.php");
         exit;
     }
 
@@ -31,7 +29,7 @@ if (isset($_POST["enviar"])) {
     $datosProfesor = validarLoginProfesor($emailUsuarioRecibido, $passwordUsuarioRecibida);
     if (!empty($datosProfesor)) {
         $_SESSION['idProfesor'] = $datosProfesor['idProfesor'];
-        header("Location: ../vistas/profesores/dashboard.php");
+        header("Location: ../vistas/profesores/inicio/dashboard.php");
         exit;
     }
 
@@ -39,15 +37,15 @@ if (isset($_POST["enviar"])) {
     $datosEstudiante = validarLoginEstudiante($emailUsuarioRecibido, $passwordUsuarioRecibida);
     if (!empty($datosEstudiante)) {
         $_SESSION['idEstudiante'] = $datosEstudiante['idEstudiante'];
-        header("Location: ../vistas/estudiantes/dashboard.php");
+        header("Location: ../vistas/estudiantes/inicio/dashboard.php");
         exit;
     }
 
     // 4. Si llegamos aquí, es que no existe en ninguna tabla con esos datos
     $_SESSION["error"] = "Datos incorrectos.";
-    header("Location: ../index.php");
+    header("Location: ../vistas/login.php");
     exit;
 }
 
-header("Location: ../index.php");
+header("Location: ../vistas/login.php");
 exit;

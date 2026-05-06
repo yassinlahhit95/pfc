@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 $hayError = false;
 
 if (isset($_POST['guardarNotas'])) {
-    $idModulo = trim($_POST['idModulo'] ?? '');
+    $idModulo = trim($_POST['idModulo']);
     $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
     $listaNotas1Ev = $_POST['notas_1ev'] ?? [];
     $listaNotas1Final = $_POST['notas_1final'] ?? [];
@@ -57,7 +57,7 @@ if (isset($_POST['guardarNotas'])) {
         $_SESSION['error'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
     }
 
-    $idCiclo = trim($_POST['idCiclo'] ?? '');
+    $idCiclo = trim($_POST['idCiclo']);
     header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idCiclo=" . $idCiclo . "&idModulo=" . $idModulo);
     exit;
 }

@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 
@@ -62,7 +62,7 @@ $_nTfgsProf = contarTFGsDeProfesor($idProf);
         </div>
 
         <nav class="menu-navegacion">
-            <a href="../../../vistas/profesores/dashboard.php" class="enlace-menu <?= ($seccionActual == 'inicio') ? 'activo' : '' ?>">
+            <a href="../../../vistas/profesores/inicio/dashboard.php" class="enlace-menu <?= ($seccionActual == 'inicio') ? 'activo' : '' ?>">
                 <i class="fas fa-home"></i> <span>INICIO</span>
             </a>
 

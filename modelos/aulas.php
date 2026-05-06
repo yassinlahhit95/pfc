@@ -6,12 +6,12 @@ function listarAulas() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM aulas ORDER BY idAula ASC";
     $resultado = mysqli_query($con, $sql);
-    
+
     $listaAulas = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaAulas[] = $fila;
     }
-    
+
     mysqli_close($con);
     return $listaAulas;
 }
@@ -19,14 +19,15 @@ function listarAulas() {
 // Comprobar si ya existe un aula con el mismo nombre
 function checkAulaExistente($nombreAula, $idExcluir = null) {
     $con = obtenerConexion();
-    $nombreEscapado = $nombreAula;
-    
-    $sql = "SELECT idAula FROM aulas WHERE nombreAula = '$nombreEscapado'";
     if ($idExcluir) {
-        $sql .= " AND idAula != $idExcluir";
+        $stmt = mysqli_prepare($con, "SELECT idAula FROM aulas WHERE nombreAula = ? AND idAula != ?");
+        mysqli_stmt_bind_param($stmt, "si", $nombreAula, $idExcluir);
+    } else {
+        $stmt = mysqli_prepare($con, "SELECT idAula FROM aulas WHERE nombreAula = ?");
+        mysqli_stmt_bind_param($stmt, "s", $nombreAula);
     }
-    
-    $resultado = mysqli_query($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
     mysqli_close($con);
     return $existe;
@@ -38,8 +39,9 @@ function insertarAula($nombreAula) {
         return false;
     }
     $con = obtenerConexion();
-    $sql = "INSERT INTO aulas (nombreAula) VALUES ('$nombreAula')";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "INSERT INTO aulas (nombreAula) VALUES (?)");
+    mysqli_stmt_bind_param($stmt, "s", $nombreAula);
+    $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
@@ -47,8 +49,9 @@ function insertarAula($nombreAula) {
 // Eliminar un aula por su ID
 function eliminarAula($idAula) {
     $con = obtenerConexion();
-    $sql = "DELETE FROM aulas WHERE idAula = $idAula";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "DELETE FROM aulas WHERE idAula = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idAula);
+    $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
@@ -59,8 +62,9 @@ function actualizarAula($idAula, $nuevoNombreAula) {
         return false;
     }
     $con = obtenerConexion();
-    $sql = "UPDATE aulas SET nombreAula = '$nuevoNombreAula' WHERE idAula = $idAula";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "UPDATE aulas SET nombreAula = ? WHERE idAula = ?");
+    mysqli_stmt_bind_param($stmt, "si", $nuevoNombreAula, $idAula);
+    $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
@@ -68,10 +72,11 @@ function actualizarAula($idAula, $nuevoNombreAula) {
 // Obtener los datos de un aula específica por su ID
 function obtenerAulaPorId($idAula) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM aulas WHERE idAula = $idAula";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT * FROM aulas WHERE idAula = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idAula);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $datosAula = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return $datosAula;
 }
-

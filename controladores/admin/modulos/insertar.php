@@ -2,8 +2,6 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$hayError = false;
-
 if (isset($_POST['guardarModulo'])) {
     $nombreNuevoModulo = trim($_POST['nombreModulo']);
     $idCicloNuevoModulo = trim($_POST['idCiclo']);
@@ -38,12 +36,9 @@ if (isset($_POST['guardarModulo'])) {
             $_SESSION['exito'] = "Módulo registrado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
-        } else {
-            $hayError = true;
-            $_SESSION['error'] = "No se pudo registrar el módulo.";
         }
+        $_SESSION['error'] = "No se pudo registrar el módulo.";
     } else {
-        $hayError = true;
         $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_modulo'] = $_POST;
     }

@@ -3,27 +3,23 @@ session_start();
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['actualizarArticulo'])) {
-    $idArticulo = trim($_POST['idArticulo'] ?? '');
-    $nombreArticulo = trim($_POST['nombreArticulo'] ?? '');
-    $numeroSerie = trim($_POST['numeroSerie'] ?? '');
-
-    $hayError = false;
+    $idArticulo = trim($_POST['idArticulo']);
+    $nombreArticulo = trim($_POST['nombreArticulo']);
+    $numeroSerie = trim($_POST['numeroSerie']);
 
     $errores_campos = [];
     if (empty($nombreArticulo) || empty($numeroSerie)) {
-        $_SESSION['error'] = "Faltan datos.";
-        $hayError = true;
+        $errores_campos['datos'] = "Faltan datos.";
     }
 
     // Comprobamos duplicados
-    if (!$hayError) {
+    if (empty($errores_campos)) {
         if (checkArticuloExistente($numeroSerie, $idArticulo)) {
             $errores_campos['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
-            $hayError = true;
         }
     }
 
-    if (!$hayError) {
+    if (empty($errores_campos)) {
         // Obtenemos el artÃ­culo para mantener su estado actual
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
         $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
@@ -32,9 +28,8 @@ if (isset($_POST['actualizarArticulo'])) {
             $_SESSION['exito'] = "Artículo actualizado.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
-        } else {
-            $_SESSION['error'] = "No se pudo actualizar el artículo.";
         }
+        $_SESSION['error'] = "No se pudo actualizar el artículo.";
     } else {
         $_SESSION['errores'] = $errores_campos;
         $_SESSION['datos_inventario'] = $_POST;

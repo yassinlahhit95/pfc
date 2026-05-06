@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 if (empty($_SESSION['idEstudiante'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 
@@ -64,7 +64,7 @@ $_nRetosEst = count(listarCalificacionesRetoPorEstudiante($idEst));
         </div>
 
         <nav class="menu-navegacion">
-            <a href="../../../vistas/estudiantes/dashboard.php" class="enlace-menu <?= ($seccionActual == 'inicio') ? 'activo' : '' ?>">
+            <a href="../../../vistas/estudiantes/inicio/dashboard.php" class="enlace-menu <?= ($seccionActual == 'inicio') ? 'activo' : '' ?>">
                 <i class="fas fa-home"></i> <span>INICIO</span>
             </a>
 

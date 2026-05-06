@@ -2,13 +2,11 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$hayError = false;
-
 if (isset($_POST['guardarReto'])) {
-    $nombreReto = trim($_POST['nombreReto'] ?? '');
-    $horasReto = trim($_POST['horasReto'] ?? '');
-    $fechaInicioReto = trim($_POST['fechaInicioReto'] ?? '');
-    $fechaFinReto = trim($_POST['fechaFinReto'] ?? '');
+    $nombreReto = trim($_POST['nombreReto']);
+    $horasReto = trim($_POST['horasReto']);
+    $fechaInicioReto = trim($_POST['fechaInicioReto']);
+    $fechaFinReto = trim($_POST['fechaFinReto']);
     $listaModulos = $_POST['modulosReto'] ?? [];
 
     $listaDeErrores = [];
@@ -53,12 +51,9 @@ if (isset($_POST['guardarReto'])) {
             $_SESSION['exito'] = "Reto creado.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;
-        } else {
-            $hayError = true;
-            $_SESSION['error'] = "No se pudo crear el reto.";
         }
+        $_SESSION['error'] = "No se pudo crear el reto.";
     } else {
-        $hayError = true;
         $_SESSION['errores'] = $listaDeErrores;
         $_SESSION['datos_reto'] = $_POST;
     }

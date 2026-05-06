@@ -66,12 +66,10 @@ function contarCiclos() {
 // Contar cuántos estudiantes están vinculados a un profesor concreto
 function contarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
-            FROM estudiantes e 
-            JOIN ciclos c ON e.idCiclo = c.idCiclo 
-            JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            WHERE cp.idProfesor = $idProfesor";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return (int)($fila['total'] ?? 0);
@@ -80,8 +78,10 @@ function contarEstudiantesDeProfesor($idProfesor) {
 // Contar cuántos ciclos formativos tiene asignados un profesor
 function contarCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM ciclo_profesor WHERE idProfesor = $idProfesor";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT COUNT(*) as total FROM ciclo_profesor WHERE idProfesor = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return (int)($fila['total'] ?? 0);
@@ -154,22 +154,20 @@ function obtenerTotalRecaudado() {
 // Calcular el porcentaje global de módulos aprobados (nota final >= 5)
 function obtenerPorcentajeAprobadosGlobal() {
     $con = obtenerConexion();
-    
+
     // 1. Contamos el total de calificaciones registradas
     $sql = "SELECT COUNT(*) as conteo FROM calificaciones_modulos";
     $resultado = mysqli_query($con, $sql);
     $filaTotal = mysqli_fetch_assoc($resultado);
     $totalRegistros = (int)$filaTotal['conteo'];
 
-    if ($totalRegistros === 0) { 
-        mysqli_close($con); 
-        return 0; 
+    if ($totalRegistros === 0) {
+        mysqli_close($con);
+        return 0;
     }
 
     // 2. Contamos cuántas de esas calificaciones son aprobadas (en 1ª o 2ª final)
-    $sql = "SELECT COUNT(*) as conteo 
-                     FROM calificaciones_modulos 
-                     WHERE nota_1final >= 5 OR nota_2final >= 5";
+    $sql = "SELECT COUNT(*) as conteo FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5";
     $resultado = mysqli_query($con, $sql);
     $filaAprobados = mysqli_fetch_assoc($resultado);
     $totalAprobados = (int)$filaAprobados['conteo'];
@@ -194,4 +192,3 @@ function contarPagosRealizados() {
 function contarPagos() {
     return contarPagosRealizados();
 }
-

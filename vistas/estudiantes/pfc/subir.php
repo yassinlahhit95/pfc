@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -7,7 +7,7 @@ $errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 

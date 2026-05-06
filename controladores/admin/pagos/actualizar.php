@@ -10,25 +10,22 @@ if (isset($_POST['actualizarPago'])) {
     $fechaPago = trim($_POST['fechaPago']);
     $proximaFecha = trim($_POST['fechaProximoPago']);
 
-    $hayError = false;
+    $errores = [];
 
     if (empty($idEstudiante) || empty($monto) || $monto <= 0 || empty($fechaPago)) {
-        $hayError = true;
+        $errores['datos'] = "Error al actualizar.";
     }
 
-    if (!$hayError) {
+    if (empty($errores)) {
         $resultado = actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
         if ($resultado) {
             $_SESSION['exito'] = "Pago actualizado.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
-        } else {
-            $hayError = true;
         }
-    }
-
-    if ($hayError) {
         $_SESSION['error'] = "Error al actualizar.";
+    } else {
+        $_SESSION['error'] = $errores['datos'];
     }
 
     header("Location: ../../../vistas/admin/pagos/modificarPagos.php?idPago=$idPago");

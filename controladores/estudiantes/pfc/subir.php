@@ -55,5 +55,5 @@ if (isset($_POST['subirTFG'])) {
     exit;
 }
 
-header("Location: ../../../vistas/estudiantes/dashboard.php");
+header("Location: ../../../vistas/estudiantes/inicio/dashboard.php");
 exit;

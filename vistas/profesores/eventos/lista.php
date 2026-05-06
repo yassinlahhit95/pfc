@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 session_start();
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
-    header("Location: ../../../index.php");
+    header("Location: ../../login.php");
     exit;
 }
 

@@ -1,15 +1,18 @@
-<?php
+﻿<?php
 session_start();
-header("Location: inicio/dashboard.php");
-exit;
 
-require_once __DIR__ . "/../../modelos/conectar.php";
-require_once __DIR__ . "/../../modelos/panelDeControl.php";
-require_once __DIR__ . "/../../modelos/anuncios.php";
-require_once __DIR__ . "/../../modelos/eventos.php";
-require_once __DIR__ . "/../../modelos/retos.php";
-require_once __DIR__ . "/../../modelos/modulos.php";
-require_once __DIR__ . "/../../modelos/estudiantes.php";
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/panelDeControl.php";
+require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 // Estadísticas resumidas
 $totalEstudiantesRegistrados = contarEstudiantes();
@@ -31,7 +34,7 @@ $listaEventosProximos = listarEventosProximos();
 $titulo_pagina = "PANEL DE CONTROL - ADMIN";
 $seccion = 'inicio';
 
-include __DIR__ . '/comunes/nav.php';
+include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
@@ -70,15 +73,15 @@ include __DIR__ . '/comunes/nav.php';
 
 <div class="cuadricula-secundaria">
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    
+
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta"><h3>ACCIONES RÁPIDAS</h3></div>
       <div class="cuadricula-acciones-rapidas">
-        <a href="estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
-        <a href="profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
-        <a href="pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos</span></a>
-        <a href="eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
+        <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
+        <a href="../profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
+        <a href="../pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
+        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos</span></a>
+        <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
 
@@ -104,7 +107,7 @@ include __DIR__ . '/comunes/nav.php';
             <?php if ($numeroPaginaActual > 1) { ?>
                 <a href="dashboard.php?p_anuncios=<?= $numeroPaginaActual - 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-left"></i></a>
             <?php } ?>
-            
+
             <span class="boton-paginacion activo"><?= $numeroPaginaActual ?> / <?= $totalPaginasAnuncios ?></span>
 
             <?php if ($numeroPaginaActual < $totalPaginasAnuncios) { ?>
@@ -128,9 +131,9 @@ include __DIR__ . '/comunes/nav.php';
         <?php if (empty($listaEventosProximos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
-            <?php 
+            <?php
             $contadorEventosMostrados = 0;
-            foreach ($listaEventosProximos as $eventoIndividual) { 
+            foreach ($listaEventosProximos as $eventoIndividual) {
                 if ($contadorEventosMostrados < 4) {
                     $diaEvento = date('d', strtotime($eventoIndividual['fechaEvento']));
                     $mesEvento = strtoupper(date('M', strtotime($eventoIndividual['fechaEvento'])));
@@ -142,22 +145,17 @@ include __DIR__ . '/comunes/nav.php';
                 <p class="texto-atenuado"><?= date('H:i', strtotime($eventoIndividual['horaEvento'])) ?>h - <?= $eventoIndividual['ubicacionEvento'] ?></p>
               </div>
             </div>
-            <?php 
+            <?php
                     $contadorEventosMostrados++;
                 }
             } ?>
         <?php } ?>
       </div>
       <div class="margen-arriba">
-          <a href="eventos/gestionEventos.php" class="boton-secundario ancho-total">GESTIONAR CALENDARIO</a>
+          <a href="../eventos/gestionEventos.php" class="boton-secundario ancho-total">GESTIONAR CALENDARIO</a>
       </div>
     </div>
   </div>
 </div>
 
-<?php include __DIR__ . '/comunes/footer.php'; ?>
-
-
-
-
-
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

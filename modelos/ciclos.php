@@ -4,15 +4,15 @@ require_once __DIR__ . "/conectar.php";
 // Obtener la lista de todos los ciclos formativos registrados
 function listarTodosLosCiclos() {
     $con = obtenerConexion();
-    $sql = "SELECT ciclos.*, niveles.nombreNivel 
-            FROM ciclos 
-            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel 
+    $sql = "SELECT ciclos.*, niveles.nombreNivel
+            FROM ciclos
+            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel
             ORDER BY ciclos.idCiclo ASC";
-            
+
     $resultado = mysqli_query($con, $sql);
     $listaCiclos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) { 
-        $listaCiclos[] = $fila; 
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $listaCiclos[] = $fila;
     }
     mysqli_close($con);
     return $listaCiclos;
@@ -21,16 +21,13 @@ function listarTodosLosCiclos() {
 // Obtener los ciclos formativos que tiene asignados un profesor
 function obtenerCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT ciclos.*, niveles.nombreNivel 
-            FROM ciclos 
-            JOIN ciclo_profesor ON ciclos.idCiclo = ciclo_profesor.idCiclo 
-            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel 
-            WHERE ciclo_profesor.idProfesor = $idProfesor";
-            
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT ciclos.*, niveles.nombreNivel FROM ciclos JOIN ciclo_profesor ON ciclos.idCiclo = ciclo_profesor.idCiclo LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel WHERE ciclo_profesor.idProfesor = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaCiclos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) { 
-        $listaCiclos[] = $fila; 
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $listaCiclos[] = $fila;
     }
     mysqli_close($con);
     return $listaCiclos;
@@ -39,15 +36,15 @@ function obtenerCiclosDeProfesor($idProfesor) {
 // Comprobar si ya existe un ciclo con el mismo nombre o abreviatura
 function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = null) {
     $con = obtenerConexion();
-    $nombreEscapado = $nombreCiclo;
-    $abreviaturaEscapada = $abreviaturaCiclo;
-    
-    $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = '$nombreEscapado' OR abreviaturaCiclo = '$abreviaturaEscapada')";
     if ($idExcluir) {
-        $sql .= " AND idCiclo != $idExcluir";
+        $stmt = mysqli_prepare($con, "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?) AND idCiclo != ?");
+        mysqli_stmt_bind_param($stmt, "ssi", $nombreCiclo, $abreviaturaCiclo, $idExcluir);
+    } else {
+        $stmt = mysqli_prepare($con, "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?)");
+        mysqli_stmt_bind_param($stmt, "ss", $nombreCiclo, $abreviaturaCiclo);
     }
-    
-    $resultado = mysqli_query($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
     mysqli_close($con);
     return $existe;
@@ -59,25 +56,27 @@ function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIds
         return false;
     }
     $con = obtenerConexion();
-    
+
     // Insertamos los datos básicos del ciclo
-    $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) 
-            VALUES ('$nombreCiclo', '$abreviaturaCiclo', $idNivel, $precioCiclo)";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "ssid", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo);
+    $resultado = mysqli_stmt_execute($stmt);
 
     // Obtenemos el ID del ciclo que acabamos de crear
     $idNuevoCiclo = mysqli_insert_id($con);
 
     // Relacionamos con los profesores seleccionados
+    $stmt = mysqli_prepare($con, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)");
     foreach ($listaIdsProfesores as $idProfesor) {
-        $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idNuevoCiclo, $idProfesor)";
-        $resultado = mysqli_query($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idNuevoCiclo, $idProfesor);
+        $resultado = mysqli_stmt_execute($stmt);
     }
 
     // Relacionamos con las aulas seleccionadas
+    $stmt = mysqli_prepare($con, "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES (?, ?)");
     foreach ($listaIdsAulas as $idAula) {
-        $sql = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idNuevoCiclo, $idAula)";
-        $resultado = mysqli_query($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idNuevoCiclo, $idAula);
+        $resultado = mysqli_stmt_execute($stmt);
     }
 
     mysqli_close($con);
@@ -90,27 +89,32 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
         return false;
     }
     $con = obtenerConexion();
-    
+
     // 1. Actualizamos los datos básicos del ciclo
-    $sql = "UPDATE ciclos 
-            SET nombreCiclo='$nombreCiclo', abreviaturaCiclo='$abreviaturaCiclo', idNivel=$idNivel, precioCiclo=$precioCiclo 
-            WHERE idCiclo=$idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?");
+    mysqli_stmt_bind_param($stmt, "ssdii", $nombreCiclo, $abreviaturaCiclo, $precioCiclo, $idNivel, $idCiclo);
+    $resultado = mysqli_stmt_execute($stmt);
 
     // 2. Limpiamos y reasignamos los profesores
-    $sql = "DELETE FROM ciclo_profesor WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "DELETE FROM ciclo_profesor WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+
+    $stmt = mysqli_prepare($con, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)");
     foreach ($listaIdsProfesores as $idProfesor) {
-        $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES ($idCiclo, $idProfesor)";
-        $resultado = mysqli_query($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idProfesor);
+        $resultado = mysqli_stmt_execute($stmt);
     }
 
     // 3. Limpiamos y reasignamos las aulas
-    $sql = "DELETE FROM ciclo_aula WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "DELETE FROM ciclo_aula WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+
+    $stmt = mysqli_prepare($con, "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES (?, ?)");
     foreach ($listaIdsAulas as $idAula) {
-        $sql = "INSERT INTO ciclo_aula (idCiclo, idAula) VALUES ($idCiclo, $idAula)";
-        $resultado = mysqli_query($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idAula);
+        $resultado = mysqli_stmt_execute($stmt);
     }
 
     mysqli_close($con);
@@ -120,8 +124,9 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
 // Eliminar un ciclo formativo por su ID
 function eliminarCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "DELETE FROM ciclos WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "DELETE FROM ciclos WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
@@ -129,8 +134,10 @@ function eliminarCiclo($idCiclo) {
 // Obtener los datos de un ciclo formativo específico
 function obtenerCicloPorId($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM ciclos WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT * FROM ciclos WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $datosCiclo = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return $datosCiclo;
@@ -139,11 +146,13 @@ function obtenerCicloPorId($idCiclo) {
 // Obtener la lista de IDs de profesores asignados a un ciclo
 function obtenerProfesoresDeUnCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaIdsProfesores = [];
-    while($fila = mysqli_fetch_assoc($resultado)) { 
-        $listaIdsProfesores[] = $fila['idProfesor']; 
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $listaIdsProfesores[] = $fila['idProfesor'];
     }
     mysqli_close($con);
     return $listaIdsProfesores;
@@ -152,11 +161,13 @@ function obtenerProfesoresDeUnCiclo($idCiclo) {
 // Obtener la lista de IDs de aulas asignadas a un ciclo
 function obtenerAulasDeUnCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT idAula FROM ciclo_aula WHERE idCiclo = $idCiclo";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT idAula FROM ciclo_aula WHERE idCiclo = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaIdsAulas = [];
-    while($fila = mysqli_fetch_assoc($resultado)) { 
-        $listaIdsAulas[] = $fila['idAula']; 
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $listaIdsAulas[] = $fila['idAula'];
     }
     mysqli_close($con);
     return $listaIdsAulas;
@@ -165,12 +176,11 @@ function obtenerAulasDeUnCiclo($idCiclo) {
 // Comprobar si un nombre de ciclo ya está siendo usado por otro ciclo diferente
 function comprobarNombreEnOtroCiclo($nombreCiclo, $idCicloActual) {
     $con = obtenerConexion();
-    $sql = "SELECT idCiclo FROM ciclos 
-            WHERE nombreCiclo = '$nombreCiclo' AND idCiclo != $idCicloActual";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT idCiclo FROM ciclos WHERE nombreCiclo = ? AND idCiclo != ?");
+    mysqli_stmt_bind_param($stmt, "si", $nombreCiclo, $idCicloActual);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $totalCoincidencias = mysqli_num_rows($resultado);
     mysqli_close($con);
-    
     return ($totalCoincidencias > 0);
 }
-
