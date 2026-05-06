@@ -16,5 +16,4 @@ if (isset($_POST['idModulo'])) {
 
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-
-
+?>

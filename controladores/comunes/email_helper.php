@@ -45,3 +45,4 @@ function sendEmail($to, $subject, $htmlContent) {
     
     return $httpCode === 201 || $httpCode === 200;
 }
+?>

@@ -41,3 +41,4 @@ if (isset($_POST['actualizarReto'])) {
 
 header("Location: ../../../vistas/profesores/retos/lista.php");
 exit;
+?>

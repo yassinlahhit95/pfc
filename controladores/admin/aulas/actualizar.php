@@ -37,5 +37,4 @@ if (isset($_POST['actualizarAula'])) {
 
 header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
-
-
+?>

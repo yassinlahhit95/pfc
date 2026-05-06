@@ -27,3 +27,4 @@ if (isset($_POST['idReclamacion'])) {
 
 header("Location: ../../../vistas/profesores/mensajes/lista.php");
 exit;
+?>

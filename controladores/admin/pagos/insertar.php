@@ -72,4 +72,4 @@ if (isset($_POST['guardarPago'])) {
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
 ?>>
-
+?>

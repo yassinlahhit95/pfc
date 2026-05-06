@@ -40,5 +40,4 @@ if (isset($_POST['guardarAnuncio'])) {
 
 header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
 exit;
-
-
+?>

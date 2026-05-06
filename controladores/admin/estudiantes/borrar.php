@@ -14,5 +14,4 @@ if (isset($_POST['idEstudiante'])) {
 
 header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
 exit;
-
-
+?>

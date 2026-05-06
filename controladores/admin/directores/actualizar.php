@@ -62,5 +62,4 @@ if (isset($_POST['actualizarDirector'])) {
 
 header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
-
-
+?>

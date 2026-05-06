@@ -52,3 +52,4 @@ if (isset($_POST['actualizarNota'])) {
 
 header("Location: ../../../vistas/profesores/calificaciones/lista.php");
 exit;
+?>

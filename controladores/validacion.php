@@ -49,3 +49,4 @@ if (isset($_POST["enviar"])) {
 
 header("Location: ../vistas/login.php");
 exit;
+?>

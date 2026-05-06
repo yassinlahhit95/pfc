@@ -46,5 +46,4 @@ if (isset($_POST['actualizarCiclo'])) {
 
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
-
-
+?>

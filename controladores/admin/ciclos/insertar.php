@@ -48,5 +48,4 @@ if (isset($_POST['guardarCiclo'])) {
 
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
-
-
+?>

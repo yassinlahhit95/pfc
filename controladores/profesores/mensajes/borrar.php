@@ -17,3 +17,4 @@ if (isset($_GET['id'])) {
 
 header("Location: ../../../vistas/profesores/mensajes/lista.php");
 exit;
+?>

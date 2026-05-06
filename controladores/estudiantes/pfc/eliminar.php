@@ -22,3 +22,4 @@ if (isset($_POST['idEstudiante'])) {
 
 header("Location: ../../../vistas/estudiantes/pfc/subir.php");
 exit;
+?>

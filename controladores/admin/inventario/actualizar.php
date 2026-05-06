@@ -41,5 +41,4 @@ if (isset($_POST['actualizarArticulo'])) {
 
 header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
-
-
+?>

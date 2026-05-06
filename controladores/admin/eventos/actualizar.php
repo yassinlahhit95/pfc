@@ -34,5 +34,4 @@ if (isset($_POST['actualizarEvento'])) {
 
 header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
 exit;
-
-
+?>

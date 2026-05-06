@@ -65,5 +65,4 @@ if (isset($_POST['guardarProfesor'])) {
 
 header("Location: ../../../vistas/admin/profesores/verProfesores.php");
 exit;
-
-
+?>

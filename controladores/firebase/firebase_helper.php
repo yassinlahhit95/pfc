@@ -153,3 +153,4 @@ function obtenerTokenUsuario($idUsuario, $rolUsuario) {
     }
     return null;
 }
+?>

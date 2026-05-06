@@ -35,3 +35,4 @@ if (isset($_POST['insertarNota'])) {
 
 header("Location: ../../../vistas/profesores/calificaciones/lista.php");
 exit;
+?>

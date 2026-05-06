@@ -37,3 +37,4 @@ if (isset($datosRecibidos['token'], $datosRecibidos['userId'], $datosRecibidos['
 } else {
     echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
 }
+?>

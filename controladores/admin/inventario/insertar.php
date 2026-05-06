@@ -40,5 +40,4 @@ if (isset($_POST['guardarArticulo'])) {
 
 header("Location: ../../../vistas/admin/inventario/verInventario.php");
 exit;
-
-
+?>

@@ -36,5 +36,4 @@ if (isset($_POST['guardarAula'])) {
 
 header("Location: ../../../vistas/admin/aulas/verAulas.php");
 exit;
-
-
+?>

@@ -60,5 +60,4 @@ if (isset($_POST['guardarDirector'])) {
 
 header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
-
-
+?>

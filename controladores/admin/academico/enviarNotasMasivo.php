@@ -25,5 +25,4 @@ if (isset($_SESSION['idProfesor'])) {
     header("Location: ../../dashboard.php");
 }
 exit;
-
-
+?>

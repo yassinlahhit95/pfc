@@ -64,5 +64,4 @@ if (isset($_POST['guardarNotas'])) {
 
 header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
 exit;
-
-
+?>

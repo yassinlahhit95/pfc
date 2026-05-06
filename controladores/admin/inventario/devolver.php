@@ -21,5 +21,4 @@ if (!$hayError) {
 
 header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
 exit;
-
-
+?>

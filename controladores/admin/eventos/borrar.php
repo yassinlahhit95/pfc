@@ -14,5 +14,4 @@ if (isset($_POST['idEvento'])) {
 
 header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
 exit;
-
-
+?>

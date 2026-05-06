@@ -49,5 +49,4 @@ if (isset($_POST['guardarModulo'])) {
 
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-
-
+?>

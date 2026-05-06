@@ -14,5 +14,4 @@ if (isset($_POST['idDirector'])) {
 
 header("Location: ../../../vistas/admin/directores/verDirectores.php");
 exit;
-
-
+?>

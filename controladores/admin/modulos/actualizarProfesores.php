@@ -28,5 +28,4 @@ if (isset($_POST['actualizarProfesores'])) {
 
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-
-
+?>

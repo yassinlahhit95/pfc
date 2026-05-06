@@ -75,5 +75,4 @@ if (isset($_POST['guardarEstudiante'])) {
 
 header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
 exit;
-
-
+?>

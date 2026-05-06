@@ -16,5 +16,4 @@ if (isset($_POST['idProfesor'])) {
 
 header("Location: ../../../vistas/admin/profesores/verProfesores.php");
 exit;
-
-
+?>
