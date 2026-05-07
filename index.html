@@ -1,521 +1,39 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="landing-page">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TFG Gestión Académica</title>
-  <style>
-    :root {
-      --fondo: #fafafa;
-      --fondo-alt: #ffffff;
-      --texto: #111827;
-      --texto-claro: #4b5563;
-      --acento: #4f46e5;
-      --acento-hover: #4338ca;
-      --acento-claro: #eef2ff;
-      --borde: #e5e7eb;
-      --sombra: 0 4px 14px rgba(0, 0, 0, 0.05);
-      --sombra-hover: 0 10px 24px rgba(0, 0, 0, 0.08);
-      --radio: 14px;
-      --espaciado: 16px;
-      --ancho-max: 1100px;
-      --fuente: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--fuente);
-      background-color: var(--fondo);
-      color: var(--texto);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Utilidades y Estructura Base */
-    .contenedor {
-      max-width: var(--ancho-max);
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .seccion {
-      padding: 80px 0;
-    }
-
-    .titulo-seccion {
-      text-align: center;
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      letter-spacing: -0.02em;
-    }
-
-    .descripcion-seccion {
-      text-align: center;
-      color: var(--texto-claro);
-      max-width: 650px;
-      margin: 0 auto 40px auto;
-      font-size: 1.05rem;
-    }
-
-    .rejilla {
-      display: grid;
-      gap: 24px;
-    }
-
-    .tarjeta {
-      background: var(--fondo-alt);
-      padding: 28px;
-      border-radius: var(--radio);
-      border: 1px solid var(--borde);
-      box-shadow: var(--sombra);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .tarjeta:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--sombra-hover);
-    }
-
-    .boton {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 26px;
-      font-size: 1rem;
-      font-weight: 600;
-      text-decoration: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-    }
-
-    .boton-principal {
-      background: var(--acento);
-      color: white;
-    }
-
-    .boton-principal:hover {
-      background: var(--acento-hover);
-    }
-
-    .boton-secundario {
-      background: transparent;
-      color: var(--acento);
-      border: 1.5px solid var(--borde);
-    }
-
-    .boton-secundario:hover {
-      border-color: var(--acento);
-      background: var(--acento-claro);
-    }
-
-    /* Animación al hacer scroll */
-    .animar {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .animar.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Cabecera */
-    .cabecera {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(250, 250, 250, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--borde);
-      padding: 16px 0;
-    }
-
-    .cabecera-contenedor {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--acento);
-      text-decoration: none;
-    }
-
-    .menu {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .menu-enlace {
-      color: var(--texto-claro);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.2s;
-    }
-
-    .menu-enlace:hover {
-      color: var(--acento);
-    }
-
-    .menu-boton {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    .menu-icono {
-      width: 24px;
-      height: 2px;
-      background: var(--texto);
-      position: relative;
-      display: block;
-    }
-
-    .menu-icono::before, .menu-icono::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: var(--texto);
-      left: 0;
-    }
-
-    .menu-icono::before { top: -7px; }
-    .menu-icono::after { top: 7px; }
-
-    /* Hero */
-    .hero {
-      padding: 140px 0 80px 0;
-      text-align: center;
-      background: radial-gradient(ellipse at top, var(--fondo-alt) 0%, var(--fondo) 60%);
-    }
-
-    .titulo-hero {
-      font-size: clamp(2.2rem, 5vw, 3.2rem);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 20px;
-    }
-
-    .subtitulo-hero {
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: var(--texto-claro);
-      max-width: 720px;
-      margin: 0 auto 36px auto;
-      line-height: 1.6;
-    }
-
-    .hero-botones {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    /* Características */
-    .caracteristicas-rejilla {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    }
-
-    .tarjeta-icono {
-      width: 40px;
-      height: 40px;
-      background: var(--acento-claro);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      font-size: 1.4rem;
-    }
-
-    .tarjeta-titulo {
-      font-weight: 700;
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-    }
-
-    .tarjeta-texto {
-      color: var(--texto-claro);
-      font-size: 0.95rem;
-    }
-
-    /* Sección Visual */
-    .visual {
-      text-align: center;
-      background: var(--fondo-alt);
-      border-top: 1px solid var(--borde);
-      border-bottom: 1px solid var(--borde);
-    }
-
-    .mockup {
-      max-width: 950px;
-      margin: 40px auto 0;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      padding: 24px;
-      position: relative;
-      border: 1px solid var(--borde);
-      overflow: hidden;
-    }
-
-    .mockup-barra {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .mockup-punto {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #e5e7eb;
-    }
-
-    .mockup-punto:first-child { background: #ff5f56; }
-    .mockup-punto:nth-child(2) { background: #ffbd2e; }
-    .mockup-punto:nth-child(3) { background: #27c93f; }
-
-    .mockup-contenido {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 20px;
-      height: 320px;
-    }
-
-    .mockup-sidebar {
-      background: var(--fondo);
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    .mockup-linea {
-      height: 10px;
-      background: #e5e7eb;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-
-    .mockup-principal {
-      background: #f9fafb;
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .mockup-titulo-mock {
-      height: 20px;
-      background: var(--borde);
-      border-radius: 8px;
-      width: 30%;
-      margin-bottom: 20px;
-    }
-
-    .mockup-tabla {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .mockup-fila {
-      height: 16px;
-      background: #ffffff;
-      border: 1px solid var(--borde);
-      border-radius: 6px;
-      margin-bottom: 2px;
-    }
-
-    /* Beneficios */
-    .beneficios-rejilla {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-
-    .beneficio-numero {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: #e2e8f0;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    /* Planes */
-    .planes {
-      background: var(--fondo-alt);
-      border-top: 1px solid var(--borde);
-    }
-
-    .planes-rejilla {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .tarjeta-plan {
-      text-align: center;
-      border: 1px solid var(--borde);
-    }
-
-    .tarjeta-plan.destacado {
-      border-color: var(--acento);
-      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.15);
-      background: var(--acento-claro);
-    }
-
-    .plan-nombre {
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin-bottom: 12px;
-    }
-
-    .plan-lista {
-      list-style: none;
-      text-align: left;
-      margin: 20px 0;
-    }
-
-    .plan-elemento {
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--borde);
-      color: var(--texto-claro);
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .plan-elemento::before {
-      content: "✓";
-      color: var(--acento);
-      font-weight: 700;
-    }
-
-    /* Sección Técnica */
-    .tecnica {
-      background: linear-gradient(to bottom, var(--fondo), var(--fondo-alt));
-    }
-
-    .tecnica-rejilla {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-
-    .tarjeta-tecnica {
-      border-left: 3px solid var(--acento);
-    }
-
-    /* Footer */
-    .pie-pagina {
-      background: var(--fondo-alt);
-      border-top: 1px solid var(--borde);
-      padding: 40px 0;
-      text-align: center;
-      color: var(--texto-claro);
-      font-size: 0.9rem;
-    }
-
-    .pie-nombre {
-      font-weight: 700;
-      color: var(--texto);
-    }
-
-    .pie-linea {
-      height: 1px;
-      background: var(--borde);
-      width: 40px;
-      margin: 12px auto;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .menu {
-        position: fixed;
-        top: 70px;
-        right: 0;
-        width: 100%;
-        background: var(--fondo-alt);
-        flex-direction: column;
-        padding: 20px;
-        gap: 16px;
-        border-bottom: 1px solid var(--borde);
-        box-shadow: var(--sombra);
-        transform: translateY(-20px);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-      }
-
-      .menu.activo {
-        transform: translateY(0);
-        opacity: 1;
-        visibility: visible;
-      }
-
-      .menu-boton {
-        display: block;
-      }
-
-      .mockup-contenido {
-        grid-template-columns: 1fr;
-      }
-
-      .mockup-sidebar {
-        display: none;
-      }
-    }
-  </style>
+  <!-- Estilos Externos -->
+  <link rel="stylesheet" href="./public/css/admin.css">
+  <link rel="stylesheet" href="./public/css/responsive.css">
 </head>
-<body>
+<body class="landing-body">
 
-  <header class="cabecera">
-    <div class="contenedor cabecera-contenedor">
-      <a href="#" class="logo">TFG Gestión Académica</a>
-      <nav class="menu" id="menu">
-        <a href="#inicio" class="menu-enlace">Inicio</a>
-        <a href="#caracteristicas" class="menu-enlace">Características</a>
-        <a href="#beneficios" class="menu-enlace">Beneficios</a>
-        <a href="#planes" class="menu-enlace">Planes</a>
-        <a href="./vistas/login.php" class="boton boton-principal" style="padding: 10px 18px; font-size: 0.9rem;">Acceso</a>
+  <header class="cabecera-landing">
+    <div class="contenedor cabecera-contenedor-landing">
+      <a href="#" class="logo-landing">TFG Gestión Académica</a>
+      <nav class="menu-landing" id="menu">
+        <a href="#inicio" class="menu-enlace-landing">Inicio</a>
+        <a href="#caracteristicas" class="menu-enlace-landing">Características</a>
+        <a href="#beneficios" class="menu-enlace-landing">Beneficios</a>
+        <a href="#planes" class="menu-enlace-landing">Planes</a>
+        <a href="./vistas/login.php" class="boton boton-principal-landing btn-acceso-nav">Acceso</a>
       </nav>
-      <button class="menu-boton" id="menu-boton" aria-label="Abrir menú">
-        <span class="menu-icono"></span>
+      <button class="menu-boton-landing" id="menu-boton" aria-label="Abrir menú">
+        <span class="menu-icono-landing"></span>
       </button>
     </div>
   </header>
 
   <main>
-    <section id="inicio" class="hero animar">
+    <section id="inicio" class="hero-landing animar">
       <div class="contenedor">
-        <h1 class="titulo-hero">Gestiona tu centro educativo<br>de forma simple</h1>
-        <p class="subtitulo-hero">Una plataforma centralizada para estudiantes, profesores, ciclos, pagos y administración. Construida para ser robusta, clara y rápida.</p>
-        <div class="hero-botones">
-          <a href="#planes" class="boton boton-principal">Solicitar demo</a>
-          <a href="#visual" class="boton boton-secundario">Ver plataforma</a>
+        <h1 class="titulo-hero-landing">Gestiona tu centro educativo<br>de forma simple</h1>
+        <p class="subtitulo-hero-landing">Una plataforma centralizada para estudiantes, profesores, ciclos, pagos y administración. Construida para ser robusta, clara y rápida.</p>
+        <div class="hero-botones-landing">
+          <a href="#planes" class="boton boton-principal-landing">Solicitar demo</a>
+          <a href="#visual" class="boton boton-secundario-landing">Ver plataforma</a>
         </div>
       </div>
     </section>
@@ -524,150 +42,149 @@
       <div class="contenedor">
         <h2 class="titulo-seccion">Características principales</h2>
         <p class="descripcion-seccion">Todo lo que un centro formativo necesita, unificado en un solo sistema moderno.</p>
-        <div class="rejilla caracteristicas-rejilla">
+        <div class="rejilla caracteristicas-rejilla-landing">
           <div class="tarjeta">
-            <div class="tarjeta-icono">🎓</div>
-            <h3 class="tarjeta-titulo">Gestión de estudiantes</h3>
-            <p class="tarjeta-texto">Registro, perfiles, seguimiento académico y control de asistencia en tiempo real.</p>
+            <div class="tarjeta-icono-landing">🎓</div>
+            <h3 class="tarjeta-titulo-landing">Gestión de estudiantes</h3>
+            <p class="tarjeta-texto-landing">Registro, perfiles, seguimiento académico y control de asistencia en tiempo real.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono">👩‍🏫</div>
-            <h3 class="tarjeta-titulo">Control de profesores</h3>
-            <p class="tarjeta-texto">Asignación de módulos, carga docente y coordinación directa con el equipo.</p>
+            <div class="tarjeta-icono-landing">👩‍🏫</div>
+            <h3 class="tarjeta-titulo-landing">Control de profesores</h3>
+            <p class="tarjeta-texto-landing">Asignación de módulos, carga docente y coordinación directa con el equipo.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono">📚</div>
-            <h3 class="tarjeta-titulo">Módulos y ciclos</h3>
-            <p class="tarjeta-texto">Organización clara de ciclos formativos, asignaturas y competencias.</p>
+            <div class="tarjeta-icono-landing">📚</div>
+            <h3 class="tarjeta-titulo-landing">Módulos y ciclos</h3>
+            <p class="tarjeta-texto-landing">Organización clara de ciclos formativos, asignaturas y competencias.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono">📊</div>
-            <h3 class="tarjeta-titulo">Notas y evaluaciones</h3>
-            <p class="tarjeta-texto">Registro de calificaciones, boletines automáticos y exportación de actas.</p>
+            <div class="tarjeta-icono-landing">📊</div>
+            <h3 class="tarjeta-titulo-landing">Notas y evaluaciones</h3>
+            <p class="tarjeta-texto-landing">Registro de calificaciones, boletines automáticos y exportación de actas.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono">💳</div>
-            <h3 class="tarjeta-titulo">Pagos y facturación</h3>
-            <p class="tarjeta-texto">Gestión de matrículas, cuotas, recibos y control de morosidad.</p>
+            <div class="tarjeta-icono-landing">💳</div>
+            <h3 class="tarjeta-titulo-landing">Pagos y facturación</h3>
+            <p class="tarjeta-texto-landing">Gestión de matrículas, cuotas, recibos y control de morosidad.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono">📝</div>
-            <h3 class="tarjeta-titulo">Reclamaciones</h3>
-            <p class="tarjeta-texto">Canal oficial para incidencias, solicitudes y resolución de trámites.</p>
+            <div class="tarjeta-icono-landing">📝</div>
+            <h3 class="tarjeta-titulo-landing">Reclamaciones</h3>
+            <p class="tarjeta-texto-landing">Canal oficial para incidencias, solicitudes y resolución de trámites.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="visual" class="seccion visual animar">
+    <section id="visual" class="seccion visual-landing animar">
       <div class="contenedor">
         <h2 class="titulo-seccion">Interfaz clara, sin distracciones</h2>
         <p class="descripcion-seccion">Diseñada para que cualquier usuario la entienda en menos de un minuto.</p>
-          <video autoplay loop muted playsinline preload="auto" style="width: 100%; border-radius: 12px; display: block;">
-            <source src="./public/videos/demo.mp4" type="video/mp4">
-            Tu navegador no soporta videos HTML5.
-          </video>
-  
+        <video autoplay loop muted playsinline preload="auto" class="video-demo-landing">
+          <source src="./public/videos/demo.mp4" type="video/mp4">
+          Tu navegador no soporta videos HTML5.
+        </video>
+      </div>
     </section>
 
     <section id="beneficios" class="seccion animar">
       <div class="contenedor">
         <h2 class="titulo-seccion">Por qué elegir este sistema</h2>
         <p class="descripcion-seccion">No es solo una herramienta, es la base de tu gestión diaria.</p>
-        <div class="rejilla beneficios-rejilla">
+        <div class="rejilla beneficios-rejilla-landing">
           <div class="tarjeta">
-            <div class="beneficio-numero">01</div>
-            <h3 class="tarjeta-titulo">Centralización</h3>
-            <p class="tarjeta-texto">Elimina hojas sueltas y herramientas múltiples. Toda la información convive en un único entorno seguro.</p>
+            <div class="beneficio-numero-landing">01</div>
+            <h3 class="tarjeta-titulo-landing">Centralización</h3>
+            <p class="tarjeta-texto-landing">Elimina hojas sueltas y herramientas múltiples. Toda la información convive en un único entorno seguro.</p>
           </div>
           <div class="tarjeta">
-            <div class="beneficio-numero">02</div>
-            <h3 class="tarjeta-titulo">Ahorro de tiempo</h3>
-            <p class="tarjeta-texto">Automatiza tareas repetitivas: matrículas, notas, avisos y reportes. Tu equipo se enfoca en enseñar.</p>
+            <div class="beneficio-numero-landing">02</div>
+            <h3 class="tarjeta-titulo-landing">Ahorro de tiempo</h3>
+            <p class="tarjeta-texto-landing">Automatiza tareas repetitivas: matrículas, notas, avisos y reportes. Tu equipo se enfoca en enseñar.</p>
           </div>
           <div class="tarjeta">
-            <div class="beneficio-numero">03</div>
-            <h3 class="tarjeta-titulo">Control total</h3>
-            <p class="tarjeta-texto">Permisos por roles, historial de cambios y auditoría. Sabes quién modifica qué y cuándo.</p>
+            <div class="beneficio-numero-landing">03</div>
+            <h3 class="tarjeta-titulo-landing">Control total</h3>
+            <p class="tarjeta-texto-landing">Permisos por roles, historial de cambios y auditoría. Sabes quién modifica qué y cuándo.</p>
           </div>
           <div class="tarjeta">
-            <div class="beneficio-numero">04</div>
-            <h3 class="tarjeta-titulo">Fácil uso</h3>
-            <p class="tarjeta-texto">Interfaz intuitiva, lenguaje claro y sin curva de aprendizaje. Ideal para centros con poco tiempo para formaciones.</p>
+            <div class="beneficio-numero-landing">04</div>
+            <h3 class="tarjeta-titulo-landing">Fácil uso</h3>
+            <p class="tarjeta-texto-landing">Interfaz intuitiva, lenguaje claro y sin curva de aprendizaje. Ideal para centros con poco tiempo para formaciones.</p>
           </div>
           <div class="tarjeta">
-            <div class="beneficio-numero">05</div>
-            <h3 class="tarjeta-titulo">Soporte técnico</h3>
-            <p class="tarjeta-texto">Asistencia profesional para resolver dudas y problemas técnicos de manera rápida y eficiente.</p>
+            <div class="beneficio-numero-landing">05</div>
+            <h3 class="tarjeta-titulo-landing">Soporte técnico</h3>
+            <p class="tarjeta-texto-landing">Asistencia profesional para resolver dudas y problemas técnicos de manera rápida y eficiente.</p>
           </div>
-
-                    <div class="tarjeta">
-            <div class="beneficio-numero">06</div>
-            <h3 class="tarjeta-titulo">Actualizaciones regulares</h3>
-            <p class="tarjeta-texto">Mejoras constantes y nuevas funcionalidades para mantener el sistema siempre actualizado.</p>
+          <div class="tarjeta">
+            <div class="beneficio-numero-landing">06</div>
+            <h3 class="tarjeta-titulo-landing">Actualizaciones regulares</h3>
+            <p class="tarjeta-texto-landing">Mejoras constantes y nuevas funcionalidades para mantener el sistema siempre actualizado.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="planes" class="seccion planes animar">
+    <section id="planes" class="seccion planes-landing animar">
       <div class="contenedor">
         <h2 class="titulo-seccion">Planes claros y transparentes</h2>
         <p class="descripcion-seccion">Elige el nivel de gestión que necesita tu centro. Sin costes ocultos.</p>
-        <div class="rejilla planes-rejilla">
-          <div class="tarjeta tarjeta-plan">
-            <h3 class="plan-nombre">Plan Medio</h3>
-            <p class="tarjeta-texto" style="margin-bottom: 20px;">Ideal para centros pequeños y medianos.</p>
-            <ul class="plan-lista">
-              <li class="plan-elemento">Hasta 200 alumnos</li>
-              <li class="plan-elemento">Gestión de notas básica</li>
-              <li class="plan-elemento">Soporte por correo</li>
-              <li class="plan-elemento">Acceso web estándar</li>
+        <div class="rejilla planes-rejilla-landing">
+          <div class="tarjeta tarjeta-plan-landing">
+            <h3 class="plan-nombre-landing">Plan Medio</h3>
+            <p class="tarjeta-texto-landing mb-20">Ideal para centros pequeños y medianos.</p>
+            <ul class="plan-lista-landing">
+              <li class="plan-elemento-landing">Hasta 200 alumnos</li>
+              <li class="plan-elemento-landing">Gestión de notas básica</li>
+              <li class="plan-elemento-landing">Soporte por correo</li>
+              <li class="plan-elemento-landing">Acceso web estándar</li>
             </ul>
-            <a href="#" class="boton boton-secundario" style="width: 100%;">Empezar ahora</a>
+            <a href="#" class="boton boton-secundario-landing ancho-total">Empezar ahora</a>
           </div>
-          <div class="tarjeta tarjeta-plan destacado">
-            <h3 class="plan-nombre">Plan Superior</h3>
-            <p class="tarjeta-texto" style="margin-bottom: 20px;">Para institutos y academias en crecimiento.</p>
-            <ul class="plan-lista">
-              <li class="plan-elemento">Usuarios ilimitados</li>
-              <li class="plan-elemento">Módulo de pagos y facturación</li>
-              <li class="plan-elemento">Reclamaciones y notificaciones</li>
-              <li class="plan-elemento">Soporte prioritario</li>
+          <div class="tarjeta tarjeta-plan-landing destacado">
+            <h3 class="plan-nombre-landing">Plan Superior</h3>
+            <p class="tarjeta-texto-landing mb-20">Para institutos y academias en crecimiento.</p>
+            <ul class="plan-lista-landing">
+              <li class="plan-elemento-landing">Usuarios ilimitados</li>
+              <li class="plan-elemento-landing">Módulo de pagos y facturación</li>
+              <li class="plan-elemento-landing">Reclamaciones y notificaciones</li>
+              <li class="plan-elemento-landing">Soporte prioritario</li>
             </ul>
-            <a href="#" class="boton boton-principal" style="width: 100%;">Solicitar acceso</a>
+            <a href="#" class="boton boton-principal-landing ancho-total">Solicitar acceso</a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="seccion tecnica animar">
+    <section class="seccion tecnica-landing animar">
       <div class="contenedor">
         <h2 class="titulo-seccion">Base técnica sólida</h2>
         <p class="descripcion-seccion">Construido con tecnologías maduras, seguras y fáciles de mantener.</p>
-        <div class="rejilla tecnica-rejilla">
-          <div class="tarjeta tarjeta-tecnica">
-            <h3 class="tarjeta-titulo">PHP Nativo + MVC</h3>
-            <p class="tarjeta-texto">Sin frameworks pesados. Arquitectura modelo-vista-controlador limpia, ordenada y mantenible por cualquier desarrollador.</p>
+        <div class="rejilla tecnica-rejilla-landing">
+          <div class="tarjeta tarjeta-tecnica-landing">
+            <h3 class="tarjeta-titulo-landing">PHP Nativo + MVC</h3>
+            <p class="tarjeta-texto-landing">Sin frameworks pesados. Arquitectura modelo-vista-controlador limpia, ordenada y mantenible por cualquier desarrollador.</p>
           </div>
-          <div class="tarjeta tarjeta-tecnica">
-            <h3 class="tarjeta-titulo">Base de datos MySQL</h3>
-            <p class="tarjeta-texto">Relacional, estable y optimizada. Consultas rápidas, índices bien estructurados y backup sencillo.</p>
+          <div class="tarjeta tarjeta-tecnica-landing">
+            <h3 class="tarjeta-titulo-landing">Base de datos MySQL</h3>
+            <p class="tarjeta-texto-landing">Relacional, estable y optimizada. Consultas rápidas, índices bien estructurados y backup sencillo.</p>
           </div>
-          <div class="tarjeta tarjeta-tecnica">
-            <h3 class="tarjeta-titulo">Arquitectura organizada</h3>
-            <p class="tarjeta-texto">Separación estricta entre modelos, controladores y vistas. Código modular, comentado y listo para escalar.</p>
+          <div class="tarjeta tarjeta-tecnica-landing">
+            <h3 class="tarjeta-titulo-landing">Arquitectura organizada</h3>
+            <p class="tarjeta-texto-landing">Separación estricta entre modelos, controladores y vistas. Código modular, comentado y listo para escalar.</p>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer id="acceso" class="pie-pagina animar">
+  <footer id="acceso" class="pie-pagina-landing animar">
     <div class="contenedor">
-      <p class="pie-nombre">Yassin Lahhit</p>
+      <p class="pie-nombre-landing">Yassin Lahhit</p>
       <p>Proyecto Final de Grado</p>
-      <div class="pie-linea"></div>
+      <div class="pie-linea-landing"></div>
       <p>Año 2025 / 2026</p>
     </div>
   </footer>

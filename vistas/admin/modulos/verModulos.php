@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Validación de sesión simple
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -14,14 +13,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 
-// Obtenemos la lista de todos los módulos registrados
 $listaDeModulosActuales = listarModulos();
 
-// Captura de mensajes de éxito o error
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
-
-// Limpiamos los mensajes de la sesión
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
@@ -65,7 +60,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <?php } else { ?>
                     <?php foreach ($listaDeModulosActuales as $moduloIndividual) { ?>
                     <?php
-                        // Lógica simple para obtener los nombres de los profesores de este módulo
                         $conexionTemporal = obtenerConexion();
                         $idModuloActual = $moduloIndividual['idModulo'];
 

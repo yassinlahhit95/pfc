@@ -12,7 +12,6 @@ if (isset($_POST['actualizarArticulo'])) {
         $errores_campos['datos'] = "Faltan datos.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores_campos)) {
         if (checkArticuloExistente($numeroSerie, $idArticulo)) {
             $errores_campos['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
@@ -20,7 +19,6 @@ if (isset($_POST['actualizarArticulo'])) {
     }
 
     if (empty($errores_campos)) {
-        // Obtenemos el artÃ­culo para mantener su estado actual
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
         $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
 

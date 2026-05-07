@@ -1,4 +1,9 @@
-/* Estilos para el sistema de notificaciones in-app */
+/* 
+================================================================
+   AULAPRO - NOTIFICACIONES (NOTIFICACIONES.CSS)
+================================================================
+*/
+
 #contenedor-notificaciones {
     position: fixed;
     top: 20px;

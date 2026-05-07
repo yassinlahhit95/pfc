@@ -14,7 +14,6 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $idCiclo = intval($_GET['idCiclo'] ?? 0);
 $idModulo = intval($_GET['idModulo'] ?? 0);
 
-// Filtros disponibles para el profesor
 $mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
 $mis_modulos = [];
 if ($idCiclo > 0) {

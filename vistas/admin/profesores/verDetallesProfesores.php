@@ -19,7 +19,6 @@ if (!$profesor) {
     exit;
 }
 
-// Obtener datos asignados
 $ciclosProfesor = obtenerCiclosDeProfesor($id);
 $modulosProfesor = obtenerModulosDeProfesor($id);
 $retosProfesor = obtenerRetosDeProfesor($id);
@@ -63,7 +62,6 @@ $retosProfesor = obtenerRetosDeProfesor($id);
             </div>
         </div>
 
-        <!-- MÓDULOS ASIGNADOS -->
         <div class="tarjeta-blanca">
             <div class="titulo-tarjeta">
                 <h3><i class="fas fa-book"></i> Módulos Impartidos</h3>
@@ -93,7 +91,6 @@ $retosProfesor = obtenerRetosDeProfesor($id);
         </div>
     </div>
 
-    <!-- BARRA LATERAL: CICLOS Y RETOS -->
     <div class="ancho-fijo-300">
         <div class="tarjeta-blanca margen-abajo">
             <div class="titulo-tarjeta"><h3><i class="fas fa-layer-group"></i> Ciclos</h3></div>

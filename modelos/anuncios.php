@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener todos los anuncios del sistema
 function listarTodosLosAnuncios() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM anuncios ORDER BY idAnuncio DESC";
@@ -17,7 +16,6 @@ function listarTodosLosAnuncios() {
     return $listaAnuncios;
 }
 
-// Insertar un nuevo anuncio
 function insertarAnuncio($titulo, $mensaje, $dirigidoA = 'todos') {
     $con = obtenerConexion();
     $fechaActual = date('Y-m-d H:i:s');
@@ -31,7 +29,6 @@ function insertarAnuncio($titulo, $mensaje, $dirigidoA = 'todos') {
     return $resultado;
 }
 
-// Eliminar un anuncio por su ID
 function eliminarAnuncio($idAnuncio) {
     $con = obtenerConexion();
     $sql = "DELETE FROM anuncios WHERE idAnuncio = ?";
@@ -42,7 +39,6 @@ function eliminarAnuncio($idAnuncio) {
     return $resultado;
 }
 
-// Obtener los datos de un anuncio específico
 function obtenerAnuncioPorId($idAnuncio) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM anuncios WHERE idAnuncio = ?";
@@ -61,7 +57,6 @@ function obtenerAnuncioPorId($idAnuncio) {
     return $anuncio;
 }
 
-// Actualizar un anuncio existente
 function actualizarAnuncio($idAnuncio, $titulo, $mensaje, $fechaExpiracion, $dirigidoA) {
     $con = obtenerConexion();
     $sql = "UPDATE anuncios SET titulo=?, mensaje=?, fechaExpiracion=?, dirigidoA=? WHERE idAnuncio=?";
@@ -72,7 +67,6 @@ function actualizarAnuncio($idAnuncio, $titulo, $mensaje, $fechaExpiracion, $dir
     return $resultado;
 }
 
-// Contar cuántos anuncios están vigentes (no han expirado)
 function contarAnunciosQueEstanActivos() {
     $con = obtenerConexion();
     $hoy = date('Y-m-d');
@@ -86,7 +80,6 @@ function contarAnunciosQueEstanActivos() {
     return (int)($fila['total'] ?? 0);
 }
 
-// Listar anuncios filtrados por el rol del usuario (estudiante, profesor, etc)
 function listarAnunciosPorRol($rolUsuario) {
     $con = obtenerConexion();
     $hoy = date('Y-m-d');
@@ -103,11 +96,8 @@ function listarAnunciosPorRol($rolUsuario) {
     return $listaAnuncios;
 }
 
-// Obtener anuncios con paginación (Simplificado: recibe la página y el límite)
 function listarAnunciosPaginados($paginaActual, $limitePorPagina) {
     $con = obtenerConexion();
-
-    // Calculamos desde dónde empezar a leer (inicio)
     $inicio = ($paginaActual - 1) * $limitePorPagina;
 
     $sql = "SELECT * FROM anuncios ORDER BY idAnuncio DESC LIMIT ?, ?";

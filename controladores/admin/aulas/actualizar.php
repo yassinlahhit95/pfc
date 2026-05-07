@@ -11,7 +11,6 @@ if (isset($_POST['actualizarAula'])) {
         $errores['nombreAula'] = "El nombre del aula es obligatorio.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores)) {
         if (checkAulaExistente($nuevoNombre, $idAula)) {
             $errores['nombreAula'] = "Este nombre de aula ya está en uso.";

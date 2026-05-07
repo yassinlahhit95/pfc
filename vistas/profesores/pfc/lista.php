@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td>
                                 <div class="botones-accion">
                                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>" title="Descargar"><i class="fas fa-download"></i></a>
-                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" style="display:inline;">
+                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" class="display-inline">
                                         <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
                                         <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
                                             <i class="fas fa-trash"></i>

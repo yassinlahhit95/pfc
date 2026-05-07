@@ -10,7 +10,7 @@ function toggleMenu() {
     }
 }
 
-// Cerrar menú al hacer clic fuera (opcional, para móvil)
+// Cerrar menú al hacer clic fuera en móvil
 document.addEventListener('click', function(event) {
     var sidebar = document.getElementById('barraLateral');
     var toggle = document.querySelector('.menu-toggle');

@@ -29,8 +29,7 @@ if (isset($_POST['enviarMensaje'])) {
         $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'profesor');
         
         if ($resultado) {
-            // Notificaciones
-            if ($idEstudiante > 1) { 
+            if ($idEstudiante > 1) {
                 $token = obtenerTokenUsuario($idEstudiante, "estudiante");
                 if ($token) enviarNotificacionFirebase($token, "Mensaje de Profesor: " . $asunto, $descripcion);
             } else {

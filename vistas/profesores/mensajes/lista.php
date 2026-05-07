@@ -13,7 +13,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-// Obtenemos los mensajes donde el profesor es emisor o destinatario
 $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 
 $tituloPagina = "Buzón de Mensajes - Portal Profesores";

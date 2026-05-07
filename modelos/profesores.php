@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todos los profesores
 function listarProfesores() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM profesores ORDER BY idProfesor ASC";
@@ -14,7 +13,6 @@ function listarProfesores() {
     return $lista;
 }
 
-// Comprobar si ya existe un profesor con el mismo DNI o Email
 function checkProfesorExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
@@ -33,7 +31,6 @@ function checkProfesorExistente($dni, $email, $idExcluir = null) {
     return $existe;
 }
 
-// Registrar un nuevo profesor en el sistema
 function insertarProfesor(string $nombre, string $email, string $tel, string $dni, string $dir, string $f_nac, string $f_alta, string $ciudad, string $cp, string $obs): bool|int {
     if (checkProfesorExistente($dni, $email)) {
         return false;
@@ -44,7 +41,6 @@ function insertarProfesor(string $nombre, string $email, string $tel, string $dn
     mysqli_stmt_bind_param($stmt, "ssssssssss", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
     mysqli_stmt_execute($stmt);
 
-    // Obtenemos el último ID generado (el ID del nuevo profesor)
     $sql = "SELECT MAX(idProfesor) as ultimoId FROM profesores";
     $stmt2 = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt2);
@@ -56,7 +52,6 @@ function insertarProfesor(string $nombre, string $email, string $tel, string $dn
     return $idNuevo;
 }
 
-// Actualizar un profesor
 function actualizarProfesor(int $id, string $nombre, string $email, string $tel, string $dni, string $dir, string $f_nac, string $f_alta, string $ciudad, string $cp, string $obs): bool {
     if (checkProfesorExistente($dni, $email, $id)) {
         return false;
@@ -70,7 +65,6 @@ function actualizarProfesor(int $id, string $nombre, string $email, string $tel,
     return $resultado;
 }
 
-// Asociar un profesor con un ciclo formativo
 function asociarCicloProfesor($idCic, $idProf) {
     $con = obtenerConexion();
     $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
@@ -81,7 +75,6 @@ function asociarCicloProfesor($idCic, $idProf) {
     return $resultado;
 }
 
-// Asociar un profesor con un módulo profesional
 function asociarModuloProfesor($idMod, $idProf) {
     $con = obtenerConexion();
     $sql = "INSERT INTO profesor_modulo (idModulo, idProfesor) VALUES (?, ?)";
@@ -92,7 +85,6 @@ function asociarModuloProfesor($idMod, $idProf) {
     return $resultado;
 }
 
-// Eliminar un profesor del sistema
 function eliminarProfesor($id) {
     $con = obtenerConexion();
     $sql = "DELETE FROM profesores WHERE idProfesor = ?";
@@ -103,7 +95,6 @@ function eliminarProfesor($id) {
     return $resultado;
 }
 
-// Obtener los datos de un profesor por su ID
 function obtenerProfesorPorId($id) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM profesores WHERE idProfesor = ?";
@@ -116,7 +107,6 @@ function obtenerProfesorPorId($id) {
     return $fila;
 }
 
-// Obtener los profesores que imparten clases en un ciclo formativo
 function listarProfesoresPorCiclo($idCic) {
     $con = obtenerConexion();
     $sql = "SELECT p.* FROM profesores p JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor WHERE cp.idCiclo = ? ORDER BY p.nombreProfesor ASC";
@@ -132,7 +122,6 @@ function listarProfesoresPorCiclo($idCic) {
     return $lista;
 }
 
-// Obtener los IDs de los módulos asignados a un profesor
 function obtenerIdsModulosDeProfesor($idProf) {
     $con = obtenerConexion();
     $sql = "SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?";
@@ -148,7 +137,6 @@ function obtenerIdsModulosDeProfesor($idProf) {
     return $lista;
 }
 
-// Eliminar todas las asignaciones de módulos de un profesor
 function limpiarModulosProfesor($idProf) {
     $con = obtenerConexion();
     $sql = "DELETE FROM profesor_modulo WHERE idProfesor = ?";
@@ -159,7 +147,6 @@ function limpiarModulosProfesor($idProf) {
     return $resultado;
 }
 
-// Cambiar la contraseña de acceso del profesor
 function actualizarPasswordProfesor($id, $pass) {
     $con = obtenerConexion();
     $sql = "UPDATE profesores SET password = ? WHERE idProfesor = ?";
@@ -170,7 +157,6 @@ function actualizarPasswordProfesor($id, $pass) {
     return $resultado;
 }
 
-// Actualizar los datos básicos del perfil del profesor
 function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
     $con = obtenerConexion();
     $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=? WHERE idProfesor=?";
@@ -181,11 +167,9 @@ function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
     return $resultado;
 }
 
-// Obtener profesores y sus módulos para un estudiante específico (según su ciclo)
 function obtenerProfesoresConModulosParaEstudiante($idEst) {
     $con = obtenerConexion();
 
-    // Primero obtenemos el ciclo del estudiante
     $sql = "SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEst);
@@ -194,7 +178,6 @@ function obtenerProfesoresConModulosParaEstudiante($idEst) {
     $filaCiclo = mysqli_fetch_assoc($resultado);
     $idCiclo = $filaCiclo['idCiclo'];
 
-    // Ahora buscamos los profesores que dan clase en los módulos de ese ciclo
     $sql = "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo FROM profesores p JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor JOIN modulos m ON pm.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY p.nombreProfesor ASC, m.nombreModulo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
@@ -208,7 +191,6 @@ function obtenerProfesoresConModulosParaEstudiante($idEst) {
     return $lista;
 }
 
-// Obtener tokens de todos los profesores para notificaciones push
 function obtenerTokensProfesores() {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM profesores WHERE fcm_token IS NOT NULL AND fcm_token != ''";
@@ -223,7 +205,6 @@ function obtenerTokensProfesores() {
     return $lista;
 }
 
-// Validar login de profesor
 function validarLoginProfesor($email, $pass) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM profesores WHERE emailProfesor = ? AND password = ?";
@@ -236,7 +217,6 @@ function validarLoginProfesor($email, $pass) {
     return $datos;
 }
 
-// Actualizar token FCM para notificaciones
 function actualizarTokenFCMProfesor($id, $token) {
     $con = obtenerConexion();
     $sql = "UPDATE profesores SET fcm_token = ? WHERE idProfesor = ?";
@@ -247,7 +227,6 @@ function actualizarTokenFCMProfesor($id, $token) {
     return $resultado;
 }
 
-// Obtener token FCM de un profesor específico
 function obtenerTokenFCMProfesor($id) {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM profesores WHERE idProfesor = ?";

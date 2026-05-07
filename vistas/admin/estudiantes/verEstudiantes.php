@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Validación de sesión simple
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -14,14 +13,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-// Obtenemos todos los estudiantes de la base de datos
 $listaDeEstudiantesActuales = listarEstudiantes();
 
-// Captura de mensajes de sesión para mostrar alertas
 $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
-
-// Limpiamos los mensajes para que no se repitan al recargar
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 

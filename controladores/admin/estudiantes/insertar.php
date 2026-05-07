@@ -49,7 +49,6 @@ if (isset($_POST['guardarEstudiante'])) {
         $errores['idCiclo'] = "Debe seleccionar un ciclo.";
     }
 
-    // Comprobamos duplicados antes de insertar
     if (empty($errores)) {
         if (checkEstudianteExistente($dni, $email)) {
             $errores['dniEstudiante'] = "El DNI o Email ya están registrados.";

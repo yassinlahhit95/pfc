@@ -1,34 +1,30 @@
 <?php
-// Seguridad: Solo admin
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
 }
 
-// Usamos rutas raíz directas (más humano y estable sin $_SERVER)
-// Esto evita errores al incluir el nav desde diferentes profundidades
-$rel = "/pfc/"; 
+// Root paths: evita errores al incluir nav desde diferentes profundidades
+$rel = "/pfc/";
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-
-// Contadores para el menú
-$_nEstudiantes = contarEstudiantes();
-$_nProfesores = contarProfesores();
-$_nDirectores = contarDirectores();
-$_nPagos = contarPagos();
-$_nAnuncios = contarAnuncios();
-$_nMensajes = contarReclamaciones();
-$_nSinLeer = contarMensajesNoLeidosAdmin();
-$_nCiclos = contarCiclos();
-$_nModulos = contarModulos();
-$_nRetos = contarRetos();
-$_nAulas = contarAulas();
-$_nInventario = contarInventario();
-$_nPrestamos = contarPrestamosActivos();
-$_nTFG = contarTFGsSubidos();
+$numEstudiantes = contarEstudiantes();
+$numProfesores = contarProfesores();
+$numDirectores = contarDirectores();
+$numPagos = contarPagos();
+$numAnuncios = contarAnuncios();
+$numMensajes = contarReclamaciones();
+$numSinLeer = contarMensajesNoLeidosAdmin();
+$numCiclos = contarCiclos();
+$numModulos = contarModulos();
+$numRetos = contarRetos();
+$numAulas = contarAulas();
+$numInventario = contarInventario();
+$numPrestamos = contarPrestamosActivos();
+$numTFG = contarTFGsSubidos();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -79,22 +75,22 @@ $_nTFG = contarTFGsSubidos();
                 
                 <a href="<?= $rel ?>vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?= ($seccion == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
-                    <span class="etiqueta-contador"><?= $_nEstudiantes ?></span>
+                    <span class="etiqueta-contador"><?= $numEstudiantes ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/ciclos/verCiclos.php" class="enlace-menu <?= ($seccion == 'ciclos') ? 'activo' : '' ?>">
                     <i class="fas fa-layer-group"></i> <span>CICLOS FORMATIVOS</span>
-                    <span class="etiqueta-contador"><?= $_nCiclos ?></span>
+                    <span class="etiqueta-contador"><?= $numCiclos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/modulos/verModulos.php" class="enlace-menu <?= ($seccion == 'modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-book"></i> <span>MÓDULOS</span>
-                    <span class="etiqueta-contador"><?= $_nModulos ?></span>
+                    <span class="etiqueta-contador"><?= $numModulos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/retos/verRetos.php" class="enlace-menu <?= ($seccion == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS / PROYECTOS</span>
-                    <span class="etiqueta-contador"><?= $_nRetos ?></span>
+                    <span class="etiqueta-contador"><?= $numRetos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?= ($seccion == 'notas_modulos') ? 'activo' : '' ?>">
@@ -111,7 +107,7 @@ $_nTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/pfc/verTFGs.php" class="enlace-menu <?= ($seccion == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
-                    <span class="etiqueta-contador"><?= $_nTFG ?></span>
+                    <span class="etiqueta-contador"><?= $numTFG ?></span>
                 </a>
             </div>
 
@@ -120,17 +116,17 @@ $_nTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/directores/verDirectores.php" class="enlace-menu <?= ($seccion == 'directores') ? 'activo' : '' ?>">
                     <i class="fas fa-user-tie"></i> <span>DIRECTORES</span>
-                    <span class="etiqueta-contador"><?= $_nDirectores ?></span>
+                    <span class="etiqueta-contador"><?= $numDirectores ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/profesores/verProfesores.php" class="enlace-menu <?= ($seccion == 'profesores') ? 'activo' : '' ?>">
                     <i class="fas fa-chalkboard-teacher"></i> <span>PROFESORES</span>
-                    <span class="etiqueta-contador"><?= $_nProfesores ?></span>
+                    <span class="etiqueta-contador"><?= $numProfesores ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/pagos/verPagosGeneral.php" class="enlace-menu <?= ($seccion == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-wallet"></i> <span>PAGOS</span>
-                    <span class="etiqueta-contador"><?= $_nPagos ?></span>
+                    <span class="etiqueta-contador"><?= $numPagos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/eventos/gestionEventos.php" class="enlace-menu <?= ($seccion == 'eventos') ? 'activo' : '' ?>">
@@ -139,12 +135,12 @@ $_nTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?= ($seccion == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>AVISOS Y PUSH</span>
-                    <span class="etiqueta-contador"><?= $_nAnuncios ?></span>
+                    <span class="etiqueta-contador"><?= $numAnuncios ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/mensajes/lista.php" class="enlace-menu <?= ($seccion == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($_nSinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $_nMensajes ?></span>
+                    <span class="etiqueta-contador <?= ($numSinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $numMensajes ?></span>
                 </a>
             </div>
 
@@ -153,17 +149,17 @@ $_nTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/aulas/verAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
                     <i class="fas fa-door-open"></i> <span>AULAS</span>
-                    <span class="etiqueta-contador"><?= $_nAulas ?></span>
+                    <span class="etiqueta-contador"><?= $numAulas ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/inventario/verInventario.php" class="enlace-menu <?= ($seccion == 'inventario') ? 'activo' : '' ?>">
                     <i class="fas fa-boxes"></i> <span>INVENTARIO</span>
-                    <span class="etiqueta-contador"><?= $_nInventario ?></span>
+                    <span class="etiqueta-contador"><?= $numInventario ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?= ($seccion == 'prestamos') ? 'activo' : '' ?>">
                     <i class="fas fa-hand-holding"></i> <span>PRÉSTAMOS</span>
-                    <span class="etiqueta-contador"><?= $_nPrestamos ?></span>
+                    <span class="etiqueta-contador"><?= $numPrestamos ?></span>
                 </a>
             </div>
 

@@ -10,7 +10,6 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-// Filtros para la selección de destinatarios
 $tipoDeDestinatario = $_GET['tipoDestinatario'] ?? "profesor"; // 'profesor' o 'estudiante'
 $idCicloSeleccionado = $_GET['idCiclo'] ?? "";
 
@@ -21,7 +20,6 @@ $listaDeCiclos = listarTodosLosCiclos();
 if ($tipoDeDestinatario == 'profesor') {
     $listaDeProfesores = listarProfesores();
 } else {
-    // Si queremos escribir a estudiantes, podemos filtrar por ciclo
     if (!empty($idCicloSeleccionado)) {
         $listaDeEstudiantes = listarEstudiantesPorCiclo($idCicloSeleccionado);
     } else {
@@ -29,7 +27,6 @@ if ($tipoDeDestinatario == 'profesor') {
     }
 }
 
-// Mensajes y errores de la sesión
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 $lista_de_errores = $_SESSION['errores'] ?? [];
@@ -55,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca p-25">
-    <div class="disposicion-flexible separacion-grande margen-abajo alinear-centro" style="padding: 10px 0;">
+    <div class="disposicion-flexible separacion-grande margen-abajo alinear-centro pv-10">
         <div class="campo-formulario">
             <label class="texto-negrita">1. Seleccionar Grupo de Destino:</label>
             <div class="disposicion-flexible separacion-pequena mt-10">
@@ -86,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php } ?>
     </div>
 
-    <hr class="margen-abajo" style="opacity: 0.2;">
+    <hr class="margen-abajo opacity-20">
 
     <form action="../../../controladores/admin/mensajes/insertar.php" method="POST" class="p-10">
         <input type="hidden" name="emisor_rol" value="admin">
@@ -137,7 +134,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="margen-arriba-grande disposicion-flexible" style="justify-content: flex-end; gap: 15px;">
+        <div class="margen-arriba-grande disposicion-flexible justify-end gap-15">
             <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
@@ -149,6 +146,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

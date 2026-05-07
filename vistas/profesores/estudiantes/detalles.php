@@ -1,10 +1,6 @@
 <?php
-/**
- * Vista de Detalles del Estudiante para Profesores (Solo Lectura)
- */
 session_start();
 
-// Seguridad: Verificar sesión de profesor
 if (empty($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
     exit;
@@ -16,18 +12,13 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 $idEstudiante = $_GET['idEstudiante'] ?? 0;
 $idEstudiante = intval($idEstudiante);
 
-// Obtener los datos del estudiante
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 
-// Verificar si el estudiante existe
 if (!$estudiante) {
     $_SESSION['error'] = "ESTUDIANTE NO ENCONTRADO.";
     header("Location: lista.php");
     exit;
 }
-
-// Opcional: Podríamos verificar que el estudiante pertenece a un ciclo del profesor
-// Pero por ahora permitimos la visualización si existe el ID
 
 $tituloDelPagina = "Detalles del Estudiante - Portal Profesores";
 $seccionActual = 'estudiantes';

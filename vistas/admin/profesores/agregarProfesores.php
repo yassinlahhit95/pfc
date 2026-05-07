@@ -10,7 +10,6 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();
 
-// Organizar módulos por ciclo
 $modulos_por_ciclo = [];
 foreach ($todosLosModulos as $m) {
     $idC = $m['idCiclo'];
@@ -43,7 +42,6 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
         <div class="formulario-cuadricula">
-            <!-- (Same profile fields as before) -->
             <div class="campo-formulario">
                 <label for="nombreProfesor">Nombre Completo *</label>
                 <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
@@ -135,7 +133,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos mb-15" data-ciclo-id="<?= $idCiclo ?>" style="display: none;">
+                        <div class="grupo-modulos mb-15 d-none" data-ciclo-id="<?= $idCiclo ?>">
                             <p class="texto-negrita color-primario borde-abajo-gris mb-10 pb-3">
                                 <?= $grupo['nombre'] ?>
                             </p>
@@ -177,19 +175,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (grupo) {
                 if (check.checked) {
-                    grupo.style.display = 'block';
+                    grupo.classList.remove('d-none');
                     algunoSeleccionado = true;
                 } else {
-                    grupo.style.display = 'none';
-                    // Opcional: desmarcar módulos si el ciclo se deselecciona
-                    // const inputsModulo = grupo.querySelectorAll('input[type="checkbox"]');
-                    // inputsModulo.forEach(i => i.checked = false);
+                    grupo.classList.add('d-none');
                 }
             }
         });
 
         if (msgVacio) {
-            msgVacio.style.display = algunoSeleccionado ? 'none' : 'block';
+            if (algunoSeleccionado) {
+                msgVacio.classList.add('d-none');
+            } else {
+                msgVacio.classList.remove('d-none');
+            }
         }
     }
 
@@ -197,13 +196,8 @@ document.addEventListener('DOMContentLoaded', function() {
         check.addEventListener('change', actualizarModulos);
     });
 
-    // Ejecutar al cargar por si hay datos de sesión
     actualizarModulos();
 });
 </script>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

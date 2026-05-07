@@ -6,7 +6,6 @@ if (!isset($_SESSION['idProfesor'])) {
     exit;
 }
 
-// Recuperar errores y datos de la sesión (Patrón Admin)
 $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
 $errores = $_SESSION['errores'] ?? [];
@@ -44,7 +43,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <!-- Filtro de Ciclo -->
     <form method="GET" class="margen-abajo">
         <div class="disposicion-flexible alinear-fin separacion-grande">
             <div class="campo-formulario flexible-rellenar">

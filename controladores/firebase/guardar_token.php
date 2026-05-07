@@ -6,7 +6,6 @@ require_once __DIR__ . "/../../modelos/estudiantes.php";
 
 header('Content-Type: application/json');
 
-// Obtenemos los datos del cuerpo de la petición (JSON)
 $datosRecibidos = json_decode(file_get_contents('php://input'), true);
 
 if (isset($datosRecibidos['token'], $datosRecibidos['userId'], $datosRecibidos['userRole'])) {
@@ -16,16 +15,15 @@ if (isset($datosRecibidos['token'], $datosRecibidos['userId'], $datosRecibidos['
 
     $resultado = false;
 
-    // Llamamos al modelo correspondiente según el rol
     switch ($rolUsuario) {
-        case 'estudiante': 
-            $resultado = actualizarTokenFCMEstudiante($idUsuario, $tokenFCM); 
+        case 'estudiante':
+            $resultado = actualizarTokenFCMEstudiante($idUsuario, $tokenFCM);
             break;
-        case 'profesor': 
-            $resultado = actualizarTokenFCMProfesor($idUsuario, $tokenFCM); 
+        case 'profesor':
+            $resultado = actualizarTokenFCMProfesor($idUsuario, $tokenFCM);
             break;
-        case 'admin': 
-            $resultado = actualizarTokenFCMDirector($idUsuario, $tokenFCM); 
+        case 'admin':
+            $resultado = actualizarTokenFCMDirector($idUsuario, $tokenFCM);
             break;
     }
 

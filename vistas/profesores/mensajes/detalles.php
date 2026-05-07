@@ -17,7 +17,6 @@ if (!$mensaje) {
     exit;
 }
 
-// Obtenemos info del profesor actual para mostrar su nombre en lugar de "Tú"
 require_once __DIR__ . "/../../../modelos/profesores.php";
 $profeActual = obtenerProfesorPorId($_SESSION['idProfesor']);
 $nombreProfeParaVista = $profeActual['nombreProfesor'] ?? 'Profesor';

@@ -36,7 +36,6 @@ if (isset($_POST['actualizarDirector'])) {
         $errores_campos['telefonoDirector'] = "Teléfono numérico.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores_campos)) {
         if (checkDirectorExistente($dni, $email, $idDirector)) {
             $errores_campos['dniDirector'] = "El DNI o Email ya están registrados por otro director.";

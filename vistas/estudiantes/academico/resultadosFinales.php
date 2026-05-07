@@ -15,7 +15,6 @@ $idEstudiante = $_SESSION['idEstudiante'];
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
-// Obtenemos los datos finales procesados desde el Modelo (MVC)
 $resumenFinal = obtenerResultadosFinalesEstudiante($idEstudiante);
 
 $tituloDelPagina = "Mis Resultados Finales - Portal Estudiantes";

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todos los retos registrados en el sistema
 function listarRetos() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM retos ORDER BY idReto ASC";
@@ -15,7 +14,6 @@ function listarRetos() {
     return $listaRetos;
 }
 
-// Obtener los retos vinculados a un módulo específico
 function listarRetosFiltrados($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto WHERE mr.idModulo = ? ORDER BY r.idReto ASC";
@@ -31,7 +29,6 @@ function listarRetosFiltrados($idModulo) {
     return $listaFiltrada;
 }
 
-// Obtener los retos que imparte un profesor (a través de sus módulos asignados)
 function obtenerRetosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN profesor_modulo pm ON mr.idModulo = pm.idModulo WHERE pm.idProfesor = ?";
@@ -47,7 +44,6 @@ function obtenerRetosDeProfesor($idProfesor) {
     return $listaProfesor;
 }
 
-// Registrar un nuevo reto y asociarlo a una lista de módulos
 function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos) {
     $con = obtenerConexion();
     $sql = "INSERT INTO retos (nombreReto, fechaInicio, fechaFin, horasReto) VALUES (?, ?, ?, ?)";
@@ -58,7 +54,6 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
     if ($resultado) {
         $idNuevoReto = mysqli_insert_id($con);
 
-        // Creamos las asociaciones con los módulos seleccionados
         $sql2 = "INSERT INTO modulo_reto (idModulo, idReto) VALUES (?, ?)";
         $stmt2 = mysqli_prepare($con, $sql2);
         foreach ($listaIdsModulos as $idModulo) {
@@ -70,11 +65,9 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
     return $resultado;
 }
 
-// Comprobar si al añadir/editar un reto se superan las horas totales permitidas por el módulo
 function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExcluir = 0) {
     $con = obtenerConexion();
 
-    // Obtenemos el límite de horas configurado para el módulo
     $sql = "SELECT horasMaximas FROM modulos WHERE idModulo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -85,7 +78,6 @@ function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExclui
 
     $idRetoAExcluir = (int)$idRetoAExcluir;
 
-    // Sumamos las horas de los retos ya existentes (excluyendo el que estamos editando si aplica)
     $sql = "SELECT SUM(r.horasReto) as total FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto WHERE mr.idModulo = ? AND r.idReto != ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idModulo, $idRetoAExcluir);
@@ -99,7 +91,6 @@ function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExclui
     return (($horasOcupadas + $horasNuevas) <= $limiteMaximo);
 }
 
-// Actualizar los datos de un reto y sus asociaciones con módulos
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos = null) {
     $con = obtenerConexion();
     $sql = "UPDATE retos SET nombreReto=?, fechaInicio=?, fechaFin=?, horasReto=? WHERE idReto=?";
@@ -108,7 +99,6 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
     $resultado = mysqli_stmt_execute($stmt);
 
     if ($resultado && $listaIdsModulos !== null) {
-        // Refrescamos las asociaciones con módulos
         $sql = "DELETE FROM modulo_reto WHERE idReto = ?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idReto);
@@ -126,7 +116,6 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
     return $resultado;
 }
 
-// Eliminar un reto permanentemente
 function eliminarReto($idReto) {
     $con = obtenerConexion();
     $sql = "DELETE FROM retos WHERE idReto = ?";
@@ -137,7 +126,6 @@ function eliminarReto($idReto) {
     return $resultado;
 }
 
-// Obtener la información de un reto específico por su ID
 function obtenerRetoPorId($idReto) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM retos WHERE idReto = ?";
@@ -150,7 +138,6 @@ function obtenerRetoPorId($idReto) {
     return $reto;
 }
 
-// Listar los módulos que participan en un reto concreto
 function obtenerModulosDeReto($idReto) {
     $con = obtenerConexion();
     $sql = "SELECT m.*, c.nombreCiclo FROM modulos m JOIN ciclos c ON m.idCiclo = c.idCiclo JOIN modulo_reto mr ON m.idModulo = mr.idModulo WHERE mr.idReto = ?";
@@ -166,7 +153,6 @@ function obtenerModulosDeReto($idReto) {
     return $listaModulos;
 }
 
-// Registrar o actualizar la nota de un estudiante en un reto
 function calificarReto($idEstudiante, $idReto, $notaObtenida) {
     $con = obtenerConexion();
 
@@ -191,7 +177,6 @@ function calificarReto($idEstudiante, $idReto, $notaObtenida) {
     return $resultado;
 }
 
-// Eliminar la nota de un estudiante en un reto
 function eliminarCalificacionReto($idEstudiante, $idReto) {
     $con = obtenerConexion();
     $sql = "DELETE FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
@@ -202,7 +187,6 @@ function eliminarCalificacionReto($idEstudiante, $idReto) {
     return $resultado;
 }
 
-// Obtener la nota de un estudiante en un reto específico
 function obtenerCalificacionReto($idEstudiante, $idReto) {
     $con = obtenerConexion();
     $sql = "SELECT nota FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
@@ -221,11 +205,9 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
     return $nota;
 }
 
-// Calcular la media de notas de retos asociadas a un módulo para cada estudiante
 function listarCalificacionesRetoPorModulo($idModulo) {
     $con = obtenerConexion();
 
-    // Identificamos todos los retos vinculados al módulo
     $sql = "SELECT idReto FROM modulo_reto WHERE idModulo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -245,7 +227,6 @@ function listarCalificacionesRetoPorModulo($idModulo) {
     // IDs son enteros obtenidos de la BD — se construye la cláusula IN de forma segura
     $listaIds = implode(",", $idsRetos);
 
-    // Calculamos el promedio de notas de esos retos por cada alumno
     $sql = "SELECT idEstudiante, AVG(nota) as promedio
                   FROM calificaciones_retos
                   WHERE idReto IN ($listaIds)
@@ -261,7 +242,6 @@ function listarCalificacionesRetoPorModulo($idModulo) {
     return $mapaMedias;
 }
 
-// Obtener el historial de todas las notas de retos de un estudiante
 function listarCalificacionesRetoPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT r.nombreReto, cr.nota, r.fechaInicio, r.fechaFin FROM calificaciones_retos cr JOIN retos r ON cr.idReto = r.idReto WHERE cr.idEstudiante = ? ORDER BY r.fechaInicio DESC";
@@ -277,7 +257,6 @@ function listarCalificacionesRetoPorEstudiante($idEstudiante) {
     return $listaHistorial;
 }
 
-// Obtener todos los retos pertenecientes a un ciclo formativo
 function obtenerRetosPorCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulos m ON mr.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY r.idReto ASC";
@@ -293,7 +272,6 @@ function obtenerRetosPorCiclo($idCiclo) {
     return $listaRetos;
 }
 
-// Calcular el promedio global de todos los retos realizados por un estudiante
 function obtenerPromedioRetosEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT AVG(nota) as promedio FROM calificaciones_retos WHERE idEstudiante = ?";

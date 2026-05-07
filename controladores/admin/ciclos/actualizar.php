@@ -20,7 +20,6 @@ if (isset($_POST['actualizarCiclo'])) {
         $errores_campos['abreviaturaCiclo'] = "Abreviatura obligatoria.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores_campos)) {
         if (checkCicloExistente($nombre, $abreviatura, $idCiclo)) {
             $errores_campos['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";

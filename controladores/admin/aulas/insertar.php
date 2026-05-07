@@ -10,7 +10,6 @@ if (isset($_POST['guardarAula'])) {
         $errores['nombreAula'] = "El nombre del aula es obligatorio.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores)) {
         if (checkAulaExistente($nombreAula)) {
             $errores['nombreAula'] = "Este nombre de aula ya existe.";

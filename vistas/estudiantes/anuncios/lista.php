@@ -1,9 +1,4 @@
 <?php
-/**
- * Tablón de Anuncios para Estudiantes
- * 
- * Muestra los comunicados oficiales y avisos del centro dirigidos a los alumnos.
- */
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -17,7 +12,6 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-// Obtenemos los anuncios vigentes para el perfil de estudiante
 $anuncios = listarAnunciosPorRol('estudiantes');
 
 $tituloDelPagina = "Anuncios - Portal Estudiantes";

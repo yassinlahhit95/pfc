@@ -22,7 +22,6 @@ if (isset($_POST['guardarCiclo'])) {
         $errores_campos['idNivel'] = "Nivel obligatorio.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores_campos)) {
         if (checkCicloExistente($nombre, $abreviatura)) {
             $errores_campos['nombreCiclo'] = "El nombre o la abreviatura ya existen.";

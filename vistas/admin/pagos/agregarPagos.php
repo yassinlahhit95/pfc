@@ -9,14 +9,12 @@ $idEstudianteElegido = $_GET['idEstudiante'] ?? '';
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-// Filtrar estudiantes por ciclo si se ha seleccionado uno
 if (!empty($idCicloElegido)) {
     $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 } else {
     $todos_los_estudiantes = listarEstudiantes();
 }
 
-// Obtener info financiera si hay estudiante seleccionado
 $infoFinanciera = null;
 if (!empty($idEstudianteElegido)) {
     $infoFinanciera = obtenerEstadoFinancieroEstudiante($idEstudianteElegido);
@@ -136,7 +134,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-// JavaScript muy simple para ayudar al usuario, no es AJAX
 function actualizarMontoRapido() {
     const tipo = document.getElementById('tipoPago').value;
     const precioTotal = <?= $infoFinanciera['precioCiclo'] ?>;

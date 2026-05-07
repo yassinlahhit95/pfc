@@ -24,7 +24,6 @@ $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $listaAnuncios = listarTodosLosAnuncios();
 $listaEventosProximos = listarEventosProximos();
 
-// Validamos que el estudiante exista y obtenemos su ciclo
 $idCiclo = $estudianteActual['idCiclo'] ?? 0;
 
 $listaModulos = obtenerModulosPorCiclo($idCiclo);
@@ -49,7 +48,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<!-- ESTADISTICAS EN FLEX -->
 <div class="disposicion-flexible envoltura-flexible separacion-grande margen-abajo">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul flexible-rellenar">
         <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
@@ -66,7 +64,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="cuadricula-secundaria mt-30">
-  <!-- COLUMNA IZQUIERDA: ANUNCIOS -->
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
 
     <div class="tarjeta-blanca">
@@ -101,7 +98,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
   </div>
 
-  <!-- COLUMNA DERECHA: EVENTOS -->
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">

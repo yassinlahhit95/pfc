@@ -25,7 +25,6 @@ $modulos_asignados = obtenerIdsModulosDeProfesor($idProfesor);
 $todos_los_modulos = listarModulos(); // Incluye nombre de ciclo por el JOIN
 $ciclos = listarTodosLosCiclos();
 
-// Organizar módulos por ciclo para mejor UX
 $modulos_por_ciclo = [];
 foreach ($todos_los_modulos as $m) {
     $modulos_por_ciclo[$m['nombreCiclo']][] = $m;

@@ -23,7 +23,6 @@ if (isset($_POST['guardarAnuncio'])) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
 
         if ($resultado) {
-            // ... (rest of logic)
             $_SESSION['exito'] = "Anuncio publicado y notificado.";
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;

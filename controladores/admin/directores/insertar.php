@@ -34,7 +34,6 @@ if (isset($_POST['guardarDirector'])) {
         $lista_de_errores['telefonoDirector'] = "El teléfono debe ser numérico.";
     }
 
-    // Comprobamos duplicados
     if (empty($lista_de_errores)) {
         if (checkDirectorExistente($dni, $email)) {
             $lista_de_errores['dniDirector'] = "El DNI o Email ya están registrados.";

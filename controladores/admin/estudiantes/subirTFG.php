@@ -18,7 +18,6 @@ if (isset($_POST['subirTFG'])) {
         $timestamp = date('d-m-Y_H-i-s');
         $nombreArchivo = "TFG_" . $idEstudiante . "_" . $timestamp . ".pdf";
 
-        // Usar __DIR__ para la ruta de subida
         $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
 
         if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {

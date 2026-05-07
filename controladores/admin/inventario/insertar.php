@@ -15,7 +15,6 @@ if (isset($_POST['guardarArticulo'])) {
         $errores['numeroSerie'] = "El número de serie es obligatorio.";
     }
 
-    // Comprobamos duplicados
     if (empty($errores)) {
         if (checkArticuloExistente($numeroSerie)) {
             $errores['numeroSerie'] = "Este número de serie ya está registrado.";

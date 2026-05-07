@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener las notas de un alumno en un módulo específico
 function obtenerNotasModulo($idEstudiante, $idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
@@ -14,7 +13,6 @@ function obtenerNotasModulo($idEstudiante, $idModulo) {
     return $datosCalificaciones;
 }
 
-// Listar todas las calificaciones registradas (Uso para Administradores)
 function listarCalificacionesGeneral() {
     $con = obtenerConexion();
     $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
@@ -32,7 +30,6 @@ function listarCalificacionesGeneral() {
     return $listaCalificaciones;
 }
 
-// Obtener una calificación específica por su ID único
 function obtenerCalificacionPorId($idCalificacion) {
     if (empty($idCalificacion) || !is_numeric($idCalificacion)) {
         return null;
@@ -49,7 +46,6 @@ function obtenerCalificacionPorId($idCalificacion) {
     return $datosCalificacion;
 }
 
-// Eliminar un registro de calificación por su ID
 function eliminarCalificacion($idCalificacion) {
     $con = obtenerConexion();
     $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = ?";
@@ -60,7 +56,6 @@ function eliminarCalificacion($idCalificacion) {
     return $resultado;
 }
 
-// Obtener el historial completo de notas de un estudiante (todos sus módulos)
 function listarCalificacionesPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT cm.*, m.nombreModulo FROM calificaciones_modulos cm JOIN modulos m ON cm.idModulo = m.idModulo WHERE idEstudiante = ?";
@@ -76,7 +71,6 @@ function listarCalificacionesPorEstudiante($idEstudiante) {
     return $listaEstudiante;
 }
 
-// Listar calificaciones para profesores con filtros opcionales (Ciclo y Módulo)
 function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0) {
     $con = obtenerConexion();
 
@@ -115,7 +109,6 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
     return $listaFiltrada;
 }
 
-// Guardar una nueva calificación o actualizarla si ya existe (Upsert)
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones) {
     $con = obtenerConexion();
 
@@ -126,12 +119,10 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1
     $resultado = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($resultado) > 0) {
-        // Actualizamos registro existente
         $sql = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "sssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
     } else {
-        // Creamos nuevo registro
         $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "iisssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
@@ -142,11 +133,9 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1
     return $resultado;
 }
 
-// Listar datos para el formulario de calificar un módulo completo (todos los alumnos del ciclo)
 function listarCalificacionesPorModulo($idModulo) {
     $con = obtenerConexion();
 
-    // Obtenemos primero el ciclo al que pertenece el módulo
     $sql = "SELECT idCiclo FROM modulos WHERE idModulo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
@@ -155,7 +144,6 @@ function listarCalificacionesPorModulo($idModulo) {
     $datosModulo = mysqli_fetch_assoc($resultado);
     $idCiclo = (int)($datosModulo['idCiclo'] ?? 0);
 
-    // Traemos todos los alumnos del ciclo y su nota actual si la tienen
     $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev as calificacion, cm.observaciones FROM estudiantes e LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = ? WHERE e.idCiclo = ? ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idModulo, $idCiclo);
@@ -171,9 +159,6 @@ function listarCalificacionesPorModulo($idModulo) {
 
 // --- LÓGICA DE NEGOCIO PARA RESULTADOS FINALES (75% Módulos / 25% Retos) ---
 
-/**
- * Calcula los resultados académicos globales para todos los estudiantes de un ciclo.
- */
 function obtenerResultadosFinalesCiclo($idCiclo) {
     require_once __DIR__ . "/modulos.php";
     require_once __DIR__ . "/estudiantes.php";
@@ -189,9 +174,6 @@ function obtenerResultadosFinalesCiclo($idCiclo) {
     return $listaResultados;
 }
 
-/**
- * Calcula los resultados finales de un estudiante aplicando los pesos (75% módulos, 25% retos).
- */
 function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null) {
     require_once __DIR__ . "/modulos.php";
     require_once __DIR__ . "/retos.php";
@@ -245,7 +227,6 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         // 3. Cálculo de Nota Final del Módulo
         $notaFinalModulo = ($mediaNotasModulo * 0.75) + ($mediaRetosModulo * 0.25);
 
-        // Determinar estado del módulo
         if ($cantidadNotasValidas === 0) {
             $estadoModulo = "Pendiente";
         } elseif ($notaFinalModulo >= 5) {

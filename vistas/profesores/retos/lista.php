@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td>
                                 <div class="botones-accion">
                                     <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar" title="Editar"><i class="fas fa-edit"></i></a>
-                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este reto?');" style="display:inline;">
+                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este reto?');" class="display-inline">
                                         <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
                                         <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
                                             <i class="fas fa-trash"></i>

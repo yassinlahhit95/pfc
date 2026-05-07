@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener todos los pagos registrados
 function listarTodosLosPagos() {
     $con = obtenerConexion();
     $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
@@ -19,7 +18,6 @@ function listarTodosLosPagos() {
     return $listaPagos;
 }
 
-// Listar pagos filtrados por ciclo
 function listarPagosFiltrados($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo FROM pagos JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY idPago DESC";
@@ -35,7 +33,6 @@ function listarPagosFiltrados($idCiclo) {
     return $listaPagos;
 }
 
-// Obtener el historial de pagos de un alumno
 function obtenerPagosPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM pagos WHERE idEstudiante = ? ORDER BY fechaPago DESC";
@@ -51,7 +48,6 @@ function obtenerPagosPorEstudiante($idEstudiante) {
     return $listaPagos;
 }
 
-// Registrar un nuevo pago
 function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo) {
     $con = obtenerConexion();
     $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago) VALUES (?, ?, ?, ?, ?)";
@@ -62,7 +58,6 @@ function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fec
     return $resultado;
 }
 
-// Actualizar un pago existente
 function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante = "") {
     $con = obtenerConexion();
     if (!empty($comprobante)) {
@@ -79,11 +74,9 @@ function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $
     return $resultado;
 }
 
-// Obtener el balance financiero (total, pagado, restante) de un estudiante
 function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     $con = obtenerConexion();
 
-    // Suma de lo ya pagado
     $sql = "SELECT SUM(monto) as total FROM pagos WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
@@ -92,7 +85,6 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     $filaPagos = mysqli_fetch_assoc($resultado);
     $pagado = (float)($filaPagos['total'] ?? 0);
 
-    // Precio total del ciclo que cursa
     $sql = "SELECT precioCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
@@ -113,7 +105,6 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     ];
 }
 
-// Eliminar un registro de pago
 function eliminarPago($idPago) {
     $con = obtenerConexion();
     $sql = "DELETE FROM pagos WHERE idPago = ?";
@@ -124,7 +115,6 @@ function eliminarPago($idPago) {
     return $resultado;
 }
 
-// Obtener un pago por su ID
 function obtenerPagoPorId($idPago) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM pagos WHERE idPago = ?";
@@ -144,7 +134,6 @@ function obtenerPagoPorId($idPago) {
     return $pago;
 }
 
-// Contar cuántos pagos ha realizado un estudiante
 function contarPagosEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM pagos WHERE idEstudiante = ?";

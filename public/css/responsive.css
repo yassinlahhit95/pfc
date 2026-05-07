@@ -1,17 +1,21 @@
+/* 
+================================================================
+   AULAPRO - ESTILOS RESPONSIVE (RESPONSIVE.CSS)
+   Centralización de Media Queries y Adaptabilidad
+================================================================
+*/
 
-
-
-
-
+/* --- 1. TABLETS Y PANTALLAS MEDIANAS (< 992px) --- */
 @media (max-width: 992px) {
+    /* Navegación Superior */
     .navbar-superior {
-        display: flex; /* MOSTRAR EN MÓVIL/TABLET */
+        display: flex; 
         left: 0;
         padding: 0 15px;
     }
 
     .menu-superior {
-        display: none; /* OCULTAR LINKS DE TEXTO EN MÓVIL PARA USAR HAMBURGUESA O SIDEBAR */
+        display: none; 
     }
 
     .menu-toggle {
@@ -20,16 +24,117 @@
         z-index: 2000;
     }
 
+    /* Contenido Principal */
     .contenido-derecha,
     .contenido-principal {
         margin-left: 0 !important;
         width: 100%;
         padding: 15px;
-        padding-top: 85px; /* ESPACIO PARA NAVBAR SUPERIOR */
+        padding-top: 85px; 
+    }
+
+    /* Dashboard */
+    .cuadricula-estadisticas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cuadricula-secundaria {
+      grid-template-columns: 1fr;
+    }
+
+    /* Barra Lateral y Logos */
+    .boton-cerrar-barra, #botonCerrarBarra {
+        display: block;
+    }
+
+    .logo-navbar-png { display: none; }
+    .logo-navbar-jpeg { display: block; }
+    
+    body.menu-abierto .logo-navbar-png { display: block; }
+    body.menu-abierto .logo-navbar-jpeg { display: none; }
+
+    .barra-lateral {
+      width: 70px;
+      padding: 0;
+    }
+    
+    .barra-lateral .sidebar-logo-png { display: none; }
+    .barra-lateral .sidebar-logo-jpeg { display: block; }
+    .barra-lateral .titulo-panel-sidebar { display: none; }
+    .barra-lateral .enlace-menu span,
+    .barra-lateral .titulo-de-seccion,
+    .barra-lateral .etiqueta-contador {
+      display: none;
+    }
+
+    .barra-lateral.activo {
+      width: 260px;
+    }
+
+    .barra-lateral.activo .sidebar-logo-png { display: block; }
+    .barra-lateral.activo .sidebar-logo-jpeg { display: none; }
+    .barra-lateral.activo .titulo-panel-sidebar { display: inline-block; }
+
+    .barra-lateral.activo .texto-negrita,
+    .barra-lateral.activo .enlace-menu span,
+    .barra-lateral.activo .titulo-de-seccion,
+    .barra-lateral.activo .etiqueta-contador {
+      display: block;
+    }
+
+    .contenido-derecha,
+    .contenido-principal {
+      margin-left: 70px;
+      padding: 20px;
+    }
+
+    /* Formularios */
+    .form-fila.grid-2, .form-fila.grid-3 {
+        grid-template-columns: 1fr; /* Forzar una columna incluso en pantallas grandes */
     }
 }
 
+/* --- 2. MÓVILES (< 768px) --- */
+@media (max-width: 768px) {
+    .solo-movil { display: block; }
+    .ocultar-movil { display: none; }
 
+    /* Sección About Me */
+    .contenedor-about {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .about-titulo {
+        font-size: 36px;
+    }
+
+    .about-subtitulo {
+        font-size: 16px;
+    }
+
+    .about-descripcion {
+        font-size: 14px;
+    }
+
+    .silhueta-contenedor {
+        width: 250px;
+        height: 330px;
+    }
+
+    .enlace-red-social {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .about-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* --- 3. MÓVILES PEQUEÑOS (< 576px) --- */
 @media (max-width: 576px) {
     .contenedor-tabla {
         overflow-x: auto;
@@ -50,24 +155,7 @@
     .subtitulo-encabezado {
         font-size: 0.8rem;
     }
-}
 
-
-.solo-movil { display: none; }
-
-@media (max-width: 768px) {
-    .solo-movil { display: block; }
-    .ocultar-movil { display: none; }
-}
-
-/* Dashboard responsive */
-@media (max-width: 992px) {
-    .cuadricula-estadisticas {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 576px) {
     .cuadricula-estadisticas {
         grid-template-columns: 1fr;
     }
@@ -83,4 +171,55 @@
     .cuadricula-acciones-rapidas {
         grid-template-columns: 1fr;
     }
+
+    /* Barra Lateral en Móvil */
+    .barra-lateral {
+        left: -260px;
+        width: 260px;
+        transition: left 0.3s;
+    }
+    
+    .barra-lateral.mostrar-menu {
+        left: 0;
+        display: block;
+    }
+
+    .contenido-derecha,
+    .contenido-principal {
+        margin-left: 0 !important;
+        padding: 15px;
+    }
+}
+
+/* --- 4. UTILIDADES DE VISIBILIDAD --- */
+.solo-movil { display: none; }
+
+/* --- 5. LANDING PAGE (< 768px) --- */
+@media (max-width: 768px) {
+  .menu-landing {
+    position: fixed;
+    top: 70px;
+    right: 0;
+    width: 100%;
+    background: #ffffff;
+    flex-direction: column;
+    padding: 20px;
+    gap: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    transform: translateY(-20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .menu-landing.activo {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .menu-boton-landing {
+    display: block;
+  }
 }

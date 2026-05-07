@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todos los directores registrados
 function listarDirectores() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM directores ORDER BY idDirector ASC";
@@ -15,7 +14,6 @@ function listarDirectores() {
     return $listaDirectores;
 }
 
-// Comprobar si ya existe un director con el mismo DNI o Email
 function checkDirectorExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
@@ -34,7 +32,6 @@ function checkDirectorExistente($dni, $email, $idExcluir = null) {
     return $existe;
 }
 
-// Registrar un nuevo director en el sistema
 function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     if (checkDirectorExistente($dni, $email)) {
         return false;
@@ -48,7 +45,6 @@ function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNa
     return $resultado;
 }
 
-// Actualizar los datos completos de un director existente
 function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     if (checkDirectorExistente($dni, $email, $idDirector)) {
         return false;
@@ -62,7 +58,6 @@ function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fech
     return $resultado;
 }
 
-// Eliminar un director por su ID
 function eliminarDirector($idDirector) {
     $con = obtenerConexion();
     $sql = "DELETE FROM directores WHERE idDirector = ?";
@@ -73,7 +68,6 @@ function eliminarDirector($idDirector) {
     return $resultado;
 }
 
-// Actualizar los datos básicos de contacto de un director
 function actualizarPerfilDirector($idDirector, $nombre, $email, $telefono) {
     $con = obtenerConexion();
     $sql = "UPDATE directores SET nombreDirector=?, emailDirector=?, telefonoDirector=? WHERE idDirector=?";
@@ -84,7 +78,6 @@ function actualizarPerfilDirector($idDirector, $nombre, $email, $telefono) {
     return $resultado;
 }
 
-// Obtener la información de un director específico por su ID
 function obtenerDirectorPorId($idDirector) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM directores WHERE idDirector = ?";
@@ -97,7 +90,6 @@ function obtenerDirectorPorId($idDirector) {
     return $datosDirector;
 }
 
-// Actualizar la contraseña de acceso de un director
 function actualizarPasswordDirector($idDirector, $nuevaPassword) {
     $con = obtenerConexion();
     $sql = "UPDATE directores SET password = ? WHERE idDirector = ?";
@@ -108,7 +100,6 @@ function actualizarPasswordDirector($idDirector, $nuevaPassword) {
     return $resultado;
 }
 
-// Obtener los tokens FCM de todos los directores para notificaciones push
 function obtenerTokensDirectores() {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM directores WHERE fcm_token IS NOT NULL AND fcm_token != ''";
@@ -124,7 +115,6 @@ function obtenerTokensDirectores() {
     return $listaTokens;
 }
 
-// Validar las credenciales de acceso de un director (login)
 function validarLoginDirector($email, $password) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM directores WHERE emailDirector = ? AND password = ?";
@@ -137,7 +127,6 @@ function validarLoginDirector($email, $password) {
     return $datosUsuario;
 }
 
-// Guardar o actualizar el token FCM de un director
 function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
     $con = obtenerConexion();
     $sql = "UPDATE directores SET fcm_token = ? WHERE idDirector = ?";
@@ -148,7 +137,6 @@ function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
     return $resultado;
 }
 
-// Obtener el token FCM actual de un director específico
 function obtenerTokenFCMDirector($idDirector) {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM directores WHERE idDirector = ?";

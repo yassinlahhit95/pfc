@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todos los estudiantes registrados
 function listarEstudiantes() {
     $con = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo
@@ -20,7 +19,6 @@ function listarEstudiantes() {
     return $listaEstudiantes;
 }
 
-// Comprobar si ya existe un estudiante con el mismo DNI o Email
 function checkEstudianteExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
@@ -39,7 +37,6 @@ function checkEstudianteExistente($dni, $email, $idExcluir = null) {
     return $existe;
 }
 
-// Registrar un nuevo estudiante en el sistema
 function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo) {
     if (checkEstudianteExistente($dni, $email)) {
         return false;
@@ -53,7 +50,6 @@ function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, 
     return $resultado;
 }
 
-// Actualizar todos los datos de un estudiante existente
 function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo) {
     if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
         return false;
@@ -67,7 +63,6 @@ function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaN
     return $resultado;
 }
 
-// Obtener los estudiantes vinculados a los ciclos que imparte un profesor
 function listarEstudiantesPorProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?) ORDER BY estudiantes.nombreEstudiante ASC";
@@ -83,7 +78,6 @@ function listarEstudiantesPorProfesor($idProfesor) {
     return $listaEstudiantes;
 }
 
-// Listar todos los estudiantes matriculados en un ciclo específico
 function listarEstudiantesPorCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC";
@@ -99,7 +93,6 @@ function listarEstudiantesPorCiclo($idCiclo) {
     return $listaEstudiantes;
 }
 
-// Eliminar un estudiante por su ID
 function eliminarEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "DELETE FROM estudiantes WHERE idEstudiante = ?";
@@ -110,7 +103,6 @@ function eliminarEstudiante($idEstudiante) {
     return $resultado;
 }
 
-// Obtener la información completa de un estudiante por su ID
 function obtenerEstudiantePorId($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
@@ -123,7 +115,6 @@ function obtenerEstudiantePorId($idEstudiante) {
     return $datosEstudiante;
 }
 
-// Actualizar la contraseña de un estudiante
 function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?";
@@ -134,7 +125,6 @@ function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     return $resultado;
 }
 
-// Actualizar los datos básicos del perfil de un estudiante
 function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=? WHERE idEstudiante=?";
@@ -145,7 +135,6 @@ function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
     return $resultado;
 }
 
-// Obtener los tokens FCM de todos los estudiantes para notificaciones masivas
 function obtenerTokensEstudiantes() {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM estudiantes WHERE fcm_token IS NOT NULL AND fcm_token != ''";
@@ -160,7 +149,6 @@ function obtenerTokensEstudiantes() {
     return $listaTokens;
 }
 
-// Validar las credenciales de acceso de un estudiante
 function validarLoginEstudiante($email, $password) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND password = ?";
@@ -173,7 +161,6 @@ function validarLoginEstudiante($email, $password) {
     return $datosUsuario;
 }
 
-// Guardar o actualizar el token FCM de un estudiante
 function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET fcm_token = ? WHERE idEstudiante = ?";
@@ -184,7 +171,6 @@ function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
     return $resultado;
 }
 
-// Obtener el token FCM actual de un estudiante específico
 function obtenerTokenFCMEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM estudiantes WHERE idEstudiante = ?";

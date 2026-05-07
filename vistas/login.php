@@ -1,14 +1,6 @@
 <?php
-/**
- * Vista de Inicio de Sesión
- * 
- * Esta página gestiona el acceso de los usuarios al sistema.
- * Verifica si ya existe una sesión activa para redirigir al dashboard correspondiente.
- */
-
 session_start();
 
-// Si el usuario ya está autenticado, lo redirigimos automáticamente a su panel de control
 if (isset($_SESSION['idAdmin'])) {
     header("Location: admin/inicio/dashboard.php");
     exit;
@@ -20,12 +12,10 @@ if (isset($_SESSION['idAdmin'])) {
     exit;
 }
 
-// Comprobamos si existe algún mensaje de error almacenado en la sesión
 $mensajeError = '';
 if (isset($_SESSION['error'])) {
     $mensajeError = $_SESSION['error'];
 }
-// Limpiamos el mensaje de error después de recuperarlo para que no se muestre en futuras recargas
 unset($_SESSION['error']);
 ?>
 <!DOCTYPE html>
@@ -35,31 +25,11 @@ unset($_SESSION['error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión - Sistema de Gestión Escolar</title>
     <link rel="stylesheet" href="../public/css/admin.css">
+    <link rel="stylesheet" href="../public/css/responsive.css">
     <link rel="icon" href="../public/imagenes/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        .contenedor-login { width: 100%; max-width: 400px; padding: 20px; }
-        .tarjeta-login { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; text-align: center; }
-        .logo-login { font-size: 48px; margin-bottom: 20px; color: #667eea; }
-        .titulo-login { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .subtitulo-login { color: #999; margin-bottom: 30px; font-size: 14px; }
-        .formulario-login { display: flex; flex-direction: column; gap: 15px; }
-        .campo-login { text-align: left; }
-        .campo-login label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; font-size: 14px; }
-        .campo-login input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-        .boton-enviar-login { background: #667eea; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .mensaje-error-login { background: #fee; color: #c33; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; border-left: 4px solid #c33; }
-    </style>
 </head>
-<body>
+<body class="login-body">
 
 <div class="contenedor-login">
     <div class="tarjeta-login">
@@ -67,9 +37,7 @@ unset($_SESSION['error']);
         <h1 class="titulo-login">Portal Escolar</h1>
         <p class="subtitulo-login">Introduce tus credenciales para acceder</p>
 
-        <?php 
-        // Si hay un mensaje de error, lo mostramos en una alerta visual
-        if (!empty($mensajeError)) { ?>
+        <?php if (!empty($mensajeError)) { ?>
         <div class="mensaje-error-login"><?php echo $mensajeError; ?></div>
         <?php } ?>
 

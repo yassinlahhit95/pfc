@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -13,15 +12,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-// Obtenemos la lista completa de profesores
 $listaDeTodosLosProfesores = listarProfesores();
 
-// Captura de mensajes de sesiÃ³n para alertas
 $mensajeDeError = $_SESSION['error'] ?? '';
-
 $mensajeDeExito = $_SESSION['exito'] ?? '';
-
-// Limpiamos la sesiÃ³n despuÃ©s de capturar
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 

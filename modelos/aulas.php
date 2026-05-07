@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todas las aulas registradas
 function listarAulas() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM aulas ORDER BY idAula ASC";
@@ -16,7 +15,6 @@ function listarAulas() {
     return $listaAulas;
 }
 
-// Comprobar si ya existe un aula con el mismo nombre
 function checkAulaExistente($nombreAula, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
@@ -35,7 +33,6 @@ function checkAulaExistente($nombreAula, $idExcluir = null) {
     return $existe;
 }
 
-// Insertar una nueva aula en el sistema
 function insertarAula($nombreAula) {
     if (checkAulaExistente($nombreAula)) {
         return false;
@@ -49,7 +46,6 @@ function insertarAula($nombreAula) {
     return $resultado;
 }
 
-// Eliminar un aula por su ID
 function eliminarAula($idAula) {
     $con = obtenerConexion();
     $sql = "DELETE FROM aulas WHERE idAula = ?";
@@ -60,7 +56,6 @@ function eliminarAula($idAula) {
     return $resultado;
 }
 
-// Actualizar el nombre de un aula existente
 function actualizarAula($idAula, $nuevoNombreAula) {
     if (checkAulaExistente($nuevoNombreAula, $idAula)) {
         return false;
@@ -74,7 +69,6 @@ function actualizarAula($idAula, $nuevoNombreAula) {
     return $resultado;
 }
 
-// Obtener los datos de un aula específica por su ID
 function obtenerAulaPorId($idAula) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM aulas WHERE idAula = ?";

@@ -21,12 +21,10 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-// Obtenemos solo los ciclos del profesor
 $todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
 
 $id_ciclo_elegido = intval($_GET['idCiclo'] ?? 0);
 if ($id_ciclo_elegido) {
-    // Verificar que el profesor tiene acceso a este ciclo
     $tieneAcceso = false;
     foreach ($todos_los_ciclos as $cicloIndividual) {
         if ($cicloIndividual['idCiclo'] == $id_ciclo_elegido) {
@@ -43,10 +41,7 @@ if ($id_ciclo_elegido) {
 $datos_finales = [];
 
 if ($id_ciclo_elegido) {
-    // 1. Obtener todos los estudiantes del ciclo
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
-    
-    // 2. Obtener todos los módulos del ciclo
     $lista_modulos = obtenerModulosPorCiclo($id_ciclo_elegido);
     
     foreach ($estudiantes_lista as $estudianteIndividual) {

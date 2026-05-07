@@ -25,7 +25,6 @@ if (!$reto) {
 $idProfesor = $_SESSION['idProfesor'];
 $misModulos = obtenerModulosDeProfesor($idProfesor);
 
-// Obtener los módulos actualmente asociados a este reto
 $modulosAsociados = obtenerModulosDeReto($id);
 $idsModulosAsociados = array_column($modulosAsociados, 'idModulo');
 

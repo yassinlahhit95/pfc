@@ -38,7 +38,6 @@ if (isset($_POST['actualizarProfesor'])) {
         $listaErroresValidacion['direccionProfesor'] = "La dirección es obligatoria.";
     }
 
-    // Comprobamos duplicados
     if (empty($listaErroresValidacion)) {
         if (checkProfesorExistente($dniProfesorActualizar, $emailProfesorActualizar, $idProfesorActualizar)) {
             $listaErroresValidacion['dniProfesor'] = "El DNI o Email ya están registrados por otro profesor.";

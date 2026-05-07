@@ -5,7 +5,6 @@ $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
 unset($_SESSION['error'], $_SESSION['exito']);
 
-// Validación de sesión simple
 if (empty($_SESSION['idEstudiante'])) {
     header("Location: ../../login.php");
     exit;

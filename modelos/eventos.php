@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener los próximos eventos (a partir de hoy)
 function listarEventosProximos() {
     $con = obtenerConexion();
     $hoy = date('Y-m-d');
@@ -21,7 +20,6 @@ function listarEventosProximos() {
     return $listaEventos;
 }
 
-// Insertar un nuevo evento en el calendario
 function insertarEvento($titulo, $descripcion, $fecha, $hora, $ubicacion) {
     $con = obtenerConexion();
     $sql = "INSERT INTO eventos (tituloEvento, descripcionEvento, fechaEvento, horaEvento, ubicacionEvento) VALUES (?, ?, ?, ?, ?)";
@@ -32,7 +30,6 @@ function insertarEvento($titulo, $descripcion, $fecha, $hora, $ubicacion) {
     return $resultado;
 }
 
-// Eliminar un evento por su ID
 function eliminarEvento($idEvento) {
     $con = obtenerConexion();
     $sql = "DELETE FROM eventos WHERE idEvento = ?";
@@ -43,7 +40,6 @@ function eliminarEvento($idEvento) {
     return $resultado;
 }
 
-// Obtener los datos de un evento específico
 function obtenerEventoPorId($idEvento) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM eventos WHERE idEvento = ?";
@@ -56,7 +52,6 @@ function obtenerEventoPorId($idEvento) {
     return $evento;
 }
 
-// Actualizar los datos de un evento existente
 function actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubicacion) {
     $con = obtenerConexion();
     $sql = "UPDATE eventos SET tituloEvento=?, descripcionEvento=?, fechaEvento=?, horaEvento=?, ubicacionEvento=? WHERE idEvento=?";

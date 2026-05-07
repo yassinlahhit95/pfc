@@ -18,7 +18,6 @@ if (isset($_POST['subirTFG'])) {
             $listaErrores['archivoTFG'] = "Error al subir el archivo (Código: " . $archivoTFG['error'] . ").";
         }
     } else {
-        // Validar extensión (PDF o Word)
         $ext = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
         $permitidos = ['pdf', 'doc', 'docx'];
         

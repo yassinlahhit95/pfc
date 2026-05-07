@@ -12,12 +12,11 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idProf = $_SESSION['idProfesor'];
 
-// Contadores con prefijo para evitar colisiones con las vistas (ej: $ciclos array)
-$_nAlumnosProf = contarEstudiantesDeProfesor($idProf);
-$_nCiclosProf = contarCiclosDeProfesor($idProf);
-$_nMensajesProf = contarMensajesDeProfesor($idProf);
-$_nSinLeerProf = contarMensajesNoLeidosProfesor($idProf);
-$_nTfgsProf = contarTFGsDeProfesor($idProf);
+$numAlumnos = contarEstudiantesDeProfesor($idProf);
+$numCiclos = contarCiclosDeProfesor($idProf);
+$numMensajes = contarMensajesDeProfesor($idProf);
+$numSinLeer = contarMensajesNoLeidosProfesor($idProf);
+$numTfgs = contarTFGsDeProfesor($idProf);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -68,12 +67,12 @@ $_nTfgsProf = contarTFGsDeProfesor($idProf);
                 
                 <a href="../../../vistas/profesores/estudiantes/lista.php" class="enlace-menu <?= ($seccionActual == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
-                    <span class="etiqueta-contador"><?= $_nAlumnosProf ?></span>
+                    <span class="etiqueta-contador"><?= $numAlumnos ?></span>
                 </a>
 
                 <a href="../../../vistas/profesores/ciclos/lista.php" class="enlace-menu <?= ($seccionActual == 'ciclos') ? 'activo' : '' ?>">
                     <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
-                    <span class="etiqueta-contador"><?= $_nCiclosProf ?></span>
+                    <span class="etiqueta-contador"><?= $numCiclos ?></span>
                 </a>
 
                 <a href="../../../vistas/profesores/modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
@@ -98,7 +97,7 @@ $_nTfgsProf = contarTFGsDeProfesor($idProf);
 
                 <a href="../../../vistas/profesores/pfc/lista.php" class="enlace-menu <?= ($seccionActual == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
-                    <span class="etiqueta-contador"><?= $_nTfgsProf ?></span>
+                    <span class="etiqueta-contador"><?= $numTfgs ?></span>
                 </a>
             </div>
 
@@ -111,7 +110,7 @@ $_nTfgsProf = contarTFGsDeProfesor($idProf);
 
                 <a href="../../../vistas/profesores/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($_nSinLeerProf > 0) ? 'alerta-roja' : '' ?>"><?= $_nMensajesProf ?></span>
+                    <span class="etiqueta-contador <?= ($numSinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $numMensajes ?></span>
                 </a>
 
                 <a href="../../../vistas/profesores/eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">

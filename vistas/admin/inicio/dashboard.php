@@ -1,21 +1,11 @@
 <?php
-/**
- * Panel de Control del Administrador (Dashboard)
- * 
- * Este archivo centraliza las estadísticas generales del centro, acciones rápidas,
- * tablón de anuncios y eventos próximos para el perfil de administrador.
- */
-
 session_start();
 
-// Verificamos si el usuario tiene una sesión de administrador activa
 if (empty($_SESSION['idAdmin'])) {
-    // Si no está autenticado, redirigimos a la página de inicio de sesión
     header("Location: ../../login.php");
     exit;
 }
 
-// Cargamos los modelos necesarios para obtener los datos del sistema
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
@@ -24,7 +14,6 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-// Recopilamos estadísticas resumidas para las tarjetas informativas superiores
 $totalEstudiantesRegistrados = contarEstudiantes();
 $totalProfesoresRegistrados = contarProfesores();
 $totalRetosAcademicos = intval(contarRetos());
@@ -33,19 +22,16 @@ $porcentajeGlobalAprobados = obtenerPorcentajeAprobadosGlobal();
 $cantidadTotalRecaudada = obtenerTotalRecaudado();
 $totalOperacionesDePago = contarPagosRealizados();
 
-// Lógica de paginación para el Tablón de Anuncios
 $anunciosAMostrarPorPagina = 5;
 $numeroPaginaActual = max(1, intval($_GET['p_anuncios'] ?? 1));
 $totalAnunciosActivos = intval(contarAnunciosQueEstanActivos());
 $totalPaginasAnuncios = ceil($totalAnunciosActivos / $anunciosAMostrarPorPagina);
 $listaAnunciosSistema = listarAnunciosPaginados($numeroPaginaActual, $anunciosAMostrarPorPagina);
 
-// Obtenemos la lista de eventos programados para fechas futuras
 $listaEventosProximos = listarEventosProximos();
 $titulo_pagina = "PANEL DE CONTROL - ADMIN";
 $seccion = 'inicio';
 
-// Incluimos la barra de navegación lateral y superior
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
@@ -57,7 +43,6 @@ include __DIR__ . '/../comunes/nav.php';
 
 <h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
-  <!-- Tarjetas de estadísticas principales -->
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?= $totalEstudiantesRegistrados ?></h3><p>Estudiantes</p></div>
   </div>
@@ -76,7 +61,6 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div class="cuadricula-estadisticas">
-  <!-- Tarjetas de estadísticas financieras -->
   <div class="tarjeta-estadistica">
     <div class="info-estadistica"><h3><?= number_format($cantidadTotalRecaudada, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
   </div>
@@ -88,7 +72,6 @@ include __DIR__ . '/../comunes/nav.php';
 <div class="cuadricula-secundaria">
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
 
-    <!-- Sección de Acceso Rápido a funciones comunes -->
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta"><h3>ACCIONES RÁPIDAS</h3></div>
       <div class="cuadricula-acciones-rapidas">
@@ -100,7 +83,6 @@ include __DIR__ . '/../comunes/nav.php';
       </div>
     </div>
 
-    <!-- Tablón de Anuncios con paginación -->
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
         <h3>TABLÓN DE ANUNCIOS</h3>
@@ -138,7 +120,6 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
   </div>
 
-  <!-- Agenda de Eventos Próximos -->
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
@@ -151,7 +132,6 @@ include __DIR__ . '/../comunes/nav.php';
             <?php
             $contadorEventosMostrados = 0;
             foreach ($listaEventosProximos as $eventoIndividual) {
-                // Limitamos la visualización a los 4 eventos más cercanos
                 if ($contadorEventosMostrados < 4) {
                     $diaEvento = date('d', strtotime($eventoIndividual['fechaEvento']));
                     $mesEvento = strtoupper(date('M', strtotime($eventoIndividual['fechaEvento'])));
@@ -176,7 +156,4 @@ include __DIR__ . '/../comunes/nav.php';
   </div>
 </div>
 
-<?php 
-// Incluimos el pie de página
-include __DIR__ . '/../comunes/footer.php'; 
-?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

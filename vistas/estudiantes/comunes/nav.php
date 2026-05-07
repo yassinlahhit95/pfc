@@ -4,7 +4,7 @@ if (empty($_SESSION['idEstudiante'])) {
     exit;
 }
 
-// Usamos rutas raíz directas (más humano y estable sin $_SERVER)
+// Root paths: evita errores al incluir nav desde diferentes profundidades
 $rel = "/pfc/";
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
@@ -17,12 +17,11 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idEst = $_SESSION['idEstudiante'];
 
-// Contadores con prefijo para evitar colisiones
-$_nMensajesEst = count(listarMensajesDeEstudiante($idEst));
-$_nSinLeerEst = contarMensajesNoLeidosEstudiante($idEst);
-$_nAnunciosEst = count(listarAnunciosPorRol('estudiantes'));
-$_nPagosEst = contarPagosEstudiante($idEst);
-$_nRetosEst = count(listarCalificacionesRetoPorEstudiante($idEst));
+$numMensajes = count(listarMensajesDeEstudiante($idEst));
+$numSinLeer = contarMensajesNoLeidosEstudiante($idEst);
+$numAnuncios = count(listarAnunciosPorRol('estudiantes'));
+$numPagos = contarPagosEstudiante($idEst);
+$numRetos = count(listarCalificacionesRetoPorEstudiante($idEst));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -73,7 +72,7 @@ $_nRetosEst = count(listarCalificacionesRetoPorEstudiante($idEst));
 
                 <a href="<?= $rel ?>vistas/estudiantes/retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>MIS RETOS</span>
-                    <span class="etiqueta-contador"><?= $_nRetosEst ?></span>
+                    <span class="etiqueta-contador"><?= $numRetos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/estudiantes/calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
@@ -98,17 +97,17 @@ $_nRetosEst = count(listarCalificacionesRetoPorEstudiante($idEst));
 
                 <a href="<?= $rel ?>vistas/estudiantes/anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
-                    <span class="etiqueta-contador"><?= $_nAnunciosEst ?></span>
+                    <span class="etiqueta-contador"><?= $numAnuncios ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/estudiantes/mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($_nSinLeerEst > 0) ? 'alerta-roja' : '' ?>"><?= $_nMensajesEst ?></span>
+                    <span class="etiqueta-contador <?= ($numSinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $numMensajes ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/estudiantes/pagos/lista.php" class="enlace-menu <?= ($seccionActual == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-credit-card"></i> <span>MIS PAGOS</span>
-                    <span class="etiqueta-contador"><?= $_nPagosEst ?></span>
+                    <span class="etiqueta-contador"><?= $numPagos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/estudiantes/eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">

@@ -9,7 +9,6 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-// Capturamos selecciones
 $idCicloElegido = $_GET['idCiclo'] ?? '';
 $idModuloElegido = $_GET['idModulo'] ?? '';
 
@@ -17,7 +16,6 @@ $listaCiclos = listarTodosLosCiclos();
 $listaModulos = !empty($idCicloElegido) ? obtenerModulosPorCiclo($idCicloElegido) : [];
 $listaEstudiantes = !empty($idModuloElegido) ? listarCalificacionesPorModulo($idModuloElegido) : [];
 
-// Mensajes de feedback
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
@@ -110,7 +108,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesModulos.php';">
                         <i class="fas fa-eraser"></i> LIMPIAR
                     </button>
-                    <label class="etiqueta-notificacion" style="align-self: center;">
+                    <label class="etiqueta-notificacion self-center">
                         <input type="checkbox" name="notificarEstudiantes" value="1">
                         <i class="fas fa-envelope"></i> NOTIFICAR POR EMAIL
                     </label>

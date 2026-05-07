@@ -37,7 +37,6 @@ if (isset($_POST['guardarProfesor'])) {
         $listaErroresValidacion['direccionProfesor'] = "La dirección es obligatoria.";
     }
 
-    // Comprobamos duplicados
     if (empty($listaErroresValidacion)) {
         if (checkProfesorExistente($dniNuevoProfesor, $emailNuevoProfesor)) {
             $listaErroresValidacion['dniProfesor'] = "El DNI o Email ya están registrados.";
@@ -48,7 +47,6 @@ if (isset($_POST['guardarProfesor'])) {
         $idNuevoProfesorInsertado = insertarProfesor($nombreNuevoProfesor, $emailNuevoProfesor, $telefonoNuevoProfesor, $dniNuevoProfesor, $direccionNuevoProfesor, $fechaNacimientoNuevoProfesor, $fechaAltaNuevoProfesor, $ciudadNuevoProfesor, $codigoPostalNuevoProfesor, $observacionesNuevoProfesor);
         
         if ($idNuevoProfesorInsertado) {
-            // ... (rest of logic)
             $_SESSION['exito'] = "Profesor registrado.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;

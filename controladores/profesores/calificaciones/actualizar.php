@@ -11,7 +11,6 @@ if (isset($_POST['actualizarNota'])) {
     $nota2Ev = trim($_POST['nota_2ev']);
     $nota2Final = trim($_POST['nota_2final']);
 
-    // Sustituimos comas por puntos
     $nota1Ev = str_replace(',', '.', $nota1Ev);
     $nota1Final = str_replace(',', '.', $nota1Final);
     $nota2Ev = str_replace(',', '.', $nota2Ev);

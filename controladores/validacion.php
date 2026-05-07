@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../modelos/directores.php";
 require_once __DIR__ . "/../modelos/profesores.php";
@@ -14,10 +14,8 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    // Limpiamos cualquier variable de sesión previa para asegurar un inicio de sesión limpio
     unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante']);
 
-    // Paso 1: Intentamos validar las credenciales en la tabla de Directores (Administradores)
     $datosAdmin = validarLoginDirector($emailUsuarioRecibido, $passwordUsuarioRecibida);
     if (!empty($datosAdmin)) {
         $_SESSION['idAdmin'] = $datosAdmin['idDirector'];
@@ -25,7 +23,6 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    // Paso 2: Si no se encuentra en directores, verificamos en la tabla de Profesores
     $datosProfesor = validarLoginProfesor($emailUsuarioRecibido, $passwordUsuarioRecibida);
     if (!empty($datosProfesor)) {
         $_SESSION['idProfesor'] = $datosProfesor['idProfesor'];
@@ -33,7 +30,6 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    // Paso 3: Si no se encuentra en profesores, verificamos en la tabla de Estudiantes
     $datosEstudiante = validarLoginEstudiante($emailUsuarioRecibido, $passwordUsuarioRecibida);
     if (!empty($datosEstudiante)) {
         $_SESSION['idEstudiante'] = $datosEstudiante['idEstudiante'];
@@ -41,7 +37,6 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    // Paso 4: Si no se encuentra coincidencia en ninguna de las tablas, se considera un error de autenticación
     $_SESSION["error"] = "Datos incorrectos.";
     header("Location: ../vistas/login.php");
     exit;

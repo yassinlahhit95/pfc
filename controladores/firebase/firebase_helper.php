@@ -1,22 +1,13 @@
 <?php
-/**
- * Helper para la gestión de notificaciones push a través de Firebase Cloud Messaging (FCM) V1.
- */
-
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/directores.php";
 
-/**
- * Obtiene el Access Token de Google para autenticar las peticiones de FCM.
- * @return string|null Token de acceso o null si no se puede obtener (falta config).
- */
 function obtenerAccessToken() {
-    // Definimos la ruta del archivo de credenciales de forma relativa al proyecto
     $rutaConfig = __DIR__ . '/../../config/service-account.json';
-    
+
     if (!file_exists($rutaConfig)) {
-        // Si no existe el archivo, retornamos null silenciosamente.
+        // Null if Firebase not configured (optional feature)
         return null;
     }
 
@@ -73,22 +64,15 @@ function obtenerAccessToken() {
     return $datosRespuesta['access_token'] ?? null;
 }
 
-/**
- * Envía una notificación push a un dispositivo específico.
- * @param string $token Token FCM del dispositivo destino.
- * @param string $titulo Título de la notificación.
- * @param string $mensaje Cuerpo de la notificación.
- * @return string|false Respuesta de Google o false si falló la configuración inicial.
- */
 function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     if (empty($token)) return false;
 
     $idProyecto = "pfc1-5c23c"; // ID del proyecto en Firebase Console
     $urlFCM = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
-    
+
     $accessToken = obtenerAccessToken();
     if (!$accessToken) {
-        // Si no hay configuración, salimos sin hacer nada (evita errores en cadena).
+        // Salimos sin error si Firebase no está configurado (evita errores en cadena)
         return false;
     }
 
@@ -131,24 +115,21 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     $resultadoEnvio = curl_exec($ch);
     $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    
+
     if ($codigoHttp !== 200) {
         error_log("FCM Error ($codigoHttp): " . $resultadoEnvio);
     }
-    
+
     return $resultadoEnvio;
 }
 
-/**
- * Obtiene el token FCM de un usuario desde los modelos.
- */
 function obtenerTokenUsuario($idUsuario, $rolUsuario) {
     switch ($rolUsuario) {
-        case 'estudiante': 
+        case 'estudiante':
             return obtenerTokenFCMEstudiante($idUsuario);
-        case 'profesor': 
+        case 'profesor':
             return obtenerTokenFCMProfesor($idUsuario);
-        case 'admin': 
+        case 'admin':
             return obtenerTokenFCMDirector($idUsuario);
     }
     return null;

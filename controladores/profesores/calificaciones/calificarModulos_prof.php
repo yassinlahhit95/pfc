@@ -7,7 +7,6 @@ if (isset($_POST['guardarNotas'])) {
     $idCiclo = trim($_POST['idCiclo']); 
     $estudiantes = $_POST['estudiantes'];
     
-    // Recogemos los arrays de notas del formulario con nombres claros
     $notas_1ra_evaluacion = $_POST['notas_1ev'];
     $notas_1ra_final      = $_POST['notas_1final'];
     $notas_2da_evaluacion = $_POST['notas_2ev'];
@@ -16,7 +15,6 @@ if (isset($_POST['guardarNotas'])) {
 
     $hayError = false;
 
-    // Recorremos los alumnos para guardar sus notas
     foreach ($estudiantes as $indice => $idEstudiante) {
         $idEstudiante = trim($idEstudiante);
         $nota1 = trim($notas_1ra_evaluacion[$indice]);
@@ -25,7 +23,6 @@ if (isset($_POST['guardarNotas'])) {
         $nota4 = trim($notas_2da_final[$indice]);
         $comentario = trim($todas_las_observaciones[$indice]);
 
-        // Validamos que si hay nota, sea un número entre 0 y 10
         $notas_del_alumno = [$nota1, $nota2, $nota3, $nota4];
         foreach ($notas_del_alumno as $nota) {
             if (!empty($nota) && (!is_numeric($nota) || $nota < 0 || $nota > 10)) {
@@ -45,7 +42,6 @@ if (isset($_POST['guardarNotas'])) {
     }
 
     if (!$hayError) {
-        // Enviar correos si se marca la opción
         if (isset($_POST['notificarEstudiantes']) && !empty($_POST['notificarEstudiantes'])) {
             require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
             foreach ($estudiantes as $idParaEnvio) {

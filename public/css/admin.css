@@ -1,7 +1,11 @@
+/* 
+================================================================
+   AULAPRO - ESTILOS PRINCIPALES (ADMIN.CSS)
+   Organizado y Comentado
+================================================================
+*/
 
-
-
-
+/* --- 1. CONFIGURACIÓN BASE Y RESET --- */
 * {
   margin: 0;
   padding: 0;
@@ -19,9 +23,7 @@ body {
   position: relative;
 }
 
-/* ============================================
-   BARRA LATERAL (NAV)
-   ============================================ */
+/* --- 2. BARRA LATERAL (SIDEBAR) --- */
 .barra-lateral {
   width: 260px;
   background-color: #1a1c2e;
@@ -144,17 +146,7 @@ body {
     display: none;
 }
 
-@media (max-width: 992px) {
-    .boton-cerrar-barra, #botonCerrarBarra {
-        display: block;
-    }
-}
-
-
-
-/* ============================================
-   NAVEGACIÓN SUPERIOR (NUEVO)
-   ============================================ */
+/* --- 3. NAVEGACIÓN SUPERIOR --- */
 .navbar-superior {
   height: 70px;
   background-color: white;
@@ -207,7 +199,7 @@ body {
     font-size: 16px;
 }
 
-/* Estilos generales para listas en el contenido */
+/* --- 4. ESTILOS DE LISTAS --- */
 ul {
     list-style-position: inside;
 }
@@ -224,6 +216,7 @@ ul {
     color: #4a5568;
 }
 
+/* --- 5. LOGOS --- */
 .logo-navbar {
   height: 45px;
   width: auto;
@@ -232,14 +225,6 @@ ul {
 
 .logo-navbar-png { display: block; }
 .logo-navbar-jpeg { display: none; }
-
-@media (max-width: 992px) {
-    .logo-navbar-png { display: none; }
-    .logo-navbar-jpeg { display: block; }
-    
-    body.menu-abierto .logo-navbar-png { display: block; }
-    body.menu-abierto .logo-navbar-jpeg { display: none; }
-}
 
 .cabecera-menu {
   padding: 20px 10px;
@@ -274,73 +259,13 @@ ul {
     background: rgba(102, 126, 234, 0.05);
 }
 
+/* --- 6. CONTENIDO PRINCIPAL --- */
 .contenido-derecha,
 .contenido-principal {
   margin-left: 260px;
   padding: 30px;
   min-height: 100vh;
   transition: all 0.3s;
-}
-
-.d-none-escritorio { display: none; }
-
-
-@media (max-width: 992px) {
-  .d-none-escritorio { display: block; }
-  
-  .barra-lateral {
-    width: 70px;
-    padding: 0;
-  }
-  
-  .barra-lateral .sidebar-logo-png { display: none; }
-  .barra-lateral .sidebar-logo-jpeg { display: block; }
-  .barra-lateral .titulo-panel-sidebar { display: none; }
-  .barra-lateral .enlace-menu span,
-  .barra-lateral .titulo-de-seccion,
-  .barra-lateral .etiqueta-contador {
-    display: none;
-  }
-
-  .barra-lateral.activo {
-    width: 260px;
-  }
-
-  .barra-lateral.activo .sidebar-logo-png { display: block; }
-  .barra-lateral.activo .sidebar-logo-jpeg { display: none; }
-  .barra-lateral.activo .titulo-panel-sidebar { display: inline-block; }
-
-  .barra-lateral.activo .texto-negrita,
-  .barra-lateral.activo .enlace-menu span,
-  .barra-lateral.activo .titulo-de-seccion,
-  .barra-lateral.activo .etiqueta-contador {
-    display: block;
-  }
-
-  .contenido-derecha,
-  .contenido-principal {
-    margin-left: 70px;
-    padding: 20px;
-  }
-}
-
-@media (max-width: 576px) {
-  .barra-lateral {
-    left: -260px;
-    width: 260px;
-    transition: left 0.3s;
-  }
-  
-  .barra-lateral.mostrar-menu {
-    left: 0;
-    display: block;
-  }
-
-  .contenido-derecha,
-  .contenido-principal {
-    margin-left: 0 !important;
-    padding: 15px;
-  }
 }
 
 .encabezado-pagina {
@@ -356,9 +281,7 @@ ul {
   margin-top: 5px;
 }
 
-
-
-
+/* --- 7. TARJETAS (CARDS) --- */
 .tarjeta-blanca {
   background: white;
   border-radius: 4px; 
@@ -386,6 +309,7 @@ ul {
   letter-spacing: 0.5px;
 }
 
+/* --- 8. UTILIDADES DE SCROLL --- */
 .scroll-vertical {
   max-height: 250px;
   overflow-y: auto;
@@ -419,12 +343,15 @@ ul {
 .pt-3 { padding-top: 3px !important; }
 .pb-3 { padding-bottom: 3px !important; }
 
+/* --- 9. TABLAS --- */
 .contenedor-tabla {
   background: transparent;
   border-radius: 0; 
   overflow: hidden;
   border: none;
   margin-top: 10px;
+  width: 100%;
+  overflow-x: auto; /* Para tablas anchas en móvil */
 }
 
 .tabla-datos {
@@ -455,10 +382,7 @@ ul {
   color: #a0aec0;
 }
 
-/* ============================================
-   BOTONES DE ACCIÓN EN TABLAS
-   ============================================ */
-
+/* --- 10. BOTONES DE ACCIÓN --- */
 .btn-accion {
     padding: 6px 10px;
     border-radius: 4px;
@@ -510,10 +434,7 @@ ul {
     color: white;
 }
 
-/* ============================================
-   BOTONES GENERALES
-   ============================================ */
-
+/* --- 11. BOTONES GENERALES --- */
 .boton-primario {
   background: #667eea;
   color: white;
@@ -562,6 +483,7 @@ ul {
   gap: 8px;
 }
 
+/* --- 12. ESTADOS Y MENSAJES --- */
 .estado-bolita {
   padding: 4px 12px;
   border-radius: 4px; 
@@ -619,6 +541,7 @@ ul {
   font-weight: 900 !important;
   font-size: 18px !important;
 }
+
 .error-campo {
   display: block;
   font-size: 13px;
@@ -627,15 +550,57 @@ ul {
   font-weight: bold;
 }
 
+/* --- 13. UTILIDADES DE TEXTO Y ESPACIADO --- */
 .texto-verde { color: #16a34a !important; }
 .texto-rojo { color: #dc2626 !important; }
 .texto-gris { color: #718096 !important; }
 .texto-negrita { font-weight: bold; }
 
-/* Utilidades de espaciado */
 .mt-0 { margin-top: 0 !important; }
 .mt-5 { margin-top: 5px !important; }
 .sin-margen { margin: 0 !important; }
+.borde-abajo-gris { border-bottom: none; }
+.mt-10 { margin-top: 10px !important; }
+.mt-20 { margin-top: 20px !important; }
+.mt-30 { margin-top: 30px !important; }
+.mb-5 { margin-bottom: 5px !important; }
+.mb-10 { margin-bottom: 10px !important; }
+.mb-15 { margin-bottom: 15px !important; }
+.mb-20 { margin-bottom: 20px !important; }
+.pb-10 { padding-bottom: 10px !important; }
+.p-8 { padding: 8px !important; }
+.p-15 { padding: 15px !important; }
+.p-20 { padding: 20px !important; }
+.ml-10 { margin-left: 10px !important; }
+.ml-20 { margin-left: 20px !important; }
+
+/* --- 14. UTILIDADES DE VISUALIZACIÓN Y BORDES --- */
+.d-none { display: none !important; }
+.d-inline { display: inline !important; }
+.d-block { display: block !important; }
+.d-grid { display: grid !important; }
+.pre-wrap { white-space: pre-wrap !important; }
+
+.border-secundario { border: none !important; }
+.rounded-8 { border-radius: 8px !important; }
+
+.text-white { color: white !important; }
+.text-uppercase { text-transform: uppercase !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.line-height-15 { line-height: 1.5 !important; }
+.line-height-16 { line-height: 1.6 !important; }
+.font-size-11 { font-size: 1.1em !important; }
+
+.bg-secundario { background-color: #3498db !important; }
+.color-primario { color: #667eea !important; }
+.color-secundario { color: #3498db !important; }
+.color-error { color: #dc2626 !important; }
+.border-error { border-color: #dc2626 !important; }
+
+.sin-borde { border: none !important; box-shadow: none !important; }
+
+/* --- 15. ANUNCIOS Y MENSAJES --- */
 .anuncio-item-completo {
     padding: 25px;
     transition: background 0.2s;
@@ -664,62 +629,7 @@ ul {
     white-space: normal;
 }
 
-.borde-abajo-gris { border-bottom: none; }
-.mt-10 { margin-top: 10px !important; }
-.mt-20 { margin-top: 20px !important; }
-.mt-30 { margin-top: 30px !important; }
-.mb-5 { margin-bottom: 5px !important; }
-.mb-10 { margin-bottom: 10px !important; }
-.mb-15 { margin-bottom: 15px !important; }
-.mb-20 { margin-bottom: 20px !important; }
-.pb-10 { padding-bottom: 10px !important; }
-.p-8 { padding: 8px !important; }
-.p-15 { padding: 15px !important; }
-.p-20 { padding: 20px !important; }
-.ml-10 { margin-left: 10px !important; }
-.ml-20 { margin-left: 20px !important; }
-
-/* Utilidades de visualización */
-.d-none { display: none !important; }
-.d-inline { display: inline !important; }
-.d-block { display: block !important; }
-.d-grid { display: grid !important; }
-.pre-wrap { white-space: pre-wrap !important; }
-
-/* Utilidades de bordes */
-.border-secundario { border: none !important; }
-.rounded-8 { border-radius: 8px !important; }
-
-/* Utilidades de texto */
-.text-white { color: white !important; }
-.text-uppercase { text-transform: uppercase !important; }
-.text-center { text-align: center !important; }
-.text-right { text-align: right !important; }
-.line-height-15 { line-height: 1.5 !important; }
-.line-height-16 { line-height: 1.6 !important; }
-.font-size-11 { font-size: 1.1em !important; }
-
-/* Colores utilitarios */
-.bg-secundario { background-color: #3498db !important; }
-.color-primario { color: #667eea !important; }
-.color-secundario { color: #3498db !important; }
-.color-error { color: #dc2626 !important; }
-.border-error { border-color: #dc2626 !important; }
-
-.sin-borde { border: none !important; box-shadow: none !important; }
-
-.contenedor-tabla {
-  background: transparent;
-  border: none;
-  margin-top: 10px;
-  width: 100%;
-  overflow-x: auto; /* Para tablas anchas en móvil */
-}
-
-/* ============================================
-   DASHBOARD - ANÁLISIS DE DATOS (Estadísticas)
-   ============================================ */
-
+/* --- 16. DASHBOARD - ESTADÍSTICAS --- */
 .cuadricula-estadisticas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -806,20 +716,13 @@ ul {
   margin: 0;
 }
 
-/* Cuadrícula secundaria del dashboard */
+/* --- 17. DASHBOARD - CUADRÍCULAS Y ACCIONES --- */
 .cuadricula-secundaria {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
 }
 
-@media (max-width: 992px) {
-  .cuadricula-secundaria {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Acciones rápidas */
 .cuadricula-acciones-rapidas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -847,7 +750,7 @@ ul {
   border-color: #667eea;
 }
 
-/* Actividad reciente */
+/* --- 18. ACTIVIDAD Y EVENTOS --- */
 .lista-actividad,
 .lista-eventos {
   display: flex;
@@ -866,7 +769,6 @@ ul {
   border: none;
 }
 
-/* Eventos */
 .fecha-evento {
   width: 50px;
   height: 55px;
@@ -885,7 +787,6 @@ ul {
   background: #667eea;
 }
 
-/* Estilos para el Tablón de Anuncios */
 .anuncio-item {
     padding: 15px;
     border-radius: 8px;
@@ -932,13 +833,8 @@ ul {
   text-transform: uppercase;
 }
 
-/* Textos utilitarios */
+/* --- 19. DETALLES Y FICHAS --- */
 .texto-oscuro {
-  color: #2d3748;
-}
-
-.texto-negrita {
-  font-weight: 600;
   color: #2d3748;
 }
 
@@ -951,7 +847,6 @@ ul {
   font-size: 14px;
 }
 
-/* Estilos para filas de detalles (Fichas de ver) */
 .fila-detalle {
     display: flex;
     align-items: center;
@@ -982,6 +877,7 @@ ul {
     background-color: #f0f7ff !important; /* Azul muy suave para mis mensajes */
 }
 
+/* --- 20. UTILIDADES DE FLEX Y GRID --- */
 .disposicion-flexible { display: flex; }
 .direccion-columna { flex-direction: column; }
 .envoltura-flexible { flex-wrap: wrap; }
@@ -997,7 +893,7 @@ ul {
 .item-detalle-lateral-amarillo { background: #fdffdf; border: 1px solid #e6e9c0; }
 .item-detalle-lateral-azul { background: #f4f8ff; border: 1px solid #d0e1fd; }
 
-/* Utilidades para eliminar CSS en línea */
+/* --- 21. UTILIDADES VARIAS --- */
 .texto-centrado { text-align: center !important; }
 .ancho-ajustable-nota { width: 60px !important; }
 .etiqueta-notificacion { margin-left: 20px; font-weight: bold; color: #3498db; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
@@ -1012,10 +908,22 @@ ul {
 .borde-abajo-primario { border-bottom: 2px solid #667eea; padding-bottom: 5px; color: #667eea; }
 .tarjeta-alerta-info { padding: 15px; background-color: #f9f9f9; border-left: 5px solid #3498db; margin-top: 30px; }
 
-/* ============================================
-   ESTILOS DE FORMULARIOS ESTÁNDAR
-   ============================================ */
+/* Nuevas utilidades para eliminar inline CSS */
+.self-center { align-self: center !important; }
+.justify-end { justify-content: flex-end !important; }
+.gap-15 { gap: 15px !important; }
+.pv-10 { padding-top: 10px !important; padding-bottom: 10px !important; }
+.opacity-20 { opacity: 0.2 !important; }
+.border-top-suave { border-top: 1px solid #eee !important; }
+.border-top-dashed { border-top: 1px dashed #ddd !important; }
+.display-inline { display: inline !important; }
+.flex-0-0-150 { flex: 0 0 150px !important; }
+.font-12 { font-size: 12px !important; }
+.mt-15 { margin-top: 15px !important; }
+.pt-15 { padding-top: 15px !important; }
+.pt-20 { padding-top: 20px !important; }
 
+/* --- 22. FORMULARIOS ESTÁNDAR --- */
 .form-estandar {
     width: 100%;
     max-width: 100%; /* Ocupar todo el ancho disponible */
@@ -1029,12 +937,6 @@ ul {
     display: grid;
     grid-template-columns: 1fr; /* Siempre una sola columna */
     gap: 20px;
-}
-
-@media (min-width: 768px) {
-    .form-fila.grid-2, .form-fila.grid-3 {
-        grid-template-columns: 1fr; /* Forzar una columna incluso en pantallas grandes */
-    }
 }
 
 .campo-formulario {
@@ -1114,10 +1016,7 @@ ul {
     cursor: pointer;
 }
 
-/* ============================================
-   ESTILOS PARA CHECKBOXES GLOBALES
-   ============================================ */
-
+/* --- 23. CHECKBOXES GLOBALES --- */
 .campo-checkbox {
     display: flex;
     align-items: center;
@@ -1134,11 +1033,6 @@ ul {
     margin: 0;
     cursor: pointer;
 }
-
-
-/* ============================================
-   ESTILOS DE FORMULARIO Y SELECCI�N
-   ============================================ */
 
 .formulario-cuadricula {
     display: grid;
@@ -1175,9 +1069,7 @@ ul {
     color: #4a5568;
 }
 
-/* ============================================
-   ESTILOS DE UTILIDAD PARA ELIMINAR INLINE
-   ============================================ */
+/* --- 24. UTILIDADES DE MAQUETACIÓN --- */
 .avatar-contenedor { flex: 0 0 150px; }
 .borde-superior-suave { border-top: 1px solid #eee; }
 .copyright-texto { font-size: 12px; }
@@ -1185,10 +1077,7 @@ ul {
 .ancho-completo { width: 100%; }
 .max-ancho-completo { max-width: 100%; }
 
-/* ============================================
-   ESTILOS SECCIÓN ABOUT ME
-   ============================================ */
-
+/* --- 25. SECCIÓN SOBRE MÍ (ABOUT ME) --- */
 .seccion-about-me {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 60px 20px;
@@ -1293,46 +1182,7 @@ ul {
     box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .contenedor-about {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    .about-titulo {
-        font-size: 36px;
-    }
-
-    .about-subtitulo {
-        font-size: 16px;
-    }
-
-    .about-descripcion {
-        font-size: 14px;
-    }
-
-    .silhueta-contenedor {
-        width: 250px;
-        height: 330px;
-    }
-
-    .enlace-red-social {
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
-    }
-
-    .about-acciones {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
-
-/* ============================================
-   ESTILOS BOTONES FORMULARIO COLUMNA
-   ============================================ */
+/* --- 26. BOTONES FORMULARIO --- */
 .form-estandar-botones {
     display: flex;
     gap: 15px;
@@ -1344,3 +1194,372 @@ ul {
     flex: 1;
     justify-content: center;
 }
+
+/* --- 27. ESTILOS LANDING (INDEX.HTML) --- */
+html.landing-page {
+  scroll-behavior: smooth;
+}
+
+body.landing-body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #fafafa;
+  color: #111827;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.seccion {
+  padding: 80px 0;
+}
+
+.titulo-seccion {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.descripcion-seccion {
+  text-align: center;
+  color: #4b5563;
+  max-width: 650px;
+  margin: 0 auto 40px auto;
+  font-size: 1.05rem;
+}
+
+.rejilla {
+  display: grid;
+  gap: 24px;
+}
+
+.tarjeta {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 26px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.boton-principal-landing {
+  background: #4f46e5;
+  color: white;
+}
+
+.boton-principal-landing:hover {
+  background: #4338ca;
+}
+
+.boton-secundario-landing {
+  background: transparent;
+  color: #4f46e5;
+  border: 1.5px solid #e5e7eb;
+}
+
+.boton-secundario-landing:hover {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
+.btn-acceso-nav {
+  padding: 10px 18px !important;
+  font-size: 0.9rem !important;
+}
+
+.animar {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.animar.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cabecera-landing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(250, 250, 250, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 0;
+}
+
+.cabecera-contenedor-landing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo-landing {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.menu-landing {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.menu-enlace-landing {
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.menu-enlace-landing:hover {
+  color: #4f46e5;
+}
+
+.menu-boton-landing {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.menu-icono-landing {
+  width: 24px;
+  height: 2px;
+  background: #111827;
+  position: relative;
+  display: block;
+}
+
+.menu-icono-landing::before, .menu-icono-landing::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #111827;
+  left: 0;
+}
+
+.menu-icono-landing::before { top: -7px; }
+.menu-icono-landing::after { top: 7px; }
+
+.hero-landing {
+  padding: 140px 0 80px 0;
+  text-align: center;
+  background: radial-gradient(ellipse at top, #ffffff 0%, #fafafa 60%);
+}
+
+.titulo-hero-landing {
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.subtitulo-hero-landing {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: #4b5563;
+  max-width: 720px;
+  margin: 0 auto 36px auto;
+  line-height: 1.6;
+}
+
+.hero-botones-landing {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.caracteristicas-rejilla-landing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.tarjeta-icono-landing {
+  width: 40px;
+  height: 40px;
+  background: #eef2ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+}
+
+.tarjeta-titulo-landing {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.tarjeta-texto-landing {
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.visual-landing {
+  text-align: center;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.video-demo-landing {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+.beneficios-rejilla-landing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.beneficio-numero-landing {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.planes-landing {
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.planes-rejilla-landing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tarjeta-plan-landing {
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+
+.tarjeta-plan-landing.destacado {
+  border-color: #4f46e5;
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.15);
+  background: #eef2ff;
+}
+
+.plan-nombre-landing {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.plan-lista-landing {
+  list-style: none;
+  text-align: left;
+  margin: 20px 0;
+}
+
+.plan-elemento-landing {
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e7eb;
+  color: #4b5563;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-elemento-landing::before {
+  content: "✓";
+  color: #4f46e5;
+  font-weight: 700;
+}
+
+.tecnica-landing {
+  background: linear-gradient(to bottom, #fafafa, #ffffff);
+}
+
+.tecnica-rejilla-landing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.tarjeta-tecnica-landing {
+  border-left: 3px solid #4f46e5;
+}
+
+.pie-pagina-landing {
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  padding: 40px 0;
+  text-align: center;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.pie-nombre-landing {
+  font-weight: 700;
+  color: #111827;
+}
+
+.pie-linea-landing {
+  height: 1px;
+  background: #e5e7eb;
+  width: 40px;
+  margin: 12px auto;
+}
+
+/* --- 28. ESTILOS LOGIN (LOGIN.PHP) --- */
+body.login-body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.contenedor-login { width: 100%; max-width: 400px; padding: 20px; }
+.tarjeta-login { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; text-align: center; }
+.logo-login { font-size: 48px; margin-bottom: 20px; color: #667eea; }
+.titulo-login { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px; }
+.subtitulo-login { color: #999; margin-bottom: 30px; font-size: 14px; }
+.formulario-login { display: flex; flex-direction: column; gap: 15px; }
+.campo-login { text-align: left; }
+.campo-login label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; font-size: 14px; }
+.campo-login input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+.boton-enviar-login { background: #667eea; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.mensaje-error-login { background: #fee; color: #c33; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; border-left: 4px solid #c33; }

@@ -27,7 +27,6 @@ $listaModulos = obtenerModulosDeProfesor($idProfesor);
 $listaRetos = obtenerRetosDeProfesor($idProfesor);
 $listaEventos = listarEventosProximos();
 
-// Conteo de mensajes pendientes
 $mensajesPendientes = 0;
 foreach ($listaMensajes as $mensaje) {
     if ($mensaje['estadoReclamacion'] === 'pendiente') {

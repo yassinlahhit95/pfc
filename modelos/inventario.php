@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todos los préstamos realizados en el sistema
 function listarTodosLosPrestamos() {
     $con = obtenerConexion();
     $sql = "SELECT prestamos.*, estudiantes.nombreEstudiante,
@@ -21,7 +20,6 @@ function listarTodosLosPrestamos() {
     return $listaPrestamos;
 }
 
-// Obtener el inventario completo de dispositivos
 function listarArticulos() {
     $con = obtenerConexion();
     $sql = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo,
@@ -38,7 +36,6 @@ function listarArticulos() {
     return $listaArticulos;
 }
 
-// Listar únicamente los préstamos que aún no han sido devueltos
 function listarPrestamosActivos() {
     $con = obtenerConexion();
     $sql = "SELECT prestamos.*, estudiantes.nombreEstudiante,
@@ -58,7 +55,6 @@ function listarPrestamosActivos() {
     return $listaPrestamosActivos;
 }
 
-// Comprobar si ya existe un artículo con el mismo número de serie
 function checkArticuloExistente($numeroSerie, $idExcluir = null) {
     $con = obtenerConexion();
     $serieUppercase = strtoupper($numeroSerie);
@@ -78,7 +74,6 @@ function checkArticuloExistente($numeroSerie, $idExcluir = null) {
     return $existe;
 }
 
-// Registrar un nuevo dispositivo en el inventario
 function insertarArticulo($nombreArticulo, $numeroSerie) {
     if (checkArticuloExistente($numeroSerie)) {
         return false;
@@ -93,7 +88,6 @@ function insertarArticulo($nombreArticulo, $numeroSerie) {
     return $resultado;
 }
 
-// Eliminar un dispositivo del inventario por su ID
 function eliminarArticulo($idArticulo) {
     $con = obtenerConexion();
     $sql = "DELETE FROM dispositivos WHERE idDispositivo = ?";
@@ -104,11 +98,9 @@ function eliminarArticulo($idArticulo) {
     return $resultado;
 }
 
-// Registrar la salida de un dispositivo (préstamo a un estudiante)
 function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $con = obtenerConexion();
 
-    // Obtenemos el número de serie del dispositivo para el registro del préstamo
     $sql = "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
@@ -117,13 +109,11 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $fila = mysqli_fetch_assoc($resultado);
     $numeroSerie = $fila['numeroSerie'];
 
-    // Insertamos el registro del préstamo
     $sql = "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "iss", $idEstudiante, $numeroSerie, $fechaPrestamo);
     mysqli_stmt_execute($stmt);
 
-    // Actualizamos el estado del dispositivo a 'prestado'
     $sql = "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
@@ -133,11 +123,9 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     return $resultado;
 }
 
-// Procesar la devolución de un dispositivo prestado
 function devolverPrestamo($idPrestamo) {
     $con = obtenerConexion();
 
-    // Localizamos el dispositivo vinculado al préstamo
     $sql = "SELECT numeroSerie FROM prestamos WHERE idPrestamo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idPrestamo);
@@ -147,13 +135,11 @@ function devolverPrestamo($idPrestamo) {
     $numeroSerie = $fila['numeroSerie'];
     $fechaHoy = date('Y-m-d');
 
-    // Marcamos el préstamo como finalizado
     $sql = "UPDATE prestamos SET fechaDevolucion = ?, estadoPrestamo = 'devuelto' WHERE idPrestamo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $fechaHoy, $idPrestamo);
     $resultado = mysqli_stmt_execute($stmt);
 
-    // Volvemos a poner el dispositivo como disponible en el inventario
     $sql = "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $numeroSerie);
@@ -163,7 +149,6 @@ function devolverPrestamo($idPrestamo) {
     return $resultado;
 }
 
-// Obtener la información de un artículo específico por su ID
 function obtenerArticuloPorId($idArticulo) {
     $con = obtenerConexion();
     $sql = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, numeroSerie, estadoDispositivo as estado FROM dispositivos WHERE idDispositivo = ?";
@@ -176,7 +161,6 @@ function obtenerArticuloPorId($idArticulo) {
     return $articulo;
 }
 
-// Actualizar los datos técnicos o el estado de un dispositivo
 function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoDispositivo) {
     if (checkArticuloExistente($numeroSerie, $idArticulo)) {
         return false;

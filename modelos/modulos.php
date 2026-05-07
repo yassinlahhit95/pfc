@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Obtener la lista de todos los módulos registrados
 function listarModulos() {
     $con = obtenerConexion();
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo
@@ -18,7 +17,6 @@ function listarModulos() {
     return $listaModulos;
 }
 
-// Obtener los módulos que imparte un profesor específico
 function obtenerModulosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo WHERE profesor_modulo.idProfesor = ?";
@@ -34,7 +32,6 @@ function obtenerModulosDeProfesor($idProfesor) {
     return $listaModulos;
 }
 
-// Obtener módulos de un profesor dentro de un ciclo formativo concreto
 function obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo WHERE profesor_modulo.idProfesor = ? AND modulos.idCiclo = ?";
@@ -50,7 +47,6 @@ function obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
     return $listaModulos;
 }
 
-// Obtener todos los módulos pertenecientes a un ciclo formativo
 function obtenerModulosPorCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM modulos WHERE idCiclo = ?";
@@ -66,7 +62,6 @@ function obtenerModulosPorCiclo($idCiclo) {
     return $listaModulos;
 }
 
-// Comprobar si ya existe un módulo con el mismo nombre en el mismo ciclo
 function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
@@ -85,7 +80,6 @@ function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = null) {
     return $existe;
 }
 
-// Insertar un nuevo módulo en la base de datos
 function insertarModulo($nombreModulo, $idCiclo, $horasMaximas) {
     if (checkModuloExistente($nombreModulo, $idCiclo)) {
         return false;
@@ -99,7 +93,6 @@ function insertarModulo($nombreModulo, $idCiclo, $horasMaximas) {
     return $resultado;
 }
 
-// Actualizar los datos de un módulo existente
 function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
     if (checkModuloExistente($nombreModulo, $idCiclo, $idModulo)) {
         return false;
@@ -113,7 +106,6 @@ function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
     return $resultado;
 }
 
-// Eliminar un módulo por su ID
 function eliminarModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "DELETE FROM modulos WHERE idModulo = ?";
@@ -124,7 +116,6 @@ function eliminarModulo($idModulo) {
     return $resultado;
 }
 
-// Obtener los datos de un módulo específico
 function obtenerModuloPorId($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM modulos WHERE idModulo = ?";
@@ -137,7 +128,6 @@ function obtenerModuloPorId($idModulo) {
     return $datosModulo;
 }
 
-// Obtener los IDs de los profesores que imparten un módulo
 function obtenerProfesoresDeModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT idProfesor FROM profesor_modulo WHERE idModulo = ?";
@@ -153,7 +143,6 @@ function obtenerProfesoresDeModulo($idModulo) {
     return $listaIdsProfesores;
 }
 
-// Eliminar todas las asociaciones de profesores de un módulo
 function limpiarProfesoresModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "DELETE FROM profesor_modulo WHERE idModulo = ?";
@@ -164,7 +153,6 @@ function limpiarProfesoresModulo($idModulo) {
     return $resultado;
 }
 
-// Calcular la suma de horas de todos los retos asociados a un módulo
 function obtenerHorasTotalesRetosModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT SUM(r.horasReto) as total FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto WHERE mr.idModulo = ?";

@@ -8,10 +8,8 @@ if (isset($_POST['actualizarModulos'])) {
     $idProfesorAsignacion = intval(trim($_POST['idProfesor']));
     $listaModulosSeleccionados = $_POST['modulos'] ?? [];
 
-    // 1. Limpiar asignaciones previas
     limpiarModulosProfesor($idProfesorAsignacion);
 
-    // 2. Insertar nuevas asignaciones
     foreach ($listaModulosSeleccionados as $idModuloParaAsociar) {
         if (!asociarModuloProfesor(intval($idModuloParaAsociar), $idProfesorAsignacion)) {
             $hayError = true;

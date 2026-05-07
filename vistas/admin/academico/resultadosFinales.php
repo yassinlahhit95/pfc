@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// ValidaciÃ³n de sesiÃ³n simple
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -14,7 +13,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-// Captura del ciclo seleccionado
 $idCicloElegidoParaVer = 0;
 $idCicloElegidoParaVer = (int)($_GET['idCiclo'] ?? 0);
 
@@ -22,11 +20,9 @@ $listaDeTodosLosCiclos = listarTodosLosCiclos();
 $listaDeDatosFinalesAMostrar = [];
 
 if (!empty($idCicloElegidoParaVer)) {
-    // Obtenemos los datos procesados desde el Modelo (MVC)
     $listaDeDatosFinalesAMostrar = obtenerResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
 
-// Mensajes de sesiÃ³n
 $mensajeExito = $_SESSION['exito'] ?? '';
 $mensajeError = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
@@ -91,8 +87,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         ?>
                         <tr>
                             <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>
-                            <td><?= $fila['promedio_global'] ?> (Notas)</td> 
-                            <td>-</td> <!-- En el modelo calculamos el global, podrÃ­amos desglosar si fuera necesario -->
+                            <td><?= $fila['promedio_global'] ?> (Notas)</td>
+                            <td>-</td>
                             <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
                             <td class="<?= $claseDelColor ?> texto-negrita">
                                 <?= $fila['estado_global'] ?>

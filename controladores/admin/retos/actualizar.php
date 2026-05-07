@@ -31,7 +31,6 @@ if (isset($_POST['actualizarReto'])) {
     if (empty($listaModulosAsociados)) {
         $listaErroresValidacion['modulosReto'] = "Debe seleccionar al menos un módulo.";
     } else if (is_numeric($horasDelReto)) {
-        // Validar que el módulo tenga suficientes horas disponibles
         foreach ($listaModulosAsociados as $idModuloParaValidar) {
             if (!comprobarHorasDisponiblesModulo($idModuloParaValidar, $horasDelReto, $idRetoActualizar)) {
                 $listaErroresValidacion['modulosReto'] = "Un módulo seleccionado no tiene suficientes horas.";
