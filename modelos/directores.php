@@ -19,10 +19,12 @@ function listarDirectores() {
 function checkDirectorExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
-        $stmt = mysqli_prepare($con, "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?) AND idDirector != ?");
+        $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?) AND idDirector != ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
     } else {
-        $stmt = mysqli_prepare($con, "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?)");
+        $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?)";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
     }
     mysqli_stmt_execute($stmt);
@@ -38,7 +40,8 @@ function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNa
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssss", $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -51,7 +54,8 @@ function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fech
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE directores SET nombreDirector=?, emailDirector=?, dniDirector=?, telefonoDirector=?, fechaAltaDirector=?, fechaNacimientoDirector=?, direccionDirector=?, ciudadDirector=?, codigoPostalDirector=?, observacionesDirector=? WHERE idDirector=?");
+    $sql = "UPDATE directores SET nombreDirector=?, emailDirector=?, dniDirector=?, telefonoDirector=?, fechaAltaDirector=?, fechaNacimientoDirector=?, direccionDirector=?, ciudadDirector=?, codigoPostalDirector=?, observacionesDirector=? WHERE idDirector=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -61,7 +65,8 @@ function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fech
 // Eliminar un director por su ID
 function eliminarDirector($idDirector) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM directores WHERE idDirector = ?");
+    $sql = "DELETE FROM directores WHERE idDirector = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -71,7 +76,8 @@ function eliminarDirector($idDirector) {
 // Actualizar los datos básicos de contacto de un director
 function actualizarPerfilDirector($idDirector, $nombre, $email, $telefono) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE directores SET nombreDirector=?, emailDirector=?, telefonoDirector=? WHERE idDirector=?");
+    $sql = "UPDATE directores SET nombreDirector=?, emailDirector=?, telefonoDirector=? WHERE idDirector=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $telefono, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -81,7 +87,8 @@ function actualizarPerfilDirector($idDirector, $nombre, $email, $telefono) {
 // Obtener la información de un director específico por su ID
 function obtenerDirectorPorId($idDirector) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM directores WHERE idDirector = ?");
+    $sql = "SELECT * FROM directores WHERE idDirector = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idDirector);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -93,7 +100,8 @@ function obtenerDirectorPorId($idDirector) {
 // Actualizar la contraseña de acceso de un director
 function actualizarPasswordDirector($idDirector, $nuevaPassword) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE directores SET password = ? WHERE idDirector = ?");
+    $sql = "UPDATE directores SET password = ? WHERE idDirector = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevaPassword, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -119,7 +127,8 @@ function obtenerTokensDirectores() {
 // Validar las credenciales de acceso de un director (login)
 function validarLoginDirector($email, $password) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM directores WHERE emailDirector = ? AND password = ?");
+    $sql = "SELECT * FROM directores WHERE emailDirector = ? AND password = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $email, $password);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -131,7 +140,8 @@ function validarLoginDirector($email, $password) {
 // Guardar o actualizar el token FCM de un director
 function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE directores SET fcm_token = ? WHERE idDirector = ?");
+    $sql = "UPDATE directores SET fcm_token = ? WHERE idDirector = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevoToken, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -141,7 +151,8 @@ function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
 // Obtener el token FCM actual de un director específico
 function obtenerTokenFCMDirector($idDirector) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT fcm_token FROM directores WHERE idDirector = ?");
+    $sql = "SELECT fcm_token FROM directores WHERE idDirector = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idDirector);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -150,3 +161,4 @@ function obtenerTokenFCMDirector($idDirector) {
     mysqli_close($con);
     return $token;
 }
+?>

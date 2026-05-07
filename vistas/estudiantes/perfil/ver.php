@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,10 +21,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>MI PERFIL</h1>
-    <a href="../dashboard.php" class="boton-secundario">
-        <i class="fas fa-home"></i> VOLVER AL INICIO
-    </a>
+    <div>
+        <h1>Mi Perfil</h1>
+        <p class="subtitulo">Información de tu cuenta de estudiante</p>
+    </div>
+    <div class="acciones-pagina">
+        <a href="editar.php" class="boton-primario">
+            <i class="fas fa-edit"></i> EDITAR MI PERFIL
+        </a>
+    </div>
 </div>
 
 <?php if ($error) { ?>
@@ -35,18 +40,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-user-circle"></i> DATOS PERSONALES</h3>
+    </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Nombre completo</div>
-        <div class="valor-detalle"><?= $estudiante['nombreEstudiante'] ?></div>
+        <div class="etiqueta-detalle">Nombre Completo</div>
+        <div class="valor-detalle texto-negrita"><?= strtoupper($estudiante['nombreEstudiante']) ?></div>
     </div> 
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Ciclo </div>
-        <div class="valor-detalle"><?= $estudiante['nombreCiclo'] ?></div>
+        <div class="etiqueta-detalle">Ciclo Formativo</div>
+        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span></div>
     </div>
-
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Email</div>
@@ -59,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">DNI</div>
+        <div class="etiqueta-detalle">DNI / Identificación</div>
         <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
@@ -72,16 +78,6 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="etiqueta-detalle">Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] ?></div>
     </div>
-
-         <div>
-            <a href="editar.php" class="boton-primario">
-                <i class="fas fa-edit"></i> Editar mi Perfil
-            </a>
-        </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

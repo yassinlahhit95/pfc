@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -34,9 +34,9 @@ $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Notas de Alumnos</h1>
-    <a href="agregar.php" class="boton-primario">Asignar Nota</a>
+    <a href="agregar.php" class="boton-primario">ASIGNAR NOTA</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -49,8 +49,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="tarjeta-blanca margen-abajo">
     <form method="GET" action="" class="disposicion-flexible alinear-fin separacion-grande">
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por Ciclo:</label>
-            <select name="idCiclo" onchange="this.form.submit()">
+            <label for="idCiclo">Filtrar por Ciclo:</label>
+            <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Ciclos --</option>
                 <?php foreach ($mis_ciclos as $c) { ?>
                     <option value="<?= $c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
@@ -60,9 +60,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por M�dulo:</label>
-            <select name="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis M�dulos --</option>
+            <label for="idModulo">Filtrar por Módulo:</label>
+            <select name="idModulo" id="idModulo" onchange="this.form.submit()">
+                <option value="0">-- Todos mis Módulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
@@ -71,7 +71,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div class="mb-15">
-            <a href="lista.php" class="boton-secundario">Limpiar</a>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname;">
+                <i class="fas fa-eraser"></i> LIMPIAR
+            </button>
         </div>
     </form>
 </div>
@@ -82,11 +84,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>M�dulo</th>
-                    <th>1� Ev</th>
-                    <th>1� Final</th>
-                    <th>2� Ev</th>
-                    <th>2� Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -113,11 +115,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 <?php } ?>
             </tbody>
-        </table>
-    </div>
-</div>
+            </table>
+            </div>
+            </div>
 
-<?php include '../comunes/footer.php'; ?>
+            <?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 
 

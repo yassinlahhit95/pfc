@@ -30,48 +30,46 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/retos/insertar.php" method="POST">
-        <div class="form-estandar">
-            <div class="campo-formulario">
-                <label>Nombre del Reto *</label>
-                <input type="text" name="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['nombreReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Horas Totales Estimadas *</label>
-                <input type="text" name="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['horasReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaInicioReto'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
-                <?php } ?>
-            </div>
-
-            <div class="campo-formulario">
-                <label>Fecha de Fin *</label>
-                <input type="date" name="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaFinReto'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
-                <?php } ?>
-            </div>
+        <div class="campo-formulario">
+            <label for="nombreReto">Nombre del Reto *</label>
+            <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>" required>
+            <?php if (isset($lista_de_errores['nombreReto'])) { ?>
+                <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
+            <?php } ?>
         </div>
 
-        <div class="margen-arriba">
+        <div class="campo-formulario">
+            <label for="horasReto">Horas Totales Estimadas *</label>
+            <input type="number" name="horasReto" id="horasReto" value="<?= $datos['horasReto'] ?? '' ?>" required>
+            <?php if (isset($lista_de_errores['horasReto'])) { ?>
+                <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
+            <?php } ?>
+        </div>
+
+        <div class="campo-formulario">
+            <label for="fechaInicioReto">Fecha de Inicio *</label>
+            <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaInicioReto'] ?? '' ?>" required>
+            <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
+                <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
+            <?php } ?>
+        </div>
+
+        <div class="campo-formulario">
+            <label for="fechaFinReto">Fecha de Fin *</label>
+            <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaFinReto'] ?? '' ?>" required>
+            <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
+                <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
+            <?php } ?>
+        </div>
+
+        <div class="campo-formulario">
             <label><strong>Vincular Módulos (Obligatorio seleccionar al menos uno) *</strong></label>
             <div class="tarjeta-gris-suave scroll-vertical mt-5">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <div class="item-seleccionable">
-                        <input type="checkbox" name="modulosReto[]" value="<?= $modulo['idModulo'] ?>" 
+                        <input type="checkbox" name="modulosReto[]" id="modulo_<?= $modulo['idModulo'] ?>" value="<?= $modulo['idModulo'] ?>" 
                             <?= (isset($datos['modulosReto']) && in_array($modulo['idModulo'], $datos['modulosReto'])) ? 'checked' : '' ?>>
-                        <span><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</span>
+                        <label for="modulo_<?= $modulo['idModulo'] ?>"><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</label>
                     </div>
                 <?php } ?>
             </div>
@@ -82,11 +80,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="form-acciones">
             <button type="submit" name="guardarReto" class="boton-primario">
-                <i class="fas fa-save"></i> Crear Reto
+                <i class="fas fa-save"></i> CREAR RETO
             </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
-            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
     </form>
 </div>

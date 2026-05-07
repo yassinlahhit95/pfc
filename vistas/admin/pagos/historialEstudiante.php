@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Historial de Pagos: <?= $estudiante['nombreEstudiante'] ?></h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">Volver a General</a>
+    <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($exito) { ?>

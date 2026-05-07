@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -23,37 +23,40 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Datos TFG</h1>
-    <a href="../../../vistas/profesores/pfc/lista.php" class="boton-secundario">← VOLVER</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error): ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito): ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/profesores/pfc/actualizar.php" method="POST">
-        <input type="hidden" name="idEstudiante" value="<?= htmlspecialchars($idEstudiante) ?>">
+        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Estudiante</label>
-                <input type="text" value="<?= htmlspecialchars($datosTFG['nombreEstudiante'] ?? '') ?>" disabled>
+                <label for="nombreEstudiante">Estudiante</label>
+                <input type="text" id="nombreEstudiante" value="<?= $datosTFG['nombreEstudiante'] ?? '' ?>" disabled>
             </div>
 
             <div class="campo-formulario">
-                <label>Título del TFG *</label>
-                <input type="text" name="tituloTFG" value="<?= htmlspecialchars($datosTFG['tituloTFG'] ?? '') ?>" class="<?= isset($errores['tituloTFG']) ? 'input-error' : '' ?>">
-                <?php if (isset($errores['tituloTFG'])): ?>
+                <label for="tituloTFG">Título del TFG *</label>
+                <input type="text" id="tituloTFG" name="tituloTFG" value="<?= $datosTFG['tituloTFG'] ?? '' ?>" class="<?= isset($errores['tituloTFG']) ? 'input-error' : '' ?>">
+                <?php if (isset($errores['tituloTFG'])) { ?>
                     <strong class="error-campo"><?= $errores['tituloTFG'] ?></strong>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
         <div class="form-acciones">
             <button type="submit" name="actualizarTFG" class="boton-primario">
                 <i class="fas fa-save"></i> ACTUALIZAR TFG
+            </button>
+            <button type="reset" class="boton-secundario">
+                <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </div>
     </form>

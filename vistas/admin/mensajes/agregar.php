@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -44,9 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Redactar Nuevo Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver al Buzón
-    </a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($exito) { ?>

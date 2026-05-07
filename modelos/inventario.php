@@ -63,10 +63,12 @@ function checkArticuloExistente($numeroSerie, $idExcluir = null) {
     $con = obtenerConexion();
     $serieUppercase = strtoupper($numeroSerie);
     if ($idExcluir) {
-        $stmt = mysqli_prepare($con, "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?");
+        $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "si", $serieUppercase, $idExcluir);
     } else {
-        $stmt = mysqli_prepare($con, "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ?");
+        $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "s", $serieUppercase);
     }
     mysqli_stmt_execute($stmt);
@@ -83,7 +85,8 @@ function insertarArticulo($nombreArticulo, $numeroSerie) {
     }
     $con = obtenerConexion();
     $serieMayusculas = strtoupper($numeroSerie);
-    $stmt = mysqli_prepare($con, "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) VALUES (?, ?, 'disponible')");
+    $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) VALUES (?, ?, 'disponible')";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $nombreArticulo, $serieMayusculas);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -93,7 +96,8 @@ function insertarArticulo($nombreArticulo, $numeroSerie) {
 // Eliminar un dispositivo del inventario por su ID
 function eliminarArticulo($idArticulo) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM dispositivos WHERE idDispositivo = ?");
+    $sql = "DELETE FROM dispositivos WHERE idDispositivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -105,7 +109,8 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $con = obtenerConexion();
 
     // Obtenemos el número de serie del dispositivo para el registro del préstamo
-    $stmt = mysqli_prepare($con, "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = ?");
+    $sql = "SELECT numeroSerie FROM dispositivos WHERE idDispositivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -113,12 +118,14 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     $numeroSerie = $fila['numeroSerie'];
 
     // Insertamos el registro del préstamo
-    $stmt = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')");
+    $sql = "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "iss", $idEstudiante, $numeroSerie, $fechaPrestamo);
     mysqli_stmt_execute($stmt);
 
     // Actualizamos el estado del dispositivo a 'prestado'
-    $stmt = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?");
+    $sql = "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     $resultado = mysqli_stmt_execute($stmt);
 
@@ -131,7 +138,8 @@ function devolverPrestamo($idPrestamo) {
     $con = obtenerConexion();
 
     // Localizamos el dispositivo vinculado al préstamo
-    $stmt = mysqli_prepare($con, "SELECT numeroSerie FROM prestamos WHERE idPrestamo = ?");
+    $sql = "SELECT numeroSerie FROM prestamos WHERE idPrestamo = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idPrestamo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -140,12 +148,14 @@ function devolverPrestamo($idPrestamo) {
     $fechaHoy = date('Y-m-d');
 
     // Marcamos el préstamo como finalizado
-    $stmt = mysqli_prepare($con, "UPDATE prestamos SET fechaDevolucion = ?, estadoPrestamo = 'devuelto' WHERE idPrestamo = ?");
+    $sql = "UPDATE prestamos SET fechaDevolucion = ?, estadoPrestamo = 'devuelto' WHERE idPrestamo = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $fechaHoy, $idPrestamo);
     $resultado = mysqli_stmt_execute($stmt);
 
     // Volvemos a poner el dispositivo como disponible en el inventario
-    $stmt = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = ?");
+    $sql = "UPDATE dispositivos SET estadoDispositivo = 'disponible' WHERE numeroSerie = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $numeroSerie);
     mysqli_stmt_execute($stmt);
 
@@ -156,7 +166,8 @@ function devolverPrestamo($idPrestamo) {
 // Obtener la información de un artículo específico por su ID
 function obtenerArticuloPorId($idArticulo) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, numeroSerie, estadoDispositivo as estado FROM dispositivos WHERE idDispositivo = ?");
+    $sql = "SELECT idDispositivo as idArticulo, nombreDispositivo as nombreArticulo, numeroSerie, estadoDispositivo as estado FROM dispositivos WHERE idDispositivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -171,9 +182,12 @@ function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoD
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=? WHERE idDispositivo=?");
+    $sql = "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=? WHERE idDispositivo=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssi", $nombreArticulo, $numeroSerie, $estadoDispositivo, $idArticulo);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
+
+?>

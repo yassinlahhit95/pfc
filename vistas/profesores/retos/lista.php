@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,9 +20,11 @@ $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Gestión de Retos</h1>
-    <a href="agregar.php" class="boton-primario">NUEVO RETO</a>
+    <div class="acciones-pagina">
+        <a href="agregar.php" class="boton-primario">NUEVO RETO</a>
+    </div>
 </div>
 
 <?php if ($error) { ?>
@@ -53,8 +55,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $reto['fechaFin'] ?></td>
                             <td><?= $reto['horasReto'] ?> h</td>
                             <td>
-                                <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
-                                <a href="../../../controladores/profesores/retos/borrar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <div class="botones-accion">
+                                    <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar" title="Editar"><i class="fas fa-edit"></i></a>
+                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este reto?');" style="display:inline;">
+                                        <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
+                                        <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     <?php } ?>
@@ -68,7 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 
 

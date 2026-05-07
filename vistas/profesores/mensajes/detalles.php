@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -79,8 +79,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="margen-arriba p-20 bg-gris-suave rounded-8 break-word ancho-completo">
-        <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
-        <div class="line-height-16 pre-wrap max-ancho-completo"><?= $mensaje['descripcion'] ?></div>
+        <label for="contenidoMensaje" class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
+        <div id="contenidoMensaje" class="line-height-16 pre-wrap max-ancho-completo"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

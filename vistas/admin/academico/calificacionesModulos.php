@@ -77,29 +77,31 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     </thead>
                     <tbody>
                         <?php if (empty($listaEstudiantes)) { ?>
-                            <tr><td colspan="6" class="sin-datos">No hay estudiantes matriculados en este ciclo</td></tr>
+                            <tr>
+                                <td colspan="6" class="sin-datos">No hay estudiantes matriculados en este ciclo</td>
+                            </tr>
                         <?php } else { ?>
-                            <?php foreach ($listaEstudiantes as $alumno) { 
+                            <?php foreach ($listaEstudiantes as $alumno) {
                                 $idEst = $alumno['idEstudiante'];
                                 $notas = obtenerNotasModulo($idEst, $idModuloElegido) ?? [];
                             ?>
-                            <tr>
-                                <td>
-                                    <strong><?= strtoupper($alumno['nombreEstudiante']) ?></strong>
-                                    <input type="hidden" name="estudiantes[]" value="<?= $idEst ?>">
-                                </td>
-                                <td><input type="text" name="notas_1ev[]" value="<?= $notas['nota_1ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                <td><input type="text" name="notas_1final[]" value="<?= $notas['nota_1final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                <td><input type="text" name="notas_2ev[]" value="<?= $notas['nota_2ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                <td><input type="text" name="notas_2final[]" value="<?= $notas['nota_2final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                <td><input type="text" name="observaciones[]" value="<?= $notas['observaciones'] ?? '' ?>" class="ancho-total"></td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <strong><?= strtoupper($alumno['nombreEstudiante']) ?></strong>
+                                        <input type="hidden" name="estudiantes[]" value="<?= $idEst ?>">
+                                    </td>
+                                    <td><input type="text" name="notas_1ev[]" value="<?= $notas['nota_1ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="notas_1final[]" value="<?= $notas['nota_1final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="notas_2ev[]" value="<?= $notas['nota_2ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="notas_2final[]" value="<?= $notas['nota_2final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="observaciones[]" value="<?= $notas['observaciones'] ?? '' ?>" class="ancho-total"></td>
+                                </tr>
                             <?php } ?>
                         <?php } ?>
                     </tbody>
                 </table>
             </div>
-            
+
             <?php if (!empty($listaEstudiantes)) { ?>
                 <div class="form-acciones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
@@ -109,7 +111,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <i class="fas fa-eraser"></i> LIMPIAR
                     </button>
                     <label class="etiqueta-notificacion" style="align-self: center;">
-                        <input type="checkbox" name="notificarEstudiantes" value="1"> 
+                        <input type="checkbox" name="notificarEstudiantes" value="1">
                         <i class="fas fa-envelope"></i> NOTIFICAR POR EMAIL
                     </label>
                 </div>
@@ -119,6 +121,3 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-

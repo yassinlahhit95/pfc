@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {

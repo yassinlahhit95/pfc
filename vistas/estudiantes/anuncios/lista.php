@@ -1,4 +1,9 @@
-﻿<?php
+<?php
+/**
+ * Tablón de Anuncios para Estudiantes
+ * 
+ * Muestra los comunicados oficiales y avisos del centro dirigidos a los alumnos.
+ */
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -12,6 +17,7 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
+// Obtenemos los anuncios vigentes para el perfil de estudiante
 $anuncios = listarAnunciosPorRol('estudiantes');
 
 $tituloDelPagina = "Anuncios - Portal Estudiantes";
@@ -32,33 +38,34 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <?php if ($anuncios) { ?>
-        <div class="lista-anuncios-completa">
+        <div class="lista-avisos">
             <?php foreach ($anuncios as $anuncio) { ?>
-                <div class="anuncio-item-completo">
-                    <div class="mb-10">
-                        <label class="texto-negrita">Título del Anuncio:</label> 
-                        <span class="color-primario texto-negrita"><?= strtoupper($anuncio['titulo']) ?></span>
+                <div class="aviso-item mb-25 pb-20 borde-abajo-gris">
+                    <div class="disposicion-flexible alinear-centro espacio-entre-elementos mb-10">
+                        <h2 class="texto-azul m-0"><?= strtoupper($anuncio['titulo']) ?></h2>
+                        <span class="texto-atenuado texto-pequeno">
+                            <i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?>
+                        </span>
                     </div>
                     
-                    <div class="cuerpo-anuncio mb-15">
-                        <label class="texto-negrita">Contenido:</label>
-                       <span class="color-primario texto-negrita"><?= nl2br($anuncio['mensaje']) ?></span>
+                    <div class="cuerpo-aviso mb-15">
+                        <p class="line-height-16 texto-oscuro"><?= nl2br($anuncio['mensaje']) ?></p>
                     </div>
 
-                    <div class="cuerpo-anuncio mb-15">
-                        <label class="texto-negrita">Disponible hasta:</label>
-                       <span class="color-primario texto-negrita"><?= date('d/m/Y', strtotime($anuncio['fechaExpiracion'])) ?></span>
+                    <div class="pie-aviso disposicion-flexible alinear-centro">
+                        <span class="etiqueta-pequena color-secundario-suave">
+                            <i class="fas fa-clock"></i> Disponible hasta: <?= date('d/m/Y', strtotime($anuncio['fechaExpiracion'])) ?>
+                        </span>
                     </div>
                 </div>
             <?php } ?>
         </div>
     <?php } else { ?>
-        <p class="texto-atenuado text-center p-20">No hay anuncios publicados en este momento.</p>
+        <div class="text-center p-40">
+            <i class="fas fa-bullhorn fa-3x texto-atenuado mb-15"></i>
+            <p class="texto-atenuado">No hay avisos publicados para estudiantes en este momento.</p>
+        </div>
     <?php } ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

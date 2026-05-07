@@ -55,48 +55,48 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/admin/retos/actualizar.php">
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
         
-        <div class="form-estandar">
+        <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Nombre del Reto *</label>
-                <input type="text" name="nombreReto" value="<?= $reto['nombreReto'] ?>">
+                <label for="nombreReto">Nombre del Reto *</label>
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>" required>
                 <?php if (isset($lista_de_errores['nombreReto'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Horas Totales Estimadas *</label>
-                <input type="text" name="horasReto" value="<?= $reto['horasReto'] ?>">
+                <label for="horasReto">Horas Totales Estimadas *</label>
+                <input type="number" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>" required>
                 <?php if (isset($lista_de_errores['horasReto'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Inicio *</label>
-                <input type="date" name="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>">
+                <label for="fechaInicioReto">Fecha de Inicio *</label>
+                <input type="date" name="fechaInicioReto" id="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>" required>
                 <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Fin *</label>
-                <input type="date" name="fechaFinReto" value="<?= $reto['fechaFin'] ?>">
+                <label for="fechaFinReto">Fecha de Fin *</label>
+                <input type="date" name="fechaFinReto" id="fechaFinReto" value="<?= $reto['fechaFin'] ?>" required>
                 <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="form-acciones">
+        <div class="campo-formulario margen-arriba">
             <label><strong>Vincular Módulos *</strong></label>
             <div class="tarjeta-gris-suave scroll-vertical mt-5">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <div class="item-seleccionable">
-                        <input type="checkbox" name="modulosReto[]" value="<?= $modulo['idModulo'] ?>" 
+                        <input type="checkbox" name="modulosReto[]" id="modulo_<?= $modulo['idModulo'] ?>" value="<?= $modulo['idModulo'] ?>" 
                             <?= in_array($modulo['idModulo'], $ids_modulos_viculados) ? 'checked' : '' ?>>
-                        <span><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</span>
+                        <label for="modulo_<?= $modulo['idModulo'] ?>"><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</label>
                     </div>
                 <?php } ?>
             </div>
@@ -107,8 +107,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="form-acciones">
             <button type="submit" name="actualizarReto" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Cambios
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
     </form>
 </div>

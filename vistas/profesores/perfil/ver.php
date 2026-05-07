@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Nombre Completo</div>
-        <div class="valor-detalle"><strong><?= strtoupper($profesor['nombreProfesor']) ?></strong></div>
+        <div class="valor-detalle texto-negrita"><?= strtoupper($profesor['nombreProfesor']) ?></div>
     </div>
 
     <div class="fila-detalle">
@@ -67,4 +67,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

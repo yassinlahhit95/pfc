@@ -1,173 +1,20 @@
 <?php
+/**
+ * Redirección al Dashboard Principal de Profesores
+ * 
+ * Este archivo sirve como punto de entrada para el portal de profesores,
+ * redirigiendo al usuario a la vista actual del dashboard situada en la subcarpeta 'inicio/'.
+ */
+
 session_start();
-header("Location: inicio/dashboard.php");
-exit;
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
-
-require_once __DIR__ . "/../../modelos/profesores.php";
-require_once __DIR__ . "/../../modelos/anuncios.php";
-require_once __DIR__ . "/../../modelos/reclamaciones.php";
-require_once __DIR__ . "/../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../modelos/modulos.php";
-require_once __DIR__ . "/../../modelos/retos.php";
-
-$profesorActual = obtenerProfesorPorId($idProfesor);
-$listaAnuncios = listarTodosLosAnuncios();
-$listaMensajes = listarMensajesParaProfesor($idProfesor);
-$listaEstudiantes = listarEstudiantesPorProfesor($idProfesor);
-$listaModulos = obtenerModulosDeProfesor($idProfesor);
-$listaRetos = obtenerRetosDeProfesor($idProfesor);
-
-// Conteo de mensajes pendientes
-$mensajesPendientes = 0;
-foreach ($listaMensajes as $mensaje) {
-    if ($mensaje['estadoReclamacion'] === 'pendiente') {
-        $mensajesPendientes++;
-    }
+// Verificamos si el usuario tiene una sesión de profesor activa
+if (empty($_SESSION['idProfesor'])) {
+    header("Location: ../login.php");
+    exit;
 }
 
-$tituloDelPagina = "Panel de Control - Profesor";
-$seccionActual = 'inicio';
-include_once __DIR__ . "/comunes/nav.php";
+// Redireccionamos a la ubicación actual del dashboard
+header("Location: inicio/dashboard.php");
+exit;
 ?>
-
-<div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
-  <div>
-    <h1>Bienvenido/a, <?= $profesorActual['nombreProfesor'] ?? '' ?></h1>
-  </div>
-</div>
-
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
-<?php } ?>
-
-<h2 class="margen-abajo texto-oscuro">Resumen de Actividad</h2>
-<div class="cuadricula-estadisticas">
-  <div class="tarjeta-estadistica tarjeta-estadistica-azul">
-    <div class="info-estadistica"><h3><?= count($listaEstudiantes) ?></h3><p>Alumnos</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?= $mensajesPendientes ?></h3><p>Mensajes</p></div>
-  </div>
-</div>
-
-<div class="cuadricula-secundaria">
-  <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    
-    <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
-      <div class="cuadricula-acciones-rapidas">
-        <a href="calificaciones/agregar.php" class="accion-rapida"><span>Poner Notas</span></a>
-        <a href="retos/insertar.php" class="accion-rapida"><span>Nuevo Reto</span></a>
-        <a href="mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
-        <a href="perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
-        <a href="#" class="accion-rapida color-secundario text-white" onclick="document.getElementById('formMasivo').style.display='block'; return false;">
-          <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
-        </a>
-      </div>
-      
-      <div id="formMasivo" class="d-none mt-20 p-15 border-secundario rounded-8">
-        <h4 class="mt-0">Enviar Resultados por Email a un Ciclo</h4>
-        <form action="../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
-          <select name="idCiclo" class="ancho-total p-8 mb-10">
-            <option value="">Seleccione un ciclo...</option>
-            <?php 
-            $ciclosVistos = [];
-            foreach ($listaModulos as $m) {
-                if (!in_array($m['idCiclo'], $ciclosVistos)) {
-                    $ciclosVistos[] = $m['idCiclo'];
-            ?>
-                <option value="<?= $m['idCiclo'] ?>"><?= $m['nombreCiclo'] ?></option>
-            <?php } } ?>
-          </select>
-          <button type="submit" class="boton-primario ancho-total bg-secundario">ENVIAR A TODOS LOS ALUMNOS</button>
-        </form>
-      </div>
-    </div>
-
-    <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn"></i> Últimos Avisos</h3>
-      </div>
-      <?php if (!empty($listaAnuncios)) { ?>
-        <div>
-            <?php 
-            $c = 0;
-            foreach ($listaAnuncios as $anuncio) {
-                if ($c < 4) {
-            ?>
-            <div class="anuncio-item">
-                <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
-                <p class="texto-pequeno sin-margen"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
-            </div>
-            <?php 
-                }
-                $c++;
-            } ?>
-        </div>
-      <?php } else { ?>
-        <p class="texto-atenuado">No hay anuncios activos.</p>
-      <?php } ?>
-    </div>
-  </div>
-
-  <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta">
-        <h3>Próximos Eventos</h3>
-      </div>
-      <div class="lista-eventos">
-        <?php if (empty($listaEventos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
-        <?php } else { ?>
-            <?php 
-            $ce = 0;
-            foreach ($listaEventos as $ev) {
-                if ($ce < 4) {
-                    $d = date('d', strtotime($ev['fechaEvento']));
-                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
-            ?>
-            <div class="elemento-evento">
-              <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>
-              <div>
-                <p class="texto-negrita"><?= $ev['tituloEvento'] ?></p>
-                <p class="texto-atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
-              </div>
-            </div>
-            <?php 
-                }
-                $ce++;
-            } ?>
-        <?php } ?>
-      </div>
-    </div>
-
-    <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta">
-        <h3>Información del Perfil</h3>
-      </div>
-      <div class="info-adicional-perfil">
-        <p><strong>Email:</strong><br><?= $profesorActual['emailProfesor'] ?></p>
-        <hr class="margen-arriba">
-        <a href="perfil/ver.php" class="boton-secundario ancho-total center-text">GESTIONAR PERFIL</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<?php include __DIR__ . '/comunes/footer.php'; ?>
-
-
-

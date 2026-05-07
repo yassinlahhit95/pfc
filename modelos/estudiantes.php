@@ -24,10 +24,12 @@ function listarEstudiantes() {
 function checkEstudianteExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
-        $stmt = mysqli_prepare($con, "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?");
+        $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
     } else {
-        $stmt = mysqli_prepare($con, "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?)");
+        $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?)";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
     }
     mysqli_stmt_execute($stmt);
@@ -43,7 +45,8 @@ function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, 
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -56,7 +59,8 @@ function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaN
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=? WHERE idEstudiante=?");
+    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=? WHERE idEstudiante=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssssii", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -66,7 +70,8 @@ function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaN
 // Obtener los estudiantes vinculados a los ciclos que imparte un profesor
 function listarEstudiantesPorProfesor($idProfesor) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?) ORDER BY estudiantes.nombreEstudiante ASC");
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?) ORDER BY estudiantes.nombreEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -81,7 +86,8 @@ function listarEstudiantesPorProfesor($idProfesor) {
 // Listar todos los estudiantes matriculados en un ciclo específico
 function listarEstudiantesPorCiclo($idCiclo) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC");
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -96,7 +102,8 @@ function listarEstudiantesPorCiclo($idCiclo) {
 // Eliminar un estudiante por su ID
 function eliminarEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM estudiantes WHERE idEstudiante = ?");
+    $sql = "DELETE FROM estudiantes WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -106,7 +113,8 @@ function eliminarEstudiante($idEstudiante) {
 // Obtener la información completa de un estudiante por su ID
 function obtenerEstudiantePorId($idEstudiante) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?");
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -118,7 +126,8 @@ function obtenerEstudiantePorId($idEstudiante) {
 // Actualizar la contraseña de un estudiante
 function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?");
+    $sql = "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevaPassword, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -128,7 +137,8 @@ function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
 // Actualizar los datos básicos del perfil de un estudiante
 function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=? WHERE idEstudiante=?");
+    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=? WHERE idEstudiante=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $telefono, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -153,7 +163,8 @@ function obtenerTokensEstudiantes() {
 // Validar las credenciales de acceso de un estudiante
 function validarLoginEstudiante($email, $password) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND password = ?");
+    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND password = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $email, $password);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -165,7 +176,8 @@ function validarLoginEstudiante($email, $password) {
 // Guardar o actualizar el token FCM de un estudiante
 function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET fcm_token = ? WHERE idEstudiante = ?");
+    $sql = "UPDATE estudiantes SET fcm_token = ? WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevoToken, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -175,7 +187,8 @@ function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
 // Obtener el token FCM actual de un estudiante específico
 function obtenerTokenFCMEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT fcm_token FROM estudiantes WHERE idEstudiante = ?");
+    $sql = "SELECT fcm_token FROM estudiantes WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -184,3 +197,4 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     mysqli_close($con);
     return $token;
 }
+?>

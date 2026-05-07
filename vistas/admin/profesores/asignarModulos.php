@@ -34,9 +34,7 @@ foreach ($todos_los_modulos as $m) {
 
 <div class="encabezado-pagina">
     <h1>Asignar Módulos: <?= $profesor['nombreProfesor'] ?></h1>
-    <a href="verProfesores.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
+    <a href="verProfesores.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

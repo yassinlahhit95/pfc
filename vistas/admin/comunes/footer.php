@@ -1,45 +1,26 @@
-
-</main>
+    </main>
 </div>
 
 <script>
+function toggleMenu() {
+    var sidebar = document.getElementById('barraLateral');
+    if (sidebar) {
+        sidebar.classList.toggle('activo');
+        document.body.classList.toggle('menu-abierto');
+    }
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-  var barraLateral = document.getElementById('barraLateral');
-  var overlayBarra = document.getElementById('overlayBarra');
-  var botonAbrir = document.getElementById('botonAbrirMenu');
-  var botonCerrar = document.getElementById('botonCerrarBarra');
-
-  if (botonAbrir && botonCerrar && barraLateral && overlayBarra) {
-    
-    botonAbrir.addEventListener('click', function() {
-      barraLateral.classList.add('activo');
-      overlayBarra.classList.add('activo');
-      document.body.style.overflow = 'hidden';
-    });
-
-    
-    botonCerrar.addEventListener('click', function() {
-      barraLateral.classList.remove('activo');
-      overlayBarra.classList.remove('activo');
-      document.body.style.overflow = '';
-    });
-
-    
-    overlayBarra.addEventListener('click', function() {
-      barraLateral.classList.remove('activo');
-      overlayBarra.classList.remove('activo');
-      document.body.style.overflow = '';
-    });
-  }
+// Cerrar menú al hacer clic fuera (opcional, para móvil)
+document.addEventListener('click', function(event) {
+    var sidebar = document.getElementById('barraLateral');
+    var toggle = document.querySelector('.menu-toggle');
+    if (sidebar && sidebar.classList.contains('activo') && !sidebar.contains(event.target) && !toggle.contains(event.target)) {
+        sidebar.classList.remove('activo');
+        document.body.classList.remove('menu-abierto');
+    }
 });
 </script>
 
 <script src="../../../public/js/filtros.js"></script>
 </body>
 </html>
-
-
-
-
-

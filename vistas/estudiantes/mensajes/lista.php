@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -27,12 +27,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($error): ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito): ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -58,16 +58,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <strong><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
-                                    echo '(PROFESOR) ' . htmlspecialchars($mensaje['nombreProfesor']); 
+                                    echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
                                 } else {
-                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . htmlspecialchars($mensaje['nombreProfesor']) : 'DIRECCIÓN (ADMIN)';
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
                                 }
                             ?></strong>
                         </td>
-                        <td><p class="texto-negrita"><?= htmlspecialchars(strtoupper($mensaje['asunto'])) ?></p></td>
+                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?= htmlspecialchars(substr($mensaje['descripcion'], 0, 80)) ?>...
+                                <?= substr($mensaje['descripcion'], 0, 80) ?>...
                             </div>
                         </td>
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>

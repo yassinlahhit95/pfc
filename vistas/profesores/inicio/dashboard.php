@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -17,6 +17,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $profesorActual = obtenerProfesorPorId($idProfesor);
 $listaAnuncios = listarTodosLosAnuncios();
@@ -24,6 +25,7 @@ $listaMensajes = listarMensajesParaProfesor($idProfesor);
 $listaEstudiantes = listarEstudiantesPorProfesor($idProfesor);
 $listaModulos = obtenerModulosDeProfesor($idProfesor);
 $listaRetos = obtenerRetosDeProfesor($idProfesor);
+$listaEventos = listarEventosProximos();
 
 // Conteo de mensajes pendientes
 $mensajesPendientes = 0;
@@ -103,7 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn"></i> Últimos Avisos</h3>
+        <h3>Últimos Avisos</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div>
@@ -155,17 +157,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                 $ce++;
             } ?>
         <?php } ?>
-      </div>
-    </div>
-
-    <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta">
-        <h3>Información del Perfil</h3>
-      </div>
-      <div class="info-adicional-perfil">
-        <p><strong>Email:</strong><br><?= $profesorActual['emailProfesor'] ?></p>
-        <hr class="margen-arriba">
-        <a href="../perfil/ver.php" class="boton-secundario ancho-total center-text">GESTIONAR PERFIL</a>
       </div>
     </div>
   </div>

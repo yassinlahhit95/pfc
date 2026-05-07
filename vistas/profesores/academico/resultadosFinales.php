@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -134,8 +134,8 @@ if ($id_ciclo_elegido) {
     <div class="disposicion-flexible alinear-centro separacion-grande">
         <form method="GET" action="" class="flexible-rellenar disposicion-flexible alinear-centro">
             <div class="campo-formulario flexible-rellenar">
-                <label>Seleccione uno de sus Ciclos:</label>
-                <select name="idCiclo" onchange="this.form.submit()">
+                <label for="idCiclo">Seleccione Ciclo:</label>
+                <select id="idCiclo" name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
@@ -144,6 +144,9 @@ if ($id_ciclo_elegido) {
                     <?php } ?>
                 </select>
             </div>
+            <button type="button" class="boton-secundario ml-10" onclick="window.location.href = window.location.pathname;">
+                <i class="fas fa-eraser"></i> LIMPIAR
+            </button>
         </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>

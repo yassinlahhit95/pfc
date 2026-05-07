@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// Ver lista de todos los profes
+// Obtener la lista de todos los profesores
 function listarProfesores() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM profesores ORDER BY idProfesor ASC";
@@ -18,10 +18,12 @@ function listarProfesores() {
 function checkProfesorExistente($dni, $email, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
-        $stmt = mysqli_prepare($con, "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?) AND idProfesor != ?");
+        $sql = "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?) AND idProfesor != ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
     } else {
-        $stmt = mysqli_prepare($con, "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?)");
+        $sql = "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?)";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
     }
     mysqli_stmt_execute($stmt);
@@ -31,74 +33,81 @@ function checkProfesorExistente($dni, $email, $idExcluir = null) {
     return $existe;
 }
 
-// Meter profe nuevo
-function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+// Registrar un nuevo profesor en el sistema
+function insertarProfesor(string $nombre, string $email, string $tel, string $dni, string $dir, string $f_nac, string $f_alta, string $ciudad, string $cp, string $obs): bool|int {
     if (checkProfesorExistente($dni, $email)) {
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssss", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
     mysqli_stmt_execute($stmt);
 
-    // Sacamos el ID mas alto (el nuevo)
-    $stmt2 = mysqli_prepare($con, "SELECT MAX(idProfesor) as ultimoId FROM profesores");
+    // Obtenemos el último ID generado (el ID del nuevo profesor)
+    $sql = "SELECT MAX(idProfesor) as ultimoId FROM profesores";
+    $stmt2 = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt2);
     $resultado = mysqli_stmt_get_result($stmt2);
     $filaId = mysqli_fetch_assoc($resultado);
-    $idNuevo = $filaId['ultimoId'];
+    $idNuevo = (int)$filaId['ultimoId'];
 
     mysqli_close($con);
     return $idNuevo;
 }
 
 // Actualizar un profesor
-function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+function actualizarProfesor(int $id, string $nombre, string $email, string $tel, string $dni, string $dir, string $f_nac, string $f_alta, string $ciudad, string $cp, string $obs): bool {
     if (checkProfesorExistente($dni, $email, $id)) {
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=?, dniProfesor=?, direccionProfesor=?, fechaNacimientoProfesor=?, fechaAltaProfesor=?, ciudadProfesor=?, codigoPostalProfesor=?, observacionesProfesor=? WHERE idProfesor=?");
+    $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=?, dniProfesor=?, direccionProfesor=?, fechaNacimientoProfesor=?, fechaAltaProfesor=?, ciudadProfesor=?, codigoPostalProfesor=?, observacionesProfesor=? WHERE idProfesor=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs, $id);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-// Unir profe con ciclo
+// Asociar un profesor con un ciclo formativo
 function asociarCicloProfesor($idCic, $idProf) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)");
+    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idCic, $idProf);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-// Unir profe con modulo
+// Asociar un profesor con un módulo profesional
 function asociarModuloProfesor($idMod, $idProf) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "INSERT INTO profesor_modulo (idModulo, idProfesor) VALUES (?, ?)");
+    $sql = "INSERT INTO profesor_modulo (idModulo, idProfesor) VALUES (?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idMod, $idProf);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-// Quitar profe
+// Eliminar un profesor del sistema
 function eliminarProfesor($id) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM profesores WHERE idProfesor = ?");
+    $sql = "DELETE FROM profesores WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-// Datos de un profe por ID
+// Obtener los datos de un profesor por su ID
 function obtenerProfesorPorId($id) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM profesores WHERE idProfesor = ?");
+    $sql = "SELECT * FROM profesores WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -107,10 +116,11 @@ function obtenerProfesorPorId($id) {
     return $fila;
 }
 
-// Ver profes que dan clase en un ciclo
+// Obtener los profesores que imparten clases en un ciclo formativo
 function listarProfesoresPorCiclo($idCic) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT p.* FROM profesores p JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor WHERE cp.idCiclo = ? ORDER BY p.nombreProfesor ASC");
+    $sql = "SELECT p.* FROM profesores p JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor WHERE cp.idCiclo = ? ORDER BY p.nombreProfesor ASC";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCic);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -122,10 +132,11 @@ function listarProfesoresPorCiclo($idCic) {
     return $lista;
 }
 
-// Ver que modulos tiene este profe
+// Obtener los IDs de los módulos asignados a un profesor
 function obtenerIdsModulosDeProfesor($idProf) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?");
+    $sql = "SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProf);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -137,30 +148,33 @@ function obtenerIdsModulosDeProfesor($idProf) {
     return $lista;
 }
 
-// Borrar todas las clases de un profe
+// Eliminar todas las asignaciones de módulos de un profesor
 function limpiarModulosProfesor($idProf) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM profesor_modulo WHERE idProfesor = ?");
+    $sql = "DELETE FROM profesor_modulo WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProf);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-// Cambiar la clave
+// Cambiar la contraseña de acceso del profesor
 function actualizarPasswordProfesor($id, $pass) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE profesores SET password = ? WHERE idProfesor = ?");
+    $sql = "UPDATE profesores SET password = ? WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $pass, $id);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-// Datos basicos de perfil propio
+// Actualizar los datos básicos del perfil del profesor
 function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=? WHERE idProfesor=?");
+    $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=? WHERE idProfesor=?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $tel, $id);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -172,7 +186,8 @@ function obtenerProfesoresConModulosParaEstudiante($idEst) {
     $con = obtenerConexion();
 
     // Primero obtenemos el ciclo del estudiante
-    $stmt = mysqli_prepare($con, "SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?");
+    $sql = "SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEst);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -180,7 +195,8 @@ function obtenerProfesoresConModulosParaEstudiante($idEst) {
     $idCiclo = $filaCiclo['idCiclo'];
 
     // Ahora buscamos los profesores que dan clase en los módulos de ese ciclo
-    $stmt = mysqli_prepare($con, "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo FROM profesores p JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor JOIN modulos m ON pm.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY p.nombreProfesor ASC, m.nombreModulo ASC");
+    $sql = "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo FROM profesores p JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor JOIN modulos m ON pm.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY p.nombreProfesor ASC, m.nombreModulo ASC";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -210,7 +226,8 @@ function obtenerTokensProfesores() {
 // Validar login de profesor
 function validarLoginProfesor($email, $pass) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM profesores WHERE emailProfesor = ? AND password = ?");
+    $sql = "SELECT * FROM profesores WHERE emailProfesor = ? AND password = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $email, $pass);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -222,7 +239,8 @@ function validarLoginProfesor($email, $pass) {
 // Actualizar token FCM para notificaciones
 function actualizarTokenFCMProfesor($id, $token) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE profesores SET fcm_token = ? WHERE idProfesor = ?");
+    $sql = "UPDATE profesores SET fcm_token = ? WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $token, $id);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -232,7 +250,8 @@ function actualizarTokenFCMProfesor($id, $token) {
 // Obtener token FCM de un profesor específico
 function obtenerTokenFCMProfesor($id) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT fcm_token FROM profesores WHERE idProfesor = ?");
+    $sql = "SELECT fcm_token FROM profesores WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -241,3 +260,4 @@ function obtenerTokenFCMProfesor($id) {
     mysqli_close($con);
     return $token;
 }
+?>

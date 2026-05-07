@@ -31,9 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Modificar Módulo: <?= $modulo['nombreModulo'] ?></h1>
-    <a href="verModulos.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> VOLVER A LA LISTA
-    </a>
+    <a href="verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -46,16 +44,16 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="form-estandar">
             <div class="campo-formulario">
-                <label>Nombre del Módulo *</label>
-                <input type="text" name="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
+                <label for="nombreModulo">Nombre del Módulo *</label>
+                <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
                 <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                    <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['nombreModulo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Ciclo Formativo *</label>
-                <select name="idCiclo">
+                <label for="idCiclo">Ciclo Formativo *</label>
+                <select name="idCiclo" id="idCiclo">
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
                         <option value="<?= $ciclo['idCiclo'] ?>" <?= ($modulo['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                             <?= $ciclo['nombreCiclo'] ?>
@@ -63,15 +61,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['idCiclo'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Horas Totales *</label>
-                <input type="text" name="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
+                <label for="horasMaximas">Horas Totales *</label>
+                <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
                 <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                    <p class="texto-rojo texto-pequeno mt-5"><?= $lista_de_errores['horasMaximas'] ?></p>
+                    <strong class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></strong>
                 <?php } ?>
             </div>
         </div>
@@ -80,6 +78,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="guardarModulo" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
     </form>
 </div>

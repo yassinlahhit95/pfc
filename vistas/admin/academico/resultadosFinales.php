@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 // ValidaciÃ³n de sesiÃ³n simple

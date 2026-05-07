@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -47,30 +47,30 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Calificaciones por Módulo</h1>
-    <p class="subtitulo">Aquí puedes poner las notas de todos tus alumnos a la vez</p>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
     <form method="GET" action="../../../vistas/profesores/calificaciones/agregar.php" class="disposicion-flexible alinear-centro separacion-grande">
         <div class="campo-formulario flexible-rellenar">
-            <label>1. Selecciona el Ciclo:</label>
-            <select name="idCiclo" onchange="this.form.submit()">
+            <label for="idCiclo">1. Selecciona el Ciclo:</label>
+            <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Elige un ciclo --</option>
                 <?php foreach ($listaDeCiclos as $ciclo) { ?>
                     <option value="<?= $ciclo['idCiclo'] ?>" <?= $idCiclo == $ciclo['idCiclo'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($ciclo['nombreCiclo']) ?>
+                        <?= $ciclo['nombreCiclo'] ?>
                     </option>
                 <?php } ?>
             </select>
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Selecciona el Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
+            <label for="idModulo">2. Selecciona el Módulo:</label>
+            <select name="idModulo" id="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
                 <option value="">-- Elige un módulo --</option>
                 <?php foreach ($listaDeModulos as $modulo) { ?>
                     <option value="<?= $modulo['idModulo'] ?>" <?= $idModulo == $modulo['idModulo'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($modulo['nombreModulo']) ?>
+                        <?= $modulo['nombreModulo'] ?>
                     </option>
                 <?php } ?>
             </select>
@@ -78,12 +78,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito): ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error): ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <?php if ($idModulo) { ?>
     <div class="tarjeta-blanca margen-arriba">
@@ -119,23 +119,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?= htmlspecialchars($estudiante['nombreEstudiante']) ?></strong>
+                                    <strong><?= $estudiante['nombreEstudiante'] ?></strong>
                                     <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1ev[]" value="<?= htmlspecialchars($v1) ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_1ev[]" value="<?= $v1 ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1final[]" value="<?= htmlspecialchars($v1f) ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_1final[]" value="<?= $v1f ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2ev[]" value="<?= htmlspecialchars($v2) ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_2ev[]" value="<?= $v2 ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2final[]" value="<?= htmlspecialchars($v2f) ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_2final[]" value="<?= $v2f ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="observaciones[]" value="<?= htmlspecialchars($vobs) ?>" class="ancho-total">
+                                    <input type="text" name="observaciones[]" value="<?= $vobs ?>" class="ancho-total">
                                 </td>
                             </tr>
                             <?php } ?>
@@ -147,8 +147,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (!empty($listaDeEstudiantes)) { ?>
                 <div class="form-acciones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
-                        <i class="fas fa-save"></i> Guardar todas las Notas
+                        <i class="fas fa-save"></i> GUARDAR CALIFICACIONES
                     </button>
+                    <button type="button" class="boton-secundario" onclick="window.location.reload();"><i class="fas fa-eraser"></i> LIMPIAR</button>
                     <label class="etiqueta-notificacion ml-auto">
                         <input type="checkbox" name="notificarEstudiantes" value="1"> 
                         <i class="fas fa-envelope"></i> Enviar aviso por email

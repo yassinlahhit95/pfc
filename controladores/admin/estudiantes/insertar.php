@@ -22,8 +22,8 @@ if (isset($_POST['guardarEstudiante'])) {
     }
     if (empty($email)) {
         $errores['emailEstudiante'] = "El email es obligatorio.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errores['emailEstudiante'] = "El formato del email no es vÃ¡lido.";
+    } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+        $errores['emailEstudiante'] = "El formato del email no es válido.";
     }
     if (empty($dni)) {
         $errores['dniEstudiante'] = "El DNI es obligatorio.";

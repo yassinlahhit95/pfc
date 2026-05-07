@@ -27,9 +27,7 @@ unset($_SESSION['error']);
 
 <div class="encabezado-pagina">
     <h1>Asignar Profesor al Módulo: <?= $modulo['nombreModulo'] ?></h1>
-    <a href="verModulos.php" class="boton-secundario">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
+    <a href="verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>

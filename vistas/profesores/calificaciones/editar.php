@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Calificación</h1>
-    <a href="lista.php" class="boton-secundario">? Volver</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -53,12 +53,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form action="../../../controladores/profesores/calificaciones/actualizar.php" method="POST">
+    <form action="../../../controladores/profesores/calificaciones/actualizar.php" method="POST" class="form-estandar">
         <input type="hidden" name="idCalificacion" value="<?= $id ?>">
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Estudiante *</label>
-                <select name="idEstudiante" disabled>
+                <label for="idEstudiante">Estudiante *</label>
+                <select name="idEstudiante" id="idEstudiante" disabled>
                     <?php foreach ($estudiantes as $est) { ?>
                         <option value="<?= $est['idEstudiante'] ?>" <?= $est['idEstudiante'] == $nota['idEstudiante'] ? 'selected' : '' ?>><?= $est['nombreEstudiante'] ?></option>
                     <?php } ?>
@@ -67,8 +67,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Módulo *</label>
-                <select name="idModulo" disabled>
+                <label for="idModulo">Módulo *</label>
+                <select name="idModulo" id="idModulo" disabled>
                     <?php foreach ($modulos as $mod) { ?>
                         <option value="<?= $mod['idModulo'] ?>" <?= $mod['idModulo'] == $nota['idModulo'] ? 'selected' : '' ?>><?= $mod['nombreModulo'] ?></option>
                     <?php } ?>
@@ -77,45 +77,48 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>1 Evaluacin</label>
-                <input type="text" name="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>" class="<?= isset($errores['nota_1ev']) ? 'input-error' : '' ?>">
+                <label for="nota_1ev">1ª Evaluación</label>
+                <input type="text" name="nota_1ev" id="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>" class="<?= isset($errores['nota_1ev']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_1ev'])) { ?>
                     <strong class="error-campo"><?= $errores['nota_1ev'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>1 Final</label>
-                <input type="text" name="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>" class="<?= isset($errores['nota_1final']) ? 'input-error' : '' ?>">
+                <label for="nota_1final">1ª Final</label>
+                <input type="text" name="nota_1final" id="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>" class="<?= isset($errores['nota_1final']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_1final'])) { ?>
                     <strong class="error-campo"><?= $errores['nota_1final'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>2 Evaluacin</label>
-                <input type="text" name="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>" class="<?= isset($errores['nota_2ev']) ? 'input-error' : '' ?>">
+                <label for="nota_2ev">2ª Evaluación</label>
+                <input type="text" name="nota_2ev" id="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>" class="<?= isset($errores['nota_2ev']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_2ev'])) { ?>
                     <strong class="error-campo"><?= $errores['nota_2ev'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>2 Final</label>
-                <input type="text" name="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>" class="<?= isset($errores['nota_2final']) ? 'input-error' : '' ?>">
+                <label for="nota_2final">2ª Final</label>
+                <input type="text" name="nota_2final" id="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>" class="<?= isset($errores['nota_2final']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_2final'])) { ?>
                     <strong class="error-campo"><?= $errores['nota_2final'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="margen-arriba disposicion-flexible alinear-centro separacion-media">
-            <button type="submit" name="actualizarNota" class="boton-primario">Actualizar Calificacin</button>
-            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
+        <div class="form-acciones">
+            <button type="submit" name="actualizarNota" class="boton-primario">
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
-            <label class="etiqueta-notificacion">
-                <input type="checkbox" name="notificarEstudiante" value="1"> Notificar por Email
+            <button type="button" class="boton-secundario" onclick="window.location.reload();">
+                <i class="fas fa-eraser"></i> LIMPIAR
+            </button>
+            <label class="etiqueta-notificacion ml-auto">
+                <input type="checkbox" name="notificarEstudiante" value="1"> 
+                <i class="fas fa-envelope"></i> Notificar por Email
             </label>
         </div>
     </form>

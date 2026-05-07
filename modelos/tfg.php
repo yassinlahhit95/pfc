@@ -22,7 +22,8 @@ function listarTodosLosTFGs() {
 // Listar TFGs filtrados por un ciclo formativo específico
 function listarTFGsFiltrados($idCiclo) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.archivoTFG != '' AND e.idCiclo = ? ORDER BY e.nombreEstudiante ASC");
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.archivoTFG != '' AND e.idCiclo = ? ORDER BY e.nombreEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -37,7 +38,8 @@ function listarTFGsFiltrados($idCiclo) {
 // Obtener los datos del TFG de un estudiante concreto
 function obtenerTFGporEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT idEstudiante, nombreEstudiante, archivoTFG, fechaSubidaTFG FROM estudiantes WHERE idEstudiante = ?");
+    $sql = "SELECT idEstudiante, nombreEstudiante, archivoTFG, fechaSubidaTFG FROM estudiantes WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -50,7 +52,8 @@ function obtenerTFGporEstudiante($idEstudiante) {
 function actualizarTFG($idEstudiante, $nombreArchivo) {
     $con = obtenerConexion();
     $fechaHoraActual = date('Y-m-d H:i:s');
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?");
+    $sql = "UPDATE estudiantes SET archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssi", $nombreArchivo, $fechaHoraActual, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -63,10 +66,12 @@ function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
     $fechaHoraActual = date('Y-m-d H:i:s');
 
     if (!empty($nombreArchivo)) {
-        $stmt = mysqli_prepare($con, "UPDATE estudiantes SET tituloTFG = ?, archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?");
+        $sql = "UPDATE estudiantes SET tituloTFG = ?, archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "sssi", $tituloTFG, $nombreArchivo, $fechaHoraActual, $idEstudiante);
     } else {
-        $stmt = mysqli_prepare($con, "UPDATE estudiantes SET tituloTFG = ? WHERE idEstudiante = ?");
+        $sql = "UPDATE estudiantes SET tituloTFG = ? WHERE idEstudiante = ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "si", $tituloTFG, $idEstudiante);
     }
 
@@ -78,7 +83,8 @@ function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
 // Eliminar el archivo del TFG de un estudiante (limpiar campos)
 function eliminarTFG($idEstudiante) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = ?");
+    $sql = "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -98,7 +104,8 @@ function contarTFGsSubidos() {
 // Contar los TFGs subidos por estudiantes de los ciclos de un profesor
 function contarTFGsDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ? AND e.archivoTFG != ''");
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ? AND e.archivoTFG != ''";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -110,7 +117,8 @@ function contarTFGsDeProfesor($idProfesor) {
 // Listar los TFGs de los estudiantes vinculados a un profesor
 function listarTFGsPorProfesor($idProfesor) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ? AND e.archivoTFG != '' ORDER BY e.nombreEstudiante ASC");
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ? AND e.archivoTFG != '' ORDER BY e.nombreEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -127,7 +135,8 @@ function eliminarArchivoTFG($idEstudiante) {
     $con = obtenerConexion();
 
     // 1. Localizamos el archivo en la base de datos
-    $stmt = mysqli_prepare($con, "SELECT archivoTFG FROM estudiantes WHERE idEstudiante = ?");
+    $sql = "SELECT archivoTFG FROM estudiantes WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultadoBusqueda = mysqli_stmt_get_result($stmt);
@@ -141,10 +150,13 @@ function eliminarArchivoTFG($idEstudiante) {
     }
 
     // 2. Limpiamos los campos en la base de datos (está en la tabla estudiantes)
-    $stmt = mysqli_prepare($con, "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = ?");
+    $sql = "UPDATE estudiantes SET archivoTFG = '', fechaSubidaTFG = NULL WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
 
     mysqli_close($con);
     return $resultado;
 }
+
+?>

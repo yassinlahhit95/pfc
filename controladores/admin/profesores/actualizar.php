@@ -23,7 +23,7 @@ if (isset($_POST['actualizarProfesor'])) {
     }
     if (empty($emailProfesorActualizar)) {
         $listaErroresValidacion['emailProfesor'] = "El email es obligatorio.";
-    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $emailProfesorActualizar)) {
+    } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailProfesorActualizar)) {
         $listaErroresValidacion['emailProfesor'] = "El formato del email no es válido.";
     }
     if (empty($dniProfesorActualizar)) {

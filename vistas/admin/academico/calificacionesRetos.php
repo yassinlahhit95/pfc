@@ -82,7 +82,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <input type="hidden" name="idReto" value="<?= $id_reto_elegido ?>">
             <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
             <input type="hidden" name="idModulo" value="<?= $id_modulo_elegido ?>">
-            
+
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
@@ -93,27 +93,29 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     </thead>
                     <tbody>
                         <?php if (empty($estudiantes_lista)) { ?>
-                            <tr><td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
+                            <tr>
+                                <td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td>
+                            </tr>
                         <?php } else { ?>
-                            <?php foreach ($estudiantes_lista as $estudianteItem) { 
+                            <?php foreach ($estudiantes_lista as $estudianteItem) {
                                 $idEstudianteFila = $estudianteItem['idEstudiante'];
                                 $notaRetoActual = obtenerCalificacionReto($idEstudianteFila, $id_reto_elegido);
                             ?>
-                            <tr>
-                                <td>
-                                    <strong><?= strtoupper($estudianteItem['nombreEstudiante']) ?></strong>
-                                    <input type="hidden" name="estudiantes[]" value="<?= $idEstudianteFila ?>">
-                                </td>
-                                <td>
-                                    <input type="text" name="notas[]" value="<?= $notaRetoActual ?>" class="ancho-ajustable-nota">
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <strong><?= strtoupper($estudianteItem['nombreEstudiante']) ?></strong>
+                                        <input type="hidden" name="estudiantes[]" value="<?= $idEstudianteFila ?>">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="notas[]" value="<?= $notaRetoActual ?>" class="ancho-ajustable-nota">
+                                    </td>
+                                </tr>
                             <?php } ?>
                         <?php } ?>
                     </tbody>
                 </table>
             </div>
-            
+
             <?php if (!empty($estudiantes_lista)) { ?>
                 <div class="margen-arriba">
                     <button type="submit" name="guardarNotasReto" class="boton-primario">
@@ -126,6 +128,3 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

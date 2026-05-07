@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -24,16 +24,16 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="encabezado-pagina">
     <h1>Buzón de Mensajes</h1>
     <a href="../../../vistas/profesores/mensajes/agregar.php" class="boton-primario">
-        <i class="fas fa-plus"></i> Redactar Mensaje
+        <i class="fas fa-plus"></i> REDACTAR MENSAJE
     </a>
 </div>
 
-<?php if ($exito): ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
-<?php if ($error): ?>
+<?php } ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
@@ -59,13 +59,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?= $esMio ? 'Tú (Profesor)' : htmlspecialchars($mensaje['nombreEstudiante'] ?? '') ?></strong>
+                            <strong><?= $esMio ? 'Tú (Profesor)' : ($mensaje['nombreEstudiante'] ?? '') ?></strong>
                         </td>
-                        <td><?= htmlspecialchars($mensaje['nombreCiclo'] ?? '-') ?></td>
-                        <td><p class="texto-negrita"><?= htmlspecialchars(strtoupper($mensaje['asunto'])) ?></p></td>
+                        <td><?= $mensaje['nombreCiclo'] ?? '-' ?></td>
+                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?= htmlspecialchars(substr($mensaje['descripcion'], 0, 40)) ?>...
+                                <?= substr($mensaje['descripcion'], 0, 40) ?>...
                             </div>
                         </td>
                         <td>

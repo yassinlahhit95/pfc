@@ -22,7 +22,7 @@ if (isset($_POST['guardarDirector'])) {
     }
     if (empty($email)) {
         $lista_de_errores['emailDirector'] = "El email es obligatorio.";
-    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
+    } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
         $lista_de_errores['emailDirector'] = "El formato del email no es vÃ¡lido.";
     }
     if (empty($dni)) {

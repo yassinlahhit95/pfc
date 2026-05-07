@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Pago</h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">Volver</a>
+    <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($esDespuesDeJunio) { ?>
@@ -48,30 +48,32 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-abajo">
     <form method="GET" action="">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>1. Filtrar por Ciclo:</label>
-                <select name="idCiclo" onchange="this.form.submit()">
-                    <option value="">-- Todos los Ciclos --</option>
-                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>  
-                            <?= $ciclo['nombreCiclo'] ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+        <div class="campo-formulario">
+            <label for="idCiclo">1. Filtrar por Ciclo:</label>
+            <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
+                <option value="">-- Todos los Ciclos --</option>
+                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>  
+                        <?= $ciclo['nombreCiclo'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
 
-            <div class="campo-formulario">
-                <label>2. Seleccionar Estudiante:</label>
-                <select name="idEstudiante" onchange="this.form.submit()">
-                    <option value="">-- Seleccionar Estudiante --</option>
-                    <?php foreach ($todos_los_estudiantes as $est) { ?>
-                        <option value="<?= $est['idEstudiante'] ?>" <?= ($idEstudianteElegido == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= $est['nombreEstudiante'] ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+        <div class="campo-formulario">
+            <label for="idEstudiante">2. Seleccionar Estudiante:</label>
+            <select name="idEstudiante" id="idEstudiante" onchange="this.form.submit()">
+                <option value="">-- Seleccionar Estudiante --</option>
+                <?php foreach ($todos_los_estudiantes as $est) { ?>
+                    <option value="<?= $est['idEstudiante'] ?>" <?= ($idEstudianteElegido == $est['idEstudiante']) ? 'selected' : '' ?>>
+                        <?= $est['nombreEstudiante'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <div class="form-acciones">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
     </form>
 </div>
@@ -107,26 +109,24 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
             <input type="hidden" name="fechaPago" value="<?= $hoy ?>">
 
-            <div class="formulario-cuadricula">
-                <div class="campo-formulario">
-                    <label>Tipo de Pago *</label>
-                    <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()">
-                        <option value="">-- Elegir --</option>
-                        <option value="mensual">Mensual (10% del total)</option>
-                        <option value="trimestral">Trimestral (25% del total)</option>
-                        <option value="semestral">Semestral (50% del total)</option>
-                        <option value="unico">Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>     
-                    </select>
-                </div>
-
-                <div class="campo-formulario">
-                    <label>Cantidad a Cobrar (€) *</label>
-                    <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>">
-                    <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</small>
-                </div>
+            <div class="campo-formulario">
+                <label for="tipoPago">Tipo de Pago *</label>
+                <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()" required>
+                    <option value="">-- Elegir --</option>
+                    <option value="mensual">Mensual (10% del total)</option>
+                    <option value="trimestral">Trimestral (25% del total)</option>
+                    <option value="semestral">Semestral (50% del total)</option>
+                    <option value="unico">Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>     
+                </select>
             </div>
 
-            <div class="margen-arriba">
+            <div class="campo-formulario">
+                <label for="montoInput">Cantidad a Cobrar (€) *</label>
+                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" required>
+                <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</small>
+            </div>
+
+            <div class="form-acciones">
                 <button type="submit" name="guardarPago" class="boton-primario">
                     <i class="fas fa-check"></i> Confirmar y Registrar Pago (<?= date('d/m/Y', strtotime($hoy)) ?>)
                 </button>

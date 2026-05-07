@@ -20,10 +20,12 @@ function listarAulas() {
 function checkAulaExistente($nombreAula, $idExcluir = null) {
     $con = obtenerConexion();
     if ($idExcluir) {
-        $stmt = mysqli_prepare($con, "SELECT idAula FROM aulas WHERE nombreAula = ? AND idAula != ?");
+        $sql = "SELECT idAula FROM aulas WHERE nombreAula = ? AND idAula != ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "si", $nombreAula, $idExcluir);
     } else {
-        $stmt = mysqli_prepare($con, "SELECT idAula FROM aulas WHERE nombreAula = ?");
+        $sql = "SELECT idAula FROM aulas WHERE nombreAula = ?";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "s", $nombreAula);
     }
     mysqli_stmt_execute($stmt);
@@ -39,7 +41,8 @@ function insertarAula($nombreAula) {
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "INSERT INTO aulas (nombreAula) VALUES (?)");
+    $sql = "INSERT INTO aulas (nombreAula) VALUES (?)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $nombreAula);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -49,7 +52,8 @@ function insertarAula($nombreAula) {
 // Eliminar un aula por su ID
 function eliminarAula($idAula) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM aulas WHERE idAula = ?");
+    $sql = "DELETE FROM aulas WHERE idAula = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idAula);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -62,7 +66,8 @@ function actualizarAula($idAula, $nuevoNombreAula) {
         return false;
     }
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE aulas SET nombreAula = ? WHERE idAula = ?");
+    $sql = "UPDATE aulas SET nombreAula = ? WHERE idAula = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevoNombreAula, $idAula);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
@@ -72,7 +77,8 @@ function actualizarAula($idAula, $nuevoNombreAula) {
 // Obtener los datos de un aula específica por su ID
 function obtenerAulaPorId($idAula) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM aulas WHERE idAula = ?");
+    $sql = "SELECT * FROM aulas WHERE idAula = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idAula);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -80,3 +86,4 @@ function obtenerAulaPorId($idAula) {
     mysqli_close($con);
     return $datosAula;
 }
+?>

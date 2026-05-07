@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -71,7 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3><i class="fas fa-bullhorn texto-azul"></i> TABLÓN DE ANUNCIOS</h3>
+        <h3>TABLÓN DE ANUNCIOS</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">

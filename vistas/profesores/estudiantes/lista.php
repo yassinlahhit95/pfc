@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gesti�n de Estudiantes</h1>
+    <h1>Gestión de Estudiantes</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -35,8 +35,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
-        <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
-        <select id="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
+        <label for="selectFiltroCicloProf"><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
+        <select id="selectFiltroCicloProf" name="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                 <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="titulo-tarjeta">
         <h3>Estudiantes Registrados</h3>
     </div>
-    
+
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaEstudiantesProf">
             <thead>
@@ -60,6 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Email</th>
                     <th>DNI</th>
                     <th>Ciclo</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,11 +71,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $est['emailEstudiante'] ?></td>
                             <td><?= $est['dniEstudiante'] ?></td>
                             <td><?= $est['nombreCiclo'] ?></td>
+                            <td>
+                                <div class="botones-accion">
+                                    <a href="detalles.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-ver" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay estudiantes registrados.</td>
+                        <td colspan="5" class="sin-datos">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -82,7 +90,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 
 

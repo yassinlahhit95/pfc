@@ -17,7 +17,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Módulo</h1>
-    <a href="verModulos.php" class="boton-secundario">← VOLVER</a>
+    <a href="verModulos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -28,16 +28,16 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/modulos/insertar.php" method="POST" class="form-estandar">
 
         <div class="campo-formulario">
-            <label>Nombre del Módulo *</label>
-            <input type="text" name="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
+            <label for="nombreModulo">Nombre del Módulo *</label>
+            <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
             <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
                 <strong class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo-formulario">
-            <label>Ciclo Formativo Asociado *</label>
-            <select name="idCiclo">
+            <label for="idCiclo">Ciclo Formativo Asociado *</label>
+            <select name="idCiclo" id="idCiclo">
                 <option value="">Seleccione un ciclo</option>
                 <?php foreach ($todos_los_ciclos as $ciclo) { ?>
                     <option value="<?= $ciclo['idCiclo'] ?>" <?= (isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
@@ -51,8 +51,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo-formulario">
-            <label>Horas Máximas *</label>
-            <input type="text" name="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
+            <label for="horasMaximas">Horas Máximas *</label>
+            <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
             <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
                 <strong class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></strong>
             <?php } ?>
@@ -62,9 +62,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="guardarModulo" class="boton-primario">
                 <i class="fas fa-save"></i> REGISTRAR MÓDULO
             </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
     </form>
 </div>

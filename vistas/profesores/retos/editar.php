@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -11,7 +11,8 @@ if (!isset($_SESSION['idProfesor'])) {
     exit;
 }
 
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $id = $_GET['id'] ?? '';
 $reto = obtenerRetoPorId($id);
@@ -21,6 +22,13 @@ if (!$reto) {
     exit;
 }
 
+$idProfesor = $_SESSION['idProfesor'];
+$misModulos = obtenerModulosDeProfesor($idProfesor);
+
+// Obtener los módulos actualmente asociados a este reto
+$modulosAsociados = obtenerModulosDeReto($id);
+$idsModulosAsociados = array_column($modulosAsociados, 'idModulo');
+
 $tituloPagina = "Editar Reto - Portal Profesores";
 $seccionActual = 'retos';
 include_once "../comunes/nav.php";
@@ -28,58 +36,74 @@ include_once "../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Editar Reto</h1>
-    <a href="lista.php" class="boton-secundario">← VOLVER</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
-<?php if ($error): ?>
+<?php if ($error) { ?>
     <div class="mensaje-error"><?= $error ?></div>
-<?php endif; ?>
-<?php if ($exito): ?>
+<?php } ?>
+<?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
-<?php endif; ?>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/profesores/retos/actualizar.php" method="POST" class="form-estandar">
         <input type="hidden" name="idReto" value="<?= $id ?>">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
-                <label>Nombre del Reto *</label>
-                <input type="text" name="nombreReto" value="<?= $reto['nombreReto'] ?>" class="<?= isset($errs['nombreReto']) ? 'input-error' : '' ?>">
-                <?php if (isset($errs['nombreReto'])): ?>
-                    <strong class="error-campo"><?= $errs['nombreReto'] ?></strong>
-                <?php endif; ?>
-            </div>
+        
+        <div class="campo-formulario">
+            <label for="nombreReto">Nombre del Reto *</label>
+            <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>" class="<?= isset($errs['nombreReto']) ? 'input-error' : '' ?>">
+            <?php if (isset($errs['nombreReto'])) { ?>
+                <strong class="error-campo"><?= $errs['nombreReto'] ?></strong>
+            <?php } ?>
+        </div>
 
-            <div class="campo-formulario">
-                <label>Horas Totales *</label>
-                <input type="text" name="horasReto" value="<?= $reto['horasReto'] ?>" class="<?= isset($errs['horasReto']) ? 'input-error' : '' ?>">
-                <?php if (isset($errs['horasReto'])): ?>
-                    <strong class="error-campo"><?= $errs['horasReto'] ?></strong>
-                <?php endif; ?>
-            </div>
+        <div class="campo-formulario">
+            <label for="horasReto">Horas Totales *</label>
+            <input type="text" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>" class="<?= isset($errs['horasReto']) ? 'input-error' : '' ?>">
+            <?php if (isset($errs['horasReto'])) { ?>
+                <strong class="error-campo"><?= $errs['horasReto'] ?></strong>
+            <?php } ?>
+        </div>
 
-            <div class="campo-formulario">
-                <label>Fecha Inicio *</label>
-                <input type="date" name="fechaInicio" value="<?= $reto['fechaInicio'] ?>" class="<?= isset($errs['fechaInicio']) ? 'input-error' : '' ?>">
-                <?php if (isset($errs['fechaInicio'])): ?>
-                    <strong class="error-campo"><?= $errs['fechaInicio'] ?></strong>
-                <?php endif; ?>
-            </div>
+        <div class="campo-formulario">
+            <label for="fechaInicio">Fecha Inicio *</label>
+            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= $reto['fechaInicio'] ?>" class="<?= isset($errs['fechaInicio']) ? 'input-error' : '' ?>">
+            <?php if (isset($errs['fechaInicio'])) { ?>
+                <strong class="error-campo"><?= $errs['fechaInicio'] ?></strong>
+            <?php } ?>
+        </div>
 
-            <div class="campo-formulario">
-                <label>Fecha Fin *</label>
-                <input type="date" name="fechaFin" value="<?= $reto['fechaFin'] ?>" class="<?= isset($errs['fechaFin']) ? 'input-error' : '' ?>">
-                <?php if (isset($errs['fechaFin'])): ?>
-                    <strong class="error-campo"><?= $errs['fechaFin'] ?></strong>
-                <?php endif; ?>
+        <div class="campo-formulario">
+            <label for="fechaFin">Fecha Fin *</label>
+            <input type="date" name="fechaFin" id="fechaFin" value="<?= $reto['fechaFin'] ?>" class="<?= isset($errs['fechaFin']) ? 'input-error' : '' ?>">
+            <?php if (isset($errs['fechaFin'])) { ?>
+                <strong class="error-campo"><?= $errs['fechaFin'] ?></strong>
+            <?php } ?>
+        </div>
+
+        <div class="campo-formulario">
+            <label>Asociar a Módulos *</label>
+            <p class="texto-atenuado mb-10">Seleccione los módulos en los que se evaluará este reto.</p>
+            <div class="lista-checkboxes scroll-vertical-200">
+                <?php foreach ($misModulos as $mod) { ?>
+                    <label class="item-checkbox" for="mod_<?= $mod['idModulo'] ?>">
+                        <input type="checkbox" name="modulos[]" id="mod_<?= $mod['idModulo'] ?>" value="<?= $mod['idModulo'] ?>" 
+                            <?= in_array($mod['idModulo'], $idsModulosAsociados) ? 'checked' : '' ?>>
+                        <span><?= $mod['nombreModulo'] ?> (<?= $mod['abreviaturaCiclo'] ?>)</span>
+                    </label>
+                <?php } ?>
             </div>
+            <?php if (isset($errs['modulos'])) { ?>
+                <strong class="error-campo"><?= $errs['modulos'] ?></strong>
+            <?php } ?>
         </div>
 
         <div class="form-acciones mt-20">
             <button type="submit" name="actualizarReto" class="boton-primario">
-                <i class="fas fa-save"></i> ACTUALIZAR RETO
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
-            <button type="button" class="boton-secundario px-25" onclick="window.location.href = window.location.pathname + window.location.search;">
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </div>
@@ -87,4 +111,3 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

@@ -24,6 +24,9 @@ if (isset($_POST['actualizarPerfilBtn'])) {
     } else if (empty($email)) {
         $_SESSION['error'] = "El correo electrónico es obligatorio.";
         $hayError = true;
+    } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+        $_SESSION['error'] = "El formato del email no es válido.";
+        $hayError = true;
     }
 
     if (!$hayError && !empty($passwordNueva)) {

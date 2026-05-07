@@ -1,11 +1,8 @@
-﻿<?php
+<?php
 if (empty($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
     exit;
 }
-
-// Usamos rutas raíz directas (más humano y estable sin $_SERVER)
-$rel = "/pfc/";
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
@@ -18,8 +15,8 @@ $idProf = $_SESSION['idProfesor'];
 // Contadores con prefijo para evitar colisiones con las vistas (ej: $ciclos array)
 $_nAlumnosProf = contarEstudiantesDeProfesor($idProf);
 $_nCiclosProf = contarCiclosDeProfesor($idProf);
-$_nMensajesProf = contarMessagesDeProfesor($idProf);
-$_nSinLeerProf = contarMessagesNoLeidosProfesor($idProf);
+$_nMensajesProf = contarMensajesDeProfesor($idProf);
+$_nSinLeerProf = contarMensajesNoLeidosProfesor($idProf);
 $_nTfgsProf = contarTFGsDeProfesor($idProf);
 ?>
 <!DOCTYPE html>
@@ -135,7 +132,16 @@ $_nTfgsProf = contarTFGsDeProfesor($idProf);
                 <div class="info-sistema-footer">
                     &copy; <?= date('Y') ?> Yassin Lahhit
                 </div>
-...
+            </div>
+        </nav>
+    </aside>
+
+    <script>
+    function toggleMenu() {
+        var sidebar = document.getElementById('barraLateral');
+        sidebar.classList.toggle('activo');
+        document.body.classList.toggle('menu-abierto');
+    }
     </script>
 
     <main class="contenido-principal">
@@ -143,4 +149,3 @@ $_nTfgsProf = contarTFGsDeProfesor($idProf);
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="d-none"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>
-

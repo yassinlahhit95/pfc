@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -36,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Modificar Aula</h1>
-    <a href="verAulas.php" class="boton-secundario">← VOLVER</a>
+    <a href="verAulas.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -48,8 +48,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idAula" value="<?= $id ?>">
         
         <div class="campo-formulario">
-            <label>Nombre del Aula</label>
-            <input type="text" name="nombreAula" value="<?= $aula['nombreAula'] ?>" class="<?= isset($errs['nombreAula']) ? 'input-error' : '' ?>">
+            <label for="nombreAula">Nombre del Aula</label>
+            <input type="text" id="nombreAula" name="nombreAula" value="<?= $aula['nombreAula'] ?>" class="<?= isset($errs['nombreAula']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['nombreAula'])) { ?>
                 <strong class="error-campo"><?= $errs['nombreAula'] ?></strong>
             <?php } ?>

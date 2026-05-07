@@ -20,7 +20,7 @@ if (isset($_POST['actualizarPerfil'])) {
 
     if (empty($nom)) $errs['nombreProfesor'] = "El nombre es obligatorio.";
     if (empty($eml)) $errs['emailProfesor'] = "El correo es obligatorio.";
-    else if (!filter_var($eml, FILTER_VALIDATE_EMAIL)) $errs['emailProfesor'] = "Formato inválido.";
+    else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $eml)) $errs['emailProfesor'] = "Formato inválido.";
     if (!empty($tel) && !is_numeric($tel)) $errs['telefonoProfesor'] = "Debe ser un número.";
 
     if (!empty($pwdNva)) {

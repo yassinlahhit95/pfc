@@ -66,7 +66,8 @@ function contarCiclos() {
 // Contar cuántos estudiantes están vinculados a un profesor concreto
 function contarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ?");
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -78,7 +79,8 @@ function contarEstudiantesDeProfesor($idProfesor) {
 // Contar cuántos ciclos formativos tiene asignados un profesor
 function contarCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT COUNT(*) as total FROM ciclo_profesor WHERE idProfesor = ?");
+    $sql = "SELECT COUNT(*) as total FROM ciclo_profesor WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -192,3 +194,4 @@ function contarPagosRealizados() {
 function contarPagos() {
     return contarPagosRealizados();
 }
+?>

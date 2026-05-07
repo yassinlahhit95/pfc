@@ -37,7 +37,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
 <div class="encabezado-pagina">
     <h1>Nuevo Profesor</h1>
-    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">← VOLVER</a>
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -45,72 +45,72 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
         <div class="formulario-cuadricula">
             <!-- (Same profile fields as before) -->
             <div class="campo-formulario">
-                <label>Nombre Completo *</label>
-                <input type="text" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
+                <label for="nombreProfesor">Nombre Completo *</label>
+                <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['nombreProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['nombreProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Email *</label>
-                <input type="text" name="emailProfesor" value="<?php if(isset($datos['emailProfesor'])) { echo $datos['emailProfesor']; } ?>">
+                <label for="emailProfesor">Email *</label>
+                <input type="text" id="emailProfesor" name="emailProfesor" value="<?php if(isset($datos['emailProfesor'])) { echo $datos['emailProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['emailProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['emailProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>DNI *</label>
-                <input type="text" name="dniProfesor" value="<?php if(isset($datos['dniProfesor'])) { echo $datos['dniProfesor']; } ?>">
+                <label for="dniProfesor">DNI *</label>
+                <input type="text" id="dniProfesor" name="dniProfesor" value="<?php if(isset($datos['dniProfesor'])) { echo $datos['dniProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['dniProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['dniProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Teléfono *</label>
-                <input type="text" name="telefonoProfesor" value="<?php if(isset($datos['telefonoProfesor'])) { echo $datos['telefonoProfesor']; } ?>">
+                <label for="telefonoProfesor">Teléfono *</label>
+                <input type="text" id="telefonoProfesor" name="telefonoProfesor" value="<?php if(isset($datos['telefonoProfesor'])) { echo $datos['telefonoProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['telefonoProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['telefonoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Dirección *</label>
-                <input type="text" name="direccionProfesor" value="<?php if(isset($datos['direccionProfesor'])) { echo $datos['direccionProfesor']; } ?>">
+                <label for="direccionProfesor">Dirección *</label>
+                <input type="text" id="direccionProfesor" name="direccionProfesor" value="<?php if(isset($datos['direccionProfesor'])) { echo $datos['direccionProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['direccionProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['direccionProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Ciudad *</label>
-                <input type="text" name="ciudadProfesor" value="<?php if(isset($datos['ciudadProfesor'])) { echo $datos['ciudadProfesor']; } ?>">
+                <label for="ciudadProfesor">Ciudad *</label>
+                <input type="text" id="ciudadProfesor" name="ciudadProfesor" value="<?php if(isset($datos['ciudadProfesor'])) { echo $datos['ciudadProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['ciudadProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['ciudadProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Código Postal *</label>
-                <input type="text" name="codigoPostalProfesor" value="<?php if(isset($datos['codigoPostalProfesor'])) { echo $datos['codigoPostalProfesor']; } ?>">
+                <label for="codigoPostalProfesor">Código Postal *</label>
+                <input type="text" id="codigoPostalProfesor" name="codigoPostalProfesor" value="<?php if(isset($datos['codigoPostalProfesor'])) { echo $datos['codigoPostalProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['codigoPostalProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['codigoPostalProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Nacimiento *</label>
-                <input type="date" name="fechaNacimientoProfesor" value="<?php if(isset($datos['fechaNacimientoProfesor'])) { echo $datos['fechaNacimientoProfesor']; } ?>">
+                <label for="fechaNacimientoProfesor">Fecha de Nacimiento *</label>
+                <input type="date" id="fechaNacimientoProfesor" name="fechaNacimientoProfesor" value="<?php if(isset($datos['fechaNacimientoProfesor'])) { echo $datos['fechaNacimientoProfesor']; } ?>">
                 <?php if (isset($lista_de_errores['fechaNacimientoProfesor'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
-                <label>Observaciones / Curriculum Vitae (Resumen)</label>
-                <textarea name="observacionesProfesor" rows="3"><?php if(isset($datos['observacionesProfesor'])) { echo $datos['observacionesProfesor']; } ?></textarea>
+                <label for="observacionesProfesor">Observaciones / Curriculum Vitae (Resumen)</label>
+                <textarea id="observacionesProfesor" name="observacionesProfesor" rows="3"><?php if(isset($datos['observacionesProfesor'])) { echo $datos['observacionesProfesor']; } ?></textarea>
             </div>
         </div>
 
@@ -152,9 +152,12 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones mt-25">
             <button type="submit" name="guardarProfesor" class="boton-primario">
                 <i class="fas fa-save"></i> REGISTRAR PROFESOR
+            </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </div>
     </form>

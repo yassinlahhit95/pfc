@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,7 +20,7 @@ $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="disposicion-flexible espacio-entre-elementos alinear-centro margen-abajo">
+<div class="encabezado-pagina">
     <h1>Gestión de TFGs Entregados</h1>
 </div>
 
@@ -53,14 +53,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $tfg['nombreCiclo'] ?></td>
                             <td><?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></td>
                             <td>
-                                <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>"><i class="fas fa-download"></i></a>
-                                <a href="../../../controladores/profesores/pfc/borrar.php?id=<?= $tfg['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <div class="botones-accion">
+                                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>" title="Descargar"><i class="fas fa-download"></i></a>
+                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" style="display:inline;">
+                                        <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
+                                        <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavia.</td>
+                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavía.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -68,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 
 

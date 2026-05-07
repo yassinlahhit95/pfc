@@ -46,8 +46,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
-                <label>Estudiante *</label>
-                <select name="idEstudiante">
+                <label for="idEstudiante">Estudiante *</label>
+                <select name="idEstudiante" id="idEstudiante" required>
                     <?php foreach ($todos_los_estudiantes as $estudiante) { ?>
                         <option value="<?= $estudiante['idEstudiante'] ?>" <?= $pago['idEstudiante'] == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
                             <?= $estudiante['nombreEstudiante'] ?>
@@ -60,8 +60,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Tipo de Pago *</label>
-                <select name="tipoPago">
+                <label for="tipoPago">Tipo de Pago *</label>
+                <select name="tipoPago" id="tipoPago" required>
                     <option value="mensual" <?= $pago['tipoPago'] == 'mensual' ? 'selected' : '' ?>>Mensual</option>
                     <option value="trimestral" <?= $pago['tipoPago'] == 'trimestral' ? 'selected' : '' ?>>Trimestral</option>
                     <option value="semestral" <?= $pago['tipoPago'] == 'semestral' ? 'selected' : '' ?>>Semestral</option>
@@ -70,31 +70,32 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Cantidad (Monto) *</label>
-                <input type="number" name="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>">
+                <label for="cantidadPago">Cantidad (Monto) *</label>
+                <input type="number" name="cantidadPago" id="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>" required>
                 <?php if (isset($lista_de_errores['cantidadPago'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['cantidadPago'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Fecha de Pago *</label>
-                <input type="date" name="fechaPago" value="<?= $pago['fechaPago'] ?>">
+                <label for="fechaPago">Fecha de Pago *</label>
+                <input type="date" name="fechaPago" id="fechaPago" value="<?= $pago['fechaPago'] ?>" required>
                 <?php if (isset($lista_de_errores['fechaPago'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['fechaPago'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Próxima Fecha de Pago</label>
-                <input type="date" name="fechaProximoPago" value="<?= $pago['fechaProximoPago'] ?>">
+                <label for="fechaProximoPago">Próxima Fecha de Pago</label>
+                <input type="date" name="fechaProximoPago" id="fechaProximoPago" value="<?= $pago['fechaProximoPago'] ?>">
             </div>
         </div>
 
-        <div class="margen-arriba">
+        <div class="form-acciones">
             <button type="submit" name="actualizarPago" class="boton-primario">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
+            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
     </form>
 </div>

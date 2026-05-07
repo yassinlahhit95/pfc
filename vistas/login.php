@@ -1,6 +1,14 @@
 <?php
+/**
+ * Vista de Inicio de Sesión
+ * 
+ * Esta página gestiona el acceso de los usuarios al sistema.
+ * Verifica si ya existe una sesión activa para redirigir al dashboard correspondiente.
+ */
+
 session_start();
 
+// Si el usuario ya está autenticado, lo redirigimos automáticamente a su panel de control
 if (isset($_SESSION['idAdmin'])) {
     header("Location: admin/inicio/dashboard.php");
     exit;
@@ -12,10 +20,12 @@ if (isset($_SESSION['idAdmin'])) {
     exit;
 }
 
+// Comprobamos si existe algún mensaje de error almacenado en la sesión
 $mensajeError = '';
 if (isset($_SESSION['error'])) {
     $mensajeError = $_SESSION['error'];
 }
+// Limpiamos el mensaje de error después de recuperarlo para que no se muestre en futuras recargas
 unset($_SESSION['error']);
 ?>
 <!DOCTYPE html>
@@ -57,19 +67,21 @@ unset($_SESSION['error']);
         <h1 class="titulo-login">Portal Escolar</h1>
         <p class="subtitulo-login">Introduce tus credenciales para acceder</p>
 
-        <?php if (!empty($mensajeError)) { ?>
+        <?php 
+        // Si hay un mensaje de error, lo mostramos en una alerta visual
+        if (!empty($mensajeError)) { ?>
         <div class="mensaje-error-login"><?php echo $mensajeError; ?></div>
         <?php } ?>
 
         <form action="../controladores/validacion.php" method="POST" class="formulario-login">
             <div class="campo-login">
                 <label>Email:</label>
-                <input type="text" name="usuario" placeholder="ejemplo@email.com">
+                <input type="text" name="usuario" placeholder="ejemplo@email.com" required>
             </div>
 
             <div class="campo-login">
                 <label>Contraseña:</label>
-                <input type="password" name="contrasena" placeholder="Tu contraseña">
+                <input type="password" name="contrasena" placeholder="Tu contraseña" required>
             </div>
 
             <button type="submit" name="enviar" class="boton-enviar-login">Entrar al Sistema</button>

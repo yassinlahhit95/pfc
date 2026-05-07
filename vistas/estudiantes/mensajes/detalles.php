@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">? Volver</a>
+    <a href="lista.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>

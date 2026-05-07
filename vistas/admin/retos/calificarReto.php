@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $id = $_GET['id'] ?? '';
-$retoActual = obtenerDetallesReto($id);
+$retoActual = obtenerRetoPorId($id);
 
 if (!$retoActual) {
     header("Location: verRetos.php");

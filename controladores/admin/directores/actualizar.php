@@ -24,7 +24,7 @@ if (isset($_POST['actualizarDirector'])) {
     }
     if (empty($email)) {
         $errores_campos['emailDirector'] = "Email obligatorio.";
-    } else if (!preg_match('/^[^@]+@[^@]+\.[^@]+$/', $email)) {
+    } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
         $errores_campos['emailDirector'] = "Email no válido.";
     }
     if (empty($dni)) {

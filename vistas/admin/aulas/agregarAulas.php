@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -19,9 +19,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
 
 <div class="contenedor-formulario-pequeno">
     <div class="encabezado-pagina">
-        <a href="verAulas.php" class="boton-secundario">
-            <i class="fas fa-arrow-left"></i> VOLVER
-        </a>
+        <a href="verAulas.php" class="boton-secundario">← Volver</a>
         <h1>NUEVA AULA</h1>
     </div>
 
@@ -32,19 +30,19 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
     <div class="tarjeta-blanca">
         <form method="POST" action="../../../controladores/admin/aulas/insertar.php">
             <div class="campo-formulario">
-                <label>NOMBRE DEL AULA *</label>
-                <input type="text" name="nombreAula" value="<?= $datos['nombreAula'] ?? '' ?>" placeholder="Ej: Aula 101, Taller de Informática...">
+                <label for="nombreAula">NOMBRE DEL AULA *</label>
+                <input type="text" id="nombreAula" name="nombreAula" value="<?= $datos['nombreAula'] ?? '' ?>" placeholder="Ej: Aula 101, Taller de Informática...">
                 <?php if (isset($lista_de_errores['nombreAula'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['nombreAula'] ?></strong>
                 <?php } ?>
             </div>
 
-            <div class="botones-formulario mt-20">
+            <div class="form-acciones">
                 <button type="submit" name="guardarAula" class="boton-primario">
                     <i class="fas fa-save"></i> GUARDAR AULA
                 </button>
-                <button type="button" class="boton-secundario" onclick="window.location.href = 'verAulas.php';">
-                    <i class="fas fa-times"></i> CANCELAR
+                <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
+                    <i class="fas fa-eraser"></i> LIMPIAR
                 </button>
             </div>
         </form>

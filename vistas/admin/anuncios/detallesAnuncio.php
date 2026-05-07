@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Detalles del Anuncio</h1>
-    <a href="gestionAnuncios.php" class="boton-secundario">â† Volver a la lista</a>
+    <a href="gestionAnuncios.php" class="boton-secundario">← Volver</a>
 </div>
 
 <div class="tarjeta-blanca">

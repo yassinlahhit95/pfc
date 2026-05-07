@@ -18,9 +18,11 @@ function listarNiveles() {
 // Eliminar un nivel educativo por su nombre (Uso administrativo)
 function borrarNivelPorNombre($nombreNivel) {
     $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM niveles WHERE nombreNivel = ?");
+    $sql = "DELETE FROM niveles WHERE nombreNivel = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $nombreNivel);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
+?>

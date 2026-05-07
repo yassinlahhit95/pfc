@@ -38,27 +38,27 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
         <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
         
         <div class="campo-formulario">
-            <label>Título del Anuncio *</label>
-            <input type="text" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
+            <label for="tituloAnuncio">Título del Anuncio *</label>
+            <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
             <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
                 <strong class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo-formulario margen-arriba">
-            <label>Contenido del Anuncio *</label>
-            <textarea name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
+            <label for="contenidoAnuncio">Contenido del Anuncio *</label>
+            <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
             <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
                 <strong class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-acciones">
             <button type="submit" name="actualizarAnuncio" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Cambios
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
             <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
+                <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </div>
     </form>

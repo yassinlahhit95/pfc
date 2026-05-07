@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>Modificar Ciclo: <?= $ciclo['nombreCiclo'] ?></h1>
-    <a href="verCiclos.php" class="boton-secundario">← VOLVER</a>
+    <a href="verCiclos.php" class="boton-secundario">← Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -70,24 +70,24 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="form-estandar">
             <div class="campo-formulario">
-                <label>Nombre del Ciclo *</label>
-                <input type="text" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
+                <label for="nombreCiclo">Nombre del Ciclo *</label>
+                <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Abreviatura *</label>
-                <input type="text" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
+                <label for="abreviaturaCiclo">Abreviatura *</label>
+                <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
                 <?php if (isset($lista_de_errores['abreviaturaCiclo'])) { ?>
                     <strong class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label>Nivel Formativo *</label>
-                <select name="idNivel">
+                <label for="idNivel">Nivel Formativo *</label>
+                <select id="idNivel" name="idNivel">
                     <?php foreach ($listaNiveles as $nivel) { ?>
                         <option value="<?= $nivel['idNivel'] ?>" <?php if (($ciclo['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
                             <?= $nivel['nombreNivel'] ?>
@@ -100,8 +100,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label>Precio Total del Ciclo (€) *</label>
-                <input type="number" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
+                <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
+                <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
             </div>
         </div>
 
