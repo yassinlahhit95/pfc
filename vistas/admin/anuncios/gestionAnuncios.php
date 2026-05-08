@@ -10,10 +10,7 @@ $todos_los_anuncios = listarTodosLosAnuncios();
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_anuncio'] ?? [];
-
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
+unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">

@@ -13,7 +13,7 @@ $todos_los_estudiantes = listarEstudiantes();
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_prestamo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
@@ -44,8 +44,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                         <?php } ?>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idArticulo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['idArticulo'] ?></strong>
+                <?php if (isset($errores['idArticulo'])) { ?>
+                    <strong class="error-campo"><?= $errores['idArticulo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -59,16 +59,16 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></strong>
+                <?php if (isset($errores['idEstudiante'])) { ?>
+                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label>Fecha de Préstamo *</label>
                 <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['fechaPrestamo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaPrestamo'] ?></strong>
+                <?php if (isset($errores['fechaPrestamo'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaPrestamo'] ?></strong>
                 <?php } ?>
             </div>
 

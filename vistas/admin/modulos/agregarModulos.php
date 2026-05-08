@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $error = $_SESSION['error'] ?? "";
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_modulo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
@@ -30,8 +30,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo-formulario">
             <label for="nombreModulo">Nombre del Módulo *</label>
             <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
-            <?php if (isset($lista_de_errores['nombreModulo'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['nombreModulo'] ?></strong>
+            <?php if (isset($errores['nombreModulo'])) { ?>
+                <strong class="error-campo"><?= $errores['nombreModulo'] ?></strong>
             <?php } ?>
         </div>
 
@@ -45,16 +45,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </option>
                 <?php } ?>
             </select>
-            <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
+            <?php if (isset($errores['idCiclo'])) { ?>
+                <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo-formulario">
             <label for="horasMaximas">Horas Máximas *</label>
             <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
-            <?php if (isset($lista_de_errores['horasMaximas'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['horasMaximas'] ?></strong>
+            <?php if (isset($errores['horasMaximas'])) { ?>
+                <strong class="error-campo"><?= $errores['horasMaximas'] ?></strong>
             <?php } ?>
         </div>
 

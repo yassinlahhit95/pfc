@@ -11,7 +11,7 @@ $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_aulas'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
@@ -32,8 +32,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
             <div class="campo-formulario">
                 <label for="nombreAula">NOMBRE DEL AULA *</label>
                 <input type="text" id="nombreAula" name="nombreAula" value="<?= $datos['nombreAula'] ?? '' ?>" placeholder="Ej: Aula 101, Taller de Informática...">
-                <?php if (isset($lista_de_errores['nombreAula'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreAula'] ?></strong>
+                <?php if (isset($errores['nombreAula'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreAula'] ?></strong>
                 <?php } ?>
             </div>
 

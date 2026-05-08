@@ -19,17 +19,11 @@ function listarEstudiantes() {
     return $listaEstudiantes;
 }
 
-function checkEstudianteExistente($dni, $email, $idExcluir = null) {
+function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     $con = obtenerConexion();
-    if ($idExcluir) {
-        $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
-    } else {
-        $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
-    }
+    $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;

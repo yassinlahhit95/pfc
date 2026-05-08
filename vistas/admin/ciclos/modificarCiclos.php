@@ -46,7 +46,7 @@ if (isset($_SESSION['datos_ciclos'])) {
 }
 
 $error = $_SESSION['error'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 
@@ -72,16 +72,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label for="nombreCiclo">Nombre del Ciclo *</label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></strong>
+                <?php if (isset($errores['nombreCiclo'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="abreviaturaCiclo">Abreviatura *</label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['abreviaturaCiclo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></strong>
+                <?php if (isset($errores['abreviaturaCiclo'])) { ?>
+                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -94,8 +94,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idNivel'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['idNivel'] ?></strong>
+                <?php if (isset($errores['idNivel'])) { ?>
+                    <strong class="error-campo"><?= $errores['idNivel'] ?></strong>
                 <?php } ?>
             </div>
 

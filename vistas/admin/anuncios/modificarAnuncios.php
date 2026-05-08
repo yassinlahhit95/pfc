@@ -14,12 +14,12 @@ if (!$anuncio) {
     exit;
 }
 
-$anuncio = ($_SESSION['datos_anuncio'] ?? 0);
+if (isset($_SESSION['datos_anuncio'])) {
+    $anuncio = array_merge($anuncio, $_SESSION['datos_anuncio']);
+}
 
 $error = $_SESSION['error'] ?? "";
-
-$lista_de_errores = [];
-$lista_de_errores = ($_SESSION['errores'] ?? 0);
+$errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 ?>
@@ -40,16 +40,16 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
         <div class="campo-formulario">
             <label for="tituloAnuncio">Título del Anuncio *</label>
             <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
-            <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></strong>
+            <?php if (isset($errores['tituloAnuncio'])) { ?>
+                <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo-formulario margen-arriba">
             <label for="contenidoAnuncio">Contenido del Anuncio *</label>
             <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
-            <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></strong>
+            <?php if (isset($errores['contenidoAnuncio'])) { ?>
+                <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
             <?php } ?>
         </div>
 

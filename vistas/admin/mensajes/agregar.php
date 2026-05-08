@@ -29,7 +29,7 @@ if ($tipoDeDestinatario == 'profesor') {
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos_form = $_SESSION['datos_mensaje'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_mensaje']);
@@ -112,24 +112,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php } ?>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['destinatario'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['destinatario'] ?></strong>
+                <?php if (isset($errores['destinatario'])) { ?>
+                    <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Asunto del Mensaje *</label>
                 <input type="text" name="asunto" class="mt-5 ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['asunto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['asunto'] ?></strong>
+                <?php if (isset($errores['asunto'])) { ?>
+                    <strong class="error-campo"><?= $errores['asunto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label class="texto-negrita">Cuerpo del Mensaje *</label>
                 <textarea name="descripcion" rows="6" class="mt-5 ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
-                <?php if (isset($lista_de_errores['descripcion'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['descripcion'] ?></strong>
+                <?php if (isset($errores['descripcion'])) { ?>
+                    <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
                 <?php } ?>
             </div>
         </div>

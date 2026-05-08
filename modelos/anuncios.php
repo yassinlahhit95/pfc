@@ -98,11 +98,12 @@ function listarAnunciosPorRol($rolUsuario) {
 
 function listarAnunciosPaginados($paginaActual, $limitePorPagina) {
     $con = obtenerConexion();
+    $hoy = date('Y-m-d');
     $inicio = ($paginaActual - 1) * $limitePorPagina;
 
-    $sql = "SELECT * FROM anuncios ORDER BY idAnuncio DESC LIMIT ?, ?";
+    $sql = "SELECT * FROM anuncios WHERE fechaExpiracion >= ? ORDER BY idAnuncio DESC LIMIT ?, ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $inicio, $limitePorPagina);
+    mysqli_stmt_bind_param($stmt, "sii", $hoy, $inicio, $limitePorPagina);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
 

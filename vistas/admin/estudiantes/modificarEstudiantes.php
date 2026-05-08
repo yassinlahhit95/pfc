@@ -25,9 +25,9 @@ if (!empty($datosGuardados)) {
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$lista_de_errores = $_SESSION['errores'] ?? [];
-if (!is_array($lista_de_errores)) {
-    $lista_de_errores = [];
+$errores = $_SESSION['errores'] ?? [];
+if (!is_array($errores)) {
+    $errores = [];
 }
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
@@ -50,16 +50,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label for="nombreEstudiante">Nombre Completo *</label>
                 <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
-                <?php if (isset($lista_de_errores['nombreEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreEstudiante'] ?></strong>
+                <?php if (isset($errores['nombreEstudiante'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="emailEstudiante">Email *</label>
                 <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
-                <?php if (isset($lista_de_errores['emailEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['emailEstudiante'] ?></strong>
+                <?php if (isset($errores['emailEstudiante'])) { ?>
+                    <strong class="error-campo"><?= $errores['emailEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -72,24 +72,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['idCiclo'] ?></strong>
+                <?php if (isset($errores['idCiclo'])) { ?>
+                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="dniEstudiante">DNI *</label>
                 <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
-                <?php if (isset($lista_de_errores['dniEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['dniEstudiante'] ?></strong>
+                <?php if (isset($errores['dniEstudiante'])) { ?>
+                    <strong class="error-campo"><?= $errores['dniEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="telefonoEstudiante">Teléfono *</label>
                 <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
-                <?php if (isset($lista_de_errores['telefonoEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['telefonoEstudiante'] ?></strong>
+                <?php if (isset($errores['telefonoEstudiante'])) { ?>
+                    <strong class="error-campo"><?= $errores['telefonoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 

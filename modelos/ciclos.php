@@ -32,17 +32,11 @@ function obtenerCiclosDeProfesor($idProfesor) {
     return $listaCiclos;
 }
 
-function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = null) {
+function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = 0) {
     $con = obtenerConexion();
-    if ($idExcluir) {
-        $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?) AND idCiclo != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ssi", $nombreCiclo, $abreviaturaCiclo, $idExcluir);
-    } else {
-        $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $nombreCiclo, $abreviaturaCiclo);
-    }
+    $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?) AND idCiclo != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $nombreCiclo, $abreviaturaCiclo, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
@@ -179,8 +173,8 @@ function comprobarNombreEnOtroCiclo($nombreCiclo, $idCicloActual) {
     mysqli_stmt_bind_param($stmt, "si", $nombreCiclo, $idCicloActual);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $totalCoincidencias = mysqli_num_rows($resultado);
+    $existe = mysqli_num_rows($resultado) > 0;
     mysqli_close($con);
-    return ($totalCoincidencias > 0);
+    return $existe;
 }
 ?>

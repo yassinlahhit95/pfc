@@ -16,7 +16,7 @@ if (!$reclamacion) {
 
 $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_reclamacion'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reclamacion']);
@@ -45,8 +45,8 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
             <div class="campo-formulario">
                 <label>Asunto *</label>
                 <input type="text" name="asuntoReclamacion" value="<?= $reclamacion['asuntoReclamacion'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['asuntoReclamacion'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['asuntoReclamacion'] ?></strong>
+                <?php if (isset($errores['asuntoReclamacion'])) { ?>
+                    <strong class="error-campo"><?= $errores['asuntoReclamacion'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -62,8 +62,8 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
             <div class="campo-formulario campo-ancho-total">
                 <label>Descripción *</label>
                 <textarea name="descripcionReclamacion" rows="6"><?= $reclamacion['descripcionReclamacion'] ?? '' ?></textarea>
-                <?php if (isset($lista_de_errores['descripcionReclamacion'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['descripcionReclamacion'] ?></strong>
+                <?php if (isset($errores['descripcionReclamacion'])) { ?>
+                    <strong class="error-campo"><?= $errores['descripcionReclamacion'] ?></strong>
                 <?php } ?>
             </div>
         </div>

@@ -11,20 +11,20 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-$numEstudiantes = contarEstudiantes();
-$numProfesores = contarProfesores();
-$numDirectores = contarDirectores();
-$numPagos = contarPagos();
-$numAnuncios = contarAnuncios();
-$numMensajes = contarReclamaciones();
-$numSinLeer = contarMensajesNoLeidosAdmin();
-$numCiclos = contarCiclos();
-$numModulos = contarModulos();
-$numRetos = contarRetos();
-$numAulas = contarAulas();
-$numInventario = contarInventario();
-$numPrestamos = contarPrestamosActivos();
-$numTFG = contarTFGsSubidos();
+$estudiantes = contarEstudiantes();
+$profesores = contarProfesores();
+$directores = contarDirectores();
+$pagos = contarPagos();
+$anuncios = contarAnuncios();
+$mensajes = contarReclamaciones();
+$sinLeer = contarMensajesNoLeidosAdmin();
+$ciclos = contarCiclos();
+$modulos = contarModulos();
+$retos = contarRetos();
+$aulas = contarAulas();
+$inventario = contarInventario();
+$prestamos = contarPrestamosActivos();
+$tfgs = contarTFGsSubidos();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -75,22 +75,22 @@ $numTFG = contarTFGsSubidos();
                 
                 <a href="<?= $rel ?>vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?= ($seccion == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
-                    <span class="etiqueta-contador"><?= $numEstudiantes ?></span>
+                    <span class="etiqueta-contador"><?= $estudiantes ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/ciclos/verCiclos.php" class="enlace-menu <?= ($seccion == 'ciclos') ? 'activo' : '' ?>">
                     <i class="fas fa-layer-group"></i> <span>CICLOS FORMATIVOS</span>
-                    <span class="etiqueta-contador"><?= $numCiclos ?></span>
+                    <span class="etiqueta-contador"><?= $ciclos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/modulos/verModulos.php" class="enlace-menu <?= ($seccion == 'modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-book"></i> <span>MÓDULOS</span>
-                    <span class="etiqueta-contador"><?= $numModulos ?></span>
+                    <span class="etiqueta-contador"><?= $modulos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/retos/verRetos.php" class="enlace-menu <?= ($seccion == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS / PROYECTOS</span>
-                    <span class="etiqueta-contador"><?= $numRetos ?></span>
+                    <span class="etiqueta-contador"><?= $retos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?= ($seccion == 'notas_modulos') ? 'activo' : '' ?>">
@@ -107,7 +107,7 @@ $numTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/pfc/verTFGs.php" class="enlace-menu <?= ($seccion == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
-                    <span class="etiqueta-contador"><?= $numTFG ?></span>
+                    <span class="etiqueta-contador"><?= $tfgs ?></span>
                 </a>
             </div>
 
@@ -116,17 +116,17 @@ $numTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/directores/verDirectores.php" class="enlace-menu <?= ($seccion == 'directores') ? 'activo' : '' ?>">
                     <i class="fas fa-user-tie"></i> <span>DIRECTORES</span>
-                    <span class="etiqueta-contador"><?= $numDirectores ?></span>
+                    <span class="etiqueta-contador"><?= $directores ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/profesores/verProfesores.php" class="enlace-menu <?= ($seccion == 'profesores') ? 'activo' : '' ?>">
                     <i class="fas fa-chalkboard-teacher"></i> <span>PROFESORES</span>
-                    <span class="etiqueta-contador"><?= $numProfesores ?></span>
+                    <span class="etiqueta-contador"><?= $profesores ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/pagos/verPagosGeneral.php" class="enlace-menu <?= ($seccion == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-wallet"></i> <span>PAGOS</span>
-                    <span class="etiqueta-contador"><?= $numPagos ?></span>
+                    <span class="etiqueta-contador"><?= $pagos ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/eventos/gestionEventos.php" class="enlace-menu <?= ($seccion == 'eventos') ? 'activo' : '' ?>">
@@ -135,12 +135,12 @@ $numTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?= ($seccion == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>AVISOS Y PUSH</span>
-                    <span class="etiqueta-contador"><?= $numAnuncios ?></span>
+                    <span class="etiqueta-contador"><?= $anuncios ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/mensajes/lista.php" class="enlace-menu <?= ($seccion == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($numSinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $numMensajes ?></span>
+                    <span class="etiqueta-contador <?= ($sinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $mensajes ?></span>
                 </a>
             </div>
 
@@ -149,17 +149,17 @@ $numTFG = contarTFGsSubidos();
 
                 <a href="<?= $rel ?>vistas/admin/aulas/verAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
                     <i class="fas fa-door-open"></i> <span>AULAS</span>
-                    <span class="etiqueta-contador"><?= $numAulas ?></span>
+                    <span class="etiqueta-contador"><?= $aulas ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/inventario/verInventario.php" class="enlace-menu <?= ($seccion == 'inventario') ? 'activo' : '' ?>">
                     <i class="fas fa-boxes"></i> <span>INVENTARIO</span>
-                    <span class="etiqueta-contador"><?= $numInventario ?></span>
+                    <span class="etiqueta-contador"><?= $inventario ?></span>
                 </a>
 
                 <a href="<?= $rel ?>vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?= ($seccion == 'prestamos') ? 'activo' : '' ?>">
                     <i class="fas fa-hand-holding"></i> <span>PRÉSTAMOS</span>
-                    <span class="etiqueta-contador"><?= $numPrestamos ?></span>
+                    <span class="etiqueta-contador"><?= $prestamos ?></span>
                 </a>
             </div>
 

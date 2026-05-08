@@ -112,49 +112,45 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones) {
     $con = obtenerConexion();
 
-    $sql = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idModulo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
+    $sqlBuscar = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
+    $stmtBuscar = mysqli_prepare($con, $sqlBuscar);
+    mysqli_stmt_bind_param($stmtBuscar, "ii", $idEstudiante, $idModulo);
+    mysqli_stmt_execute($stmtBuscar);
+    $resultado = mysqli_stmt_get_result($stmtBuscar);
 
     if (mysqli_num_rows($resultado) > 0) {
-        $sql = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "sssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
+        $sqlGuardar = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
+        $stmtGuardar = mysqli_prepare($con, $sqlGuardar);
+        mysqli_stmt_bind_param($stmtGuardar, "sssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
     } else {
-        $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "iisssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
+        $sqlGuardar = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmtGuardar = mysqli_prepare($con, $sqlGuardar);
+        mysqli_stmt_bind_param($stmtGuardar, "iisssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
     }
 
-    $resultado = mysqli_stmt_execute($stmt);
+    $ok = mysqli_stmt_execute($stmtGuardar);
     mysqli_close($con);
-    return $resultado;
+    return $ok;
 }
 
 function listarCalificacionesPorModulo($idModulo) {
     $con = obtenerConexion();
-
-    $sql = "SELECT idCiclo FROM modulos WHERE idModulo = ?";
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev AS calificacion, cm.observaciones
+            FROM modulos mo
+            JOIN estudiantes e ON e.idCiclo = mo.idCiclo
+            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = mo.idModulo
+            WHERE mo.idModulo = ?
+            ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $datosModulo = mysqli_fetch_assoc($resultado);
-    $idCiclo = (int)($datosModulo['idCiclo'] ?? 0);
-
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev as calificacion, cm.observaciones FROM estudiantes e LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = ? WHERE e.idCiclo = ? ORDER BY e.nombreEstudiante ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idModulo, $idCiclo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $listaModulo = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaModulo[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($con);
-    return $listaModulo;
+    return $lista;
 }
 
 // --- LÓGICA DE NEGOCIO PARA RESULTADOS FINALES (75% Módulos / 25% Retos) ---

@@ -11,7 +11,7 @@ $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_inventario'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
@@ -33,16 +33,16 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
                 <div class="campo-formulario">
                     <label for="nombreArticulo">NOMBRE DEL ARTÍCULO *</label>
                     <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? '' ?>" placeholder="Ej: Portátil HP ProBook">
-                    <?php if (isset($lista_de_errores['nombreArticulo'])) { ?>
-                        <strong class="error-campo"><?= $lista_de_errores['nombreArticulo'] ?></strong>
+                    <?php if (isset($errores['nombreArticulo'])) { ?>
+                        <strong class="error-campo"><?= $errores['nombreArticulo'] ?></strong>
                     <?php } ?>
                 </div>
 
                 <div class="campo-formulario">
                     <label for="numeroSerie">NÚMERO DE SERIE *</label>
                     <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? '' ?>" placeholder="Ej: SN-12345678">
-                    <?php if (isset($lista_de_errores['numeroSerie'])) { ?>
-                        <strong class="error-campo"><?= $lista_de_errores['numeroSerie'] ?></strong>
+                    <?php if (isset($errores['numeroSerie'])) { ?>
+                        <strong class="error-campo"><?= $errores['numeroSerie'] ?></strong>
                     <?php } ?>
                 </div>
             </div>

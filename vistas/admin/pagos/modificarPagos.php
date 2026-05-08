@@ -19,7 +19,7 @@ $todos_los_estudiantes = listarEstudiantes();
 
 $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_pago']);
 
@@ -47,21 +47,21 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label for="idEstudiante">Estudiante *</label>
-                <select name="idEstudiante" id="idEstudiante" required>
+                <select name="idEstudiante" id="idEstudiante">
                     <?php foreach ($todos_los_estudiantes as $estudiante) { ?>
                         <option value="<?= $estudiante['idEstudiante'] ?>" <?= $pago['idEstudiante'] == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
                             <?= $estudiante['nombreEstudiante'] ?>
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['idEstudiante'] ?></strong>
+                <?php if (isset($errores['idEstudiante'])) { ?>
+                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="tipoPago">Tipo de Pago *</label>
-                <select name="tipoPago" id="tipoPago" required>
+                <select name="tipoPago" id="tipoPago">
                     <option value="mensual" <?= $pago['tipoPago'] == 'mensual' ? 'selected' : '' ?>>Mensual</option>
                     <option value="trimestral" <?= $pago['tipoPago'] == 'trimestral' ? 'selected' : '' ?>>Trimestral</option>
                     <option value="semestral" <?= $pago['tipoPago'] == 'semestral' ? 'selected' : '' ?>>Semestral</option>
@@ -71,17 +71,17 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label for="cantidadPago">Cantidad (Monto) *</label>
-                <input type="number" name="cantidadPago" id="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>" required>
-                <?php if (isset($lista_de_errores['cantidadPago'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['cantidadPago'] ?></strong>
+                <input type="number" name="cantidadPago" id="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>">
+                <?php if (isset($errores['cantidadPago'])) { ?>
+                    <strong class="error-campo"><?= $errores['cantidadPago'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="fechaPago">Fecha de Pago *</label>
-                <input type="date" name="fechaPago" id="fechaPago" value="<?= $pago['fechaPago'] ?>" required>
-                <?php if (isset($lista_de_errores['fechaPago'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaPago'] ?></strong>
+                <input type="date" name="fechaPago" id="fechaPago" value="<?= $pago['fechaPago'] ?>">
+                <?php if (isset($errores['fechaPago'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaPago'] ?></strong>
                 <?php } ?>
             </div>
 

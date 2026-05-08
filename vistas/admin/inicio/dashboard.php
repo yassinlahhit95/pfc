@@ -14,21 +14,21 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$totalEstudiantesRegistrados = contarEstudiantes();
-$totalProfesoresRegistrados = contarProfesores();
-$totalRetosAcademicos = intval(contarRetos());
-$totalModulosProfesionales = intval(contarModulos());
-$porcentajeGlobalAprobados = obtenerPorcentajeAprobadosGlobal();
-$cantidadTotalRecaudada = obtenerTotalRecaudado();
-$totalOperacionesDePago = contarPagosRealizados();
+$totalEstudiantes = contarEstudiantes();
+$totalProfesores = contarProfesores();
+$totalRetos = intval(contarRetos());
+$totalModulos = intval(contarModulos());
+$pctAprobados = obtenerPorcentajeAprobadosGlobal();
+$recaudado = obtenerTotalRecaudado();
+$totalCobros = contarPagosRealizados();
 
-$anunciosAMostrarPorPagina = 5;
-$numeroPaginaActual = max(1, intval($_GET['p_anuncios'] ?? 1));
-$totalAnunciosActivos = intval(contarAnunciosQueEstanActivos());
-$totalPaginasAnuncios = ceil($totalAnunciosActivos / $anunciosAMostrarPorPagina);
-$listaAnunciosSistema = listarAnunciosPaginados($numeroPaginaActual, $anunciosAMostrarPorPagina);
+$porPagina = 5;
+$pagina = max(1, intval($_GET['p_anuncios'] ?? 1));
+$totalAnuncios = intval(contarAnunciosQueEstanActivos());
+$totalPaginas = ceil($totalAnuncios / $porPagina);
+$listaAnuncios = listarAnunciosPaginados($pagina, $porPagina);
 
-$listaEventosProximos = listarEventosProximos();
+$eventos = listarEventosProximos();
 $titulo_pagina = "PANEL DE CONTROL - ADMIN";
 $seccion = 'inicio';
 
@@ -44,28 +44,28 @@ include __DIR__ . '/../comunes/nav.php';
 <h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
-    <div class="info-estadistica"><h3><?= $totalEstudiantesRegistrados ?></h3><p>Estudiantes</p></div>
+    <div class="info-estadistica"><h3><?= $totalEstudiantes ?></h3><p>Estudiantes</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-cian">
-    <div class="info-estadistica"><h3><?= $totalProfesoresRegistrados ?></h3><p>Profesores</p></div>
+    <div class="info-estadistica"><h3><?= $totalProfesores ?></h3><p>Profesores</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= $totalModulosProfesionales ?></h3><p>Módulos</p></div>
+    <div class="info-estadistica"><h3><?= $totalModulos ?></h3><p>Módulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?= $totalRetosAcademicos ?></h3><p>Retos</p></div>
+    <div class="info-estadistica"><h3><?= $totalRetos ?></h3><p>Retos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?= $porcentajeGlobalAprobados ?>%</h3><p>Aprobados</p></div>
+    <div class="info-estadistica"><h3><?= $pctAprobados ?>%</h3><p>Aprobados</p></div>
   </div>
 </div>
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica">
-    <div class="info-estadistica"><h3><?= number_format($cantidadTotalRecaudada, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
+    <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
   </div>
   <div class="tarjeta-estadistica">
-    <div class="info-estadistica"><h3><?= $totalOperacionesDePago ?></h3><p>Cobros Realizados</p></div>
+    <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
   </div>
 </div>
 
@@ -84,38 +84,40 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
 
     <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta">
+      <div class="titulo-tarjeta espacio-entre-elementos">
         <h3>TABLÓN DE ANUNCIOS</h3>
+        <a href="../anuncios/gestionAnuncios.php" class="boton-secundario texto-pequeno">Gestionar</a>
       </div>
-      <?php if ($listaAnunciosSistema) { ?>
+      <?php if ($listaAnuncios) { ?>
         <div class="lista-anuncios-dashboard">
-            <?php foreach ($listaAnunciosSistema as $anuncioIndividual) { ?>
+            <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
                 <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                    <strong class="anuncio-titulo"><?= strtoupper($anuncioIndividual['titulo']) ?></strong>
-                    <small class="texto-atenuado"><?= date('d/m/Y H:i', strtotime($anuncioIndividual['fechaAnuncio'])) ?></small>
+                    <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
+                    <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
                 </div>
-                <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncioIndividual['mensaje']) ?></p>
+                <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncio['mensaje']) ?></p>
+                <div class="mt-5">
+                    <span class="etiqueta-dirigido-a"><?= ucfirst($anuncio['dirigidoA']) ?></span>
+                </div>
             </div>
             <?php } ?>
         </div>
 
-        <?php if ($totalPaginasAnuncios > 1) { ?>
+        <?php if ($totalPaginas > 1) { ?>
         <div class="paginacion">
-            <?php if ($numeroPaginaActual > 1) { ?>
-                <a href="dashboard.php?p_anuncios=<?= $numeroPaginaActual - 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-left"></i></a>
+            <?php if ($pagina > 1) { ?>
+                <a href="dashboard.php?p_anuncios=<?= $pagina - 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-left"></i></a>
             <?php } ?>
-
-            <span class="boton-paginacion activo"><?= $numeroPaginaActual ?> / <?= $totalPaginasAnuncios ?></span>
-
-            <?php if ($numeroPaginaActual < $totalPaginasAnuncios) { ?>
-                <a href="dashboard.php?p_anuncios=<?= $numeroPaginaActual + 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-right"></i></a>
+            <span class="boton-paginacion activo"><?= $pagina ?> / <?= $totalPaginas ?></span>
+            <?php if ($pagina < $totalPaginas) { ?>
+                <a href="dashboard.php?p_anuncios=<?= $pagina + 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-right"></i></a>
             <?php } ?>
         </div>
         <?php } ?>
 
       <?php } else { ?>
-        <p class="texto-atenuado">No hay anuncios activos actualmente.</p>
+        <p class="texto-atenuado">No hay anuncios activos.</p>
       <?php } ?>
     </div>
   </div>
@@ -126,25 +128,25 @@ include __DIR__ . '/../comunes/nav.php';
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
-        <?php if (empty($listaEventosProximos)) { ?>
+        <?php if (empty($eventos)) { ?>
             <p class="texto-atenuado">No hay eventos próximos programados.</p>
         <?php } else { ?>
             <?php
-            $contadorEventosMostrados = 0;
-            foreach ($listaEventosProximos as $eventoIndividual) {
-                if ($contadorEventosMostrados < 4) {
-                    $diaEvento = date('d', strtotime($eventoIndividual['fechaEvento']));
-                    $mesEvento = strtoupper(date('M', strtotime($eventoIndividual['fechaEvento'])));
+            $i = 0;
+            foreach ($eventos as $evento) {
+                if ($i < 4) {
+                    $dia = date('d', strtotime($evento['fechaEvento']));
+                    $mes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
             ?>
             <div class="elemento-evento">
-              <div class="fecha-evento azul"><div class="dia"><?= $diaEvento ?></div><div class="mes"><?= $mesEvento ?></div></div>
+              <div class="fecha-evento azul"><div class="dia"><?= $dia ?></div><div class="mes"><?= $mes ?></div></div>
               <div>
-                <p class="texto-negrita"><?= strtoupper($eventoIndividual['tituloEvento']) ?></p>
-                <p class="texto-atenuado"><?= date('H:i', strtotime($eventoIndividual['horaEvento'])) ?>h - <?= $eventoIndividual['ubicacionEvento'] ?></p>
+                <p class="texto-negrita"><?= strtoupper($evento['tituloEvento']) ?></p>
+                <p class="texto-atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
               </div>
             </div>
             <?php
-                    $contadorEventosMostrados++;
+                    $i++;
                 }
             } ?>
         <?php } ?>

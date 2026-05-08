@@ -14,10 +14,12 @@ if (!$director) {
     exit;
 }
 
-$director = ($_SESSION['datos_director'] ?? 0);
+if (isset($_SESSION['datos_director'])) {
+    $director = array_merge($director, $_SESSION['datos_director']);
+}
 
 $error = $_SESSION['error'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
 ?>
@@ -39,64 +41,64 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
             <div class="campo-formulario">
                 <label for="nombreDirector">Nombre Completo *</label>
                 <input type="text" id="nombreDirector" name="nombreDirector" value="<?= $director['nombreDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['nombreDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreDirector'] ?></strong>
+                <?php if (isset($errores['nombreDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="emailDirector">Email *</label>
                 <input type="text" id="emailDirector" name="emailDirector" value="<?= $director['emailDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['emailDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['emailDirector'] ?></strong>
+                <?php if (isset($errores['emailDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['emailDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="dniDirector">DNI *</label>
                 <input type="text" id="dniDirector" name="dniDirector" value="<?= $director['dniDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['dniDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['dniDirector'] ?></strong>
+                <?php if (isset($errores['dniDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['dniDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="telefonoDirector">Teléfono *</label>
                 <input type="text" id="telefonoDirector" name="telefonoDirector" value="<?= $director['telefonoDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['telefonoDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['telefonoDirector'] ?></strong>
+                <?php if (isset($errores['telefonoDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['telefonoDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="fechaNacimientoDirector">Fecha de Nacimiento *</label>
                 <input type="date" id="fechaNacimientoDirector" name="fechaNacimientoDirector" value="<?= $director['fechaNacimientoDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['fechaNacimientoDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaNacimientoDirector'] ?></strong>
+                <?php if (isset($errores['fechaNacimientoDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaNacimientoDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="ciudadDirector">Ciudad *</label>
                 <input type="text" id="ciudadDirector" name="ciudadDirector" value="<?= $director['ciudadDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['ciudadDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['ciudadDirector'] ?></strong>
+                <?php if (isset($errores['ciudadDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['ciudadDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="codigoPostalDirector">Código Postal *</label>
                 <input type="text" id="codigoPostalDirector" name="codigoPostalDirector" value="<?= $director['codigoPostalDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['codigoPostalDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['codigoPostalDirector'] ?></strong>
+                <?php if (isset($errores['codigoPostalDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['codigoPostalDirector'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario campo-ancho-total">
                 <label for="direccionDirector">Dirección Completa *</label>
                 <input type="text" id="direccionDirector" name="direccionDirector" value="<?= $director['direccionDirector'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['direccionDirector'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['direccionDirector'] ?></strong>
+                <?php if (isset($errores['direccionDirector'])) { ?>
+                    <strong class="error-campo"><?= $errores['direccionDirector'] ?></strong>
                 <?php } ?>
             </div>
 

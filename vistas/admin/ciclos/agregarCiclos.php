@@ -8,7 +8,7 @@ $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 $listaAulas = listarAulas();
 
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_ciclo'] ?? [];
 
 unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
@@ -35,16 +35,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label for="nombreCiclo">Nombre del Ciclo *</label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= $datos['nombreCiclo'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['nombreCiclo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreCiclo'] ?></strong>
+                <?php if (isset($errores['nombreCiclo'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="abreviaturaCiclo">Abreviatura *</label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= $datos['abreviaturaCiclo'] ?? '' ?>">
-                <?php if (isset($lista_de_errores['abreviaturaCiclo'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['abreviaturaCiclo'] ?></strong>
+                <?php if (isset($errores['abreviaturaCiclo'])) { ?>
+                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -58,8 +58,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($lista_de_errores['idNivel'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['idNivel'] ?></strong>
+                <?php if (isset($errores['idNivel'])) { ?>
+                    <strong class="error-campo"><?= $errores['idNivel'] ?></strong>
                 <?php } ?>
             </div>
 

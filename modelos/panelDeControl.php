@@ -135,25 +135,18 @@ function obtenerTotalRecaudado() {
 
 function obtenerPorcentajeAprobadosGlobal() {
     $con = obtenerConexion();
-
-    $sql = "SELECT COUNT(*) as conteo FROM calificaciones_modulos";
+    $sql = "SELECT
+                (SELECT COUNT(*) FROM calificaciones_modulos) AS total,
+                (SELECT COUNT(*) FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5) AS aprobados";
     $resultado = mysqli_query($con, $sql);
-    $filaTotal = mysqli_fetch_assoc($resultado);
-    $totalRegistros = (int)$filaTotal['conteo'];
-
-    if ($totalRegistros === 0) {
-        mysqli_close($con);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    $total = (int)$fila['total'];
+    $aprobados = (int)$fila['aprobados'];
+    if ($total === 0) {
         return 0;
     }
-
-    $sql = "SELECT COUNT(*) as conteo FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5";
-    $resultado = mysqli_query($con, $sql);
-    $filaAprobados = mysqli_fetch_assoc($resultado);
-    $totalAprobados = (int)$filaAprobados['conteo'];
-
-    $porcentaje = ($totalAprobados / $totalRegistros) * 100;
-    mysqli_close($con);
-    return round($porcentaje, 1);
+    return round(($aprobados / $total) * 100, 1);
 }
 
 function contarPagosRealizados() {

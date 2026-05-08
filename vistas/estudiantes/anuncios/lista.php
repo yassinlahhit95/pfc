@@ -12,7 +12,7 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-$anuncios = listarAnunciosPorRol('estudiantes');
+$listaAnuncios = listarAnunciosPorRol('estudiantes');
 
 $tituloDelPagina = "Anuncios - Portal Estudiantes";
 $seccionActual = 'anuncios';
@@ -31,9 +31,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <?php if ($anuncios) { ?>
+    <?php if ($listaAnuncios) { ?>
         <div class="lista-avisos">
-            <?php foreach ($anuncios as $anuncio) { ?>
+            <?php foreach ($listaAnuncios as $anuncio) { ?>
                 <div class="aviso-item mb-25 pb-20 borde-abajo-gris">
                     <div class="disposicion-flexible alinear-centro espacio-entre-elementos mb-10">
                         <h2 class="texto-azul m-0"><?= strtoupper($anuncio['titulo']) ?></h2>

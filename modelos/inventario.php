@@ -55,18 +55,12 @@ function listarPrestamosActivos() {
     return $listaPrestamosActivos;
 }
 
-function checkArticuloExistente($numeroSerie, $idExcluir = null) {
+function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
     $con = obtenerConexion();
-    $serieUppercase = strtoupper($numeroSerie);
-    if ($idExcluir) {
-        $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "si", $serieUppercase, $idExcluir);
-    } else {
-        $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "s", $serieUppercase);
-    }
+    $serie = strtoupper($numeroSerie);
+    $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $serie, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;

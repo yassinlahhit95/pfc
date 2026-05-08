@@ -22,7 +22,7 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
 if (isset($_SESSION['idProfesor'])) {
     header("Location: ../../../vistas/profesores/inicio/dashboard.php");
 } else {
-    header("Location: ../../dashboard.php");
+    header("Location: ../../../vistas/admin/inicio/dashboard.php");
 }
 exit;
 ?>

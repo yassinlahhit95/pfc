@@ -18,31 +18,31 @@ if (isset($_POST['actualizarDirector'])) {
     $codigoPostal = trim($_POST['codigoPostalDirector']);
     $observaciones = trim($_POST['observacionesDirector']);
 
-    $errores_campos = [];
+    $errores = [];
     if (empty($nombre)) {
-        $errores_campos['nombreDirector'] = "Nombre obligatorio.";
+        $errores['nombreDirector'] = "Nombre obligatorio.";
     }
     if (empty($email)) {
-        $errores_campos['emailDirector'] = "Email obligatorio.";
+        $errores['emailDirector'] = "Email obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores_campos['emailDirector'] = "Email no válido.";
+        $errores['emailDirector'] = "Email no válido.";
     }
     if (empty($dni)) {
-        $errores_campos['dniDirector'] = "DNI obligatorio.";
+        $errores['dniDirector'] = "DNI obligatorio.";
     }
     if (empty($telefono)) {
-        $errores_campos['telefonoDirector'] = "Teléfono obligatorio.";
-    } else if (!is_numeric($telefono)) {
-        $errores_campos['telefonoDirector'] = "Teléfono numérico.";
+        $errores['telefonoDirector'] = "El teléfono es obligatorio.";
+    } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
+        $errores['telefonoDirector'] = "El teléfono debe tener exactamente 9 dígitos.";
     }
 
-    if (empty($errores_campos)) {
+    if (empty($errores)) {
         if (checkDirectorExistente($dni, $email, $idDirector)) {
-            $errores_campos['dniDirector'] = "El DNI o Email ya están registrados por otro director.";
+            $errores['dniDirector'] = "El DNI o Email ya están registrados por otro director.";
         }
     }
 
-    if (empty($errores_campos)) {
+    if (empty($errores)) {
         $resultado = actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
         if ($resultado) {
             $_SESSION['exito'] = "Director actualizado.";
@@ -51,7 +51,7 @@ if (isset($_POST['actualizarDirector'])) {
         }
         $_SESSION['error'] = "No se pudo actualizar el director.";
     } else {
-        $_SESSION['errores'] = $errores_campos;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_director'] = $_POST;
     }
 

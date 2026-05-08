@@ -14,17 +14,11 @@ function listarDirectores() {
     return $listaDirectores;
 }
 
-function checkDirectorExistente($dni, $email, $idExcluir = null) {
+function checkDirectorExistente($dni, $email, $idExcluir = 0) {
     $con = obtenerConexion();
-    if ($idExcluir) {
-        $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?) AND idDirector != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
-    } else {
-        $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
-    }
+    $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?) AND idDirector != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;

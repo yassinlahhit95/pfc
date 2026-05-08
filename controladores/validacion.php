@@ -8,8 +8,17 @@ if (isset($_POST["enviar"])) {
     $emailUsuarioRecibido = trim($_POST["usuario"]);
     $passwordUsuarioRecibida = trim($_POST["contrasena"]);
 
-    if (empty($emailUsuarioRecibido) || empty($passwordUsuarioRecibida)) {
-        $_SESSION["error"] = "Campos obligatorios.";
+    $errores = [];
+    if (empty($emailUsuarioRecibido)) {
+        $errores['usuario'] = "El email es obligatorio.";
+    }
+    if (empty($passwordUsuarioRecibida)) {
+        $errores['contrasena'] = "La contraseña es obligatoria.";
+    }
+
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_login'] = $_POST;
         header("Location: ../vistas/login.php");
         exit;
     }
@@ -37,7 +46,8 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    $_SESSION["error"] = "Datos incorrectos.";
+    $_SESSION['errores'] = ['usuario' => "Email o contraseña incorrectos."];
+    $_SESSION['datos_login'] = $_POST;
     header("Location: ../vistas/login.php");
     exit;
 }

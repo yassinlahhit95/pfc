@@ -11,7 +11,7 @@ $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_anuncio'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
@@ -32,8 +32,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
             <div class="campo-formulario">
                 <label for="tituloAnuncio">TÍTULO DEL ANUNCIO *</label>
                 <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">
-                <?php if (isset($lista_de_errores['tituloAnuncio'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['tituloAnuncio'] ?></strong>
+                <?php if (isset($errores['tituloAnuncio'])) { ?>
+                    <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
                 <?php } ?>
             </div>
 
@@ -49,8 +49,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
             <div class="campo-formulario">
                 <label for="contenidoAnuncio">CONTENIDO DEL ANUNCIO *</label>
                 <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" placeholder="Escriba aquí el mensaje..."><?= $datos['contenidoAnuncio'] ?? '' ?></textarea>
-                <?php if (isset($lista_de_errores['contenidoAnuncio'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['contenidoAnuncio'] ?></strong>
+                <?php if (isset($errores['contenidoAnuncio'])) { ?>
+                    <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
                 <?php } ?>
             </div>
 

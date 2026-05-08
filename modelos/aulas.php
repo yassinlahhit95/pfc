@@ -15,17 +15,11 @@ function listarAulas() {
     return $listaAulas;
 }
 
-function checkAulaExistente($nombreAula, $idExcluir = null) {
+function checkAulaExistente($nombreAula, $idExcluir = 0) {
     $con = obtenerConexion();
-    if ($idExcluir) {
-        $sql = "SELECT idAula FROM aulas WHERE nombreAula = ? AND idAula != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "si", $nombreAula, $idExcluir);
-    } else {
-        $sql = "SELECT idAula FROM aulas WHERE nombreAula = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "s", $nombreAula);
-    }
+    $sql = "SELECT idAula FROM aulas WHERE nombreAula = ? AND idAula != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $nombreAula, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;

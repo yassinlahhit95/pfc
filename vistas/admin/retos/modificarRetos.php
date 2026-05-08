@@ -30,7 +30,7 @@ $todos_los_modulos = listarModulos();
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-$lista_de_errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reto']);
 
@@ -58,33 +58,33 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label for="nombreReto">Nombre del Reto *</label>
-                <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>" required>
-                <?php if (isset($lista_de_errores['nombreReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['nombreReto'] ?></strong>
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>">
+                <?php if (isset($errores['nombreReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="horasReto">Horas Totales Estimadas *</label>
-                <input type="number" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>" required>
-                <?php if (isset($lista_de_errores['horasReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['horasReto'] ?></strong>
+                <input type="number" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>">
+                <?php if (isset($errores['horasReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['horasReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="fechaInicioReto">Fecha de Inicio *</label>
-                <input type="date" name="fechaInicioReto" id="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>" required>
-                <?php if (isset($lista_de_errores['fechaInicioReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaInicioReto'] ?></strong>
+                <input type="date" name="fechaInicioReto" id="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>">
+                <?php if (isset($errores['fechaInicioReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaInicioReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="fechaFinReto">Fecha de Fin *</label>
-                <input type="date" name="fechaFinReto" id="fechaFinReto" value="<?= $reto['fechaFin'] ?>" required>
-                <?php if (isset($lista_de_errores['fechaFinReto'])) { ?>
-                    <strong class="error-campo"><?= $lista_de_errores['fechaFinReto'] ?></strong>
+                <input type="date" name="fechaFinReto" id="fechaFinReto" value="<?= $reto['fechaFin'] ?>">
+                <?php if (isset($errores['fechaFinReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
         </div>
@@ -100,8 +100,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </div>
                 <?php } ?>
             </div>
-            <?php if (isset($lista_de_errores['modulosReto'])) { ?>
-                <strong class="error-campo"><?= $lista_de_errores['modulosReto'] ?></strong>
+            <?php if (isset($errores['modulosReto'])) { ?>
+                <strong class="error-campo"><?= $errores['modulosReto'] ?></strong>
             <?php } ?>
         </div>
 

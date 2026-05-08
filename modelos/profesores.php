@@ -13,17 +13,11 @@ function listarProfesores() {
     return $lista;
 }
 
-function checkProfesorExistente($dni, $email, $idExcluir = null) {
+function checkProfesorExistente($dni, $email, $idExcluir = 0) {
     $con = obtenerConexion();
-    if ($idExcluir) {
-        $sql = "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?) AND idProfesor != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
-    } else {
-        $sql = "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
-    }
+    $sql = "SELECT idProfesor FROM profesores WHERE (dniProfesor = ? OR emailProfesor = ?) AND idProfesor != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
@@ -31,7 +25,7 @@ function checkProfesorExistente($dni, $email, $idExcluir = null) {
     return $existe;
 }
 
-function insertarProfesor(string $nombre, string $email, string $tel, string $dni, string $dir, string $f_nac, string $f_alta, string $ciudad, string $cp, string $obs): bool|int {
+function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
     if (checkProfesorExistente($dni, $email)) {
         return false;
     }
@@ -40,19 +34,12 @@ function insertarProfesor(string $nombre, string $email, string $tel, string $dn
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssss", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
     mysqli_stmt_execute($stmt);
-
-    $sql = "SELECT MAX(idProfesor) as ultimoId FROM profesores";
-    $stmt2 = mysqli_prepare($con, $sql);
-    mysqli_stmt_execute($stmt2);
-    $resultado = mysqli_stmt_get_result($stmt2);
-    $filaId = mysqli_fetch_assoc($resultado);
-    $idNuevo = (int)$filaId['ultimoId'];
-
+    $idNuevo = mysqli_insert_id($con);
     mysqli_close($con);
     return $idNuevo;
 }
 
-function actualizarProfesor(int $id, string $nombre, string $email, string $tel, string $dni, string $dir, string $f_nac, string $f_alta, string $ciudad, string $cp, string $obs): bool {
+function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
     if (checkProfesorExistente($dni, $email, $id)) {
         return false;
     }
@@ -169,18 +156,14 @@ function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
 
 function obtenerProfesoresConModulosParaEstudiante($idEst) {
     $con = obtenerConexion();
-
-    $sql = "SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?";
+    $sql = "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo
+            FROM profesores p
+            JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor
+            JOIN modulos m ON pm.idModulo = m.idModulo
+            WHERE m.idCiclo = (SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?)
+            ORDER BY p.nombreProfesor ASC, m.nombreModulo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEst);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $filaCiclo = mysqli_fetch_assoc($resultado);
-    $idCiclo = $filaCiclo['idCiclo'];
-
-    $sql = "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo FROM profesores p JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor JOIN modulos m ON pm.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY p.nombreProfesor ASC, m.nombreModulo ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];

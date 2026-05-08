@@ -824,6 +824,17 @@ ul {
     font-size: 13.5px;
 }
 
+.etiqueta-dirigido-a {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #eef2ff;
+    color: #4c51bf;
+    letter-spacing: 0.3px;
+}
+
 .fecha-evento .dia {
   font-size: 18px;
 }
@@ -1081,7 +1092,7 @@ ul {
 .seccion-about-me {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 60px 20px;
-    margin: 40px 0 0 0;
+    margin: 0;
     color: white;
 }
 
@@ -1143,8 +1154,26 @@ ul {
 .about-descripcion {
     font-size: 16px;
     line-height: 1.8;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     opacity: 0.95;
+}
+
+.about-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.about-stack span {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .about-acciones {
@@ -1519,7 +1548,6 @@ body.landing-body {
 }
 
 .tarjeta-tecnica-landing {
-  border-left: 3px solid #4f46e5;
 }
 
 .pie-pagina-landing {
@@ -1562,4 +1590,4 @@ body.login-body {
 .campo-login label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; font-size: 14px; }
 .campo-login input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
 .boton-enviar-login { background: #667eea; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-.mensaje-error-login { background: #fee; color: #c33; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; border-left: 4px solid #c33; }
+.mensaje-error-login { background: #fee; color: #c33; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; }

@@ -67,28 +67,22 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
 
 function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExcluir = 0) {
     $con = obtenerConexion();
-
-    $sql = "SELECT horasMaximas FROM modulos WHERE idModulo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idModulo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $datosModulo = mysqli_fetch_assoc($resultado);
-    $limiteMaximo = (int)($datosModulo['horasMaximas'] ?? 0);
-
     $idRetoAExcluir = (int)$idRetoAExcluir;
-
-    $sql = "SELECT SUM(r.horasReto) as total FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto WHERE mr.idModulo = ? AND r.idReto != ?";
+    $sql = "SELECT m.horasMaximas, SUM(r.horasReto) AS horasOcupadas
+            FROM modulos m
+            LEFT JOIN modulo_reto mr ON m.idModulo = mr.idModulo
+            LEFT JOIN retos r ON mr.idReto = r.idReto AND r.idReto != ?
+            WHERE m.idModulo = ?
+            GROUP BY m.idModulo, m.horasMaximas";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idModulo, $idRetoAExcluir);
+    mysqli_stmt_bind_param($stmt, "ii", $idRetoAExcluir, $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $datosSuma = mysqli_fetch_assoc($resultado);
-    $horasOcupadas = (int)($datosSuma['total'] ?? 0);
-
+    $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-
-    return (($horasOcupadas + $horasNuevas) <= $limiteMaximo);
+    $maximo = (int)($fila['horasMaximas'] ?? 0);
+    $ocupadas = (int)($fila['horasOcupadas'] ?? 0);
+    return ($ocupadas + $horasNuevas) <= $maximo;
 }
 
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos = null) {
@@ -156,25 +150,25 @@ function obtenerModulosDeReto($idReto) {
 function calificarReto($idEstudiante, $idReto, $notaObtenida) {
     $con = obtenerConexion();
 
-    $sql = "SELECT idCalificacion FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idReto);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
+    $sqlBuscar = "SELECT idCalificacion FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
+    $stmtBuscar = mysqli_prepare($con, $sqlBuscar);
+    mysqli_stmt_bind_param($stmtBuscar, "ii", $idEstudiante, $idReto);
+    mysqli_stmt_execute($stmtBuscar);
+    $resultado = mysqli_stmt_get_result($stmtBuscar);
 
     if (mysqli_num_rows($resultado) > 0) {
-        $sql = "UPDATE calificaciones_retos SET nota = ? WHERE idEstudiante = ? AND idReto = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "dii", $notaObtenida, $idEstudiante, $idReto);
+        $sqlGuardar = "UPDATE calificaciones_retos SET nota = ? WHERE idEstudiante = ? AND idReto = ?";
+        $stmtGuardar = mysqli_prepare($con, $sqlGuardar);
+        mysqli_stmt_bind_param($stmtGuardar, "dii", $notaObtenida, $idEstudiante, $idReto);
     } else {
-        $sql = "INSERT INTO calificaciones_retos (idEstudiante, idReto, nota) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "iid", $idEstudiante, $idReto, $notaObtenida);
+        $sqlGuardar = "INSERT INTO calificaciones_retos (idEstudiante, idReto, nota) VALUES (?, ?, ?)";
+        $stmtGuardar = mysqli_prepare($con, $sqlGuardar);
+        mysqli_stmt_bind_param($stmtGuardar, "iid", $idEstudiante, $idReto, $notaObtenida);
     }
 
-    $resultado = mysqli_stmt_execute($stmt);
+    $ok = mysqli_stmt_execute($stmtGuardar);
     mysqli_close($con);
-    return $resultado;
+    return $ok;
 }
 
 function eliminarCalificacionReto($idEstudiante, $idReto) {
@@ -207,39 +201,21 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
 
 function listarCalificacionesRetoPorModulo($idModulo) {
     $con = obtenerConexion();
-
-    $sql = "SELECT idReto FROM modulo_reto WHERE idModulo = ?";
+    $sql = "SELECT cr.idEstudiante, AVG(cr.nota) AS promedio
+            FROM calificaciones_retos cr
+            JOIN modulo_reto mr ON cr.idReto = mr.idReto
+            WHERE mr.idModulo = ?
+            GROUP BY cr.idEstudiante";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-
-    $idsRetos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $idsRetos[] = (int)$fila['idReto'];
+    $medias = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $medias[$fila['idEstudiante']] = $fila['promedio'];
     }
-
-    if (empty($idsRetos)) {
-        mysqli_close($con);
-        return [];
-    }
-
-    // IDs son enteros obtenidos de la BD — se construye la cláusula IN de forma segura
-    $listaIds = implode(",", $idsRetos);
-
-    $sql = "SELECT idEstudiante, AVG(nota) as promedio
-                  FROM calificaciones_retos
-                  WHERE idReto IN ($listaIds)
-                  GROUP BY idEstudiante";
-    $resultado = mysqli_query($con, $sql);
-
-    $mapaMedias = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $mapaMedias[$fila['idEstudiante']] = $fila['promedio'];
-    }
-
     mysqli_close($con);
-    return $mapaMedias;
+    return $medias;
 }
 
 function listarCalificacionesRetoPorEstudiante($idEstudiante) {

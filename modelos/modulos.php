@@ -62,17 +62,11 @@ function obtenerModulosPorCiclo($idCiclo) {
     return $listaModulos;
 }
 
-function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = null) {
+function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = 0) {
     $con = obtenerConexion();
-    if ($idExcluir) {
-        $sql = "SELECT idModulo FROM modulos WHERE nombreModulo = ? AND idCiclo = ? AND idModulo != ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "sii", $nombreModulo, $idCiclo, $idExcluir);
-    } else {
-        $sql = "SELECT idModulo FROM modulos WHERE nombreModulo = ? AND idCiclo = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "si", $nombreModulo, $idCiclo);
-    }
+    $sql = "SELECT idModulo FROM modulos WHERE nombreModulo = ? AND idCiclo = ? AND idModulo != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "sii", $nombreModulo, $idCiclo, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;

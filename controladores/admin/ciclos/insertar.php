@@ -11,24 +11,27 @@ if (isset($_POST['guardarCiclo'])) {
     $profesores = $_POST['profesores'] ?? [];
     $aulas = $_POST['aulas'] ?? [];
 
-    $errores_campos = [];
+    $errores = [];
     if (empty($nombre)) {
-        $errores_campos['nombreCiclo'] = "Nombre obligatorio.";
+        $errores['nombreCiclo'] = "Nombre obligatorio.";
     }
     if (empty($abreviatura)) {
-        $errores_campos['abreviaturaCiclo'] = "Abreviatura obligatoria.";
+        $errores['abreviaturaCiclo'] = "Abreviatura obligatoria.";
     }
     if (empty($idNivelEducativo)) {
-        $errores_campos['idNivel'] = "Nivel obligatorio.";
+        $errores['idNivel'] = "Nivel obligatorio.";
+    }
+    if (!is_numeric($precioCiclo) || $precioCiclo < 0) {
+        $errores['precioCiclo'] = "El precio debe ser un número válido.";
     }
 
-    if (empty($errores_campos)) {
+    if (empty($errores)) {
         if (checkCicloExistente($nombre, $abreviatura)) {
-            $errores_campos['nombreCiclo'] = "El nombre o la abreviatura ya existen.";
+            $errores['nombreCiclo'] = "El nombre o la abreviatura ya existen.";
         }
     }
 
-    if (empty($errores_campos)) {
+    if (empty($errores)) {
         $resultado = insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo registrado.";
@@ -37,7 +40,7 @@ if (isset($_POST['guardarCiclo'])) {
         }
         $_SESSION['error'] = "No se pudo registrar el ciclo.";
     } else {
-        $_SESSION['errores'] = $errores_campos;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclo'] = $_POST;
     }
 

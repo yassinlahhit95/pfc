@@ -25,8 +25,9 @@ $hoy = date('Y-m-d');
 $fechaLimite = date('Y') . '-06-30';
 $esDespuesDeJunio = ($hoy > $fechaLimite);
 
-$lista_de_errores = $_SESSION['errores'] ?? [];
-unset($_SESSION['errores']);
+$error = $_SESSION['error'] ?? '';
+$errores = $_SESSION['errores'] ?? [];
+unset($_SESSION['error'], $_SESSION['errores']);
 
 $titulo_pagina = "Registrar Pago - Admin";
 $seccion = 'pagos';
@@ -37,6 +38,10 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>Registrar Nuevo Pago</h1>
     <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
 
 <?php if ($esDespuesDeJunio) { ?>
     <div class="mensaje-error">
@@ -109,7 +114,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label for="tipoPago">Tipo de Pago *</label>
-                <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()" required>
+                <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()">
                     <option value="">-- Elegir --</option>
                     <option value="mensual">Mensual (10% del total)</option>
                     <option value="trimestral">Trimestral (25% del total)</option>
@@ -120,7 +125,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label for="montoInput">Cantidad a Cobrar (€) *</label>
-                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" required>
+                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>">
                 <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</small>
             </div>
 

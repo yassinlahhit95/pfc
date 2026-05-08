@@ -12,21 +12,24 @@ if (isset($_POST['actualizarCiclo'])) {
     $profesores = $_POST['profesores'] ?? [];
     $aulas = $_POST['aulas'] ?? [];
 
-    $errores_campos = [];
+    $errores = [];
     if (empty($nombre)) {
-        $errores_campos['nombreCiclo'] = "Nombre obligatorio.";
+        $errores['nombreCiclo'] = "Nombre obligatorio.";
     }
     if (empty($abreviatura)) {
-        $errores_campos['abreviaturaCiclo'] = "Abreviatura obligatoria.";
+        $errores['abreviaturaCiclo'] = "Abreviatura obligatoria.";
+    }
+    if (!is_numeric($precioCiclo) || $precioCiclo < 0) {
+        $errores['precioCiclo'] = "El precio debe ser un número válido.";
     }
 
-    if (empty($errores_campos)) {
+    if (empty($errores)) {
         if (checkCicloExistente($nombre, $abreviatura, $idCiclo)) {
-            $errores_campos['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";
+            $errores['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";
         }
     }
 
-    if (empty($errores_campos)) {
+    if (empty($errores)) {
         $resultado = actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo actualizado.";
@@ -35,7 +38,7 @@ if (isset($_POST['actualizarCiclo'])) {
         }
         $_SESSION['error'] = "No se pudo actualizar el ciclo.";
     } else {
-        $_SESSION['errores'] = $errores_campos;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclos'] = $_POST;
     }
 

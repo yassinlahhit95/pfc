@@ -30,7 +30,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
 <div class="encabezado-pagina">
     <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
-    <p class="subtitulo">Promedio global del ciclo (75% MÃ³dulos / 25% Retos)</p>
+    <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
 </div>
 
 <?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?= $mensajeExito ?></div> <?php } ?>
