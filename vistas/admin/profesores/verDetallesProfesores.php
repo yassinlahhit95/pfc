@@ -29,13 +29,13 @@ $retosProfesor = obtenerRetosDeProfesor($id);
     <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">← Volver</a>
 </div>
 
-<div class="disposicion-flexible separacion-grande">
-    <div class="flexible-rellenar">
-        <div class="tarjeta-blanca margen-abajo">
-            <div class="titulo-tarjeta">
-                <h3><i class="fas fa-user-tie"></i> Información General</h3>
-            </div>
-            
+<div class="tarjeta-blanca margen-abajo">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-user-tie"></i> Información General</h3>
+    </div>
+    
+    <div class="disposicion-flexible separacion-grande envoltura-flexible">
+        <div class="flexible-rellenar">
             <div class="fila-detalle">
                 <div class="etiqueta-detalle">Nombre Completo</div>
                 <div class="valor-detalle texto-negrita"><?= $profesor['nombreProfesor'] ?></div>
@@ -62,67 +62,67 @@ $retosProfesor = obtenerRetosDeProfesor($id);
             </div>
         </div>
 
-        <div class="tarjeta-blanca">
-            <div class="titulo-tarjeta">
-                <h3><i class="fas fa-book"></i> Módulos Impartidos</h3>
-            </div>
-            <div class="contenedor-tabla">
-                <table class="tabla-datos">
-                    <thead>
-                        <tr>
-                            <th>Módulo</th>
-                            <th>Abreviatura Ciclo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($modulosProfesor)) { ?>
-                            <tr><td colspan="2" class="sin-datos">No tiene módulos asignados</td></tr>
-                        <?php } else { ?>
-                            <?php foreach ($modulosProfesor as $m) { ?>
-                            <tr>
-                                <td><strong><?= $m['nombreModulo'] ?></strong></td>
-                                <td><span class="etiqueta-estado azul"><?= $m['abreviaturaCiclo'] ?></span></td>
-                            </tr>
-                            <?php } ?>
+        <div class="ancho-fijo-300">
+            <div class="mb-20">
+                <h4 class="mb-10"><i class="fas fa-layer-group"></i> Ciclos</h4>
+                <div class="lista-detalles-lateral">
+                    <?php if (empty($ciclosProfesor)) { ?>
+                        <p class="texto-atenuado">Sin ciclos asignados</p>
+                    <?php } else { ?>
+                        <?php foreach ($ciclosProfesor as $c) { ?>
+                            <div class="item-detalle-lateral item-detalle-lateral-amarillo">
+                                <strong><?= $c['abreviaturaCiclo'] ?></strong><br>
+                                <small><?= $c['nombreCiclo'] ?></small>
+                            </div>
                         <?php } ?>
-                    </tbody>
-                </table>
+                    <?php } ?>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="mb-10"><i class="fas fa-tasks"></i> Retos Activos</h4>
+                <div class="lista-detalles-lateral">
+                    <?php if (empty($retosProfesor)) { ?>
+                        <p class="texto-atenuado">Sin retos asignados</p>
+                    <?php } else { ?>
+                        <?php foreach ($retosProfesor as $r) { ?>
+                            <div class="item-detalle-lateral item-detalle-lateral-azul">
+                                <strong><?= $r['nombreReto'] ?></strong><br>
+                                <small><?= $r['horasReto'] ?> horas</small>
+                            </div>
+                        <?php } ?>
+                    <?php } ?>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="ancho-fijo-300">
-        <div class="tarjeta-blanca margen-abajo">
-            <div class="titulo-tarjeta"><h3><i class="fas fa-layer-group"></i> Ciclos</h3></div>
-            <div class="lista-detalles-lateral">
-                <?php if (empty($ciclosProfesor)) { ?>
-                    <p class="texto-atenuado">Sin ciclos asignados</p>
+<div class="tarjeta-blanca">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-book"></i> Módulos Impartidos</h3>
+    </div>
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
+            <thead>
+                <tr>
+                    <th>Módulo</th>
+                    <th>Abreviatura Ciclo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($modulosProfesor)) { ?>
+                    <tr><td colspan="2" class="sin-datos">No tiene módulos asignados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($ciclosProfesor as $c) { ?>
-                        <div class="item-detalle-lateral item-detalle-lateral-amarillo">
-                            <strong><?= $c['abreviaturaCiclo'] ?></strong><br>
-                            <small><?= $c['nombreCiclo'] ?></small>
-                        </div>
+                    <?php foreach ($modulosProfesor as $m) { ?>
+                    <tr>
+                        <td><strong><?= $m['nombreModulo'] ?></strong></td>
+                        <td><span class="etiqueta-estado azul"><?= $m['abreviaturaCiclo'] ?></span></td>
+                    </tr>
                     <?php } ?>
                 <?php } ?>
-            </div>
-        </div>
-
-        <div class="tarjeta-blanca">
-            <div class="titulo-tarjeta"><h3><i class="fas fa-tasks"></i> Retos Activos</h3></div>
-            <div class="lista-detalles-lateral">
-                <?php if (empty($retosProfesor)) { ?>
-                    <p class="texto-atenuado">Sin retos asignados</p>
-                <?php } else { ?>
-                    <?php foreach ($retosProfesor as $r) { ?>
-                        <div class="item-detalle-lateral item-detalle-lateral-azul">
-                            <strong><?= $r['nombreReto'] ?></strong><br>
-                            <small><?= $r['horasReto'] ?> horas</small>
-                        </div>
-                    <?php } ?>
-                <?php } ?>
-            </div>
-        </div>
+            </tbody>
+        </table>
     </div>
 </div>
 

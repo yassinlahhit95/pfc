@@ -32,11 +32,11 @@ if (isset($_POST['actualizarCiclo'])) {
     if (empty($errores)) {
         $resultado = actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Ciclo actualizado.";
+            $_SESSION['exito'] = "Ciclo actualizado correctamente.";
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo actualizar el ciclo.";
+        $_SESSION['error'] = "No se realizaron cambios o no se pudo actualizar el ciclo en la base de datos.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclos'] = $_POST;

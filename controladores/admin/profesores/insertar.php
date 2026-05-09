@@ -47,11 +47,11 @@ if (isset($_POST['guardarProfesor'])) {
         $idNuevoProfesorInsertado = insertarProfesor($nombreNuevoProfesor, $emailNuevoProfesor, $telefonoNuevoProfesor, $dniNuevoProfesor, $direccionNuevoProfesor, $fechaNacimientoNuevoProfesor, $fechaAltaNuevoProfesor, $ciudadNuevoProfesor, $codigoPostalNuevoProfesor, $observacionesNuevoProfesor);
         
         if ($idNuevoProfesorInsertado) {
-            $_SESSION['exito'] = "Profesor registrado.";
+            $_SESSION['exito'] = "Profesor registrado correctamente.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo registrar el profesor.";
+        $_SESSION['error'] = "Hubo un problema al registrar el profesor en la base de datos.";
     } else {
         $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_profesor'] = $_POST;

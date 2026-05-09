@@ -30,8 +30,24 @@ if (isset($_POST['guardarReto'])) {
 
     if (empty($fechaFinReto)) {
         $listaDeErrores['fechaFinReto'] = "La fecha de fin es obligatoria.";
-    } else if ($fechaFinReto < $fechaInicioReto) {
+    } else if (!empty($fechaInicioReto) && $fechaFinReto < $fechaInicioReto) {
         $listaDeErrores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
+    }
+
+    if (!empty($fechaInicioReto) && !empty($fechaFinReto) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicioReto <= $fechaFinReto) {
+        $begin = new DateTime($fechaInicioReto);
+        $end = new DateTime($fechaFinReto);
+        $diasLaborables = 0;
+        while ($begin <= $end) {
+            if ($begin->format('N') < 6) {
+                $diasLaborables++;
+            }
+            $begin->modify('+1 day');
+        }
+        $maxHorasPermitidas = $diasLaborables * 6;
+        if ($horasReto > $maxHorasPermitidas) {
+            $listaDeErrores['horasReto'] = "Las horas estimadas superan el máximo de $maxHorasPermitidas h para el periodo seleccionado (6h/día laborable).";
+        }
     }
 
     if (empty($listaModulos)) {
@@ -48,11 +64,11 @@ if (isset($_POST['guardarReto'])) {
     if (empty($listaDeErrores)) {
         $resultado = insertarReto($nombreReto, $fechaInicioReto, $fechaFinReto, $horasReto, $listaModulos);
         if ($resultado) {
-            $_SESSION['exito'] = "Reto creado.";
+            $_SESSION['exito'] = "Reto creado correctamente.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo crear el reto.";
+        $_SESSION['error'] = "No se pudo crear el reto en la base de datos.";
     } else {
         $_SESSION['errores'] = $listaDeErrores;
         $_SESSION['datos_reto'] = $_POST;

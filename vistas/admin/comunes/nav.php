@@ -4,9 +4,6 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-// Root paths: evita errores al incluir nav desde diferentes profundidades
-$rel = "/pfc/";
-
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
@@ -32,10 +29,10 @@ $tfgs = contarTFGsSubidos();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $titulo_pagina ?? 'AulaPro Admin' ?></title>
-    <link rel="stylesheet" href="<?= $rel ?>public/css/admin.css">
-    <link rel="stylesheet" href="<?= $rel ?>public/css/responsive.css">
-    <link rel="stylesheet" href="<?= $rel ?>public/css/notificaciones.css">
-    <link rel="icon" href="<?= $rel ?>public/imagenes/favicon.ico">
+    <link rel="stylesheet" href="../../../public/css/admin.css">
+    <link rel="stylesheet" href="../../../public/css/responsive.css">
+    <link rel="stylesheet" href="../../../public/css/notificaciones.css">
+    <link rel="icon" href="../../../public/imagenes/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -43,13 +40,13 @@ $tfgs = contarTFGsSubidos();
 
 <header class="navbar-superior">
     <div class="logo-navbar-contenedor">
-        <img src="<?= $rel ?>public/imagenes/aulapro.png" alt="Logo" class="logo-navbar logo-navbar-png">
-        <img src="<?= $rel ?>public/imagenes/aulapro.jpeg" alt="Logo" class="logo-navbar logo-navbar-jpeg">
+        <img src="../../../public/imagenes/aulapro.png" alt="Logo" class="logo-navbar logo-navbar-png">
+        <img src="../../../public/imagenes/aulapro.jpeg" alt="Logo" class="logo-navbar logo-navbar-jpeg">
     </div>
     <div class="menu-superior">
         <ul class="navbar-nav">
-            <li><a href="<?= $rel ?>vistas/admin/directores/perfil.php"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
-            <li><a href="<?= $rel ?>controladores/logout.php"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+            <li><a href="../directores/perfil.php"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
+            <li><a href="../../../controladores/logout.php"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
         </ul>
     </div>
     <button class="menu-toggle" onclick="toggleMenu()">
@@ -60,52 +57,52 @@ $tfgs = contarTFGsSubidos();
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <img src="<?= $rel ?>public/imagenes/aulapro.png" alt="Logo" class="sidebar-logo sidebar-logo-png">
-            <img src="<?= $rel ?>public/imagenes/aulapro.jpeg" alt="Logo" class="sidebar-logo sidebar-logo-jpeg">
+            <img src="../../../public/imagenes/aulapro.png" alt="Logo" class="sidebar-logo sidebar-logo-png">
+            <img src="../../../public/imagenes/aulapro.jpeg" alt="Logo" class="sidebar-logo sidebar-logo-jpeg">
             <div class="titulo-panel-sidebar">ADMIN PANEL</div>
         </div>
 
         <nav class="menu-navegacion">
-            <a href="<?= $rel ?>vistas/admin/inicio/dashboard.php" class="enlace-menu <?= ($seccion == 'inicio') ? 'activo' : '' ?>">
+            <a href="../inicio/dashboard.php" class="enlace-menu <?= ($seccion == 'inicio') ? 'activo' : '' ?>">
                 <i class="fas fa-chart-line"></i> <span>DASHBOARD</span>
             </a>
 
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
                 
-                <a href="<?= $rel ?>vistas/admin/estudiantes/verEstudiantes.php" class="enlace-menu <?= ($seccion == 'estudiantes') ? 'activo' : '' ?>">
+                <a href="../estudiantes/verEstudiantes.php" class="enlace-menu <?= ($seccion == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
                     <span class="etiqueta-contador"><?= $estudiantes ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/ciclos/verCiclos.php" class="enlace-menu <?= ($seccion == 'ciclos') ? 'activo' : '' ?>">
+                <a href="../ciclos/verCiclos.php" class="enlace-menu <?= ($seccion == 'ciclos') ? 'activo' : '' ?>">
                     <i class="fas fa-layer-group"></i> <span>CICLOS FORMATIVOS</span>
                     <span class="etiqueta-contador"><?= $ciclos ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/modulos/verModulos.php" class="enlace-menu <?= ($seccion == 'modulos') ? 'activo' : '' ?>">
+                <a href="../modulos/verModulos.php" class="enlace-menu <?= ($seccion == 'modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-book"></i> <span>MÓDULOS</span>
                     <span class="etiqueta-contador"><?= $modulos ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/retos/verRetos.php" class="enlace-menu <?= ($seccion == 'retos') ? 'activo' : '' ?>">
+                <a href="../retos/verRetos.php" class="enlace-menu <?= ($seccion == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS / PROYECTOS</span>
                     <span class="etiqueta-contador"><?= $retos ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/academico/calificacionesModulos.php" class="enlace-menu <?= ($seccion == 'notas_modulos') ? 'activo' : '' ?>">
+                <a href="../academico/calificacionesModulos.php" class="enlace-menu <?= ($seccion == 'notas_modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/academico/calificacionesRetos.php" class="enlace-menu <?= ($seccion == 'notas_retos') ? 'activo' : '' ?>">
+                <a href="../academico/calificacionesRetos.php" class="enlace-menu <?= ($seccion == 'notas_retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/academico/resultadosFinales.php" class="enlace-menu <?= ($seccion == 'resultados_modulos') ? 'activo' : '' ?>">
+                <a href="../academico/resultadosFinales.php" class="enlace-menu <?= ($seccion == 'resultados_modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/pfc/verTFGs.php" class="enlace-menu <?= ($seccion == 'tfg') ? 'activo' : '' ?>">
+                <a href="../pfc/verTFGs.php" class="enlace-menu <?= ($seccion == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
                     <span class="etiqueta-contador"><?= $tfgs ?></span>
                 </a>
@@ -114,31 +111,31 @@ $tfgs = contarTFGsSubidos();
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">PERSONAL Y CENTRO</p>
 
-                <a href="<?= $rel ?>vistas/admin/directores/verDirectores.php" class="enlace-menu <?= ($seccion == 'directores') ? 'activo' : '' ?>">
+                <a href="../directores/verDirectores.php" class="enlace-menu <?= ($seccion == 'directores') ? 'activo' : '' ?>">
                     <i class="fas fa-user-tie"></i> <span>DIRECTORES</span>
                     <span class="etiqueta-contador"><?= $directores ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/profesores/verProfesores.php" class="enlace-menu <?= ($seccion == 'profesores') ? 'activo' : '' ?>">
+                <a href="../profesores/verProfesores.php" class="enlace-menu <?= ($seccion == 'profesores') ? 'activo' : '' ?>">
                     <i class="fas fa-chalkboard-teacher"></i> <span>PROFESORES</span>
                     <span class="etiqueta-contador"><?= $profesores ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/pagos/verPagosGeneral.php" class="enlace-menu <?= ($seccion == 'pagos') ? 'activo' : '' ?>">
+                <a href="../pagos/verPagosGeneral.php" class="enlace-menu <?= ($seccion == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-wallet"></i> <span>PAGOS</span>
                     <span class="etiqueta-contador"><?= $pagos ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/eventos/gestionEventos.php" class="enlace-menu <?= ($seccion == 'eventos') ? 'activo' : '' ?>">
+                <a href="../eventos/gestionEventos.php" class="enlace-menu <?= ($seccion == 'eventos') ? 'activo' : '' ?>">
                     <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/anuncios/gestionAnuncios.php" class="enlace-menu <?= ($seccion == 'anuncios') ? 'activo' : '' ?>">
+                <a href="../anuncios/gestionAnuncios.php" class="enlace-menu <?= ($seccion == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>AVISOS Y PUSH</span>
                     <span class="etiqueta-contador"><?= $anuncios ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/mensajes/lista.php" class="enlace-menu <?= ($seccion == 'reclamaciones') ? 'activo' : '' ?>">
+                <a href="../mensajes/lista.php" class="enlace-menu <?= ($seccion == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
                     <span class="etiqueta-contador <?= ($sinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $mensajes ?></span>
                 </a>
@@ -147,30 +144,30 @@ $tfgs = contarTFGsSubidos();
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">RECURSOS</p>
 
-                <a href="<?= $rel ?>vistas/admin/aulas/verAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
+                <a href="../aulas/verAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
                     <i class="fas fa-door-open"></i> <span>AULAS</span>
                     <span class="etiqueta-contador"><?= $aulas ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/inventario/verInventario.php" class="enlace-menu <?= ($seccion == 'inventario') ? 'activo' : '' ?>">
+                <a href="../inventario/verInventario.php" class="enlace-menu <?= ($seccion == 'inventario') ? 'activo' : '' ?>">
                     <i class="fas fa-boxes"></i> <span>INVENTARIO</span>
                     <span class="etiqueta-contador"><?= $inventario ?></span>
                 </a>
 
-                <a href="<?= $rel ?>vistas/admin/inventario/gestionarPrestamos.php" class="enlace-menu <?= ($seccion == 'prestamos') ? 'activo' : '' ?>">
+                <a href="../inventario/gestionarPrestamos.php" class="enlace-menu <?= ($seccion == 'prestamos') ? 'activo' : '' ?>">
                     <i class="fas fa-hand-holding"></i> <span>PRÉSTAMOS</span>
                     <span class="etiqueta-contador"><?= $prestamos ?></span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="<?= $rel ?>vistas/admin/directores/perfil.php" class="enlace-menu <?= ($seccion == 'perfil') ? 'activo' : '' ?>">
+                <a href="../directores/perfil.php" class="enlace-menu <?= ($seccion == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
-                <a href="<?= $rel ?>vistas/admin/comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccion == 'creditos') ? 'activo' : '' ?>">
+                <a href="../comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccion == 'creditos') ? 'activo' : '' ?>">
                     <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
                 </a>
-                <a href="<?= $rel ?>controladores/logout.php" class="enlace-menu">
+                <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
                 <div class="info-sistema-footer">
@@ -191,5 +188,5 @@ $tfgs = contarTFGsSubidos();
     <main class="contenido-principal">
     <?php if (isset($_SESSION['idAdmin'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="d-none"></div>
-        <script type="module" src="<?= $rel ?>public/js/firebase/firebase-init.js"></script>
+        <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

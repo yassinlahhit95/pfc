@@ -61,10 +61,10 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div class="cuadricula-estadisticas">
-  <div class="tarjeta-estadistica">
+  <div class="tarjeta-estadistica tarjeta-estadistica-morada">
     <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
   </div>
-  <div class="tarjeta-estadistica">
+  <div class="tarjeta-estadistica tarjeta-estadistica-cian-claro">
     <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
   </div>
 </div>

@@ -34,11 +34,11 @@ if (isset($_POST['guardarCiclo'])) {
     if (empty($errores)) {
         $resultado = insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Ciclo registrado.";
+            $_SESSION['exito'] = "Ciclo registrado correctamente.";
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo registrar el ciclo.";
+        $_SESSION['error'] = "No se pudo registrar el ciclo en la base de datos.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclo'] = $_POST;

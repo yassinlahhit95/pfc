@@ -83,17 +83,17 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <?php foreach ($listaDeDatosFinalesAMostrar as $fila) { 
                             $claseDelColor = "texto-rojo";
                             if ($fila['estado_global'] == "APROBADO") { $claseDelColor = "texto-verde"; }
-                            if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
+                            if (strpos($fila['estado_global'], "PENDIENTE") !== false) { $claseDelColor = "texto-gris"; }
                         ?>
                         <tr>
                             <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>
-                            <td><?= $fila['promedio_global'] ?> (Notas)</td>
-                            <td>-</td>
+                            <td><?= $fila['media_modulos'] ?></td>
+                            <td><?= $fila['media_retos'] ?></td>
                             <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
                             <td class="<?= $claseDelColor ?> texto-negrita">
                                 <?= $fila['estado_global'] ?>
-                                <?php if($fila['tiene_suspensos'] == true && $fila['estado_global'] != "PENDIENTE") { 
-                                    echo " <small title='Tiene mÃ³dulos suspensos'>(!)</small>"; 
+                                <?php if($fila['tiene_suspensos'] == true && strpos($fila['estado_global'], "PENDIENTE") === false) { 
+                                    echo " <small title='Tiene módulos suspensos'>(!)</small>"; 
                                 } ?>
                             </td>
                         </tr>
@@ -104,8 +104,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </div>
         
         <div class="tarjeta-alerta-info">
-            <p><i class="fas fa-info-circle"></i> <strong>CÃ¡lculo Global:</strong> Se promedian todas las calificaciones de todos los mÃ³dulos (75%) y todos los retos (25%).</p>
-            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin mÃ³dulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
+            <p><i class="fas fa-info-circle"></i> <strong>Cálculo Global:</strong> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
+            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
         </div>
     </div>
 <?php } ?>

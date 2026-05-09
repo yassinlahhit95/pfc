@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($ciclos)) { ?>
+                <?php if (!empty($ciclos) && !is_numeric($ciclos)) { ?>
                     <?php foreach ($ciclos as $ciclo) { ?>
                         <tr>
                             <td class="texto-negrita"><?= $ciclo['nombreCiclo'] ?></td>

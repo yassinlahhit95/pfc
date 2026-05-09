@@ -58,11 +58,11 @@ if (isset($_POST['guardarEstudiante'])) {
     if (empty($errores)) {
         $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
         if ($resultado) {
-            $_SESSION['exito'] = "Estudiante registrado.";
+            $_SESSION['exito'] = "Estudiante registrado correctamente.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         }
-        $_SESSION['error'] = "Hubo un problema técnico al intentar guardar el estudiante en la base de datos.";
+        $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante en la base de datos.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_estudiante'] = $_POST;

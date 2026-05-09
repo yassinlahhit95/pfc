@@ -1,23 +1,23 @@
 <?php
 function sendEmail($to, $subject, $htmlContent) {
-    // needs config/secrets.php with: $brevo_api_key = 'YOUR_KEY';
+    // Busca la API KEY en config/secrets.php
     $pathSecrets = __DIR__ . '/../../config/secrets.php';
+    $apiKey = '';
+
     if (file_exists($pathSecrets)) {
         include $pathSecrets;
         $apiKey = $brevo_api_key ?? '';
-    } else {
-        $apiKey = 'TU_CLAVE_API_DEBE_IR_EN_CONFIG_SECRETS_PHP';
     }
 
-    if (empty($apiKey) || $apiKey === 'TU_CLAVE_API_DEBE_IR_EN_CONFIG_SECRETS_PHP') {
-        error_log("Error: Brevo API Key no configurada en $pathSecrets");
+    if (empty($apiKey)) {
+        error_log("Error de Correo: API Key de Brevo no encontrada en $pathSecrets. Asegúrate de haber creado el archivo y definido la variable $brevo_api_key.");
         return false;
     }
 
     $url = 'https://api.brevo.com/v3/smtp/email';
 
     $data = [
-        'sender' => ['name' => 'Sistema Académico PFC', 'email' => 'yassin.lahhit@gmail.com'],
+        'sender' => ['name' => 'CFP - AulaPro | Notas finales ', 'email' => 'notas@yassin.agency'],
         'to' => [['email' => $to]],
         'subject' => $subject,
         'htmlContent' => $htmlContent
@@ -36,7 +36,19 @@ function sendEmail($to, $subject, $htmlContent) {
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $err = curl_error($ch);
     curl_close($ch);
+
+    if ($err) {
+        error_log("Error de CURL en Brevo: " . $err);
+        $_SESSION['ultimo_error_email'] = "Error de conexión (CURL): " . $err;
+    }
+
+    if ($httpCode !== 200 && $httpCode !== 201) {
+        $msgError = "Brevo HTTP $httpCode: " . $response;
+        error_log($msgError);
+        $_SESSION['ultimo_error_email'] = $msgError;
+    }
 
     return $httpCode === 201 || $httpCode === 200;
 }

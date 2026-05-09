@@ -13,8 +13,14 @@ if (isset($_POST['guardarPago'])) {
 
     $errores = [];
 
-    if (empty($idEstudiante) || empty($tipoPago) || empty($monto) || $monto <= 0) {
-        $errores['datos'] = "Error en datos.";
+    if (empty($tipoPago)) {
+        $errores['tipoPago'] = "Debes elegir un tipo de pago.";
+    }
+
+    if (empty($monto)) {
+        $errores['monto'] = "La cantidad a cobrar es obligatoria.";
+    } else if (!is_numeric($monto) || $monto <= 0) {
+        $errores['monto'] = "La cantidad debe ser un número positivo.";
     }
 
     if ($hoy > $fechaLimite) {
@@ -26,8 +32,7 @@ if (isset($_POST['guardarPago'])) {
     if (empty($errores)) {
         $estadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
         if ($monto > ($estadoFinanciero['restante'] + 0.05)) {
-            $errores['monto'] = "Cantidad excedida.";
-            $_SESSION['error'] = "Cantidad excedida.";
+            $errores['monto'] = "La cantidad no puede superar el pendiente.";
         }
     }
 
@@ -49,13 +54,14 @@ if (isset($_POST['guardarPago'])) {
         $ok = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
 
         if ($ok) {
-            $_SESSION['exito'] = "Pago registrado.";
+            $_SESSION['exito'] = "Pago registrado correctamente.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         }
-        $_SESSION['error'] = "Error al registrar el pago.";
-    } elseif (empty($_SESSION['error'])) {
-        $_SESSION['error'] = $errores['datos'];
+        $_SESSION['error'] = "Error al registrar el pago en la base de datos.";
+    } else {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_pago'] = $_POST;
     }
 
     header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");

@@ -39,17 +39,20 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
     $existeAlgundoSuspenso = false;
 
     foreach ($listaCalificaciones as $datosDelModulo) {
-        $listaNotasTemporales = [];
-        if (is_numeric($datosDelModulo['nota_1ev']) && $datosDelModulo['nota_1ev'] > 0) { $listaNotasTemporales[] = $datosDelModulo['nota_1ev']; }
-        if (is_numeric($datosDelModulo['nota_1final']) && $datosDelModulo['nota_1final'] > 0) { $listaNotasTemporales[] = $datosDelModulo['nota_1final']; }
-        if (is_numeric($datosDelModulo['nota_2ev']) && $datosDelModulo['nota_2ev'] > 0) { $listaNotasTemporales[] = $datosDelModulo['nota_2ev']; }
-        if (is_numeric($datosDelModulo['nota_2final']) && $datosDelModulo['nota_2final'] > 0) { $listaNotasTemporales[] = $datosDelModulo['nota_2final']; }
+        $n1 = (isset($datosDelModulo['nota_1ev']) && is_numeric($datosDelModulo['nota_1ev'])) ? (float)$datosDelModulo['nota_1ev'] : null;
+        $n1f = (isset($datosDelModulo['nota_1final']) && is_numeric($datosDelModulo['nota_1final'])) ? (float)$datosDelModulo['nota_1final'] : null;
+        $n2 = (isset($datosDelModulo['nota_2ev']) && is_numeric($datosDelModulo['nota_2ev'])) ? (float)$datosDelModulo['nota_2ev'] : null;
+        $n2f = (isset($datosDelModulo['nota_2final']) && is_numeric($datosDelModulo['nota_2final'])) ? (float)$datosDelModulo['nota_2final'] : null;
 
-        $notaFinalDelModulo = 0;
-        $cantidadNotasModulo = count($listaNotasTemporales);
-        if ($cantidadNotasModulo > 0) {
-            $notaFinalDelModulo = array_sum($listaNotasTemporales) / $cantidadNotasModulo;
-        }
+        $def1 = ($n1f !== null) ? max($n1 ?? 0, $n1f) : $n1;
+        $def2 = ($n2f !== null) ? max($n2 ?? 0, $n2f) : $n2;
+
+        $sumaEv = 0;
+        $cantEv = 0;
+        if ($def1 !== null) { $sumaEv += $def1; $cantEv++; }
+        if ($def2 !== null) { $sumaEv += $def2; $cantEv++; }
+
+        $notaFinalDelModulo = ($cantEv > 0) ? $sumaEv / $cantEv : 0;
 
         $textoDelEstado = "APROBADO";
         $colorDelEstado = "green";

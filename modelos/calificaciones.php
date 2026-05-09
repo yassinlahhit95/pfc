@@ -187,43 +187,48 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         'nombreEstudiante' => strtoupper($datosEst['nombreEstudiante']),
         'nombreCiclo' => $datosEst['nombreCiclo'],
         'detalles_modulos' => [],
+        'media_modulos' => 0,
+        'media_retos' => 0,
         'promedio_global' => 0,
         'estado_global' => 'PENDIENTE',
         'tiene_suspensos' => false
     ];
 
-    $sumaFinalAcumulada = 0;
-    $contadorModulosConNota = 0;
+    $sumaModulosPonderada = 0;
+    $sumaRetosPonderada = 0;
+    $contadorModulosEvaluados = 0;
     $totalModulosCiclo = count($listaModulos);
 
     foreach ($listaModulos as $modulo) {
         $idModuloActual = $modulo['idModulo'];
 
-        // 1. Media de Módulo (Peso 75%)
+        // 1. Cálculo de Nota de Módulo (Recuperación incluida)
         $datosNotas = obtenerNotasModulo($idEstudiante, $idModuloActual);
-        $camposNotas = ['nota_1ev', 'nota_1final', 'nota_2ev', 'nota_2final'];
-        $sumaNotasModulo = 0;
-        $cantidadNotasValidas = 0;
+        
+        $n1 = (isset($datosNotas['nota_1ev']) && is_numeric($datosNotas['nota_1ev'])) ? (float)$datosNotas['nota_1ev'] : null;
+        $n1f = (isset($datosNotas['nota_1final']) && is_numeric($datosNotas['nota_1final'])) ? (float)$datosNotas['nota_1final'] : null;
+        $n2 = (isset($datosNotas['nota_2ev']) && is_numeric($datosNotas['nota_2ev'])) ? (float)$datosNotas['nota_2ev'] : null;
+        $n2f = (isset($datosNotas['nota_2final']) && is_numeric($datosNotas['nota_2final'])) ? (float)$datosNotas['nota_2final'] : null;
 
-        if ($datosNotas) {
-            foreach ($camposNotas as $campo) {
-                if (isset($datosNotas[$campo]) && is_numeric($datosNotas[$campo]) && !empty($datosNotas[$campo])) {
-                    $sumaNotasModulo += (float)$datosNotas[$campo];
-                    $cantidadNotasValidas++;
-                }
-            }
-        }
+        // Lógica de recuperación: la nota final sustituye a la de evaluación si existe y es mayor (o simplemente si existe)
+        $def1 = ($n1f !== null) ? max($n1 ?? 0, $n1f) : $n1;
+        $def2 = ($n2f !== null) ? max($n2 ?? 0, $n2f) : $n2;
 
-        $mediaNotasModulo = ($cantidadNotasValidas > 0) ? $sumaNotasModulo / $cantidadNotasValidas : 0;
+        $sumaEv = 0;
+        $cantEv = 0;
+        if ($def1 !== null) { $sumaEv += $def1; $cantEv++; }
+        if ($def2 !== null) { $sumaEv += $def2; $cantEv++; }
 
-        // 2. Media de Retos (Peso 25%)
+        $mediaNotasExamenes = ($cantEv > 0) ? $sumaEv / $cantEv : 0;
+
+        // 2. Media de Retos del Módulo
         $mapaMediasRetos = listarCalificacionesRetoPorModulo($idModuloActual);
         $mediaRetosModulo = (float)($mapaMediasRetos[$idEstudiante] ?? 0);
 
-        // 3. Cálculo de Nota Final del Módulo
-        $notaFinalModulo = ($mediaNotasModulo * 0.75) + ($mediaRetosModulo * 0.25);
+        // 3. Cálculo de Nota Final del Módulo (75% Exámenes, 25% Retos)
+        $notaFinalModulo = ($mediaNotasExamenes * 0.75) + ($mediaRetosModulo * 0.25);
 
-        if ($cantidadNotasValidas === 0) {
+        if ($cantEv === 0) {
             $estadoModulo = "Pendiente";
         } elseif ($notaFinalModulo >= 5) {
             $estadoModulo = "Aprobado";
@@ -235,21 +240,26 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $resumenEstudiante['detalles_modulos'][] = [
             'idModulo' => $idModuloActual,
             'nombreModulo' => $modulo['nombreModulo'],
-            'media_notas' => round($mediaNotasModulo, 2),
+            'media_notas' => round($mediaNotasExamenes, 2),
             'media_retos' => round($mediaRetosModulo, 2),
             'nota_final' => round($notaFinalModulo, 2),
             'estado' => $estadoModulo
         ];
 
-        if ($cantidadNotasValidas > 0) {
-            $sumaFinalAcumulada += $notaFinalModulo;
-            $contadorModulosConNota++;
+        if ($cantEv > 0) {
+            $sumaModulosPonderada += $mediaNotasExamenes;
+            $sumaRetosPonderada += $mediaRetosModulo;
+            $contadorModulosEvaluados++;
         }
     }
 
-    // El promedio global solo se calcula si se han cursado y evaluado TODOS los módulos del ciclo
-    if ($contadorModulosConNota === $totalModulosCiclo && $totalModulosCiclo > 0) {
-        $promedioGlobal = $sumaFinalAcumulada / $contadorModulosConNota;
+    if ($contadorModulosEvaluados === $totalModulosCiclo && $totalModulosCiclo > 0) {
+        $mediaGlobalModulos = $sumaModulosPonderada / $totalModulosCiclo;
+        $mediaGlobalRetos = $sumaRetosPonderada / $totalModulosCiclo;
+        $promedioGlobal = ($mediaGlobalModulos * 0.75) + ($mediaGlobalRetos * 0.25);
+
+        $resumenEstudiante['media_modulos'] = round($mediaGlobalModulos, 2);
+        $resumenEstudiante['media_retos'] = round($mediaGlobalRetos, 2);
         $resumenEstudiante['promedio_global'] = round($promedioGlobal, 2);
 
         if ($promedioGlobal >= 5 && !$resumenEstudiante['tiene_suspensos']) {
@@ -259,6 +269,8 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         }
         $resumenEstudiante['calculo_completo'] = true;
     } else {
+        $resumenEstudiante['media_modulos'] = "-";
+        $resumenEstudiante['media_retos'] = "-";
         $resumenEstudiante['promedio_global'] = "-";
         $resumenEstudiante['estado_global'] = 'PENDIENTE (Incompleto)';
         $resumenEstudiante['calculo_completo'] = false;

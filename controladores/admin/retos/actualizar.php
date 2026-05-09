@@ -27,6 +27,24 @@ if (isset($_POST['actualizarReto'])) {
     }
     if (empty($fechaFinDelReto)) {
         $listaErroresValidacion['fechaFinReto'] = "La fecha de fin es obligatoria.";
+    } else if (!empty($fechaInicioDelReto) && $fechaFinDelReto < $fechaInicioDelReto) {
+        $listaErroresValidacion['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
+    }
+
+    if (!empty($fechaInicioDelReto) && !empty($fechaFinDelReto) && !empty($horasDelReto) && is_numeric($horasDelReto) && $fechaInicioDelReto <= $fechaFinDelReto) {
+        $begin = new DateTime($fechaInicioDelReto);
+        $end = new DateTime($fechaFinDelReto);
+        $diasLaborables = 0;
+        while ($begin <= $end) {
+            if ($begin->format('N') < 6) {
+                $diasLaborables++;
+            }
+            $begin->modify('+1 day');
+        }
+        $maxHorasPermitidas = $diasLaborables * 6;
+        if ($horasDelReto > $maxHorasPermitidas) {
+            $listaErroresValidacion['horasReto'] = "Las horas estimadas superan el máximo de $maxHorasPermitidas h para el periodo seleccionado (6h/día laborable).";
+        }
     }
     if (empty($listaModulosAsociados)) {
         $listaErroresValidacion['modulosReto'] = "Debe seleccionar al menos un módulo.";
@@ -41,11 +59,11 @@ if (isset($_POST['actualizarReto'])) {
 
     if (empty($listaErroresValidacion)) {
         if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, $listaModulosAsociados)) {
-            $_SESSION['exito'] = "Reto actualizado.";
+            $_SESSION['exito'] = "Reto actualizado correctamente.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo actualizar el reto.";
+        $_SESSION['error'] = "No se pudo actualizar el reto o no hubo cambios.";
     } else {
         $_SESSION['errores'] = $listaErroresValidacion;
         

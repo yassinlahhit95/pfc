@@ -701,6 +701,26 @@ ul {
   color: #ffffff;
 }
 
+.tarjeta-estadistica-morada {
+  background: #716CB0;
+  border-color: #716CB0;
+}
+
+.tarjeta-estadistica-morada .info-estadistica h3,
+.tarjeta-estadistica-morada .info-estadistica p {
+  color: #ffffff;
+}
+
+.tarjeta-estadistica-cian-claro {
+  background: #3BC0C3;
+  border-color: #3BC0C3;
+}
+
+.tarjeta-estadistica-cian-claro .info-estadistica h3,
+.tarjeta-estadistica-cian-claro .info-estadistica p {
+  color: #ffffff;
+}
+
 .info-estadistica h3 {
   font-size: 28px;
   font-weight: 700;
@@ -1050,6 +1070,10 @@ ul {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     margin-bottom: 20px;
+}
+
+.campo-ancho-total {
+    grid-column: 1 / -1;
 }
 
 .item-seleccionable {

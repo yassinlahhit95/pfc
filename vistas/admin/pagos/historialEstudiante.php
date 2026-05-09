@@ -45,7 +45,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($pagos)) { ?>
+                <?php if (empty($pagos) || is_numeric($pagos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay registros de pagos para este estudiante</td></tr>
                 <?php } else { ?>
                     <?php foreach ($pagos as $p) { ?>

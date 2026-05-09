@@ -5,15 +5,35 @@
 .env
 config/secrets.php
 config/service-account.json
+*.key
+*.pem
+*.p12
+
+# IDEs y Editores
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # Directorios de XAMPP/Local
 /nbproject/
 /vendor/
+/node_modules/
 
 # Archivos de Sistema
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 .DS_Store
 
-# Temporales de PHP
+# Temporales de PHP y Servidor
 sess_*
 *.log
+*.tmp
+error_log
+.phpunit.result.cache
+
+# Subidas de archivos (opcional, si no quieres guardar uploads en git)
+# public/uploads/pfc/*
+# !public/uploads/pfc/.gitkeep
+

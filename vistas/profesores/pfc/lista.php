@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if ($tfgs) { ?>
+                <?php if (!empty($tfgs) && !is_numeric($tfgs)) { ?>
                     <?php foreach ($tfgs as $tfg) { 
                         $nombreLimpio = str_replace(' ', '_', $tfg['nombreEstudiante']);
                         $nombreDescarga = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . ".pdf";

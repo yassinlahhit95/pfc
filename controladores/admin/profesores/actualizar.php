@@ -46,11 +46,11 @@ if (isset($_POST['actualizarProfesor'])) {
 
     if (empty($listaErroresValidacion)) {
         if (actualizarProfesor($idProfesorActualizar, $nombreProfesorActualizar, $emailProfesorActualizar, $telefonoProfesorActualizar, $dniProfesorActualizar, $direccionProfesorActualizar, $fechaNacimientoProfesor, $fechaAltaProfesor, $ciudadProfesor, $codigoPostalProfesor, $observacionesProfesor)) {
-            $_SESSION['exito'] = "Profesor actualizado.";
+            $_SESSION['exito'] = "Profesor actualizado correctamente.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo actualizar el profesor.";
+        $_SESSION['error'] = "No se pudo actualizar el profesor o no hubo cambios.";
     } else {
         $_SESSION['errores'] = $listaErroresValidacion;
         $_SESSION['datos_profesor'] = $_POST;

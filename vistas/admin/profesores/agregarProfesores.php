@@ -38,7 +38,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+        <div class="formulario-cuadricula" style="grid-template-columns: 1fr;">
             <div class="campo-formulario">
                 <label for="nombreProfesor">Nombre Completo *</label>
                 <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
@@ -109,7 +109,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
             </div>
         </div>
 
-        <div class="cuadricula-secundaria mt-25">
+        <div class="cuadricula-secundaria mt-25" style="grid-template-columns: 1fr 1fr;">
             <div>
                 <h4 class="margen-abajo"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
                 <div class="lista-checkboxes scroll-vertical-200">

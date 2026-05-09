@@ -29,40 +29,42 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form action="../../../controladores/admin/retos/insertar.php" method="POST">
-        <div class="campo-formulario">
-            <label for="nombreReto">Nombre del Reto *</label>
-            <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
-            <?php if (isset($errores['nombreReto'])) { ?>
-                <strong class="error-campo"><?= $errores['nombreReto'] ?></strong>
-            <?php } ?>
+    <form action="../../../controladores/admin/retos/insertar.php" method="POST" id="formReto">
+        <div class="formulario-cuadricula" style="grid-template-columns: 1fr;">
+            <div class="campo-formulario">
+                <label for="nombreReto">Nombre del Reto *</label>
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
+                <?php if (isset($errores['nombreReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreReto'] ?></strong>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="horasReto">Horas Totales Estimadas *</label>
+                <input type="number" name="horasReto" id="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
+                <?php if (isset($errores['horasReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['horasReto'] ?></strong>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="fechaInicioReto">Fecha de Inicio *</label>
+                <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaInicioReto'] ?? '' ?>">
+                <?php if (isset($errores['fechaInicioReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaInicioReto'] ?></strong>
+                <?php } ?>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="fechaFinReto">Fecha de Fin *</label>
+                <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaFinReto'] ?? '' ?>">
+                <?php if (isset($errores['fechaFinReto'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaFinReto'] ?></strong>
+                <?php } ?>
+            </div>
         </div>
 
-        <div class="campo-formulario">
-            <label for="horasReto">Horas Totales Estimadas *</label>
-            <input type="number" name="horasReto" id="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
-            <?php if (isset($errores['horasReto'])) { ?>
-                <strong class="error-campo"><?= $errores['horasReto'] ?></strong>
-            <?php } ?>
-        </div>
-
-        <div class="campo-formulario">
-            <label for="fechaInicioReto">Fecha de Inicio *</label>
-            <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaInicioReto'] ?? '' ?>">
-            <?php if (isset($errores['fechaInicioReto'])) { ?>
-                <strong class="error-campo"><?= $errores['fechaInicioReto'] ?></strong>
-            <?php } ?>
-        </div>
-
-        <div class="campo-formulario">
-            <label for="fechaFinReto">Fecha de Fin *</label>
-            <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= $datos['fechaFinReto'] ?? '' ?>">
-            <?php if (isset($errores['fechaFinReto'])) { ?>
-                <strong class="error-campo"><?= $errores['fechaFinReto'] ?></strong>
-            <?php } ?>
-        </div>
-
-        <div class="campo-formulario">
+        <div class="campo-formulario mt-20">
             <label><strong>Vincular Módulos (Obligatorio seleccionar al menos uno) *</strong></label>
             <div class="tarjeta-gris-suave scroll-vertical mt-5">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
@@ -86,6 +88,37 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </form>
 </div>
+
+<script>
+document.getElementById('formReto').addEventListener('submit', function(e) {
+    const fechaInicio = new Date(document.getElementById('fechaInicioReto').value);
+    const fechaFin = new Date(document.getElementById('fechaFinReto').value);
+    const horas = parseInt(document.getElementById('horasReto').value);
+    
+    if (fechaInicio > fechaFin) {
+        e.preventDefault();
+        alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
+        return;
+    }
+
+    // Calcular días laborables (Lunes a Viernes)
+    let diasLaborables = 0;
+    let current = new Date(fechaInicio);
+    while (current <= fechaFin) {
+        const day = current.getDay();
+        if (day !== 0 && day !== 6) { // 0 es Domingo, 6 es Sábado
+            diasLaborables++;
+        }
+        current.setDate(current.getDate() + 1);
+    }
+
+    const maxHoras = diasLaborables * 6;
+    if (horas > maxHoras) {
+        e.preventDefault();
+        alert(`Las horas estimadas (${horas}) superan el máximo permitido para este rango de fechas (${maxHoras} horas, basadas en 6h/día de Lunes a Viernes).`);
+    }
+});
+</script>
 
 <?php include '../comunes/footer.php'; ?>
 
