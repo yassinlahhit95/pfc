@@ -74,9 +74,11 @@
 </head>
 <body class="landing-body">
 
-  <header class="cabecera-landing">
+  <header class="cabecera-landing" id="cabecera">
     <div class="contenedor cabecera-contenedor-landing">
-      <a href="#" class="logo-landing">AulaPro</a>
+      <a href="#" class="logo-landing">
+        <img src="public/imagenes/aulapro.jpeg" alt="AulaPro" class="logo-imagen-landing">
+      </a>
       <nav class="menu-landing" id="menu">
         <a href="#inicio" class="menu-enlace-landing">Inicio</a>
         <a href="#caracteristicas" class="menu-enlace-landing">Plataforma</a>
@@ -93,11 +95,33 @@
   <main>
     <section id="inicio" class="hero-landing animar">
       <div class="contenedor">
-        <h1 class="titulo-hero-landing">Tu centro educativo,<br><span>gestionado de verdad.</span></h1>
-        <p class="subtitulo-hero-landing">Alumnos, notas, profesores, pagos y comunicación en una sola plataforma. Sin Excel, sin papel, sin perder el tiempo.</p>
+        <div class="hero-badge">✦ Pensado para centros formativos reales</div>
+        <h1 class="titulo-hero-landing">Para de perder tiempo<br><span>en lo que no es enseñar.</span></h1>
+        <p class="subtitulo-hero-landing">AulaPro pone orden en el día a día de tu centro — notas, pagos, alumnos y comunicación — sin curvas de aprendizaje ni hojas de cálculo interminables.</p>
         <div class="hero-botones-landing">
           <a href="#planes" class="boton boton-principal-landing">Pedir una demo</a>
           <a href="#visual" class="boton boton-secundario-landing">Ver cómo funciona</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">6</span>
+            <span class="hero-stat-label">módulos</span>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">3</span>
+            <span class="hero-stat-label">roles</span>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">100%</span>
+            <span class="hero-stat-label">web</span>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">0</span>
+            <span class="hero-stat-label">instalaciones</span>
+          </div>
         </div>
       </div>
     </section>
@@ -339,6 +363,14 @@
           listaMenu.classList.toggle('activo');
         });
       }
+
+      // Navbar transparente sobre hero, sólido al scrollear
+      const cabecera = document.getElementById('cabecera');
+      function actualizarNavbar() {
+        cabecera.classList.toggle('nav-scrolled', window.scrollY > 40);
+      }
+      window.addEventListener('scroll', actualizarNavbar, { passive: true });
+      actualizarNavbar();
 
       // Scroll suave con offset para el header fijo y preselección de plan
       const alturaHeader = document.querySelector('.cabecera-landing')?.offsetHeight ?? 72;

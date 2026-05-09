@@ -280,6 +280,37 @@
     max-width: 320px;
   }
 
+  .hero-stats {
+    gap: 8px 0;
+  }
+
+  .hero-stat {
+    padding: 0 16px;
+  }
+
+  .hero-stat-num {
+    font-size: 1.5rem;
+  }
+
+  /* Menú móvil sobre hero oscuro */
+  .menu-landing {
+    background: #1e1b4b;
+    border-bottom-color: rgba(255,255,255,0.1);
+  }
+
+  .menu-landing .menu-enlace-landing {
+    color: rgba(255,255,255,0.85);
+  }
+
+  .nav-scrolled .menu-landing {
+    background: #ffffff;
+    border-bottom-color: #e5e7eb;
+  }
+
+  .nav-scrolled .menu-landing .menu-enlace-landing {
+    color: #4b5563;
+  }
+
   /* Secciones */
   .seccion {
     padding: 64px 0;
