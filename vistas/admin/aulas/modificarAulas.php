@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -35,8 +35,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Aula</h1>
-    <a href="verAulas.php" class="boton-secundario">â† Volver</a>
+    <h1>MODIFICAR AULA</h1>
+    <a href="verAulas.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

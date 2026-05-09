@@ -29,8 +29,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Pago</h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">â† Volver</a>
+    <h1>MODIFICAR PAGO</h1>
+    <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="mensual" <?= $pago['tipoPago'] == 'mensual' ? 'selected' : '' ?>>Mensual</option>
                     <option value="trimestral" <?= $pago['tipoPago'] == 'trimestral' ? 'selected' : '' ?>>Trimestral</option>
                     <option value="semestral" <?= $pago['tipoPago'] == 'semestral' ? 'selected' : '' ?>>Semestral</option>
-                    <option value="unico" <?= $pago['tipoPago'] == 'unico' ? 'selected' : '' ?>>Ãšnico</option>
+                    <option value="unico" <?= $pago['tipoPago'] == 'unico' ? 'selected' : '' ?>>Único</option>
                 </select>
             </div>
 

@@ -8,13 +8,13 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "AULAPRO | GESTIóN DE RETOS";
+$titulo_pagina = "AULAPRO | GESTIÓN DE RETOS";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Retos / Proyectos</h1>
+    <h1>RETOS / PROYECTOS</h1>
     <a href="agregarRetos.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO RETO
     </a>

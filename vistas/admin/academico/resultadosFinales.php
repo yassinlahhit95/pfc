@@ -53,7 +53,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Ã‚¿EstÃƒÂ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Está seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
@@ -70,7 +70,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Global MÃƒÂ³dulos (75%)</th>
+                        <th>Media Global Módulos (75%)</th>
                         <th>Media Global Retos (25%)</th>
                         <th>Nota Final Ciclo</th>
                         <th>Estado Final</th>
@@ -83,7 +83,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <?php foreach ($listaDeDatosFinalesAMostrar as $fila) { 
                             $claseDelColor = "texto-rojo";
                             if ($fila['estado_global'] == "APROBADO") { $claseDelColor = "texto-verde"; }
-                            if (strpos($fila['estado_global'], "PENDIENTE") !== false) { $claseDelColor = "texto-gris"; }
+                            if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
                         ?>
                         <tr>
                             <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -20,18 +20,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Ficha de Estudiante</h1>
+    <h1>FICHA DE ESTUDIANTE</h1>
     <div class="acciones-pagina">
         <a href="../../../vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-primario">
             <i class="fas fa-edit"></i> Editar Datos
         </a>
-        <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">â† Volver</a>
+        <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>InformaciÃƒÂ³n Personal</h3>
+        <h3>Información Personal</h3>
     </div>
     
     <div class="fila-detalle">
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">TelÃƒÂ©fono</div>
+        <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Ciudad / DirecciÃƒÂ³n</div>
+        <div class="etiqueta-detalle">Ciudad / Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3>SituaciÃƒÂ³n del TFG</h3>
+        <h3>Situación del TFG</h3>
     </div>
     <div class="disposicion-flexible alinear-centro espacio-entre-elementos">
         <div>

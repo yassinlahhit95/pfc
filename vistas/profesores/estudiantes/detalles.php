@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idProfesor'])) {
@@ -26,13 +26,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Ficha de Estudiante</h1>
-    <a href="lista.php" class="boton-secundario">â† Volver</a>
+    <h1>FICHA DE ESTUDIANTE</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user-graduate"></i> INFORMACIÃ“N PERSONAL</h3>
+        <h3><i class="fas fa-user-graduate"></i> INFORMACIÓN PERSONAL</h3>
     </div>
     
     <div class="fila-detalle">
@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">TelÃ©fono</div>
+        <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Ciudad / DirecciÃ³n</div>
+        <div class="etiqueta-detalle">Ciudad / Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-file-pdf"></i> SITUACIÃ“N DEL TFG</h3>
+        <h3><i class="fas fa-file-pdf"></i> SITUACIÓN DEL TFG</h3>
     </div>
     <div class="disposicion-flexible alinear-centro espacio-entre-elementos">
         <div>

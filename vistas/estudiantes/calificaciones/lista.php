@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -22,7 +22,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Mis Calificaciones</h1>
+    <h1>MIS CALIFICACIONES</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -34,18 +34,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>Calificaciones por MÃ³dulo</h3>
+        <h3>Calificaciones por Módulo</h3>
     </div>
     
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
-                    <th>MÃ³dulo</th>
-                    <th>1Âº Ev</th>
-                    <th>1Âº Final</th>
-                    <th>2Âº Ev</th>
-                    <th>2Âº Final</th>
+                    <th>Módulo</th>
+                    <th>1º Ev</th>
+                    <th>1º Final</th>
+                    <th>2º Ev</th>
+                    <th>2º Final</th>
                     <th>Estado</th>
                     <th>Observaciones</th>
                 </tr>

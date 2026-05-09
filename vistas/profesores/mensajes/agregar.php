@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -31,8 +31,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Redactar Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">â† Volver</a>
+    <h1>REDACTAR MENSAJE</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>
@@ -73,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idEstudiante">Destinatario</label>
             <select name="idEstudiante" id="idEstudiante" class="<?= isset($errores['idEstudiante']) ? 'input-error' : '' ?>">
                 <option value="">-- Seleccionar Destinatario --</option>
-                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>DirecciÃ³n (AdministraciÃ³n)</option>
+                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Dirección (Administración)</option>
                 <optgroup label="Estudiantes">
                     <?php foreach ($listaDeEstudiantes as $estudiante) {
                         $selected = ($datos['idEstudiante'] ?? '') == $estudiante['idEstudiante'] ? 'selected' : '';
@@ -99,7 +99,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo-formulario">
             <label for="descripcion">Mensaje</label>
-            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aquÃ­ tu mensaje (mÃ¡ximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
+            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errores['descripcion'])) { ?>
                 <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
             <?php } ?>

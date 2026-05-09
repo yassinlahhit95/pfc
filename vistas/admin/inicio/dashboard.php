@@ -14,6 +14,8 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
+require_once __DIR__ . "/../../../modelos/directores.php";
+
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores = contarProfesores();
 $totalRetos = intval(contarRetos());
@@ -21,6 +23,9 @@ $totalModulos = intval(contarModulos());
 $pctAprobados = obtenerPorcentajeAprobadosGlobal();
 $recaudado = obtenerTotalRecaudado();
 $totalCobros = contarPagosRealizados();
+
+$adminInfo = obtenerDirectorPorId($_SESSION['idAdmin']);
+$nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
 $porPagina = 5;
 $pagina = max(1, intval($_GET['p_anuncios'] ?? 1));
@@ -37,11 +42,11 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
   <div>
-    <h1>RESUMEN DEL CENTRO</h1>
+    <h1>BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
   </div>
 </div>
 
-<h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÃ‰MICO Y DATOS</h2>
+<h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?= $totalEstudiantes ?></h3><p>Estudiantes</p></div>
@@ -62,7 +67,7 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-morada">
-    <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> â‚¬</h3><p>Total Recaudado</p></div>
+    <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-cian-claro">
     <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
@@ -78,27 +83,26 @@ include __DIR__ . '/../comunes/nav.php';
         <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="../profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="../pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>ðŸ”” Avisos</span></a>
+        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos</span></a>
         <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
 
     <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta espacio-entre-elementos">
-        <h3>TABLÃ“N DE ANUNCIOS</h3>
-        <a href="../anuncios/gestionAnuncios.php" class="boton-secundario texto-pequeno">Gestionar</a>
+      <div class="titulo-tarjeta">
+        <h3>TABLÓN DE ANUNCIOS</h3>
       </div>
       <?php if ($listaAnuncios) { ?>
         <div class="lista-anuncios-dashboard">
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
                 <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                    <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
+                    <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></strong>
                     <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
                 </div>
                 <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncio['mensaje']) ?></p>
                 <div class="mt-5">
-                    <span class="etiqueta-dirigido-a"><?= ucfirst($anuncio['dirigidoA']) ?></span>
+                    <span class="etiqueta-dirigido-a"><?= strtoupper($anuncio['dirigidoA']) ?></span>
                 </div>
             </div>
             <?php } ?>
@@ -125,7 +129,7 @@ include __DIR__ . '/../comunes/nav.php';
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PRÃ“XIMOS EVENTOS</h3>
+        <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($eventos)) { ?>
@@ -150,9 +154,6 @@ include __DIR__ . '/../comunes/nav.php';
                 }
             } ?>
         <?php } ?>
-      </div>
-      <div class="margen-arriba">
-          <a href="../eventos/gestionEventos.php" class="boton-secundario ancho-total">GESTIONAR CALENDARIO</a>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
@@ -23,10 +23,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Agregar Ciclo</h1>
+        <h1>AGREGAR CICLO</h1>
         <p class="subtitulo-encabezado">Defina un nuevo programa formativo y asigne recursos</p>
     </div>
-    <a href="verCiclos.php" class="boton-secundario">â† Volver</a>
+    <a href="verCiclos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -64,7 +64,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label for="precioCiclo">Precio Total del Ciclo (â‚¬) *</label>
+                <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $datos['precioCiclo'] ?? '1000.00' ?>">
             </div>
         </div>

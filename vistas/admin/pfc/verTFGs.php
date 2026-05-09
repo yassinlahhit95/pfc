@@ -10,13 +10,13 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "AULAPRO | GESTIóN DE TFGS";
+$titulo_pagina = "AULAPRO | GESTIÓN DE TFGS";
 $seccion = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Trabajos Fin de Grado</h1>
+    <h1>GESTIÓN DE TRABAJOS FIN DE GRADO</h1>
 </div>
 
 <?php if ($exito) { ?>

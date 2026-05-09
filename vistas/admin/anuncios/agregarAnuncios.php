@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -20,7 +20,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 <div class="contenedor-formulario-mediano">
     <div class="encabezado-pagina">
         <h1>NUEVO ANUNCIO</h1>
-        <a href="gestionAnuncios.php" class="boton-secundario">← VOLVER</a>
+        <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 
     <?php if ($error) { ?>

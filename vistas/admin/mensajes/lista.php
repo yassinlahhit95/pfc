@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $listaDeMensajes = listarTodosLosMensajes();
 
-$titulo_pagina = "AULAPRO | GESTIóN DE MENSAJERíA";
+$titulo_pagina = "AULAPRO | GESTIÓN DE MENSAJERÍA";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -21,7 +21,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Buzón Central de Mensajes</h1>
+    <h1>BUZÓN CENTRAL DE MENSAJES</h1>
     <a href="agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO MENSAJE
     </a>

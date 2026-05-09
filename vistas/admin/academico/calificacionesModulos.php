@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | NOTAS DE MóDULOS";
+$titulo_pagina = "AULAPRO | NOTAS DE MÓDULOS";
 $seccion = 'notas_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -22,11 +22,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificaciones por Módulo</h1>
+    <h1>CALIFICACIONES POR MÓDULO</h1>
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="GET" action="calificacionesModulos.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="GET" action="calificacionesModulos.php" class="disposicion-flexible alinear-centro separacion-grande envoltura-flexible">
         <div class="campo-formulario flexible-rellenar">
             <label>1. Seleccione un Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
@@ -66,11 +66,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <thead>
                         <tr>
                             <th>Estudiante</th>
-                            <th>1Âª Ev</th>
-                            <th>1Âª Final</th>
-                            <th>2Âª Ev</th>
-                            <th>2Âª Final</th>
-                            <th>Observaciones</th>
+                            <th>1ª EV</th>
+                            <th>1ª FINAL</th>
+                            <th>2ª EV</th>
+                            <th>2ª FINAL</th>
+                            <th>OBSERVACIONES</th>
                         </tr>
                     </thead>
                     <tbody>

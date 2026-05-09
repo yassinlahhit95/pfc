@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
@@ -28,7 +28,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Mi Trabajo Fin de Grado (TFG)</h1>
+    <h1>MI TRABAJO FIN DE GRADO (TFG)</h1>
 </div>
 
 <?php if (!empty($error)) { ?>
@@ -71,7 +71,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <strong>Subido el:</strong> <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?>
                     </p>
                 <?php } else { ?>
-                    <p class="texto-atenuado">No se ha subido ningÃºn archivo todavÃ­a.</p>
+                    <p class="texto-atenuado">No se ha subido ningún archivo todavía.</p>
                 <?php } ?>
             </div>
         </div>

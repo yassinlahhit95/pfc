@@ -14,7 +14,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Inventario</h1>
+    <h1>GESTIÓN DE INVENTARIO</h1>
     <a href="agregarArticulo.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO ARTÍCULO
     </a>
@@ -34,7 +34,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>NÂº Serie</th>
+                    <th>Nº Serie</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>

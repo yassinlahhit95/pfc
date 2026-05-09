@@ -24,8 +24,8 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Profesor: <?= $profesor['nombreProfesor'] ?></h1>
-    <a href="verProfesores.php" class="boton-secundario">â† Volver</a>
+    <h1>MODIFICAR PROFESOR: <?= $profesor['nombreProfesor'] ?></h1>
+    <a href="verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">

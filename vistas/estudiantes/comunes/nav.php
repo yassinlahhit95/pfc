@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if (empty($_SESSION['idEstudiante'])) {
     header("Location: ../../login.php");
     exit;
@@ -128,14 +130,6 @@ $retos = count(listarCalificacionesRetoPorEstudiante($idEst));
             </div>
         </nav>
     </aside>
-
-    <script>
-    function toggleMenu() {
-        var sidebar = document.getElementById('barraLateral');
-        sidebar.classList.toggle('activo');
-        document.body.classList.toggle('menu-abierto');
-    }
-    </script>
 
     <main class="contenido-principal">
     <?php if (isset($_SESSION['idEstudiante'])) { ?>

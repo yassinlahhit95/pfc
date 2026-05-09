@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AulaPro - Iniciar Sesión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Lado Izquierdo - Login */
+        .login-section {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 80px;
+            background-color: #ffffff;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            gap: 12px;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .welcome-subtitle {
+            color: #6b7280;
+            margin-bottom: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.4s; }
+        .form-group:nth-child(2) { animation-delay: 0.5s; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            border-color: #4f46e5;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Lado Derecho - Promo con efectos */
+        .promo-section {
+            width: 50%;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animación de fondo gradiente */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Círculos flotantes de fondo */
+        .promo-section::before,
+        .promo-section::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .promo-section::before {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .promo-section::after {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 5s;
+        }
+
+        /* Círculos adicionales */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            animation-delay: 2s;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            top: 20%;
+            left: 30%;
+            animation-delay: 7s;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            bottom: 30%;
+            right: 20%;
+            animation-delay: 12s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -30px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+        }
+
+        .promo-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .promo-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease-out 0.3s both;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .promo-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-preview {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 1s ease-out 0.7s both, pulse 3s infinite ease-in-out 2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-preview:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 35px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .dashboard-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .footer-info {
+            position: absolute;
+            bottom: 40px;
+            left: 80px;
+            right: 80px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        /* Animaciones keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Partículas flotantes */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 30%; top: 60%; animation-delay: 2s; }
+        .particle:nth-child(3) { left: 50%; top: 40%; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 70%; top: 80%; animation-delay: 6s; }
+        .particle:nth-child(5) { left: 90%; top: 30%; animation-delay: 8s; }
+        .particle:nth-child(6) { left: 20%; top: 70%; animation-delay: 10s; }
+        .particle:nth-child(7) { left: 60%; top: 10%; animation-delay: 12s; }
+        .particle:nth-child(8) { left: 80%; top: 50%; animation-delay: 14s; }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px) scale(1.2);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-40px) translateX(-10px) scale(0.8);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translateY(-20px) translateX(15px) scale(1.1);
+                opacity: 0.5;
+            }
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 968px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .login-section {
+                width: 100%;
+                padding: 40px 30px;
+            }
+
+            .promo-section {
+                width: 100%;
+                padding: 40px 30px;
+                min-height: 500px;
+            }
+
+            .promo-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sección Login -->
+        <div class="login-section">
+            <div class="logo">
+                <div class="logo-icon">A</div>
+                <div class="logo-text">AulaPro</div>
+            </div>
+
+            <h1 class="welcome-title">Acceso al Sistema</h1>
+            <p class="welcome-subtitle">Gestión académica integral para tu centro educativo.</p>
+
+            <form method="POST" action="">
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input 
+                        type="email" 
+                        name="correo" 
+                        class="form-input" 
+                        placeholder="nombre@aulapro.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input 
+                        type="password" 
+                        name="contrasena" 
+                        class="form-input" 
+                        placeholder="••••••••"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-button">INICIAR SESIÓN</button>
+            </form>
+        </div>
+
+        <!-- Sección Promo con efectos -->
+        <div class="promo-section">
+            <!-- Partículas flotantes -->
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+
+            <!-- Formas flotantes -->
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+
+            <div class="promo-content">
+                <h2 class="promo-title">Plataforma Educativa Tri-Portal</h2>
+                <p class="promo-subtitle">Conecta estudiantes, profesores y administración en un entorno unificado y eficiente.</p>
+                
+                <div class="dashboard-preview">
+                    <img src="dashboard-preview.png" alt="Vista previa del Dashboard de AulaPro">
+                </div>
+            </div>
+
+            <div class="footer-info">
+                <span>Copyright © 2025 AulaPro - TFG</span>
+                <span>v1.0</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

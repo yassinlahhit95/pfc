@@ -30,7 +30,7 @@
         margin-left: 0 !important;
         width: 100%;
         padding: 15px;
-        padding-top: 85px; 
+        padding-top: 100px; 
     }
 
     /* Dashboard */
@@ -43,23 +43,26 @@
     }
 
     /* Barra Lateral y Logos */
-    .boton-cerrar-barra, #botonCerrarBarra {
-        display: block;
-    }
-
-    .logo-navbar-png { display: none; }
-    .logo-navbar-jpeg { display: block; }
-    
-    body.menu-abierto .logo-navbar-png { display: block; }
-    body.menu-abierto .logo-navbar-jpeg { display: none; }
-
     .barra-lateral {
       width: 70px;
       padding: 0;
+      transition: all 0.3s ease;
+      z-index: 1001;
     }
     
-    .barra-lateral .sidebar-logo-png { display: none; }
-    .barra-lateral .sidebar-logo-jpeg { display: block; }
+    .logo-navbar-png, .sidebar-logo-png { display: none; }
+    .logo-navbar-jpeg, .sidebar-logo-jpeg { display: block; }
+    
+    body.menu-abierto .logo-navbar-png,
+    .barra-lateral.activo .sidebar-logo-png { 
+        display: block !important; 
+    }
+    
+    body.menu-abierto .logo-navbar-jpeg,
+    .barra-lateral.activo .sidebar-logo-jpeg { 
+        display: none !important; 
+    }
+
     .barra-lateral .titulo-panel-sidebar { display: none; }
     .barra-lateral .enlace-menu span,
     .barra-lateral .titulo-de-seccion,
@@ -84,20 +87,56 @@
 
     .contenido-derecha,
     .contenido-principal {
-      margin-left: 70px;
+      margin-left: 70px !important;
       padding: 20px;
-    }
-
-    /* Formularios */
-    .form-fila.grid-2, .form-fila.grid-3 {
-        grid-template-columns: 1fr; /* Forzar una columna incluso en pantallas grandes */
+      padding-top: 85px;
+      transition: all 0.3s ease;
     }
 }
 
 /* --- 2. MÓVILES (< 768px) --- */
 @media (max-width: 768px) {
-    .solo-movil { display: block; }
-    .ocultar-movil { display: none; }
+    .barra-lateral {
+        left: -260px;
+        width: 260px;
+        position: fixed;
+        height: 100vh;
+    }
+
+    .barra-lateral.activo {
+        left: 0;
+    }
+
+    .barra-lateral .enlace-menu span,
+    .barra-lateral .titulo-de-seccion,
+    .barra-lateral .etiqueta-contador,
+    .barra-lateral .titulo-panel-sidebar {
+      display: block;
+    }
+    
+    .barra-lateral .sidebar-logo-png { display: block; }
+    .barra-lateral .sidebar-logo-jpeg { display: none; }
+
+    .contenido-derecha,
+    .contenido-principal {
+      margin-left: 0 !important;
+    }
+
+    body.menu-abierto {
+        overflow: hidden;
+    }
+
+    body.menu-abierto::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
 
     /* Sección About Me */
     .contenedor-about {
@@ -187,7 +226,7 @@
     .contenido-derecha,
     .contenido-principal {
         margin-left: 0 !important;
-        padding: 15px;
+        padding: 100px 15px 15px 15px;
     }
 }
 

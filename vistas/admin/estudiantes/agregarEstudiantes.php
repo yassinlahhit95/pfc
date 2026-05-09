@@ -25,8 +25,8 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Nuevo Estudiante</h1>
-    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">â† Volver</a>
+    <h1>NUEVO ESTUDIANTE</h1>
+    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if (!empty($exito)) { ?>

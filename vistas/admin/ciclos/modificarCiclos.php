@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
@@ -56,8 +56,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Ciclo: <?= $ciclo['nombreCiclo'] ?></h1>
-    <a href="verCiclos.php" class="boton-secundario">â† Volver</a>
+    <h1>MODIFICAR CICLO: <?= $ciclo['nombreCiclo'] ?></h1>
+    <a href="verCiclos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>
@@ -100,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label for="precioCiclo">Precio Total del Ciclo (â‚¬) *</label>
+                <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
             </div>
         </div>

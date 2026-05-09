@@ -23,8 +23,8 @@ $profs = obtenerProfesoresConModulosParaEstudiante($idEst);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Nuevo Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <h1>NUEVO MENSAJE</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | GESTIóN DE ANUNCIOS";
+$titulo_pagina = "AULAPRO | GESTIÓN DE ANUNCIOS";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -14,7 +14,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Anuncios del Sistema</h1>
+    <h1>ANUNCIOS DEL SISTEMA</h1>
     <a href="agregarAnuncios.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO ANUNCIO
     </a>

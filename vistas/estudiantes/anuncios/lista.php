@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,7 +20,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>TablÃ³n de Anuncios</h1>
+    <h1>TABLÓN DE ANUNCIOS</h1>
 </div>
 
 <?php if ($error) { ?>

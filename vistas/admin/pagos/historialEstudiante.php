@@ -22,8 +22,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Historial de Pagos: <?= $estudiante['nombreEstudiante'] ?></h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">â† Volver</a>
+    <h1>HISTORIAL DE PAGOS: <?= $estudiante['nombreEstudiante'] ?></h1>
+    <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
                         <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
-                        <td><?= number_format($p['monto'], 2) ?> â‚¬</td>
+                        <td><?= number_format($p['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
                     </tr>
                     <?php } ?>

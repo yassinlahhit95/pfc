@@ -11,8 +11,8 @@ unset($_SESSION['errores'], $_SESSION['datos_director']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Nuevo Director de Ciclo</h1>
-    <a href="verDirectores.php" class="boton-secundario">â† Volver</a>
+    <h1>NUEVO DIRECTOR DE CICLO</h1>
+    <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">

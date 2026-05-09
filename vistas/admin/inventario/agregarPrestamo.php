@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | NUEVO PRéSTAMO";
+$titulo_pagina = "AULAPRO | NUEVO PRÉSTAMO";
 $seccion = 'prestamos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -20,8 +20,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Registrar Nuevo Préstamo</h1>
-    <a href="gestionarPrestamos.php" class="boton-secundario">â† Volver</a>
+    <h1>REGISTRAR NUEVO PRÉSTAMO</h1>
+    <a href="gestionarPrestamos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

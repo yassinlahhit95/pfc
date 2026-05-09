@@ -22,8 +22,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Detalles del Anuncio</h1>
-    <a href="gestionAnuncios.php" class="boton-secundario">â† Volver</a>
+    <h1>DETALLES DEL ANUNCIO</h1>
+    <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Ã‚¿Eliminar definitivamente este anuncio?')">
+        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar definitivamente este anuncio?')">
             <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
             <button type="submit" class="boton-secundario color-error border-error">
                 <i class="fas fa-trash"></i> Eliminar

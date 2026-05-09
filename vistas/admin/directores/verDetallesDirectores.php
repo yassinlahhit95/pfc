@@ -17,8 +17,8 @@ if (!$director) { ?>
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Ficha del Director</h1>
-    <a href="verDirectores.php" class="boton-secundario">â† Volver</a>
+    <h1>FICHA DEL DIRECTOR</h1>
+    <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">

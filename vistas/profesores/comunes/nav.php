@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if (empty($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
     exit;
@@ -134,14 +136,6 @@ $tfgs = contarTFGsDeProfesor($idProf);
             </div>
         </nav>
     </aside>
-
-    <script>
-    function toggleMenu() {
-        var sidebar = document.getElementById('barraLateral');
-        sidebar.classList.toggle('activo');
-        document.body.classList.toggle('menu-abierto');
-    }
-    </script>
 
     <main class="contenido-principal">
     <?php if (isset($_SESSION['idProfesor'])) { ?>

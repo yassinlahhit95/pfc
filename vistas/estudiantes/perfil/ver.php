@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -22,8 +22,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <div>
-        <h1>Mi Perfil</h1>
-        <p class="subtitulo">InformaciÃ³n de tu cuenta de estudiante</p>
+        <h1>MI PERFIL</h1>
+        <p class="subtitulo">Información de tu cuenta de estudiante</p>
     </div>
     <div class="acciones-pagina">
         <a href="editar.php" class="boton-primario">
@@ -60,12 +60,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">TelÃ©fono</div>
+        <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">DNI / IdentificaciÃ³n</div>
+        <div class="etiqueta-detalle">DNI / Identificación</div>
         <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">DirecciÃ³n</div>
+        <div class="etiqueta-detalle">Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] ?></div>
     </div>
 </div>

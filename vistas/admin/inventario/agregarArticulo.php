@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "AULAPRO | AÃ‘ADIR NUEVO ARTÍCULO";
+$titulo_pagina = "AULAPRO | AÑADIR NUEVO ARTÍCULO";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -19,7 +19,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
 
 <div class="contenedor-formulario-pequeno">
     <div class="encabezado-pagina">
-        <a href="verInventario.php" class="boton-secundario">â† Volver</a>
+        <a href="verInventario.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
         <h1>NUEVO ARTÍCULO</h1>
     </div>
 
@@ -39,7 +39,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
                 </div>
 
                 <div class="campo-formulario">
-                    <label for="numeroSerie">NÃšMERO DE SERIE *</label>
+                    <label for="numeroSerie">NÚMERO DE SERIE *</label>
                     <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? '' ?>" placeholder="Ej: SN-12345678">
                     <?php if (isset($errores['numeroSerie'])) { ?>
                         <strong class="error-campo"><?= $errores['numeroSerie'] ?></strong>

@@ -23,13 +23,13 @@ $mensajeError = $_SESSION['error'] ?? '';
 $mensajeExito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "AULAPRO | GESTIÃ“N DE PAGOS";
+$titulo_pagina = "AULAPRO | GESTIÓN DE PAGOS";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>GESTIÃ“N DE PAGOS</h1>
+    <h1>GESTIÓN DE PAGOS</h1>
     <a href="agregarPagos.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO PAGO
     </a>
@@ -74,7 +74,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>TIPO</th>
                     <th>CANTIDAD</th>
                     <th>FECHA PAGO</th>
-                    <th>PRÃ“XIMO PAGO</th>
+                    <th>PRÓXIMO PAGO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -91,11 +91,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
-                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> â‚¬</td>
+                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
                             <?php if ($pagoIndividual['tipoPago'] == 'unico') { ?>
-                                <span class="texto-gris">N/A (PAGO ÃšNICO)</span>
+                                <span class="texto-gris">N/A (PAGO ÚNICO)</span>
                             <?php } else { ?>
                                 <?= date('d/m/Y', strtotime($pagoIndividual['fechaProximoPago'])) ?>
                             <?php } ?>

@@ -40,8 +40,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Redactar Nuevo Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">â† Volver</a>
+    <h1>REDACTAR NUEVO MENSAJE</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($exito) { ?>

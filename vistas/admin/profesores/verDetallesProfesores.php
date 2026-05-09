@@ -25,8 +25,8 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Ficha del Profesor</h1>
-    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">â† Volver</a>
+    <h1>FICHA DEL PROFESOR</h1>
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca margen-abajo">

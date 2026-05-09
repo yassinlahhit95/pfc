@@ -5,7 +5,7 @@ require_once __DIR__ . "/../modelos/profesores.php";
 require_once __DIR__ . "/../modelos/estudiantes.php";
 
 if (isset($_POST["enviar"])) {
-    $emailUsuarioRecibido = trim($_POST["usuario"]);
+    $emailUsuarioRecibido = strtolower(trim($_POST["usuario"]));
     $passwordUsuarioRecibida = trim($_POST["contrasena"]);
 
     $errores = [];

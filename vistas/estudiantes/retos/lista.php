@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,7 +20,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Mis Retos</h1>
+    <h1>MIS RETOS</h1>
 </div>
 
 <?php if ($error) { ?>

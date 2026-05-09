@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | ASIGNAR MóDULOS A PROFESOR";
+$titulo_pagina = "AULAPRO | ASIGNAR MÓDULOS A PROFESOR";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -32,8 +32,8 @@ foreach ($todos_los_modulos as $m) {
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Asignar Módulos: <?= $profesor['nombreProfesor'] ?></h1>
-    <a href="verProfesores.php" class="boton-secundario">â† Volver</a>
+    <h1>ASIGNAR MÓDULOS: <?= $profesor['nombreProfesor'] ?></h1>
+    <a href="verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">

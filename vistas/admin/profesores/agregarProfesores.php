@@ -32,8 +32,8 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Nuevo Profesor</h1>
-    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">â† Volver</a>
+    <h1>NUEVO PROFESOR</h1>
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">

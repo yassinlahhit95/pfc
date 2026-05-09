@@ -27,8 +27,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Detalles del Mensaje</h1>
-    <a href="../../../vistas/profesores/mensajes/lista.php" class="boton-secundario">← Volver</a>
+    <h1>DETALLES DEL MENSAJE</h1>
+    <a href="../../../vistas/profesores/mensajes/lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

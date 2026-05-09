@@ -23,8 +23,8 @@ include_once "../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Editar Mi Perfil</h1>
-    <a href="ver.php" class="boton-secundario">← Volver</a>
+    <h1>EDITAR MI PERFIL</h1>
+    <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

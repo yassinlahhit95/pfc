@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -23,8 +23,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificar Reto: <?= $retoActual['nombreReto'] ?></h1>
-    <a href="verRetos.php" class="boton-secundario">â† Volver</a>
+    <h1>CALIFICAR RETO: <?= $retoActual['nombreReto'] ?></h1>
+    <a href="verRetos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($exito) { ?>

@@ -814,13 +814,15 @@ ul {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     margin-bottom: 15px;
     transition: all 0.3s ease;
-    border: none;
+    border: 1px solid #f0f4f8;
+    border-left: 4px solid #667eea;
 }
 
 .anuncio-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(102, 126, 234, 0.15);
-    background: #fdfdff;
+    background: #f8faff;
+    border-color: #667eea;
 }
 
 .anuncio-titulo {
@@ -880,9 +882,10 @@ ul {
 
 .fila-detalle {
     display: flex;
+    flex-wrap: wrap; /* Permitir que baje si no cabe */
     align-items: center;
     padding: 10px 0;
-    border-bottom: none;
+    border-bottom: 1px solid #f7fafc; /* Añadimos un separador sutil */
 }
 
 .fila-detalle:last-child {
@@ -890,18 +893,30 @@ ul {
 }
 
 .fila-detalle .etiqueta-detalle {
-    flex: 0 0 200px; /* Ancho fijo para etiquetas para que todo se alinee */
+    flex: 0 0 200px;
     font-weight: 600;
     color: #718096;
-    font-size: 14px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .fila-detalle .valor-detalle {
     flex: 1;
+    min-width: 250px; /* Asegura que el valor tenga espacio o baje */
     color: #2d3748;
     font-size: 15px;
+    word-break: break-word; /* Evita que correos largos rompan el diseño */
+}
+
+@media (max-width: 600px) {
+    .fila-detalle .etiqueta-detalle {
+        flex: 0 0 100%;
+        margin-bottom: 4px;
+    }
+    .fila-detalle .valor-detalle {
+        min-width: 100%;
+    }
 }
 
 .fila-propia {
@@ -986,7 +1001,7 @@ ul {
 .campo-formulario select, 
 .campo-formulario textarea {
     padding: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #667EEA; /* Color solicitado */
     border-radius: 4px;
     font-size: 14px;
     background-color: #fff;
@@ -1007,15 +1022,30 @@ ul {
     padding-top: 20px;
     border-top: 1px solid #e2e8f0;
     display: flex;
-    justify-content: flex-start; /* Alineados al inicio */
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
     gap: 15px;
 }
 
 .form-acciones .boton-primario,
 .form-acciones .boton-secundario {
-    flex: none; /* No estirar botones */
-    width: auto; /* Ancho según contenido */
-    min-width: 150px; /* Un ancho mínimo razonable pero no excesivo */
+    flex: none;
+    width: auto;
+    min-width: 150px;
+}
+
+@media (max-width: 600px) {
+    .form-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-acciones .boton-primario,
+    .form-acciones .boton-secundario {
+        width: 100%;
+        min-width: unset;
+        justify-content: center;
+    }
 }
 
 .contenedor-grid-asignacion {
@@ -1615,3 +1645,30 @@ body.login-body {
 .campo-login input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
 .boton-enviar-login { background: #667eea; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 .mensaje-error-login { background: #fee; color: #c33; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; }
+
+/* --- RESPONSIVE FIXES FOR DETAILS --- */
+@media (max-width: 768px) {
+    .fila-detalle {
+        flex-wrap: wrap;
+        padding: 12px 0;
+        gap: 4px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .fila-detalle:last-child {
+        border-bottom: none;
+    }
+
+    .fila-detalle .etiqueta-detalle {
+        flex: 0 0 100%;
+        font-size: 11px;
+        margin-bottom: 2px;
+    }
+
+    .fila-detalle .valor-detalle {
+        flex: 0 0 100%;
+        font-size: 14px;
+        word-break: break-word;
+    }
+}
+

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $titulo_pagina = "AULAPRO | SOBRE EL PROYECTO";
 $seccionActual = 'creditos';
@@ -15,12 +15,12 @@ include_once __DIR__ . "/nav.php";
 
         <div class="about-contenido">
             <h2 class="about-titulo">ABOUT ME</h2>
-            <h3 class="about-subtitulo">Yassin Lahhit â€” DAW Â· CPS Ibaiondo</h3>
+            <h3 class="about-subtitulo">Yassin Lahhit — DAW · CPS Ibaiondo</h3>
             <p class="about-descripcion">
                 Soy estudiante de segundo de DAW en CPS Ibaiondo. AulaPro es mi TFG:
                 lo he montado de cero, base de datos, backend y frontend, sin frameworks externos.
                 El backend en PHP con arquitectura MVC propia, el frontend en CSS puro.
-                Me gusta que el cÃ³digo sea limpio y que las cosas funcionen sin complicarse.
+                Me gusta que el código sea limpio y que las cosas funcionen sin complicarse.
             </p>
 
             <div class="about-stack">
@@ -50,7 +50,7 @@ include_once __DIR__ . "/nav.php";
             </div>
 
             <div class="separador-huella mt-30">
-                <p class="texto-negrita mb-5">Â© <?= date('Y') ?> Yassin Lahhit</p>
+                <p class="texto-negrita mb-5">© <?= date('Y') ?> Yassin Lahhit</p>
                 <p class="texto-atenuado">Desarrollado con PHP, MySQL y Brevo API.</p>
             </div>
         </div>

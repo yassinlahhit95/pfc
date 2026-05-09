@@ -25,8 +25,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Modificar Director</h1>
-    <a href="verDirectores.php" class="boton-secundario">â† Volver</a>
+    <h1>MODIFICAR DIRECTOR</h1>
+    <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

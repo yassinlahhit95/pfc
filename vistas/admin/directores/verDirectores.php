@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | GESTIóN DE DIRECTORES";
+$titulo_pagina = "AULAPRO | GESTIÓN DE DIRECTORES";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -15,7 +15,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Directores de Ciclo</h1>
+    <h1>DIRECTORES DE CICLO</h1>
     <a href="agregarDirectores.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO DIRECTOR
     </a>

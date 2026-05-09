@@ -14,8 +14,8 @@ unset($_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Crear Nuevo Evento</h1>
-    <a href="gestionEventos.php" class="boton-secundario">â† Volver</a>
+    <h1>CREAR NUEVO EVENTO</h1>
+    <a href="gestionEventos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($error) { ?>

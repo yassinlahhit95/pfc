@@ -46,8 +46,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificaciones por Módulo</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <h1>CALIFICACIONES POR MÓDULO</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">

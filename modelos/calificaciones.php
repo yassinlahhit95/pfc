@@ -240,9 +240,9 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $resumenEstudiante['detalles_modulos'][] = [
             'idModulo' => $idModuloActual,
             'nombreModulo' => $modulo['nombreModulo'],
-            'media_notas' => round($mediaNotasExamenes, 2),
+            'media_notas' => ($cantEv > 0) ? round($mediaNotasExamenes, 2) : "-",
             'media_retos' => round($mediaRetosModulo, 2),
-            'nota_final' => round($notaFinalModulo, 2),
+            'nota_final' => ($cantEv > 0) ? round($notaFinalModulo, 2) : "-",
             'estado' => $estadoModulo
         ];
 
@@ -253,6 +253,7 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         }
     }
 
+    // El promedio global solo se calcula si TODOS los módulos están evaluados
     if ($contadorModulosEvaluados === $totalModulosCiclo && $totalModulosCiclo > 0) {
         $mediaGlobalModulos = $sumaModulosPonderada / $totalModulosCiclo;
         $mediaGlobalRetos = $sumaRetosPonderada / $totalModulosCiclo;
@@ -272,7 +273,7 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $resumenEstudiante['media_modulos'] = "-";
         $resumenEstudiante['media_retos'] = "-";
         $resumenEstudiante['promedio_global'] = "-";
-        $resumenEstudiante['estado_global'] = 'PENDIENTE (Incompleto)';
+        $resumenEstudiante['estado_global'] = 'PENDIENTE'; // Cambiado de 'Incompleto' a solo 'PENDIENTE'
         $resumenEstudiante['calculo_completo'] = false;
     }
 

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -21,7 +21,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $profeActual = obtenerProfesorPorId($_SESSION['idProfesor']);
 $nombreProfeParaVista = $profeActual['nombreProfesor'] ?? 'Profesor';
 
-// Marcar como leÃ­do automÃ¡ticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] == $_SESSION['idProfesor']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
@@ -33,13 +33,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">â† Volver</a>
+    <h1>DETALLES DEL MENSAJE</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> INFORMACIÃ“N DEL MENSAJE</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> INFORMACIÓN DEL MENSAJE</h3>
     </div>
     
     <div class="fila-detalle">
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'DirecciÃ³n') : $nombreProfeParaVista . ' (Profesor)' ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Dirección') : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
@@ -70,7 +70,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">LEÃDO / VISTO</span>
+                <span class="estado-bolita activo-verde">LEÍDO / VISTO</span>
             <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">PENDIENTE / NUEVO</span>
             <?php } ?>

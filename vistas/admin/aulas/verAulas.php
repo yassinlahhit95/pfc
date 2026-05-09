@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | GESTIóN DE AULAS";
+$titulo_pagina = "AULAPRO | GESTIÓN DE AULAS";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -14,7 +14,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Aulas del Centro</h1>
+    <h1>AULAS DEL CENTRO</h1>
     <a href="agregarAulas.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVA AULA
     </a>

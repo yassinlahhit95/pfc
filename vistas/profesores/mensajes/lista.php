@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Buzón de Mensajes</h1>
+    <h1>BUZÓN DE MENSAJES</h1>
     <a href="../../../vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> REDACTAR MENSAJE
     </a>

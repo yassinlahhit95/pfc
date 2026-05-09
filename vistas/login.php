@@ -32,7 +32,7 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
 <div class="contenedor-login">
     <div class="tarjeta-login">
         <div class="logo-login"><i class="fas fa-school"></i></div>
-        <h1 class="titulo-login">Portal Escolar</h1>
+        <h1 class="titulo-login">PORTAL ESCOLAR</h1>
         <p class="subtitulo-login">Introduce tus credenciales para acceder</p>
 
         <form action="../controladores/validacion.php" method="POST" class="formulario-login">

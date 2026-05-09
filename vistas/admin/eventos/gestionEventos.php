@@ -5,7 +5,7 @@ if (!isset($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "AULAPRO | GESTIóN DE EVENTOS";
+$titulo_pagina = "AULAPRO | GESTIÓN DE EVENTOS";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -20,7 +20,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Próximos Eventos</h1>
+    <h1>PRÓXIMOS EVENTOS</h1>
     <a href="agregarEvento.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO EVENTO
     </a>

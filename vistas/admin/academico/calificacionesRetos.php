@@ -26,7 +26,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Calificaciones por Reto</h1>
+    <h1>CALIFICACIONES POR RETO</h1>
 </div>
 
 <div class="tarjeta-blanca">
