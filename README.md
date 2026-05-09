@@ -6,37 +6,45 @@
 ## 📋 Información General
 | Característica | Detalle |
 |----------------|---------|
-| Estado | ✅ Completado (Versión 1.0) |
+| Estado | ✅ Completado (Versión 1.1) |
 | Tecnología | PHP 7.4+, MySQL, HTML5, CSS3, JavaScript |
 | Arquitectura | Modelo-Vista-Controlador (MVC) Tri-Portal |
 | Licencia | MIT |
 | Autor | Yassin Lahhit |
+| URL Live | [yassin.agency](https://yassin.agency) |
 
 ---
 
-## 📖 Descripción
-Sistema de gestión académica avanzado diseñado para centros educativos de Formación Profesional. La plataforma se divide en tres portales independientes pero interconectados para una gestión eficiente:
+## 📖 Características Principales
 
 ### 👨‍🎓 Portal Estudiantes
-- **Mi Perfil:** Gestión de datos personales.
-- **Académico:** Consulta de calificaciones por módulos.
-- **Retos:** Seguimiento de metodología basada en retos.
+- **Mi Perfil:** Gestión de datos personales con avatares.
+- **Académico:** Consulta de calificaciones por módulos (Recuperaciones incluidas).
+- **Retos:** Seguimiento de metodología basada en retos (ABP).
 - **PFC/TFG:** Sistema de subida y gestión de Proyectos Finales de Ciclo.
-- **Pagos:** Control de mensualidades y estado financiero.
-- **Mensajería:** Comunicación directa con profesores.
+- **Pagos:** Control de mensualidades y estado financiero en tiempo real.
+- **Mensajería:** Comunicación directa con el equipo docente.
 
 ### 👨‍🏫 Portal Profesores
-- **Gestión Académica:** Introducción de notas y evaluación de módulos.
-- **Evaluación de Retos:** Calificación de proyectos y competencias.
-- **Mensajería:** Buzón de entrada y envío de mensajes a estudiantes.
-- **Perfil:** Administración de datos docentes.
+- **Gestión Académica:** Introducción de notas y evaluación de módulos con lógica de re-evaluación.
+- **Evaluación de Retos:** Calificación de competencias y proyectos transversales.
+- **Mensajería:** Buzón de entrada y notificaciones a estudiantes.
 
-### 👑 Portal Administrador (Dashboard Global)
-- **Control Total:** Gestión de usuarios (Estudiantes, Profesores, Directores).
-- **Estructura:** Configuración de Ciclos, Módulos y Aulas.
-- **Inventario:** Préstamos y devoluciones de material tecnológico.
-- **Comunicación:** Publicación de anuncios globales y notificaciones Push (Firebase).
-- **Finanzas:** Supervisión de pagos de todo el centro.
+### 👑 Portal Administrador
+- **Control Global:** Gestión de usuarios (Estudiantes, Profesores, Directores).
+- **Estructura:** Configuración dinámica de Ciclos, Módulos y Aulas.
+- **Inventario:** Sistema de préstamos de hardware con trazabilidad.
+- **Anuncios:** Publicación de avisos con **Notificaciones Push (Firebase)** y **Email Automático (Brevo)**.
+- **Finanzas:** Supervisión integral de recaudación y cobros pendientes.
+
+---
+
+## 🚀 Innovaciones y Mejoras Recientes (v1.1)
+- **Login Dinámico:** Nueva interfaz de acceso con integración de video de introducción (`intro.mp4`) y diseño de alta conversión.
+- **Lógica Académica Avanzada**: Implementación de sistema de pesos (75% Módulos / 25% Retos) con soporte automático para exámenes de recuperación.
+- **Sistema de Notificaciones Dual**: Integración de **Firebase Cloud Messaging** para avisos en escritorio y **Brevo API** para notificaciones por email.
+- **Optimización Responsive 100%**: Refactorización completa de CSS para garantizar que todas las vistas de detalles y tablas funcionen perfectamente en smartphones y tablets (iOS/Android).
+- **Seguridad y Normalización**: Validación de datos con Regex, normalización de correos electrónicos (trim/lowercase) y protección de archivos sensibles.
 
 ---
 
@@ -44,62 +52,23 @@ Sistema de gestión académica avanzado diseñado para centros educativos de For
 ```
 pfc/
 ├── 📁 controladores/         # Lógica de negocio dividida por portal
-│   ├── 📁 admin/             # Operaciones administrativas
-│   ├── 📁 estudiantes/       # Acciones del alumno
-│   └── 📁 profesores/        # Gestión docente
-├── 📁 modelos/               # Capa de datos compartida (PDO/MySQLi)
-│   ├── conectar.php          # Conexión principal
-│   └── (entidades).php       # Clases de lógica de datos
+├── 📁 modelos/               # Capa de datos compartida
 ├── 📁 vistas/                # Interfaz de usuario (Templates PHP)
-│   ├── 📁 admin/             # Vistas del Dashboard Admin
-│   ├── 📁 estudiantes/       # Panel del Alumno
-│   └── 📁 profesores/        # Panel del Profesor
-├── 📁 public/                # Recursos públicos y estáticos
-│   ├── 📁 css/               # Estilos organizados (admin, responsive, notificaciones)
-│   ├── 📁 js/                # Scripts Frontend y Firebase
-│   └── 📁 uploads/           # Almacenamiento de documentos y PFCs
-├── 📁 config/                # Configuraciones de seguridad y Firebase
-└── database.sql              # Esquema completo de la Base de Datos
+├── 📁 public/                # Recursos estáticos (CSS, JS, Imágenes, Videos)
+├── 📁 config/                # Configuraciones de seguridad (Ignorado en Git)
+└── database.sql              # Esquema optimizado para servidores de hosting
 ```
 
 ---
 
-## ⚙️ Requisitos e Instalación
+## ⚙️ Instalación
 
-### Requisitos
-- **Servidor Web:** Apache 2.4+ / Nginx.
-- **PHP:** 7.4 o superior (Extensiones: `mysqli`, `curl`, `mbstring`).
-- **Base de Datos:** MySQL 5.7+ o MariaDB 10.3+.
-
-### Instalación Paso a Paso
-1. **Clonar Repositorio:**
-   ```bash
-   git clone https://github.com/yassinlahhit95/tfg.git
-   ```
-2. **Base de Datos:**
-   - Crear DB: `cuhq4y87y_pfc`.
-   - Importar `database.sql`.
-3. **Configuración:**
-   - Editar `modelos/conectar.php` con tus credenciales.
-   - En `config/`, copiar `secrets.php.example` a `secrets.php` y añadir tu API Key de Brevo (Email).
-   - Añadir `service-account.json` para Firebase en `config/`.
-
----
-
-## 🎨 Estándares de Desarrollo
-- **Botones:** Texto en MAYÚSCULAS para acciones principales.
-- **Seguridad:** Uso de `mysqli_real_escape_string()` y protección contra entradas duplicadas.
-- **UI:** Diseño responsive basado en Flexbox y CSS Grid.
-- **Mensajería:** Feedback inmediato mediante toasts y mensajes de sesión (`$_SESSION['exito']`/`error`).
-
----
-
-## 📦 Changelog Reciente
-- **V1.0 Final**:
-  - Implementación completa del sistema tri-portal.
-  - Refactorización de estilos CSS y optimización responsive.
-  - Integración de notificaciones Push con Firebase.
-  - Mejora en la validación de formularios y protección de datos.
+1. **Clonar Repositorio.**
+2. **Importar DB:** Usar `database.sql` en un servidor MySQL.
+3. **Configurar Credenciales:**
+   - `modelos/conectar.php`: Datos de acceso a la BD.
+   - `config/secrets.php`: API Key de Brevo.
+   - `config/service-account.json`: Credenciales de Firebase.
 
 ---
 

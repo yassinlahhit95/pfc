@@ -4,6 +4,7 @@
 # Credenciales y Secretos
 .env
 config/secrets.php
+config/service-account.php
 config/service-account.json
 *.key
 *.pem
@@ -33,7 +34,6 @@ sess_*
 error_log
 .phpunit.result.cache
 
-# Subidas de archivos (opcional, si no quieres guardar uploads en git)
-# public/uploads/pfc/*
-# !public/uploads/pfc/.gitkeep
-
+# Subidas de archivos
+public/uploads/pfc/*
+!public/uploads/pfc/.gitkeep
