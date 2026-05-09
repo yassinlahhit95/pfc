@@ -17,13 +17,13 @@ const messaging = getMessaging(app);
 
 export async function requestPermissionAndGetToken(userId, userRole) {
     try {
-        const swPath = new URL('../../../firebase-messaging-sw.js', import.meta.url).pathname;
+        // Rutas relativas a la raíz del servidor
+        const swPath = '/firebase-messaging-sw.js';
+        const tokenPath = '/controladores/firebase/guardar_token.php';
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            for (let reg of registrations) { await reg.unregister(); }
-
+            // Registramos el SW (si ya existe, el navegador lo gestiona)
             const registration = await navigator.serviceWorker.register(swPath);
             await navigator.serviceWorker.ready;
 
@@ -33,14 +33,13 @@ export async function requestPermissionAndGetToken(userId, userRole) {
             });
 
             if (token) {
-                const tokenPath = new URL('../../../controladores/firebase/guardar_token.php', import.meta.url).pathname;
                 const response = await fetch(tokenPath, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token, userId, userRole })
                 });
                 const result = await response.json();
-                if (result.success) console.log("Token guardado con éxito.");
+                if (result.success) console.log("Token FCM guardado con éxito.");
             }
         }
     } catch (error) {
@@ -51,20 +50,17 @@ export async function requestPermissionAndGetToken(userId, userRole) {
 onMessage(messaging, (payload) => {
     console.log("¡MENSAJE RECIBIDO DE FIREBASE!", payload);
     
-    // Intentar obtener datos de 'data' o 'notification'
     const titulo = (payload.data && payload.data.title) ? payload.data.title : (payload.notification ? payload.notification.title : "Notificación");
     const mensaje = (payload.data && payload.data.body) ? payload.data.body : (payload.notification ? payload.notification.body : "Nuevo mensaje recibido");
 
-    // Intentar mostrar notificación nativa
     if (Notification.permission === 'granted') {
-        const iconPath = new URL('../../../public/img/logoSuperAdmin.png', import.meta.url).pathname;
+        const iconPath = '/public/img/logoSuperAdmin.png';
         new Notification(titulo, {
             body: mensaje,
             icon: iconPath
         });
     }
     
-    // Mostrar en la UI personalizada
     mostrarNotificacionUI(titulo, mensaje);
 });
 

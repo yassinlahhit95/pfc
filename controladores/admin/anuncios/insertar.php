@@ -23,7 +23,22 @@ if (isset($_POST['guardarAnuncio'])) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
 
         if ($resultado) {
-            $_SESSION['exito'] = "Anuncio publicado y notificado.";
+            // NOTIFICACIONES PUSH FIREBASE
+            $tokens = [];
+            if ($dirigidoA == 'estudiantes' || $dirigidoA == 'todos') {
+                $tokens = array_merge($tokens, obtenerTokensEstudiantes());
+            }
+            if ($dirigidoA == 'profesores' || $dirigidoA == 'todos') {
+                require_once __DIR__ . "/../../../modelos/profesores.php";
+                $tokens = array_merge($tokens, obtenerTokensProfesores());
+            }
+
+            $tokens = array_unique($tokens); // Evitar duplicados
+            foreach ($tokens as $token) {
+                enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...");
+            }
+
+            $_SESSION['exito'] = "Anuncio publicado y notificado a " . count($tokens) . " dispositivos.";
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         }

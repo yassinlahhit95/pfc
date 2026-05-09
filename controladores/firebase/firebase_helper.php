@@ -72,7 +72,7 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
 
     $accessToken = obtenerAccessToken();
     if (!$accessToken) {
-        // Salimos sin error si Firebase no está configurado (evita errores en cadena)
+        error_log("FCM Error: No se pudo obtener el Access Token. Revisa service-account.json");
         return false;
     }
 
@@ -90,7 +90,7 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
             ],
             'webpush' => [
                 'notification' => [
-                    'icon' => '/pfc/public/img/logoSuperAdmin.png'
+                    'icon' => '/public/img/logoSuperAdmin.png'
                 ]
             ]
         ]
@@ -114,10 +114,17 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
 
     $resultadoEnvio = curl_exec($ch);
     $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $errCurl = curl_error($ch);
     curl_close($ch);
 
+    if ($errCurl) {
+        error_log("FCM CURL Error: " . $errCurl);
+    }
+
     if ($codigoHttp !== 200) {
-        error_log("FCM Error ($codigoHttp): " . $resultadoEnvio);
+        error_log("FCM API Error (HTTP $codigoHttp): " . $resultadoEnvio);
+    } else {
+        error_log("FCM Success: Notificación enviada correctamente al token: " . substr($token, 0, 20) . "...");
     }
 
     return $resultadoEnvio;

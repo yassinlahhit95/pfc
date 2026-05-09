@@ -15,13 +15,14 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('[SW] Mensaje recibido en segundo plano:', payload);
   
-  const notificationTitle = payload.data.title || payload.notification.title;
-  const iconPath = new URL('./public/img/logoSuperAdmin.png', self.location.href).pathname;
+  const notificationTitle = payload.data.title || payload.notification.title || "Nueva Notificación";
+  const iconPath = '/public/img/logoSuperAdmin.png';
 
   const notificationOptions = {
-    body: payload.data.body || payload.notification.body,
+    body: payload.data.body || payload.notification.body || "Tienes un nuevo mensaje.",
     icon: iconPath,
-    badge: iconPath
+    badge: iconPath,
+    data: payload.data
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);
