@@ -224,7 +224,7 @@
               <li class="plan-elemento-landing">Notas y boletines en PDF</li>
               <li class="plan-elemento-landing">Soporte por email (48h)</li>
             </ul>
-            <a href="#form-contacto" class="boton boton-secundario-landing ancho-total" data-plan="Plan Medio">Empezar con este plan</a>
+            <a href="#form-contacto" class="boton boton-secundario-landing ancho-total" data-plan="Plan Medio">Solicitar información</a>
           </div>
 
           <div class="tarjeta tarjeta-plan-landing destacado">
@@ -249,7 +249,7 @@
               <li class="plan-elemento-landing">Personalización de marca</li>
               <li class="plan-elemento-landing">Soporte prioritario (24h)</li>
             </ul>
-            <a href="#form-contacto" class="boton boton-principal-landing ancho-total" data-plan="Plan Superior">Contactar ahora</a>
+            <a href="#form-contacto" class="boton boton-principal-landing ancho-total" data-plan="Plan Superior">Solicitar información</a>
           </div>
         </div>
 
@@ -460,68 +460,6 @@
         });
       }
 
-      // Modal demo
-      const roles = {
-        admin:      { email: 'admin@aulapro.com',      pass: 'demo2024', label: 'Administrador' },
-        profesor:   { email: 'profesor@aulapro.com',   pass: 'demo2024', label: 'Profesor' },
-        estudiante: { email: 'estudiante@aulapro.com', pass: 'demo2024', label: 'Estudiante' }
-      };
-
-      const modalDemo     = document.getElementById('modal-demo');
-      const btnCerrar     = document.getElementById('btn-cerrar-modal');
-      const demoEmailEl   = document.getElementById('demo-email');
-      const demoPassEl    = document.getElementById('demo-pass');
-      const btnIrDemo     = document.getElementById('btn-ir-demo');
-      const tabs          = document.querySelectorAll('.modal-tab');
-
-      function abrirModal() {
-        modalDemo.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        actualizarRol('admin');
-      }
-
-      function cerrarModal() {
-        modalDemo.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-
-      function actualizarRol(rolKey) {
-        const rol = roles[rolKey];
-        demoEmailEl.textContent = rol.email;
-        demoPassEl.textContent  = rol.pass;
-        btnIrDemo.href          = 'vistas/login.php?u=' + encodeURIComponent(rol.email);
-        btnIrDemo.textContent   = 'Entrar como ' + rol.label;
-        tabs.forEach(t => t.classList.toggle('activo', t.dataset.rol === rolKey));
-      }
-
-      if (modalDemo) {
-        // Abrir desde botones de plan
-        document.querySelectorAll('[data-plan="Plan Medio"]').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            abrirModal();
-          });
-        });
-
-        btnCerrar.addEventListener('click', cerrarModal);
-        modalDemo.addEventListener('click', (e) => { if (e.target === modalDemo) cerrarModal(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarModal(); });
-
-        tabs.forEach(tab => {
-          tab.addEventListener('click', () => actualizarRol(tab.dataset.rol));
-        });
-
-        document.querySelectorAll('.btn-copiar').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const texto = document.getElementById(btn.dataset.campo).textContent;
-            navigator.clipboard.writeText(texto).then(() => {
-              const orig = btn.textContent;
-              btn.textContent = '✓';
-              setTimeout(() => btn.textContent = orig, 1500);
-            });
-          });
-        });
-      }
 
       // Asegurar que el video se reproduce cuando la sección es visible
       const video = document.querySelector('#visual video');
@@ -548,42 +486,5 @@
     });
   </script>
 
-  <!-- Modal demo -->
-  <div id="modal-demo" class="modal-demo-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-demo-titulo" style="display:none">
-    <div class="modal-demo-caja">
-      <button class="modal-demo-cerrar" id="btn-cerrar-modal" aria-label="Cerrar">&times;</button>
-
-      <div class="modal-demo-cabecera">
-        <div class="modal-demo-icono">🚀</div>
-        <h2 class="modal-demo-titulo" id="modal-demo-titulo">Prueba AulaPro ahora</h2>
-        <p class="modal-demo-subtitulo">Elige un rol y entra directamente. No necesitas registrarte.</p>
-      </div>
-
-      <div class="modal-demo-tabs" role="tablist">
-        <button class="modal-tab activo" data-rol="admin" role="tab">Administrador</button>
-        <button class="modal-tab" data-rol="profesor" role="tab">Profesor</button>
-        <button class="modal-tab" data-rol="estudiante" role="tab">Estudiante</button>
-      </div>
-
-      <div class="modal-demo-credenciales">
-        <div class="credencial-fila">
-          <span class="credencial-etiqueta">Email</span>
-          <span class="credencial-valor" id="demo-email">admin@aulapro.com</span>
-          <button class="btn-copiar" data-campo="demo-email" title="Copiar">⎘</button>
-        </div>
-        <div class="credencial-fila">
-          <span class="credencial-etiqueta">Contraseña</span>
-          <span class="credencial-valor" id="demo-pass">demo2024</span>
-          <button class="btn-copiar" data-campo="demo-pass" title="Copiar">⎘</button>
-        </div>
-      </div>
-
-      <a id="btn-ir-demo" href="vistas/login.php?u=admin@aulapro.com" class="boton boton-principal-landing modal-demo-boton">
-        Entrar como Administrador
-      </a>
-
-      <p class="modal-demo-aviso">Cuenta de demostración — los datos se reinician periódicamente.</p>
-    </div>
-  </div>
 </body>
 </html>
