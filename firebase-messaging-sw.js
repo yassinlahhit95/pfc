@@ -12,18 +12,10 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// Manejador en segundo plano
 messaging.onBackgroundMessage((payload) => {
-  console.log('[SW] Mensaje recibido en segundo plano:', payload);
-  
-  const notificationTitle = payload.data.title || payload.notification.title || "Nueva Notificación";
-  const iconPath = '/public/img/logoSuperAdmin.png';
-
-  const notificationOptions = {
-    body: payload.data.body || payload.notification.body || "Tienes un nuevo mensaje.",
-    icon: iconPath,
-    badge: iconPath,
-    data: payload.data
-  };
-
-  return self.registration.showNotification(notificationTitle, notificationOptions);
+  console.log('[SW] Mensaje recibido (fondo):', payload);
+  // No llamamos a self.registration.showNotification() porque el servidor 
+  // ya envía un bloque 'notification' que el navegador muestra automáticamente
+  // con la foto y el formato perfecto.
 });

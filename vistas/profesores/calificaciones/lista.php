@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -28,7 +28,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = "Calificaciones - Portal Profesores";
+$tituloDelPagina = "AULAPRO | CALIFICACIONES";
 $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -59,9 +59,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div class="campo-formulario flexible-rellenar">
-            <label for="idModulo">Filtrar por Módulo:</label>
+            <label for="idModulo">Filtrar por MÃ³dulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis Módulos --</option>
+                <option value="0">-- Todos mis MÃ³dulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
@@ -83,11 +83,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>Módulo</th>
-                    <th>1ª Ev</th>
-                    <th>1ª Final</th>
-                    <th>2ª Ev</th>
-                    <th>2ª Final</th>
+                    <th>MÃ³dulo</th>
+                    <th>1Âª Ev</th>
+                    <th>1Âª Final</th>
+                    <th>2Âª Ev</th>
+                    <th>2Âª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -119,6 +119,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 
 

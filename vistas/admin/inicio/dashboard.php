@@ -29,7 +29,7 @@ $totalPaginas = ceil($totalAnuncios / $porPagina);
 $listaAnuncios = listarAnunciosPaginados($pagina, $porPagina);
 
 $eventos = listarEventosProximos();
-$titulo_pagina = "PANEL DE CONTROL - ADMIN";
+$titulo_pagina = "AULAPRO | PANEL DE CONTROL";
 $seccion = 'inicio';
 
 include __DIR__ . '/../comunes/nav.php';
@@ -41,7 +41,7 @@ include __DIR__ . '/../comunes/nav.php';
   </div>
 </div>
 
-<h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
+<h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÃ‰MICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?= $totalEstudiantes ?></h3><p>Estudiantes</p></div>
@@ -62,7 +62,7 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-morada">
-    <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
+    <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> â‚¬</h3><p>Total Recaudado</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-cian-claro">
     <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
@@ -78,14 +78,14 @@ include __DIR__ . '/../comunes/nav.php';
         <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="../profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="../pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos</span></a>
+        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>ðŸ”” Avisos</span></a>
         <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta espacio-entre-elementos">
-        <h3>TABLÓN DE ANUNCIOS</h3>
+        <h3>TABLÃ“N DE ANUNCIOS</h3>
         <a href="../anuncios/gestionAnuncios.php" class="boton-secundario texto-pequeno">Gestionar</a>
       </div>
       <?php if ($listaAnuncios) { ?>
@@ -125,7 +125,7 @@ include __DIR__ . '/../comunes/nav.php';
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PRÓXIMOS EVENTOS</h3>
+        <h3>PRÃ“XIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($eventos)) { ?>
@@ -159,3 +159,4 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+

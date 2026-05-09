@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -14,7 +14,7 @@ if (!$estudiante) {
     exit;
 }
 
-$titulo_pagina = "Detalle del Estudiante - Admin";
+$titulo_pagina = "AULAPRO | DETALLE DEL ESTUDIANTE";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -25,13 +25,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="../../../vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-primario">
             <i class="fas fa-edit"></i> Editar Datos
         </a>
-        <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">← Volver</a>
+        <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">â† Volver</a>
     </div>
 </div>
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>InformaciÃ³n Personal</h3>
+        <h3>InformaciÃƒÂ³n Personal</h3>
     </div>
     
     <div class="fila-detalle">
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">TelÃ©fono</div>
+        <div class="etiqueta-detalle">TelÃƒÂ©fono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Ciudad / DirecciÃ³n</div>
+        <div class="etiqueta-detalle">Ciudad / DirecciÃƒÂ³n</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3>SituaciÃ³n del TFG</h3>
+        <h3>SituaciÃƒÂ³n del TFG</h3>
     </div>
     <div class="disposicion-flexible alinear-centro espacio-entre-elementos">
         <div>
@@ -97,6 +97,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE ESTUDIANTES - ADMIN";
+$titulo_pagina = "AULAPRO | LISTADO DE ESTUDIANTES";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -107,6 +107,7 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

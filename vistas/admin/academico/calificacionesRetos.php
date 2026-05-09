@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Notas de Retos - Admin";
+$titulo_pagina = "AULAPRO | NOTAS DE RETOS";
 $seccion = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 

@@ -8,7 +8,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Gestión de Retos - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE RETOS";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -77,6 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

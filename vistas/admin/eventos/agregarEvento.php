@@ -5,7 +5,7 @@ if (!isset($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "Agregar Evento - Admin";
+$titulo_pagina = "AULAPRO | AGREGAR EVENTO";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -15,7 +15,7 @@ unset($_SESSION['error']);
 
 <div class="encabezado-pagina">
     <h1>Crear Nuevo Evento</h1>
-    <a href="gestionEventos.php" class="boton-secundario">← Volver</a>
+    <a href="gestionEventos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -61,4 +61,5 @@ unset($_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

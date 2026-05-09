@@ -5,7 +5,7 @@ if (!isset($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "Gestión de Eventos - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE EVENTOS";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -84,4 +84,5 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

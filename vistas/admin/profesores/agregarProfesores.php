@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Agregar Profesor - Admin";
+$titulo_pagina = "AULAPRO | AGREGAR PROFESOR";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -33,7 +33,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
 <div class="encabezado-pagina">
     <h1>Nuevo Profesor</h1>
-    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">← Volver</a>
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -198,3 +198,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
+

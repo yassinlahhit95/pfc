@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Profesor - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR PROFESOR";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -25,7 +25,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
 <div class="encabezado-pagina">
     <h1>Modificar Profesor: <?= $profesor['nombreProfesor'] ?></h1>
-    <a href="verProfesores.php" class="boton-secundario">← Volver</a>
+    <a href="verProfesores.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -118,6 +118,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

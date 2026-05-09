@@ -24,14 +24,14 @@ if (!empty($datos)) {
     $modulo = array_merge($modulo, $datos);
 }
 
-$titulo_pagina = "Modificar Módulo - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR MóDULO";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Módulo: <?= $modulo['nombreModulo'] ?></h1>
-    <a href="verModulos.php" class="boton-secundario">← Volver</a>
+    <a href="verModulos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -84,6 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

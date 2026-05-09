@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Inventario del Centro - Admin";
+$titulo_pagina = "AULAPRO | INVENTARIO DEL CENTRO";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -34,7 +34,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Nº Serie</th>
+                    <th>NÂº Serie</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -78,6 +78,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

@@ -22,14 +22,14 @@ if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emiso
     $mensaje['leido'] = 1;
 }
 
-$titulo_pagina = "Detalle del Mensaje - Admin";
+$titulo_pagina = "AULAPRO | DETALLE DEL MENSAJE";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -90,6 +90,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

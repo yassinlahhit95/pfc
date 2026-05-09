@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $listaDeMensajes = listarTodosLosMensajes();
 
-$titulo_pagina = "Gestión de Mensajería - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE MENSAJERíA";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -90,6 +90,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

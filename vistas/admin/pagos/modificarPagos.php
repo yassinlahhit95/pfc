@@ -23,14 +23,14 @@ $errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_pago']);
 
-$titulo_pagina = "Modificar Pago - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR PAGO";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Pago</h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
+    <a href="verPagosGeneral.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="mensual" <?= $pago['tipoPago'] == 'mensual' ? 'selected' : '' ?>>Mensual</option>
                     <option value="trimestral" <?= $pago['tipoPago'] == 'trimestral' ? 'selected' : '' ?>>Trimestral</option>
                     <option value="semestral" <?= $pago['tipoPago'] == 'semestral' ? 'selected' : '' ?>>Semestral</option>
-                    <option value="unico" <?= $pago['tipoPago'] == 'unico' ? 'selected' : '' ?>>Único</option>
+                    <option value="unico" <?= $pago['tipoPago'] == 'unico' ? 'selected' : '' ?>>Ãšnico</option>
                 </select>
             </div>
 
@@ -101,6 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

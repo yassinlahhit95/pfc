@@ -17,13 +17,18 @@ const messaging = getMessaging(app);
 
 export async function requestPermissionAndGetToken(userId, userRole) {
     try {
-        // Rutas relativas a la raíz del servidor
         const swPath = '/firebase-messaging-sw.js';
         const tokenPath = '/controladores/firebase/guardar_token.php';
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            // Registramos el SW (si ya existe, el navegador lo gestiona)
+            // FORZAR LIMPIEZA: Desregistramos cualquier SW antiguo para evitar duplicados
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (let reg of regs) {
+                await reg.unregister();
+            }
+
+            // Registramos el nuevo SW limpio
             const registration = await navigator.serviceWorker.register(swPath);
             await navigator.serviceWorker.ready;
 
@@ -53,14 +58,8 @@ onMessage(messaging, (payload) => {
     const titulo = (payload.data && payload.data.title) ? payload.data.title : (payload.notification ? payload.notification.title : "Notificación");
     const mensaje = (payload.data && payload.data.body) ? payload.data.body : (payload.notification ? payload.notification.body : "Nuevo mensaje recibido");
 
-    if (Notification.permission === 'granted') {
-        const iconPath = '/public/img/logoSuperAdmin.png';
-        new Notification(titulo, {
-            body: mensaje,
-            icon: iconPath
-        });
-    }
-    
+    // Mostramos SOLO la UI personalizada cuando el usuario está navegando
+    // Esto evita que salga el aviso de Windows + el aviso azul de la web
     mostrarNotificacionUI(titulo, mensaje);
 });
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "PUBLICAR NUEVO ANUNCIO - ADMIN";
+$titulo_pagina = "AULAPRO | PUBLICAR NUEVO ANUNCIO";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -19,8 +19,8 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 
 <div class="contenedor-formulario-mediano">
     <div class="encabezado-pagina">
-        <a href="gestionAnuncios.php" class="boton-secundario">← Volver</a>
         <h1>NUEVO ANUNCIO</h1>
+        <a href="gestionAnuncios.php" class="boton-secundario">← VOLVER</a>
     </div>
 
     <?php if ($error) { ?>
@@ -60,9 +60,6 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
                 </button>
                 <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                     <i class="fas fa-eraser"></i> LIMPIAR
-                </button>
-                <button type="button" class="boton-secundario" onclick="window.location.href = 'gestionAnuncios.php';">
-                    <i class="fas fa-times"></i> CANCELAR
                 </button>
             </div>
         </form>

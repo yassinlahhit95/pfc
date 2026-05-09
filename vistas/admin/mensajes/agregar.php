@@ -34,14 +34,14 @@ $datos_form = $_SESSION['datos_mensaje'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_mensaje']);
 
-$titulo_pagina = "Redactar Mensaje Oficial - Admin";
+$titulo_pagina = "AULAPRO | REDACTAR MENSAJE OFICIAL";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Redactar Nuevo Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -146,3 +146,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

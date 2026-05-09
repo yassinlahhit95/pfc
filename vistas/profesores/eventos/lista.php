@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
@@ -13,13 +13,13 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = "Calendario de Eventos - Portal Profesores";
+$tituloDelPagina = "AULAPRO | CALENDARIO DE EVENTOS";
 $seccionActual = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Próximos Eventos del Centro</h1>
+    <h1>PrÃ³ximos Eventos del Centro</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Evento</th>
-                    <th>Ubicación</th>
+                    <th>UbicaciÃ³n</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +62,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Aulas - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE AULAS";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -68,6 +68,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

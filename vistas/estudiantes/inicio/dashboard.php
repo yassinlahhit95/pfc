@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -31,13 +31,13 @@ $listaRetos = obtenerRetosPorCiclo($idCiclo);
 $cantidadPagos = contarPagosEstudiante($idEstudiante);
 $listaMensajes = listarMensajesDeEstudiante($idEstudiante);
 
-$tituloDelPagina = "Panel de Control - Estudiante";
+$tituloDelPagina = "AULAPRO | PANEL DE CONTROL";
 $seccionActual = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>¡HOLA, <?= strtoupper($estudianteActual['nombreEstudiante']) ?>!</h1>
+    <h1>Â¡HOLA, <?= strtoupper($estudianteActual['nombreEstudiante']) ?>!</h1>
     <p class="texto-atenuado"><?= strtoupper($estudianteActual['nombreCiclo']) ?></p>
 </div>
 
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="disposicion-flexible envoltura-flexible separacion-grande margen-abajo">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul flexible-rellenar">
-        <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
+        <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>MÃ³dulos</p></div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-verde flexible-rellenar">
         <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>TABLÓN DE ANUNCIOS</h3>
+        <h3>TABLÃ“N DE ANUNCIOS</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">
@@ -101,11 +101,11 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>PRÓXIMOS EVENTOS</h3>
+        <h3>PRÃ“XIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventosProximos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
+            <p class="texto-atenuado">No hay eventos prÃ³ximos.</p>
         <?php } else { ?>
             <?php
             $cest = 0;
@@ -133,3 +133,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+

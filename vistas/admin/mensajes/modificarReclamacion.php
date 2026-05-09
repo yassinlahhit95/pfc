@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Reclamación - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR RECLAMACIóN";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -26,7 +26,7 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
 
 <div class="encabezado-pagina">
     <h1>Modificar Reclamación</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -77,6 +77,7 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

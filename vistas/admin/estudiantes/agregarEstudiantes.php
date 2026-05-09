@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$titulo_pagina = "Nuevo Estudiante - Admin";
+$titulo_pagina = "AULAPRO | NUEVO ESTUDIANTE";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -26,7 +26,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
 
 <div class="encabezado-pagina">
     <h1>Nuevo Estudiante</h1>
-    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">← Volver</a>
+    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if (!empty($exito)) { ?>
@@ -130,6 +130,7 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 
 

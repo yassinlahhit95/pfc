@@ -10,14 +10,14 @@ $datos = $_SESSION['datos_modulo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_modulo']);
 
-$titulo_pagina = "Registrar Módulo - Admin";
+$titulo_pagina = "AULAPRO | REGISTRAR MóDULO";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Módulo</h1>
-    <a href="verModulos.php" class="boton-secundario">← Volver</a>
+    <a href="verModulos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="form-acciones">
             <button type="submit" name="guardarModulo" class="boton-primario">
-                <i class="fas fa-save"></i> REGISTRAR MÓDULO
+                <i class="fas fa-save"></i> REGISTRAR MÃ“DULO
             </button>
             <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
         </div>
@@ -68,6 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "GESTIÓN DE MÓDULOS - ADMIN";
+$titulo_pagina = "AULAPRO | MÓDULOS PROFESIONALES";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -124,6 +124,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

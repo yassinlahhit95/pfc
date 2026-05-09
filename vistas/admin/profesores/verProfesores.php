@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "GESTIÃ“N DE PROFESORES - ADMIN";
+$titulo_pagina = "AULAPRO | PROFESORES DEL CENTRO";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -41,7 +41,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE COMPLETO</th>
-                    <th>CORREO ELECTRÃ“NICO</th>
+                    <th>CORREO ELECTRÓNICO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -63,14 +63,14 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                     <i class="fas fa-search"></i>
                                 </a>
                                 <a href="../../../vistas/admin/profesores/asignarModulos.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
-                                   class="btn-accion btn-ver" title="Asignar MÃ³dulos especÃ­ficos">
+                                   class="btn-accion btn-ver" title="Asignar Módulos específicos">
                                     <i class="fas fa-book"></i>
                                 </a>
                                 <a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
                                    class="btn-accion btn-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿EstÃ¡s seguro de eliminar a este profesor?')">
+                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
                                     <input type="hidden" name="idProfesor" value="<?= $profesorIndividual['idProfesor'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Eliminar del sistema">
                                         <i class="fas fa-trash"></i>
@@ -87,6 +87,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

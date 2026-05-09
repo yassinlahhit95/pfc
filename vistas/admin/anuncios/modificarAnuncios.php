@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Anuncio - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR ANUNCIO";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -26,7 +26,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 
 <div class="encabezado-pagina">
     <h1>Modificar Anuncio</h1>
-    <a href="gestionAnuncios.php" class="boton-secundario">← Volver</a>
+    <a href="gestionAnuncios.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -65,6 +65,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

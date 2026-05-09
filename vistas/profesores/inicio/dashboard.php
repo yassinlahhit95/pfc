@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -34,7 +34,7 @@ foreach ($listaMensajes as $mensaje) {
     }
 }
 
-$tituloDelPagina = "Panel de Control - Profesor";
+$tituloDelPagina = "AULAPRO | PANEL DE CONTROL";
 $seccionActual = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -58,7 +58,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="info-estadistica"><h3><?= count($listaEstudiantes) ?></h3><p>Alumnos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
+    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>MÃ³dulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
     <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
@@ -72,7 +72,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
 
     <div class="tarjeta-blanca">
-      <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
+      <div class="titulo-tarjeta"><h3>Acciones RÃ¡pidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="../calificaciones/lista.php" class="accion-rapida"><span>Poner Notas</span></a>
         <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
@@ -104,7 +104,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>Últimos Avisos</h3>
+        <h3>Ãšltimos Avisos</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div>
@@ -131,11 +131,11 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
-        <h3>Próximos Eventos</h3>
+        <h3>PrÃ³ximos Eventos</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
+            <p class="texto-atenuado">No hay eventos prÃ³ximos.</p>
         <?php } else { ?>
             <?php
             $ce = 0;
@@ -162,3 +162,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+

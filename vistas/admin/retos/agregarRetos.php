@@ -11,14 +11,14 @@ $exito = $_SESSION['exito'] ?? '';
 
 unset($_SESSION['errores'], $_SESSION['datos_reto'], $_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Nuevo Reto - Admin";
+$titulo_pagina = "AULAPRO | NUEVO RETO";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Crear Nuevo Reto</h1>
-    <a href="verRetos.php" class="boton-secundario">← Volver</a>
+    <a href="verRetos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -121,6 +121,7 @@ document.getElementById('formReto').addEventListener('submit', function(e) {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

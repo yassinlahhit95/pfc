@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -17,14 +17,14 @@ $exito = $_SESSION['exito'] ?? '';
 $error = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
 
-$titulo_pagina = "Calificar Reto - Admin";
+$titulo_pagina = "AULAPRO | CALIFICAR RETO";
 $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Calificar Reto: <?= $retoActual['nombreReto'] ?></h1>
-    <a href="verRetos.php" class="boton-secundario">← Volver</a>
+    <a href="verRetos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -82,6 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

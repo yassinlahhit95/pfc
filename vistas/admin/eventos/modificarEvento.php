@@ -15,14 +15,14 @@ if (!$evento) {
     exit;
 }
 
-$titulo_pagina = "Modificar Evento - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR EVENTO";
 $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Evento</h1>
-    <a href="gestionEventos.php" class="boton-secundario">← Volver</a>
+    <a href="gestionEventos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -66,4 +66,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

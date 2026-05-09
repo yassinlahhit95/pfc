@@ -30,14 +30,14 @@ $errores = $_SESSION['errores'] ?? [];
 $datos_pago = $_SESSION['datos_pago'] ?? [];
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_pago']);
 
-$titulo_pagina = "Registrar Pago - Admin";
+$titulo_pagina = "AULAPRO | REGISTRAR PAGO";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Registrar Nuevo Pago</h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
+    <a href="verPagosGeneral.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -90,15 +90,15 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="formulario-cuadricula">
         <div class="campo-formulario">
             <label>Precio del Ciclo</label>
-            <p><strong><?= number_format($infoFinanciera['precioCiclo'], 2) ?> €</strong></p>
+            <p><strong><?= number_format($infoFinanciera['precioCiclo'], 2) ?> â‚¬</strong></p>
         </div>
         <div class="campo-formulario">
             <label>Ya Pagado</label>
-            <p><?= number_format($infoFinanciera['totalPagado'], 2) ?> €</p>
+            <p><?= number_format($infoFinanciera['totalPagado'], 2) ?> â‚¬</p>
         </div>
         <div class="campo-formulario">
             <label>Pendiente</label>
-            <p class="color-error texto-negrita"><?= number_format($infoFinanciera['restante'], 2) ?> €</p>
+            <p class="color-error texto-negrita"><?= number_format($infoFinanciera['restante'], 2) ?> â‚¬</p>
         </div>
     </div>
 
@@ -120,7 +120,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="mensual" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'mensual') ? 'selected' : '' ?>>Mensual (10% del total)</option>
                     <option value="trimestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'trimestral') ? 'selected' : '' ?>>Trimestral (25% del total)</option>
                     <option value="semestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'semestral') ? 'selected' : '' ?>>Semestral (50% del total)</option>
-                    <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>     
+                    <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> â‚¬)</option>     
                 </select>
                 <?php if (isset($errores['tipoPago'])) { ?>
                     <strong class="error-campo"><?= $errores['tipoPago'] ?></strong>
@@ -128,9 +128,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label for="montoInput">Cantidad a Cobrar (€) *</label>
+                <label for="montoInput">Cantidad a Cobrar (â‚¬) *</label>
                 <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= $datos_pago['monto'] ?? '' ?>">
-                <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</small>
+                <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> â‚¬</small>
                 <?php if (isset($errores['monto'])) { ?>
                     <strong class="error-campo"><?= $errores['monto'] ?></strong>
                 <?php } ?>
@@ -170,6 +170,7 @@ if (document.getElementById('tipoPago') && document.getElementById('tipoPago').v
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

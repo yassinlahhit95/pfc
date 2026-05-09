@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
@@ -50,14 +50,14 @@ $errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
 
-$titulo_pagina = "Modificar Ciclo - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR CICLO";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Ciclo: <?= $ciclo['nombreCiclo'] ?></h1>
-    <a href="verCiclos.php" class="boton-secundario">← Volver</a>
+    <a href="verCiclos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -100,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
+                <label for="precioCiclo">Precio Total del Ciclo (â‚¬) *</label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
             </div>
         </div>
@@ -145,6 +145,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

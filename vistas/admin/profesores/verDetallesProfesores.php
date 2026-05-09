@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Detalles Profesor - Admin";
+$titulo_pagina = "AULAPRO | DETALLES PROFESOR";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -26,7 +26,7 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 
 <div class="encabezado-pagina">
     <h1>Ficha del Profesor</h1>
-    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">← Volver</a>
+    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca margen-abajo">
@@ -127,6 +127,7 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

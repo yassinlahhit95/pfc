@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Ciclos - Admin";
+$titulo_pagina = "AULAPRO | CICLOS FORMATIVOS";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -14,7 +14,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Ciclos Formativos</h1>
+    <h1>CICLOS FORMATIVOS</h1>
     <a href="agregarCiclos.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO CICLO
     </a>
@@ -34,9 +34,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Nivel</th>
-                    <th>Acciones</th>
+                    <th>NOMBRE DEL CICLO</th>
+                    <th>NIVEL</th>
+                    <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,6 +70,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

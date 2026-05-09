@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -10,7 +10,7 @@ if (!isset($_SESSION['idEstudiante'])) {
     exit;
 }
 
-$tituloDelPagina = "Mis Notas de Retos - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | MIS NOTAS DE RETOS";
 $seccionActual = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -45,7 +45,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
             <tbody>
                 <?php if (empty($mis_notas_retos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">Aún no tienes calificaciones registradas en retos.</td>
+                        <td colspan="4" class="sin-datos">AÃºn no tienes calificaciones registradas en retos.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($mis_notas_retos as $nota) { ?>
@@ -66,10 +66,11 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 
 <div class="margen-arriba tarjeta-gris-suave">
     <p class="subtitulo">Consulta tus notas obtenidas en los retos y proyectos</p>
-    <p>Estas notas son finales y contribuyen al 25% de la calificación global del módulo asociado.</p>
+    <p>Estas notas son finales y contribuyen al 25% de la calificaciÃ³n global del mÃ³dulo asociado.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

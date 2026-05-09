@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -14,7 +14,7 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 
 $retos = listarRetos();
 
-$tituloDelPagina = "Mis Retos - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | MIS RETOS";
 $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -68,6 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

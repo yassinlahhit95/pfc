@@ -16,14 +16,14 @@ if (!$articulo) {
     exit;
 }
 
-$titulo_pagina = "Modificar Artículo - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR ARTíCULO";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Artículo: <?= $articulo['nombreArticulo'] ?></h1>
-    <a href="verInventario.php" class="boton-secundario">← Volver</a>
+    <a href="verInventario.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -52,6 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

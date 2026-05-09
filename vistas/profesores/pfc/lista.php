@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -15,13 +15,13 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 $idProfesor = $_SESSION['idProfesor'];
 $tfgs = listarTFGsPorProfesor($idProfesor);
 
-$tituloDelPagina = "Gestión de TFGs - Portal Profesores";
+$tituloDelPagina = "AULAPRO | GESTIÃ³N DE TFGS";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de TFGs Entregados</h1>
+    <h1>GestiÃ³n de TFGs Entregados</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td>
                                 <div class="botones-accion">
                                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>" title="Descargar"><i class="fas fa-download"></i></a>
-                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" class="display-inline">
+                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de que desea eliminar este archivo?');" class="display-inline">
                                         <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
                                         <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
                                             <i class="fas fa-trash"></i>
@@ -67,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavía.</td>
+                        <td colspan="4" class="sin-datos">No hay TFGs subidos todavÃ­a.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -76,6 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 
 

@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Anuncios - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE ANUNCIOS";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -76,6 +76,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

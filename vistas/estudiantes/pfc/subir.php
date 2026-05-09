@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,7 +21,7 @@ $nombreLimpio = str_replace(' ', '_', $estudianteActual['nombreEstudiante']);
 $timestampDescarga = date('d-m-Y_H-i-s');
 $nombreDescarga = "TFG_" . $nombreLimpio . "_" . $timestampDescarga . ".pdf";
 
-$tituloDelPagina = "Mi TFG - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -39,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3>ESTADO DE LA ENTREGA Y GESTIÓN</h3>
+        <h3>ESTADO DE LA ENTREGA Y GESTIÃ“N</h3>
     </div>
 
     <div class="fila-detalle">
@@ -69,7 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario" download="<?= $nombreDescarga ?>">
                         <i class="fas fa-download"></i> DESCARGAR
                     </a>
-                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
+                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡s seguro de eliminar el archivo entregado?')">
                         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
                         <button type="submit" name="borrarTFG" class="boton-secundario color-error">
                             <i class="fas fa-trash-alt"></i> ELIMINAR
@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } ?>
 
     <div class="titulo-tarjeta mt-30">
-        <h3>SUBIR DOCUMENTACIÓN</h3>
+        <h3>SUBIR DOCUMENTACIÃ“N</h3>
         <p class="subtitulo">Formatos aceptados: PDF, Word (.doc, .docx)</p>
     </div>
 
@@ -108,4 +108,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

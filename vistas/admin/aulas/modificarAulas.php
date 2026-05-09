@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -29,14 +29,14 @@ $errs = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_aulas']);
 
-$titulo_pagina = "Modificar Aula - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR AULA";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Aula</h1>
-    <a href="verAulas.php" class="boton-secundario">← Volver</a>
+    <a href="verAulas.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -67,4 +67,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

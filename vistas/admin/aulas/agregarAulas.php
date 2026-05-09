@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "AÑADIR NUEVA AULA - ADMIN";
+$titulo_pagina = "AULAPRO | AÃ‘ADIR NUEVA AULA";
 $seccion = 'aulas';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -19,7 +19,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
 
 <div class="contenedor-formulario-pequeno">
     <div class="encabezado-pagina">
-        <a href="verAulas.php" class="boton-secundario">← Volver</a>
+        <a href="verAulas.php" class="boton-secundario">â† Volver</a>
         <h1>NUEVA AULA</h1>
     </div>
 
@@ -50,4 +50,5 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_aulas']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 

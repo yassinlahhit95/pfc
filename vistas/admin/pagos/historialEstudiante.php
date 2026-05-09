@@ -16,14 +16,14 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Historial de Pagos - Admin";
+$titulo_pagina = "AULAPRO | HISTORIAL DE PAGOS";
 $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Historial de Pagos: <?= $estudiante['nombreEstudiante'] ?></h1>
-    <a href="verPagosGeneral.php" class="boton-secundario">← Volver</a>
+    <a href="verPagosGeneral.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($exito) { ?>
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
                         <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
-                        <td><?= number_format($p['monto'], 2) ?> €</td>
+                        <td><?= number_format($p['monto'], 2) ?> â‚¬</td>
                         <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
                     </tr>
                     <?php } ?>
@@ -63,6 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

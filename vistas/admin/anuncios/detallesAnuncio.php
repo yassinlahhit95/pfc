@@ -16,14 +16,14 @@ if (!$anuncio) {
     exit;
 }
 
-$titulo_pagina = "Detalles del Anuncio - Admin";
+$titulo_pagina = "AULAPRO | DETALLES DEL ANUNCIO";
 $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Anuncio</h1>
-    <a href="gestionAnuncios.php" class="boton-secundario">← Volver</a>
+    <a href="gestionAnuncios.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Â¿Eliminar definitivamente este anuncio?')">
+        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('Ã‚¿Eliminar definitivamente este anuncio?')">
             <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
             <button type="submit" class="boton-secundario color-error border-error">
                 <i class="fas fa-trash"></i> Eliminar
@@ -70,6 +70,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

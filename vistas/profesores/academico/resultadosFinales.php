@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -115,7 +115,7 @@ if ($id_ciclo_elegido) {
 
 <div class="encabezado-pagina">
     <h1>RESULTADOS FINALES DE MIS ALUMNOS</h1>
-    <p class="subtitulo">Resumen global (75% Módulos / 25% Retos)</p>
+    <p class="subtitulo">Resumen global (75% MÃ³dulos / 25% Retos)</p>
 </div>
 
 <?php if ($exito) { ?>
@@ -145,7 +145,7 @@ if ($id_ciclo_elegido) {
         </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Enviar resultados por email a todos los alumnos de este ciclo?')">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿Enviar resultados por email a todos los alumnos de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> NOTIFICAR A TODOS
@@ -162,7 +162,7 @@ if ($id_ciclo_elegido) {
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Módulos (75%)</th>
+                        <th>Media MÃ³dulos (75%)</th>
                         <th>Media Retos (25%)</th>
                         <th>Nota Final</th>
                         <th>Estado</th>
@@ -185,7 +185,7 @@ if ($id_ciclo_elegido) {
                             <td class="<?= $clase_estado ?> texto-negrita">
                                 <?= $filaIndividual['estado'] ?>
                                 <?php if ($filaIndividual['alert'] == true) { ?>
-                                    <small title='Tiene módulos suspensos'>(!)</small>
+                                    <small title='Tiene mÃ³dulos suspensos'>(!)</small>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -198,6 +198,7 @@ if ($id_ciclo_elegido) {
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

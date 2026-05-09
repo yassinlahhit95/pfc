@@ -76,12 +76,16 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
         return false;
     }
 
+    // URL absoluta del logo para que Firebase la encuentre siempre
+    $urlLogo = "https://yassin.agency/public/imagenes/aulapro.png";
+
     $cuerpoCarga = [
         'message' => [
             'token' => $token,
             'notification' => [
                 'title' => $titulo,
-                'body' => $mensaje
+                'body' => $mensaje,
+                'image' => $urlLogo // Imagen opcional (grande)
             ],
             'data' => [
                 'title' => $titulo,
@@ -90,7 +94,8 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
             ],
             'webpush' => [
                 'notification' => [
-                    'icon' => '/public/img/logoSuperAdmin.png'
+                    'icon' => $urlLogo, // Icono pequeño
+                    'badge' => $urlLogo  // Icono de la barra de estado
                 ]
             ]
         ]

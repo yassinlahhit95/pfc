@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -15,7 +15,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = "Mis Ciclos Formativos - Portal Profesores";
+$tituloDelPagina = "AULAPRO | MIS CICLOS FORMATIVOS";
 $seccionActual = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -61,6 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 
 

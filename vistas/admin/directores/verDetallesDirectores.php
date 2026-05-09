@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Detalles Director - Admin";
+$titulo_pagina = "AULAPRO | DETALLES DIRECTOR";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -18,7 +18,7 @@ if (!$director) { ?>
 
 <div class="encabezado-pagina">
     <h1>Ficha del Director</h1>
-    <a href="verDirectores.php" class="boton-secundario">← Volver</a>
+    <a href="verDirectores.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -100,6 +100,7 @@ if (!$director) { ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

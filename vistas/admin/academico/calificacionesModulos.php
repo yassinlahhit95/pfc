@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Notas de Módulos - Admin";
+$titulo_pagina = "AULAPRO | NOTAS DE MóDULOS";
 $seccion = 'notas_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -66,10 +66,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <thead>
                         <tr>
                             <th>Estudiante</th>
-                            <th>1ª Ev</th>
-                            <th>1ª Final</th>
-                            <th>2ª Ev</th>
-                            <th>2ª Final</th>
+                            <th>1Âª Ev</th>
+                            <th>1Âª Final</th>
+                            <th>2Âª Ev</th>
+                            <th>2Âª Final</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>

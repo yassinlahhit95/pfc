@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,20 +21,20 @@ if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
     exit;
 }
 
-// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
+// Marcar como leÃ­do automÃ¡ticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'estudiante' && $mensaje['idEstudiante'] == $_SESSION['idEstudiante']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
 }
 
-$tituloDelPagina = "Detalles del Mensaje - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | DETALLES DEL MENSAJE";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Detalles del Mensaje</h1>
-    <a href="lista.php" class="boton-secundario">← Volver</a>
+    <a href="lista.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -46,13 +46,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> Información del Mensaje</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> InformaciÃ³n del Mensaje</h3>
     </div>
     
     <div class="fila-detalle">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administración (Sistema)' ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'AdministraciÃ³n (Sistema)' ?>
         </div>
     </div>
 
@@ -84,6 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

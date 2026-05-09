@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Modificar Director - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR DIRECTOR";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -26,7 +26,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
 
 <div class="encabezado-pagina">
     <h1>Modificar Director</h1>
-    <a href="verDirectores.php" class="boton-secundario">← Volver</a>
+    <a href="verDirectores.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -120,6 +120,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_director']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

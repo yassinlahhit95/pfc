@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $id = $_SESSION['idProfesor'];
 $profesor = obtenerProfesorPorId($id);
 
-$tituloDelPagina = "Mi Perfil - Portal Profesores";
+$tituloDelPagina = "AULAPRO | MI PERFIL";
 $seccionActual = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -19,11 +19,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="encabezado-pagina">
     <div>
         <h1>Mi Perfil</h1>
-        <p class="subtitulo">Información de tu cuenta de profesor</p>
+        <p class="subtitulo">InformaciÃ³n de tu cuenta de profesor</p>
     </div>
     <div class="acciones-pagina">
         <a href="editar.php" class="boton-primario">
-            <i class="fas fa-edit"></i> EDITAR INFORMACIÓN
+            <i class="fas fa-edit"></i> EDITAR INFORMACIÃ“N
         </a>
     </div>
 </div>
@@ -44,17 +44,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="etiqueta-detalle">TelÃ©fono</div>
         <div class="valor-detalle"><?= $profesor['telefonoProfesor'] ?></div>
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">DNI / Identificación</div>
+        <div class="etiqueta-detalle">DNI / IdentificaciÃ³n</div>
         <div class="valor-detalle"><?= $profesor['dniProfesor'] ?></div>
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle">Dirección</div>
+        <div class="etiqueta-detalle">DirecciÃ³n</div>
         <div class="valor-detalle"><?= $profesor['direccionProfesor'] ?></div>
     </div>
     
@@ -67,3 +67,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

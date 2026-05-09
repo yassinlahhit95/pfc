@@ -10,7 +10,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Gestión de TFGs - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE TFGS";
 $seccion = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -77,6 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

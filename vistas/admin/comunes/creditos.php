@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Huella Digital - Yassin Lahhit";
+$titulo_pagina = "AULAPRO | HUELLA DIGITAL";
 $seccion = 'creditos';
 include_once "nav.php";
 ?>
@@ -41,9 +41,10 @@ include_once "nav.php";
     </div>
 
     <div class="margen-arriba texto-centrado border-top-dashed pt-20">
-        <p class="texto-negrita mb-5">© <?php echo date('Y'); ?> Yassin Lahhit</p>
+        <p class="texto-negrita mb-5">Â© <?php echo date('Y'); ?> Yassin Lahhit</p>
         <p class="texto-atenuado font-12">Todos los derechos reservados. Desarrollado con PHP, MySQL y Brevo API.</p>
     </div>
 </div>
 
 <?php include 'footer.php'; ?>
+

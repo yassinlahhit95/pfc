@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idEstudiante'])) {
@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 $id = $_SESSION['idEstudiante'];
 $tfg = obtenerTFGporEstudiante($id);
 
-$tituloDelPagina = "Mi TFG - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
 include_once "../comunes/nav.php";
 
@@ -71,7 +71,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <strong>Subido el:</strong> <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?>
                     </p>
                 <?php } else { ?>
-                    <p class="texto-atenuado">No se ha subido ningún archivo todavía.</p>
+                    <p class="texto-atenuado">No se ha subido ningÃºn archivo todavÃ­a.</p>
                 <?php } ?>
             </div>
         </div>
@@ -90,5 +90,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 

@@ -15,7 +15,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$titulo_pagina = "Mi Perfil - Administración";
+$titulo_pagina = "AULAPRO | MI PERFIL";
 $seccion = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -56,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="text" id="telefonoDirector" name="telefonoDirector" value="<?= $datosAdmin['telefonoDirector'] ?? '' ?>">
         </div>
 
-        <div class="titulo-tarjeta mt-30"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
+        <div class="titulo-tarjeta mt-30"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÃ‘A</h3></div>
         <p class="texto-atenuado mb-15">Solo rellene estos campos si desea actualizar su clave de acceso.</p>
 
         <div class="campo-formulario">
@@ -81,3 +81,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

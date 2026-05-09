@@ -6,7 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
-$titulo_pagina = "RESULTADOS FINALES - ADMIN";
+$titulo_pagina = "AULAPRO | RESULTADOS FINALES";
 $seccion = 'resultados_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -53,7 +53,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Ã‚¿EstÃƒÂ¡ seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
@@ -70,7 +70,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Global MÃ³dulos (75%)</th>
+                        <th>Media Global MÃƒÂ³dulos (75%)</th>
                         <th>Media Global Retos (25%)</th>
                         <th>Nota Final Ciclo</th>
                         <th>Estado Final</th>
@@ -111,6 +111,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

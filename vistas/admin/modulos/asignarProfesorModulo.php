@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Asignar Profesor a Módulo - Admin";
+$titulo_pagina = "AULAPRO | ASIGNAR PROFESOR A MóDULO";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -27,7 +27,7 @@ unset($_SESSION['error']);
 
 <div class="encabezado-pagina">
     <h1>Asignar Profesor al Módulo: <?= $modulo['nombreModulo'] ?></h1>
-    <a href="verModulos.php" class="boton-secundario">← Volver</a>
+    <a href="verModulos.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <?php if ($error) { ?>
@@ -64,6 +64,7 @@ unset($_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

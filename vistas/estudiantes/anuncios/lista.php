@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -14,13 +14,13 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 $listaAnuncios = listarAnunciosPorRol('estudiantes');
 
-$tituloDelPagina = "Anuncios - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | ANUNCIOS";
 $seccionActual = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Tablón de Anuncios</h1>
+    <h1>TablÃ³n de Anuncios</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -63,3 +63,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+

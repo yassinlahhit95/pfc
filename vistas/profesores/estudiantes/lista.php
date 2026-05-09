@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -17,13 +17,13 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = "Lista de Estudiantes - Portal Profesores";
+$tituloDelPagina = "AULAPRO | LISTA DE ESTUDIANTES";
 $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>Gestión de Estudiantes</h1>
+    <h1>GestiÃ³n de Estudiantes</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -91,6 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
 
 
 

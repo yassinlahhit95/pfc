@@ -1,6 +1,6 @@
 <?php
 session_start();
-$titulo_pagina = "Gestión de Préstamos - Admin";
+$titulo_pagina = "AULAPRO | GESTIóN DE PRéSTAMOS";
 $seccion = 'prestamos';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -17,7 +17,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <div class="encabezado-pagina">
     <h1>Préstamos de Material</h1>
     <a href="agregarPrestamo.php" class="boton-primario">
-        <i class="fas fa-plus"></i> NUEVO PRÉSTAMO
+        <i class="fas fa-plus"></i> NUEVO PRÃ‰STAMO
     </a>
 </div>
 
@@ -89,6 +89,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

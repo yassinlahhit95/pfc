@@ -32,14 +32,14 @@ if (!is_array($errores)) {
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
-$titulo_pagina = "Modificar Estudiante - Admin";
+$titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
     <h1>Modificar Estudiante: <?= $estudiante['nombreEstudiante'] ?></h1>
-    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">← Volver</a>
+    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario">â† Volver</a>
 </div>
 
 <div class="tarjeta-blanca">
@@ -133,6 +133,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 
