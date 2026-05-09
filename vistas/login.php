@@ -310,7 +310,8 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
                         name="usuario" 
                         class="form-input" 
                         placeholder="nombre@aulapro.com"
-                        value="<?php echo $datos['usuario'] ?? ''; ?>"
+                        value="<?php echo htmlspecialchars($datos['usuario'] ?? $_GET['u'] ?? ''); ?>"
+                    id="campo-usuario"
                         required
                     >
                     <?php if (!empty($errores['usuario'])) { ?>
@@ -364,5 +365,14 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             </div>
         </div>
     </div>
+    <script>
+      // Si viene de demo, foco en contraseña directamente
+      <?php if (!empty($_GET['u'])): ?>
+      document.addEventListener('DOMContentLoaded', () => {
+        const pwd = document.querySelector('input[name="contrasena"]');
+        if (pwd) pwd.focus();
+      });
+      <?php endif; ?>
+    </script>
 </body>
 </html>

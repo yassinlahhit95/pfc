@@ -235,21 +235,24 @@
 
 /* --- 5. LANDING PAGE (< 768px) --- */
 @media (max-width: 768px) {
+  /* Menú móvil */
   .menu-landing {
     position: fixed;
-    top: 70px;
+    top: 60px;
+    left: 0;
     right: 0;
     width: 100%;
     background: #ffffff;
     flex-direction: column;
-    padding: 20px;
-    gap: 16px;
+    padding: 16px 24px 20px;
+    gap: 12px;
     border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-    transform: translateY(-20px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-8px);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
+    z-index: 99;
   }
 
   .menu-landing.activo {
@@ -260,5 +263,98 @@
 
   .menu-boton-landing {
     display: block;
+  }
+
+  /* Hero */
+  .hero-landing {
+    padding: 110px 0 64px;
+  }
+
+  .hero-botones-landing {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-botones-landing .boton {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  /* Secciones */
+  .seccion {
+    padding: 64px 0;
+  }
+
+  .titulo-seccion {
+    font-size: 1.75rem;
+  }
+
+  /* Tarjetas de plan */
+  .planes-rejilla-landing {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
+
+  .tarjeta-plan-landing {
+    padding: 28px 24px;
+  }
+
+  /* Formulario de contacto */
+  .form-fila-landing {
+    grid-template-columns: 1fr;
+  }
+
+  .contacto-form-wrapper {
+    padding: 24px 20px;
+  }
+}
+
+/* --- 6. LANDING PAGE MÓVILES PEQUEÑOS (< 480px) --- */
+@media (max-width: 480px) {
+  .contenedor {
+    padding: 0 16px;
+  }
+
+  .titulo-seccion {
+    font-size: 1.55rem;
+  }
+
+  .descripcion-seccion {
+    font-size: 0.95rem;
+  }
+
+  /* Precios: número grande más contenido */
+  .precio-cantidad {
+    font-size: 2.5rem;
+  }
+
+  /* Toggle de facturación */
+  .billing-toggle-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .billing-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.85rem;
+  }
+
+  .billing-badge-ahorro {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+
+  /* Botones hero */
+  .boton {
+    padding: 13px 20px;
+    font-size: 0.95rem;
+  }
+
+  /* Plan badge */
+  .plan-badge {
+    font-size: 0.72rem;
+    padding: 3px 12px;
   }
 }

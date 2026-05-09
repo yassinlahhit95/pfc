@@ -3,8 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TFG Gestión Académica</title>
-  <!-- Estilos Externos -->
+  <title>AulaPro — Gestión académica para centros formativos</title>
+
+  <!-- SEO básico -->
+  <meta name="description" content="AulaPro centraliza la gestión de tu centro formativo: alumnos, profesores, notas, pagos y comunicación en una sola plataforma. Sin Excel, sin papel.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yassin.agency/">
+
+  <!-- Open Graph (WhatsApp, LinkedIn, Facebook) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yassin.agency/">
+  <meta property="og:title" content="AulaPro — Gestión académica para centros formativos">
+  <meta property="og:description" content="Alumnos, notas, profesores, pagos y comunicación en una sola plataforma. Sin Excel, sin papel, sin perder el tiempo.">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="AulaPro">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AulaPro — Gestión académica para centros formativos">
+  <meta name="twitter:description" content="Alumnos, notas, profesores, pagos y comunicación en una sola plataforma. Sin Excel, sin papel, sin perder el tiempo.">
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AulaPro",
+    "url": "https://yassin.agency/",
+    "description": "Plataforma de gestión académica para centros formativos. Gestiona alumnos, profesores, notas, pagos y comunicación desde un solo lugar.",
+    "applicationCategory": "EducationApplication",
+    "operatingSystem": "Web",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Plan Medio",
+        "price": "49",
+        "priceCurrency": "EUR",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "price": "49",
+          "priceCurrency": "EUR",
+          "unitText": "MONTH"
+        }
+      },
+      {
+        "@type": "Offer",
+        "name": "Plan Superior",
+        "price": "89",
+        "priceCurrency": "EUR",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "price": "89",
+          "priceCurrency": "EUR",
+          "unitText": "MONTH"
+        }
+      }
+    ],
+    "author": {
+      "@type": "Person",
+      "name": "Yassin Lahhit",
+      "url": "https://yassin.agency/"
+    }
+  }
+  </script>
+
+  <!-- Preload CSS crítico -->
+  <link rel="preload" href="public/css/admin.css" as="style">
   <link rel="stylesheet" href="public/css/admin.css">
   <link rel="stylesheet" href="public/css/responsive.css">
 </head>
@@ -12,12 +76,12 @@
 
   <header class="cabecera-landing">
     <div class="contenedor cabecera-contenedor-landing">
-      <a href="#" class="logo-landing">TFG Gestión Académica</a>
+      <a href="#" class="logo-landing">AulaPro</a>
       <nav class="menu-landing" id="menu">
         <a href="#inicio" class="menu-enlace-landing">Inicio</a>
-        <a href="#caracteristicas" class="menu-enlace-landing">Características</a>
-        <a href="#beneficios" class="menu-enlace-landing">Beneficios</a>
-        <a href="#planes" class="menu-enlace-landing">Planes</a>
+        <a href="#caracteristicas" class="menu-enlace-landing">Plataforma</a>
+        <a href="#beneficios" class="menu-enlace-landing">Por qué</a>
+        <a href="#planes" class="menu-enlace-landing">Contacto</a>
         <a href="vistas/login.php" class="boton boton-principal-landing btn-acceso-nav">Acceso</a>
       </nav>
       <button class="menu-boton-landing" id="menu-boton" aria-label="Abrir menú">
@@ -29,49 +93,49 @@
   <main>
     <section id="inicio" class="hero-landing animar">
       <div class="contenedor">
-        <h1 class="titulo-hero-landing">Gestiona tu centro educativo<br>de forma simple</h1>
-        <p class="subtitulo-hero-landing">Una plataforma centralizada para estudiantes, profesores, ciclos, pagos y administración. Construida para ser robusta, clara y rápida.</p>
+        <h1 class="titulo-hero-landing">Tu centro educativo,<br><span>gestionado de verdad.</span></h1>
+        <p class="subtitulo-hero-landing">Alumnos, notas, profesores, pagos y comunicación en una sola plataforma. Sin Excel, sin papel, sin perder el tiempo.</p>
         <div class="hero-botones-landing">
-          <a href="#planes" class="boton boton-principal-landing">Solicitar demo</a>
-          <a href="#visual" class="boton boton-secundario-landing">Ver plataforma</a>
+          <a href="#planes" class="boton boton-principal-landing">Pedir una demo</a>
+          <a href="#visual" class="boton boton-secundario-landing">Ver cómo funciona</a>
         </div>
       </div>
     </section>
 
-    <section id="caracteristicas" class="seccion animar">
+    <section id="caracteristicas" class="seccion caracteristicas-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Características principales</h2>
-        <p class="descripcion-seccion">Todo lo que un centro formativo necesita, unificado en un solo sistema moderno.</p>
+        <h2 class="titulo-seccion">Todo lo que tu centro necesita</h2>
+        <p class="descripcion-seccion">Sin módulos de relleno. Solo lo que se usa cada día, bien hecho.</p>
         <div class="rejilla caracteristicas-rejilla-landing">
           <div class="tarjeta">
             <div class="tarjeta-icono-landing">🎓</div>
-            <h3 class="tarjeta-titulo-landing">Gestión de estudiantes</h3>
-            <p class="tarjeta-texto-landing">Registro, perfiles, seguimiento académico y control de asistencia en tiempo real.</p>
+            <h3 class="tarjeta-titulo-landing">Alumnos</h3>
+            <p class="tarjeta-texto-landing">Ficha completa, historial académico y estado de matrícula. Todo en un clic, sin buscar en carpetas.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">👩‍🏫</div>
-            <h3 class="tarjeta-titulo-landing">Control de profesores</h3>
-            <p class="tarjeta-texto-landing">Asignación de módulos, carga docente y coordinación directa con el equipo.</p>
+            <div class="tarjeta-icono-landing">👨‍🏫</div>
+            <h3 class="tarjeta-titulo-landing">Profesores y módulos</h3>
+            <p class="tarjeta-texto-landing">Asigna módulos, gestiona cargas lectivas y coordina el equipo desde un panel unificado.</p>
           </div>
           <div class="tarjeta">
             <div class="tarjeta-icono-landing">📚</div>
-            <h3 class="tarjeta-titulo-landing">Módulos y ciclos</h3>
-            <p class="tarjeta-texto-landing">Organización clara de ciclos formativos, asignaturas y competencias.</p>
+            <h3 class="tarjeta-titulo-landing">Ciclos formativos</h3>
+            <p class="tarjeta-texto-landing">Estructura tus ciclos, agrupa módulos y mantén la organización académica siempre actualizada.</p>
           </div>
           <div class="tarjeta">
             <div class="tarjeta-icono-landing">📊</div>
-            <h3 class="tarjeta-titulo-landing">Notas y evaluaciones</h3>
-            <p class="tarjeta-texto-landing">Registro de calificaciones, boletines automáticos y exportación de actas.</p>
+            <h3 class="tarjeta-titulo-landing">Notas y boletines</h3>
+            <p class="tarjeta-texto-landing">Introduce calificaciones, genera boletines en PDF y exporta actas al instante.</p>
           </div>
           <div class="tarjeta">
             <div class="tarjeta-icono-landing">💳</div>
-            <h3 class="tarjeta-titulo-landing">Pagos y facturación</h3>
-            <p class="tarjeta-texto-landing">Gestión de matrículas, cuotas, recibos y control de morosidad.</p>
+            <h3 class="tarjeta-titulo-landing">Pagos y matrículas</h3>
+            <p class="tarjeta-texto-landing">Registra cobros, emite recibos y detecta impagos antes de que se conviertan en un problema.</p>
           </div>
           <div class="tarjeta">
             <div class="tarjeta-icono-landing">📝</div>
             <h3 class="tarjeta-titulo-landing">Reclamaciones</h3>
-            <p class="tarjeta-texto-landing">Canal oficial para incidencias, solicitudes y resolución de trámites.</p>
+            <p class="tarjeta-texto-landing">Canal oficial para incidencias y solicitudes. Sin emails perdidos ni llamadas sin respuesta.</p>
           </div>
         </div>
       </div>
@@ -79,49 +143,49 @@
 
     <section id="visual" class="seccion visual-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Interfaz clara, sin distracciones</h2>
-        <p class="descripcion-seccion">Diseñada para que cualquier usuario la entienda en menos de un minuto.</p>
-        <video autoplay loop muted playsinline preload="auto" class="video-demo-landing">
+        <h2 class="titulo-seccion">Tan claro que no necesita tutorial</h2>
+        <p class="descripcion-seccion">Cada usuario ve solo lo que le corresponde: el alumno su expediente, el profesor sus grupos, el director todo.</p>
+        <video autoplay loop muted playsinline preload="none" class="video-demo-landing">
           <source src="./public/videos/intro.mp4" type="video/mp4">
           Tu navegador no soporta videos HTML5.
         </video>
       </div>
     </section>
 
-    <section id="beneficios" class="seccion animar">
+    <section id="beneficios" class="seccion beneficios-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Por qué elegir este sistema</h2>
-        <p class="descripcion-seccion">No es solo una herramienta, es la base de tu gestión diaria.</p>
+        <h2 class="titulo-seccion">Por qué funciona donde otros fallan</h2>
+        <p class="descripcion-seccion">No son promesas de catálogo. Son los problemas reales que resuelve.</p>
         <div class="rejilla beneficios-rejilla-landing">
           <div class="tarjeta">
             <div class="beneficio-numero-landing">01</div>
-            <h3 class="tarjeta-titulo-landing">Centralización</h3>
-            <p class="tarjeta-texto-landing">Elimina hojas sueltas y herramientas múltiples. Toda la información convive en un único entorno seguro.</p>
+            <h3 class="tarjeta-titulo-landing">Un solo lugar para todo</h3>
+            <p class="tarjeta-texto-landing">Se acabaron las hojas de cálculo desactualizadas y los datos contradictorios entre sistemas.</p>
           </div>
           <div class="tarjeta">
             <div class="beneficio-numero-landing">02</div>
-            <h3 class="tarjeta-titulo-landing">Ahorro de tiempo</h3>
-            <p class="tarjeta-texto-landing">Automatiza tareas repetitivas: matrículas, notas, avisos y reportes. Tu equipo se enfoca en enseñar.</p>
+            <h3 class="tarjeta-titulo-landing">Tiempo recuperado</h3>
+            <p class="tarjeta-texto-landing">Las tareas que antes tomaban horas se hacen en minutos. Matrículas, notas, recibos: en automático.</p>
           </div>
           <div class="tarjeta">
             <div class="beneficio-numero-landing">03</div>
-            <h3 class="tarjeta-titulo-landing">Control total</h3>
-            <p class="tarjeta-texto-landing">Permisos por roles, historial de cambios y auditoría. Sabes quién modifica qué y cuándo.</p>
+            <h3 class="tarjeta-titulo-landing">Acceso por roles</h3>
+            <p class="tarjeta-texto-landing">Cada usuario ve y hace solo lo que le corresponde. Nada más, nada menos.</p>
           </div>
           <div class="tarjeta">
             <div class="beneficio-numero-landing">04</div>
-            <h3 class="tarjeta-titulo-landing">Fácil uso</h3>
-            <p class="tarjeta-texto-landing">Interfaz intuitiva, lenguaje claro y sin curva de aprendizaje. Ideal para centros con poco tiempo para formaciones.</p>
+            <h3 class="tarjeta-titulo-landing">Sin curva de aprendizaje</h3>
+            <p class="tarjeta-texto-landing">Si alguien sabe usar el correo, sabe usar AulaPro. No hace falta formación previa.</p>
           </div>
           <div class="tarjeta">
             <div class="beneficio-numero-landing">05</div>
-            <h3 class="tarjeta-titulo-landing">Soporte técnico</h3>
-            <p class="tarjeta-texto-landing">Asistencia profesional para resolver dudas y problemas técnicos de manera rápida y eficiente.</p>
+            <h3 class="tarjeta-titulo-landing">Funciona en cualquier sitio</h3>
+            <p class="tarjeta-texto-landing">Desde el navegador del móvil, la tablet del aula o el ordenador de secretaría. Sin instalar nada.</p>
           </div>
           <div class="tarjeta">
             <div class="beneficio-numero-landing">06</div>
-            <h3 class="tarjeta-titulo-landing">Actualizaciones regulares</h3>
-            <p class="tarjeta-texto-landing">Mejoras constantes y nuevas funcionalidades para mantener el sistema siempre actualizado.</p>
+            <h3 class="tarjeta-titulo-landing">Soporte directo</h3>
+            <p class="tarjeta-texto-landing">Hablas con el desarrollador, no con un bot. Las incidencias se resuelven, no se archivan.</p>
           </div>
         </div>
       </div>
@@ -129,51 +193,126 @@
 
     <section id="planes" class="seccion planes-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Planes claros y transparentes</h2>
-        <p class="descripcion-seccion">Elige el nivel de gestión que necesita tu centro. Sin costes ocultos.</p>
-        <div class="rejilla planes-rejilla-landing">
+        <h2 class="titulo-seccion">Elige tu plan</h2>
+        <p class="descripcion-seccion">Usuarios ilimitados en ambos planes. La diferencia está en los módulos, las sedes y el nivel de soporte.</p>
+
+        <div class="billing-toggle-wrapper">
+          <button class="billing-btn activo" id="btn-mensual">Mensual</button>
+          <button class="billing-btn" id="btn-anual">
+            Anual
+            <span class="billing-badge-ahorro">2 meses gratis</span>
+          </button>
+        </div>
+
+        <div class="planes-rejilla-landing">
           <div class="tarjeta tarjeta-plan-landing">
             <h3 class="plan-nombre-landing">Plan Medio</h3>
-            <p class="tarjeta-texto-landing mb-20">Ideal para centros pequeños y medianos.</p>
+            <p class="plan-descripcion">Para centros pequeños que quieren dejar de improvisar.</p>
+            <div class="plan-precio-bloque">
+              <div class="plan-precio">
+                <span class="precio-simbolo">€</span>
+                <span class="precio-cantidad" data-mensual="49" data-anual="39">49</span>
+                <span class="precio-periodo">/mes</span>
+              </div>
+              <p class="precio-nota mensual-nota">facturado mensualmente</p>
+              <p class="precio-nota anual-nota" style="display:none">facturado anualmente · <strong>ahorra €120</strong></p>
+            </div>
             <ul class="plan-lista-landing">
-              <li class="plan-elemento-landing">Hasta 200 alumnos</li>
-              <li class="plan-elemento-landing">Gestión de notas básica</li>
-              <li class="plan-elemento-landing">Soporte por correo</li>
-              <li class="plan-elemento-landing">Acceso web estándar</li>
-            </ul>
-            <a href="#" class="boton boton-secundario-landing ancho-total">Empezar ahora</a>
-          </div>
-          <div class="tarjeta tarjeta-plan-landing destacado">
-            <h3 class="plan-nombre-landing">Plan Superior</h3>
-            <p class="tarjeta-texto-landing mb-20">Para institutos y academias en crecimiento.</p>
-            <ul class="plan-lista-landing">
+              <li class="plan-elemento-landing">1 sede o centro</li>
               <li class="plan-elemento-landing">Usuarios ilimitados</li>
+              <li class="plan-elemento-landing">Alumnos, profesores y ciclos</li>
+              <li class="plan-elemento-landing">Notas y boletines en PDF</li>
+              <li class="plan-elemento-landing">Soporte por email (48h)</li>
+            </ul>
+            <a href="#form-contacto" class="boton boton-secundario-landing ancho-total" data-plan="Plan Medio">Empezar con este plan</a>
+          </div>
+
+          <div class="tarjeta tarjeta-plan-landing destacado">
+            <div class="plan-badge">Más completo</div>
+            <h3 class="plan-nombre-landing">Plan Superior</h3>
+            <p class="plan-descripcion">Para academias que necesitan todo bajo control.</p>
+            <div class="plan-precio-bloque">
+              <div class="plan-precio">
+                <span class="precio-simbolo">€</span>
+                <span class="precio-cantidad" data-mensual="89" data-anual="69">89</span>
+                <span class="precio-periodo">/mes</span>
+              </div>
+              <p class="precio-nota mensual-nota">facturado mensualmente</p>
+              <p class="precio-nota anual-nota" style="display:none">facturado anualmente · <strong>ahorra €240</strong></p>
+            </div>
+            <ul class="plan-lista-landing">
+              <li class="plan-elemento-landing">Hasta 3 sedes</li>
+              <li class="plan-elemento-landing">Usuarios ilimitados</li>
+              <li class="plan-elemento-landing">Todo lo del Plan Medio</li>
               <li class="plan-elemento-landing">Módulo de pagos y facturación</li>
               <li class="plan-elemento-landing">Reclamaciones y notificaciones</li>
-              <li class="plan-elemento-landing">Soporte prioritario</li>
+              <li class="plan-elemento-landing">Personalización de marca</li>
+              <li class="plan-elemento-landing">Soporte prioritario (24h)</li>
             </ul>
-            <a href="#" class="boton boton-principal-landing ancho-total">Solicitar acceso</a>
+            <a href="#form-contacto" class="boton boton-principal-landing ancho-total" data-plan="Plan Superior">Contactar ahora</a>
           </div>
+        </div>
+
+        <p style="text-align:center; font-size:0.85rem; color:#9ca3af; margin-bottom: 2.5rem;">¿Necesitas algo a medida? Escríbenos y lo hablamos.</p>
+
+        <div class="contacto-form-wrapper">
+          <form id="form-contacto" class="contacto-form-landing" novalidate>
+            <!-- honeypot anti-spam: bots lo rellenan, humanos no -->
+            <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+            <div class="form-fila-landing">
+              <div class="form-campo-landing">
+                <label for="cf-nombre">Nombre completo *</label>
+                <input type="text" id="cf-nombre" name="nombre" placeholder="Tu nombre" required>
+              </div>
+              <div class="form-campo-landing">
+                <label for="cf-email">Correo electrónico *</label>
+                <input type="email" id="cf-email" name="email" placeholder="tu@centro.com" required>
+              </div>
+            </div>
+            <div class="form-fila-landing">
+              <div class="form-campo-landing">
+                <label for="cf-centro">Centro educativo *</label>
+                <input type="text" id="cf-centro" name="centro" placeholder="Nombre del instituto o academia" required>
+              </div>
+              <div class="form-campo-landing">
+                <label for="cf-plan">Plan de interés</label>
+                <select id="cf-plan" name="plan">
+                  <option value="">Selecciona un plan...</option>
+                  <option value="Plan Medio">Plan Medio</option>
+                  <option value="Plan Superior">Plan Superior</option>
+                  <option value="Aún no lo sé">Aún no lo sé</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-campo-landing">
+              <label for="cf-mensaje">Mensaje (opcional)</label>
+              <textarea id="cf-mensaje" name="mensaje" placeholder="Cuéntanos sobre tu centro: número de alumnos, funcionalidades que necesitas..."></textarea>
+            </div>
+            <div class="form-acciones-landing">
+              <button type="submit" class="boton boton-principal-landing" id="btn-enviar">Enviar consulta</button>
+            </div>
+            <div id="form-feedback"></div>
+          </form>
         </div>
       </div>
     </section>
 
     <section class="seccion tecnica-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Base técnica sólida</h2>
-        <p class="descripcion-seccion">Construido con tecnologías maduras, seguras y fáciles de mantener.</p>
+        <h2 class="titulo-seccion">Construido para durar</h2>
+        <p class="descripcion-seccion">Sin dependencias innecesarias, sin magia. Código que cualquier desarrollador puede leer y mantener.</p>
         <div class="rejilla tecnica-rejilla-landing">
           <div class="tarjeta tarjeta-tecnica-landing">
-            <h3 class="tarjeta-titulo-landing">PHP Nativo + MVC</h3>
-            <p class="tarjeta-texto-landing">Sin frameworks pesados. Arquitectura modelo-vista-controlador limpia, ordenada y mantenible por cualquier desarrollador.</p>
+            <h3 class="tarjeta-titulo-landing">PHP nativo + MVC</h3>
+            <p class="tarjeta-texto-landing">Sin frameworks pesados. Arquitectura modelo-vista-controlador limpia: fácil de extender, fácil de auditar.</p>
           </div>
           <div class="tarjeta tarjeta-tecnica-landing">
-            <h3 class="tarjeta-titulo-landing">Base de datos MySQL</h3>
-            <p class="tarjeta-texto-landing">Relacional, estable y optimizada. Consultas rápidas, índices bien estructurados y backup sencillo.</p>
+            <h3 class="tarjeta-titulo-landing">MySQL relacional</h3>
+            <p class="tarjeta-texto-landing">Base de datos estructurada, con integridad referencial y consultas optimizadas para miles de registros.</p>
           </div>
           <div class="tarjeta tarjeta-tecnica-landing">
-            <h3 class="tarjeta-titulo-landing">Arquitectura organizada</h3>
-            <p class="tarjeta-texto-landing">Separación estricta entre modelos, controladores y vistas. Código modular, comentado y listo para escalar.</p>
+            <h3 class="tarjeta-titulo-landing">Sin vendor lock-in</h3>
+            <p class="tarjeta-texto-landing">Tu servidor, tu base de datos, tu código. No dependes de ninguna plataforma de terceros para seguir funcionando.</p>
           </div>
         </div>
       </div>
@@ -182,10 +321,10 @@
 
   <footer id="acceso" class="pie-pagina-landing animar">
     <div class="contenedor">
-      <p class="pie-nombre-landing">Yassin Lahhit</p>
-      <p>Proyecto Final de Grado</p>
+      <p class="pie-nombre-landing">AulaPro</p>
+      <p>Proyecto Final de Grado — Yassin Lahhit</p>
       <div class="pie-linea-landing"></div>
-      <p>Año 2025 / 2026</p>
+      <p>2025 / 2026</p>
     </div>
   </footer>
 
@@ -201,16 +340,28 @@
         });
       }
 
-      // Scroll suave y cierre de menú al hacer clic
+      // Scroll suave con offset para el header fijo y preselección de plan
+      const alturaHeader = document.querySelector('.cabecera-landing')?.offsetHeight ?? 72;
+
       document.querySelectorAll('a[href^="#"]').forEach(enlace => {
         enlace.addEventListener('click', (e) => {
-          const destino = document.querySelector(enlace.getAttribute('href'));
-          if (destino) {
-            e.preventDefault();
-            destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            if (listaMenu.classList.contains('activo')) {
-              listaMenu.classList.remove('activo');
-            }
+          const href = enlace.getAttribute('href');
+          const destino = document.querySelector(href);
+          if (!destino) return;
+          e.preventDefault();
+
+          const y = destino.getBoundingClientRect().top + window.scrollY - alturaHeader - 16;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+
+          if (listaMenu && listaMenu.classList.contains('activo')) {
+            listaMenu.classList.remove('activo');
+          }
+
+          // Si el enlace viene de una tarjeta de plan, preselecciona el plan en el formulario
+          const planElegido = enlace.dataset.plan;
+          if (planElegido) {
+            const selectPlan = document.getElementById('cf-plan');
+            if (selectPlan) selectPlan.value = planElegido;
           }
         });
       });
@@ -229,6 +380,148 @@
       });
 
       document.querySelectorAll('.animar').forEach(el => observador.observe(el));
+
+      // Toggle facturación mensual / anual
+      const btnMensual = document.getElementById('btn-mensual');
+      const btnAnual = document.getElementById('btn-anual');
+      if (btnMensual && btnAnual) {
+        const cantidades = document.querySelectorAll('.precio-cantidad');
+        const notasMensual = document.querySelectorAll('.mensual-nota');
+        const notasAnual = document.querySelectorAll('.anual-nota');
+
+        btnMensual.addEventListener('click', () => {
+          btnMensual.classList.add('activo');
+          btnAnual.classList.remove('activo');
+          cantidades.forEach(el => el.textContent = el.dataset.mensual);
+          notasMensual.forEach(el => el.style.display = '');
+          notasAnual.forEach(el => el.style.display = 'none');
+        });
+
+        btnAnual.addEventListener('click', () => {
+          btnAnual.classList.add('activo');
+          btnMensual.classList.remove('activo');
+          cantidades.forEach(el => el.textContent = el.dataset.anual);
+          notasMensual.forEach(el => el.style.display = 'none');
+          notasAnual.forEach(el => el.style.display = '');
+        });
+      }
+
+      // Formulario de contacto SaaS
+      const formContacto = document.getElementById('form-contacto');
+      if (formContacto) {
+        formContacto.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById('btn-enviar');
+          const feedback = document.getElementById('form-feedback');
+          const nombre = document.getElementById('cf-nombre').value.trim();
+          const email = document.getElementById('cf-email').value.trim();
+          const centro = document.getElementById('cf-centro').value.trim();
+
+          if (!nombre || !email || !centro) {
+            feedback.className = 'feedback-error';
+            feedback.textContent = 'Por favor, completa los campos obligatorios (nombre, email y centro).';
+            return;
+          }
+
+          btn.disabled = true;
+          btn.textContent = 'Enviando...';
+          feedback.innerHTML = '';
+          feedback.className = '';
+
+          // URL relativa funciona tanto en localhost como en producción
+          const endpoint = new URL('controladores/contacto_landing.php', window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/'));
+
+          try {
+            const res = await fetch(endpoint.href, {
+              method: 'POST',
+              body: new FormData(formContacto)
+            });
+
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+
+            if (data.ok) {
+              feedback.className = 'feedback-exito';
+              feedback.textContent = data.msg;
+              formContacto.reset();
+              btn.textContent = 'Enviado ✓';
+            } else {
+              feedback.className = 'feedback-error';
+              feedback.textContent = data.msg;
+              btn.disabled = false;
+              btn.textContent = 'Enviar consulta';
+            }
+          } catch {
+            feedback.className = 'feedback-error';
+            feedback.textContent = 'Error de conexión. Inténtalo de nuevo más tarde.';
+            btn.disabled = false;
+            btn.textContent = 'Enviar consulta';
+          }
+        });
+      }
+
+      // Modal demo
+      const roles = {
+        admin:      { email: 'admin@aulapro.com',      pass: 'demo2024', label: 'Administrador' },
+        profesor:   { email: 'profesor@aulapro.com',   pass: 'demo2024', label: 'Profesor' },
+        estudiante: { email: 'estudiante@aulapro.com', pass: 'demo2024', label: 'Estudiante' }
+      };
+
+      const modalDemo     = document.getElementById('modal-demo');
+      const btnCerrar     = document.getElementById('btn-cerrar-modal');
+      const demoEmailEl   = document.getElementById('demo-email');
+      const demoPassEl    = document.getElementById('demo-pass');
+      const btnIrDemo     = document.getElementById('btn-ir-demo');
+      const tabs          = document.querySelectorAll('.modal-tab');
+
+      function abrirModal() {
+        modalDemo.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        actualizarRol('admin');
+      }
+
+      function cerrarModal() {
+        modalDemo.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+
+      function actualizarRol(rolKey) {
+        const rol = roles[rolKey];
+        demoEmailEl.textContent = rol.email;
+        demoPassEl.textContent  = rol.pass;
+        btnIrDemo.href          = 'vistas/login.php?u=' + encodeURIComponent(rol.email);
+        btnIrDemo.textContent   = 'Entrar como ' + rol.label;
+        tabs.forEach(t => t.classList.toggle('activo', t.dataset.rol === rolKey));
+      }
+
+      if (modalDemo) {
+        // Abrir desde botones de plan
+        document.querySelectorAll('[data-plan="Plan Medio"]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            abrirModal();
+          });
+        });
+
+        btnCerrar.addEventListener('click', cerrarModal);
+        modalDemo.addEventListener('click', (e) => { if (e.target === modalDemo) cerrarModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarModal(); });
+
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => actualizarRol(tab.dataset.rol));
+        });
+
+        document.querySelectorAll('.btn-copiar').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const texto = document.getElementById(btn.dataset.campo).textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+              const orig = btn.textContent;
+              btn.textContent = '✓';
+              setTimeout(() => btn.textContent = orig, 1500);
+            });
+          });
+        });
+      }
 
       // Asegurar que el video se reproduce cuando la sección es visible
       const video = document.querySelector('#visual video');
@@ -254,5 +547,43 @@
       }
     });
   </script>
+
+  <!-- Modal demo -->
+  <div id="modal-demo" class="modal-demo-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-demo-titulo" style="display:none">
+    <div class="modal-demo-caja">
+      <button class="modal-demo-cerrar" id="btn-cerrar-modal" aria-label="Cerrar">&times;</button>
+
+      <div class="modal-demo-cabecera">
+        <div class="modal-demo-icono">🚀</div>
+        <h2 class="modal-demo-titulo" id="modal-demo-titulo">Prueba AulaPro ahora</h2>
+        <p class="modal-demo-subtitulo">Elige un rol y entra directamente. No necesitas registrarte.</p>
+      </div>
+
+      <div class="modal-demo-tabs" role="tablist">
+        <button class="modal-tab activo" data-rol="admin" role="tab">Administrador</button>
+        <button class="modal-tab" data-rol="profesor" role="tab">Profesor</button>
+        <button class="modal-tab" data-rol="estudiante" role="tab">Estudiante</button>
+      </div>
+
+      <div class="modal-demo-credenciales">
+        <div class="credencial-fila">
+          <span class="credencial-etiqueta">Email</span>
+          <span class="credencial-valor" id="demo-email">admin@aulapro.com</span>
+          <button class="btn-copiar" data-campo="demo-email" title="Copiar">⎘</button>
+        </div>
+        <div class="credencial-fila">
+          <span class="credencial-etiqueta">Contraseña</span>
+          <span class="credencial-valor" id="demo-pass">demo2024</span>
+          <button class="btn-copiar" data-campo="demo-pass" title="Copiar">⎘</button>
+        </div>
+      </div>
+
+      <a id="btn-ir-demo" href="vistas/login.php?u=admin@aulapro.com" class="boton boton-principal-landing modal-demo-boton">
+        Entrar como Administrador
+      </a>
+
+      <p class="modal-demo-aviso">Cuenta de demostración — los datos se reinician periódicamente.</p>
+    </div>
+  </div>
 </body>
 </html>
