@@ -67,7 +67,7 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
 
 function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExcluir = 0) {
     $con = obtenerConexion();
-    $idRetoAExcluir = (int)$idRetoAExcluir;
+    $idRetoAExcluir = intval($idRetoAExcluir);
     $sql = "SELECT m.horasMaximas, SUM(r.horasReto) AS horasOcupadas
             FROM modulos m
             LEFT JOIN modulo_reto mr ON m.idModulo = mr.idModulo
@@ -80,8 +80,12 @@ function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExclui
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    $maximo = (int)($fila['horasMaximas'] ?? 0);
-    $ocupadas = (int)($fila['horasOcupadas'] ?? 0);
+    $maximo = 0;
+    $ocupadas = 0;
+    if ($fila != null) {
+        if ($fila['horasMaximas'] != null) { $maximo = intval($fila['horasMaximas']); }
+        if ($fila['horasOcupadas'] != null) { $ocupadas = intval($fila['horasOcupadas']); }
+    }
     return ($ocupadas + $horasNuevas) <= $maximo;
 }
 
@@ -191,7 +195,7 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
     $fila = mysqli_fetch_assoc($resultado);
 
     $nota = "";
-    if (isset($fila['nota'])) {
+    if ($fila != null && $fila['nota'] != null) {
         $nota = $fila['nota'];
     }
 
@@ -256,7 +260,10 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    $promedio = (float)($fila['promedio'] ?? 0);
+    $promedio = 0;
+    if ($fila != null && $fila['promedio'] != null) {
+        $promedio = floatval($fila['promedio']);
+    }
     mysqli_close($con);
     return $promedio;
 }

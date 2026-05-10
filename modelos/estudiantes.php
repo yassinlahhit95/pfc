@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarEstudiantes() {
@@ -135,7 +135,7 @@ function obtenerTokensEstudiantes() {
     $resultado = mysqli_query($con, $sql);
     $listaTokens = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        if (!empty($fila['fcm_token'])) {
+        if ($fila['fcm_token'] != null) {
             $listaTokens[] = $fila['fcm_token'];
         }
     }
@@ -173,7 +173,10 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    $token = $fila['fcm_token'] ?? null;
+    $token = null;
+    if ($fila != null && $fila['fcm_token'] != null) {
+        $token = $fila['fcm_token'];
+    }
     mysqli_close($con);
     return $token;
 }

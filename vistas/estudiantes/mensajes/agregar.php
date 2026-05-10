@@ -17,8 +17,6 @@ $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 
 $idEst = $_SESSION['idEstudiante'];
-$est = obtenerEstudiantePorId($idEst);
-
 $profs = obtenerProfesoresConModulosParaEstudiante($idEst);
 ?>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AulaPro — Gestión académica para centros formativos</title>
+  <link rel="icon" href="public/imagenes/favicon.ico">
 
   <!-- SEO básico -->
   <meta name="description" content="AulaPro centraliza la gestión de tu centro formativo: alumnos, profesores, notas, pagos y comunicación en una sola plataforma. Sin Excel, sin papel.">
@@ -68,8 +69,8 @@
   </script>
 
   <!-- Preload CSS crítico -->
-  <link rel="preload" href="public/css/admin.css" as="style">
-  <link rel="stylesheet" href="public/css/admin.css">
+  <link rel="preload" href="public/css/landing.css" as="style">
+  <link rel="stylesheet" href="public/css/landing.css">
   <link rel="stylesheet" href="public/css/responsive.css">
 </head>
 <body class="landing-body">
@@ -102,27 +103,7 @@
           <a href="#planes" class="boton boton-principal-landing">Pedir una demo</a>
           <a href="#visual" class="boton boton-secundario-landing">Ver cómo funciona</a>
         </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <span class="hero-stat-num">6</span>
-            <span class="hero-stat-label">módulos</span>
-          </div>
-          <div class="hero-stat-sep"></div>
-          <div class="hero-stat">
-            <span class="hero-stat-num">3</span>
-            <span class="hero-stat-label">roles</span>
-          </div>
-          <div class="hero-stat-sep"></div>
-          <div class="hero-stat">
-            <span class="hero-stat-num">100%</span>
-            <span class="hero-stat-label">web</span>
-          </div>
-          <div class="hero-stat-sep"></div>
-          <div class="hero-stat">
-            <span class="hero-stat-num">0</span>
-            <span class="hero-stat-label">instalaciones</span>
-          </div>
-        </div>
+        <p class="hero-motivacion">Únete a los centros que ya dejaron atrás el papeleo y recuperaron tiempo para lo que importa: <strong>enseñar.</strong></p>
       </div>
     </section>
 
@@ -239,7 +220,7 @@
                 <span class="precio-periodo">/mes</span>
               </div>
               <p class="precio-nota mensual-nota">facturado mensualmente</p>
-              <p class="precio-nota anual-nota" style="display:none">facturado anualmente · <strong>ahorra €120</strong></p>
+              <p class="precio-nota anual-nota">facturado anualmente · <strong>ahorra €120</strong></p>
             </div>
             <ul class="plan-lista-landing">
               <li class="plan-elemento-landing">1 sede o centro</li>
@@ -262,7 +243,7 @@
                 <span class="precio-periodo">/mes</span>
               </div>
               <p class="precio-nota mensual-nota">facturado mensualmente</p>
-              <p class="precio-nota anual-nota" style="display:none">facturado anualmente · <strong>ahorra €240</strong></p>
+              <p class="precio-nota anual-nota">facturado anualmente · <strong>ahorra €240</strong></p>
             </div>
             <ul class="plan-lista-landing">
               <li class="plan-elemento-landing">Hasta 3 sedes</li>
@@ -277,12 +258,12 @@
           </div>
         </div>
 
-        <p style="text-align:center; font-size:0.85rem; color:#9ca3af; margin-bottom: 2.5rem;">¿Necesitas algo a medida? Escríbenos y lo hablamos.</p>
+        <p class="texto-nota-precios">¿Necesitas algo a medida? Escríbenos y lo hablamos.</p>
 
         <div class="contacto-form-wrapper">
           <form id="form-contacto" class="contacto-form-landing" novalidate>
             <!-- honeypot anti-spam: bots lo rellenan, humanos no -->
-            <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+            <input type="text" name="website" class="campo-honeypot" tabindex="-1" autocomplete="off">
             <div class="form-fila-landing">
               <div class="form-campo-landing">
                 <label for="cf-nombre">Nombre completo *</label>
@@ -321,26 +302,6 @@
       </div>
     </section>
 
-    <section class="seccion tecnica-landing animar">
-      <div class="contenedor">
-        <h2 class="titulo-seccion">Construido para durar</h2>
-        <p class="descripcion-seccion">Sin dependencias innecesarias, sin magia. Código que cualquier desarrollador puede leer y mantener.</p>
-        <div class="rejilla tecnica-rejilla-landing">
-          <div class="tarjeta tarjeta-tecnica-landing">
-            <h3 class="tarjeta-titulo-landing">PHP nativo + MVC</h3>
-            <p class="tarjeta-texto-landing">Sin frameworks pesados. Arquitectura modelo-vista-controlador limpia: fácil de extender, fácil de auditar.</p>
-          </div>
-          <div class="tarjeta tarjeta-tecnica-landing">
-            <h3 class="tarjeta-titulo-landing">MySQL relacional</h3>
-            <p class="tarjeta-texto-landing">Base de datos estructurada, con integridad referencial y consultas optimizadas para miles de registros.</p>
-          </div>
-          <div class="tarjeta tarjeta-tecnica-landing">
-            <h3 class="tarjeta-titulo-landing">Sin vendor lock-in</h3>
-            <p class="tarjeta-texto-landing">Tu servidor, tu base de datos, tu código. No dependes de ninguna plataforma de terceros para seguir funcionando.</p>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer id="acceso" class="pie-pagina-landing animar">
@@ -354,17 +315,15 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Menú móvil
       const botonMenu = document.getElementById('menu-boton');
       const listaMenu = document.getElementById('menu');
-      
+
       if (botonMenu && listaMenu) {
         botonMenu.addEventListener('click', () => {
           listaMenu.classList.toggle('activo');
         });
       }
 
-      // Navbar transparente sobre hero, sólido al scrollear
       const cabecera = document.getElementById('cabecera');
       function actualizarNavbar() {
         cabecera.classList.toggle('nav-scrolled', window.scrollY > 40);
@@ -372,7 +331,6 @@
       window.addEventListener('scroll', actualizarNavbar, { passive: true });
       actualizarNavbar();
 
-      // Scroll suave con offset para el header fijo y preselección de plan
       const alturaHeader = document.querySelector('.cabecera-landing')?.offsetHeight ?? 72;
 
       document.querySelectorAll('a[href^="#"]').forEach(enlace => {
@@ -389,7 +347,6 @@
             listaMenu.classList.remove('activo');
           }
 
-          // Si el enlace viene de una tarjeta de plan, preselecciona el plan en el formulario
           const planElegido = enlace.dataset.plan;
           if (planElegido) {
             const selectPlan = document.getElementById('cf-plan');
@@ -398,7 +355,6 @@
         });
       });
 
-      // Animación al hacer scroll
       const observador = new IntersectionObserver((entradas) => {
         entradas.forEach(entrada => {
           if (entrada.isIntersecting) {
@@ -413,7 +369,6 @@
 
       document.querySelectorAll('.animar').forEach(el => observador.observe(el));
 
-      // Toggle facturación mensual / anual
       const btnMensual = document.getElementById('btn-mensual');
       const btnAnual = document.getElementById('btn-anual');
       if (btnMensual && btnAnual) {
@@ -434,11 +389,10 @@
           btnMensual.classList.remove('activo');
           cantidades.forEach(el => el.textContent = el.dataset.anual);
           notasMensual.forEach(el => el.style.display = 'none');
-          notasAnual.forEach(el => el.style.display = '');
+          notasAnual.forEach(el => el.style.display = 'block');
         });
       }
 
-      // Formulario de contacto SaaS
       const formContacto = document.getElementById('form-contacto');
       if (formContacto) {
         formContacto.addEventListener('submit', async (e) => {
@@ -460,7 +414,6 @@
           feedback.innerHTML = '';
           feedback.className = '';
 
-          // URL relativa funciona tanto en localhost como en producción
           const endpoint = new URL('controladores/contacto_landing.php', window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/'));
 
           try {
@@ -492,19 +445,14 @@
         });
       }
 
-
-      // Asegurar que el video se reproduce cuando la sección es visible
       const video = document.querySelector('#visual video');
       if (video) {
         const reproducirVideo = () => {
           const promesa = video.play();
           if (promesa !== undefined) {
-            promesa.catch(() => {
-              // Algunos navegadores bloquean autoplay hasta interacción del usuario
-            });
+            promesa.catch(() => {});
           }
         };
-        // Intentar reproducir inmediatamente y cuando la sección se vuelve visible
         reproducirVideo();
         const observerVideo = new IntersectionObserver((entries) => {
           entries.forEach(entry => {

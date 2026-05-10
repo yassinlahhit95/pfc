@@ -10,54 +10,54 @@ if (isset($_POST['actualizarReto'])) {
     $fechaFinDelReto = trim($_POST['fechaFinReto']);
     $listaModulosAsociados = $_POST['modulosReto'] ?? [];
 
-    $listaErroresValidacion = [];
+    $errores = [];
 
     if (empty($nombreRetoActualizar)) {
-        $listaErroresValidacion['nombreReto'] = "El nombre es obligatorio.";
+        $errores['nombreReto'] = "El nombre es obligatorio.";
     }
     if (empty($horasDelReto)) {
-        $listaErroresValidacion['horasReto'] = "Las horas son obligatorias.";
+        $errores['horasReto'] = "Las horas son obligatorias.";
     } else {
         if (!is_numeric($horasDelReto)) {
-            $listaErroresValidacion['horasReto'] = "Las horas deben ser un número.";
+            $errores['horasReto'] = "Las horas deben ser un número.";
         }
     }
     if (empty($fechaInicioDelReto)) {
-        $listaErroresValidacion['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
+        $errores['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
     }
     if (empty($fechaFinDelReto)) {
-        $listaErroresValidacion['fechaFinReto'] = "La fecha de fin es obligatoria.";
+        $errores['fechaFinReto'] = "La fecha de fin es obligatoria.";
     } else if (!empty($fechaInicioDelReto) && $fechaFinDelReto < $fechaInicioDelReto) {
-        $listaErroresValidacion['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
+        $errores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
     }
 
     if (!empty($fechaInicioDelReto) && !empty($fechaFinDelReto) && !empty($horasDelReto) && is_numeric($horasDelReto) && $fechaInicioDelReto <= $fechaFinDelReto) {
-        $begin = new DateTime($fechaInicioDelReto);
-        $end = new DateTime($fechaFinDelReto);
+        $fechaInicioObj = new DateTime($fechaInicioDelReto);
+        $fechaFinObj = new DateTime($fechaFinDelReto);
         $diasLaborables = 0;
-        while ($begin <= $end) {
-            if ($begin->format('N') < 6) {
+        while ($fechaInicioObj <= $fechaFinObj) {
+            if ($fechaInicioObj->format('N') < 6) {
                 $diasLaborables++;
             }
-            $begin->modify('+1 day');
+            $fechaInicioObj->modify('+1 day');
         }
         $maxHorasPermitidas = $diasLaborables * 6;
         if ($horasDelReto > $maxHorasPermitidas) {
-            $listaErroresValidacion['horasReto'] = "Las horas estimadas superan el máximo de $maxHorasPermitidas h para el periodo seleccionado (6h/día laborable).";
+            $errores['horasReto'] = "Las horas estimadas superan el máximo de $maxHorasPermitidas h para el periodo seleccionado (6h/día laborable).";
         }
     }
     if (empty($listaModulosAsociados)) {
-        $listaErroresValidacion['modulosReto'] = "Debe seleccionar al menos un módulo.";
+        $errores['modulosReto'] = "Debe seleccionar al menos un módulo.";
     } else if (is_numeric($horasDelReto)) {
         foreach ($listaModulosAsociados as $idModuloParaValidar) {
             if (!comprobarHorasDisponiblesModulo($idModuloParaValidar, $horasDelReto, $idRetoActualizar)) {
-                $listaErroresValidacion['modulosReto'] = "Un módulo seleccionado no tiene suficientes horas.";
+                $errores['modulosReto'] = "Un módulo seleccionado no tiene suficientes horas.";
                 break;
             }
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, $listaModulosAsociados)) {
             $_SESSION['exito'] = "Reto actualizado correctamente.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
@@ -65,7 +65,7 @@ if (isset($_POST['actualizarReto'])) {
         }
         $_SESSION['error'] = "No se pudo actualizar el reto o no hubo cambios.";
     } else {
-        $_SESSION['errores'] = $listaErroresValidacion;
+        $_SESSION['errores'] = $errores;
         
         $datosParaSesion = $_POST;
         $datosParaSesion['fechaInicio'] = $_POST['fechaInicioReto'];

@@ -1,9 +1,11 @@
 <?php
+ob_start();
 session_start();
 require_once __DIR__ . "/../../modelos/directores.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 
+ob_clean();
 header('Content-Type: application/json');
 
 $datosRecibidos = json_decode(file_get_contents('php://input'), true);

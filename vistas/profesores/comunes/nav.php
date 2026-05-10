@@ -11,6 +11,8 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $idProf = $_SESSION['idProfesor'];
 
@@ -19,6 +21,8 @@ $ciclos = contarCiclosDeProfesor($idProf);
 $mensajes = contarMensajesDeProfesor($idProf);
 $sinLeer = contarMensajesNoLeidosProfesor($idProf);
 $tfgs = contarTFGsDeProfesor($idProf);
+$modulos = count(obtenerModulosDeProfesor($idProf));
+$retos = count(obtenerRetosDeProfesor($idProf));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -79,10 +83,12 @@ $tfgs = contarTFGsDeProfesor($idProf);
 
                 <a href="../modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
+                    <span class="etiqueta-contador"><?= $modulos ?></span>
                 </a>
 
                 <a href="../retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS</span>
+                    <span class="etiqueta-contador"><?= $retos ?></span>
                 </a>
 
                 <a href="../calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">

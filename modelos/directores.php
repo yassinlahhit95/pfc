@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarDirectores() {
@@ -101,7 +101,7 @@ function obtenerTokensDirectores() {
 
     $listaTokens = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        if (!empty($fila['fcm_token'])) {
+        if ($fila['fcm_token'] != null) {
             $listaTokens[] = $fila['fcm_token'];
         }
     }
@@ -139,7 +139,10 @@ function obtenerTokenFCMDirector($idDirector) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    $token = $fila['fcm_token'] ?? null;
+    $token = null;
+    if ($fila != null && $fila['fcm_token'] != null) {
+        $token = $fila['fcm_token'];
+    }
     mysqli_close($con);
     return $token;
 }

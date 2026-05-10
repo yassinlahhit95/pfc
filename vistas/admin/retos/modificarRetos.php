@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/admin/retos/actualizar.php" id="formReto">
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
         
-        <div class="formulario-cuadricula" style="grid-template-columns: 1fr;">
+        <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label for="nombreReto">Nombre del Reto *</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>">

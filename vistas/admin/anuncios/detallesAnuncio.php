@@ -32,26 +32,25 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
     
     <div class="fila-detalle">
-        <div class="etiqueta-detalle"><i class="fas fa-calendar-alt"></i> Publicado</div>
+        <div class="etiqueta-detalle">Publicado</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></div>
     </div>
 
     <div class="fila-detalle">
-        <div class="etiqueta-detalle"><i class="fas fa-user-friends"></i> Dirigido a</div>
+        <div class="etiqueta-detalle">Dirigido a</div>
         <div class="valor-detalle"><span class="estado-bolita activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
     </div>
 
-    <div class="fila-detalle">
-        <div class="etiqueta-detalle"><i class="fas fa-hourglass-end"></i> Expira el</div>
-        <div class="valor-detalle"><?= date('d/m/Y', strtotime($anuncio['fechaExpiracion'])) ?></div>
-    </div>
-    
     <div class="margen-arriba">
-        <div class="titulo-tarjeta">
-            <h3>Contenido del Anuncio</h3>
-        </div>
-        <div class="tarjeta-gris-suave p-20 pre-wrap font-size-11 line-height-16">
-            <?= $anuncio['contenidoAnuncio'] ?>
+        <div class="fila-detalle">
+            <div class="etiqueta-detalle">Contenido</div>
+            <div class="valor-detalle">
+                <?php if (!empty($anuncio['contenidoAnuncio'])) { ?>
+                    <?= $anuncio['contenidoAnuncio'] ?>
+                <?php } else { ?>
+                    <span class="texto-atenuado">Sin contenido.</span>
+                <?php } ?>
+            </div>
         </div>
     </div>
 

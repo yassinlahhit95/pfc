@@ -3,53 +3,53 @@ session_start();
 require_once "../../../modelos/profesores.php";
 
 if (isset($_POST['actualizarPerfil'])) {
-    $idProf = trim($_POST['idProfesor']);
-    $nom = trim($_POST['nombreProfesor']);
-    $eml = strtolower(trim($_POST['emailProfesor']));
-    $tel = trim($_POST['telefonoProfesor']);
-    
-    $pwdAct = trim($_POST['current_password']);
-    $pwdNva = trim($_POST['new_password']);
+    $idProfesor = trim($_POST['idProfesor']);
+    $nombre = trim($_POST['nombreProfesor']);
+    $email = strtolower(trim($_POST['emailProfesor']));
+    $telefono = trim($_POST['telefonoProfesor']);
 
-    $errs = [];
+    $passwordActual = trim($_POST['current_password']);
+    $passwordNueva = trim($_POST['new_password']);
 
-    if (empty($idProf)) {
+    $errores = [];
+
+    if (empty($idProfesor)) {
         header("Location: ../../../vistas/profesores/perfil/ver.php");
         exit;
     }
 
-    if (empty($nom)) $errs['nombreProfesor'] = "El nombre es obligatorio.";
-    if (empty($eml)) $errs['emailProfesor'] = "El correo es obligatorio.";
-    else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $eml)) $errs['emailProfesor'] = "Formato inválido.";
-    if (!empty($tel) && !is_numeric($tel)) $errs['telefonoProfesor'] = "Debe ser un número.";
+    if (empty($nombre)) $errores['nombreProfesor'] = "El nombre es obligatorio.";
+    if (empty($email)) $errores['emailProfesor'] = "El correo es obligatorio.";
+    else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) $errores['emailProfesor'] = "Formato inválido.";
+    if (!empty($telefono) && !is_numeric($telefono)) $errores['telefonoProfesor'] = "Debe ser un número.";
 
-    if (!empty($pwdNva)) {
-        if (empty($pwdAct)) {
-            $errs['current_password'] = "Ingresa la contraseña actual.";
+    if (!empty($passwordNueva)) {
+        if (empty($passwordActual)) {
+            $errores['current_password'] = "Ingresa la contraseña actual.";
         } else {
-            $prof = obtenerProfesorPorId($idProf);
-            if (!$prof || $prof['password'] !== $pwdAct) {
-                $errs['current_password'] = "Contraseña actual incorrecta.";
-            } else if (strlen($pwdNva) < 6) {
-                $errs['new_password'] = "Mínimo 6 caracteres.";
+            $datosProfesor = obtenerProfesorPorId($idProfesor);
+            if (!$datosProfesor || $datosProfesor['password'] !== $passwordActual) {
+                $errores['current_password'] = "Contraseña actual incorrecta.";
+            } else if (strlen($passwordNueva) < 6) {
+                $errores['new_password'] = "Mínimo 6 caracteres.";
             }
         }
     }
 
-    if (!empty($errs)) {
-        $_SESSION['errores'] = $errs;
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_perfil'] = $_POST;
         header("Location: ../../../vistas/profesores/perfil/editar.php");
         exit;
     }
 
-    if (!empty($pwdNva)) {
-        actualizarPasswordProfesor($idProf, $pwdNva);
+    if (!empty($passwordNueva)) {
+        actualizarPasswordProfesor($idProfesor, $passwordNueva);
     }
 
-    $res = actualizarPerfilProfesor($idProf, $nom, $eml, $tel);
-    
-    if ($res) {
+    $resultado = actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono);
+
+    if ($resultado) {
         $_SESSION['exito'] = "Perfil actualizado correctamente.";
         header("Location: ../../../vistas/profesores/perfil/ver.php");
         exit;

@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/retos/insertar.php" method="POST" id="formReto">
-        <div class="formulario-cuadricula" style="grid-template-columns: 1fr;">
+        <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label for="nombreReto">Nombre del Reto *</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">

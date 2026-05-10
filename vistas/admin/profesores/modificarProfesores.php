@@ -32,7 +32,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">
         <input type="hidden" name="idProfesor" value="<?= $id_profesor ?>">
         
-        <div class="formulario-cuadricula" style="grid-template-columns: 1fr;">
+        <div class="formulario-cuadricula">
             <div class="campo-formulario">
                 <label for="nombreProfesor">Nombre Completo *</label>
                 <input type="text" name="nombreProfesor" id="nombreProfesor" value="<?= $profesor['nombreProfesor'] ?>">

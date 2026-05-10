@@ -35,14 +35,14 @@ if (isset($_POST['guardarReto'])) {
     }
 
     if (!empty($fechaInicioReto) && !empty($fechaFinReto) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicioReto <= $fechaFinReto) {
-        $begin = new DateTime($fechaInicioReto);
-        $end = new DateTime($fechaFinReto);
+        $fechaInicioObj = new DateTime($fechaInicioReto);
+        $fechaFinObj = new DateTime($fechaFinReto);
         $diasLaborables = 0;
-        while ($begin <= $end) {
-            if ($begin->format('N') < 6) {
+        while ($fechaInicioObj <= $fechaFinObj) {
+            if ($fechaInicioObj->format('N') < 6) {
                 $diasLaborables++;
             }
-            $begin->modify('+1 day');
+            $fechaInicioObj->modify('+1 day');
         }
         $maxHorasPermitidas = $diasLaborables * 6;
         if ($horasReto > $maxHorasPermitidas) {

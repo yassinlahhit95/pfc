@@ -77,7 +77,11 @@ function contarAnunciosQueEstanActivos() {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    $total = 0;
+    if ($fila != null && $fila['total'] != null) {
+        $total = intval($fila['total']);
+    }
+    return $total;
 }
 
 function listarAnunciosPorRol($rolUsuario) {

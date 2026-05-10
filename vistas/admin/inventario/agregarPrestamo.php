@@ -9,8 +9,15 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $articulos_disponibles = listarArticulos();
-$todos_los_estudiantes = listarEstudiantes();
 $todos_los_ciclos = listarTodosLosCiclos();
+
+$idCicloFiltro = $_GET['idCiclo'] ?? '';
+
+if (!empty($idCicloFiltro)) {
+    $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloFiltro);
+} else {
+    $todos_los_estudiantes = listarEstudiantes();
+}
 
 $error = $_SESSION['error'] ?? "";
 $errores = $_SESSION['errores'] ?? [];
@@ -29,6 +36,20 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 <?php } ?>
 
 <div class="tarjeta-blanca">
+    <form method="GET" action="agregarPrestamo.php" class="margen-abajo">
+        <div class="campo-formulario">
+            <label>Filtrar Estudiantes por Ciclo:</label>
+            <select name="idCiclo" onchange="this.form.submit()">
+                <option value="">-- Todos los ciclos --</option>
+                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= $ciclo['nombreCiclo'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+    </form>
+
     <form method="POST" action="../../../controladores/admin/inventario/prestar.php">
         <div class="formulario-cuadricula">
 
@@ -74,7 +95,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 
         </div>
 
-        <div class="margen-arriba disposicion-flexible separacion-media">
+        <div class="form-acciones">
             <button type="submit" name="registrarPrestamo" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Préstamo
             </button>
@@ -86,7 +107,3 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

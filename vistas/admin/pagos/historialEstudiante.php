@@ -10,7 +10,7 @@ if (empty($idEstudiante)) {
 }
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
-$pagos = obtenerPagosPorEstudiante($idEstudiante);
+$listaPagos = obtenerPagosPorEstudiante($idEstudiante);
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -45,10 +45,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($pagos) || is_numeric($pagos)) { ?>
+                <?php if (empty($listaPagos)) { ?>
                     <tr><td colspan="4" class="sin-datos">No hay registros de pagos para este estudiante</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($pagos as $p) { ?>
+                    <?php foreach ($listaPagos as $p) { ?>
                     <tr>
                         <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
                         <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>

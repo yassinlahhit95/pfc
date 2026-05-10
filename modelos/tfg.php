@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosTFGs() {
@@ -60,7 +60,7 @@ function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
     $con = obtenerConexion();
     $fechaHoraActual = date('Y-m-d H:i:s');
 
-    if (!empty($nombreArchivo)) {
+    if ($nombreArchivo != null) {
         $sql = "UPDATE estudiantes SET tituloTFG = ?, archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "sssi", $tituloTFG, $nombreArchivo, $fechaHoraActual, $idEstudiante);
@@ -91,7 +91,11 @@ function contarTFGsSubidos() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    $total = 0;
+    if ($fila != null && $fila['total'] != null) {
+        $total = intval($fila['total']);
+    }
+    return $total;
 }
 
 function contarTFGsDeProfesor($idProfesor) {
@@ -103,7 +107,11 @@ function contarTFGsDeProfesor($idProfesor) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    $total = 0;
+    if ($fila != null && $fila['total'] != null) {
+        $total = intval($fila['total']);
+    }
+    return $total;
 }
 
 function listarTFGsPorProfesor($idProfesor) {
@@ -131,7 +139,7 @@ function eliminarArchivoTFG($idEstudiante) {
     $resultadoBusqueda = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultadoBusqueda);
 
-    if ($fila && !empty($fila['archivoTFG'])) {
+    if ($fila != null && $fila['archivoTFG'] != null) {
         $rutaFisica = __DIR__ . "/../public/uploads/pfc/" . $fila['archivoTFG'];
         if (file_exists($rutaFisica)) {
             unlink($rutaFisica);

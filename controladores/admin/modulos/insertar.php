@@ -7,31 +7,31 @@ if (isset($_POST['guardarModulo'])) {
     $idCicloNuevoModulo = trim($_POST['idCiclo']);
     $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
 
-    $listaErroresValidacion = [];
+    $errores = [];
 
     if (empty($nombreNuevoModulo)) {
-        $listaErroresValidacion['nombreModulo'] = "Nombre de módulo obligatorio.";
+        $errores['nombreModulo'] = "Nombre de módulo obligatorio.";
     }
     
     if (empty($idCicloNuevoModulo)) {
-        $listaErroresValidacion['idCiclo'] = "Seleccione un ciclo.";
+        $errores['idCiclo'] = "Seleccione un ciclo.";
     }
     
     if (empty($horasMaximasNuevoModulo)) {
-        $listaErroresValidacion['horasMaximas'] = "Horas máximas obligatorias.";
+        $errores['horasMaximas'] = "Horas máximas obligatorias.";
     } else {
         if (!is_numeric($horasMaximasNuevoModulo)) {
-            $listaErroresValidacion['horasMaximas'] = "Las horas deben ser numéricas.";
+            $errores['horasMaximas'] = "Las horas deben ser numéricas.";
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (checkModuloExistente($nombreNuevoModulo, $idCicloNuevoModulo)) {
-            $listaErroresValidacion['nombreModulo'] = "Este módulo ya existe en el ciclo seleccionado.";
+            $errores['nombreModulo'] = "Este módulo ya existe en el ciclo seleccionado.";
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
             $_SESSION['exito'] = "Módulo registrado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
@@ -39,7 +39,7 @@ if (isset($_POST['guardarModulo'])) {
         }
         $_SESSION['error'] = "No se pudo registrar el módulo.";
     } else {
-        $_SESSION['errores'] = $listaErroresValidacion;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_modulo'] = $_POST;
     }
 

@@ -51,9 +51,9 @@ if (isset($_POST['guardarPago'])) {
             $proximaFecha = $fechaLimite;
         }
 
-        $ok = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
+        $resultado = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
 
-        if ($ok) {
+        if ($resultado) {
             $_SESSION['exito'] = "Pago registrado correctamente.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;

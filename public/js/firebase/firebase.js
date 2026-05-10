@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
 import { mostrarNotificacionUI } from "./notificaciones-ui.js";
 
 const firebaseConfig = {
@@ -8,8 +8,7 @@ const firebaseConfig = {
   projectId: "pfc1-5c23c",
   storageBucket: "pfc1-5c23c.firebasestorage.app",
   messagingSenderId: "204025751806",
-  appId: "1:204025751806:web:45c4d0f9a705a0083c9daf",
-  measurementId: "G-NH8NP9TKHT"
+  appId: "1:204025751806:web:45c4d0f9a705a0083c9daf"
 };
 
 const app = initializeApp(firebaseConfig);

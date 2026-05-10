@@ -35,6 +35,9 @@ if (isset($_POST['actualizarDirector'])) {
     } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
         $errores['telefonoDirector'] = "El teléfono debe tener exactamente 9 dígitos.";
     }
+    if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
+        $errores['codigoPostalDirector'] = "El código postal debe ser numérico.";
+    }
 
     if (empty($errores)) {
         if (checkDirectorExistente($dni, $email, $idDirector)) {

@@ -1,12 +1,35 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (isset($_POST['enviarMensaje'])) {
-    $idEstudianteDestino = $_POST['idEstudiante'] ?? null;
-    $idProfesorDestino = $_POST['idProfesor'] ?? null;
-    $rolEmisorMensaje = $_POST['emisor_rol'] ?? 'admin';
+    $idEstudianteDestino = '';
+    if (!empty($_POST['idEstudiante'])) {
+        $idEstudianteDestino = trim($_POST['idEstudiante']);
+    }
+
+    $idProfesorDestino = '';
+    if (!empty($_POST['idProfesor'])) {
+        $idProfesorDestino = trim($_POST['idProfesor']);
+    }
+
+    $rolEmisorMensaje = 'admin';
+    if (!empty($_POST['emisor_rol'])) {
+        $rolEmisorMensaje = trim($_POST['emisor_rol']);
+    }
+
+    $tipoDeDestinatario = 'profesor';
+    if (!empty($_POST['tipoDestinatario'])) {
+        $tipoDeDestinatario = trim($_POST['tipoDestinatario']);
+    }
+
+    $idCicloMasivo = '';
+    if (!empty($_POST['idCicloMasivo'])) {
+        $idCicloMasivo = trim($_POST['idCicloMasivo']);
+    }
+
     $asuntoMensaje = trim($_POST['asunto']);
     $descripcionMensaje = trim($_POST['descripcion']);
 
@@ -14,7 +37,8 @@ if (isset($_POST['enviarMensaje'])) {
 
     $errores = [];
 
-    if (empty($idEstudianteDestino) && empty($idProfesorDestino)) {
+    $esMensajeMasivo = ($tipoDeDestinatario == 'estudiante' && !empty($idCicloMasivo));
+    if (empty($idEstudianteDestino) && empty($idProfesorDestino) && !$esMensajeMasivo) {
         $errores['destinatario'] = "Debe seleccionar un destinatario específico.";
     }
     if (empty($asuntoMensaje)) {
@@ -26,16 +50,47 @@ if (isset($_POST['enviarMensaje'])) {
 
     if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
-        $_SESSION['error'] = "Por favor, corrija los errores en el formulario.";
-        header("Location: ../../../vistas/admin/mensajes/agregar.php?tipoDestinatario=" . ($idEstudianteDestino ? 'estudiante' : 'profesor'));
+
+        $urlRedireccion = "../../../vistas/admin/mensajes/agregar.php?tipoDestinatario=" . $tipoDeDestinatario;
+        if (!empty($idCicloMasivo)) {
+            $urlRedireccion = $urlRedireccion . "&idCiclo=" . $idCicloMasivo;
+        }
+        header("Location: " . $urlRedireccion);
         exit;
     }
 
-    if (insertarNuevoMensaje($idEstudianteDestino, $idProfesorDestino, $asuntoMensaje, $descripcionMensaje, date('Y-m-d'), $rolEmisorMensaje)) {
-        $idDestinatarioFinal = $idEstudianteDestino ?: $idProfesorDestino;
-        $rolDestinatarioFinal = $idEstudianteDestino ? 'estudiante' : 'profesor';
+    if (!empty($idCicloMasivo) && empty($idEstudianteDestino) && $tipoDeDestinatario == 'estudiante') {
+        $estudiantesDelCiclo = listarEstudiantesPorCiclo($idCicloMasivo);
+        $mensajesEnviados = 0;
 
-        if ($idDestinatarioFinal) {
+        foreach ($estudiantesDelCiclo as $est) {
+            if (insertarNuevoMensaje($est['idEstudiante'], '', $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje)) {
+                $mensajesEnviados++;
+                $tokenDispositivo = obtenerTokenUsuario($est['idEstudiante'], 'estudiante');
+                if ($tokenDispositivo) {
+                    enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje);
+                }
+            }
+        }
+
+        unset($_SESSION['datos_mensaje']);
+        $_SESSION['exito'] = "Mensaje enviado a " . $mensajesEnviados . " estudiantes del ciclo.";
+        header("Location: ../../../vistas/admin/mensajes/lista.php");
+        exit;
+    }
+
+    if (insertarNuevoMensaje($idEstudianteDestino, $idProfesorDestino, $asuntoMensaje, $descripcionMensaje, $rolEmisorMensaje)) {
+        $idDestinatarioFinal = $idEstudianteDestino;
+        if (empty($idDestinatarioFinal)) {
+            $idDestinatarioFinal = $idProfesorDestino;
+        }
+
+        $rolDestinatarioFinal = 'profesor';
+        if (!empty($idEstudianteDestino)) {
+            $rolDestinatarioFinal = 'estudiante';
+        }
+
+        if (!empty($idDestinatarioFinal)) {
             $tokenDispositivo = obtenerTokenUsuario($idDestinatarioFinal, $rolDestinatarioFinal);
             if ($tokenDispositivo) {
                 enviarNotificacionFirebase($tokenDispositivo, "Nuevo Mensaje: " . $asuntoMensaje, $descripcionMensaje);

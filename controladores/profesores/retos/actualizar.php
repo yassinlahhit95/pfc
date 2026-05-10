@@ -4,40 +4,40 @@ require_once "../../../modelos/retos.php";
 
 if (isset($_POST['actualizarReto'])) {
     $idReto = trim($_POST['idReto']);
-    $nom = trim($_POST['nombreReto']);
-    $fIni = trim($_POST['fechaInicio']);
-    $fFin = trim($_POST['fechaFin']);
-    $hrs = trim($_POST['horasReto']);
-    $mods = $_POST['modulos'] ?? [];
+    $nombreReto = trim($_POST['nombreReto']);
+    $fechaInicio = trim($_POST['fechaInicio']);
+    $fechaFin = trim($_POST['fechaFin']);
+    $horasReto = trim($_POST['horasReto']);
+    $modulosSeleccionados = $_POST['modulos'] ?? [];
 
-    $errs = [];
+    $errores = [];
 
     if (empty($idReto)) {
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
     }
 
-    if (empty($nom)) $errs['nombreReto'] = "El nombre del reto es obligatorio.";
-    if (empty($fIni)) $errs['fechaInicio'] = "La fecha de inicio es obligatoria.";
-    if (empty($fFin)) $errs['fechaFin'] = "La fecha de fin es obligatoria.";
-    if (empty($hrs)) {
-        $errs['horasReto'] = "Las horas son obligatorias.";
-    } elseif (!is_numeric($hrs)) {
-        $errs['horasReto'] = "Las horas deben ser un valor numérico.";
+    if (empty($nombreReto)) $errores['nombreReto'] = "El nombre del reto es obligatorio.";
+    if (empty($fechaInicio)) $errores['fechaInicio'] = "La fecha de inicio es obligatoria.";
+    if (empty($fechaFin)) $errores['fechaFin'] = "La fecha de fin es obligatoria.";
+    if (empty($horasReto)) {
+        $errores['horasReto'] = "Las horas son obligatorias.";
+    } elseif (!is_numeric($horasReto)) {
+        $errores['horasReto'] = "Las horas deben ser un valor numérico.";
     }
 
-    if (empty($mods)) {
-        $errs['modulos'] = "Debe seleccionar al menos un módulo para este reto.";
+    if (empty($modulosSeleccionados)) {
+        $errores['modulos'] = "Debe seleccionar al menos un módulo para este reto.";
     }
 
-    if (!empty($errs)) {
-        $_SESSION['errores'] = $errs;
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
         header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
         exit;
     }
 
-    $res = actualizarReto($idReto, $nom, $fIni, $fFin, $hrs, $mods);
-    if ($res) {
+    $resultado = actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $modulosSeleccionados);
+    if ($resultado) {
         $_SESSION['exito'] = "Reto actualizado correctamente.";
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;

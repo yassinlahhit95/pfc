@@ -57,10 +57,9 @@ function listarPrestamosActivos() {
 
 function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
     $con = obtenerConexion();
-    $serie = strtoupper($numeroSerie);
     $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $serie, $idExcluir);
+    mysqli_stmt_bind_param($stmt, "si", $numeroSerie, $idExcluir);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
@@ -73,10 +72,9 @@ function insertarArticulo($nombreArticulo, $numeroSerie) {
         return false;
     }
     $con = obtenerConexion();
-    $serieMayusculas = strtoupper($numeroSerie);
     $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) VALUES (?, ?, 'disponible')";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $nombreArticulo, $serieMayusculas);
+    mysqli_stmt_bind_param($stmt, "ss", $nombreArticulo, $numeroSerie);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;

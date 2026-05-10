@@ -11,7 +11,6 @@ $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../modelos/conectar.php";
 
 $listaDeModulosActuales = listarModulos();
 
@@ -58,23 +57,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td colspan="6" class="sin-datos">No hay módulos registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeModulosActuales as $moduloIndividual) { ?>
-                    <?php
-                        $conexionTemporal = obtenerConexion();
-                        $idModuloActual = $moduloIndividual['idModulo'];
-
-                        $sqlProfesores = "SELECT profesores.nombreProfesor
-                                          FROM profesores
-                                          JOIN profesor_modulo ON profesores.idProfesor = profesor_modulo.idProfesor
-                                          WHERE profesor_modulo.idModulo = $idModuloActual";
-
-                        $resultadoProfesores = mysqli_query($conexionTemporal, $sqlProfesores);
-                        $nombresProfesores = [];
-
-                        while($datosProfesor = mysqli_fetch_assoc($resultadoProfesores)) {
-                            $nombresProfesores[] = strtoupper($datosProfesor['nombreProfesor']);
-                        }
-                        mysqli_close($conexionTemporal);
+                    <?php foreach ($listaDeModulosActuales as $moduloIndividual) {
+                        $nombresProfesores = obtenerNombresProfesoresDeModulo($moduloIndividual['idModulo']);
                     ?>
                     <tr>
                         <td><?= $moduloIndividual['idModulo'] ?></td>
@@ -92,7 +76,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                 </span>
                             <?php } else { ?>
                                 <div class="texto-pequeno">
-                                    <?= implode(", ", $nombresProfesores) ?>
+                                    <?= implode(", ", array_map('strtoupper', $nombresProfesores)) ?>
                                 </div>
                             <?php } ?>
                         </td>

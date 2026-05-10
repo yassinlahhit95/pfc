@@ -16,7 +16,6 @@ if (!$mensaje) {
     exit;
 }
 
-// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (Administración)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'admin' && (($mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] === NULL) || ($mensaje['emisor_rol'] == 'profesor' && $mensaje['idEstudiante'] === NULL))) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;

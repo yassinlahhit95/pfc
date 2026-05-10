@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosMensajes() {
@@ -53,7 +53,7 @@ function responderMensaje($idReclamacion, $contenidoRespuesta) {
     return $resultado;
 }
 
-function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fecha, $rolEmisor = 'estudiante') {
+function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $rolEmisor = 'estudiante') {
     $con = obtenerConexion();
     $fechaHoraActual = date('Y-m-d H:i:s');
 
@@ -115,7 +115,7 @@ function contarMensajesNoLeidosAdmin() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarMensajesNoLeidosProfesor($idProfesor) {
@@ -127,7 +127,7 @@ function contarMensajesNoLeidosProfesor($idProfesor) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarMensajesDeProfesor($idProfesor) {
@@ -139,7 +139,7 @@ function contarMensajesDeProfesor($idProfesor) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarMensajesNoLeidosEstudiante($idEstudiante) {
@@ -151,7 +151,7 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 ?>

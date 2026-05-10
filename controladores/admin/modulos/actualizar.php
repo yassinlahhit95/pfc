@@ -8,31 +8,31 @@ if (isset($_POST['guardarModulo'])) {
     $idCicloAsociado = trim($_POST['idCiclo']);
     $horasMaximasModulo = trim($_POST['horasMaximas']);
 
-    $listaErroresValidacion = [];
+    $errores = [];
 
     if (empty($nombreModuloActualizar)) {
-        $listaErroresValidacion['nombreModulo'] = "Nombre de módulo obligatorio.";
+        $errores['nombreModulo'] = "Nombre de módulo obligatorio.";
     }
     
     if (empty($idCicloAsociado)) {
-        $listaErroresValidacion['idCiclo'] = "Seleccione un ciclo.";
+        $errores['idCiclo'] = "Seleccione un ciclo.";
     }
     
     if (empty($horasMaximasModulo)) {
-        $listaErroresValidacion['horasMaximas'] = "Horas máximas obligatorias.";
+        $errores['horasMaximas'] = "Horas máximas obligatorias.";
     } else {
         if (!is_numeric($horasMaximasModulo)) {
-            $listaErroresValidacion['horasMaximas'] = "Las horas deben ser numéricas.";
+            $errores['horasMaximas'] = "Las horas deben ser numéricas.";
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
-            $listaErroresValidacion['nombreModulo'] = "Este módulo ya existe en este ciclo.";
+            $errores['nombreModulo'] = "Este módulo ya existe en este ciclo.";
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
             $_SESSION['exito'] = "Módulo actualizado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
@@ -40,7 +40,7 @@ if (isset($_POST['guardarModulo'])) {
         }
         $_SESSION['error'] = "No se pudo actualizar el módulo.";
     } else {
-        $_SESSION['errores'] = $listaErroresValidacion;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_modulo'] = $_POST;
     }
 

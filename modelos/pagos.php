@@ -91,7 +91,7 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    $pagado = (float)$fila['totalPagado'];
+    $pagado = floatval($fila['totalPagado']);
 
     $sql = "SELECT c.precioCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -99,7 +99,7 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    $precio = (float)$fila['precioCiclo'];
+    $precio = floatval($fila['precioCiclo']);
 
     mysqli_close($con);
     return [
@@ -129,7 +129,6 @@ function obtenerPagoPorId($idPago) {
     $pago = mysqli_fetch_assoc($resultado);
 
     if ($pago) {
-        // Mantenemos alias por compatibilidad
         $pago['conceptoPago'] = $pago['tipoPago'];
         $pago['cantidadPago'] = $pago['monto'];
     }
@@ -147,6 +146,10 @@ function contarPagosEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    $total = 0;
+    if ($fila != null && $fila['total'] != null) {
+        $total = intval($fila['total']);
+    }
+    return $total;
 }
 ?>

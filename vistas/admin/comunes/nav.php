@@ -13,7 +13,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $estudiantes = contarEstudiantes();
 $profesores = contarProfesores();
 $directores = contarDirectores();
-$pagos = contarPagos();
+$pagos = contarPagosRealizados();
 $anuncios = contarAnuncios();
 $mensajes = contarReclamaciones();
 $sinLeer = contarMensajesNoLeidosAdmin();

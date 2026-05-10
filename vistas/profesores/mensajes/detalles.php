@@ -21,7 +21,6 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $profeActual = obtenerProfesorPorId($_SESSION['idProfesor']);
 $nombreProfeParaVista = $profeActual['nombreProfesor'] ?? 'Profesor';
 
-// Marcar como leído automáticamente SOLO si el que abre el mensaje es el receptor (no el emisor)
 if (!$mensaje['leido'] && $mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] == $_SESSION['idProfesor']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;

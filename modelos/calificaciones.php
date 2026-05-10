@@ -1,6 +1,10 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/modulos.php";
+require_once __DIR__ . "/estudiantes.php";
+require_once __DIR__ . "/retos.php";
 
+// Devuelve las notas de un estudiante en un módulo concreto
 function obtenerNotasModulo($idEstudiante, $idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
@@ -8,11 +12,12 @@ function obtenerNotasModulo($idEstudiante, $idModulo) {
     mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $datosCalificaciones = mysqli_fetch_assoc($resultado);
+    $notas = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return $datosCalificaciones;
+    return $notas;
 }
 
+// Devuelve todas las calificaciones con el nombre del estudiante y del módulo
 function listarCalificacionesGeneral() {
     $con = obtenerConexion();
     $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
@@ -22,117 +27,136 @@ function listarCalificacionesGeneral() {
             ORDER BY e.idEstudiante ASC";
 
     $resultado = mysqli_query($con, $sql);
-    $listaCalificaciones = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaCalificaciones[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($con);
-    return $listaCalificaciones;
+    return $lista;
 }
 
+// Devuelve una calificación buscando por su ID
 function obtenerCalificacionPorId($idCalificacion) {
-    if (empty($idCalificacion) || !is_numeric($idCalificacion)) {
-        return null;
-    }
     $con = obtenerConexion();
     $sql = "SELECT * FROM calificaciones_modulos WHERE idCalificacion = ?";
     $stmt = mysqli_prepare($con, $sql);
-    $idCalificacion = (int)$idCalificacion;
     mysqli_stmt_bind_param($stmt, "i", $idCalificacion);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $datosCalificacion = mysqli_fetch_assoc($resultado);
+    $datos = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return $datosCalificacion;
+    return $datos;
 }
 
+// Elimina una calificación de la base de datos
 function eliminarCalificacion($idCalificacion) {
     $con = obtenerConexion();
     $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCalificacion);
-    $resultado = mysqli_stmt_execute($stmt);
+    $exito = mysqli_stmt_execute($stmt);
     mysqli_close($con);
-    return $resultado;
+    return $exito;
 }
 
+// Devuelve todas las calificaciones de un estudiante con el nombre de cada módulo
 function listarCalificacionesPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT cm.*, m.nombreModulo FROM calificaciones_modulos cm JOIN modulos m ON cm.idModulo = m.idModulo WHERE idEstudiante = ?";
+    $sql = "SELECT cm.*, m.nombreModulo
+            FROM calificaciones_modulos cm
+            JOIN modulos m ON cm.idModulo = m.idModulo
+            WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $listaEstudiante = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaEstudiante[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($con);
-    return $listaEstudiante;
+    return $lista;
 }
 
+// Devuelve las calificaciones del profesor con filtros opcionales por ciclo o módulo
 function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0) {
     $con = obtenerConexion();
 
-    // Solo permitimos visualizar las calificaciones de los ciclos/módulos que el profesor imparte
-    $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
-            FROM calificaciones_modulos cm
-            JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
-            JOIN modulos m ON cm.idModulo = m.idModulo
-            WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)";
-
-    $types = "i";
-    $params = [$idProfesor];
-
-    if ($idCiclo > 0) {
-        $sql .= " AND m.idCiclo = ?";
-        $types .= "i";
-        $params[] = $idCiclo;
-    }
+    // Si se filtra por módulo concreto
     if ($idModulo > 0) {
-        $sql .= " AND m.idModulo = ?";
-        $types .= "i";
-        $params[] = $idModulo;
+        $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
+                FROM calificaciones_modulos cm
+                JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
+                JOIN modulos m ON cm.idModulo = m.idModulo
+                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                AND m.idModulo = ?
+                ORDER BY e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idModulo);
+
+    // Si se filtra por ciclo
+    } elseif ($idCiclo > 0) {
+        $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
+                FROM calificaciones_modulos cm
+                JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
+                JOIN modulos m ON cm.idModulo = m.idModulo
+                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                AND m.idCiclo = ?
+                ORDER BY e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idCiclo);
+
+    // Sin filtro, se devuelven todas las calificaciones del profesor
+    } else {
+        $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
+                FROM calificaciones_modulos cm
+                JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
+                JOIN modulos m ON cm.idModulo = m.idModulo
+                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                ORDER BY e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     }
 
-    $sql .= " ORDER BY e.nombreEstudiante ASC";
-
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $listaFiltrada = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaFiltrada[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($con);
-    return $listaFiltrada;
+    return $lista;
 }
 
+// Guarda las notas: si ya existen las actualiza, si no las crea nuevas
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones) {
     $con = obtenerConexion();
 
+    // Primero comprobamos si ya existe una fila para este estudiante y módulo
     $sqlBuscar = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
-    $stmtBuscar = mysqli_prepare($con, $sqlBuscar);
-    mysqli_stmt_bind_param($stmtBuscar, "ii", $idEstudiante, $idModulo);
-    mysqli_stmt_execute($stmtBuscar);
-    $resultado = mysqli_stmt_get_result($stmtBuscar);
+    $stmt = mysqli_prepare($con, $sqlBuscar);
+    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idModulo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($resultado) > 0) {
-        $sqlGuardar = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
-        $stmtGuardar = mysqli_prepare($con, $sqlGuardar);
-        mysqli_stmt_bind_param($stmtGuardar, "sssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
+        // Si ya existe, actualizamos los datos
+        $sql = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
+        $stmt2 = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt2, "sssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
     } else {
-        $sqlGuardar = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmtGuardar = mysqli_prepare($con, $sqlGuardar);
-        mysqli_stmt_bind_param($stmtGuardar, "iisssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
+        // Si no existe, insertamos una fila nueva
+        $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt2 = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt2, "iisssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
     }
 
-    $ok = mysqli_stmt_execute($stmtGuardar);
+    $exito = mysqli_stmt_execute($stmt2);
     mysqli_close($con);
-    return $ok;
+    return $exito;
 }
 
+// Devuelve los estudiantes de un módulo con su nota (puede estar vacía si aún no tiene)
 function listarCalificacionesPorModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev AS calificacion, cm.observaciones
@@ -153,130 +177,162 @@ function listarCalificacionesPorModulo($idModulo) {
     return $lista;
 }
 
-// --- LÓGICA DE NEGOCIO PARA RESULTADOS FINALES (75% Módulos / 25% Retos) ---
-
+// Calcula y devuelve el resumen final de todos los estudiantes de un ciclo
 function obtenerResultadosFinalesCiclo($idCiclo) {
-    require_once __DIR__ . "/modulos.php";
-    require_once __DIR__ . "/estudiantes.php";
-    require_once __DIR__ . "/retos.php";
-
     $listaEstudiantes = listarEstudiantesPorCiclo($idCiclo);
     $listaModulos = obtenerModulosPorCiclo($idCiclo);
     $listaResultados = [];
 
+    // Calculamos el resultado de cada estudiante y lo guardamos en la lista
     foreach ($listaEstudiantes as $estudiante) {
         $listaResultados[] = obtenerResultadosFinalesEstudiante($estudiante['idEstudiante'], $listaModulos);
     }
     return $listaResultados;
 }
 
+// Calcula el resultado final de un estudiante: medias, nota final y estado global
 function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null) {
-    require_once __DIR__ . "/modulos.php";
-    require_once __DIR__ . "/retos.php";
-    require_once __DIR__ . "/estudiantes.php";
 
-    if ($listaModulos === null) {
-        $datosEst = obtenerEstudiantePorId($idEstudiante);
-        $listaModulos = obtenerModulosPorCiclo($datosEst['idCiclo']);
-    } else {
-        $datosEst = obtenerEstudiantePorId($idEstudiante);
+    // Obtenemos los datos del estudiante para saber su nombre y su ciclo
+    $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+
+    // Si no nos pasan los módulos, los buscamos según el ciclo del estudiante
+    if ($listaModulos == null) {
+        $listaModulos = obtenerModulosPorCiclo($datosEstudiante['idCiclo']);
     }
 
-    $resumenEstudiante = [
-        'idEstudiante' => $idEstudiante,
-        'nombreEstudiante' => strtoupper($datosEst['nombreEstudiante']),
-        'nombreCiclo' => $datosEst['nombreCiclo'],
-        'detalles_modulos' => [],
-        'media_modulos' => 0,
-        'media_retos' => 0,
-        'promedio_global' => 0,
-        'estado_global' => 'PENDIENTE',
-        'tiene_suspensos' => false
-    ];
+    // Preparamos el array de resultados con los valores por defecto
+    $resumen = [];
+    $resumen['idEstudiante']     = $idEstudiante;
+    $resumen['nombreEstudiante'] = $datosEstudiante['nombreEstudiante'];
+    $resumen['nombreCiclo']      = $datosEstudiante['nombreCiclo'];
+    $resumen['detalles_modulos'] = [];
+    $resumen['media_modulos']    = 0;
+    $resumen['media_retos']      = 0;
+    $resumen['promedio_global']  = 0;
+    $resumen['estado_global']    = 'PENDIENTE';
+    $resumen['tiene_suspensos']  = false;
 
-    $sumaModulosPonderada = 0;
-    $sumaRetosPonderada = 0;
-    $contadorModulosEvaluados = 0;
-    $totalModulosCiclo = count($listaModulos);
+    // Variables para acumular los datos de todos los módulos
+    $sumaModulos     = 0;
+    $sumaRetos       = 0;
+    $modulosConNotas = 0;
+    $totalModulos    = count($listaModulos);
 
+    // Recorremos cada módulo del ciclo para calcular la nota del estudiante
     foreach ($listaModulos as $modulo) {
         $idModuloActual = $modulo['idModulo'];
 
-        // 1. Cálculo de Nota de Módulo (Recuperación incluida)
-        $datosNotas = obtenerNotasModulo($idEstudiante, $idModuloActual);
-        
-        $n1 = (isset($datosNotas['nota_1ev']) && is_numeric($datosNotas['nota_1ev'])) ? (float)$datosNotas['nota_1ev'] : null;
-        $n1f = (isset($datosNotas['nota_1final']) && is_numeric($datosNotas['nota_1final'])) ? (float)$datosNotas['nota_1final'] : null;
-        $n2 = (isset($datosNotas['nota_2ev']) && is_numeric($datosNotas['nota_2ev'])) ? (float)$datosNotas['nota_2ev'] : null;
-        $n2f = (isset($datosNotas['nota_2final']) && is_numeric($datosNotas['nota_2final'])) ? (float)$datosNotas['nota_2final'] : null;
+        // Obtenemos las notas guardadas del estudiante en este módulo
+        $notas = obtenerNotasModulo($idEstudiante, $idModuloActual);
 
-        // Lógica de recuperación: la nota final sustituye a la de evaluación si existe y es mayor (o simplemente si existe)
-        $def1 = ($n1f !== null) ? max($n1 ?? 0, $n1f) : $n1;
-        $def2 = ($n2f !== null) ? max($n2 ?? 0, $n2f) : $n2;
+        // Inicializamos las cuatro notas posibles como vacías
+        $nota1ev           = null;
+        $nota1recuperacion = null;
+        $nota2ev           = null;
+        $nota2recuperacion = null;
 
-        $sumaEv = 0;
-        $cantEv = 0;
-        if ($def1 !== null) { $sumaEv += $def1; $cantEv++; }
-        if ($def2 !== null) { $sumaEv += $def2; $cantEv++; }
-
-        $mediaNotasExamenes = ($cantEv > 0) ? $sumaEv / $cantEv : 0;
-
-        // 2. Media de Retos del Módulo
-        $mapaMediasRetos = listarCalificacionesRetoPorModulo($idModuloActual);
-        $mediaRetosModulo = (float)($mapaMediasRetos[$idEstudiante] ?? 0);
-
-        // 3. Cálculo de Nota Final del Módulo (75% Exámenes, 25% Retos)
-        $notaFinalModulo = ($mediaNotasExamenes * 0.75) + ($mediaRetosModulo * 0.25);
-
-        if ($cantEv === 0) {
-            $estadoModulo = "Pendiente";
-        } elseif ($notaFinalModulo >= 5) {
-            $estadoModulo = "Aprobado";
-        } else {
-            $estadoModulo = "Suspenso";
-            $resumenEstudiante['tiene_suspensos'] = true;
+        // Si tiene notas guardadas, las leemos y convertimos a número decimal
+        if ($notas != null) {
+            if ($notas['nota_1ev'] != null)    { $nota1ev           = floatval($notas['nota_1ev']); }
+            if ($notas['nota_1final'] != null)  { $nota1recuperacion = floatval($notas['nota_1final']); }
+            if ($notas['nota_2ev'] != null)    { $nota2ev           = floatval($notas['nota_2ev']); }
+            if ($notas['nota_2final'] != null)  { $nota2recuperacion = floatval($notas['nota_2final']); }
         }
 
-        $resumenEstudiante['detalles_modulos'][] = [
-            'idModulo' => $idModuloActual,
-            'nombreModulo' => $modulo['nombreModulo'],
-            'media_notas' => ($cantEv > 0) ? round($mediaNotasExamenes, 2) : "-",
-            'media_retos' => round($mediaRetosModulo, 2),
-            'nota_final' => ($cantEv > 0) ? round($notaFinalModulo, 2) : "-",
-            'estado' => $estadoModulo
-        ];
+        // La nota definitiva de cada evaluación es la más alta entre la nota y la recuperación
+        $notaDefinitiva1 = $nota1ev;
+        if ($nota1recuperacion != null && $nota1recuperacion > $nota1ev) {
+            $notaDefinitiva1 = $nota1recuperacion;
+        }
 
-        if ($cantEv > 0) {
-            $sumaModulosPonderada += $mediaNotasExamenes;
-            $sumaRetosPonderada += $mediaRetosModulo;
-            $contadorModulosEvaluados++;
+        $notaDefinitiva2 = $nota2ev;
+        if ($nota2recuperacion != null && $nota2recuperacion > $nota2ev) {
+            $notaDefinitiva2 = $nota2recuperacion;
+        }
+
+        // Sumamos las evaluaciones que tienen nota para calcular la media de exámenes
+        $sumaEvaluaciones    = 0;
+        $evaluacionesConNota = 0;
+        if ($notaDefinitiva1 != null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
+        if ($notaDefinitiva2 != null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
+
+        $mediaExamenes = 0;
+        if ($evaluacionesConNota > 0) {
+            $mediaExamenes = $sumaEvaluaciones / $evaluacionesConNota;
+        }
+
+        // Obtenemos la media de retos del estudiante en este módulo
+        $calificacionesRetos = listarCalificacionesRetoPorModulo($idModuloActual);
+        $mediaRetos = 0;
+        if ($calificacionesRetos[$idEstudiante] != null) {
+            $mediaRetos = floatval($calificacionesRetos[$idEstudiante]);
+        }
+
+        // La nota final del módulo es 75% exámenes y 25% retos
+        $notaFinal = ($mediaExamenes * 0.75) + ($mediaRetos * 0.25);
+
+        // Determinamos si el módulo está aprobado, suspenso o pendiente
+        if ($evaluacionesConNota == 0) {
+            $estado = "Pendiente";
+        } elseif ($notaFinal >= 5) {
+            $estado = "Aprobado";
+        } else {
+            $estado = "Suspenso";
+            $resumen['tiene_suspensos'] = true;
+        }
+
+        // Guardamos el detalle de este módulo en el resumen
+        $detalle = [];
+        $detalle['idModulo']     = $idModuloActual;
+        $detalle['nombreModulo'] = $modulo['nombreModulo'];
+        $detalle['media_retos']  = round($mediaRetos, 2);
+        $detalle['estado']       = $estado;
+
+        if ($evaluacionesConNota > 0) {
+            $detalle['media_notas'] = round($mediaExamenes, 2);
+            $detalle['nota_final']  = round($notaFinal, 2);
+        } else {
+            $detalle['media_notas'] = "-";
+            $detalle['nota_final']  = "-";
+        }
+
+        $resumen['detalles_modulos'][] = $detalle;
+
+        // Solo contamos los módulos que ya tienen alguna nota para el promedio global
+        if ($evaluacionesConNota > 0) {
+            $sumaModulos     += $mediaExamenes;
+            $sumaRetos       += $mediaRetos;
+            $modulosConNotas++;
         }
     }
 
-    // El promedio global solo se calcula si TODOS los módulos están evaluados
-    if ($contadorModulosEvaluados === $totalModulosCiclo && $totalModulosCiclo > 0) {
-        $mediaGlobalModulos = $sumaModulosPonderada / $totalModulosCiclo;
-        $mediaGlobalRetos = $sumaRetosPonderada / $totalModulosCiclo;
-        $promedioGlobal = ($mediaGlobalModulos * 0.75) + ($mediaGlobalRetos * 0.25);
+    // Si todos los módulos tienen notas, calculamos el promedio global del estudiante
+    if ($modulosConNotas == $totalModulos && $totalModulos > 0) {
+        $mediaModulos     = $sumaModulos / $totalModulos;
+        $mediaRetosGlobal = $sumaRetos / $totalModulos;
+        $promedioGlobal   = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
 
-        $resumenEstudiante['media_modulos'] = round($mediaGlobalModulos, 2);
-        $resumenEstudiante['media_retos'] = round($mediaGlobalRetos, 2);
-        $resumenEstudiante['promedio_global'] = round($promedioGlobal, 2);
+        $resumen['media_modulos']    = round($mediaModulos, 2);
+        $resumen['media_retos']      = round($mediaRetosGlobal, 2);
+        $resumen['promedio_global']  = round($promedioGlobal, 2);
+        $resumen['calculo_completo'] = true;
 
-        if ($promedioGlobal >= 5 && !$resumenEstudiante['tiene_suspensos']) {
-            $resumenEstudiante['estado_global'] = 'APROBADO';
+        // Para aprobar necesita media de 5 o más y no tener ningún módulo suspenso
+        if ($promedioGlobal >= 5 && !$resumen['tiene_suspensos']) {
+            $resumen['estado_global'] = 'APROBADO';
         } else {
-            $resumenEstudiante['estado_global'] = 'SUSPENSO';
+            $resumen['estado_global'] = 'SUSPENSO';
         }
-        $resumenEstudiante['calculo_completo'] = true;
     } else {
-        $resumenEstudiante['media_modulos'] = "-";
-        $resumenEstudiante['media_retos'] = "-";
-        $resumenEstudiante['promedio_global'] = "-";
-        $resumenEstudiante['estado_global'] = 'PENDIENTE'; // Cambiado de 'Incompleto' a solo 'PENDIENTE'
-        $resumenEstudiante['calculo_completo'] = false;
+        // Todavía faltan notas, no podemos calcular el resultado final
+        $resumen['media_modulos']    = "-";
+        $resumen['media_retos']      = "-";
+        $resumen['promedio_global']  = "-";
+        $resumen['estado_global']    = 'PENDIENTE';
+        $resumen['calculo_completo'] = false;
     }
 
-    return $resumenEstudiante;
+    return $resumen;
 }
 ?>

@@ -15,7 +15,6 @@ if (!$modulo) {
     exit;
 }
 
-// Obtenemos el profesor actual (solo puede haber uno por regla)
 $profesores_asignados = obtenerProfesoresDeModulo(intval($idModulo));
 $idProfesorActual = !empty($profesores_asignados) ? $profesores_asignados[0] : 0;
 

@@ -13,13 +13,13 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
 
     $listaCalificaciones = listarCalificacionesPorEstudiante($idEstudianteRecibido);
 
-    $nombreEstudianteMayusculas = strtoupper($datosEstudiante['nombreEstudiante']);
-    $nombreCicloMayusculas = strtoupper($datosEstudiante['nombreCiclo']);
+    $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
+    $nombreCiclo = $datosEstudiante['nombreCiclo'];
 
     $contenidoCorreoHTML = "
     <div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;'>
-        <h2 style='color: #2c3e50;'>" . $nombreEstudianteMayusculas . "</h2>
-        <p>Calificaciones finales para el ciclo: <strong>" . $nombreCicloMayusculas . "</strong></p>
+        <h2 style='color: #2c3e50;'>" . $nombreEstudiante . "</h2>
+        <p>Calificaciones finales para el ciclo: <strong>" . $nombreCiclo . "</strong></p>
 
         <table style='width: 100%; border-collapse: collapse; margin-top: 20px;'>
             <thead>
@@ -39,20 +39,51 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
     $existeAlgundoSuspenso = false;
 
     foreach ($listaCalificaciones as $datosDelModulo) {
-        $n1 = (isset($datosDelModulo['nota_1ev']) && is_numeric($datosDelModulo['nota_1ev'])) ? (float)$datosDelModulo['nota_1ev'] : null;
-        $n1f = (isset($datosDelModulo['nota_1final']) && is_numeric($datosDelModulo['nota_1final'])) ? (float)$datosDelModulo['nota_1final'] : null;
-        $n2 = (isset($datosDelModulo['nota_2ev']) && is_numeric($datosDelModulo['nota_2ev'])) ? (float)$datosDelModulo['nota_2ev'] : null;
-        $n2f = (isset($datosDelModulo['nota_2final']) && is_numeric($datosDelModulo['nota_2final'])) ? (float)$datosDelModulo['nota_2final'] : null;
+        $nota1ev = null;
+        if (isset($datosDelModulo['nota_1ev']) && is_numeric($datosDelModulo['nota_1ev'])) {
+            $nota1ev = floatval($datosDelModulo['nota_1ev']);
+        }
 
-        $def1 = ($n1f !== null) ? max($n1 ?? 0, $n1f) : $n1;
-        $def2 = ($n2f !== null) ? max($n2 ?? 0, $n2f) : $n2;
+        $nota1final = null;
+        if (isset($datosDelModulo['nota_1final']) && is_numeric($datosDelModulo['nota_1final'])) {
+            $nota1final = floatval($datosDelModulo['nota_1final']);
+        }
 
-        $sumaEv = 0;
-        $cantEv = 0;
-        if ($def1 !== null) { $sumaEv += $def1; $cantEv++; }
-        if ($def2 !== null) { $sumaEv += $def2; $cantEv++; }
+        $nota2ev = null;
+        if (isset($datosDelModulo['nota_2ev']) && is_numeric($datosDelModulo['nota_2ev'])) {
+            $nota2ev = floatval($datosDelModulo['nota_2ev']);
+        }
 
-        $notaFinalDelModulo = ($cantEv > 0) ? $sumaEv / $cantEv : 0;
+        $nota2final = null;
+        if (isset($datosDelModulo['nota_2final']) && is_numeric($datosDelModulo['nota_2final'])) {
+            $nota2final = floatval($datosDelModulo['nota_2final']);
+        }
+
+        $notaDefinitiva1 = $nota1ev;
+        if ($nota1final !== null) {
+            $notaDefinitiva1 = max($nota1ev, $nota1final);
+        }
+
+        $notaDefinitiva2 = $nota2ev;
+        if ($nota2final !== null) {
+            $notaDefinitiva2 = max($nota2ev, $nota2final);
+        }
+
+        $sumaEvaluaciones = 0;
+        $evaluacionesConNota = 0;
+        if ($notaDefinitiva1 !== null) {
+            $sumaEvaluaciones += $notaDefinitiva1;
+            $evaluacionesConNota++;
+        }
+        if ($notaDefinitiva2 !== null) {
+            $sumaEvaluaciones += $notaDefinitiva2;
+            $evaluacionesConNota++;
+        }
+
+        $notaFinalDelModulo = 0;
+        if ($evaluacionesConNota > 0) {
+            $notaFinalDelModulo = $sumaEvaluaciones / $evaluacionesConNota;
+        }
 
         $textoDelEstado = "APROBADO";
         $colorDelEstado = "green";
@@ -65,11 +96,11 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
         $sumaTotalNotasModulos = $sumaTotalNotasModulos + $notaFinalDelModulo;
         $contadorTotalModulos++;
 
-        $nombreModuloMayus = strtoupper($datosDelModulo['nombreModulo']);
+        $nombreModulo = $datosDelModulo['nombreModulo'];
 
         $contenidoCorreoHTML .= "
                 <tr>
-                    <td style='padding: 10px; border: 1px solid #ddd;'>" . $nombreModuloMayus . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>" . $nombreModulo . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_1ev'] . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_1final'] . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_2ev'] . "</td>

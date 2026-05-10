@@ -31,34 +31,22 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <?php if ($anuncios) { ?>
-        <div class="lista-anuncios-completa">
-            <?php foreach ($anuncios as $anuncio) { ?>
-                <div class="anuncio-item-completo">
-                    <div class="mb-10">
-                        <label class="texto-negrita">Título del Anuncio:</label> 
-                        <span class="color-primario texto-negrita"><?= strtoupper($anuncio['titulo'] ?? '') ?></span>
-                    </div>
-
-                    <div class="cuerpo-anuncio mb-15">
-                        <label class="texto-negrita">Contenido:</label>
-                        <div class="mt-5"><?= nl2br($anuncio['mensaje'] ?? '') ?></div>
-                    </div>
-
-                    <div class="texto-atenuado texto-pequeno">
-                        <i class="fas fa-calendar-alt"></i> Disponible hasta: <?= date('d/m/Y', strtotime($anuncio['fechaExpiracion'] ?? 'now')) ?>
-                    </div>
-                </div>
-            <?php } ?>
+<?php if (!empty($anuncios)) { ?>
+    <?php foreach ($anuncios as $anuncio) { ?>
+        <div class="tarjeta-blanca margen-abajo">
+            <div class="titulo-tarjeta">
+                <h3><?= strtoupper($anuncio['titulo'] ?? '') ?></h3>
+                <small class="texto-atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
+            </div>
+            <div class="margen-arriba">
+                <p class="line-height-16"><?= nl2br($anuncio['mensaje'] ?? '') ?></p>
+            </div>
         </div>
-    <?php } else { ?>
-        <p class="texto-atenuado text-center p-20">No hay anuncios publicados en este momento.</p>
     <?php } ?>
-</div>
+<?php } else { ?>
+    <div class="tarjeta-blanca">
+        <p class="texto-atenuado text-center p-20">No hay anuncios publicados en este momento.</p>
+    </div>
+<?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

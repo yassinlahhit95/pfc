@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function contarEstudiantes() {
@@ -7,7 +7,7 @@ function contarEstudiantes() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarProfesores() {
@@ -16,7 +16,7 @@ function contarProfesores() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarDirectores() {
@@ -25,7 +25,7 @@ function contarDirectores() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarAnuncios() {
@@ -34,7 +34,7 @@ function contarAnuncios() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarReclamaciones() {
@@ -43,7 +43,7 @@ function contarReclamaciones() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarCiclos() {
@@ -52,7 +52,7 @@ function contarCiclos() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarEstudiantesDeProfesor($idProfesor) {
@@ -64,7 +64,7 @@ function contarEstudiantesDeProfesor($idProfesor) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarCiclosDeProfesor($idProfesor) {
@@ -76,7 +76,7 @@ function contarCiclosDeProfesor($idProfesor) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarModulos() {
@@ -85,7 +85,7 @@ function contarModulos() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarRetos() {
@@ -94,7 +94,7 @@ function contarRetos() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarAulas() {
@@ -103,7 +103,7 @@ function contarAulas() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarInventario() {
@@ -112,7 +112,7 @@ function contarInventario() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function contarPrestamosActivos() {
@@ -121,7 +121,7 @@ function contarPrestamosActivos() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
 function obtenerTotalRecaudado() {
@@ -130,7 +130,7 @@ function obtenerTotalRecaudado() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (float)($fila['acumulado'] ?? 0);
+    return floatval($fila['acumulado']);
 }
 
 function obtenerPorcentajeAprobadosGlobal() {
@@ -141,9 +141,9 @@ function obtenerPorcentajeAprobadosGlobal() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    $total = (int)$fila['total'];
-    $aprobados = (int)$fila['aprobados'];
-    if ($total === 0) {
+    $total = intval($fila['total']);
+    $aprobados = intval($fila['aprobados']);
+    if ($total == 0) {
         return 0;
     }
     return round(($aprobados / $total) * 100, 1);
@@ -155,11 +155,7 @@ function contarPagosRealizados() {
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($fila['total'] ?? 0);
+    return intval($fila['total']);
 }
 
-// Alias para compatibilidad
-function contarPagos() {
-    return contarPagosRealizados();
-}
 ?>

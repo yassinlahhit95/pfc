@@ -23,7 +23,7 @@ if (isset($_POST['guardarDirector'])) {
     if (empty($email)) {
         $errores['emailDirector'] = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailDirector'] = "El formato del email no es vÃ¡lido.";
+        $errores['emailDirector'] = "El formato del email no es válido.";
     }
     if (empty($dni)) {
         $errores['dniDirector'] = "El DNI es obligatorio.";
@@ -32,6 +32,9 @@ if (isset($_POST['guardarDirector'])) {
         $errores['telefonoDirector'] = "El teléfono es obligatorio.";
     } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
         $errores['telefonoDirector'] = "El teléfono debe tener exactamente 9 dígitos.";
+    }
+    if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
+        $errores['codigoPostalDirector'] = "El código postal debe ser numérico.";
     }
 
     if (empty($errores)) {

@@ -5,23 +5,19 @@ $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
-require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../modelos/retos.php";
 
-$id = $_GET['idProfesor'] ?? $_GET['id'] ?? 0;
+$id = $_GET['idProfesor'] ?? 0;
 
 $profesor = obtenerProfesorPorId($id);
 
 if (!$profesor) {
-    echo "<div class='mensaje-error'>Profesor no encontrado. ID recibido: $id</div>";
+    echo "<div class='mensaje-error'>Profesor no encontrado.</div>";
     include '../comunes/footer.php';
     exit;
 }
 
-$ciclosProfesor = obtenerCiclosDeProfesor($id);
 $modulosProfesor = obtenerModulosDeProfesor($id);
-$retosProfesor = obtenerRetosDeProfesor($id);
 ?>
 
 <div class="encabezado-pagina">
@@ -29,85 +25,131 @@ $retosProfesor = obtenerRetosDeProfesor($id);
     <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca margen-abajo">
+<div class="tarjeta-blanca">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user-tie"></i> Información General</h3>
+        <h3>Información General</h3>
     </div>
-    
-    <div class="disposicion-flexible separacion-grande envoltura-flexible">
-        <div class="flexible-rellenar">
-            <div class="fila-detalle">
-                <div class="etiqueta-detalle">Nombre Completo</div>
-                <div class="valor-detalle texto-negrita"><?= $profesor['nombreProfesor'] ?></div>
-            </div>
 
-            <div class="fila-detalle">
-                <div class="etiqueta-detalle">Email</div>
-                <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
-            </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Nombre Completo</div>
+        <div class="valor-detalle texto-negrita"><?= $profesor['nombreProfesor'] ?></div>
+    </div>
 
-            <div class="fila-detalle">
-                <div class="etiqueta-detalle">Teléfono</div>
-                <div class="valor-detalle"><?= $profesor['telefonoProfesor'] ?></div>
-            </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Email</div>
+        <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
+    </div>
 
-            <div class="fila-detalle">
-                <div class="etiqueta-detalle">DNI</div>
-                <div class="valor-detalle"><?= $profesor['dniProfesor'] ?></div>
-            </div>
-
-            <div class="fila-detalle">
-                <div class="etiqueta-detalle">Dirección</div>
-                <div class="valor-detalle"><?= $profesor['direccionProfesor'] ?></div>
-            </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">DNI</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['dniProfesor'])) { ?>
+                <?= $profesor['dniProfesor'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
         </div>
+    </div>
 
-        <div class="ancho-fijo-300">
-            <div class="mb-20">
-                <h4 class="mb-10"><i class="fas fa-layer-group"></i> Ciclos</h4>
-                <div class="lista-detalles-lateral">
-                    <?php if (empty($ciclosProfesor)) { ?>
-                        <p class="texto-atenuado">Sin ciclos asignados</p>
-                    <?php } else { ?>
-                        <?php foreach ($ciclosProfesor as $c) { ?>
-                            <div class="item-detalle-lateral item-detalle-lateral-amarillo">
-                                <strong><?= $c['abreviaturaCiclo'] ?></strong><br>
-                                <small><?= $c['nombreCiclo'] ?></small>
-                            </div>
-                        <?php } ?>
-                    <?php } ?>
-                </div>
-            </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Teléfono</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['telefonoProfesor'])) { ?>
+                <?= $profesor['telefonoProfesor'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
+        </div>
+    </div>
 
-            <div>
-                <h4 class="mb-10"><i class="fas fa-tasks"></i> Retos Activos</h4>
-                <div class="lista-detalles-lateral">
-                    <?php if (empty($retosProfesor)) { ?>
-                        <p class="texto-atenuado">Sin retos asignados</p>
-                    <?php } else { ?>
-                        <?php foreach ($retosProfesor as $r) { ?>
-                            <div class="item-detalle-lateral item-detalle-lateral-azul">
-                                <strong><?= $r['nombreReto'] ?></strong><br>
-                                <small><?= $r['horasReto'] ?> horas</small>
-                            </div>
-                        <?php } ?>
-                    <?php } ?>
-                </div>
-            </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha de Nacimiento</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['fechaNacimientoProfesor']) && $profesor['fechaNacimientoProfesor'] != '0000-00-00') { ?>
+                <?= date('d/m/Y', strtotime($profesor['fechaNacimientoProfesor'])) ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Fecha Alta</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['fechaAltaProfesor'])) { ?>
+                <?= date('d/m/Y', strtotime($profesor['fechaAltaProfesor'])) ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
         </div>
     </div>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-book"></i> Módulos Impartidos</h3>
+        <h3>Dirección y Contacto</h3>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Dirección</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['direccionProfesor'])) { ?>
+                <?= $profesor['direccionProfesor'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Ciudad</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['ciudadProfesor'])) { ?>
+                <?= $profesor['ciudadProfesor'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Código Postal</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['codigoPostalProfesor'])) { ?>
+                <?= $profesor['codigoPostalProfesor'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">No especificado</span>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta">
+        <h3>Observaciones</h3>
+    </div>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Observaciones</div>
+        <div class="valor-detalle">
+            <?php if (!empty($profesor['observacionesProfesor'])) { ?>
+                <?= $profesor['observacionesProfesor'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">Sin observaciones.</span>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta">
+        <h3>Módulos Impartidos</h3>
     </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
                     <th>Módulo</th>
-                    <th>Abreviatura Ciclo</th>
+                    <th>Ciclo</th>
                 </tr>
             </thead>
             <tbody>
@@ -127,7 +169,3 @@ $retosProfesor = obtenerRetosDeProfesor($id);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

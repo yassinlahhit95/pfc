@@ -44,7 +44,6 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             height: 100vh;
         }
 
-        /* Lado Izquierdo - Login */
         .login-section {
             width: 50%;
             display: flex;
@@ -186,7 +185,6 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
         }
 
-        /* Lado Derecho - Promo */
         .promo-section {
             width: 50%;
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -224,6 +222,12 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             border-radius: 50%;
             animation: particleFloat 15s infinite ease-in-out;
         }
+
+        .particle:nth-child(1) { left: 10%; top: 20%; }
+        .particle:nth-child(2) { left: 30%; top: 60%; }
+        .particle:nth-child(3) { left: 50%; top: 40%; }
+        .particle:nth-child(4) { left: 70%; top: 80%; }
+        .particle:nth-child(5) { left: 90%; top: 30%; }
 
         @keyframes particleFloat {
             0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
@@ -292,7 +296,6 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
 </head>
 <body>
     <div class="container">
-        <!-- Sección Login -->
         <div class="login-section">
             <div class="logo">
                 <div class="logo-icon">A</div>
@@ -337,14 +340,13 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             </form>
         </div>
 
-        <!-- Sección Promo -->
         <div class="promo-section">
             <div class="particles">
-                <div class="particle" style="left: 10%; top: 20%;"></div>
-                <div class="particle" style="left: 30%; top: 60%;"></div>
-                <div class="particle" style="left: 50%; top: 40%;"></div>
-                <div class="particle" style="left: 70%; top: 80%;"></div>
-                <div class="particle" style="left: 90%; top: 30%;"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
             </div>
 
             <div class="promo-content">
@@ -366,13 +368,12 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
         </div>
     </div>
     <script>
-      // Si viene de demo, foco en contraseña directamente
-      <?php if (!empty($_GET['u'])): ?>
+      <?php if (!empty($_GET['u'])) { ?>
       document.addEventListener('DOMContentLoaded', () => {
         const pwd = document.querySelector('input[name="contrasena"]');
         if (pwd) pwd.focus();
       });
-      <?php endif; ?>
+      <?php } ?>
     </script>
 </body>
 </html>

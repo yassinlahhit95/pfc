@@ -156,6 +156,29 @@ function obtenerHorasTotalesRetosModulo($idModulo) {
     $resultado = mysqli_stmt_get_result($stmt);
     $datosSuma = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return (int)($datosSuma['total'] ?? 0);
+    $total = 0;
+    if ($datosSuma != null && $datosSuma['total'] != null) {
+        $total = intval($datosSuma['total']);
+    }
+    return $total;
+}
+
+// Devuelve los nombres de los profesores asignados a un módulo
+function obtenerNombresProfesoresDeModulo($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT p.nombreProfesor
+            FROM profesores p
+            JOIN profesor_modulo pm ON p.idProfesor = pm.idProfesor
+            WHERE pm.idModulo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila['nombreProfesor'];
+    }
+    mysqli_close($con);
+    return $lista;
 }
 ?>

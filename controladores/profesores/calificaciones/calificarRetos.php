@@ -23,7 +23,10 @@ if (isset($_POST['guardarNotasReto'])) {
         }
 
         if (!$hayError) {
-            $notaFinal = empty($nota) ? 0 : $nota;
+            $notaFinal = 0;
+            if (!empty($nota)) {
+                $notaFinal = $nota;
+            }
             if (!calificarReto($idEstudiante, $idReto, $notaFinal)) {
                 $hayError = true;
             }

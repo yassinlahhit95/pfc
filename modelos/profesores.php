@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarProfesores() {
@@ -180,7 +180,7 @@ function obtenerTokensProfesores() {
     $resultado = mysqli_query($con, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        if (!empty($fila['fcm_token'])) {
+        if ($fila['fcm_token'] != null) {
             $lista[] = $fila['fcm_token'];
         }
     }
@@ -218,7 +218,10 @@ function obtenerTokenFCMProfesor($id) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    $token = $fila['fcm_token'] ?? null;
+    $token = null;
+    if ($fila != null && $fila['fcm_token'] != null) {
+        $token = $fila['fcm_token'];
+    }
     mysqli_close($con);
     return $token;
 }

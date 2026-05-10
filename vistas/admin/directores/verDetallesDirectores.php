@@ -94,8 +94,15 @@ if (!$director) { ?>
     <div class="titulo-tarjeta">
         <h3>Observaciones</h3>
     </div>
-    <div class="tarjeta-gris-suave p-20 pre-wrap">
-        <?= $director['observacionesDirector'] ?: '<span class="texto-atenuado">Sin observaciones.</span>' ?>
+    <div class="fila-detalle">
+        <div class="etiqueta-detalle">Observaciones</div>
+        <div class="valor-detalle">
+            <?php if (!empty($director['observacionesDirector'])) { ?>
+                <?= $director['observacionesDirector'] ?>
+            <?php } else { ?>
+                <span class="texto-atenuado">Sin observaciones.</span>
+            <?php } ?>
+        </div>
     </div>
 </div>
 

@@ -83,7 +83,7 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
 
     $sql = "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssdii", $nombreCiclo, $abreviaturaCiclo, $precioCiclo, $idNivel, $idCiclo);
+    mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
     $resultado = mysqli_stmt_execute($stmt);
 
     $sql = "DELETE FROM ciclo_profesor WHERE idCiclo = ?";
@@ -166,15 +166,4 @@ function obtenerAulasDeUnCiclo($idCiclo) {
     return $listaIdsAulas;
 }
 
-function comprobarNombreEnOtroCiclo($nombreCiclo, $idCicloActual) {
-    $con = obtenerConexion();
-    $sql = "SELECT idCiclo FROM ciclos WHERE nombreCiclo = ? AND idCiclo != ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $nombreCiclo, $idCicloActual);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $existe = mysqli_num_rows($resultado) > 0;
-    mysqli_close($con);
-    return $existe;
-}
 ?>

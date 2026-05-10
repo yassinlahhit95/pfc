@@ -39,6 +39,9 @@ if (isset($_POST['actualizarEstudiante'])) {
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
         $errores['telefonoEstudiante'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
     }
+    if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
+        $errores['codigoPostalEstudiante'] = "El código postal debe ser numérico.";
+    }
     if (empty($idCiclo)) {
         $errores['idCiclo'] = "Debe seleccionar un ciclo.";
     }

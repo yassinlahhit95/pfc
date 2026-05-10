@@ -15,35 +15,38 @@ if (isset($_POST['guardarProfesor'])) {
     $codigoPostalNuevoProfesor = trim($_POST['codigoPostalProfesor']);
     $observacionesNuevoProfesor = trim($_POST['observacionesProfesor']);
 
-    $listaErroresValidacion = [];
+    $errores = [];
 
     if (empty($nombreNuevoProfesor)) {
-        $listaErroresValidacion['nombreProfesor'] = "El nombre es obligatorio.";
+        $errores['nombreProfesor'] = "El nombre es obligatorio.";
     }
     if (empty($emailNuevoProfesor)) {
-        $listaErroresValidacion['emailProfesor'] = "El email es obligatorio.";
+        $errores['emailProfesor'] = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailNuevoProfesor)) {
-        $listaErroresValidacion['emailProfesor'] = "El formato del email no es válido.";
+        $errores['emailProfesor'] = "El formato del email no es válido.";
     }
     if (empty($dniNuevoProfesor)) {
-        $listaErroresValidacion['dniProfesor'] = "El DNI es obligatorio.";
+        $errores['dniProfesor'] = "El DNI es obligatorio.";
     }
     if (empty($telefonoNuevoProfesor)) {
-        $listaErroresValidacion['telefonoProfesor'] = "El teléfono es obligatorio.";
+        $errores['telefonoProfesor'] = "El teléfono es obligatorio.";
     } else if (!is_numeric($telefonoNuevoProfesor)) {
-        $listaErroresValidacion['telefonoProfesor'] = "El teléfono debe ser numérico.";
+        $errores['telefonoProfesor'] = "El teléfono debe ser numérico.";
     }
     if (empty($direccionNuevoProfesor)) {
-        $listaErroresValidacion['direccionProfesor'] = "La dirección es obligatoria.";
+        $errores['direccionProfesor'] = "La dirección es obligatoria.";
+    }
+    if (!empty($codigoPostalNuevoProfesor) && !is_numeric($codigoPostalNuevoProfesor)) {
+        $errores['codigoPostalProfesor'] = "El código postal debe ser numérico.";
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (checkProfesorExistente($dniNuevoProfesor, $emailNuevoProfesor)) {
-            $listaErroresValidacion['dniProfesor'] = "El DNI o Email ya están registrados.";
+            $errores['dniProfesor'] = "El DNI o Email ya están registrados.";
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         $idNuevoProfesorInsertado = insertarProfesor($nombreNuevoProfesor, $emailNuevoProfesor, $telefonoNuevoProfesor, $dniNuevoProfesor, $direccionNuevoProfesor, $fechaNacimientoNuevoProfesor, $fechaAltaNuevoProfesor, $ciudadNuevoProfesor, $codigoPostalNuevoProfesor, $observacionesNuevoProfesor);
         
         if ($idNuevoProfesorInsertado) {
@@ -53,7 +56,7 @@ if (isset($_POST['guardarProfesor'])) {
         }
         $_SESSION['error'] = "Hubo un problema al registrar el profesor en la base de datos.";
     } else {
-        $_SESSION['errores'] = $listaErroresValidacion;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_profesor'] = $_POST;
     }
 

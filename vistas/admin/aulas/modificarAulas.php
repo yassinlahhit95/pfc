@@ -16,7 +16,6 @@ if (!$aula) {
     exit;
 }
 
-// Si hay datos de un intento previo fallido, los usamos
 $datosForm = $_SESSION['datos_aulas'] ?? [];
 if (!empty($datosForm)) {
     foreach ($datosForm as $k => $v) {

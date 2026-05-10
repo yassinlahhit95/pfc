@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 if (isset($_POST['idPago'])) {
-    $idPago = $_POST['idPago'];
+    $idPago = trim($_POST['idPago']);
     
     $resultado = eliminarPago($idPago);
     

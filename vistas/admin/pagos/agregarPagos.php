@@ -20,7 +20,7 @@ if (!empty($idEstudianteElegido)) {
     $infoFinanciera = obtenerEstadoFinancieroEstudiante($idEstudianteElegido);
 }
 
-// Regla: No se permiten pagos después del 30 de Junio
+// pagos cerrados después del 30 de junio
 $hoy = date('Y-m-d');
 $fechaLimite = date('Y') . '-06-30';
 $esDespuesDeJunio = ($hoy > $fechaLimite);
@@ -162,7 +162,6 @@ function actualizarMontoRapido() {
     document.getElementById('montoInput').value = cuota.toFixed(2);
 }
 
-// Ejecutar al cargar por si ya hay un tipo de pago seleccionado (retorno de error)
 if (document.getElementById('tipoPago') && document.getElementById('tipoPago').value !== '') {
     actualizarMontoRapido();
 }

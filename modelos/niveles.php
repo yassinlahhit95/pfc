@@ -14,13 +14,4 @@ function listarNiveles() {
     return $listaNiveles;
 }
 
-function borrarNivelPorNombre($nombreNivel) {
-    $con = obtenerConexion();
-    $sql = "DELETE FROM niveles WHERE nombreNivel = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $nombreNivel);
-    $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
-    return $resultado;
-}
 ?>

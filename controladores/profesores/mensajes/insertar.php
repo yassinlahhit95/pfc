@@ -5,12 +5,10 @@ require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (isset($_POST['enviarMensaje'])) {
-    $idEstudiante = !empty($_POST['idEstudiante']) ? (int)trim($_POST['idEstudiante']) : 0;
-    $idProfesor = (int)trim($_POST['idProfesor']);
+    $idEstudiante = trim($_POST['idEstudiante']);
+    $idProfesor = trim($_POST['idProfesor']);
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
-    $fechaActual = date('Y-m-d');
-
     $errores = [];
 
     if (empty($idEstudiante)) {
@@ -26,17 +24,14 @@ if (isset($_POST['enviarMensaje'])) {
     }
 
     if (empty($errores)) {
-        $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $fechaActual, 'profesor');
-        
+        $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, 'profesor');
+
         if ($resultado) {
-            if ($idEstudiante > 1) {
-                $token = obtenerTokenUsuario($idEstudiante, "estudiante");
-                if ($token) enviarNotificacionFirebase($token, "Mensaje de Profesor: " . $asunto, $descripcion);
-            } else {
-                $tokens = obtenerTokensDirectores();
-                foreach ($tokens as $t) enviarNotificacionFirebase($token, "Mensaje de Profesor: " . $asunto, $descripcion);
+            $tokenEstudiante = obtenerTokenUsuario($idEstudiante, "estudiante");
+            if ($tokenEstudiante) {
+                enviarNotificacionFirebase($tokenEstudiante, "Mensaje de Profesor: " . $asunto, $descripcion);
             }
-            
+
             $_SESSION['exito'] = "Mensaje enviado correctamente.";
             header("Location: ../../../vistas/profesores/mensajes/lista.php");
             exit;
@@ -47,8 +42,12 @@ if (isset($_POST['enviarMensaje'])) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_mensaje'] = $_POST;
     }
-    
-    header("Location: ../../../vistas/profesores/mensajes/agregar.php" . (isset($_GET['idCiclo']) ? "?idCiclo=".$_GET['idCiclo'] : ""));
+
+    $urlRedireccion = "../../../vistas/profesores/mensajes/agregar.php";
+    if (isset($_GET['idCiclo'])) {
+        $urlRedireccion = $urlRedireccion . "?idCiclo=" . trim($_GET['idCiclo']);
+    }
+    header("Location: " . $urlRedireccion);
     exit;
 }
 

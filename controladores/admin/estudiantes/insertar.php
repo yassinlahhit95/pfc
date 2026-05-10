@@ -29,21 +29,23 @@ if (isset($_POST['guardarEstudiante'])) {
         $errores['dniEstudiante'] = "El DNI es obligatorio.";
     }
     if (empty($telefono)) {
-        $errores['telefonoEstudiante'] = "El telÃ©fono es obligatorio.";
+        $errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoEstudiante'] = "El telÃ©fono debe ser numÃ©rico y tener exactamente 9 dÃ­gitos.";
+        $errores['telefonoEstudiante'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
     }
     if (empty($fechaNacimiento)) {
         $errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
     }
     if (empty($direccion)) {
-        $errores['direccionEstudiante'] = "La direcciÃ³n es obligatoria.";
+        $errores['direccionEstudiante'] = "La dirección es obligatoria.";
     }
     if (empty($ciudad)) {
         $errores['ciudadEstudiante'] = "La ciudad es obligatoria.";
     }
     if (empty($codigoPostal)) {
-        $errores['codigoPostalEstudiante'] = "El cÃ³digo postal es obligatorio.";
+        $errores['codigoPostalEstudiante'] = "El código postal es obligatorio.";
+    } elseif (!is_numeric($codigoPostal)) {
+        $errores['codigoPostalEstudiante'] = "El código postal debe ser numérico.";
     }
     if (empty($idCiclo)) {
         $errores['idCiclo'] = "Debe seleccionar un ciclo.";

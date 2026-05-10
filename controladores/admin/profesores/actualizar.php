@@ -16,35 +16,38 @@ if (isset($_POST['actualizarProfesor'])) {
     $codigoPostalProfesor = trim($_POST['codigoPostalProfesor']);
     $observacionesProfesor = trim($_POST['observacionesProfesor']);
 
-    $listaErroresValidacion = [];
+    $errores = [];
 
     if (empty($nombreProfesorActualizar)) {
-        $listaErroresValidacion['nombreProfesor'] = "El nombre es obligatorio.";
+        $errores['nombreProfesor'] = "El nombre es obligatorio.";
     }
     if (empty($emailProfesorActualizar)) {
-        $listaErroresValidacion['emailProfesor'] = "El email es obligatorio.";
+        $errores['emailProfesor'] = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailProfesorActualizar)) {
-        $listaErroresValidacion['emailProfesor'] = "El formato del email no es válido.";
+        $errores['emailProfesor'] = "El formato del email no es válido.";
     }
     if (empty($dniProfesorActualizar)) {
-        $listaErroresValidacion['dniProfesor'] = "El DNI es obligatorio.";
+        $errores['dniProfesor'] = "El DNI es obligatorio.";
     }
     if (empty($telefonoProfesorActualizar)) {
-        $listaErroresValidacion['telefonoProfesor'] = "El teléfono es obligatorio.";
+        $errores['telefonoProfesor'] = "El teléfono es obligatorio.";
     } else if (!is_numeric($telefonoProfesorActualizar)) {
-        $listaErroresValidacion['telefonoProfesor'] = "El teléfono debe ser numérico.";
+        $errores['telefonoProfesor'] = "El teléfono debe ser numérico.";
     }
     if (empty($direccionProfesorActualizar)) {
-        $listaErroresValidacion['direccionProfesor'] = "La dirección es obligatoria.";
+        $errores['direccionProfesor'] = "La dirección es obligatoria.";
+    }
+    if (!empty($codigoPostalProfesor) && !is_numeric($codigoPostalProfesor)) {
+        $errores['codigoPostalProfesor'] = "El código postal debe ser numérico.";
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (checkProfesorExistente($dniProfesorActualizar, $emailProfesorActualizar, $idProfesorActualizar)) {
-            $listaErroresValidacion['dniProfesor'] = "El DNI o Email ya están registrados por otro profesor.";
+            $errores['dniProfesor'] = "El DNI o Email ya están registrados por otro profesor.";
         }
     }
 
-    if (empty($listaErroresValidacion)) {
+    if (empty($errores)) {
         if (actualizarProfesor($idProfesorActualizar, $nombreProfesorActualizar, $emailProfesorActualizar, $telefonoProfesorActualizar, $dniProfesorActualizar, $direccionProfesorActualizar, $fechaNacimientoProfesor, $fechaAltaProfesor, $ciudadProfesor, $codigoPostalProfesor, $observacionesProfesor)) {
             $_SESSION['exito'] = "Profesor actualizado correctamente.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
@@ -52,7 +55,7 @@ if (isset($_POST['actualizarProfesor'])) {
         }
         $_SESSION['error'] = "No se pudo actualizar el profesor o no hubo cambios.";
     } else {
-        $_SESSION['errores'] = $listaErroresValidacion;
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_profesor'] = $_POST;
     }
 

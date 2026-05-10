@@ -30,7 +30,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <div class="tarjeta-blanca">
-    <form method="GET" action="calificacionesRetos.php" class="disposicion-flexible alinear-centro separacion-grande">
+    <form method="GET" action="calificacionesRetos.php" class="disposicion-flexible alinear-centro separacion-grande formulario-filtros-retos">
         <div class="campo-formulario flexible-rellenar">
             <label>1. Seleccione Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
