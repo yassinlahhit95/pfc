@@ -1,93 +1,160 @@
-# Contexto del Sistema: Portal de Gestión Educativa (PFC)
+# Diagrama de Casos de Uso — AulaPro (TFG)
 
-Este texto sirve como contexto y prompt para generar o comprender el **Diagrama de Casos de Uso** del sistema.
-
-## 1. Descripción General del Proyecto
-El sistema es una plataforma integral para un centro de Formación Profesional (FP) que gestiona Ciclos Formativos (ej. Desarrollo de Aplicaciones Web, Sistemas Microinformáticos y Redes). Su objetivo es conectar y coordinar a tres perfiles principales de usuarios: Directores/Administradores, Profesores y Estudiantes. El sistema maneja aspectos académicos (calificaciones basadas en metodologías ágiles y retos), administrativos (pagos, inventario de dispositivos) y comunicativos (eventos, anuncios, reclamaciones).
-
-## 2. Actores del Sistema
-Existen 3 actores principales que interactúan con el sistema:
-1. **Administrador / Director**: Tiene el máximo privilegio. Gestiona la estructura base del centro.
-2. **Profesor**: Encargado de la evaluación académica de los estudiantes en los módulos y retos que tiene asignados.
-3. **Estudiante**: Usuario final del sistema que cursa un ciclo, recibe notas y utiliza los servicios del centro.
-
-## 3. Funcionalidades por Actor (Casos de Uso)
-
-### Actor: Administrador / Director
-- **Gestión Académica Base**: Crear y modificar Niveles (Grado Medio, Superior), Aulas y Ciclos Formativos.
-- **Gestión de Usuarios**: Alta, baja y modificación de Directores, Profesores y Estudiantes.
-- **Asignaciones**: Asignar Profesores a Ciclos y Aulas a Ciclos. Asignar Módulos a Profesores.
-- **Gestión Curricular**: Crear Módulos (asignaturas) y Retos (proyectos transversales). Vincular Retos con uno o varios Módulos.
-- **Gestión Administrativa y Financiera**: Registrar pagos de matrículas/mensualidades de los estudiantes. Gestionar el inventario de Dispositivos (portátiles, proyectores) y registrar Préstamos a estudiantes.
-- **Comunicación Global**: Crear Eventos para el calendario escolar y publicar Anuncios globales o dirigidos a grupos específicos.
-- **Monitorización**: Ver métricas y estadísticas globales en un Panel de Control (Dashboard).
-
-### Actor: Profesor
-- **Evaluación por Módulos**: Introducir y modificar notas (1ª Evaluación, Finales) de los estudiantes matriculados en los módulos que imparte.
-- **Evaluación por Retos**: Calificar el desempeño de los estudiantes en los Retos transversales asignados a sus módulos.
-- **Gestión de Calificaciones Finales**: Generar promedios (el sistema calcula 75% módulos + 25% retos) y enviar boletines de notas por correo electrónico a los estudiantes.
-- **Comunicación y Soporte**: Responder a las Reclamaciones o tutorías enviadas por los estudiantes. Publicar anuncios específicos para sus alumnos.
-
-### Actor: Estudiante
-- **Consulta Académica**: Visualizar su expediente, notas de módulos, notas de retos y promedios finales.
-- **Trabajo de Fin de Grado (TFG)**: Subir, actualizar o eliminar su archivo de proyecto final (PDF) para ser evaluado.
-- **Servicios Administrativos**: Consultar el estado de sus pagos y revisar si tiene dispositivos en préstamo o vencidos.
-- **Soporte y Comunicación**: Enviar reclamaciones o mensajes a la administración o a sus profesores. Ver anuncios importantes y eventos del centro.
+Sistema de gestión académica para centros de Formación Profesional con tres portales independientes.
 
 ---
 
-## 4. Código Mermaid para el Diagrama de Casos de Uso
+## 1. Actores del Sistema
 
-Puedes usar el siguiente bloque para generar el diagrama visual en herramientas compatibles con Mermaid (como draw.io, mermaid.live o plugins de VS Code).
+| Actor | Descripción |
+|---|---|
+| **Director / Admin** | Máximo privilegio. Gestiona la estructura completa del centro. |
+| **Profesor** | Evalúa a los estudiantes en los módulos y retos que tiene asignados. |
+| **Estudiante** | Usuario final. Consulta su expediente y utiliza los servicios del centro. |
+
+---
+
+## 2. Casos de Uso por Actor
+
+### Director / Administrador
+- Iniciar y cerrar sesión
+- Ver panel de control con estadísticas globales
+- Gestionar usuarios: alta, modificación y baja de directores, profesores y estudiantes
+- Gestionar estructura académica: ciclos, módulos, retos, niveles y aulas
+- Asignar profesores a ciclos y módulos
+- Asignar aulas a ciclos
+- Gestionar pagos de matrículas y mensualidades
+- Gestionar inventario de dispositivos (alta, modificación, baja)
+- Gestionar préstamos de dispositivos a estudiantes
+- Publicar anuncios dirigidos a todos, a estudiantes o a profesores
+- Crear y gestionar eventos del calendario escolar
+- Ver y responder mensajes del buzón interno (reclamaciones)
+- Ver y gestionar todos los TFGs subidos por los estudiantes
+- Consultar calificaciones de módulos y retos
+- Ver resultados finales de todos los estudiantes
+
+### Profesor
+- Iniciar y cerrar sesión
+- Ver panel de control con sus estadísticas
+- Ver lista de estudiantes de sus ciclos
+- Ver sus ciclos y módulos asignados
+- Introducir y modificar notas de módulos (1ª evaluación, finales, 2ª convocatoria)
+- Calificar retos de los estudiantes
+- Ver resultados finales calculados (75% módulos + 25% retos)
+- Ver y gestionar los TFGs de sus estudiantes
+- Publicar anuncios para sus alumnos
+- Enviar y responder mensajes del buzón interno
+- Ver eventos del calendario escolar
+- Editar su perfil (nombre, email, teléfono)
+- Recibir notificaciones push (Firebase) y por email (Brevo)
+
+### Estudiante
+- Iniciar y cerrar sesión
+- Ver panel de control con resumen de su actividad
+- Consultar notas de módulos con desglose por evaluación
+- Consultar notas de retos
+- Ver resultado final de su ciclo
+- Subir, actualizar o eliminar su TFG (archivo PDF)
+- Consultar historial de pagos y estado de matrícula
+- Enviar mensajes al equipo docente o administración
+- Ver respuestas a sus mensajes
+- Ver anuncios publicados
+- Ver eventos del calendario escolar
+- Editar su perfil (nombre, email, teléfono)
+- Recibir notificaciones push (Firebase)
+
+---
+
+## 3. Diagrama Mermaid (Casos de Uso)
+
+> Mermaid no tiene tipo nativo `usecaseDiagram`. Se representa con `flowchart LR` agrupando por paquetes funcionales.
 
 ```mermaid
-usecaseDiagram
-    actor Director as "Administrador / Director"
-    actor Profesor
-    actor Estudiante
+flowchart LR
+    DIR["Director / Admin"]
+    PRO["Profesor"]
+    EST["Estudiante"]
 
-    package "Gestión Académica y Estructural" {
-        usecase "Gestionar Ciclos, Módulos y Retos" as UC1
-        usecase "Gestionar Usuarios (Alta/Baja)" as UC2
-        usecase "Asignar Profesores a Módulos" as UC3
-    }
+    subgraph AUTH["Autenticación"]
+        UC0["Iniciar / cerrar sesión"]
+    end
 
-    package "Evaluación Académica" {
-        usecase "Calificar Módulos" as UC4
-        usecase "Calificar Retos" as UC5
-        usecase "Calcular Promedios Finales" as UC6
-        usecase "Enviar Notas por Email" as UC7
-    }
+    subgraph ACADEM["Gestión Académica"]
+        UC1["Gestionar ciclos, módulos y retos"]
+        UC2["Gestionar usuarios"]
+        UC3["Asignar profesores a módulos"]
+        UC4["Asignar aulas a ciclos"]
+    end
 
-    package "Portal del Estudiante" {
-        usecase "Consultar Notas y Expediente" as UC8
-        usecase "Subir/Gestionar TFG" as UC9
-    }
+    subgraph EVAL["Evaluación"]
+        UC5["Calificar módulos"]
+        UC6["Calificar retos"]
+        UC7["Ver resultados finales"]
+        UC8["Gestionar TFGs"]
+    end
 
-    package "Administración y Comunicación" {
-        usecase "Gestionar Inventario y Préstamos" as UC10
-        usecase "Gestionar Pagos" as UC11
-        usecase "Publicar Eventos y Anuncios" as UC12
-        usecase "Enviar/Responder Reclamaciones" as UC13
-    }
+    subgraph ADMIN["Administración"]
+        UC9["Gestionar pagos"]
+        UC10["Gestionar inventario y préstamos"]
+    end
 
-    Director --> UC1
-    Director --> UC2
-    Director --> UC3
-    Director --> UC10
-    Director --> UC11
-    Director --> UC12
-    Director --> UC13
+    subgraph COMUN["Comunicación"]
+        UC11["Publicar anuncios"]
+        UC12["Gestionar eventos"]
+        UC13["Mensajería interna"]
+        UC14["Notificaciones push y email"]
+    end
 
-    Profesor --> UC4
-    Profesor --> UC5
-    Profesor --> UC6
-    Profesor --> UC7
-    Profesor --> UC12
-    Profesor --> UC13
+    subgraph ESTUD["Portal Estudiante"]
+        UC15["Consultar notas y expediente"]
+        UC16["Subir y gestionar TFG"]
+        UC17["Consultar pagos"]
+        UC18["Enviar mensajes"]
+    end
 
-    Estudiante --> UC8
-    Estudiante --> UC9
-    Estudiante --> UC13
+    DIR --> UC0
+    PRO --> UC0
+    EST --> UC0
+
+    DIR --> UC1
+    DIR --> UC2
+    DIR --> UC3
+    DIR --> UC4
+
+    DIR --> UC5
+    DIR --> UC6
+    DIR --> UC7
+    DIR --> UC8
+    PRO --> UC5
+    PRO --> UC6
+    PRO --> UC7
+    PRO --> UC8
+
+    DIR --> UC9
+    DIR --> UC10
+
+    DIR --> UC11
+    DIR --> UC12
+    DIR --> UC13
+    DIR --> UC14
+    PRO --> UC11
+    PRO --> UC12
+    PRO --> UC13
+    PRO --> UC14
+
+    EST --> UC15
+    EST --> UC16
+    EST --> UC17
+    EST --> UC18
 ```
-*(Nota: En Mermaid estándar se usa diagramas de clase o de grafo para simular casos de uso con mayor fidelidad, pero la estructura conceptual se refleja claramente en el esquema detallado arriba).*
+
+---
+
+## 4. Relaciones entre Casos de Uso
+
+| Relación | Descripción |
+|---|---|
+| `<<include>>` Calcular nota final | Los casos UC7 (resultados finales) incluyen siempre el cálculo 75%/25% |
+| `<<include>>` Validar sesión | Todos los casos de uso requieren sesión activa del rol correspondiente |
+| `<<extend>>` Enviar email al calificar | UC5 puede extenderse enviando un email al estudiante vía Brevo API |
+| `<<extend>>` Enviar push al publicar anuncio | UC11 puede extenderse enviando notificación push vía Firebase |

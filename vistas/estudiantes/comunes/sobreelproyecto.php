@@ -1,20 +1,21 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | SOBRE EL PROYECTO";
+$tituloDelPagina = "AULAPRO | SOBRE EL PROYECTO";
 $seccionActual = 'creditos';
 include_once __DIR__ . "/nav.php";
 ?>
 
 <div class="seccion-about-me">
     <div class="contenedor-about">
-        <div class="about-imagen-izq">
+
+        <div class="about-imagen-top">
             <div class="silhueta-contenedor">
-                <img src="../../../public/imagenes/aulapro.png" alt="AulaPro" class="silhueta-imagen">
+                <img src="../../../public/imagenes/aulapro.jpeg" alt="AulaPro" class="silhueta-imagen">
             </div>
         </div>
 
         <div class="about-contenido">
-            <h2 class="about-titulo">ABOUT ME</h2>
+            <h2 class="about-titulo">SOBRE MÍ</h2>
             <h3 class="about-subtitulo">Yassin Lahhit — DAW · CPS Ibaiondo</h3>
             <p class="about-descripcion">
                 Soy estudiante de segundo de DAW en CPS Ibaiondo. AulaPro es mi TFG:
@@ -29,6 +30,11 @@ include_once __DIR__ . "/nav.php";
                 <span>JavaScript</span>
                 <span>CSS</span>
                 <span>MVC</span>
+                <span>jQuery</span>
+                <span>Firebase</span>
+                <span>Brevo API</span>
+                <span>XAMPP</span>
+                <span>Font Awesome</span>
             </div>
 
             <div class="about-acciones mt-25">
@@ -54,8 +60,8 @@ include_once __DIR__ . "/nav.php";
                 <p class="texto-atenuado">Desarrollado con PHP, MySQL y Brevo API.</p>
             </div>
         </div>
+
     </div>
 </div>
 
 <?php include __DIR__ . '/footer.php'; ?>
-

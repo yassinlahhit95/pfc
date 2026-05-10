@@ -40,7 +40,7 @@ $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 
-$tituloPagina = "Calificaciones - Portal Profesores";
+$tituloDelPagina = "AULAPRO | AGREGAR CALIFICACIÓN";
 $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

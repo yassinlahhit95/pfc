@@ -1,77 +1,131 @@
-# TFG - Sistema de Gestión Académica (AulaPro)
-> Proyecto Final de Grado - Plataforma educativa integral desarrollada en PHP Nativo con arquitectura MVC Tri-Portal.
+# AulaPro — Sistema de Gestión Académica
+> Trabajo de Fin de Grado · Desarrollo de Aplicaciones Web · CPS Ibaiondo
+> **Autor:** Yassin Lahhit · **Versión:** 1.0 · **Curso:** 2025–2026
 
 ---
 
-## 📋 Información General
-| Característica | Detalle |
-|----------------|---------|
-| Estado | ✅ Completado (Versión 1.1) |
-| Tecnología | PHP 7.4+, MySQL, HTML5, CSS3, JavaScript |
-| Arquitectura | Modelo-Vista-Controlador (MVC) Tri-Portal |
-| Licencia | MIT |
-| Autor | Yassin Lahhit |
-| URL Live | [yassin.agency](https://yassin.agency) |
+## Información General
+
+| Campo | Detalle |
+|---|---|
+| Estado | Completado — v1.0 |
+| Arquitectura | MVC Tri-Portal (sin frameworks) |
+| Backend | PHP 8+ (procedural) |
+| Frontend | CSS puro, JavaScript, jQuery |
+| Base de datos | MySQL |
+| Integraciones | Firebase Cloud Messaging, Brevo API |
+| Servidor local | XAMPP |
+| URL demo | [yassin.agency](https://yassin.agency) |
 
 ---
 
-## 📖 Características Principales
+## Descripción
 
-### 👨‍🎓 Portal Estudiantes
-- **Mi Perfil:** Gestión de datos personales con avatares.
-- **Académico:** Consulta de calificaciones por módulos (Recuperaciones incluidas).
-- **Retos:** Seguimiento de metodología basada en retos (ABP).
-- **PFC/TFG:** Sistema de subida y gestión de Proyectos Finales de Ciclo.
-- **Pagos:** Control de mensualidades y estado financiero en tiempo real.
-- **Mensajería:** Comunicación directa con el equipo docente.
+AulaPro es una plataforma web de gestión académica diseñada para centros de Formación Profesional. Centraliza en un solo sistema la gestión de estudiantes, profesores y administración, eliminando el uso de hojas de cálculo y herramientas dispersas.
 
-### 👨‍🏫 Portal Profesores
-- **Gestión Académica:** Introducción de notas y evaluación de módulos con lógica de re-evaluación.
-- **Evaluación de Retos:** Calificación de competencias y proyectos transversales.
-- **Mensajería:** Buzón de entrada y notificaciones a estudiantes.
-
-### 👑 Portal Administrador
-- **Control Global:** Gestión de usuarios (Estudiantes, Profesores, Directores).
-- **Estructura:** Configuración dinámica de Ciclos, Módulos y Aulas.
-- **Inventario:** Sistema de préstamos de hardware con trazabilidad.
-- **Anuncios:** Publicación de avisos con **Notificaciones Push (Firebase)** y **Email Automático (Brevo)**.
-- **Finanzas:** Supervisión integral de recaudación y cobros pendientes.
+El proyecto está construido desde cero en PHP con arquitectura MVC propia, sin frameworks externos. El frontend usa CSS puro y jQuery. La base de datos es MySQL.
 
 ---
 
-## 🚀 Innovaciones y Mejoras Recientes (v1.1)
-- **Login Dinámico:** Nueva interfaz de acceso con integración de video de introducción (`intro.mp4`) y diseño de alta conversión.
-- **Lógica Académica Avanzada**: Implementación de sistema de pesos (75% Módulos / 25% Retos) con soporte automático para exámenes de recuperación.
-- **Sistema de Notificaciones Dual**: Integración de **Firebase Cloud Messaging** para avisos en escritorio y **Brevo API** para notificaciones por email.
-- **Optimización Responsive 100%**: Refactorización completa de CSS para garantizar que todas las vistas de detalles y tablas funcionen perfectamente en smartphones y tablets (iOS/Android).
-- **Seguridad y Normalización**: Validación de datos con Regex, normalización de correos electrónicos (trim/lowercase) y protección de archivos sensibles.
+## Portales
+
+### Portal Administrador
+- Gestión de usuarios: estudiantes, profesores, directores
+- Configuración de ciclos formativos, módulos y aulas
+- Gestión de pagos y seguimiento financiero
+- Inventario del centro con sistema de préstamos
+- Publicación de anuncios con notificaciones push (Firebase) y email (Brevo)
+- Mensajería interna con bandeja de entrada y alertas de no leídos
+- Panel de control con estadísticas globales en tiempo real
+- Gestión de Trabajos de Fin de Grado (TFG)
+- Calendario de eventos
+
+### Portal Profesores
+- Calificación de módulos con lógica de re-evaluación (recuperación)
+- Evaluación de retos/proyectos (metodología ABP)
+- Resultados finales con pesos configurados (75% módulos / 25% retos)
+- Gestión de TFGs asignados
+- Mensajería con estudiantes
+- Calendario de eventos y anuncios
+
+### Portal Estudiantes
+- Consulta de calificaciones por módulo con soporte de recuperaciones
+- Seguimiento de retos y notas de proyectos
+- Resultados finales del ciclo
+- Subida y gestión del TFG propio
+- Control de pagos y estado de matrícula
+- Mensajería con el equipo docente
+- Anuncios y calendario de eventos
 
 ---
 
-## 📂 Estructura del Proyecto
+## Tecnologías Utilizadas
+
+| Capa | Tecnología |
+|---|---|
+| Backend | PHP 8+ (MVC propio, sin framework) |
+| Base de datos | MySQL |
+| Frontend | HTML5, CSS3, JavaScript, jQuery |
+| Notificaciones | Firebase Cloud Messaging (FCM) v9 |
+| Email | Brevo API (SMTP transaccional) |
+| Iconos | Font Awesome 6 |
+| Servidor | XAMPP (Apache + MySQL) |
+
+---
+
+## Arquitectura MVC
+
 ```
 pfc/
-├── 📁 controladores/         # Lógica de negocio dividida por portal
-├── 📁 modelos/               # Capa de datos compartida
-├── 📁 vistas/                # Interfaz de usuario (Templates PHP)
-├── 📁 public/                # Recursos estáticos (CSS, JS, Imágenes, Videos)
-├── 📁 config/                # Configuraciones de seguridad (Ignorado en Git)
-└── database.sql              # Esquema optimizado para servidores de hosting
+├── controladores/        # Lógica de negocio y validación por portal
+│   ├── admin/
+│   ├── profesores/
+│   └── estudiantes/
+├── modelos/              # Funciones SQL y acceso a datos
+├── vistas/               # Plantillas PHP (HTML + datos)
+│   ├── admin/
+│   ├── profesores/
+│   └── estudiantes/
+├── public/               # Recursos estáticos
+│   ├── css/
+│   ├── js/
+│   └── imagenes/
+├── config/               # Credenciales (excluido de Git)
+├── database.sql          # Esquema completo de la base de datos
+└── index.html            # Landing page pública
 ```
 
 ---
 
-## ⚙️ Instalación
+## Instalación Local
 
-1. **Clonar Repositorio.**
-2. **Importar DB:** Usar `database.sql` en un servidor MySQL.
-3. **Configurar Credenciales:**
-   - `modelos/conectar.php`: Datos de acceso a la BD.
-   - `config/secrets.php`: API Key de Brevo.
-   - `config/service-account.json`: Credenciales de Firebase.
+1. Instalar [XAMPP](https://www.apachefriends.org/) y arrancar Apache + MySQL.
+2. Clonar o copiar la carpeta del proyecto en `C:/xampp/htdocs/pfc/`.
+3. Importar `database.sql` en phpMyAdmin (nombre de la BD: `pfc`).
+4. Crear el archivo `modelos/conectar.php` con las credenciales de la BD:
+   ```php
+   <?php
+   $conexion = new mysqli('localhost', 'root', '', 'pfc');
+   ```
+5. (Opcional) Configurar `config/secrets.php` con la API Key de Brevo para el envío de emails.
+6. (Opcional) Configurar `config/service-account.json` con las credenciales de Firebase para notificaciones push.
+7. Abrir el navegador en `http://localhost/pfc/`.
 
 ---
 
-## 👤 Autor
-**Yassin Lahhit**  
-*Proyecto Final de Grado - Desarrollo de Aplicaciones Web*
+## Funcionalidades Destacadas
+
+- **Sin frameworks externos** — PHP procedural puro con arquitectura MVC diseñada desde cero.
+- **Sistema de calificaciones con recuperación** — lógica de pesos y gestión de convocatorias.
+- **Notificaciones duales** — push en tiempo real via Firebase y email automático via Brevo API.
+- **Diseño completamente responsive** — adaptado a escritorio, tablet y móvil desde un único CSS sin librerías.
+- **Tres portales independientes** — cada rol (admin, profesor, estudiante) tiene su propio entorno con sesión y permisos separados.
+- **Gestión de TFGs** — subida, revisión y descarga de proyectos finales integrada en los tres portales.
+
+---
+
+## Autor
+
+**Yassin Lahhit**
+Estudiante de 2.º de DAW — CPS Ibaiondo
+Bilbao, 2026

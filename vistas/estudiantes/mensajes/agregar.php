@@ -12,7 +12,7 @@ if (!isset($_SESSION['idEstudiante'])) {
     exit;
 }
 
-$tituloPagina = "Nuevo Mensaje - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | NUEVO MENSAJE";
 $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 

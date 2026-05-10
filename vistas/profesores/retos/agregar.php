@@ -19,7 +19,7 @@ $idProfesor = $_SESSION['idProfesor'];
 $misModulos = obtenerModulosDeProfesor($idProfesor);
 $modulosElegidos = $datos['modulos'] ?? [];
 
-$tituloPagina = "Agregar Reto - Portal Profesores";
+$tituloDelPagina = "AULAPRO | NUEVO RETO";
 $seccionActual = 'retos';
 include_once "../comunes/nav.php";
 ?>

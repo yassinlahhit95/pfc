@@ -17,7 +17,7 @@ require_once "../../../modelos/estudiantes.php";
 $id = $_SESSION['idEstudiante'];
 $est = obtenerEstudiantePorId($id);
 
-$tituloPagina = "Editar Mi Perfil - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | EDITAR PERFIL";
 $seccionActual = 'perfil';
 include_once "../comunes/nav.php";
 ?>

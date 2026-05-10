@@ -114,42 +114,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<script>
-document.getElementById('formReto').addEventListener('submit', function(e) {
-    const fechaInicioInput = document.getElementById('fechaInicioReto').value;
-    const fechaFinInput = document.getElementById('fechaFinReto').value;
-    const horasInput = document.getElementById('horasReto').value;
-
-    if (!fechaInicioInput || !fechaFinInput || !horasInput) return;
-
-    const fechaInicio = new Date(fechaInicioInput);
-    const fechaFin = new Date(fechaFinInput);
-    const horas = parseInt(horasInput);
-    
-    if (fechaInicio > fechaFin) {
-        e.preventDefault();
-        alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
-        return;
-    }
-
-    // Calcular días laborables (Lunes a Viernes)
-    let diasLaborables = 0;
-    let current = new Date(fechaInicio);
-    while (current <= fechaFin) {
-        const day = current.getDay();
-        if (day !== 0 && day !== 6) { // 0 es Domingo, 6 es Sábado
-            diasLaborables++;
-        }
-        current.setDate(current.getDate() + 1);
-    }
-
-    const maxHoras = diasLaborables * 6;
-    if (horas > maxHoras) {
-        e.preventDefault();
-        alert(`Las horas estimadas (${horas}) superan el máximo permitido para este rango de fechas (${maxHoras} horas, basadas en 6h/día de Lunes a Viernes).`);
-    }
-});
-</script>
+<script src="../../../public/js/retos.js"></script>
 
 <?php include '../comunes/footer.php'; ?>
 

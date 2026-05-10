@@ -7,7 +7,7 @@ if (!$idProfesor) {
     exit;
 }
 
-$tituloPagina = "Notas de Retos - Portal Profesores";
+$tituloDelPagina = "AULAPRO | NOTAS DE RETOS";
 $seccionActual = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 

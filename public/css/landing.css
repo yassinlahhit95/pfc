@@ -157,6 +157,12 @@ body.landing-body {
   display: block;
 }
 
+.logo-landing-png  { display: block; }
+.logo-landing-jpeg { display: none; }
+
+.nav-scrolled .logo-landing-png  { display: none; }
+.nav-scrolled .logo-landing-jpeg { display: block; }
+
 .menu-landing {
   display: flex;
   align-items: center;

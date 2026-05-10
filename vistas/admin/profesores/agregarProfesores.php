@@ -158,44 +158,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
     </form>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const checkCiclos = document.querySelectorAll('.check-ciclo');
-    const msgVacio = document.getElementById('msg-seleccionar-ciclo');
-
-    function actualizarModulos() {
-        let algunoSeleccionado = false;
-        
-        checkCiclos.forEach(check => {
-            const idCiclo = check.getAttribute('data-id');
-            const grupo = document.querySelector(`.grupo-modulos[data-ciclo-id="${idCiclo}"]`);
-            
-            if (grupo) {
-                if (check.checked) {
-                    grupo.classList.remove('d-none');
-                    algunoSeleccionado = true;
-                } else {
-                    grupo.classList.add('d-none');
-                }
-            }
-        });
-
-        if (msgVacio) {
-            if (algunoSeleccionado) {
-                msgVacio.classList.add('d-none');
-            } else {
-                msgVacio.classList.remove('d-none');
-            }
-        }
-    }
-
-    checkCiclos.forEach(check => {
-        check.addEventListener('change', actualizarModulos);
-    });
-
-    actualizarModulos();
-});
-</script>
+<script src="../../../public/js/profesores-form.js"></script>
 
 <?php include '../comunes/footer.php'; ?>
 

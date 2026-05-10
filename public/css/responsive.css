@@ -1,13 +1,17 @@
-@media (max-width: 992px) {
-    /* Navegación Superior */
+/* =======================================================
+   TABLETA — min-width: 769px and max-width: 1024px
+   ======================================================= */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    /* Navegación superior */
     .navbar-superior {
-        display: flex; 
+        display: flex;
         left: 0;
         padding: 0 15px;
     }
 
     .menu-superior {
-        display: none; 
+        display: none;
     }
 
     .menu-toggle {
@@ -16,13 +20,67 @@
         z-index: 2000;
     }
 
-    /* Contenido Principal */
+    /* Barra lateral — colapsa a solo iconos */
+    .barra-lateral {
+        width: 70px;
+        padding: 0;
+        transition: all 0.3s ease;
+        z-index: 1001;
+    }
+
+    .barra-lateral .titulo-panel-sidebar,
+    .barra-lateral .enlace-menu span,
+    .barra-lateral .titulo-de-seccion,
+    .barra-lateral .etiqueta-contador {
+        display: none;
+    }
+
+    .barra-lateral.activo {
+        width: 260px;
+    }
+
+    .barra-lateral.activo .titulo-panel-sidebar { display: inline-block; }
+
+    .barra-lateral.activo .texto-negrita,
+    .barra-lateral.activo .enlace-menu span,
+    .barra-lateral.activo .titulo-de-seccion,
+    .barra-lateral.activo .etiqueta-contador {
+        display: block;
+    }
+
+    /* Logos según estado del menú */
+    .logo-navbar-png, .sidebar-logo-png { display: none; }
+    .logo-navbar-jpeg, .sidebar-logo-jpeg { display: block; }
+
+    body.menu-abierto .logo-navbar-png,
+    .barra-lateral.activo .sidebar-logo-png {
+        display: block !important;
+    }
+
+    body.menu-abierto .logo-navbar-jpeg,
+    .barra-lateral.activo .sidebar-logo-jpeg {
+        display: none !important;
+    }
+
+    /* Contenido principal */
     .contenido-derecha,
     .contenido-principal {
-        margin-left: 0 !important;
+        margin-left: 70px !important;
+        padding: 20px;
+        padding-top: 85px;
+        transition: all 0.3s ease;
+    }
+
+    /* Overlay al abrir el menú en tableta */
+    body.menu-abierto::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        padding: 15px;
-        padding-top: 100px; 
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 998;
     }
 
     /* Dashboard */
@@ -34,70 +92,101 @@
         flex-direction: column;
     }
 
-    /* Barra Lateral y Logos */
-    .barra-lateral {
-      width: 70px;
-      padding: 0;
-      transition: all 0.3s ease;
-      z-index: 1001;
-    }
-    
-    .logo-navbar-png, .sidebar-logo-png { display: none; }
-    .logo-navbar-jpeg, .sidebar-logo-jpeg { display: block; }
-    
-    body.menu-abierto .logo-navbar-png,
-    .barra-lateral.activo .sidebar-logo-png { 
-        display: block !important; 
-    }
-    
-    body.menu-abierto .logo-navbar-jpeg,
-    .barra-lateral.activo .sidebar-logo-jpeg { 
-        display: none !important; 
-    }
-
-    .barra-lateral .titulo-panel-sidebar { display: none; }
-    .barra-lateral .enlace-menu span,
-    .barra-lateral .titulo-de-seccion,
-    .barra-lateral .etiqueta-contador {
-      display: none;
-    }
-
-    .barra-lateral.activo {
-      width: 260px;
-    }
-
-    .barra-lateral.activo .sidebar-logo-png { display: block; }
-    .barra-lateral.activo .sidebar-logo-jpeg { display: none; }
-    .barra-lateral.activo .titulo-panel-sidebar { display: inline-block; }
-
-    .barra-lateral.activo .texto-negrita,
-    .barra-lateral.activo .enlace-menu span,
-    .barra-lateral.activo .titulo-de-seccion,
-    .barra-lateral.activo .etiqueta-contador {
-      display: block;
-    }
-
-    .contenido-derecha,
-    .contenido-principal {
-      margin-left: 70px !important;
-      padding: 20px;
-      padding-top: 85px;
-      transition: all 0.3s ease;
-    }
-
+    /* Sobre el proyecto */
     .seccion-about-me {
-        margin: -85px -20px -20px -20px;
-        padding: 50px 30px;
-        min-height: calc(100vh - 85px);
+        padding: 90px 30px 50px 30px;
+        min-height: 100vh;
+    }
+
+    /* Landing — mostrar hamburguesa en tableta */
+    .menu-boton-landing {
+        display: block;
+    }
+
+    .menu-landing {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: #1e1b4b;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 24px 20px;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transform: translateY(-8px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        z-index: 99;
+    }
+
+    .menu-landing.activo {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .menu-enlace-landing {
+        width: 100%;
+        display: block;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .menu-landing .btn-acceso-nav {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-scrolled .menu-landing {
+        background: #ffffff;
+        border-bottom-color: #e5e7eb;
+    }
+
+    .nav-scrolled .menu-landing .menu-enlace-landing {
+        color: #4b5563;
     }
 }
 
+
+/* =======================================================
+   MÓVIL — max-width: 768px
+   ======================================================= */
 @media (max-width: 768px) {
+
+    /* Navegación superior */
+    .navbar-superior {
+        display: flex;
+        left: 0;
+        padding: 0 15px;
+    }
+
+    .menu-superior {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block !important;
+        position: static;
+        z-index: 2000;
+    }
+
+    /* Logos — navbar muestra jpeg cuando sidebar está cerrado */
+    .logo-navbar-png  { display: none; }
+    .logo-navbar-jpeg { display: block; }
+
+    body.menu-abierto .logo-navbar-png  { display: block !important; }
+    body.menu-abierto .logo-navbar-jpeg { display: none  !important; }
+
+    /* Barra lateral — fuera de pantalla */
     .barra-lateral {
         left: -260px;
         width: 260px;
         position: fixed;
         height: 100vh;
+        transition: left 0.3s;
     }
 
     .barra-lateral.activo {
@@ -108,17 +197,20 @@
     .barra-lateral .titulo-de-seccion,
     .barra-lateral .etiqueta-contador,
     .barra-lateral .titulo-panel-sidebar {
-      display: block;
+        display: block;
     }
-    
+
     .barra-lateral .sidebar-logo-png { display: block; }
     .barra-lateral .sidebar-logo-jpeg { display: none; }
 
+    /* Contenido principal */
     .contenido-derecha,
     .contenido-principal {
-      margin-left: 0 !important;
+        margin-left: 0 !important;
+        padding: 90px 15px 15px 15px;
     }
 
+    /* Overlay al abrir el menú */
     body.menu-abierto {
         overflow: hidden;
     }
@@ -130,74 +222,22 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1000;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
     }
 
-    /* Sección About Me */
-    .contenedor-about {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .about-titulo {
-        font-size: 36px;
-    }
-
-    .about-subtitulo {
-        font-size: 16px;
-    }
-
-    .about-descripcion {
-        font-size: 14px;
-    }
-
-    .silhueta-contenedor {
-        width: 250px;
-        height: 330px;
-    }
-
-    .enlace-red-social {
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
-    }
-
-    .about-acciones {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
-@media (max-width: 768px) {
-    .formulario-filtros-retos {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 576px) {
-    .contenedor-tabla {
-        overflow-x: auto;
-    }
-
-    .tabla-datos {
-        min-width: 600px;
-    }
-
-    .tarjeta-blanca {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    .subtitulo-encabezado {
-        font-size: 0.8rem;
-    }
-
+    /* Dashboard */
     .cuadricula-estadisticas > * {
         flex: 1 1 100%;
+    }
+
+    /* Estadísticas del dashboard de estudiantes — 2 por fila */
+    .disposicion-flexible.envoltura-flexible .tarjeta-estadistica {
+        flex: 1 1 calc(50% - 10px);
+    }
+
+    .cuadricula-secundaria {
+        flex-direction: column;
     }
 
     .tarjeta-estadistica {
@@ -212,215 +252,233 @@
         flex: 1 1 100%;
     }
 
-    /* Barra Lateral en Móvil */
-    .barra-lateral {
-        left: -260px;
-        width: 260px;
-        transition: left 0.3s;
+    /* Tablas */
+    .contenedor-tabla {
+        overflow-x: auto;
     }
-    
-    .barra-lateral.mostrar-menu {
+
+    .tabla-datos {
+        min-width: 600px;
+    }
+
+    /* Tarjetas y tipografía */
+    .tarjeta-blanca {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .subtitulo-encabezado {
+        font-size: 0.8rem;
+    }
+
+    /* Filas de detalle */
+    .fila-detalle {
+        flex-wrap: wrap;
+        padding: 12px 0;
+        gap: 4px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .fila-detalle:last-child {
+        border-bottom: none;
+    }
+
+    .fila-detalle .etiqueta-detalle {
+        flex: 0 0 100%;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+
+    .fila-detalle .valor-detalle {
+        flex: 0 0 100%;
+        font-size: 14px;
+        word-break: break-word;
+    }
+
+    /* Botones de formulario */
+    .form-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-acciones .boton-primario,
+    .form-acciones .boton-secundario {
+        width: 100%;
+        min-width: unset;
+        justify-content: center;
+    }
+
+    /* Filtros */
+    .formulario-filtros-retos {
+        flex-direction: column;
+    }
+
+    /* Cuadrícula de formularios */
+    .formulario-cuadricula {
+        gap: 12px;
+    }
+
+    /* Sobre el proyecto */
+    .seccion-about-me {
+        padding: 90px 15px 30px 15px;
+        min-height: 100vh;
+    }
+
+    .about-titulo { font-size: 36px; }
+    .about-subtitulo { font-size: 16px; }
+    .about-descripcion { font-size: 14px; }
+
+    /* Landing — menú móvil */
+    .menu-landing {
+        position: fixed;
+        top: 60px;
         left: 0;
+        right: 0;
+        width: 100%;
+        background: #1e1b4b;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 24px 20px;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transform: translateY(-8px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        z-index: 99;
+    }
+
+    .menu-enlace-landing {
+        width: 100%;
         display: block;
     }
 
-    .contenido-derecha,
-    .contenido-principal {
-        margin-left: 0 !important;
-        padding: 100px 15px 15px 15px;
+    .menu-landing.activo {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
 
-    .seccion-about-me {
-        margin: -100px -15px -15px -15px;
-        padding: 30px 15px;
-        min-height: calc(100vh - 70px);
+    .menu-boton-landing {
+        display: block;
     }
-}
 
-.solo-movil { display: none; }
+    .menu-landing .btn-acceso-nav {
+        width: 100%;
+        text-align: center;
+    }
 
-@media (max-width: 768px) {
-  /* Menú móvil */
-  .menu-landing {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background: #ffffff;
-    flex-direction: column;
-    padding: 16px 24px 20px;
-    gap: 12px;
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    transform: translateY(-8px);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.25s ease;
-    z-index: 99;
-  }
+    .menu-landing .menu-enlace-landing {
+        color: rgba(255, 255, 255, 0.85);
+    }
 
-  .menu-landing.activo {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
-  }
+    .nav-scrolled .menu-landing {
+        background: #ffffff;
+        border-bottom-color: #e5e7eb;
+    }
 
-  .menu-boton-landing {
-    display: block;
-  }
+    .nav-scrolled .menu-landing .menu-enlace-landing {
+        color: #4b5563;
+    }
 
-  .menu-landing .btn-acceso-nav {
-    width: 100%;
-    text-align: center;
-  }
+    /* Landing — hero */
+    .hero-landing {
+        padding: 110px 0 64px;
+    }
 
-  /* Hero */
-  .hero-landing {
-    padding: 110px 0 64px;
-  }
+    .hero-botones-landing {
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .hero-botones-landing {
-    flex-direction: column;
-    align-items: center;
-  }
+    .hero-botones-landing .boton,
+    .form-acciones-landing .boton {
+        width: 100%;
+    }
 
-  .hero-botones-landing .boton {
-    width: 100%;
-    max-width: 100%;
-  }
+    .form-acciones-landing {
+        flex-direction: column;
+        align-items: stretch;
+    }
 
-  .form-acciones-landing {
-    justify-content: stretch;
-  }
+    /* Landing — secciones */
+    .seccion {
+        padding: 64px 0;
+    }
 
-  .form-acciones-landing .boton {
-    width: 100%;
-  }
+    .titulo-seccion {
+        font-size: 1.55rem;
+    }
 
-  .hero-stats {
-    gap: 8px 0;
-  }
+    .descripcion-seccion {
+        font-size: 0.95rem;
+    }
 
-  .hero-stat {
-    padding: 0 16px;
-  }
+    /* Landing — planes */
+    .planes-rejilla-landing {
+        flex-direction: column;
+        max-width: 480px;
+        margin: 0 auto;
+    }
 
-  .hero-stat-num {
-    font-size: 1.5rem;
-  }
+    .tarjeta-plan-landing {
+        padding: 28px 24px;
+    }
 
-  /* Menú móvil sobre hero oscuro */
-  .menu-landing {
-    background: #1e1b4b;
-    border-bottom-color: rgba(255,255,255,0.1);
-  }
+    /* Landing — precios */
+    .precio-cantidad {
+        font-size: 2.5rem;
+    }
 
-  .menu-landing .menu-enlace-landing {
-    color: rgba(255,255,255,0.85);
-  }
+    /* Landing — toggle facturación */
+    .billing-toggle-wrapper {
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-  .nav-scrolled .menu-landing {
-    background: #ffffff;
-    border-bottom-color: #e5e7eb;
-  }
+    .billing-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
 
-  .nav-scrolled .menu-landing .menu-enlace-landing {
-    color: #4b5563;
-  }
+    .billing-badge-ahorro {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
 
-  /* Secciones */
-  .seccion {
-    padding: 64px 0;
-  }
+    /* Landing — formulario contacto */
+    .form-fila-landing {
+        flex-direction: column;
+        gap: 10px;
+    }
 
-  .titulo-seccion {
-    font-size: 1.75rem;
-  }
+    .contacto-form-landing {
+        gap: 10px;
+    }
 
-  /* Tarjetas de plan */
-  .planes-rejilla-landing {
-    flex-direction: column;
-    max-width: 480px;
-  }
+    .contacto-form-wrapper {
+        padding: 20px 16px;
+    }
 
-  .tarjeta-plan-landing {
-    padding: 28px 24px;
-  }
+    /* Landing — contenedor */
+    .contenedor {
+        padding: 0 16px;
+    }
 
-  /* Formulario de contacto */
-  .form-fila-landing {
-    flex-direction: column;
-    gap: 12px;
-  }
+    /* Landing — botones */
+    .boton {
+        padding: 13px 20px;
+        font-size: 0.95rem;
+    }
 
-  .contacto-form-landing {
-    gap: 12px;
-  }
-
-  .contacto-form-wrapper {
-    padding: 24px 20px;
-  }
-}
-
-@media (max-width: 640px) {
-  .form-fila-landing {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .contacto-form-landing {
-    gap: 10px;
-  }
-  .contacto-form-wrapper {
-    padding: 20px 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .contenedor {
-    padding: 0 16px;
-  }
-
-  .titulo-seccion {
-    font-size: 1.55rem;
-  }
-
-  .descripcion-seccion {
-    font-size: 0.95rem;
-  }
-
-  /* Precios: número grande más contenido */
-  .precio-cantidad {
-    font-size: 2.5rem;
-  }
-
-  /* Toggle de facturación */
-  .billing-toggle-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .billing-btn {
-    flex: 1;
-    justify-content: center;
-    padding: 9px 12px;
-    font-size: 0.85rem;
-  }
-
-  .billing-badge-ahorro {
-    font-size: 0.7rem;
-    padding: 2px 6px;
-  }
-
-  /* Botones hero */
-  .boton {
-    padding: 13px 20px;
-    font-size: 0.95rem;
-  }
-
-  /* Plan badge */
-  .plan-badge {
-    font-size: 0.72rem;
-    padding: 3px 12px;
-  }
+    .plan-badge {
+        font-size: 0.72rem;
+        padding: 3px 12px;
+    }
 }

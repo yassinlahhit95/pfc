@@ -1,60 +1,62 @@
-# Contexto de la Base de Datos: Portal de Gestión Educativa (PFC)
+# Diagrama Entidad-Relación — AulaPro (TFG)
 
-Este texto explica en detalle la estructura de datos del proyecto para ser utilizado como prompt en la generación o comprensión del **Diagrama Entidad-Relación (ER)**.
-
-## 1. Arquitectura de la Base de Datos
-El proyecto utiliza una base de datos relacional (MySQL) estructurada para soportar metodologías educativas modernas, como el aprendizaje basado en retos (Ethazi), además de los módulos tradicionales. La base de datos está fuertemente normalizada para asegurar la integridad referencial.
-
-## 2. Entidades Principales y sus Funciones
-
-### Jerarquía Educativa
-- **NIVELES**: Define el grado formativo (ej. Grado Medio, Grado Superior). Un nivel agrupa múltiples ciclos.
-- **CICLOS**: Representa un programa educativo completo (ej. DAW, SMR). Tiene un precio asociado y pertenece a un nivel.
-- **MODULOS**: Son las asignaturas individuales que componen un ciclo formativo. Tienen un número máximo de horas.
-- **RETOS**: Son proyectos prácticos y transversales. Tienen fechas de inicio/fin y horas estimadas. 
-- **MODULO_RETO (Tabla pivote)**: Relaciona qué módulos (asignaturas) participan en qué retos. Un reto puede abarcar varios módulos y un módulo puede participar en varios retos.
-
-### Entidades de Usuarios
-- **DIRECTORES**: Usuarios con control total del sistema.
-- **PROFESORES**: Tienen datos de contacto (DNI, Teléfono). Se vinculan a Ciclos y a Módulos específicos a través de tablas intermedias.
-- **ESTUDIANTES**: Alumnos matriculados obligatoriamente en un Ciclo. Tienen un campo para subir su Trabajo de Fin de Grado (TFG).
-
-### Relaciones Académicas (Tablas Pivote / Asignaciones)
-- **CICLO_PROFESOR**: Relaciona a los profesores con los ciclos en los que son tutores o imparten clase.
-- **PROFESOR_MODULO**: Relaciona exactamente qué módulos imparte un profesor concreto.
-- **CICLO_AULA**: Asigna espacios físicos (Aulas) a los ciclos.
-
-### Entidades de Evaluación
-- **CALIFICACIONES_MODULOS**: Almacena las notas de un estudiante en un módulo específico. Guarda 4 valores: 1ª Evaluación, 1ª Final, 2ª Evaluación, 2ª Final y observaciones del profesor.
-- **CALIFICACIONES_RETOS**: Almacena la nota global (0 a 10) que obtiene un estudiante en un reto práctico concreto.
-
-### Entidades de Gestión Administrativa
-- **PAGOS**: Registra las cuotas abonadas por los estudiantes, montos y próximas fechas de cobro.
-- **DISPOSITIVOS**: Inventario físico del hardware del centro (número de serie, estado).
-- **PRESTAMOS**: Relaciona a un estudiante con un dispositivo físico, registrando las fechas de entrega y devolución.
-
-### Entidades de Comunicación
-- **RECLAMACIONES**: Tickets de soporte. Un estudiante o un profesor puede ser el emisor. Tiene un estado (Pendiente, Resuelto).
-- **ANUNCIOS y EVENTOS**: Registros de avisos en el tablón (con fecha de expiración) y calendario de eventos con ubicación física/virtual.
+Base de datos relacional MySQL con 20 tablas organizadas en 5 bloques funcionales.
 
 ---
 
-## 3. Lógica de Negocio Crucial en el Diseño ER
-- **El Cálculo de la Nota Final**: La base de datos almacena las notas separadas. A nivel lógico, la nota de un módulo pesa un 75% y el promedio de los retos asociados a ese módulo pesa el 25% restante. Las tablas `CALIFICACIONES_MODULOS`, `CALIFICACIONES_RETOS` y `MODULO_RETO` son las piezas centrales de este cálculo.
-- **TFG**: En lugar de crear una tabla separada, la tabla `ESTUDIANTES` cuenta con un campo directo `archivoTFG` que guarda la ruta del documento subido.
+## 1. Bloques de la Base de Datos
+
+### Bloque 1 — Estructura Educativa
+- **NIVELES**: Grado Medio o Grado Superior. Agrupa ciclos.
+- **CICLOS**: Programa formativo completo (DAW, SMR, DAM). Pertenece a un nivel, tiene precio.
+- **MODULOS**: Asignaturas individuales de un ciclo, con horas máximas.
+- **AULAS**: Espacios físicos del centro.
+
+### Bloque 2 — Usuarios
+- **DIRECTORES**: Control total del sistema. Tienen DNI, email, contraseña y token FCM para notificaciones push.
+- **PROFESORES**: Imparten módulos y evalúan retos. Tienen DNI, teléfono, dirección y token FCM.
+- **ESTUDIANTES**: Matriculados en un ciclo. Tienen DNI, token FCM, y dos campos para el TFG (`archivoTFG`, `fechaSubidaTFG`).
+
+### Bloque 3 — Académico y Evaluación
+- **RETOS**: Proyectos transversales con fechas de inicio/fin y horas estimadas.
+- **MODULO_RETO** *(pivot)*: Un reto puede abarcar varios módulos y viceversa.
+- **CALIFICACIONES_MODULOS**: Nota de un estudiante en un módulo. Guarda 4 valores: 1ª Evaluación, 1ª Final, 2ª Evaluación, 2ª Final, más observaciones del profesor.
+- **CALIFICACIONES_RETOS**: Nota global (0–10) de un estudiante en un reto.
+
+### Bloque 4 — Asignaciones (Tablas Pivot)
+- **CICLO_PROFESOR**: Relaciona profesores con los ciclos en que son tutores.
+- **PROFESOR_MODULO**: Relaciona exactamente qué módulos imparte cada profesor.
+- **CICLO_AULA**: Asigna aulas a ciclos.
+
+### Bloque 5 — Administración y Comunicación
+- **PAGOS**: Cuotas abonadas por estudiantes. Incluye tipo (mensual, trimestral…), comprobante y próxima fecha de cobro.
+- **DISPOSITIVOS**: Inventario de hardware del centro (número de serie, estado: disponible/prestado).
+- **PRESTAMOS**: Relaciona un estudiante con un dispositivo. Registra fechas de entrega y devolución, y estado (en curso/devuelto).
+- **ANUNCIOS**: Avisos con fecha de expiración, dirigidos a todos, estudiantes o profesores.
+- **EVENTOS**: Calendario escolar con hora y ubicación.
+- **RECLAMACIONES**: Sistema de mensajería interna. Puede ser enviado por estudiante, profesor o admin. Tiene estado (pendiente/atendido), campo de respuesta y flag de leído.
 
 ---
 
-## 4. Código Mermaid para el Diagrama ER
+## 2. Lógica de Negocio Clave
 
-A continuación, tienes el código listo en sintaxis Mermaid para renderizar la arquitectura en un diagrama visual:
+- **Nota final de módulo**: No se almacena directamente. Se calcula en tiempo de ejecución: 75% del promedio de `CALIFICACIONES_MODULOS` (convocatorias) + 25% del promedio de `CALIFICACIONES_RETOS` asociados via `MODULO_RETO`.
+- **TFG**: No tiene tabla propia. Los campos `archivoTFG` (ruta del PDF) y `fechaSubidaTFG` están directamente en la tabla `ESTUDIANTES`.
+- **Notificaciones push**: Los tres tipos de usuario (director, profesor, estudiante) tienen un campo `fcm_token` para recibir notificaciones vía Firebase Cloud Messaging.
+- **Préstamos**: La tabla `PRESTAMOS` referencia a `DISPOSITIVOS` por `numeroSerie` (clave de negocio), no por `idDispositivo`.
+
+---
+
+## 3. Diagrama Mermaid (Entidad-Relación)
 
 ```mermaid
 erDiagram
+
     NIVELES {
         int idNivel PK
         string nombreNivel
     }
+
     CICLOS {
         int idCiclo PK
         string nombreCiclo
@@ -62,12 +64,19 @@ erDiagram
         decimal precioCiclo
         int idNivel FK
     }
+
+    AULAS {
+        int idAula PK
+        string nombreAula
+    }
+
     MODULOS {
         int idModulo PK
         string nombreModulo
         int horasMaximas
         int idCiclo FK
     }
+
     RETOS {
         int idReto PK
         string nombreReto
@@ -75,22 +84,55 @@ erDiagram
         date fechaFin
         int horasReto
     }
-    PROFESORES {
-        int idProfesor PK
-        string nombreProfesor
-        string emailProfesor
-    }
-    ESTUDIANTES {
-        int idEstudiante PK
-        string nombreEstudiante
-        string emailEstudiante
-        string archivoTFG
-        int idCiclo FK
-    }
+
     MODULO_RETO {
         int idModulo FK
         int idReto FK
     }
+
+    DIRECTORES {
+        int idDirector PK
+        string nombreDirector
+        string emailDirector
+        string dniDirector
+        string fcm_token
+    }
+
+    PROFESORES {
+        int idProfesor PK
+        string nombreProfesor
+        string emailProfesor
+        string dniProfesor
+        string telefonoProfesor
+        string fcm_token
+    }
+
+    ESTUDIANTES {
+        int idEstudiante PK
+        string nombreEstudiante
+        string emailEstudiante
+        string dniEstudiante
+        int idCiclo FK
+        string archivoTFG
+        datetime fechaSubidaTFG
+        string fcm_token
+    }
+
+    CICLO_PROFESOR {
+        int idCiclo FK
+        int idProfesor FK
+    }
+
+    CICLO_AULA {
+        int idCiclo FK
+        int idAula FK
+    }
+
+    PROFESOR_MODULO {
+        int idProfesor FK
+        int idModulo FK
+    }
+
     CALIFICACIONES_MODULOS {
         int idCalificacion PK
         int idEstudiante FK
@@ -99,48 +141,90 @@ erDiagram
         decimal nota_1final
         decimal nota_2ev
         decimal nota_2final
+        text observaciones
     }
+
     CALIFICACIONES_RETOS {
         int idCalificacion PK
         int idEstudiante FK
         int idReto FK
         decimal nota
     }
-    PRESTAMOS {
-        int idPrestamo PK
-        int idEstudiante FK
-        string numeroSerie
-        date fechaPrestamo
-    }
+
     PAGOS {
         int idPago PK
         int idEstudiante FK
         decimal monto
         date fechaPago
+        date fechaProximoPago
+        enum tipoPago
+        string comprobante
     }
+
+    DISPOSITIVOS {
+        int idDispositivo PK
+        string nombreDispositivo
+        string numeroSerie
+        enum estadoDispositivo
+    }
+
+    PRESTAMOS {
+        int idPrestamo PK
+        int idEstudiante FK
+        string numeroSerie
+        date fechaPrestamo
+        date fechaDevolucion
+        enum estadoPrestamo
+    }
+
+    ANUNCIOS {
+        int idAnuncio PK
+        string titulo
+        text mensaje
+        date fechaExpiracion
+        enum dirigidoA
+    }
+
+    EVENTOS {
+        int idEvento PK
+        string tituloEvento
+        text descripcionEvento
+        date fechaEvento
+        time horaEvento
+        string ubicacionEvento
+    }
+
     RECLAMACIONES {
         int idReclamacion PK
         int idEstudiante FK
         int idProfesor FK
+        enum emisor_rol
         string asunto
+        text descripcion
+        date fecha
+        enum estadoReclamacion
+        boolean leido
+        text respuesta
     }
 
-    NIVELES ||--o{ CICLOS : "agrupa"
-    CICLOS ||--o{ MODULOS : "contiene"
-    CICLOS ||--o{ ESTUDIANTES : "matricula a"
-    MODULOS ||--o{ MODULO_RETO : "participa en"
-    RETOS ||--o{ MODULO_RETO : "abarca"
-    
-    ESTUDIANTES ||--o{ CALIFICACIONES_MODULOS : "obtiene nota en"
-    MODULOS ||--o{ CALIFICACIONES_MODULOS : "es evaluado en"
-    
-    ESTUDIANTES ||--o{ CALIFICACIONES_RETOS : "obtiene nota en"
-    RETOS ||--o{ CALIFICACIONES_RETOS : "es evaluado en"
-
-    PROFESORES ||--o{ CALIFICACIONES_MODULOS : "califican"
-    
-    ESTUDIANTES ||--o{ PRESTAMOS : "solicita"
-    ESTUDIANTES ||--o{ PAGOS : "realiza"
-    ESTUDIANTES ||--o{ RECLAMACIONES : "envía/recibe"
-    PROFESORES ||--o{ RECLAMACIONES : "envía/recibe"
+    NIVELES        ||--o{ CICLOS            : "agrupa"
+    CICLOS         ||--o{ MODULOS           : "contiene"
+    CICLOS         ||--o{ ESTUDIANTES       : "matricula a"
+    CICLOS         ||--o{ CICLO_PROFESOR    : "asigna"
+    CICLOS         ||--o{ CICLO_AULA        : "usa"
+    AULAS          ||--o{ CICLO_AULA        : "asignada a"
+    PROFESORES     ||--o{ CICLO_PROFESOR    : "pertenece a"
+    PROFESORES     ||--o{ PROFESOR_MODULO   : "imparte"
+    MODULOS        ||--o{ PROFESOR_MODULO   : "impartido por"
+    MODULOS        ||--o{ MODULO_RETO       : "participa en"
+    RETOS          ||--o{ MODULO_RETO       : "abarca"
+    ESTUDIANTES    ||--o{ CALIFICACIONES_MODULOS : "recibe nota en"
+    MODULOS        ||--o{ CALIFICACIONES_MODULOS : "evaluado en"
+    ESTUDIANTES    ||--o{ CALIFICACIONES_RETOS   : "recibe nota en"
+    RETOS          ||--o{ CALIFICACIONES_RETOS   : "evaluado en"
+    ESTUDIANTES    ||--o{ PAGOS             : "realiza"
+    ESTUDIANTES    ||--o{ PRESTAMOS         : "solicita"
+    DISPOSITIVOS   ||--o{ PRESTAMOS         : "prestado en"
+    ESTUDIANTES    ||--o{ RECLAMACIONES     : "envía o recibe"
+    PROFESORES     ||--o{ RECLAMACIONES     : "envía o recibe"
 ```

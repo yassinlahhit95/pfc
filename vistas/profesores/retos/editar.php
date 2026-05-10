@@ -28,7 +28,7 @@ $misModulos = obtenerModulosDeProfesor($idProfesor);
 $modulosAsociados = obtenerModulosDeReto($id);
 $idsModulosAsociados = array_column($modulosAsociados, 'idModulo');
 
-$tituloPagina = "Editar Reto - Portal Profesores";
+$tituloDelPagina = "AULAPRO | EDITAR RETO";
 $seccionActual = 'retos';
 include_once "../comunes/nav.php";
 ?>

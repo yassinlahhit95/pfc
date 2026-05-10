@@ -1,7 +1,8 @@
-# Configuración de Git - TFG PFC
-# Ignorar archivos sensibles y temporales
+# =============================================
+#  AulaPro — .gitignore
+# =============================================
 
-# Credenciales y Secretos
+# Credenciales y secretos (nunca subir al repositorio)
 .env
 config/secrets.php
 config/service-account.php
@@ -10,30 +11,42 @@ config/service-account.json
 *.pem
 *.p12
 
-# IDEs y Editores
+# IDEs y editores
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Directorios de XAMPP/Local
+# Herramientas de entorno local
 /nbproject/
 /vendor/
 /node_modules/
 
-# Archivos de Sistema
+# Archivos de sistema operativo
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
 
-# Temporales de PHP y Servidor
+# Temporales de PHP y servidor
 sess_*
 *.log
 *.tmp
 error_log
 .phpunit.result.cache
 
-# Subidas de archivos
+# Archivos de video (demasiado grandes para Git)
+public/videos/
+
+# Archivos subidos por usuarios (se regeneran en producción)
 public/uploads/pfc/*
 !public/uploads/pfc/.gitkeep
+
+# Scripts de mantenimiento temporales (ya eliminados)
+*.ps1
+*.py
+fix_*.php
+revert_*.php
+surgical_*.py
+inspect_*.py
+update_*.py

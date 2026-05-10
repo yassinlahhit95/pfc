@@ -21,7 +21,7 @@ $nom = $datos['nombreProfesor'] ?? $prof['nombreProfesor'];
 $eml = $datos['emailProfesor'] ?? $prof['emailProfesor'];
 $tel = $datos['telefonoProfesor'] ?? $prof['telefonoProfesor'];
 
-$tituloPagina = "Editar Mi Perfil - Portal Profesores";
+$tituloDelPagina = "AULAPRO | EDITAR PERFIL";
 $seccionActual = 'perfil';
 include_once "../comunes/nav.php";
 ?>

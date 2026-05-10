@@ -15,7 +15,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idEstudiante = $_SESSION['idEstudiante'];
 $listaDeMensajes = listarMensajesDeEstudiante($idEstudiante);
 
-$tituloPagina = "Mis Mensajes - Portal Estudiantes";
+$tituloDelPagina = "AULAPRO | MENSAJERÍA";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

@@ -21,7 +21,7 @@ if (!$mensaje) {
     exit;
 }
 
-$tituloPagina = "Gestionar Mensaje - Portal Profesores";
+$tituloDelPagina = "AULAPRO | EDITAR MENSAJE";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

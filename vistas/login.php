@@ -257,10 +257,9 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
             border: 3px solid rgba(255, 255, 255, 0.2);
-            background: #000;
         }
 
-        .dashboard-preview video {
+        .dashboard-preview img {
             width: 100%;
             height: auto;
             display: block;
@@ -354,10 +353,7 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
                 <p class="promo-subtitle">Conecta estudiantes, profesores y administración en un entorno unificado y eficiente.</p>
                 
                 <div class="dashboard-preview">
-                    <video autoplay muted loop playsinline>
-                        <source src="../public/videos/intro.mp4" type="video/mp4">
-                        Tu navegador no soporta el elemento de video.
-                    </video>
+                    <img src="../public/imagenes/aulapro.png" alt="AulaPro">
                 </div>
             </div>
 

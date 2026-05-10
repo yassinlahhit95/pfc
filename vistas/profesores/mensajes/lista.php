@@ -15,7 +15,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idProfesor = $_SESSION['idProfesor'];
 $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 
-$tituloPagina = "Buzón de Mensajes - Portal Profesores";
+$tituloDelPagina = "AULAPRO | MENSAJERÍA";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
