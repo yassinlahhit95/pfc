@@ -44,7 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/admin/pagos/actualizar.php">
         <input type="hidden" name="idPago" value="<?= $id_pago ?>">
         
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label for="idEstudiante">Estudiante *</label>
                 <select name="idEstudiante" id="idEstudiante">

@@ -38,7 +38,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
-        <div class="formulario-cuadricula">
+        <div class="form-estandar">
             <div class="campo-formulario">
                 <label for="nombreProfesor">Nombre Completo *</label>
                 <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?php if(isset($datos['nombreProfesor'])) { echo $datos['nombreProfesor']; } ?>">
@@ -71,7 +71,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor']);
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo-formulario campo-ancho-total">
                 <label for="direccionProfesor">Dirección *</label>
                 <input type="text" id="direccionProfesor" name="direccionProfesor" value="<?php if(isset($datos['direccionProfesor'])) { echo $datos['direccionProfesor']; } ?>">
                 <?php if (isset($errores['direccionProfesor'])) { ?>

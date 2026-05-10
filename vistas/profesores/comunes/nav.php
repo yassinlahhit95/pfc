@@ -131,7 +131,7 @@ $retos = count(obtenerRetosDeProfesor($idProf));
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
                 <a href="../comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
-                    <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
+                    <i class="fas fa-fingerprint"></i> <span>SOBRE MÍ</span>
                 </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
@@ -143,8 +143,7 @@ $retos = count(obtenerRetosDeProfesor($idProf));
         </nav>
     </aside>
 
-    <main class="contenido-principal">
-    <?php if (isset($_SESSION['idProfesor'])) { ?>
+    <main class="contenido-principal <?= ($seccionActual == 'creditos') ? 'p-0' : '' ?>"><?php if (isset($_SESSION['idProfesor'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="d-none"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

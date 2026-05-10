@@ -1,16 +1,14 @@
 <?php
 session_start();
-$tituloDelPagina = "AULAPRO | SOBRE EL PROYECTO";
+$tituloDelPagina = "AULAPRO | SOBRE MÍ";
 $seccionActual = 'creditos';
 include_once __DIR__ . "/nav.php";
-?>
-
-<div class="seccion-about-me">
+?><div class="seccion-about-me">
     <div class="contenedor-about">
 
         <div class="about-imagen-top">
             <div class="silhueta-contenedor">
-                <img src="../../../public/imagenes/aulapro.jpeg" alt="AulaPro" class="silhueta-imagen">
+                <img src="../../../public/imagenes/aulapro.png" alt="AulaPro" class="silhueta-imagen">
             </div>
         </div>
 
@@ -18,10 +16,12 @@ include_once __DIR__ . "/nav.php";
             <h2 class="about-titulo">SOBRE MÍ</h2>
             <h3 class="about-subtitulo">Yassin Lahhit — DAW · CPS Ibaiondo</h3>
             <p class="about-descripcion">
-                Soy estudiante de segundo de DAW en CPS Ibaiondo. AulaPro es mi TFG:
-                lo he montado de cero, base de datos, backend y frontend, sin frameworks externos.
-                El backend en PHP con arquitectura MVC propia, el frontend en CSS puro.
-                Me gusta que el código sea limpio y que las cosas funcionen sin complicarse.
+                ¡Hola! Soy <strong>Yassin Lahhit</strong>, desarrollador Full Stack apasionado por crear soluciones digitales que marquen la diferencia. 
+                <strong>AulaPro</strong> es el resultado de mi Trabajo de Fin de Grado (TFG) en el <strong>CPS Ibaiondo</strong>, un proyecto nacido con la ambición de centralizar la gestión académica en una plataforma moderna, fluida y eficiente.
+            </p>
+            <p class="about-descripcion">
+                He construido este ecosistema íntegramente desde sus cimientos, diseñando una arquitectura <strong>MVC personalizada</strong> en PHP, una base de datos MySQL robusta y una interfaz de usuario reactiva desarrollada con <strong>CSS puro</strong>. 
+                Mi filosofía se basa en el dominio de las tecnologías base para garantizar un rendimiento óptimo y un código limpio, priorizando siempre la escalabilidad y una experiencia de usuario intuitiva.
             </p>
 
             <div class="about-stack">
@@ -38,7 +38,7 @@ include_once __DIR__ . "/nav.php";
             </div>
 
             <div class="about-acciones mt-25">
-                <a href="../../../public/uploads/pfc/memoria_tfg.pdf" download class="boton-primario">
+                <a href="#" class="boton-primario">
                     <i class="fas fa-download"></i> Memoria TFG
                 </a>
                 <a href="#" target="_blank" class="boton-secundario">

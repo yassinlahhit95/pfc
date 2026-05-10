@@ -80,16 +80,11 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     <?php } ?>
 
-    <div class="titulo-tarjeta mt-30">
-        <h3>SUBIR DOCUMENTACIÓN</h3>
-        <p class="subtitulo">Formatos aceptados: PDF, Word (.doc, .docx)</p>
-    </div>
-
-    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar">
+    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar mt-30">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
         <div class="campo-formulario">
-            <label><?= empty($tfg['archivoTFG']) ? 'Seleccionar Archivo' : 'Sustituir Archivo' ?></label>
+            <label>Sustituir Archivo : Formatos aceptados: PDF, Word (.doc, .docx)</label>
             <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx" class="<?= isset($errores['archivoTFG']) ? 'input-error' : '' ?>">
             <?php if (isset($errores['archivoTFG'])) { ?>
                 <strong class="error-campo"><?= $errores['archivoTFG'] ?></strong>

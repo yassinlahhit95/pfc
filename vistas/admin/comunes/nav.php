@@ -47,7 +47,7 @@ $tfgs = contarTFGsSubidos();
     </div>
     <div class="menu-superior">
         <ul class="navbar-nav">
-            <li><a href="../directores/perfil.php"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
+            <li><a href="../directores/verDirectores.php"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
             <li><a href="../../../controladores/logout.php"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
         </ul>
     </div>
@@ -163,11 +163,8 @@ $tfgs = contarTFGsSubidos();
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="../directores/perfil.php" class="enlace-menu <?= ($seccion == 'perfil') ? 'activo' : '' ?>">
-                    <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
-                </a>
                 <a href="../comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccion == 'creditos') ? 'activo' : '' ?>">
-                    <i class="fas fa-fingerprint"></i> <span>HUELLA DIGITAL</span>
+                    <i class="fas fa-fingerprint"></i> <span>SOBRE MÍ</span>
                 </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
@@ -179,8 +176,7 @@ $tfgs = contarTFGsSubidos();
         </nav>
     </aside>
 
-    <main class="contenido-principal">
-    <?php if (isset($_SESSION['idAdmin'])) { ?>
+    <main class="contenido-principal <?= ($seccion == 'creditos') ? 'p-0' : '' ?>"><?php if (isset($_SESSION['idAdmin'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="d-none"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

@@ -10,9 +10,16 @@ if (!isset($_SESSION['idEstudiante'])) {
     exit;
 }
 
-require_once __DIR__ . "/../../../modelos/retos.php";
+$idEst = $_SESSION['idEstudiante'];
 
-$retos = listarRetos();
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+
+$datosEst = obtenerEstudiantePorId($idEst);
+$idCiclo = $datosEst['idCiclo'] ?? 0;
+
+// Obtenemos los retos específicos del ciclo del estudiante
+$retos = obtenerRetosPorCiclo($idCiclo);
 
 $tituloDelPagina = "AULAPRO | MIS RETOS";
 $seccionActual = 'retos';
@@ -21,6 +28,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>MIS RETOS</h1>
+    <p class="subtitulo">Retos asignados a tu ciclo: <?= $datosEst['nombreCiclo'] ?></p>
 </div>
 
 <?php if ($error) { ?>
@@ -42,25 +50,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Nombre del Reto</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
-                    <th>Horas</th>
+                    <th>Horas Estimadas</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if ($retos) { ?>
+                <?php if (empty($retos)) { ?>
+                    <tr>
+                        <td colspan="4" class="sin-datos">No hay retos asignados actualmente para su ciclo formativo.</td>
+                    </tr>
+                <?php } else { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
-                            <td><?= $reto['fechaInicio'] ?></td>
-                            <td><?= $reto['fechaFin'] ?></td>
+                            <td class="texto-negrita"><?= strtoupper($reto['nombreReto']) ?></td>
+                            <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
+                            <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
                             <td><?= $reto['horasReto'] ?> h</td>
                         </tr>
                     <?php } ?>
-                <?php } else { ?>
-                    <tr>
-                        <td colspan="4" class="sin-datos">
-                            <i class="fas fa-tasks"></i> No hay retos asignados actualmente.
-                        </td>
-                    </tr>
                 <?php } ?>
             </tbody>
         </table>

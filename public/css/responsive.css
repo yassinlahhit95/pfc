@@ -94,8 +94,9 @@
 
     /* Sobre el proyecto */
     .seccion-about-me {
-        padding: 90px 30px 50px 30px;
+        padding: 70px 30px 50px 30px;
         min-height: 100vh;
+        overflow: hidden;
     }
 
     /* Landing — mostrar hamburguesa en tableta */
@@ -323,8 +324,9 @@
 
     /* Sobre el proyecto */
     .seccion-about-me {
-        padding: 90px 15px 30px 15px;
+        padding: 70px 15px 30px 15px;
         min-height: 100vh;
+        overflow: hidden;
     }
 
     .about-titulo { font-size: 36px; }

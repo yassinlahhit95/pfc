@@ -265,7 +265,7 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         // Obtenemos la media de retos del estudiante en este módulo
         $calificacionesRetos = listarCalificacionesRetoPorModulo($idModuloActual);
         $mediaRetos = 0;
-        if ($calificacionesRetos[$idEstudiante] != null) {
+        if (isset($calificacionesRetos[$idEstudiante]) && $calificacionesRetos[$idEstudiante] != null) {
             $mediaRetos = floatval($calificacionesRetos[$idEstudiante]);
         }
 
@@ -307,25 +307,32 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         }
     }
 
-    // Si todos los módulos tienen notas, calculamos el promedio global del estudiante
-    if ($modulosConNotas == $totalModulos && $totalModulos > 0) {
-        $mediaModulos     = $sumaModulos / $totalModulos;
-        $mediaRetosGlobal = $sumaRetos / $totalModulos;
+    // Si hay módulos con notas, calculamos el promedio global del estudiante
+    if ($modulosConNotas > 0) {
+        $mediaModulos     = $sumaModulos / $modulosConNotas;
+        $mediaRetosGlobal = $sumaRetos / $modulosConNotas;
         $promedioGlobal   = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
 
         $resumen['media_modulos']    = round($mediaModulos, 2);
         $resumen['media_retos']      = round($mediaRetosGlobal, 2);
         $resumen['promedio_global']  = round($promedioGlobal, 2);
-        $resumen['calculo_completo'] = true;
+        
+        // El cálculo está completo solo si todos los módulos tienen notas
+        $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
 
         // Para aprobar necesita media de 5 o más y no tener ningún módulo suspenso
-        if ($promedioGlobal >= 5 && !$resumen['tiene_suspensos']) {
-            $resumen['estado_global'] = 'APROBADO';
+        // Si no se han cursado todos los módulos aún, el estado es PENDIENTE a menos que ya esté suspendido
+        if ($resumen['calculo_completo']) {
+            if ($promedioGlobal >= 5 && !$resumen['tiene_suspensos']) {
+                $resumen['estado_global'] = 'APROBADO';
+            } else {
+                $resumen['estado_global'] = 'SUSPENSO';
+            }
         } else {
-            $resumen['estado_global'] = 'SUSPENSO';
+            $resumen['estado_global'] = $resumen['tiene_suspensos'] ? 'SUSPENSO' : 'PENDIENTE';
         }
     } else {
-        // Todavía faltan notas, no podemos calcular el resultado final
+        // Todavía no hay ninguna nota registrada
         $resumen['media_modulos']    = "-";
         $resumen['media_retos']      = "-";
         $resumen['promedio_global']  = "-";
