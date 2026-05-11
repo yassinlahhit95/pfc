@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="">-- Todos los Ciclos --</option>
                     <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $idDelCicloParaFiltrar == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
-                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                            <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -86,10 +86,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($listaDePagosAMostrar as $pagoIndividual) { ?>
                     <tr>
-                        <td><strong><?= strtoupper($pagoIndividual['nombreEstudiante']) ?></strong></td>
-                        <td><?= strtoupper($pagoIndividual['nombreCiclo']) ?></td>
+                        <td><strong><?= mb_strtoupper($pagoIndividual['nombreEstudiante'], 'UTF-8') ?></strong></td>
+                        <td><?= mb_strtoupper($pagoIndividual['nombreCiclo'], 'UTF-8') ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
+                            <span class="etiqueta-pago"><?= mb_strtoupper($pagoIndividual['tipoPago'], 'UTF-8') ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>

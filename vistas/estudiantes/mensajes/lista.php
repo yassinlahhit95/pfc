@@ -64,7 +64,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 }
                             ?></strong>
                         </td>
-                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
+                        <td><p class="texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
                                 <?= substr($mensaje['descripcion'], 0, 80) ?>...

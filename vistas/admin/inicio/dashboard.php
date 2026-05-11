@@ -52,7 +52,7 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
   <div>
-    <h1>BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
+    <h1>BIENVENIDO/A, <?= mb_strtoupper($nombreAdmin, 'UTF-8') ?></h1>
   </div>
 </div>
 
@@ -109,12 +109,12 @@ include __DIR__ . '/../comunes/nav.php';
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
                 <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                    <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></strong>
+                    <strong class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></strong>
                     <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
                 </div>
                 <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncio['mensaje']) ?></p>
                 <div class="mt-5">
-                    <span class="etiqueta-dirigido-a"><?= strtoupper($anuncio['dirigidoA']) ?></span>
+                    <span class="etiqueta-dirigido-a"><?= mb_strtoupper($anuncio['dirigidoA'], 'UTF-8') ?></span>
                 </div>
             </div>
             <?php } ?>
@@ -152,12 +152,12 @@ include __DIR__ . '/../comunes/nav.php';
             foreach ($eventos as $evento) {
                 if ($i < 4) {
                     $dia = date('d', strtotime($evento['fechaEvento']));
-                    $mes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
+                    $mes = mb_strtoupper(date('M', strtotime($evento['fechaEvento'])), 'UTF-8');
             ?>
             <div class="elemento-evento">
               <div class="fecha-evento azul"><div class="dia"><?= $dia ?></div><div class="mes"><?= $mes ?></div></div>
               <div>
-                <p class="texto-negrita"><?= strtoupper($evento['tituloEvento']) ?></p>
+                <p class="texto-negrita"><?= mb_strtoupper($evento['tituloEvento'], 'UTF-8') ?></p>
                 <p class="texto-atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
               </div>
             </div>

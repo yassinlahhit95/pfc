@@ -62,12 +62,12 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     ?>
                     <tr>
                         <td><?= $moduloIndividual['idModulo'] ?></td>
-                        <td><strong><?= strtoupper($moduloIndividual['nombreModulo']) ?></strong></td>
+                        <td><strong><?= mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8') ?></strong></td>
                         <td>
                             <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
                                 <strong>[<?= $moduloIndividual['abreviaturaCiclo'] ?>]</strong> 
                             <?php } ?>
-                            <?= strtoupper($moduloIndividual['nombreCiclo']) ?>
+                            <?= mb_strtoupper($moduloIndividual['nombreCiclo'], 'UTF-8') ?>
                         </td>
                         <td>
                             <?php if (empty($nombresProfesores)) { ?>

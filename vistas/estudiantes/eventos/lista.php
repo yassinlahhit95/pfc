@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <td class="texto-negrita"><?= date('d/m/Y', strtotime($ev['fechaEvento'])) ?></td>
                         <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
-                        <td><strong><?= strtoupper($ev['tituloEvento']) ?></strong></td>
+                        <td><strong><?= mb_strtoupper($ev['tituloEvento'], 'UTF-8') ?></strong></td>
                         <td><p class="texto-pequeno"><?= $ev['descripcionEvento'] ?></p></td>
                         <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>

@@ -79,7 +79,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
+                            <span class="etiqueta-pago"><?= mb_strtoupper($pagoIndividual['tipoPago'], 'UTF-8') ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td>

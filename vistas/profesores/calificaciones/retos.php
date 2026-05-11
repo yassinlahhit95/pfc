@@ -124,7 +124,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?= strtoupper($estudiante['nombreEstudiante']) ?></strong>
+                                    <strong><?= mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8') ?></strong>
                                     <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>

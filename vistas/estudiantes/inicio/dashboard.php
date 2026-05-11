@@ -37,8 +37,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="encabezado-pagina">
-    <h1>¡HOLA, <?= strtoupper($estudianteActual['nombreEstudiante']) ?>!</h1>
-    <p class="texto-atenuado"><?= strtoupper($estudianteActual['nombreCiclo']) ?></p>
+    <h1>¡HOLA, <?= mb_strtoupper($estudianteActual['nombreEstudiante'], 'UTF-8') ?>!</h1>
+    <p class="texto-atenuado"><?= mb_strtoupper($estudianteActual['nombreCiclo'], 'UTF-8') ?></p>
 </div>
 
 <?php if ($exito) { ?>
@@ -79,7 +79,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             ?>
             <div class="anuncio-item">
                 <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                    <strong class="anuncio-titulo color-primario"><?= strtoupper($anu['tituloAnuncio']) ?></strong>
+                    <strong class="anuncio-titulo color-primario"><?= mb_strtoupper($anu['tituloAnuncio'], 'UTF-8') ?></strong>
                     <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></small>
                 </div>
                 <p class="texto-pequeno sin-margen mt-5"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
@@ -112,12 +112,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             foreach ($listaEventosProximos as $ev) {
                 if ($cest < 4) {
                     $d = date('d', strtotime($ev['fechaEvento']));
-                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
+                    $m = mb_strtoupper(date('M', strtotime($ev['fechaEvento'])), 'UTF-8');
             ?>
             <div class="elemento-evento">
               <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>
               <div>
-                <p class="texto-negrita"><?= strtoupper($ev['tituloEvento']) ?></p>
+                <p class="texto-negrita"><?= mb_strtoupper($ev['tituloEvento'], 'UTF-8') ?></p>
                 <p class="texto-atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
               </div>
             </div>

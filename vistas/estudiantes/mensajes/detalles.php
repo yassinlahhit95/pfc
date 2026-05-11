@@ -16,7 +16,7 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
-    $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.");
+    $_SESSION['error'] = mb_strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.", 'UTF-8');
     header("Location: lista.php");
     exit;
 }
@@ -62,7 +62,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></div>
     </div>
 
     <div class="fila-detalle">

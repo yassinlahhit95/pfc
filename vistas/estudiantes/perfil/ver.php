@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-detalle">
         <div class="etiqueta-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= strtoupper($estudiante['nombreEstudiante']) ?></div>
+        <div class="valor-detalle texto-negrita"><?= mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8') ?></div>
     </div> 
 
     <div class="fila-detalle">

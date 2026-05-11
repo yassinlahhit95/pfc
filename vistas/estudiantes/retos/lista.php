@@ -56,12 +56,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($retos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay retos asignados actualmente para su ciclo formativo.</td>
+                        <td colspan="4" class="sin-datos">No hay retos registrados para este ciclo formativo.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= strtoupper($reto['nombreReto']) ?></td>
+                            <td class="texto-negrita"><?= mb_strtoupper($reto['nombreReto'], 'UTF-8') ?></td>
                             <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
                             <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
                             <td><?= $reto['horasReto'] ?> h</td>

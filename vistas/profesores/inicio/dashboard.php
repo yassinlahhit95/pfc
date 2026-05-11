@@ -78,7 +78,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
         <a href="../mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
         <a href="../perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
-        <a href="#" class="accion-rapida color-secundario text-white" onclick="document.getElementById('formMasivo').style.display='block'; return false;">
+        <a href="#" class="accion-rapida color-secundario text-white" onclick="const f = document.getElementById('formMasivo'); f.classList.contains('d-none') ? f.classList.remove('d-none') : f.classList.add('d-none'); return false;">
           <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
         </a>
       </div>
@@ -142,7 +142,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             foreach ($listaEventos as $ev) {
                 if ($ce < 4) {
                     $d = date('d', strtotime($ev['fechaEvento']));
-                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
+                    $m = mb_strtoupper(date('M', strtotime($ev['fechaEvento'])), 'UTF-8');
             ?>
             <div class="elemento-evento">
               <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>

@@ -45,7 +45,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?php if($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo "selected"; } ?>>
-                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                            <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
                         </option>
                     <?php } ?>
                 </select>

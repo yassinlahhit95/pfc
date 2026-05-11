@@ -68,7 +68,7 @@ include_once "../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="titulo-tarjeta mt-30"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
+        <div class="titulo-tarjeta mt-30"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
         <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo-formulario">

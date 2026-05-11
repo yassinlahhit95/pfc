@@ -19,7 +19,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $id = $_GET['id'] ?? null;
 
 if (!$id || !is_numeric($id)) {
-    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
+    $_SESSION['error'] = mb_strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.", 'UTF-8');
     header("Location: lista.php");
     exit;
 }
@@ -27,7 +27,7 @@ if (!$id || !is_numeric($id)) {
 $nota = obtenerCalificacionPorId($id);
 
 if (!$nota) {
-    $_SESSION['error'] = strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.");
+    $_SESSION['error'] = mb_strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.", 'UTF-8');
     header("Location: lista.php");
     exit;
 }

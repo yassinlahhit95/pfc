@@ -11,7 +11,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
+$tituloDelPagina = mb_strtoupper("Resultados Finales - Portal Profesores", 'UTF-8');
 $seccionActual = 'resultados_finales';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -46,7 +46,7 @@ if ($id_ciclo_elegido) {
     
     foreach ($estudiantes_lista as $estudianteIndividual) {
         $id_est = $estudianteIndividual['idEstudiante'];
-        $nombre_est = strtoupper($estudianteIndividual['nombreEstudiante']);
+        $nombre_est = mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8');
         
         $suma_total_modulos = 0;
         $contador_total_notas_modulos = 0;
@@ -134,7 +134,7 @@ if ($id_ciclo_elegido) {
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
-                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                            <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
                         </option>
                     <?php } ?>
                 </select>

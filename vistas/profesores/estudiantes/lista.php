@@ -39,8 +39,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select id="selectFiltroCicloProf" name="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
-                    <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
+                <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
+                    <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
                 </option>
             <?php } ?>
         </select>

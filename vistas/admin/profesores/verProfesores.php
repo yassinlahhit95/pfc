@@ -54,7 +54,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
                     <tr>
                         <td><?= $profesorIndividual['idProfesor'] ?></td>
-                        <td><strong><?= strtoupper($profesorIndividual['nombreProfesor']) ?></strong></td>
+                        <td><strong><?= mb_strtoupper($profesorIndividual['nombreProfesor'], 'UTF-8') ?></strong></td>
                         <td><?= $profesorIndividual['emailProfesor'] ?></td>
                         <td>
                             <div class="botones-accion">

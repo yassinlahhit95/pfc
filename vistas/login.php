@@ -4,6 +4,7 @@
    AUTOR: Yassin Lahhit (CPS Ibaiondo)
    FECHA: Mayo 2024
    NOTA: Esta es la página principal de entrada para todos los usuarios.
+   Rediseñada en Mayo 2026.
 */
 
 session_start();
@@ -20,100 +21,116 @@ if (isset($_SESSION['idAdmin'])) {
     exit;
 }
 
-
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_login'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_login']);
+
+// Consolidar errores en un solo mensaje si existe alguno
+$mensajeError = "";
+if (!empty($errores)) {
+    if (isset($errores['usuario']) && isset($errores['contrasena'])) {
+        $mensajeError = "Usuario y contraseña son obligatorios.";
+    } else {
+        $mensajeError = reset($errores);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AULAPRO | INICIAR SESIÓN</title>
-    <link rel="shortcut icon" href="../public/imagenes/favicon.ico" type="image/x-icon">
+    <meta name="description" content="Portal de acceso al sistema de gestión de AulaPro. Gestión de asistencia, retos y seguimiento académico.">
+    <title>Acceso al Sistema - AulaPro</title>
     <link rel="icon" href="../public/imagenes/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="../public/css/login.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 </head>
-<body>
-    <div class="container">
-        <div class="login-section">
-            <div class="logo">
-                                <div class="logo-text">Aula</div>
+<body class="login-page">
 
-                <div class="logo-icon">PRO</div>
-            </div>
-
-            <h1 class="welcome-title">Acceso al Sistema</h1>
-            <p class="welcome-subtitle">Gestión académica integral para tu centro educativo.</p>
-
-            <form action="../controladores/validacion.php" method="POST">
-                <div class="form-group">
-                    <label class="form-label">Correo Electrónico</label>
-                    <input 
-                        type="text" 
-                        name="usuario" 
-                        class="form-input" 
-                        placeholder="nombre@aulapro.com"
-                        value="<?php echo htmlspecialchars($datos['usuario'] ?? $_GET['u'] ?? ''); ?>"
-                    id="campo-usuario"
-                    >
-                    <?php if (!empty($errores['usuario'])) { ?>
-                        <span class="error-campo"><?php echo $errores['usuario']; ?></span>
-                    <?php } ?>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Contraseña</label>
-                    <input 
-                        type="password" 
-                        name="contrasena" 
-                        class="form-input" 
-                        placeholder="••••••••"
-                    >
-                    <?php if (!empty($errores['contrasena'])) { ?>
-                        <span class="error-campo"><?php echo $errores['contrasena']; ?></span>
-                    <?php } ?>
-                </div>
-
-                <button type="submit" name="enviar" class="login-button">INICIAR SESIÓN</button>
-            </form>
+<main class="login-wrapper">
+    <div class="left">
+        <div class="logo">PORTAL</div><br>
+        <div class="title-wrapper">
+            <h1 class="modern-title">
+                AulaPro
+            </h1>
         </div>
-
-        <div class="promo-section">
-            <div class="particles">
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-            </div>
-
-            <div class="promo-content">
-                <h2 class="promo-title">Plataforma Educativa Tri-Portal</h2>
-                <p class="promo-subtitle">Conecta estudiantes, profesores y administración en un entorno unificado y eficiente.</p>
-                
-                <div class="dashboard-preview">
-                    <img src="../public/imagenes/aulapro.png" alt="AulaPro">
-                </div>
-            </div>
-
-            <div class="footer-info">
-                <span>© <?= date('Y') ?> AulaPro - TFG</span>
-                <span>v1.0</span>
-            </div>
+        <div class="subtitle">
+            Plataforma Integral de Gestión Académica: Conectando Estudiantes, Profesores y Administración para una Excelencia Educativa Superior.
         </div>
     </div>
-    <script>
-      // Si el usuario viene de la landing y ya tenemos su correo, ponemos el foco en la contraseña
-      <?php if (!empty($_GET['u'])) { ?>
-      document.addEventListener('DOMContentLoaded', () => {
-        const pwd = document.querySelector('input[name="contrasena"]');
+
+    <div class="login-card">
+        <?php if (!empty($mensajeError)) { ?>
+            <div id="errorMessage" class="error-message">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <?php echo $mensajeError; ?>
+            </div>
+        <?php } ?>
+
+        <form action="../controladores/validacion.php" method="POST" id="loginForm">
+            <label for="usuario">Usuario / Email</label>
+            <input type="text" id="usuario" name="usuario" placeholder="nombre@aulapro.com" value="<?php echo htmlspecialchars($datos['usuario'] ?? $_GET['u'] ?? ''); ?>" required autofocus>
+            
+            <label for="contrasena">Contraseña</label>
+            <div class="password-wrapper">
+                <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required>
+                <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar/Ocultar contraseña">
+                    <span class="eye-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+
+            <button type="submit" name="enviar" class="btn-primary">Iniciar Sesión</button>
+
+            <div class="divider"><span>o</span></div>
+
+            <div class="btn-group">
+                <a href="../index.html" class="btn-secondary" style="text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">Volver al Inicio</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("contrasena");
+
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener("click", (e) => {
+            e.preventDefault();
+            const isPassword = passwordField.type === "password";
+            passwordField.type = isPassword ? "text" : "password";
+            
+            // Optional: change icon based on state
+            const svg = togglePassword.querySelector('svg');
+            if (isPassword) {
+                svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        });
+    }
+
+    // Auto-focus on password if user is already provided (from landing)
+    <?php if (!empty($_GET['u'])) { ?>
+    document.addEventListener('DOMContentLoaded', () => {
+        const pwd = document.getElementById('contrasena');
         if (pwd) pwd.focus();
-      });
-      <?php } ?>
-    </script>
+    });
+    <?php } ?>
+</script>
+
 </body>
 </html>

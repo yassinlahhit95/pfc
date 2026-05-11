@@ -38,7 +38,7 @@ include_once "../comunes/nav.php";
     <form action="../../../controladores/estudiantes/perfil/actualizar.php" method="POST" class="form-estandar">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
-        <div class="titulo-tarjeta"><h3><i class="fas fa-user-circle"></i> DATOS DE CONTACTO</h3></div>
+        <div class="titulo-tarjeta"><h3>DATOS DE CONTACTO</h3></div>
 
         <div class="campo-formulario">
             <label for="emailEstudiante">Correo Electrónico</label>
@@ -87,3 +87,4 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+'; ?>

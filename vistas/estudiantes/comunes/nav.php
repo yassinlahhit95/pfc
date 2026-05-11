@@ -16,11 +16,11 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idEst = $_SESSION['idEstudiante'];
 
-$mensajes = count(listarMensajesDeEstudiante($idEst));
-$sinLeer = contarMensajesNoLeidosEstudiante($idEst);
-$anuncios = count(listarAnunciosPorRol('estudiantes'));
-$pagos = contarPagosEstudiante($idEst);
-$retos = count(listarCalificacionesRetoPorEstudiante($idEst));
+$totalMensajes_menu = count(listarMensajesDeEstudiante($idEst));
+$totalSinLeer_menu = contarMensajesNoLeidosEstudiante($idEst);
+$totalAnuncios_menu = count(listarAnunciosPorRol('estudiantes'));
+$totalPagos_menu = contarPagosEstudiante($idEst);
+$totalRetos_menu = count(listarCalificacionesRetoPorEstudiante($idEst));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -72,7 +72,7 @@ $retos = count(listarCalificacionesRetoPorEstudiante($idEst));
 
                 <a href="../retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>MIS RETOS</span>
-                    <span class="etiqueta-contador"><?= $retos ?></span>
+                    <span class="etiqueta-contador"><?= $totalRetos_menu ?></span>
                 </a>
 
                 <a href="../calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
@@ -97,17 +97,17 @@ $retos = count(listarCalificacionesRetoPorEstudiante($idEst));
 
                 <a href="../anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
-                    <span class="etiqueta-contador"><?= $anuncios ?></span>
+                    <span class="etiqueta-contador"><?= $totalAnuncios_menu ?></span>
                 </a>
 
                 <a href="../mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($sinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $mensajes ?></span>
+                    <span class="etiqueta-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
                 </a>
 
                 <a href="../pagos/lista.php" class="enlace-menu <?= ($seccionActual == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-credit-card"></i> <span>MIS PAGOS</span>
-                    <span class="etiqueta-contador"><?= $pagos ?></span>
+                    <span class="etiqueta-contador"><?= $totalPagos_menu ?></span>
                 </a>
 
                 <a href="../eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">
