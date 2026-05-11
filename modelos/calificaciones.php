@@ -88,11 +88,14 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
                 FROM calificaciones_modulos cm
                 JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
                 JOIN modulos m ON cm.idModulo = m.idModulo
-                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                AND m.idModulo = ?
+                WHERE m.idModulo = ?
+                AND (
+                    m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                    OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
+                )
                 ORDER BY e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idModulo);
+        mysqli_stmt_bind_param($stmt, "iii", $idModulo, $idProfesor, $idProfesor);
 
     // Si se filtra por ciclo
     } elseif ($idCiclo > 0) {
@@ -100,11 +103,14 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
                 FROM calificaciones_modulos cm
                 JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
                 JOIN modulos m ON cm.idModulo = m.idModulo
-                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                AND m.idCiclo = ?
+                WHERE m.idCiclo = ?
+                AND (
+                    m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                    OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
+                )
                 ORDER BY e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idCiclo);
+        mysqli_stmt_bind_param($stmt, "iii", $idCiclo, $idProfesor, $idProfesor);
 
     // Sin filtro, se devuelven todas las calificaciones del profesor
     } else {
@@ -112,10 +118,13 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
                 FROM calificaciones_modulos cm
                 JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
                 JOIN modulos m ON cm.idModulo = m.idModulo
-                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                WHERE (
+                    m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                    OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
+                )
                 ORDER BY e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     }
 
     mysqli_stmt_execute($stmt);

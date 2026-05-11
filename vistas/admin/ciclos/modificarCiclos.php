@@ -3,7 +3,6 @@ session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
-require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $id_ciclo = $_GET['idCiclo'] ?? '';
 $ciclo = obtenerCicloPorId($id_ciclo);
@@ -15,7 +14,6 @@ if (!$ciclo) {
 
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
-$listaAulas = listarAulas();
 
 $profesoresAsignadosRaw = obtenerProfesoresDeUnCiclo($id_ciclo);
 if (!is_array($profesoresAsignadosRaw)) {
@@ -25,17 +23,6 @@ $profesoresAsignados = [];
 foreach ($profesoresAsignadosRaw as $p) {
     if (is_array($p) && isset($p['idProfesor'])) {
         $profesoresAsignados[] = $p['idProfesor'];
-    }
-}
-
-$aulasAsignadasRaw = obtenerAulasDeUnCiclo($id_ciclo);
-if (!is_array($aulasAsignadasRaw)) {
-    $aulasAsignadasRaw = [];
-}
-$aulasAsignadas = [];
-foreach ($aulasAsignadasRaw as $a) {
-    if (is_array($a) && isset($a['idAula'])) {
-        $aulasAsignadas[] = $a['idAula'];
     }
 }
 
@@ -114,19 +101,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
                                 <?php if (in_array($prof['idProfesor'], $profesoresAsignados)) { ?>checked<?php } ?>>
                             <span><?= $prof['nombreProfesor'] ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="margen-abajo">Asignar Aulas Habituales</h4>
-                <div class="lista-checkboxes">
-                    <?php foreach ($listaAulas as $aula) { ?>
-                        <label class="item-checkbox">
-                            <input type="checkbox" name="aulas[]" value="<?= $aula['idAula'] ?>"
-                                <?php if (in_array($aula['idAula'], $aulasAsignadas)) { ?>checked<?php } ?>>
-                            <span><?= $aula['nombreAula'] ?></span>
                         </label>
                     <?php } ?>
                 </div>

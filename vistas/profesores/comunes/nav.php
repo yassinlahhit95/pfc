@@ -16,13 +16,15 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 
 $idProf = $_SESSION['idProfesor'];
 
-$alumnos = contarEstudiantesDeProfesor($idProf);
-$ciclos = contarCiclosDeProfesor($idProf);
-$mensajes = contarMensajesDeProfesor($idProf);
-$sinLeer = contarMensajesNoLeidosProfesor($idProf);
-$tfgs = contarTFGsDeProfesor($idProf);
-$modulos = count(obtenerModulosDeProfesor($idProf));
-$retos = count(obtenerRetosDeProfesor($idProf));
+// Renombramos variables para evitar colisiones con las páginas que incluyen el nav
+$totalAlumnos_menu = contarEstudiantesDeProfesor($idProf);
+$totalCiclos_menu = contarCiclosDeProfesor($idProf);
+$totalMensajes_menu = contarMensajesDeProfesor($idProf);
+$totalSinLeer_menu = contarMensajesNoLeidosProfesor($idProf);
+$totalTfgs_menu = contarTFGsDeProfesor($idProf);
+$totalModulos_menu = count(obtenerModulosDeProfesor($idProf));
+$totalRetos_menu = count(obtenerRetosDeProfesor($idProf));
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -30,10 +32,11 @@ $retos = count(obtenerRetosDeProfesor($idProf));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $tituloDelPagina ?? 'AulaPro Profesor' ?></title>
-    <link rel="stylesheet" href="../../../public/css/admin.css">
+    <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
-    <link rel="icon" href="../../../public/imagenes/favicon.ico">
+    <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -73,22 +76,22 @@ $retos = count(obtenerRetosDeProfesor($idProf));
                 
                 <a href="../estudiantes/lista.php" class="enlace-menu <?= ($seccionActual == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
-                    <span class="etiqueta-contador"><?= $alumnos ?></span>
+                    <span class="etiqueta-contador"><?= $totalAlumnos_menu ?></span>
                 </a>
 
                 <a href="../ciclos/lista.php" class="enlace-menu <?= ($seccionActual == 'ciclos') ? 'activo' : '' ?>">
                     <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
-                    <span class="etiqueta-contador"><?= $ciclos ?></span>
+                    <span class="etiqueta-contador"><?= $totalCiclos_menu ?></span>
                 </a>
 
                 <a href="../modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
-                    <span class="etiqueta-contador"><?= $modulos ?></span>
+                    <span class="etiqueta-contador"><?= $totalModulos_menu ?></span>
                 </a>
 
                 <a href="../retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS</span>
-                    <span class="etiqueta-contador"><?= $retos ?></span>
+                    <span class="etiqueta-contador"><?= $totalRetos_menu ?></span>
                 </a>
 
                 <a href="../calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
@@ -105,7 +108,7 @@ $retos = count(obtenerRetosDeProfesor($idProf));
 
                 <a href="../pfc/lista.php" class="enlace-menu <?= ($seccionActual == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
-                    <span class="etiqueta-contador"><?= $tfgs ?></span>
+                    <span class="etiqueta-contador"><?= $totalTfgs_menu ?></span>
                 </a>
             </div>
 
@@ -118,7 +121,7 @@ $retos = count(obtenerRetosDeProfesor($idProf));
 
                 <a href="../mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($sinLeer > 0) ? 'alerta-roja' : '' ?>"><?= $mensajes ?></span>
+                    <span class="etiqueta-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
                 </a>
 
                 <a href="../eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">
@@ -130,9 +133,6 @@ $retos = count(obtenerRetosDeProfesor($idProf));
                 <a href="../perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
-                <a href="../comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
-                    <i class="fas fa-fingerprint"></i> <span>SOBRE MÍ</span>
-                </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
@@ -143,7 +143,7 @@ $retos = count(obtenerRetosDeProfesor($idProf));
         </nav>
     </aside>
 
-    <main class="contenido-principal <?= ($seccionActual == 'creditos') ? 'p-0' : '' ?>"><?php if (isset($_SESSION['idProfesor'])) { ?>
+    <section class="contenido-principal"><?php if (isset($_SESSION['idProfesor'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="d-none"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

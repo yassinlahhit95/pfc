@@ -8,10 +8,6 @@ erDiagram
         int idNivel PK
         string nombreNivel
     }
-    AULAS {
-        int idAula PK
-        string nombreAula
-    }
     CICLOS {
         int idCiclo PK
         string nombreCiclo
@@ -119,10 +115,6 @@ erDiagram
         int idCiclo FK
         int idProfesor FK
     }
-    CICLO_AULA {
-        int idCiclo FK
-        int idAula FK
-    }
     PROFESOR_MODULO {
         int idProfesor FK
         int idModulo FK
@@ -132,7 +124,6 @@ erDiagram
     CICLOS ||--o{ MODULOS : "incluye"
     CICLOS ||--o{ ESTUDIANTES : "ofrece"
     CICLOS ||--o{ CICLO_PROFESOR : "asocia"
-    CICLOS ||--o{ CICLO_AULA : "usa"
     MODULOS ||--o{ MODULO_RETO : "relaciona"
     MODULOS ||--o{ PROFESOR_MODULO : "asigna"
     RETOS ||--o{ MODULO_RETO : "agrega"
@@ -178,7 +169,6 @@ sequenceDiagram
 ## Tablas de la base de datos
 
 - `niveles`: grados formativos del centro (Grado Medio/Superior).
-- `aulas`: aulas y laboratorios disponibles.
 - `ciclos`: ciclos formativos como DAW, DAM y SMR.
 - `modulos`: módulos que pertenecen a cada ciclo.
 - `profesores`: profesores con sus datos y credenciales.
@@ -195,7 +185,6 @@ sequenceDiagram
 - `reclamaciones`: reclamaciones de estudiantes o profesores.
 - `pagos`: pagos realizados por estudiantes.
 - `ciclo_profesor`: asignaciones de profesores a ciclos.
-- `ciclo_aula`: asignaciones de aulas a ciclos.
 - `profesor_modulo`: módulos que imparte cada profesor.
 
 ## Cómo funciona el proyecto
@@ -219,7 +208,3 @@ sequenceDiagram
 
 - Abre `diagramas.md` en VS Code con la extensión Mermaid.
 - O copia el contenido a https://mermaid.live/ para ver las imágenes.
-
-## Nota
-
-El entorno no pudo generar las imágenes locales porque `npx` falló por permisos en la caché. El archivo Markdown ya está listo para visualizar como gráficos Mermaid.

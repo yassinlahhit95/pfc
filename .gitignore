@@ -42,11 +42,3 @@ public/videos/
 public/uploads/pfc/*
 !public/uploads/pfc/.gitkeep
 
-# Scripts de mantenimiento temporales (ya eliminados)
-*.ps1
-*.py
-fix_*.php
-revert_*.php
-surgical_*.py
-inspect_*.py
-update_*.py

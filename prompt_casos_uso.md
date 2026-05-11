@@ -20,9 +20,8 @@ Sistema de gestión académica para centros de Formación Profesional con tres p
 - Iniciar y cerrar sesión
 - Ver panel de control con estadísticas globales
 - Gestionar usuarios: alta, modificación y baja de directores, profesores y estudiantes
-- Gestionar estructura académica: ciclos, módulos, retos, niveles y aulas
+- Gestionar estructura académica: ciclos, módulos, retos y niveles
 - Asignar profesores a ciclos y módulos
-- Asignar aulas a ciclos
 - Gestionar pagos de matrículas y mensualidades
 - Gestionar inventario de dispositivos (alta, modificación, baja)
 - Gestionar préstamos de dispositivos a estudiantes
@@ -83,7 +82,6 @@ flowchart LR
         UC1["Gestionar ciclos, módulos y retos"]
         UC2["Gestionar usuarios"]
         UC3["Asignar profesores a módulos"]
-        UC4["Asignar aulas a ciclos"]
     end
 
     subgraph EVAL["Evaluación"]
@@ -119,7 +117,6 @@ flowchart LR
     DIR --> UC1
     DIR --> UC2
     DIR --> UC3
-    DIR --> UC4
 
     DIR --> UC5
     DIR --> UC6

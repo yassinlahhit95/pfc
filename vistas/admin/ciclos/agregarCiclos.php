@@ -2,11 +2,9 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
-require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
-$listaAulas = listarAulas();
 
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_ciclo'] ?? [];
@@ -14,7 +12,6 @@ $datos = $_SESSION['datos_ciclo'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
 
 $profesoresElegidos = $datos['profesores'] ?? [];
-$aulasElegidas = $datos['aulas'] ?? [];
 
 $titulo_pagina = "AULAPRO | AGREGAR CICLO";
 $seccion = 'ciclos';
@@ -78,19 +75,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
                                 <?php if (in_array($prof['idProfesor'], $profesoresElegidos)) { ?>checked<?php } ?>>
                             <span><?= $prof['nombreProfesor'] ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="margen-abajo">Asignar Aulas Habituales</h4>
-                <div class="lista-checkboxes">
-                    <?php foreach ($listaAulas as $aula) { ?>
-                        <label class="item-checkbox">
-                            <input type="checkbox" name="aulas[]" value="<?= $aula['idAula'] ?>"
-                                <?php if (in_array($aula['idAula'], $aulasElegidas)) { ?>checked<?php } ?>>
-                            <span><?= $aula['nombreAula'] ?></span>
                         </label>
                     <?php } ?>
                 </div>

@@ -10,7 +10,6 @@ Base de datos relacional MySQL con 20 tablas organizadas en 5 bloques funcionale
 - **NIVELES**: Grado Medio o Grado Superior. Agrupa ciclos.
 - **CICLOS**: Programa formativo completo (DAW, SMR, DAM). Pertenece a un nivel, tiene precio.
 - **MODULOS**: Asignaturas individuales de un ciclo, con horas máximas.
-- **AULAS**: Espacios físicos del centro.
 
 ### Bloque 2 — Usuarios
 - **DIRECTORES**: Control total del sistema. Tienen DNI, email, contraseña y token FCM para notificaciones push.
@@ -26,7 +25,6 @@ Base de datos relacional MySQL con 20 tablas organizadas en 5 bloques funcionale
 ### Bloque 4 — Asignaciones (Tablas Pivot)
 - **CICLO_PROFESOR**: Relaciona profesores con los ciclos en que son tutores.
 - **PROFESOR_MODULO**: Relaciona exactamente qué módulos imparte cada profesor.
-- **CICLO_AULA**: Asigna aulas a ciclos.
 
 ### Bloque 5 — Administración y Comunicación
 - **PAGOS**: Cuotas abonadas por estudiantes. Incluye tipo (mensual, trimestral…), comprobante y próxima fecha de cobro.
@@ -63,11 +61,6 @@ erDiagram
         string abreviaturaCiclo
         decimal precioCiclo
         int idNivel FK
-    }
-
-    AULAS {
-        int idAula PK
-        string nombreAula
     }
 
     MODULOS {
@@ -121,11 +114,6 @@ erDiagram
     CICLO_PROFESOR {
         int idCiclo FK
         int idProfesor FK
-    }
-
-    CICLO_AULA {
-        int idCiclo FK
-        int idAula FK
     }
 
     PROFESOR_MODULO {
@@ -211,8 +199,6 @@ erDiagram
     CICLOS         ||--o{ MODULOS           : "contiene"
     CICLOS         ||--o{ ESTUDIANTES       : "matricula a"
     CICLOS         ||--o{ CICLO_PROFESOR    : "asigna"
-    CICLOS         ||--o{ CICLO_AULA        : "usa"
-    AULAS          ||--o{ CICLO_AULA        : "asignada a"
     PROFESORES     ||--o{ CICLO_PROFESOR    : "pertenece a"
     PROFESORES     ||--o{ PROFESOR_MODULO   : "imparte"
     MODULOS        ||--o{ PROFESOR_MODULO   : "impartido por"

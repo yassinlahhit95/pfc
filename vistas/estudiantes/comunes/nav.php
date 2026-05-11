@@ -28,10 +28,11 @@ $retos = count(listarCalificacionesRetoPorEstudiante($idEst));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $tituloDelPagina ?? 'AulaPro Estudiante' ?></title>
-    <link rel="stylesheet" href="../../../public/css/admin.css">
+    <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
-    <link rel="icon" href="../../../public/imagenes/favicon.ico">
+    <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -118,9 +119,6 @@ $retos = count(listarCalificacionesRetoPorEstudiante($idEst));
                 <a href="../perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
-                <a href="../comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccionActual == 'creditos') ? 'activo' : '' ?>">
-                    <i class="fas fa-fingerprint"></i> <span>SOBRE MÍ</span>
-                </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
@@ -131,7 +129,7 @@ $retos = count(listarCalificacionesRetoPorEstudiante($idEst));
         </nav>
     </aside>
 
-    <main class="contenido-principal <?= ($seccionActual == 'creditos') ? 'p-0' : '' ?>"><?php if (isset($_SESSION['idEstudiante'])) { ?>
+    <section class="contenido-principal"><?php if (isset($_SESSION['idEstudiante'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idEstudiante'] ?>" data-user-role="estudiante" class="d-none"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

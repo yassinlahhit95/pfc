@@ -35,7 +35,6 @@ Se ha refactorizado exitosamente el sistema de gestión escolar en tres portales
 │   ├── estudiantes.php .............. CRUD estudiantes + actualizarTFG
 │   ├── ciclos.php ................... Gestión ciclos + asociaciones
 │   ├── directores.php ............... CRUD directores
-│   ├── aulas.php .................... Gestión aulas
 │   ├── modulos.php .................. Gestión módulos
 │   ├── pagos.php .................... Gestión pagos
 │   ├── inventario.php ............... Gestión préstamos de inventario
@@ -54,7 +53,6 @@ Se ha refactorizado exitosamente el sistema de gestión escolar en tres portales
 │   ├── controladores/ .............. Lógica de negocio por módulo
 │   │   ├── academico/
 │   │   ├── anuncios/
-│   │   ├── aulas/
 │   │   ├── ciclos/
 │   │   ├── directores/
 │   │   ├── estudiantes/
@@ -69,7 +67,6 @@ Se ha refactorizado exitosamente el sistema de gestión escolar en tres portales
 │   │   ├── comunes/ (nav.php, footer.php)
 │   │   ├── academico/
 │   │   ├── anuncios/
-│   │   ├── aulas/
 │   │   ├── ciclos/
 │   │   ├── directores/
 │   │   ├── estudiantes/
@@ -201,7 +198,6 @@ Estudiantes controllers (depth 3): require_once "../../../modelos/estudiantes.ph
 - ✓ Gestión de estudiantes (CRUD)
 - ✓ Gestión de ciclos (CRUD)
 - ✓ Gestión de directores (CRUD)
-- ✓ Gestión de aulas (CRUD)
 - ✓ Gestión de módulos (CRUD)
 - ✓ Gestión de pagos (CRUD)
 - ✓ Gestión de inventario (préstamos/devoluciones)
@@ -335,7 +331,6 @@ Contraseña: (cualquiera en desarrollo)
 ✓ `/pfc/modelos/estudiantes.php` - CRUD estudiantes
 ✓ `/pfc/modelos/ciclos.php` - Gestión ciclos
 ✓ `/pfc/modelos/directores.php` - CRUD directores
-✓ `/pfc/modelos/aulas.php` - Gestión aulas
 ✓ `/pfc/modelos/modulos.php` - Gestión módulos
 ✓ `/pfc/modelos/pagos.php` - Gestión pagos
 ✓ `/pfc/modelos/inventario.php` - Gestión préstamos

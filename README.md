@@ -1,131 +1,78 @@
 # AulaPro — Sistema de Gestión Académica
-> Trabajo de Fin de Grado · Desarrollo de Aplicaciones Web · CPS Ibaiondo
-> **Autor:** Yassin Lahhit · **Versión:** 1.0 · **Curso:** 2025–2026
+> Trabajo de Fin de Grado (TFG) · Desarrollo de Aplicaciones Web · CPS Ibaiondo
+> **Versión:** 1.0 · **Curso:** 2025–2026
 
 ---
 
-## Información General
+## 📝 Descripción del Proyecto
 
-| Campo | Detalle |
-|---|---|
-| Estado | Completado — v1.0 |
-| Arquitectura | MVC Tri-Portal (sin frameworks) |
-| Backend | PHP 8+ (procedural) |
-| Frontend | CSS puro, JavaScript, jQuery |
-| Base de datos | MySQL |
-| Integraciones | Firebase Cloud Messaging, Brevo API |
-| Servidor local | XAMPP |
-| URL demo | [yassin.agency](https://yassin.agency) |
+**AulaPro** es una solución integral diseñada para la gestión académica y administrativa de centros de Formación Profesional. Este sistema permite centralizar el control de estudiantes, personal docente y administración en una única plataforma, eliminando la dependencia de hojas de cálculo externas y mejorando la comunicación interna del centro.
+
+El proyecto destaca por su arquitectura **MVC (Modelo-Vista-Controlador)** desarrollada de forma artesanal en PHP, sin el uso de frameworks pesados, priorizando la velocidad, la simplicidad y la legibilidad del código.
 
 ---
 
-## Descripción
-
-AulaPro es una plataforma web de gestión académica diseñada para centros de Formación Profesional. Centraliza en un solo sistema la gestión de estudiantes, profesores y administración, eliminando el uso de hojas de cálculo y herramientas dispersas.
-
-El proyecto está construido desde cero en PHP con arquitectura MVC propia, sin frameworks externos. El frontend usa CSS puro y jQuery. La base de datos es MySQL.
-
----
-
-## Portales
-
-### Portal Administrador
-- Gestión de usuarios: estudiantes, profesores, directores
-- Configuración de ciclos formativos, módulos y aulas
-- Gestión de pagos y seguimiento financiero
-- Inventario del centro con sistema de préstamos
-- Publicación de anuncios con notificaciones push (Firebase) y email (Brevo)
-- Mensajería interna con bandeja de entrada y alertas de no leídos
-- Panel de control con estadísticas globales en tiempo real
-- Gestión de Trabajos de Fin de Grado (TFG)
-- Calendario de eventos
-
-### Portal Profesores
-- Calificación de módulos con lógica de re-evaluación (recuperación)
-- Evaluación de retos/proyectos (metodología ABP)
-- Resultados finales con pesos configurados (75% módulos / 25% retos)
-- Gestión de TFGs asignados
-- Mensajería con estudiantes
-- Calendario de eventos y anuncios
-
-### Portal Estudiantes
-- Consulta de calificaciones por módulo con soporte de recuperaciones
-- Seguimiento de retos y notas de proyectos
-- Resultados finales del ciclo
-- Subida y gestión del TFG propio
-- Control de pagos y estado de matrícula
-- Mensajería con el equipo docente
-- Anuncios y calendario de eventos
-
----
-
-## Tecnologías Utilizadas
+## 🚀 Tecnologías y Herramientas
 
 | Capa | Tecnología |
 |---|---|
-| Backend | PHP 8+ (MVC propio, sin framework) |
-| Base de datos | MySQL |
-| Frontend | HTML5, CSS3, JavaScript, jQuery |
-| Notificaciones | Firebase Cloud Messaging (FCM) v9 |
-| Email | Brevo API (SMTP transaccional) |
-| Iconos | Font Awesome 6 |
-| Servidor | XAMPP (Apache + MySQL) |
+| **Backend** | PHP 8+ (Arquitectura MVC procedural) |
+| **Base de Datos** | MySQL |
+| **Frontend** | HTML5, CSS3 (Diseño Responsive propio), JavaScript, jQuery |
+| **Notificaciones** | Firebase Cloud Messaging (FCM) |
+| **Correo** | Brevo API (Envío de notas y alertas por SMTP) |
+| **Entorno** | XAMPP / Servidor Apache |
 
 ---
 
-## Arquitectura MVC
+## 🛠️ Implementación Técnica y Buenas Prácticas
 
-```
-pfc/
-├── controladores/        # Lógica de negocio y validación por portal
-│   ├── admin/
-│   ├── profesores/
-│   └── estudiantes/
-├── modelos/              # Funciones SQL y acceso a datos
-├── vistas/               # Plantillas PHP (HTML + datos)
-│   ├── admin/
-│   ├── profesores/
-│   └── estudiantes/
-├── public/               # Recursos estáticos
-│   ├── css/
-│   ├── js/
-│   └── imagenes/
-├── config/               # Credenciales (excluido de Git)
-├── database.sql          # Esquema completo de la base de datos
-└── index.html            # Landing page pública
-```
+En el desarrollo de AulaPro se han aplicado soluciones técnicas pensadas para un entorno real de centro educativo:
+
+- **Filtrado Dinámico "Sencillito"**: Implementación de una función en JavaScript que permite filtrar tablas (alumnos, módulos, etc.) en tiempo real. Esto mejora la experiencia del usuario al encontrar datos sin tener que recargar la página constantemente.
+- **Seguridad en el Lado del Servidor**: Se ha prescindido de las validaciones simples de HTML (como `required`) para mover toda la lógica de control a los controladores PHP. Usando `isset()` y `empty()`, el sistema es más robusto frente a intentos de salto de validación.
+- **Código Humanizado**: El código está documentado con un estilo cercano y pedagógico ("de estudiante a sí mismo"), explicando el porqué de cada función y lógica de negocio, lo que facilita su mantenimiento futuro.
+- **Semántica y Accesibilidad**: Estructura basada en HTML5 semántico (uso de `<section>`, `<nav>`, `<aside>`, etc.) para una mejor organización y compatibilidad.
+- **Interfaz Multi-Portal**: Tres entornos totalmente independientes para **Administradores**, **Profesores** y **Estudiantes**, cada uno con su propio flujo de trabajo y permisos de seguridad.
 
 ---
 
-## Instalación Local
+## 📦 Instalación y Configuración
 
-1. Instalar [XAMPP](https://www.apachefriends.org/) y arrancar Apache + MySQL.
-2. Clonar o copiar la carpeta del proyecto en `C:/xampp/htdocs/pfc/`.
-3. Importar `database.sql` en phpMyAdmin (nombre de la BD: `pfc`).
-4. Crear el archivo `modelos/conectar.php` con las credenciales de la BD:
-   ```php
-   <?php
-   $conexion = new mysqli('localhost', 'root', '', 'pfc');
-   ```
-5. (Opcional) Configurar `config/secrets.php` con la API Key de Brevo para el envío de emails.
-6. (Opcional) Configurar `config/service-account.json` con las credenciales de Firebase para notificaciones push.
-7. Abrir el navegador en `http://localhost/pfc/`.
+Para poner en marcha el proyecto en un entorno local (como XAMPP), sigue estos pasos:
 
----
+### 1. Preparación del Entorno
+*   Clona o descarga este repositorio en la carpeta `htdocs` de tu servidor local.
+*   Asegúrate de tener activados los módulos de **Apache** y **MySQL**.
 
-## Funcionalidades Destacadas
+### 2. Base de Datos
+*   Crea una nueva base de datos en `phpMyAdmin` (nombre recomendado: `aulapro_db`).
+*   Importa el archivo `database.sql` que se encuentra en la raíz del proyecto para generar todas las tablas y datos de prueba iniciales.
 
-- **Sin frameworks externos** — PHP procedural puro con arquitectura MVC diseñada desde cero.
-- **Sistema de calificaciones con recuperación** — lógica de pesos y gestión de convocatorias.
-- **Notificaciones duales** — push en tiempo real via Firebase y email automático via Brevo API.
-- **Diseño completamente responsive** — adaptado a escritorio, tablet y móvil desde un único CSS sin librerías.
-- **Tres portales independientes** — cada rol (admin, profesor, estudiante) tiene su propio entorno con sesión y permisos separados.
-- **Gestión de TFGs** — subida, revisión y descarga de proyectos finales integrada en los tres portales.
+### 3. Conexión al Sistema
+*   Edita el archivo `modelos/conectar.php` con tus credenciales locales (normalmente `root` y sin contraseña en XAMPP).
+*   Configura la URL base si es necesario para que las rutas funcionen correctamente.
+
+### 4. Configuración de "Secretos" (Opcional)
+Para habilitar las funciones de correo y notificaciones push, deberás añadir tus propias llaves en la carpeta `config/`:
+*   **Brevo**: Configura tu API Key en el archivo de secretos para el envío de emails.
+*   **Firebase**: Sube tu archivo `service-account.json` para habilitar las notificaciones en tiempo real.
 
 ---
 
-## Autor
+## 🌟 Funcionalidades Destacadas
 
-**Yassin Lahhit**
-Estudiante de 2.º de DAW — CPS Ibaiondo
-Bilbao, 2026
+- **Gestión Académica Completa**: Calificaciones de módulos, retos (metodología ABP) y cálculo automático de resultados finales.
+- **Sistema de Recuperaciones**: Lógica integrada para gestionar notas de evaluaciones y finales.
+- **Control de Inventario**: Registro de dispositivos y gestión de préstamos a estudiantes.
+- **Comunicación en Tiempo Real**: Tablón de anuncios con notificaciones push y avisos por email.
+- **Gestión de TFG**: Espacio dedicado para la subida y revisión de Trabajos de Fin de Grado.
+- **Diseño Móvil Primero**: Interfaz adaptada a cualquier dispositivo sin usar librerías externas de CSS.
+
+---
+
+## 👨‍💻 Autor
+
+Proyecto desarrollado como Trabajo de Fin de Grado por **Yassin Lahhit**.
+*Estudiante de Desarrollo de Aplicaciones Web (DAW) — CPS Ibaiondo.*
+Bilbao, 2026.

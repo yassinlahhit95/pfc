@@ -22,7 +22,7 @@ require_once __DIR__ . "/../../../modelos/eventos.php";
 $profesorActual = obtenerProfesorPorId($idProfesor);
 $listaAnuncios = listarTodosLosAnuncios();
 $listaMensajes = listarMensajesParaProfesor($idProfesor);
-$listaEstudiantes = listarEstudiantesPorProfesor($idProfesor);
+$listaEstudiantes = listarEstudiantesDeProfesor($idProfesor);
 $listaModulos = obtenerModulosDeProfesor($idProfesor);
 $listaRetos = obtenerRetosDeProfesor($idProfesor);
 $listaEventos = listarEventosProximos();

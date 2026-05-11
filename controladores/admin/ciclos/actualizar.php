@@ -10,7 +10,6 @@ if (isset($_POST['actualizarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
 
     $profesores = $_POST['profesores'] ?? [];
-    $aulas = $_POST['aulas'] ?? [];
 
     $errores = [];
     if (empty($nombre)) {
@@ -30,7 +29,7 @@ if (isset($_POST['actualizarCiclo'])) {
     }
 
     if (empty($errores)) {
-        $resultado = actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
+        $resultado = actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo actualizado correctamente.";
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");

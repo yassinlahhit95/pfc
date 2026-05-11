@@ -57,19 +57,27 @@ function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaN
     return $resultado;
 }
 
-function listarEstudiantesPorProfesor($idProfesor) {
+function listarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?) ORDER BY estudiantes.nombreEstudiante ASC";
+    $sql = "SELECT DISTINCT e.*, c.nombreCiclo 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
+            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
+            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?) 
+            ORDER BY e.nombreEstudiante ASC";
+
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $listaEstudiantes = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaEstudiantes[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
     mysqli_close($con);
-    return $listaEstudiantes;
+    return $lista;
 }
 
 function listarEstudiantesPorCiclo($idCiclo) {

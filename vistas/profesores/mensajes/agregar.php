@@ -22,7 +22,7 @@ $idCicloSeleccionado = $_GET['idCiclo'] ?? "";
 if (!empty($idCicloSeleccionado)) {
     $listaDeEstudiantes = listarEstudiantesPorCiclo($idCicloSeleccionado);
 } else {
-    $listaDeEstudiantes = listarEstudiantesPorProfesor($idProfesor);
+    $listaDeEstudiantes = listarEstudiantesDeProfesor($idProfesor);
 }
 
 $tituloDelPagina = "AULAPRO | NUEVO MENSAJE";

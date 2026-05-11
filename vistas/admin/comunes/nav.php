@@ -20,7 +20,6 @@ $sinLeer = contarMensajesNoLeidosAdmin();
 $ciclos = contarCiclos();
 $modulos = contarModulos();
 $retos = contarRetos();
-$aulas = contarAulas();
 $inventario = contarInventario();
 $prestamos = contarPrestamosActivos();
 $tfgs = contarTFGsSubidos();
@@ -31,10 +30,11 @@ $tfgs = contarTFGsSubidos();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $titulo_pagina ?? 'AulaPro Admin' ?></title>
-    <link rel="stylesheet" href="../../../public/css/admin.css">
+    <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
-    <link rel="icon" href="../../../public/imagenes/favicon.ico">
+    <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -146,11 +146,6 @@ $tfgs = contarTFGsSubidos();
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">RECURSOS</p>
 
-                <a href="../aulas/verAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
-                    <i class="fas fa-door-open"></i> <span>AULAS</span>
-                    <span class="etiqueta-contador"><?= $aulas ?></span>
-                </a>
-
                 <a href="../inventario/verInventario.php" class="enlace-menu <?= ($seccion == 'inventario') ? 'activo' : '' ?>">
                     <i class="fas fa-boxes"></i> <span>INVENTARIO</span>
                     <span class="etiqueta-contador"><?= $inventario ?></span>
@@ -163,9 +158,6 @@ $tfgs = contarTFGsSubidos();
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="../comunes/sobreelproyecto.php" class="enlace-menu <?= ($seccion == 'creditos') ? 'activo' : '' ?>">
-                    <i class="fas fa-fingerprint"></i> <span>SOBRE MÍ</span>
-                </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
@@ -176,7 +168,7 @@ $tfgs = contarTFGsSubidos();
         </nav>
     </aside>
 
-    <main class="contenido-principal <?= ($seccion == 'creditos') ? 'p-0' : '' ?>"><?php if (isset($_SESSION['idAdmin'])) { ?>
+    <section class="contenido-principal"><?php if (isset($_SESSION['idAdmin'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="d-none"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

@@ -100,9 +100,17 @@ function contarTFGsSubidos() {
 
 function contarTFGsDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ? AND e.archivoTFG != ''";
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
+            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
+            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?) 
+            AND e.archivoTFG != ''";
+            
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
@@ -116,9 +124,20 @@ function contarTFGsDeProfesor($idProfesor) {
 
 function listarTFGsPorProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo WHERE cp.idProfesor = ? AND e.archivoTFG != '' ORDER BY e.nombreEstudiante ASC";
+    // Mejoramos la consulta para que incluya ciclos donde el profesor tiene módulos asignados 
+    // o está asignado directamente al ciclo
+    $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
+            FROM estudiantes e 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo 
+            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
+            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
+            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?) 
+            AND e.archivoTFG != '' 
+            ORDER BY e.nombreEstudiante ASC";
+            
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $listaTFGs = [];

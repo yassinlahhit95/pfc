@@ -1,6 +1,14 @@
 <?php
+/* 
+   PANEL DE CONTROL PRINCIPAL - ADMINISTRADORES
+   Este es el corazón del sistema donde se ve todo lo que pasa.
+   Autor: Yassin Lahhit
+   Última revisión: Mayo 2024
+*/
+
 session_start();
 
+// Seguridad ante todo: si no eres admin, fuera de aquí
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -16,6 +24,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
+// Aquí pedimos todos los datos para las tarjetitas de arriba
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores = contarProfesores();
 $totalRetos = intval(contarRetos());
@@ -27,6 +36,7 @@ $totalCobros = contarPagosRealizados();
 $adminInfo = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
+// Lógica de paginación para los anuncios, para que no se llene la pantalla
 $porPagina = 5;
 $pagina = max(1, intval($_GET['p_anuncios'] ?? 1));
 $totalAnuncios = intval(contarAnunciosQueEstanActivos());
@@ -46,6 +56,7 @@ include __DIR__ . '/../comunes/nav.php';
   </div>
 </div>
 
+
 <h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
@@ -55,7 +66,7 @@ include __DIR__ . '/../comunes/nav.php';
     <div class="info-estadistica"><h3><?= $totalProfesores ?></h3><p>Profesores</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= $totalModulos ?></h3><p>Módulos</p></div>
+    <div class="info-estadistica"><h3><?= $totalModulos ?></h3><p>MÓDULOS</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
     <div class="info-estadistica"><h3><?= $totalRetos ?></h3><p>Retos</p></div>
@@ -87,6 +98,7 @@ include __DIR__ . '/../comunes/nav.php';
         <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
+
 
     <div class="tarjeta-blanca">
       <div class="titulo-tarjeta">
@@ -121,7 +133,7 @@ include __DIR__ . '/../comunes/nav.php';
         <?php } ?>
 
       <?php } else { ?>
-        <p class="texto-atenuado">No hay anuncios activos.</p>
+        <p class="texto-atenuado">No hay anuncios activos por ahora.</p>
       <?php } ?>
     </div>
   </div>

@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AulaPro — Gestión académica para centros formativos</title>
-  <link rel="icon" href="public/imagenes/favicon.ico">
+  <link rel="shortcut icon" href="public/imagenes/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="public/imagenes/favicon.ico" type="image/x-icon">
 
   <!-- SEO básico -->
   <meta name="description" content="AulaPro centraliza la gestión de tu centro formativo: alumnos, profesores, notas, pagos y comunicación en una sola plataforma. Sin Excel, sin papel.">
@@ -86,7 +87,7 @@
         <a href="#caracteristicas" class="menu-enlace-landing">Plataforma</a>
         <a href="#beneficios" class="menu-enlace-landing">Por qué</a>
         <a href="#planes" class="menu-enlace-landing">Contacto</a>
-        <a href="vistas/login.php" class="boton boton-principal-landing btn-acceso-nav">Acceso</a>
+        <a href="vistas/login.php" target="_blank" class="boton boton-principal-landing btn-acceso-nav">Acceso</a>
       </nav>
       <button class="menu-boton-landing" id="menu-boton" aria-label="Abrir menú">
         <span class="menu-icono-landing"></span>
@@ -94,7 +95,7 @@
     </div>
   </header>
 
-  <main>
+  <section>
     <section id="inicio" class="hero-landing animar">
       <div class="contenedor">
         <div class="hero-badge">✦ Pensado para centros formativos reales</div>
@@ -114,34 +115,28 @@
         <p class="descripcion-seccion">Sin módulos de relleno. Solo lo que se usa cada día, bien hecho.</p>
         <div class="rejilla caracteristicas-rejilla-landing">
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">🎓</div>
-            <h3 class="tarjeta-titulo-landing">Alumnos</h3>
-            <p class="tarjeta-texto-landing">Ficha completa, historial académico y estado de matrícula. Todo en un clic, sin buscar en carpetas.</p>
+            <h3 class="tarjeta-titulo-landing">Expediente Académico Integral</h3>
+            <p class="tarjeta-texto-landing">Acceso inmediato a la ficha del alumno, historial y estado de matriculación desde una base de datos centralizada.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">👨‍🏫</div>
-            <h3 class="tarjeta-titulo-landing">Profesores y módulos</h3>
-            <p class="tarjeta-texto-landing">Asigna módulos, gestiona cargas lectivas y coordina el equipo desde un panel unificado.</p>
+            <h3 class="tarjeta-titulo-landing">Coordinación Docente Unificada</h3>
+            <p class="tarjeta-texto-landing">Administración eficiente de módulos y cargas lectivas para asegurar el correcto funcionamiento del centro educativo.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">📚</div>
-            <h3 class="tarjeta-titulo-landing">Ciclos formativos</h3>
-            <p class="tarjeta-texto-landing">Estructura tus ciclos, agrupa módulos y mantén la organización académica siempre actualizada.</p>
+            <h3 class="tarjeta-titulo-landing">Arquitectura Curricular Flexible</h3>
+            <p class="tarjeta-texto-landing">Estructura modular de ciclos formativos adaptada a las necesidades reales de la Formación Profesional moderna.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">📊</div>
-            <h3 class="tarjeta-titulo-landing">Notas y boletines</h3>
-            <p class="tarjeta-texto-landing">Introduce calificaciones, genera boletines en PDF y exporta actas al instante.</p>
+            <h3 class="tarjeta-titulo-landing">Notificación de Calificaciones</h3>
+            <p class="tarjeta-texto-landing">Envío automático de resultados académicos directamente al correo electrónico y notificaciones push en tiempo real.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">💳</div>
-            <h3 class="tarjeta-titulo-landing">Pagos y matrículas</h3>
-            <p class="tarjeta-texto-landing">Registra cobros, emite recibos y detecta impagos antes de que se conviertan en un problema.</p>
+            <h3 class="tarjeta-titulo-landing">Gestión Económica y Cobros</h3>
+            <p class="tarjeta-texto-landing">Seguimiento exhaustivo de cuotas y mensualidades para un control financiero riguroso, evitando errores manuales.</p>
           </div>
           <div class="tarjeta">
-            <div class="tarjeta-icono-landing">📝</div>
-            <h3 class="tarjeta-titulo-landing">Reclamaciones</h3>
-            <p class="tarjeta-texto-landing">Canal oficial para incidencias y solicitudes. Sin emails perdidos ni llamadas sin respuesta.</p>
+            <h3 class="tarjeta-titulo-landing">Plataforma 100% Responsive</h3>
+            <p class="tarjeta-texto-landing">Interfaz optimizada para smartphones y tablets, garantizando una gestión fluida desde cualquier lugar y dispositivo.</p>
           </div>
         </div>
       </div>
@@ -151,10 +146,15 @@
       <div class="contenedor">
         <h2 class="titulo-seccion">Tan claro que no necesita tutorial</h2>
         <p class="descripcion-seccion">Cada usuario ve solo lo que le corresponde: el alumno su expediente, el profesor sus grupos, el director todo.</p>
-        <video autoplay loop muted playsinline preload="none" class="video-demo-landing">
-          <source src="./public/videos/intro.mp4" type="video/mp4">
+        <video autoplay loop muted controls playsinline preload="auto" class="video-demo-landing">
+          <source src="public/videos/intro.mp4" type="video/mp4">
           Tu navegador no soporta videos HTML5.
         </video>
+        <div class="video-acciones-landing animar" style="margin-top: 25px;">
+          <a href="public/videos/intro.mp4" download="AulaPro_Demo.mp4" class="boton boton-secundario-landing">
+            <i class="fas fa-download"></i> Descargar Video de Presentación
+          </a>
+        </div>
       </div>
     </section>
 
@@ -302,8 +302,7 @@
         </div>
       </div>
     </section>
-
-  </main>
+  </section>
 
   <footer id="acceso" class="pie-pagina-landing animar">
     <div class="contenedor">

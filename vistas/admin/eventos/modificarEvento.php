@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo-formulario">
                 <label for="ubicacionEvento">Ubicación</label>
-                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= $evento['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Aula 101, Salón de Actos...">
+                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= $evento['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
             </div>
 
             <div class="campo-formulario">

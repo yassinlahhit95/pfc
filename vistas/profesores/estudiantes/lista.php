@@ -10,7 +10,7 @@ if (!$idProfesor) {
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$estudiantes = listarEstudiantesPorProfesor($idProfesor);
+$estudiantes = listarEstudiantesDeProfesor($idProfesor);
 $listaDeCiclosParaFiltro = obtenerCiclosDeProfesor($idProfesor);
 
 $error = $_SESSION['error'] ?? '';

@@ -9,7 +9,6 @@ if (isset($_POST['guardarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     
     $profesores = $_POST['profesores'] ?? [];
-    $aulas = $_POST['aulas'] ?? [];
 
     $errores = [];
     if (empty($nombre)) {
@@ -32,7 +31,7 @@ if (isset($_POST['guardarCiclo'])) {
     }
 
     if (empty($errores)) {
-        $resultado = insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $aulas, $precioCiclo);
+        $resultado = insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo);
         if ($resultado) {
             $_SESSION['exito'] = "Ciclo registrado correctamente.";
             header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
