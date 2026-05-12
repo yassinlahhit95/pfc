@@ -174,6 +174,25 @@ function obtenerProfesoresConModulosParaEstudiante($idEst) {
     return $lista;
 }
 
+function obtenerCiclosTutorizadosProfesor($idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT c.*, n.nombreNivel 
+            FROM ciclos c 
+            JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+            JOIN niveles n ON c.idNivel = n.idNivel
+            WHERE cp.idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($con);
+    return $lista;
+}
+
 function obtenerTokensProfesores() {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM profesores WHERE fcm_token IS NOT NULL AND fcm_token != ''";

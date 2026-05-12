@@ -7,6 +7,7 @@
 config/secrets.php
 config/service-account.php
 config/service-account.json
+config/*.json
 *.key
 *.pem
 *.p12

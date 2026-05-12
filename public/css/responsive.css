@@ -448,6 +448,21 @@
         gap: 10px;
     }
 
+    /* Landing — pie de página */
+    .pie-grid-landing {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .pie-sociales {
+        justify-content: center;
+    }
+
+    .pie-columna-contacto p {
+        justify-content: center;
+    }
+    }
     .contacto-form-wrapper {
         padding: 20px 16px;
     }

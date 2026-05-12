@@ -6,6 +6,7 @@ if (isset($_POST['guardarModulo'])) {
     $nombreNuevoModulo = trim($_POST['nombreModulo']);
     $idCicloNuevoModulo = trim($_POST['idCiclo']);
     $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
+    $cursoNuevoModulo = intval($_POST['curso'] ?? 1);
 
     $errores = [];
 
@@ -32,7 +33,7 @@ if (isset($_POST['guardarModulo'])) {
     }
 
     if (empty($errores)) {
-        if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
+        if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo, $cursoNuevoModulo)) {
             $_SESSION['exito'] = "Módulo registrado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;

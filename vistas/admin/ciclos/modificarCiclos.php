@@ -15,20 +15,17 @@ if (!$ciclo) {
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
-$profesoresAsignadosRaw = obtenerProfesoresDeUnCiclo($id_ciclo);
-if (!is_array($profesoresAsignadosRaw)) {
-    $profesoresAsignadosRaw = [];
-}
-$profesoresAsignados = [];
-foreach ($profesoresAsignadosRaw as $p) {
-    if (is_array($p) && isset($p['idProfesor'])) {
-        $profesoresAsignados[] = $p['idProfesor'];
-    }
+$profesoresAsignados = obtenerProfesoresDeUnCiclo($id_ciclo);
+if (!is_array($profesoresAsignados)) {
+    $profesoresAsignados = [];
 }
 
 if (isset($_SESSION['datos_ciclos'])) {
     foreach ($_SESSION['datos_ciclos'] as $key => $value) {
         $ciclo[$key] = $value;
+    }
+    if (isset($_SESSION['datos_ciclos']['profesores'])) {
+        $profesoresAsignados = $_SESSION['datos_ciclos']['profesores'];
     }
 }
 

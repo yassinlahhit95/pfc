@@ -21,6 +21,7 @@ Base de datos relacional MySQL con 20 tablas organizadas en 5 bloques funcionale
 - **MODULO_RETO** *(pivot)*: Un reto puede abarcar varios módulos y viceversa.
 - **CALIFICACIONES_MODULOS**: Nota de un estudiante en un módulo. Guarda 4 valores: 1ª Evaluación, 1ª Final, 2ª Evaluación, 2ª Final, más observaciones del profesor.
 - **CALIFICACIONES_RETOS**: Nota global (0–10) de un estudiante en un reto.
+- **CALIFICACIONES_TFG**: Nota final (0–10) y observaciones sobre el Trabajo de Fin de Grado.
 
 ### Bloque 4 — Asignaciones (Tablas Pivot)
 - **CICLO_PROFESOR**: Relaciona profesores con los ciclos en que son tutores.
@@ -39,7 +40,7 @@ Base de datos relacional MySQL con 20 tablas organizadas en 5 bloques funcionale
 ## 2. Lógica de Negocio Clave
 
 - **Nota final de módulo**: No se almacena directamente. Se calcula en tiempo de ejecución: 75% del promedio de `CALIFICACIONES_MODULOS` (convocatorias) + 25% del promedio de `CALIFICACIONES_RETOS` asociados via `MODULO_RETO`.
-- **TFG**: No tiene tabla propia. Los campos `archivoTFG` (ruta del PDF) y `fechaSubidaTFG` están directamente en la tabla `ESTUDIANTES`.
+- **Gestión de TFG**: El archivo físico se registra en `ESTUDIANTES` (`archivoTFG`, `fechaSubidaTFG`), pero la nota académica y las observaciones del tutor se almacenan en la tabla dedicada `CALIFICACIONES_TFG`.
 - **Notificaciones push**: Los tres tipos de usuario (director, profesor, estudiante) tienen un campo `fcm_token` para recibir notificaciones vía Firebase Cloud Messaging.
 - **Préstamos**: La tabla `PRESTAMOS` referencia a `DISPOSITIVOS` por `numeroSerie` (clave de negocio), no por `idDispositivo`.
 
@@ -139,6 +140,13 @@ erDiagram
         decimal nota
     }
 
+    CALIFICACIONES_TFG {
+        int idCalificacion PK
+        int idEstudiante FK
+        decimal nota
+        text observaciones
+    }
+
     PAGOS {
         int idPago PK
         int idEstudiante FK
@@ -208,6 +216,7 @@ erDiagram
     MODULOS        ||--o{ CALIFICACIONES_MODULOS : "evaluado en"
     ESTUDIANTES    ||--o{ CALIFICACIONES_RETOS   : "recibe nota en"
     RETOS          ||--o{ CALIFICACIONES_RETOS   : "evaluado en"
+    ESTUDIANTES    ||--o{ CALIFICACIONES_TFG     : "calificado en"
     ESTUDIANTES    ||--o{ PAGOS             : "realiza"
     ESTUDIANTES    ||--o{ PRESTAMOS         : "solicita"
     DISPOSITIVOS   ||--o{ PRESTAMOS         : "prestado en"

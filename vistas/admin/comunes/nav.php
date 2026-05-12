@@ -15,7 +15,7 @@ $totalProfesores_menu = contarProfesores();
 $totalDirectores_menu = contarDirectores();
 $totalPagos_menu = contarPagosRealizados();
 $totalAnuncios_menu = contarAnuncios();
-$totalMensajes_menu = contarReclamaciones();
+$totalMensajes_menu = contarMensajesParaAdmin();
 $totalSinLeer_menu = contarMensajesNoLeidosAdmin();
 $totalCiclos_menu = contarCiclos();
 $totalModulos_menu = contarModulos();
@@ -107,6 +107,22 @@ $totalTfgs_menu = contarTFGsSubidos();
                 <a href="../pfc/verTFGs.php" class="enlace-menu <?= ($seccion == 'tfg') ? 'activo' : '' ?>">
                     <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
                     <span class="etiqueta-contador"><?= $totalTfgs_menu ?></span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">REPORTES</p>
+
+                <a href="../reportes/certificados.php" class="enlace-menu <?= ($seccion == 'reportes_cert') ? 'activo' : '' ?>">
+                    <i class="fas fa-stamp"></i> <span>CERTIFICADOS</span>
+                </a>
+
+                <a href="../reportes/boletines.php" class="enlace-menu <?= ($seccion == 'reportes_boletin') ? 'activo' : '' ?>">
+                    <i class="fas fa-scroll"></i> <span>BOLETINES DE NOTAS</span>
+                </a>
+
+                <a href="../reportes/sobre.php" class="enlace-menu <?= ($seccion == 'sobre') ? 'activo' : '' ?>">
+                    <i class="fas fa-info-circle"></i> <span>SOBRE EL PROYECTO</span>
                 </a>
             </div>
 

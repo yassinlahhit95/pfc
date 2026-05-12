@@ -3,6 +3,7 @@ require_once __DIR__ . "/email_helper.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../modelos/retos.php";
+require_once __DIR__ . "/../../modelos/tfg.php";
 
 function generarTablaNotasHTML($idEstudianteRecibido) {
     $datosEstudiante = obtenerEstudiantePorId($idEstudianteRecibido);
@@ -173,5 +174,82 @@ function enviarEmailNotasClase($idDelCicloElegido) {
     }
 
     return $contadorCorreosEnviados;
+}
+
+function generarEmailCalificacionTFGHTML($idEstudiante) {
+    $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+
+    if (empty($datosEstudiante)) {
+        return false;
+    }
+
+    $calificacion = obtenerCalificacionTFG($idEstudiante);
+
+    if (empty($calificacion)) {
+        return false;
+    }
+
+    $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
+    $nota = floatval($calificacion['nota']);
+    $observaciones = $calificacion['observaciones'];
+
+    $estadoTexto = "APROBADO";
+    $colorEstado = "green";
+    if ($nota < 5) {
+        $estadoTexto = "SUSPENSO";
+        $colorEstado = "red";
+    }
+
+    $contenidoHTML = "
+    <div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;'>
+        <h2 style='color: #2c3e50;'>" . $nombreEstudiante . "</h2>
+        <p>Tu Trabajo Fin de Grado (TFG) ha sido calificado.</p>
+
+        <table style='width: 100%; border-collapse: collapse; margin-top: 20px;'>
+            <thead>
+                <tr style='background-color: #3498db; color: white;'>
+                    <th style='padding: 10px; border: 1px solid #ddd; text-align: left;'>Concepto</th>
+                    <th style='padding: 10px; border: 1px solid #ddd;'>Nota</th>
+                    <th style='padding: 10px; border: 1px solid #ddd;'>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Trabajo Fin de Grado (TFG)</td>
+                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'><strong>" . number_format($nota, 2) . "</strong></td>
+                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center; color: $colorEstado; font-weight: bold;'>" . $estadoTexto . "</td>
+                </tr>
+            </tbody>
+        </table>";
+
+    if (!empty($observaciones)) {
+        $contenidoHTML .= "
+        <div style='margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 5px solid #3498db;'>
+            <p style='margin: 0;'><strong>Observaciones del profesor:</strong></p>
+            <p style='margin: 5px 0 0 0;'>" . $observaciones . "</p>
+        </div>";
+    }
+
+    $contenidoHTML .= "
+        <p style='font-size: 12px; color: #7f8c8d; margin-top: 20px;'>Este es un mensaje automático, por favor no respondas a este correo.</p>
+    </div>";
+
+    $datosParaEnviar = [];
+    $datosParaEnviar['html'] = $contenidoHTML;
+    $datosParaEnviar['email'] = $datosEstudiante['emailEstudiante'];
+    $datosParaEnviar['nombre'] = $datosEstudiante['nombreEstudiante'];
+
+    return $datosParaEnviar;
+}
+
+function enviarEmailCalificacionTFG($idEstudiante) {
+    $datosFinales = generarEmailCalificacionTFGHTML($idEstudiante);
+    if (!empty($datosFinales)) {
+        $correoDestino = $datosFinales['email'];
+        $asuntoMensaje = "Calificación de tu TFG - PFC";
+        $cuerpoHTML = $datosFinales['html'];
+        return sendEmail($correoDestino, $asuntoMensaje, $cuerpoHTML);
+    }
+    return false;
 }
 ?>

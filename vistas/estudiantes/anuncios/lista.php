@@ -33,12 +33,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (!empty($listaAnuncios)) { ?>
     <?php foreach ($listaAnuncios as $anuncio) { ?>
         <div class="anuncio-item">
-            <div class="titulo-tarjeta">
-                <h3 class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></h3>
-                <small class="texto-atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
-            </div>
-            <div class="margen-arriba">
-                <p class="line-height-16"><?= nl2br($anuncio['mensaje']) ?></p>
+            <div class="anuncio-contenido">
+                <div class="titulo-tarjeta">
+                    <h3 class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></h3>
+                    <small class="texto-atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
+                </div>
+                <div class="margen-arriba">
+                    <p class="line-height-16"><?= nl2br($anuncio['mensaje']) ?></p>
+                </div>
             </div>
         </div>
     <?php } ?>

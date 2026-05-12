@@ -58,7 +58,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?= $esMio ? 'Tú (Profesor)' : ($mensaje['nombreEstudiante'] ?? '') ?></strong>
+                            <strong><?php 
+                                if ($mensaje['emisor_rol'] == 'profesor') {
+                                    echo 'Tú (Profesor)';
+                                } elseif ($mensaje['emisor_rol'] == 'admin') {
+                                    echo 'DIRECCIÓN (ADMIN)';
+                                } else {
+                                    echo $mensaje['nombreEstudiante'] ?? 'Estudiante';
+                                }
+                            ?></strong>
                         </td>
                         <td><?= $mensaje['nombreCiclo'] ?? '-' ?></td>
                         <td><p class="texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></p></td>

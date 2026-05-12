@@ -52,10 +52,27 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <?php if (empty($listaDeMensajes)) { ?>
                     <tr><td colspan="6" class="sin-datos">No hay mensajes registrados.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { ?>
+                    <?php foreach ($listaDeMensajes as $mensaje) { 
+                        // Lógica de emisor/receptor corregida
+                        $emisor = "";
+                        $receptor = "";
+
+                        if ($mensaje['emisor_rol'] == 'admin') {
+                            $emisor = "Dirección (Admin)";
+                            if ($mensaje['idEstudiante']) $receptor = "(Alumno) " . $mensaje['nombreEstudiante'];
+                            elseif ($mensaje['idProfesor']) $receptor = "(Profesor) " . $mensaje['nombreProfesor'];
+                            else $receptor = "General";
+                        } elseif ($mensaje['emisor_rol'] == 'estudiante') {
+                            $emisor = "(Alumno) " . $mensaje['nombreEstudiante'];
+                            $receptor = "Dirección (Admin)";
+                        } elseif ($mensaje['emisor_rol'] == 'profesor') {
+                            $emisor = "(Profesor) " . $mensaje['nombreProfesor'];
+                            $receptor = "Dirección (Admin)";
+                        }
+                    ?>
                     <tr>
-                        <td><strong><?= $mensaje['nombreEstudiante'] ?></strong></td>
-                        <td><?= $mensaje['nombreProfesor'] ?: 'Dirección (Admin)' ?></td>
+                        <td><strong><?= $emisor ?></strong></td>
+                        <td><?= $receptor ?></td>
                         <td>
                             <p class="texto-negrita"><?= $mensaje['asunto'] ?></p>
                             <small class="texto-atenuado"><?= substr($mensaje['descripcion'], 0, 40) ?>...</small>
@@ -90,6 +107,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaMensajes', 15);
+</script>
 
 
 

@@ -29,8 +29,11 @@ Sistema de gestión académica para centros de Formación Profesional con tres p
 - Crear y gestionar eventos del calendario escolar
 - Ver y responder mensajes del buzón interno (reclamaciones)
 - Ver y gestionar todos los TFGs subidos por los estudiantes
+- Calificar el TFG de los estudiantes
 - Consultar calificaciones de módulos y retos
 - Ver resultados finales de todos los estudiantes
+- **Generar documentación en PDF**: boletines de notas, certificados académicos y sobres
+- **Envío masivo de notas**: notificar por email a todos los estudiantes de sus resultados
 
 ### Profesor
 - Iniciar y cerrar sesión

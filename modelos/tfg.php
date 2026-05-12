@@ -148,6 +148,42 @@ function listarTFGsPorProfesor($idProfesor) {
     return $listaTFGs;
 }
 
+function obtenerCalificacionTFG($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM calificaciones_tfg WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $datos = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return $datos;
+}
+
+function guardarCalificacionTFG($idEstudiante, $nota, $observaciones) {
+    $con = obtenerConexion();
+
+    $sqlBuscar = "SELECT idCalificacion FROM calificaciones_tfg WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sqlBuscar);
+    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+
+    if (mysqli_num_rows($resultado) > 0) {
+        $sql = "UPDATE calificaciones_tfg SET nota = ?, observaciones = ? WHERE idEstudiante = ?";
+        $stmt2 = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt2, "ssi", $nota, $observaciones, $idEstudiante);
+    } else {
+        $sql = "INSERT INTO calificaciones_tfg (idEstudiante, nota, observaciones) VALUES (?, ?, ?)";
+        $stmt2 = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt2, "iss", $idEstudiante, $nota, $observaciones);
+    }
+
+    $exito = mysqli_stmt_execute($stmt2);
+    mysqli_close($con);
+    return $exito;
+}
+
 function eliminarArchivoTFG($idEstudiante) {
     $con = obtenerConexion();
 

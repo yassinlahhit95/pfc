@@ -34,6 +34,8 @@ En el desarrollo de AulaPro se han aplicado soluciones técnicas pensadas para u
 - **Código Humanizado**: El código está documentado con un estilo cercano y pedagógico ("de estudiante a sí mismo"), explicando el porqué de cada función y lógica de negocio, lo que facilita su mantenimiento futuro.
 - **Semántica y Accesibilidad**: Estructura basada en HTML5 semántico (uso de `<section>`, `<nav>`, `<aside>`, etc.) para una mejor organización y compatibilidad.
 - **Interfaz Multi-Portal**: Tres entornos totalmente independientes para **Administradores**, **Profesores** y **Estudiantes**, cada uno con su propio flujo de trabajo y permisos de seguridad.
+- **Generación de Reportes PDF**: Uso de la librería FPDF para la creación de boletines de notas, certificados académicos y sobres de envío de forma automatizada.
+- **Comunicación Masiva**: Herramienta para el envío masivo de notas y avisos por email mediante la integración con la API de Brevo.
 
 ---
 
@@ -46,27 +48,28 @@ Para poner en marcha el proyecto en un entorno local (como XAMPP), sigue estos p
 *   Asegúrate de tener activados los módulos de **Apache** y **MySQL**.
 
 ### 2. Base de Datos
-*   Crea una nueva base de datos en `phpMyAdmin` (nombre recomendado: `aulapro_db`).
+*   Crea una nueva base de datos en `phpMyAdmin` (nombre recomendado: `pfc`).
 *   Importa el archivo `database.sql` que se encuentra en la raíz del proyecto para generar todas las tablas y datos de prueba iniciales.
 
 ### 3. Conexión al Sistema
 *   Edita el archivo `modelos/conectar.php` con tus credenciales locales (normalmente `root` y sin contraseña en XAMPP).
-*   Configura la URL base si es necesario para que las rutas funcionen correctamente.
+*   Asegúrate de que la base de datos configurada coincida con la creada en el paso anterior.
 
 ### 4. Configuración de "Secretos" (Opcional)
 Para habilitar las funciones de correo y notificaciones push, deberás añadir tus propias llaves en la carpeta `config/`:
-*   **Brevo**: Configura tu API Key en el archivo de secretos para el envío de emails.
+*   **Brevo**: Configura tu API Key en `config/secrets.php` para el envío de emails.
 *   **Firebase**: Sube tu archivo `service-account.json` para habilitar las notificaciones en tiempo real.
 
 ---
 
 ## 🌟 Funcionalidades Destacadas
 
-- **Gestión Académica Completa**: Calificaciones de módulos, retos (metodología ABP) y cálculo automático de resultados finales.
-- **Sistema de Recuperaciones**: Lógica integrada para gestionar notas de evaluaciones y finales.
+- **Gestión Académica Completa**: Calificaciones de módulos, retos (metodología ABP) y cálculo automático de resultados finales (75% módulos + 25% retos).
+- **Sistema de Recuperaciones**: Lógica integrada para gestionar notas de evaluaciones y finales en varias convocatorias.
+- **Generación de Documentación Oficial**: Creación de boletines y certificados en PDF listos para imprimir.
 - **Control de Inventario**: Registro de dispositivos y gestión de préstamos a estudiantes.
 - **Comunicación en Tiempo Real**: Tablón de anuncios con notificaciones push y avisos por email.
-- **Gestión de TFG**: Espacio dedicado para la subida y revisión de Trabajos de Fin de Grado.
+- **Gestión de TFG**: Espacio dedicado para la subida, revisión y calificación de Trabajos de Fin de Grado.
 - **Diseño Móvil Primero**: Interfaz adaptada a cualquier dispositivo sin usar librerías externas de CSS.
 
 ---

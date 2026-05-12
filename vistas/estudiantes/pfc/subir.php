@@ -17,6 +17,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 $id = $_SESSION['idEstudiante'];
 $tfg = obtenerTFGporEstudiante($id);
 $estudianteActual = obtenerEstudiantePorId($id);
+$notaTFG = obtenerCalificacionTFG($id);
 $nombreLimpio = str_replace(' ', '_', $estudianteActual['nombreEstudiante']);
 $timestampDescarga = date('d-m-Y_H-i-s');
 $nombreDescarga = "TFG_" . $nombreLimpio . "_" . $timestampDescarga . ".pdf";
@@ -76,6 +77,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </button>
                     </form>
                 </div>
+            </div>
+        </div>
+    <?php } ?>
+
+    <?php if (!empty($notaTFG)) { ?>
+        <div class="fila-detalle">
+            <div class="etiqueta-detalle">Calificación TFG</div>
+            <div class="valor-detalle">
+                <?php if ($notaTFG['nota'] >= 5) { ?>
+                    <span class="texto-verde texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — APROBADO</span>
+                <?php } else { ?>
+                    <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — SUSPENSO</span>
+                <?php } ?>
+                <?php if (!empty($notaTFG['observaciones'])) { ?>
+                    <p class="texto-atenuado" style="margin-top: 5px;"><em>Observaciones: <?= $notaTFG['observaciones'] ?></em></p>
+                <?php } ?>
             </div>
         </div>
     <?php } ?>

@@ -14,8 +14,8 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $listaDeTodosLosProfesores = listarProfesores();
 
-$mensajeDeError = $_SESSION['error'] ?? '';
-$mensajeDeExito = $_SESSION['exito'] ?? '';
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
@@ -26,12 +26,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </a>
 </div>
 
-<?php if (!empty($mensajeDeExito)) { ?>
-    <div class="mensaje-exito"><?= $mensajeDeExito ?></div>
+<?php if (!empty($exito)) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if (!empty($mensajeDeError)) { ?>
-    <div class="mensaje-error"><?= $mensajeDeError ?></div>
+<?php if (!empty($error)) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca">
@@ -87,6 +87,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaProfesores', 8);
+</script>
 
 
 

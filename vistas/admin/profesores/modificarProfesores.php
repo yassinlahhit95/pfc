@@ -19,14 +19,19 @@ if (isset($_SESSION['datos_profesor'])) {
 }
 
 $errores = $_SESSION['errores'] ?? [];
+$error = $_SESSION['error'] ?? '';
 
-unset($_SESSION['errores'], $_SESSION['datos_profesor']);
+unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>MODIFICAR PROFESOR: <?= $profesor['nombreProfesor'] ?></h1>
     <a href="verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">

@@ -142,6 +142,34 @@ $modulosProfesor = obtenerModulosDeProfesor($id);
 
 <div class="tarjeta-blanca margen-arriba">
     <div class="titulo-tarjeta">
+        <h3>Ciclos Tutorizados</h3>
+    </div>
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
+            <thead>
+                <tr>
+                    <th>Nombre del Ciclo</th>
+                    <th>Nivel</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($ciclosTutorizados)) { ?>
+                    <tr><td colspan="2" class="sin-datos">No es tutor de ningún ciclo</td></tr>
+                <?php } else { ?>
+                    <?php foreach ($ciclosTutorizados as $c) { ?>
+                    <tr>
+                        <td><strong><?= $c['nombreCiclo'] ?></strong></td>
+                        <td><?= $c['nombreNivel'] ?></td>
+                    </tr>
+                    <?php } ?>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="tarjeta-blanca margen-arriba">
+    <div class="titulo-tarjeta">
         <h3>Módulos Impartidos</h3>
     </div>
     <div class="contenedor-tabla">

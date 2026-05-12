@@ -118,6 +118,14 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
                     <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
+
+            <div class="campo-formulario">
+                <label for="curso">Nivel Formativo *</label>
+                <select name="curso" id="curso">
+                    <option value="1" <?= (isset($datos['curso']) && $datos['curso'] == 1) ? 'selected' : '' ?>>Grado Medio</option>
+                    <option value="2" <?= (isset($datos['curso']) && $datos['curso'] == 2) ? 'selected' : '' ?>>Grado Superior</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-acciones">

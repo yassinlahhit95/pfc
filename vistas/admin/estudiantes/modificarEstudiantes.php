@@ -78,6 +78,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
+                <label for="curso">Nivel Formativo *</label>
+                <select name="curso" id="curso">
+                    <option value="1" <?= ($estudiante['curso'] == 1) ? 'selected' : '' ?>>Grado Medio</option>
+                    <option value="2" <?= ($estudiante['curso'] == 2) ? 'selected' : '' ?>>Grado Superior</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario">
                 <label for="dniEstudiante">DNI *</label>
                 <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
                 <?php if (isset($errores['dniEstudiante'])) { ?>

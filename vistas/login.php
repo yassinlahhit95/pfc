@@ -76,11 +76,11 @@ if (!empty($errores)) {
 
         <form action="../controladores/validacion.php" method="POST" id="loginForm">
             <label for="usuario">Usuario / Email</label>
-            <input type="text" id="usuario" name="usuario" placeholder="nombre@aulapro.com" value="<?php echo htmlspecialchars($datos['usuario'] ?? $_GET['u'] ?? ''); ?>" required autofocus>
+            <input type="text" id="usuario" name="usuario" placeholder="nombre@aulapro.com" value="<?php echo htmlspecialchars($datos['usuario'] ?? $_GET['u'] ?? ''); ?>" autofocus>
             
             <label for="contrasena">Contraseña</label>
             <div class="password-wrapper">
-                <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required>
+                <input type="password" id="contrasena" name="contrasena" placeholder="••••••••">
                 <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar/Ocultar contraseña">
                     <span class="eye-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

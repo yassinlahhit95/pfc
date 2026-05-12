@@ -15,6 +15,7 @@ if (isset($_POST['actualizarEstudiante'])) {
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = trim($_POST['observacionesEstudiante']);
     $idCiclo = trim($_POST['idCiclo']);
+    $curso = intval($_POST['curso'] ?? 1);
 
     if (empty($idEstudiante)) {
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
@@ -53,7 +54,7 @@ if (isset($_POST['actualizarEstudiante'])) {
     }
 
     if (empty($errores)) {
-        $resultado = actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
+        $resultado = actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
 
         if ($resultado) {
             $_SESSION['exito'] = "Datos del estudiante actualizados correctamente.";

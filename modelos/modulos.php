@@ -3,7 +3,7 @@ require_once __DIR__ . "/conectar.php";
 
 function listarModulos() {
     $con = obtenerConexion();
-    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo
+    $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
             FROM modulos
             LEFT JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
             ORDER BY idModulo ASC";
@@ -49,9 +49,24 @@ function obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
 
 function obtenerModulosPorCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM modulos WHERE idCiclo = ?";
+    $sql = "SELECT * FROM modulos WHERE idCiclo = ? ORDER BY curso ASC, nombreModulo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $listaModulos = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $listaModulos[] = $fila;
+    }
+    mysqli_close($con);
+    return $listaModulos;
+}
+
+function obtenerModulosPorCicloYCurso($idCiclo, $curso) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM modulos WHERE idCiclo = ? AND curso = ? ORDER BY nombreModulo ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $curso);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $listaModulos = [];
@@ -74,27 +89,27 @@ function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = 0) {
     return $existe;
 }
 
-function insertarModulo($nombreModulo, $idCiclo, $horasMaximas) {
+function insertarModulo($nombreModulo, $idCiclo, $horasMaximas, $curso = 1) {
     if (checkModuloExistente($nombreModulo, $idCiclo)) {
         return false;
     }
     $con = obtenerConexion();
-    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas, curso) VALUES (?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sii", $nombreModulo, $idCiclo, $horasMaximas);
+    mysqli_stmt_bind_param($stmt, "siii", $nombreModulo, $idCiclo, $horasMaximas, $curso);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
+function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas, $curso = 1) {
     if (checkModuloExistente($nombreModulo, $idCiclo, $idModulo)) {
         return false;
     }
     $con = obtenerConexion();
-    $sql = "UPDATE modulos SET nombreModulo=?, idCiclo=?, horasMaximas=? WHERE idModulo=?";
+    $sql = "UPDATE modulos SET nombreModulo=?, idCiclo=?, horasMaximas=?, curso=? WHERE idModulo=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "siii", $nombreModulo, $idCiclo, $horasMaximas, $idModulo);
+    mysqli_stmt_bind_param($stmt, "siiii", $nombreModulo, $idCiclo, $horasMaximas, $curso, $idModulo);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;

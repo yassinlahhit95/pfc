@@ -114,8 +114,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 if ($c < 4) {
             ?>
             <div class="anuncio-item">
-                <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
-                <p class="texto-pequeno sin-margen"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
+                <div class="anuncio-contenido">
+                    <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
+                    <p class="texto-pequeno sin-margen"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
+                </div>
             </div>
             <?php
                 }

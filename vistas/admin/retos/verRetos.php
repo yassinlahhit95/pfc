@@ -1,8 +1,16 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $todos_los_retos = listarRetos();
+$listaDeCiclosParaFiltro = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
+$mapaCicloNivel = [];
+foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
+    $mapaCicloNivel[$cicloFiltro['idCiclo']] = $cicloFiltro['idNivel'];
+}
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -27,6 +35,33 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="disposicion-flexible envoltura-flexible separacion-grande">
+        <div class="campo-formulario flexible-rellenar">
+            <label>FILTRAR POR NIVEL:</label>
+            <select id="selectFiltroNivel" onchange="aplicarFiltrosRetos()">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
+                    <option value="<?= $nivelFiltro['idNivel'] ?>">
+                        <?= $nivelFiltro['nombreNivel'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo-formulario flexible-rellenar">
+            <label>FILTRAR POR CICLO:</label>
+            <select id="selectFiltroCiclo" onchange="aplicarFiltrosRetos()">
+                <option value="">-- Todos los Ciclos --</option>
+                <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                    <option value="<?= $cicloFiltro['idCiclo'] ?>">
+                        <?= $cicloFiltro['nombreCiclo'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaRetos">
@@ -44,12 +79,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($todos_los_retos)) { ?>
                     <tr><td colspan="6" class="sin-datos">No hay retos configurados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_retos as $reto) { 
+                    <?php foreach ($todos_los_retos as $reto) {
                         $modulos = obtenerModulosDeReto($reto['idReto']);
                         $nombresModulos = array_column($modulos, 'nombreModulo');
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
+                        $idCicloReto = !empty($modulos) ? $modulos[0]['idCiclo'] : '';
                     ?>
-                    <tr>
+                    <tr data-ciclo-id="<?= $idCicloReto ?>" data-nivel="<?= $mapaCicloNivel[$idCicloReto] ?? '' ?>">
                         <td><strong><?= $reto['nombreReto'] ?></strong></td>
                         <td><?= $textoModulos ?></td>
                         <td><?= $reto['horasReto'] ?>h</td>
@@ -77,6 +113,31 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+function aplicarFiltrosRetos() {
+    var idNivel = document.getElementById('selectFiltroNivel').value;
+    var idCiclo = document.getElementById('selectFiltroCiclo').value;
+    var filas = document.querySelectorAll('#tablaRetos tbody tr');
+
+    filas.forEach(function(fila) {
+        var pasaNivel = true;
+        var pasaCiclo = true;
+
+        if (idNivel !== '') {
+            pasaNivel = fila.getAttribute('data-nivel') === idNivel;
+        }
+        if (idCiclo !== '') {
+            pasaCiclo = fila.getAttribute('data-ciclo-id') === idCiclo;
+        }
+
+        if (pasaNivel && pasaCiclo) {
+            fila.classList.remove('fila-filtro-oculta');
+        } else {
+            fila.classList.add('fila-filtro-oculta');
+        }
+    });
+}
+</script>
 
 
 

@@ -66,6 +66,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
+                <label for="curso">Nivel Formativo *</label>
+                <select name="curso" id="curso">
+                    <option value="1" <?= ($modulo['curso'] == 1) ? 'selected' : '' ?>>Grado Medio</option>
+                    <option value="2" <?= ($modulo['curso'] == 2) ? 'selected' : '' ?>>Grado Superior</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario">
                 <label for="horasMaximas">Horas Totales *</label>
                 <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
                 <?php if (isset($errores['horasMaximas'])) { ?>

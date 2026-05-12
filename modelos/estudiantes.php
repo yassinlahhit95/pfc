@@ -3,7 +3,7 @@ require_once __DIR__ . "/conectar.php";
 
 function listarEstudiantes() {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.idNivel
             FROM estudiantes
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             ORDER BY estudiantes.idEstudiante ASC";
@@ -31,27 +31,27 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     return $existe;
 }
 
-function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo) {
+function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 1) {
     if (checkEstudianteExistente($dni, $email)) {
         return false;
     }
     $con = obtenerConexion();
-    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
+    mysqli_stmt_bind_param($stmt, "ssssssssssii", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo) {
+function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 1) {
     if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
         return false;
     }
     $con = obtenerConexion();
-    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=? WHERE idEstudiante=?";
+    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssii", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $idEstudiante);
+    mysqli_stmt_bind_param($stmt, "ssssssssssiii", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
@@ -59,8 +59,8 @@ function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaN
 
 function listarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT DISTINCT e.*, c.nombreCiclo 
-            FROM estudiantes e 
+    $sql = "SELECT DISTINCT e.*, c.nombreCiclo, c.idNivel
+            FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo 
             LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
             LEFT JOIN modulos m ON c.idCiclo = m.idCiclo

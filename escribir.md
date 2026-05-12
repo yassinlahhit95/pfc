@@ -34,6 +34,12 @@
 - ¿Qué diferencia tu sistema de otros existentes?
   Mi sistema es más barato porque usa PHP normal y MySQL, no necesita licencias caras como otros sistemas comerciales, y está hecho justo para centros como el mío.
 
+- ¿Cómo gestionas los Trabajos de Fin de Grado (TFG)?
+  Los estudiantes suben su PDF directamente al sistema, y el administrador puede revisarlos, descargarlos y ponerles la nota final con observaciones, todo desde el panel de control.
+
+- ¿Qué tipo de documentos genera el sistema?
+  Genera boletines de notas oficiales, certificados de matriculación y sobres para el envío de documentación, todo en formato PDF profesional usando la librería FPDF.
+
 ### Frases guía para completar:
 - "El presente proyecto consiste en..."
 - "Se ha desarrollado con el fin de..."

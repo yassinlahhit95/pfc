@@ -12,6 +12,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $listaDeEstudiantesActuales = listarEstudiantes();
 
@@ -39,20 +40,38 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<?php 
-$listaDeCiclosParaFiltro = listarTodosLosCiclos(); 
+<?php
+$listaDeCiclosParaFiltro = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
+$mapaCicloNivel = [];
+foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
+    $mapaCicloNivel[$cicloFiltro['idCiclo']] = $cicloFiltro['idNivel'];
+}
 ?>
 <div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
-        <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaEstudiantes')">
-            <option value="">-- Todos los Ciclos --</option>
-            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
-                    <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
-                </option>
-            <?php } ?>
-        </select>
+    <div class="disposicion-flexible envoltura-flexible separacion-grande">
+        <div class="campo-formulario flexible-rellenar">
+            <label>FILTRAR POR NIVEL:</label>
+            <select id="selectFiltroNivel" onchange="aplicarFiltrosEstudiantes()">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
+                    <option value="<?= $nivelFiltro['idNivel'] ?>">
+                        <?= $nivelFiltro['nombreNivel'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo-formulario flexible-rellenar">
+            <label>FILTRAR POR CICLO:</label>
+            <select id="selectFiltroCiclo" onchange="aplicarFiltrosEstudiantes()">
+                <option value="">-- Todos los Ciclos --</option>
+                <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                    <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
+                        <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -62,6 +81,7 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>NIVEL</th>
                     <th>NOMBRE COMPLETO</th>
                     <th>CORREO ELECTRÓNICO</th>
                     <th>CICLO ASIGNADO</th>
@@ -71,12 +91,16 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
             <tbody>
                 <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
+                        <td colspan="6" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
-                    <tr>
+                    <tr data-nivel="<?= $mapaCicloNivel[$estudianteIndividual['idCiclo']] ?? '' ?>">
                         <td><?= $estudianteIndividual['idEstudiante'] ?></td>
+                        <td>
+                            <span class="etiqueta-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                            <span class="etiqueta-estado gris"><?= $estudianteIndividual['curso'] == 1 ? '1º Curso' : '2º Curso' ?></span>
+                        </td>
                         <td><strong><?= mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8') ?></strong></td>
                         <td><?= $estudianteIndividual['emailEstudiante'] ?></td>
                         <td><?= mb_strtoupper($estudianteIndividual['nombreCiclo'], 'UTF-8') ?></td>
@@ -107,6 +131,38 @@ $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+function aplicarFiltrosEstudiantes() {
+    var idNivel = document.getElementById('selectFiltroNivel').value;
+    var textoCiclo = document.getElementById('selectFiltroCiclo').value.toLowerCase();
+    var filas = document.querySelectorAll('#tablaEstudiantes tbody tr');
+
+    filas.forEach(function(fila) {
+        var pasaNivel = true;
+        var pasaCiclo = true;
+
+        if (idNivel !== '') {
+            pasaNivel = fila.getAttribute('data-nivel') === idNivel;
+        }
+        if (textoCiclo !== '') {
+            var celdaCiclo = fila.cells[4] ? fila.cells[4].innerText.toLowerCase() : '';
+            pasaCiclo = celdaCiclo.includes(textoCiclo);
+        }
+
+        if (pasaNivel && pasaCiclo) {
+            fila.classList.remove('fila-filtro-oculta');
+        } else {
+            fila.classList.add('fila-filtro-oculta');
+        }
+    });
+
+    if (typeof resetearPaginacion === 'function' && _paginaciones && _paginaciones['tablaEstudiantes']) {
+        resetearPaginacion('tablaEstudiantes');
+    }
+}
+
+iniciarPaginacion('tablaEstudiantes', 15);
+</script>
 
 
 

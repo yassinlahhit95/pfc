@@ -8,9 +8,13 @@ Do not make advanced improvements unless explicitly requested.
 ## Rules
 
 - Use simple procedural PHP only
-- Keep the current MVC structure exactly as it is
+- Keep the current MVC structure exactly as it is (Portal Admin, Portal Profesores, Portal Estudiantes)
 - Do not create new folders or files unless requested
 - Do not move logic between Controllers and Models
+- Use existing helpers for advanced tasks:
+  - `lib/fpdf/fpdf.php` for PDF generation
+  - `controladores/comunes/email_helper.php` for Brevo API
+  - `controladores/firebase/firebase_helper.php` for FCM notifications
 
 ## Controllers
 

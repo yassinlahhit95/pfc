@@ -139,4 +139,22 @@ function obtenerProfesoresDeUnCiclo($idCiclo) {
     return $listaIdsProfesores;
 }
 
+function obtenerNombresTutoresCiclo($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT p.nombreProfesor 
+            FROM profesores p 
+            JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor 
+            WHERE cp.idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $nombres = [];
+    while($fila = mysqli_fetch_assoc($resultado)) {
+        $nombres[] = $fila['nombreProfesor'];
+    }
+    mysqli_close($con);
+    return $nombres;
+}
+
 ?>

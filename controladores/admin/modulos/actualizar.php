@@ -7,6 +7,7 @@ if (isset($_POST['guardarModulo'])) {
     $nombreModuloActualizar = trim($_POST['nombreModulo']);
     $idCicloAsociado = trim($_POST['idCiclo']);
     $horasMaximasModulo = trim($_POST['horasMaximas']);
+    $cursoModulo = intval($_POST['curso'] ?? 1);
 
     $errores = [];
 
@@ -33,7 +34,7 @@ if (isset($_POST['guardarModulo'])) {
     }
 
     if (empty($errores)) {
-        if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
+        if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo, $cursoModulo)) {
             $_SESSION['exito'] = "Módulo actualizado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;

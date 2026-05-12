@@ -24,17 +24,22 @@ foreach ($todosLosModulos as $m) {
 
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_profesor'] ?? [];
+$error = $_SESSION['error'] ?? '';
 
 $ciclosElegidos = (isset($datos['ciclos']) && is_array($datos['ciclos'])) ? $datos['ciclos'] : [];
 $modulosElegidos = (isset($datos['modulos']) && is_array($datos['modulos'])) ? $datos['modulos'] : [];
 
-unset($_SESSION['errores'], $_SESSION['datos_profesor']);
+unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
 ?>
 
 <div class="encabezado-pagina">
     <h1>NUEVO PROFESOR</h1>
     <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
+
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
+<?php } ?>
 
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">

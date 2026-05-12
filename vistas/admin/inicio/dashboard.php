@@ -108,13 +108,15 @@ include __DIR__ . '/../comunes/nav.php';
         <div class="lista-anuncios-dashboard">
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
-                <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                    <strong class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></strong>
-                    <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
-                </div>
-                <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncio['mensaje']) ?></p>
-                <div class="mt-5">
-                    <span class="etiqueta-dirigido-a"><?= mb_strtoupper($anuncio['dirigidoA'], 'UTF-8') ?></span>
+                <div class="anuncio-contenido">
+                    <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
+                        <strong class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></strong>
+                        <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
+                    </div>
+                    <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncio['mensaje']) ?></p>
+                    <div class="mt-5">
+                        <span class="etiqueta-dirigido-a"><?= mb_strtoupper($anuncio['dirigidoA'], 'UTF-8') ?></span>
+                    </div>
                 </div>
             </div>
             <?php } ?>

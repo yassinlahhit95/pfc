@@ -14,6 +14,7 @@ if (isset($_POST['guardarEstudiante'])) {
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = trim($_POST['observacionesEstudiante']);
     $idCiclo = trim($_POST['idCiclo']);
+    $curso = intval($_POST['curso'] ?? 1);
 
     $errores = [];
 
@@ -58,7 +59,7 @@ if (isset($_POST['guardarEstudiante'])) {
     }
 
     if (empty($errores)) {
-        $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo);
+        $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
         if ($resultado) {
             $_SESSION['exito'] = "Estudiante registrado correctamente.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");

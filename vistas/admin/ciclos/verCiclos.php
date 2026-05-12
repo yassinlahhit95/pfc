@@ -5,8 +5,10 @@ $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -28,6 +30,20 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
+<div class="tarjeta-blanca margen-abajo">
+    <div class="campo-formulario">
+        <label>FILTRAR POR NIVEL:</label>
+        <select id="selectFiltroNivel" onchange="filtrarTabla('selectFiltroNivel', 'tablaCiclos')">
+            <option value="">-- Todos los Niveles --</option>
+            <?php foreach ($listaNiveles as $nivelFiltro) { ?>
+                <option value="<?= $nivelFiltro['nombreNivel'] ?>">
+                    <?= $nivelFiltro['nombreNivel'] ?>
+                </option>
+            <?php } ?>
+        </select>
+    </div>
+</div>
+
 <div class="tarjeta-blanca">
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaCiclos">
@@ -36,18 +52,23 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <th>ID</th>
                     <th>NOMBRE DEL CICLO</th>
                     <th>NIVEL</th>
+                    <th>TUTORES/PROFESORES</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($todos_los_ciclos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay ciclos configurados</td></tr>
+                    <tr><td colspan="5" class="sin-datos">No hay ciclos configurados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { 
+                        $nombresTutores = obtenerNombresTutoresCiclo($ciclo['idCiclo']);
+                        $textoTutores = !empty($nombresTutores) ? implode(", ", $nombresTutores) : '<span class="texto-atenuado">Sin asignar</span>';
+                    ?>
                     <tr>
                         <td><?= $ciclo['idCiclo'] ?></td>
                         <td><strong><?= $ciclo['nombreCiclo'] ?></strong></td>
                         <td><?= $ciclo['nombreNivel'] ?></td>
+                        <td><?= $textoTutores ?></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="modificarCiclos.php?idCiclo=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-editar">

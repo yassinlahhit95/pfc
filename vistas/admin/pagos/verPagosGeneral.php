@@ -19,8 +19,8 @@ if (!empty($idDelCicloParaFiltrar)) {
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
 
-$mensajeError = $_SESSION['error'] ?? '';
-$mensajeExito = $_SESSION['exito'] ?? '';
+$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE PAGOS";
@@ -35,12 +35,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($mensajeExito) { ?>
-    <div class="mensaje-exito"><?= $mensajeExito ?></div>
+<?php if ($exito) { ?>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($mensajeError) { ?>
-    <div class="mensaje-error"><?= $mensajeError ?></div>
+<?php if ($error) { ?>
+    <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">

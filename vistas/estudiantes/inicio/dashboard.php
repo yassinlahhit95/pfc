@@ -78,13 +78,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                 if ($canu < 4) {
             ?>
             <div class="anuncio-item">
-                <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                    <strong class="anuncio-titulo color-primario"><?= mb_strtoupper($anu['tituloAnuncio'], 'UTF-8') ?></strong>
-                    <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></small>
-                </div>
-                <p class="texto-pequeno sin-margen mt-5"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
-                <div class="mt-10 text-right">
-                    <a href="../anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
+                <div class="anuncio-contenido">
+                    <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
+                        <strong class="anuncio-titulo color-primario"><?= mb_strtoupper($anu['tituloAnuncio'], 'UTF-8') ?></strong>
+                        <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></small>
+                    </div>
+                    <p class="texto-pequeno sin-margen mt-5"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
+                    <div class="mt-10 text-right">
+                        <a href="../anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
+                    </div>
                 </div>
             </div>
             <?php

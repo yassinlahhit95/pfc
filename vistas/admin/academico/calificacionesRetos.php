@@ -8,12 +8,14 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $id_ciclo_elegido = $_GET['idCiclo'] ?? 0;
 $id_modulo_elegido = $_GET['idModulo'] ?? 0;
 $id_reto_elegido = $_GET['idReto'] ?? 0;
 
 $todos_los_ciclos = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
 
 $modulos_filtrados = !empty($id_ciclo_elegido) ? obtenerModulosPorCiclo($id_ciclo_elegido) : [];
 $retos_filtrados = !empty($id_modulo_elegido) ? listarRetosFiltrados($id_modulo_elegido) : [];
@@ -32,11 +34,23 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <div class="tarjeta-blanca">
     <form method="GET" action="calificacionesRetos.php" class="disposicion-flexible alinear-centro separacion-grande formulario-filtros-retos">
         <div class="campo-formulario flexible-rellenar">
-            <label>1. Seleccione Ciclo:</label>
-            <select name="idCiclo" onchange="this.form.submit()">
+            <label>1. Nivel Formativo:</label>
+            <select id="filtroNivelReto" onchange="filtrarCiclosRetos()">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <option value="<?= $nivel['idNivel'] ?>">
+                        <?= $nivel['nombreNivel'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <div class="campo-formulario flexible-rellenar">
+            <label>2. Seleccione Ciclo:</label>
+            <select name="idCiclo" id="selectCicloReto" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($todos_los_ciclos as $cicItem) { ?>
-                    <option value="<?= $cicItem['idCiclo'] ?>" <?= ($id_ciclo_elegido == $cicItem['idCiclo']) ? 'selected' : '' ?>>
+                    <option value="<?= $cicItem['idCiclo'] ?>" data-nivel="<?= $cicItem['idNivel'] ?>" <?= ($id_ciclo_elegido == $cicItem['idCiclo']) ? 'selected' : '' ?>>
                         <?= $cicItem['nombreCiclo'] ?>
                     </option>
                 <?php } ?>
@@ -44,7 +58,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>2. Seleccione Módulo:</label>
+            <label>3. Seleccione Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($id_ciclo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>
@@ -56,7 +70,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
         </div>
 
         <div class="campo-formulario flexible-rellenar">
-            <label>3. Seleccione Reto:</label>
+            <label>4. Seleccione Reto:</label>
             <select name="idReto" onchange="this.form.submit()" <?= empty($id_modulo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($retos_filtrados as $retoItem) { ?>
@@ -128,3 +142,24 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+function filtrarCiclosRetos() {
+    var idNivel = document.getElementById('filtroNivelReto').value;
+    var selectCiclo = document.getElementById('selectCicloReto');
+    var opciones = selectCiclo.querySelectorAll('option');
+
+    opciones.forEach(function(opcion) {
+        if (opcion.value === '') {
+            opcion.style.display = '';
+            return;
+        }
+        if (idNivel === '' || opcion.getAttribute('data-nivel') === idNivel) {
+            opcion.style.display = '';
+        } else {
+            opcion.style.display = 'none';
+        }
+    });
+
+    selectCiclo.value = '';
+}
+</script>

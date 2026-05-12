@@ -111,7 +111,24 @@ function eliminarMensaje($idReclamacion) {
 
 function contarMensajesNoLeidosAdmin() {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idProfesor IS NULL AND emisor_rol = 'estudiante'";
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones
+            WHERE leido = 0
+            AND (
+                (emisor_rol = 'estudiante' AND idProfesor IS NULL)
+                OR (emisor_rol = 'profesor' AND idEstudiante IS NULL)
+            )";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return intval($fila['total']);
+}
+
+function contarMensajesParaAdmin() {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones
+            WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL)
+               OR (emisor_rol = 'profesor' AND idEstudiante IS NULL)
+               OR (emisor_rol = 'admin')";
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
@@ -120,7 +137,7 @@ function contarMensajesNoLeidosAdmin() {
 
 function contarMensajesNoLeidosProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idProfesor = ? AND emisor_rol = 'estudiante'";
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idProfesor = ? AND emisor_rol != 'profesor'";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
@@ -144,7 +161,7 @@ function contarMensajesDeProfesor($idProfesor) {
 
 function contarMensajesNoLeidosEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idEstudiante = ? AND emisor_rol = 'profesor'";
+    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idEstudiante = ? AND emisor_rol != 'estudiante'";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
@@ -155,3 +172,4 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
 }
 
 ?>
+

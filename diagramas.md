@@ -27,6 +27,7 @@ erDiagram
         string emailProfesor
         string telefonoProfesor
         string dniProfesor
+        string fcm_token
     }
     ESTUDIANTES {
         int idEstudiante PK
@@ -34,11 +35,13 @@ erDiagram
         string emailEstudiante
         int idCiclo FK
         string archivoTFG
+        string fcm_token
     }
     DIRECTORES {
         int idDirector PK
         string nombreDirector
         string emailDirector
+        string fcm_token
     }
     RETOS {
         int idReto PK
@@ -56,6 +59,12 @@ erDiagram
         int idEstudiante FK
         int idReto FK
         decimal nota
+    }
+    CALIFICACIONES_TFG {
+        int idCalificacion PK
+        int idEstudiante FK
+        decimal nota
+        text observaciones
     }
     CALIFICACIONES_MODULOS {
         int idCalificacion PK
@@ -135,36 +144,41 @@ erDiagram
     ESTUDIANTES ||--o{ PAGOS : "paga"
     ESTUDIANTES ||--o{ RECLAMACIONES : "envía"
     PROFESORES ||--o{ RECLAMACIONES : "recibe"
+    ESTUDIANTES ||--o{ CALIFICACIONES_TFG : "recibe nota"
 ```
 
-## Diagrama de Secuencia (Profesor califica un reto)
+## Diagrama de Secuencia (Flujo de Calificación de Reto)
 
 ```mermaid
 sequenceDiagram
-    participant Profesor
-    participant Sistema
-    participant BaseDatos as "Base de Datos"
-    participant Estudiante
+    participant P as Profesor
+    participant S as Sistema (Portal Profesor)
+    participant M as Modelo (Retos/Calificaciones)
+    participant B as Base de Datos
+    participant E as Estudiante
 
-    Profesor->>Sistema: Inicia sesión
-    Sistema->>BaseDatos: Comprueba email y password
-    BaseDatos-->>Sistema: Usuario profesor encontrado
-    Sistema-->>Profesor: Acceso concedido
+    P->>S: Selecciona Ciclo y Módulo
+    S->>M: obtenerRetosPorModulo($idModulo)
+    M->>B: SELECT * FROM retos...
+    B-->>M: Lista de retos
+    M-->>S: Retos disponibles
+    S-->>P: Muestra lista de retos
 
-    Profesor->>Sistema: Elige un ciclo, módulo y reto
-    Sistema->>BaseDatos: Carga módulos y retos del profesor
-    BaseDatos-->>Sistema: Devuelve opciones
-    Sistema-->>Profesor: Muestra formulario de selección
+    P->>S: Selecciona Reto y Estudiante
+    P->>S: Introduce nota (0-10)
+    S->>M: guardarCalificacionReto($idEstudiante, $idReto, $nota)
+    M->>B: INSERT/UPDATE calificaciones_retos...
+    B-->>M: Éxito
+    M-->>S: Confirmación
+    S-->>P: Mensaje "Nota guardada correctamente"
 
-    Profesor->>Sistema: Selecciona estudiante y completa nota de reto
-    Sistema->>BaseDatos: Inserta/actualiza calificaciones_retos
-    BaseDatos-->>Sistema: Confirma operación
-    Sistema-->>Profesor: Muestra mensaje de éxito
-
-    Estudiante->>Sistema: Consulta sus notas de retos
-    Sistema->>BaseDatos: Busca calificaciones_retos por idEstudiante
-    BaseDatos-->>Sistema: Envía notas
-    Sistema-->>Estudiante: Muestra calificaciones
+    Note over S,E: El estudiante recibe notificación
+    E->>S: Accede a su portal
+    S->>M: obtenerCalificacionesRetos($idEstudiante)
+    M->>B: SELECT * FROM calificaciones_retos...
+    B-->>M: Notas
+    M-->>S: Calificaciones
+    S-->>E: Muestra sus notas actualizadas
 ```
 ## Tablas de la base de datos
 
