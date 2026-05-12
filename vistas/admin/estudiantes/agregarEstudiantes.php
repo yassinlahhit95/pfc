@@ -22,6 +22,16 @@ $error = $_SESSION['error'] ?? "";
 $exito = $_SESSION['exito'] ?? "";
 
 unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $_SESSION['exito']);
+
+$nivelActual = '';
+if (!empty($datos['idCiclo'])) {
+    foreach ($todos_los_ciclos as $c) {
+        if ($c['idCiclo'] == $datos['idCiclo']) {
+            $nivelActual = $c['idNivel'];
+            break;
+        }
+    }
+}
 ?>
 
 <div class="encabezado-pagina">
@@ -105,11 +115,26 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
 
             <div class="campo-formulario">
-                <label for="idCiclo">Ciclo *</label>
-                <select name="idCiclo" id="idCiclo">
-                    <option value="">-- Seleccionar --</option>
+                <label>Nivel Formativo *</label>
+                <select id="filtroNivel" onchange="alCambiarNivel()">
+                    <option value="">-- Selecciona un nivel --</option>
+                    <option value="1" <?php if ($nivelActual == 1) { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="2" <?php if ($nivelActual == 2) { echo 'selected'; } ?>>Grado Superior</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="idCiclo">Ciclo Formativo *</label>
+                <select name="idCiclo" id="idCiclo" <?php if (!$nivelActual) { echo 'disabled'; } ?>>
+                    <?php if ($nivelActual) { ?>
+                        <option value="">-- Selecciona un ciclo --</option>
+                    <?php } else { ?>
+                        <option value="">-- Primero selecciona un nivel --</option>
+                    <?php } ?>
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?= $ciclo['idCiclo'] ?>" <?php if(isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo "selected"; } ?>>
+                        <option value="<?= $ciclo['idCiclo'] ?>" data-nivel="<?= $ciclo['idNivel'] ?>"
+                            <?php if (isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>
+                            <?php if ($nivelActual !== '' && $ciclo['idNivel'] != $nivelActual) { echo 'style="display:none"'; } ?>>
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
                     <?php } ?>
@@ -120,10 +145,10 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
             </div>
 
             <div class="campo-formulario">
-                <label for="curso">Nivel Formativo *</label>
+                <label for="curso">Curso *</label>
                 <select name="curso" id="curso">
-                    <option value="1" <?= (isset($datos['curso']) && $datos['curso'] == 1) ? 'selected' : '' ?>>Grado Medio</option>
-                    <option value="2" <?= (isset($datos['curso']) && $datos['curso'] == 2) ? 'selected' : '' ?>>Grado Superior</option>
+                    <option value="1" <?php if (isset($datos['curso']) && $datos['curso'] == 1) { echo 'selected'; } ?>>1º Curso</option>
+                    <option value="2" <?php if (isset($datos['curso']) && $datos['curso'] == 2) { echo 'selected'; } ?>>2º Curso</option>
                 </select>
             </div>
         </div>
@@ -137,9 +162,37 @@ unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $
     </form>
 </div>
 
+<script>
+function alCambiarNivel() {
+    var idNivel = document.getElementById('filtroNivel').value;
+    var selectCiclo = document.getElementById('idCiclo');
+
+    if (idNivel === '') {
+        selectCiclo.value = '';
+        selectCiclo.disabled = true;
+        selectCiclo.options[0].textContent = '-- Primero selecciona un nivel --';
+        var opciones = selectCiclo.querySelectorAll('option');
+        opciones.forEach(function(opcion) { opcion.style.display = ''; });
+        return;
+    }
+
+    var opciones = selectCiclo.querySelectorAll('option');
+    opciones.forEach(function(opcion) {
+        if (opcion.value === '') {
+            opcion.style.display = '';
+            return;
+        }
+        if (opcion.getAttribute('data-nivel') === idNivel) {
+            opcion.style.display = '';
+        } else {
+            opcion.style.display = 'none';
+        }
+    });
+
+    selectCiclo.value = '';
+    selectCiclo.options[0].textContent = '-- Selecciona un ciclo --';
+    selectCiclo.disabled = false;
+}
+</script>
+
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-
-
-

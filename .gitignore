@@ -4,6 +4,8 @@
 
 # Credenciales y secretos (nunca subir al repositorio)
 .env
+.env.local
+.env.*.local
 config/secrets.php
 config/service-account.php
 config/service-account.json
@@ -17,24 +19,27 @@ config/*.json
 .idea/
 *.swp
 *.swo
+.DS_Store
 
 # Herramientas de entorno local
 /nbproject/
 /vendor/
 /node_modules/
+.phpunit.result.cache
+.php-cs-fixer.cache
+.php_cs.cache
+
 
 # Archivos de sistema operativo
 Thumbs.db
 ehthumbs.db
 Desktop.ini
-.DS_Store
 
 # Temporales de PHP y servidor
 sess_*
 *.log
 *.tmp
 error_log
-.phpunit.result.cache
 
 # Archivos de video (demasiado grandes para Git)
 public/videos/

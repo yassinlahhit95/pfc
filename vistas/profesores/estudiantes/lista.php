@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="tarjeta-blanca margen-abajo">
     <div class="campo-formulario">
-        <label for="selectFiltroCicloProf"><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
+        <label for="selectFiltroCicloProf">FILTRAR POR CICLO:</label>
         <select id="selectFiltroCicloProf" name="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>

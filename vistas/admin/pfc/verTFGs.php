@@ -34,27 +34,29 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
-        <label><i class="fas fa-filter"></i> FILTRAR POR NIVEL:</label>
-        <select id="selectFiltroNivelTFG" onchange="filtrarNivelTFGs()">
-            <option value="">-- Todos los Niveles --</option>
-            <?php foreach ($listaNiveles as $nivelFiltro) { ?>
-                <option value="<?= $nivelFiltro['idNivel'] ?>">
-                    <?= $nivelFiltro['nombreNivel'] ?>
-                </option>
-            <?php } ?>
-        </select>
-    </div>
-    <div class="campo-formulario">
-        <label><i class="fas fa-filter"></i> FILTRAR POR CICLO:</label>
-        <select id="selectFiltroCicloTFG" onchange="filtrarTabla('selectFiltroCicloTFG', 'tablaTFGs')">
-            <option value="">-- Todos los Ciclos --</option>
-            <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>" data-nivel="<?= $cicloFiltro['idNivel'] ?>">
-                    <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
-                </option>
-            <?php } ?>
-        </select>
+    <div class="disposicion-flexible envoltura-flexible separacion-grande">
+        <div class="campo-formulario flexible-rellenar">
+            <label>FILTRAR POR NIVEL:</label>
+            <select id="selectFiltroNivelTFG" onchange="filtrarNivelTFGs()">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
+                    <option value="<?= $nivelFiltro['idNivel'] ?>">
+                        <?= $nivelFiltro['nombreNivel'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo-formulario flexible-rellenar">
+            <label>FILTRAR POR CICLO:</label>
+            <select id="selectFiltroCicloTFG" onchange="filtrarTabla('selectFiltroCicloTFG', 'tablaTFGs')">
+                <option value="">-- Todos los Ciclos --</option>
+                <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                    <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>" data-nivel="<?= $cicloFiltro['idNivel'] ?>">
+                        <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
     </div>
 </div>
 

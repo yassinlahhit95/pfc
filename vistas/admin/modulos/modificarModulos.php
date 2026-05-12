@@ -24,6 +24,14 @@ if (!empty($datos)) {
     $modulo = array_merge($modulo, $datos);
 }
 
+$nivelActual = '';
+foreach ($todos_los_ciclos as $c) {
+    if ($c['idCiclo'] == $modulo['idCiclo']) {
+        $nivelActual = $c['idNivel'];
+        break;
+    }
+}
+
 $titulo_pagina = "AULAPRO | MODIFICAR MÓDULO";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -52,10 +60,22 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
+                <label>Grado Formativo *</label>
+                <select id="filtroNivel" onchange="alCambiarNivel()">
+                    <option value="">-- Selecciona un grado --</option>
+                    <option value="1" <?php if ($nivelActual == 1) { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="2" <?php if ($nivelActual == 2) { echo 'selected'; } ?>>Grado Superior</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario">
                 <label for="idCiclo">Ciclo Formativo *</label>
-                <select name="idCiclo" id="idCiclo">
+                <select name="idCiclo" id="idCiclo" <?php if (!$nivelActual) { echo 'disabled'; } ?>>
+                    <option value="">-- Selecciona un ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?= $ciclo['idCiclo'] ?>" <?= ($modulo['idCiclo'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <option value="<?= $ciclo['idCiclo'] ?>" data-nivel="<?= $ciclo['idNivel'] ?>"
+                            <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>
+                            <?php if ($nivelActual !== '' && $ciclo['idNivel'] != $nivelActual) { echo 'style="display:none"'; } ?>>
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
                     <?php } ?>
@@ -68,8 +88,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo-formulario">
                 <label for="curso">Nivel Formativo *</label>
                 <select name="curso" id="curso">
-                    <option value="1" <?= ($modulo['curso'] == 1) ? 'selected' : '' ?>>Grado Medio</option>
-                    <option value="2" <?= ($modulo['curso'] == 2) ? 'selected' : '' ?>>Grado Superior</option>
+                    <option value="1" <?php if ($modulo['curso'] == 1) { echo 'selected'; } ?>>1º Curso</option>
+                    <option value="2" <?php if ($modulo['curso'] == 2) { echo 'selected'; } ?>>2º Curso</option>
                 </select>
             </div>
 
@@ -91,8 +111,37 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
+<script>
+function alCambiarNivel() {
+    var idNivel = document.getElementById('filtroNivel').value;
+    var selectCiclo = document.getElementById('idCiclo');
+
+    if (idNivel === '') {
+        selectCiclo.value = '';
+        selectCiclo.disabled = true;
+        selectCiclo.options[0].textContent = '-- Primero selecciona un nivel --';
+        var opciones = selectCiclo.querySelectorAll('option');
+        opciones.forEach(function(opcion) { opcion.style.display = ''; });
+        return;
+    }
+
+    var opciones = selectCiclo.querySelectorAll('option');
+    opciones.forEach(function(opcion) {
+        if (opcion.value === '') {
+            opcion.style.display = '';
+            return;
+        }
+        if (opcion.getAttribute('data-nivel') === idNivel) {
+            opcion.style.display = '';
+        } else {
+            opcion.style.display = 'none';
+        }
+    });
+
+    selectCiclo.value = '';
+    selectCiclo.options[0].textContent = '-- Selecciona un ciclo --';
+    selectCiclo.disabled = false;
+}
+</script>
+
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

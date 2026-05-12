@@ -32,6 +32,14 @@ if (!is_array($errores)) {
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
+$nivelActual = '';
+foreach ($todos_los_ciclos as $c) {
+    if ($c['idCiclo'] == $estudiante['idCiclo']) {
+        $nivelActual = $c['idNivel'];
+        break;
+    }
+}
+
 $titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
 $seccion = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -45,7 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="tarjeta-blanca">
     <form action="../../../controladores/admin/estudiantes/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?= $id_del_estudiante ?>">
-        
+
         <div class="form-estandar">
             <div class="campo-formulario">
                 <label for="nombreEstudiante">Nombre Completo *</label>
@@ -64,10 +72,22 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
+                <label>Nivel Formativo *</label>
+                <select id="filtroNivel" onchange="alCambiarNivel()">
+                    <option value="">-- Selecciona un nivel --</option>
+                    <option value="1" <?php if ($nivelActual == 1) { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="2" <?php if ($nivelActual == 2) { echo 'selected'; } ?>>Grado Superior</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario">
                 <label for="idCiclo">Ciclo Formativo *</label>
-                <select name="idCiclo" id="idCiclo">
+                <select name="idCiclo" id="idCiclo" <?php if (!$nivelActual) { echo 'disabled'; } ?>>
+                    <option value="">-- Selecciona un ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                        <option value="<?= $ciclo['idCiclo'] ?>" <?php if ($ciclo['idCiclo'] == $estudiante['idCiclo']) { echo "selected"; } ?>>
+                        <option value="<?= $ciclo['idCiclo'] ?>" data-nivel="<?= $ciclo['idNivel'] ?>"
+                            <?php if ($ciclo['idCiclo'] == $estudiante['idCiclo']) { echo 'selected'; } ?>
+                            <?php if ($nivelActual !== '' && $ciclo['idNivel'] != $nivelActual) { echo 'style="display:none"'; } ?>>
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
                     <?php } ?>
@@ -78,10 +98,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo-formulario">
-                <label for="curso">Nivel Formativo *</label>
+                <label for="curso">Curso *</label>
                 <select name="curso" id="curso">
-                    <option value="1" <?= ($estudiante['curso'] == 1) ? 'selected' : '' ?>>Grado Medio</option>
-                    <option value="2" <?= ($estudiante['curso'] == 2) ? 'selected' : '' ?>>Grado Superior</option>
+                    <option value="1" <?php if ($estudiante['curso'] == 1) { echo 'selected'; } ?>>1º Curso</option>
+                    <option value="2" <?php if ($estudiante['curso'] == 2) { echo 'selected'; } ?>>2º Curso</option>
                 </select>
             </div>
 
@@ -110,7 +130,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= $estudiante['direccionEstudiante'] ?>">
             </div>
-            
+
             <div class="campo-formulario">
                 <label for="ciudadEstudiante">Ciudad</label>
                 <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= $estudiante['ciudadEstudiante'] ?>">
@@ -125,7 +145,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="observacionesEstudiante">Observaciones</label>
                 <textarea name="observacionesEstudiante" id="observacionesEstudiante"><?= $estudiante['observacionesEstudiante'] ?></textarea>
             </div>
-            
+
             <input type="hidden" name="fechaAltaEstudiante" value="<?= $estudiante['fechaAltaEstudiante'] ?>">
         </div>
 
@@ -140,9 +160,37 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
+<script>
+function alCambiarNivel() {
+    var idNivel = document.getElementById('filtroNivel').value;
+    var selectCiclo = document.getElementById('idCiclo');
+
+    if (idNivel === '') {
+        selectCiclo.value = '';
+        selectCiclo.disabled = true;
+        selectCiclo.options[0].textContent = '-- Primero selecciona un nivel --';
+        var opciones = selectCiclo.querySelectorAll('option');
+        opciones.forEach(function(opcion) { opcion.style.display = ''; });
+        return;
+    }
+
+    var opciones = selectCiclo.querySelectorAll('option');
+    opciones.forEach(function(opcion) {
+        if (opcion.value === '') {
+            opcion.style.display = '';
+            return;
+        }
+        if (opcion.getAttribute('data-nivel') === idNivel) {
+            opcion.style.display = '';
+        } else {
+            opcion.style.display = 'none';
+        }
+    });
+
+    selectCiclo.value = '';
+    selectCiclo.options[0].textContent = '-- Selecciona un ciclo --';
+    selectCiclo.disabled = false;
+}
+</script>
+
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
-
