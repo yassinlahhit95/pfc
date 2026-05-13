@@ -70,7 +70,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td>
                             <div class="botones-accion">
                                 <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
-                                    <form action="../../../controladores/admin/inventario/devolver.php" method="POST" class="d-inline">    
+                                    <form action="../../../controladores/admin/inventario/devolver.php" method="POST" style="display: inline;">
                                         <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
                                         <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
                                         <button type="submit" class="boton-primario boton-pequeno">

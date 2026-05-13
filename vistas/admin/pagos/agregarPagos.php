@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
-    <form method="GET" action="" class="disposicion-flexible alinear-fin gap-15 envoltura-flexible">
+    <form method="GET" action="" class="disposicion-flexible alinear-fin envoltura-flexible" style="gap: 15px">
         <div class="campo-formulario flexible-rellenar">
             <label for="idCiclo">1. Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <button type="button" class="boton-secundario mb-5" onclick="window.location.href = window.location.pathname + window.location.search;">
+        <button type="button" class="boton-secundario" style="margin-bottom: 5px;" onclick="window.location.href = window.location.pathname + window.location.search;">
             <i class="fas fa-eraser"></i> LIMPIAR
         </button>
     </form>

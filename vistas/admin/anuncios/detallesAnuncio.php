@@ -27,7 +27,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="tarjeta-blanca">
-    <div class="cabecera-detalles mb-20">
+    <div class="cabecera-detalles" style="margin-bottom: 20px;">
         <h2 class="texto-azul"><?= $anuncio['tituloAnuncio'] ?></h2>
     </div>
     
@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar definitivamente este anuncio?')">
+        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar definitivamente este anuncio?')">
             <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
             <button type="submit" class="boton-secundario color-error border-error">
                 <i class="fas fa-trash"></i> Eliminar

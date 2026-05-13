@@ -162,4 +162,22 @@ function contarPagosRealizados() {
     return intval($fila['total']);
 }
 
+function contarTFGsEntregados() {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != '' AND archivoTFG IS NOT NULL";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return intval($fila['total']);
+}
+
+function contarTFGsCalificados() {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM calificaciones_tfg";
+    $resultado = mysqli_query($con, $sql);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_close($con);
+    return intval($fila['total']);
+}
+
 ?>

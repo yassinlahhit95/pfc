@@ -56,13 +56,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
             </div>
-            <div class="mb-15">
+            <div style="margin-bottom: 15px;">
                 <a href="agregar.php" class="boton-secundario">LIMPIAR FILTRO</a>
             </div>
         </div>
     </form>
 
-    <div class="titulo-tarjeta mt-30">
+    <div class="titulo-tarjeta" style="margin-top: 30px;">
         <h3><i class="fas fa-paper-plane"></i> NUEVO MENSAJE</h3>
     </div>
 

@@ -91,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <p class="texto-atenuado">Promedio General:</p>
             <h2 class="color-primario"><?= $resumenFinal['promedio_global'] ?></h2>
         </div>
-        <div class="text-right">
+        <div style="text-align: right;">
             <p class="texto-atenuado">Estado Académico:</p>
             <span class="estado-bolita <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
                 <?= $resumenFinal['estado_global'] ?>

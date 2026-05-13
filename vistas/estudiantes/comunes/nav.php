@@ -130,7 +130,7 @@ $totalRetos_menu = count(listarCalificacionesRetoPorEstudiante($idEst));
     </aside>
 
     <section class="contenido-principal"><?php if (isset($_SESSION['idEstudiante'])) { ?>
-        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idEstudiante'] ?>" data-user-role="estudiante" class="d-none"></div>
+        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idEstudiante'] ?>" data-user-role="estudiante" class="oculto"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>
 

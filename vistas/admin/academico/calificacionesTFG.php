@@ -48,7 +48,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </select>
         </div>
         
-        <div class="mb-15">
+        <div style="margin-bottom: 15px;">
             <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesTFG.php';">
                 <i class="fas fa-eraser"></i> LIMPIAR
             </button>
@@ -85,7 +85,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             <td>
                                 <?php if (!empty($item['archivoTFG'])) { ?>
                                     <span class="estado-bolita activo-verde" title="Subido el <?= date('d/m/Y', strtotime($item['fechaSubidaTFG'])) ?>">ENTREGADO</span>
-                                    <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" target="_blank" class="color-primario ml-10"><i class="fas fa-file-pdf"></i> Ver</a>
+                                    <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" target="_blank" class="color-primario" style="margin-left: 10px;"><i class="fas fa-file-pdf"></i> Ver</a>
                                 <?php } else { ?>
                                     <span class="estado-bolita inactivo-rojo">PENDIENTE</span>
                                 <?php } ?>
@@ -114,10 +114,10 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <!-- Modal para calificar (Simple overlay) -->
-<div id="modalCalificar" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center;">
+<div id="modalCalificar" class="oculto" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center;">
     <div class="tarjeta-blanca" style="max-width:500px; width:90%; position:relative;">
         <h2 id="modalTitulo">Calificar TFG</h2>
-        <form action="../../../controladores/admin/pfc/calificar.php" method="POST" class="form-estandar mt-20">
+        <form action="../../../controladores/admin/pfc/calificar.php" method="POST" class="form-estandar" style="margin-top: 20px;">
             <input type="hidden" name="idEstudiante" id="modalIdEstudiante">
             <input type="hidden" name="origen" value="calificacionesTFG">
             
@@ -175,12 +175,12 @@ function abrirModalCalificar(id, nombre, nota, obs) {
     document.getElementById('modalTitulo').innerText = 'Evaluar TFG: ' + nombre;
     document.getElementById('modalNota').value = nota;
     document.getElementById('modalObservaciones').value = obs;
-    document.getElementById('modalCalificar').classList.remove('d-none');
+    document.getElementById('modalCalificar').classList.remove('oculto');
     document.getElementById('modalCalificar').style.display = 'flex';
 }
 
 function cerrarModal() {
-    document.getElementById('modalCalificar').classList.add('d-none');
+    document.getElementById('modalCalificar').classList.add('oculto');
     document.getElementById('modalCalificar').style.display = 'none';
 }
 

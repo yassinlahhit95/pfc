@@ -18,11 +18,16 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $listaAnuncios = listarTodosLosAnuncios();
 $listaEventosProximos = listarEventosProximos();
+
+// Datos TFG
+$tfgActual = obtenerTFGporEstudiante($idEstudiante);
+$califTFG = obtenerCalificacionTFG($idEstudiante);
 
 $idCiclo = $estudianteActual['idCiclo'] ?? 0;
 
@@ -55,6 +60,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="tarjeta-estadistica tarjeta-estadistica-verde flexible-rellenar">
         <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
     </div>
+    <div class="tarjeta-estadistica tarjeta-estadistica-morada flexible-rellenar">
+        <div class="info-estadistica"><h3><?= $califTFG ? $califTFG['nota'] : (empty($tfgActual['archivoTFG']) ? 'PEND' : 'SUBIDO') ?></h3><p>TFG</p></div>
+    </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-violeta flexible-rellenar">
         <div class="info-estadistica"><h3><?= $cantidadPagos ?></h3><p>Pagos</p></div>
     </div>
@@ -63,7 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<div class="cuadricula-secundaria mt-30">
+<div class="cuadricula-secundaria" style="margin-top: 30px;">
   <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
 
     <div class="tarjeta-blanca">
@@ -83,8 +91,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <strong class="anuncio-titulo color-primario"><?= mb_strtoupper($anu['tituloAnuncio'], 'UTF-8') ?></strong>
                         <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></small>
                     </div>
-                    <p class="texto-pequeno sin-margen mt-5"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
-                    <div class="mt-10 text-right">
+                    <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
+                    <div style="margin-top: 10px; text-align: right;">
                         <a href="../anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
                     </div>
                 </div>
@@ -135,4 +143,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-

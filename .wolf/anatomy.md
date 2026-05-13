@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-12T18:40:47.603Z
-> Files: 340 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-13T10:18:26.965Z
+> Files: 342 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -339,7 +339,7 @@
 
 ## public/css/
 
-- `estilo.css` — Styles: 120 rules (~7631 tok)
+- `estilo.css` — Styles: 114 rules (~5795 tok)
 - `landing.css` — Styles: 111 rules (~4238 tok)
 - `login.css` — Styles: 45 rules, 10 vars, 3 media queries, 5 animations (~2843 tok)
 - `notificaciones.css` — contenedor-notificaciones { (~535 tok)
@@ -369,52 +369,53 @@
 
 ## vistas/admin/academico/
 
-- `calificacionesModulos.php` — Declares filtrarCiclosModulos (~2004 tok)
+- `calificacionesModulos.php` — Declares filtrarCiclosModulos (~2001 tok)
 - `calificacionesRetos.php` — Declares filtrarCiclosRetos (~1884 tok)
+- `calificacionesTFG.php` — filtrarCiclosTFG: abrirModalCalificar, cerrarModal (~2362 tok)
 - `resultadosFinales.php` — Declares filtrarCiclosFinales (~1841 tok)
 
 ## vistas/admin/anuncios/
 
-- `agregarAnuncios.php` (~859 tok)
-- `detallesAnuncio.php` (~664 tok)
-- `gestionAnuncios.php` (~828 tok)
+- `agregarAnuncios.php` (~864 tok)
+- `detallesAnuncio.php` (~672 tok)
+- `gestionAnuncios.php` (~830 tok)
 - `modificarAnuncios.php` (~668 tok)
 
 ## vistas/admin/ciclos/
 
 - `agregarCiclos.php` (~1152 tok)
 - `modificarCiclos.php` (~1289 tok)
-- `verCiclos.php` (~1004 tok)
+- `verCiclos.php` (~1006 tok)
 
 ## vistas/admin/comunes/
 
 - `footer.php` (~54 tok)
 - `index.php` (~15 tok)
-- `nav.php` (~2646 tok)
+- `nav.php` (~2706 tok)
 
 ## vistas/admin/directores/
 
 - `agregarDirectores.php` (~1419 tok)
 - `modificarDirectores.php` (~1530 tok)
 - `verDetallesDirectores.php` (~1007 tok)
-- `verDirectores.php` (~829 tok)
+- `verDirectores.php` (~831 tok)
 
 ## vistas/admin/estudiantes/
 
 - `agregarEstudiantes.php` — Declares alCambiarNivel (~2437 tok)
 - `modificarEstudiantes.php` — Declares alCambiarNivel (~2241 tok)
-- `verDetallesEstudiantes.php` (~1001 tok)
-- `verEstudiantes.php` — Declares aplicarFiltrosEstudiantes (~1849 tok)
+- `verDetallesEstudiantes.php` (~1006 tok)
+- `verEstudiantes.php` — Declares aplicarFiltrosEstudiantes (~1851 tok)
 
 ## vistas/admin/eventos/
 
 - `agregarEvento.php` (~656 tok)
-- `gestionEventos.php` (~891 tok)
+- `gestionEventos.php` (~893 tok)
 - `modificarEvento.php` (~750 tok)
 
 ## vistas/admin/inicio/
 
-- `dashboard.php` (~1970 tok)
+- `dashboard.php` (~1979 tok)
 
 ## vistas/admin/inventario/
 
@@ -422,12 +423,12 @@
 - `agregarPrestamo.php` (~1218 tok)
 - `gestionarPrestamos.php` (~963 tok)
 - `modificarArticulo.php` (~525 tok)
-- `verInventario.php` (~838 tok)
+- `verInventario.php` (~840 tok)
 
 ## vistas/admin/mensajes/
 
-- `agregar.php` (~1869 tok)
-- `detalles.php` (~830 tok)
+- `agregar.php` (~1902 tok)
+- `detalles.php` (~850 tok)
 - `lista.php` (~1258 tok)
 - `modificarReclamacion.php` (~825 tok)
 
@@ -436,14 +437,14 @@
 - `agregarModulos.php` — Declares alCambiarNivel (~1456 tok)
 - `asignarProfesorModulo.php` (~600 tok)
 - `modificarModulos.php` — Declares alCambiarNivel (~1540 tok)
-- `verModulos.php` — Declares filtrarNivelModulos (~1991 tok)
+- `verModulos.php` — Declares filtrarNivelModulos (~1993 tok)
 
 ## vistas/admin/pagos/
 
-- `agregarPagos.php` — Declares actualizarMontoRapido (~2031 tok)
+- `agregarPagos.php` — Declares actualizarMontoRapido (~2040 tok)
 - `historialEstudiante.php` (~597 tok)
 - `modificarPagos.php` (~1185 tok)
-- `verPagosGeneral.php` (~1456 tok)
+- `verPagosGeneral.php` (~1458 tok)
 
 ## vistas/admin/pfc/
 
@@ -451,11 +452,11 @@
 
 ## vistas/admin/profesores/
 
-- `agregarProfesores.php` (~2352 tok)
+- `agregarProfesores.php` (~2377 tok)
 - `asignarModulos.php` (~697 tok)
 - `modificarProfesores.php` (~1593 tok)
 - `verDetallesProfesores.php` (~1774 tok)
-- `verProfesores.php` (~1075 tok)
+- `verProfesores.php` (~1077 tok)
 
 ## vistas/admin/reportes/
 
@@ -465,23 +466,23 @@
 
 ## vistas/admin/retos/
 
-- `agregarRetos.php` (~1170 tok)
-- `calificarReto.php` (~813 tok)
-- `modificarRetos.php` (~1305 tok)
-- `verRetos.php` — Declares aplicarFiltrosRetos (~1512 tok)
+- `agregarRetos.php` (~1181 tok)
+- `calificarReto.php` (~818 tok)
+- `modificarRetos.php` (~1310 tok)
+- `verRetos.php` — Declares aplicarFiltrosRetos (~1514 tok)
 
 ## vistas/estudiantes/academico/
 
-- `resultadosFinales.php` (~977 tok)
+- `resultadosFinales.php` (~1232 tok)
 
 ## vistas/estudiantes/anuncios/
 
-- `lista.php` (~433 tok)
+- `lista.php` (~441 tok)
 
 ## vistas/estudiantes/calificaciones/
 
 - `lista.php` (~769 tok)
-- `retos.php` (~614 tok)
+- `retos.php` (~616 tok)
 
 ## vistas/estudiantes/comunes/
 
@@ -494,12 +495,12 @@
 
 ## vistas/estudiantes/inicio/
 
-- `dashboard.php` (~1432 tok)
+- `dashboard.php` (~1448 tok)
 
 ## vistas/estudiantes/mensajes/
 
 - `agregar.php` (~935 tok)
-- `detalles.php` (~753 tok)
+- `detalles.php` (~772 tok)
 - `lista.php` (~1025 tok)
 
 ## vistas/estudiantes/pagos/
@@ -508,13 +509,13 @@
 
 ## vistas/estudiantes/perfil/
 
-- `editar.php` (~1070 tok)
+- `editar.php` (~1082 tok)
 - `ver.php` (~697 tok)
 
 ## vistas/estudiantes/pfc/
 
-- `lista.php` (~934 tok)
-- `subir.php` (~1400 tok)
+- `lista.php` (~948 tok)
+- `subir.php` (~1405 tok)
 
 ## vistas/estudiantes/retos/
 
@@ -522,18 +523,19 @@
 
 ## vistas/profesores/academico/
 
-- `resultadosFinales.php` (~2298 tok)
+- `resultadosFinales.php` (~2413 tok)
 
 ## vistas/profesores/anuncios/
 
-- `lista.php` (~438 tok)
+- `lista.php` (~446 tok)
 
 ## vistas/profesores/calificaciones/
 
 - `agregar.php` (~1968 tok)
 - `editar.php` (~1480 tok)
-- `lista.php` (~1280 tok)
-- `retos.php` (~1671 tok)
+- `lista.php` (~1284 tok)
+- `retos.php` (~1675 tok)
+- `tfg.php` — abrirModalCalificar: cerrarModal (~2021 tok)
 
 ## vistas/profesores/ciclos/
 
@@ -542,12 +544,12 @@
 ## vistas/profesores/comunes/
 
 - `footer.php` (~39 tok)
-- `nav.php` (~2036 tok)
+- `nav.php` (~2096 tok)
 
 ## vistas/profesores/estudiantes/
 
 - `agregar.php` — Declares alCambiarNivel (~2339 tok)
-- `detalles.php` (~957 tok)
+- `detalles.php` (~1218 tok)
 - `editar.php` — Declares alCambiarNivel (~2233 tok)
 - `lista.php` (~1297 tok)
 
@@ -557,13 +559,13 @@
 
 ## vistas/profesores/inicio/
 
-- `dashboard.php` — Declares f (~1755 tok)
+- `dashboard.php` — Declares f (~1779 tok)
 
 ## vistas/profesores/mensajes/
 
-- `agregar.php` (~1424 tok)
-- `detalles.php` (~839 tok)
-- `editar.php` (~835 tok)
+- `agregar.php` (~1434 tok)
+- `detalles.php` (~861 tok)
+- `editar.php` (~840 tok)
 - `lista.php` (~1273 tok)
 
 ## vistas/profesores/modulos/
@@ -572,16 +574,16 @@
 
 ## vistas/profesores/perfil/
 
-- `editar.php` (~1205 tok)
+- `editar.php` (~1216 tok)
 - `ver.php` (~578 tok)
 
 ## vistas/profesores/pfc/
 
 - `editar.php` (~632 tok)
-- `lista.php` — Declares toggleFormCalificar (~1777 tok)
+- `lista.php` — Declares toggleFormCalificar (~1778 tok)
 
 ## vistas/profesores/retos/
 
-- `agregar.php` (~1267 tok)
-- `editar.php` (~1254 tok)
+- `agregar.php` (~1278 tok)
+- `editar.php` (~1265 tok)
 - `lista.php` (~807 tok)

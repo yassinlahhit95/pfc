@@ -53,7 +53,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="formulario-cuadricula">
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno">Archivo del TFG</label>
-            <div class="mt-5">
+            <div style="margin-top: 5px;">
                 <?php if (!empty($tfg['archivoTFG'])) { ?>
                     <div class="disposicion-flexible alinear-centro separacion-grande">
                         <a href="../../../public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
@@ -66,7 +66,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             </button>
                         </form>
                     </div>
-                    <p class="texto-pequeno texto-atenuado mt-10">
+                    <p class="texto-pequeno texto-atenuado" style="margin-top: 10px;">
                         <strong>Archivo:</strong> <?php echo $tfg['archivoTFG']; ?><br>
                         <strong>Subido el:</strong> <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?>
                     </p>
@@ -78,7 +78,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 
         <div class="campo-formulario">
             <label class="texto-atenuado texto-pequeno"><?php echo empty($tfg['archivoTFG']) ? 'Subir TFG (Solo PDF)' : 'Actualizar TFG (Reemplaza el anterior)'; ?></label>
-            <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="disposicion-flexible alinear-centro separacion-pequena mt-5">
+            <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="disposicion-flexible alinear-centro separacion-pequena" style="margin-top: 5px;">
                 <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
                 <input type="file" name="archivoTFG" accept=".pdf">
                 <button type="submit" name="subirTFG" class="boton-primario">

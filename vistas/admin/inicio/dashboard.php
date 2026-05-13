@@ -33,6 +33,9 @@ $pctAprobados = obtenerPorcentajeAprobadosGlobal();
 $recaudado = obtenerTotalRecaudado();
 $totalCobros = contarPagosRealizados();
 
+$totalTFGs = contarTFGsEntregados();
+$totalTFGCalificados = contarTFGsCalificados();
+
 $adminInfo = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
@@ -57,7 +60,6 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 
-<h2 class="margen-abajo texto-oscuro">ANÁLISIS ACADÉMICO Y DATOS</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?= $totalEstudiantes ?></h3><p>Estudiantes</p></div>
@@ -82,6 +84,9 @@ include __DIR__ . '/../comunes/nav.php';
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-cian-claro">
     <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
+  </div>
+  <div class="tarjeta-estadistica tarjeta-estadistica-morada">
+    <div class="info-estadistica"><h3><?= $totalTFGs ?> / <?= $totalTFGCalificados ?></h3><p>TFG (ENTREGADOS/OK)</p></div>
   </div>
 </div>
 
@@ -113,8 +118,8 @@ include __DIR__ . '/../comunes/nav.php';
                         <strong class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></strong>
                         <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
                     </div>
-                    <p class="texto-pequeno sin-margen mt-5"><?= nl2br($anuncio['mensaje']) ?></p>
-                    <div class="mt-5">
+                    <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= nl2br($anuncio['mensaje']) ?></p>
+                    <div style="margin-top: 5px;">
                         <span class="etiqueta-dirigido-a"><?= mb_strtoupper($anuncio['dirigidoA'], 'UTF-8') ?></span>
                     </div>
                 </div>

@@ -67,7 +67,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarEvento.php?idEvento=<?= $evento['idEvento'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/eventos/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este evento?')">
+                                <form action="../../../controladores/admin/eventos/borrar.php" method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este evento?')">
                                     <input type="hidden" name="idEvento" value="<?= $evento['idEvento'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

@@ -76,9 +76,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
 
-    <div class="margen-arriba p-20 bg-gris-suave rounded-8">
-        <label class="texto-atenuado texto-pequeno d-block mb-10">CONTENIDO DEL MENSAJE:</label>
-        <div class="line-height-16 pre-wrap"><?= $mensaje['descripcion'] ?></div>
+    <div class="margen-arriba bg-gris-suave" style="padding: 20px; border-radius: 8px;">
+        <label class="texto-atenuado texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
+        <div style="line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

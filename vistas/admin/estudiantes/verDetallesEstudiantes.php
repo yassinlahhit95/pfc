@@ -88,7 +88,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div>
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
                 <span class="estado-bolita activo-verde">Entregado</span>
-                <p class="texto-pequeno texto-atenuado mt-5">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
+                <p class="texto-pequeno texto-atenuado" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
             <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">No subido</span>
             <?php } ?>

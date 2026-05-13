@@ -131,12 +131,12 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
             <div>
                 <h4 class="margen-abajo"><i class="fas fa-book"></i> 2. Seleccionar Módulos</h4>
                 <div id="contenedor-modulos-dinamico" class="lista-checkboxes scroll-vertical-400 bg-gris-suave">
-                    <p id="msg-seleccionar-ciclo" class="texto-atenuado text-center p-20">
+                    <p id="msg-seleccionar-ciclo" class="texto-atenuado" style="text-align: center; padding: 20px;">
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos mb-15 d-none" data-ciclo-id="<?= $idCiclo ?>">
-                            <p class="texto-negrita color-primario borde-abajo-gris mb-10 pb-3">
+                        <div class="grupo-modulos oculto" data-ciclo-id="<?= $idCiclo ?>" style="margin-bottom: 15px;">
+                            <p class="texto-negrita color-primario" style="margin-bottom: 10px; padding-bottom: 3px; border-bottom: none;">
                                 <?= $grupo['nombre'] ?>
                             </p>
                             <?php foreach ($grupo['modulos'] as $mod) { ?>

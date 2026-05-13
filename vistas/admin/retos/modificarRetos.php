@@ -91,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo-formulario margen-arriba">
             <label><strong>Vincular Módulos *</strong></label>
-            <div class="tarjeta-gris-suave scroll-vertical mt-5">
+            <div class="tarjeta-gris-suave scroll-vertical" style="margin-top: 5px;">
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <div class="item-seleccionable">
                         <input type="checkbox" name="modulosReto[]" id="modulo_<?= $modulo['idModulo'] ?>" value="<?= $modulo['idModulo'] ?>" 

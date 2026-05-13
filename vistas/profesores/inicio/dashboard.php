@@ -18,6 +18,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $profesorActual = obtenerProfesorPorId($idProfesor);
 $listaAnuncios = listarTodosLosAnuncios();
@@ -26,6 +27,16 @@ $listaEstudiantes = listarEstudiantesDeProfesor($idProfesor);
 $listaModulos = obtenerModulosDeProfesor($idProfesor);
 $listaRetos = obtenerRetosDeProfesor($idProfesor);
 $listaEventos = listarEventosProximos();
+
+// Estadísticas TFG para el profesor
+$listaTFGsProfesor = listarTFGsPorProfesor($idProfesor);
+$totalTFGsProfesor = count($listaTFGsProfesor);
+$calificadosTFGsProfesor = 0;
+foreach ($listaTFGsProfesor as $tfg) {
+    if (obtenerCalificacionTFG($tfg['idEstudiante'])) {
+        $calificadosTFGsProfesor++;
+    }
+}
 
 $mensajesPendientes = 0;
 foreach ($listaMensajes as $mensaje) {
@@ -66,6 +77,9 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
     <div class="info-estadistica"><h3><?= $mensajesPendientes ?></h3><p>Mensajes</p></div>
   </div>
+  <div class="tarjeta-estadistica tarjeta-estadistica-morada">
+    <div class="info-estadistica"><h3><?= $totalTFGsProfesor ?> / <?= $calificadosTFGsProfesor ?></h3><p>TFG (ENTREGADOS/OK)</p></div>
+  </div>
 </div>
 
 <div class="cuadricula-secundaria">
@@ -78,15 +92,15 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
         <a href="../mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
         <a href="../perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
-        <a href="#" class="accion-rapida color-secundario text-white" onclick="const f = document.getElementById('formMasivo'); f.classList.contains('d-none') ? f.classList.remove('d-none') : f.classList.add('d-none'); return false;">
+        <a href="#" class="accion-rapida" style="background: #3498db; color: white;" onclick="const f = document.getElementById('formMasivo'); f.classList.contains('oculto') ? f.classList.remove('oculto') : f.classList.add('oculto'); return false;">
           <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
         </a>
       </div>
 
-      <div id="formMasivo" class="d-none mt-20 p-15 border-secundario rounded-8">
-        <h4 class="mt-0">Enviar Resultados por Email a un Ciclo</h4>
+      <div id="formMasivo" class="oculto" style="margin-top: 20px; padding: 15px; border: none; border-radius: 8px;">
+        <h4 style="margin-top: 0;">Enviar Resultados por Email a un Ciclo</h4>
         <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
-          <select name="idCiclo" class="ancho-total p-8 mb-10">
+          <select name="idCiclo" class="ancho-total" style="padding: 8px; margin-bottom: 10px;">
             <option value="">Seleccione un ciclo...</option>
             <?php
             $ciclosVistos = [];
@@ -97,7 +111,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <option value="<?= $m['idCiclo'] ?>"><?= $m['nombreCiclo'] ?></option>
             <?php } } ?>
           </select>
-          <button type="submit" class="boton-primario ancho-total bg-secundario">ENVIAR A TODOS LOS ALUMNOS</button>
+          <button type="submit" class="boton-primario ancho-total">ENVIAR A TODOS LOS ALUMNOS</button>
         </form>
       </div>
     </div>
@@ -116,7 +130,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
                     <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
-                    <p class="texto-pequeno sin-margen"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
+                    <p class="texto-pequeno" style="margin: 0;"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
                 </div>
             </div>
             <?php
@@ -164,4 +178,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-

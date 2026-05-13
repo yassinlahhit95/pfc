@@ -83,7 +83,7 @@ include_once "../comunes/nav.php";
 
         <div class="campo-formulario">
             <label>Asociar a Módulos *</label>
-            <p class="texto-atenuado mb-10">Seleccione los módulos en los que se evaluará este reto.</p>
+            <p class="texto-atenuado" style="margin-bottom: 10px;">Seleccione los módulos en los que se evaluará este reto.</p>
             <div class="lista-checkboxes scroll-vertical-200">
                 <?php foreach ($misModulos as $mod) { ?>
                     <label class="item-checkbox" for="mod_<?= $mod['idModulo'] ?>">
@@ -98,7 +98,7 @@ include_once "../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="form-acciones mt-20">
+        <div class="form-acciones" style="margin-top: 20px;">
             <button type="submit" name="actualizarReto" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>

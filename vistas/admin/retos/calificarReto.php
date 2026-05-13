@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </tbody>
         </table>
         
-       <div class="botones-formulario mt-20">
+       <div class="botones-formulario" style="margin-top: 20px;">
             <button type="submit" class="boton-primario">Guardar Calificaciones</button>
         </div>
     </form>

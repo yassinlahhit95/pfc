@@ -68,8 +68,8 @@ include_once "../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="titulo-tarjeta mt-30"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
-        <p class="texto-atenuado mb-15">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
+        <div class="titulo-tarjeta" style="margin-top: 30px;"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
+        <p class="texto-atenuado" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo-formulario">
             <label for="current_password">Contraseña Actual</label>

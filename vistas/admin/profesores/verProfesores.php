@@ -70,7 +70,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                    class="btn-accion btn-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
+                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
                                     <input type="hidden" name="idProfesor" value="<?= $profesorIndividual['idProfesor'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Eliminar del sistema">
                                         <i class="fas fa-trash"></i>

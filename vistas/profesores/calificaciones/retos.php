@@ -84,7 +84,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
             </select>
         </div>
 
-        <div class="ml-10">
+        <div style="margin-left: 10px;">
             <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname;">
                 <i class="fas fa-eraser"></i> LIMPIAR
             </button>

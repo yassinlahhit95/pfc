@@ -39,14 +39,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <small class="texto-atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
                 </div>
                 <div class="margen-arriba">
-                    <p class="line-height-16"><?= nl2br($anuncio['mensaje']) ?></p>
+                    <p style="line-height: 1.6;"><?= nl2br($anuncio['mensaje']) ?></p>
                 </div>
             </div>
         </div>
     <?php } ?>
 <?php } else { ?>
     <div class="tarjeta-blanca">
-        <p class="texto-atenuado text-center p-20">No hay avisos publicados en este momento.</p>
+        <p class="texto-atenuado" style="text-align: center; padding: 20px;">No hay avisos publicados en este momento.</p>
     </div>
 <?php } ?>
 

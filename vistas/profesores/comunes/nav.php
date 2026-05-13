@@ -148,6 +148,6 @@ $totalRetos_menu = count(obtenerRetosDeProfesor($idProf));
     </aside>
 
     <section class="contenido-principal"><?php if (isset($_SESSION['idProfesor'])) { ?>
-        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="d-none"></div>
+        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="oculto"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

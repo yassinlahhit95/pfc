@@ -6,7 +6,10 @@
 
 ## User Preferences
 
-<!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- User wants CSS classes to have max 1-2 classes per HTML element — no utility class stacking like Tailwind
+- User wants each section/component to have its own CSS rule with all its properties, not rely on single-property utility classes
+- User is concerned about code looking AI-generated — keep CSS simple, beginner-level
+- When removing unused utility classes: always verify HTML usage before deleting to avoid breaking the site
 
 ## Key Learnings
 

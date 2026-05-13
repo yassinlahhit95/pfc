@@ -82,9 +82,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
 
-    <div class="margen-arriba p-20 bg-gris-suave rounded-8">
-        <h4 class="mb-10 text-uppercase color-primario"><?= $mensaje['asunto'] ?></h4>
-        <div class="line-height-15 pre-wrap"><?= $mensaje['descripcion'] ?></div>
+    <div class="margen-arriba bg-gris-suave" style="padding: 20px; border-radius: 8px;">
+        <h4 class="color-primario" style="margin-bottom: 10px; text-transform: uppercase;"><?= $mensaje['asunto'] ?></h4>
+        <div style="line-height: 1.5; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

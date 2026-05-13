@@ -69,7 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
         </div>
-        <div class="mb-15">
+        <div style="margin-bottom: 15px;">
             <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname;">
                 <i class="fas fa-eraser"></i> LIMPIAR
             </button>

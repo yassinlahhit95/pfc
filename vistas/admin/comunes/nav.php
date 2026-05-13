@@ -189,6 +189,6 @@ $totalTfgs_menu = contarTFGsSubidos();
     </aside>
 
     <section class="contenido-principal"><?php if (isset($_SESSION['idAdmin'])) { ?>
-        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="d-none"></div>
+        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idAdmin'] ?>" data-user-role="admin" class="oculto"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>

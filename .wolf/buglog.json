@@ -1,4 +1,709 @@
 {
   "version": 1,
-  "bugs": []
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-13T08:16:59.541Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/retos/lista.php",
+      "root_cause": "Had \"display-inline\"",
+      "fix": "Changed to \"d-inline\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:17:04.861Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-13T08:17:09.298Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/academico/calificacionesModulos.php",
+      "root_cause": "Had \"etiqueta-notificacion self-center\"",
+      "fix": "Changed to \"etiqueta-notificacion\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:17:09.298Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-13T08:17:26.781Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/mensajes/agregar.php",
+      "root_cause": "Had \"margen-abajo opacity-20\"",
+      "fix": "Changed to \"margen-abajo\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:17:26.781Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-13T08:17:32.481Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/pagos/agregarPagos.php",
+      "root_cause": "Had \"disposicion-flexible alinear-fin gap-15 envoltura",
+      "fix": "Changed to \"disposicion-flexible alinear-fin envoltura-flexib",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:17:32.481Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-13T08:17:36.169Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/mensajes/detalles.php",
+      "root_cause": "Had \"margen-arriba p-20 bg-gris-suave rounded-8 break-",
+      "fix": "Changed to \"margen-arriba p-20 bg-gris-suave rounded-8 break-",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:17:36.169Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-13T08:30:04.970Z",
+      "error_message": "Wrong reference: overlay should be overlayBarra",
+      "file": "public/css/estilo.css",
+      "root_cause": "Used \"overlay\" instead of \"overlayBarra\"",
+      "fix": "Changed overlay → overlayBarra",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:30:16.348Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-05-13T08:47:11.083Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/comunes/nav.php",
+      "root_cause": "Had \"d-none\"",
+      "fix": "Changed to \"oculto\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-13T08:47:20.130Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-05-13T08:47:33.502Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/calificaciones/tfg.php",
+      "root_cause": "Had \"color-primario ml-10\"",
+      "fix": "Changed to \"color-primario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:47:38.592Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-05-13T08:47:54.920Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/academico/calificacionesTFG.php",
+      "root_cause": "Had \"color-primario ml-10\"",
+      "fix": "Changed to \"color-primario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-13T08:52:47.915Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-05-13T08:48:09.923Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/profesores/agregarProfesores.php",
+      "root_cause": "Had \"grupo-modulos mb-15 d-none\"",
+      "fix": "Changed to \"grupo-modulos oculto\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:48:09.923Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-05-13T08:48:23.554Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/inicio/dashboard.php",
+      "root_cause": "Had \" onclick=\"",
+      "fix": "Changed to \" style=\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-13T08:50:26.551Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-05-13T08:48:47.232Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/estudiantes/detalles.php",
+      "root_cause": "Had \"texto-pequeno texto-atenuado mt-5\"",
+      "fix": "Changed to \"texto-pequeno texto-atenuado\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-13T08:48:56.257Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-05-13T08:49:02.229Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/pagos/agregarPagos.php",
+      "root_cause": "Had \"boton-secundario mb-5\"",
+      "fix": "Changed to \"boton-secundario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:49:02.229Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-05-13T08:49:13.358Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/mensajes/agregar.php",
+      "root_cause": "Had \"disposicion-flexible separacion-pequena mt-10\"",
+      "fix": "Changed to \"disposicion-flexible separacion-pequena\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 10,
+      "last_seen": "2026-05-13T08:56:45.753Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-05-13T08:49:40.822Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/pfc/lista.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 10,
+      "last_seen": "2026-05-13T08:56:39.706Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-05-13T08:49:51.907Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/academico/resultadosFinales.php",
+      "root_cause": "Had \"boton-secundario ml-10\"",
+      "fix": "Changed to \"boton-secundario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:49:56.420Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-05-13T08:50:31.899Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/eventos/gestionEventos.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:50:31.899Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-05-13T08:50:37.124Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/calificaciones/retos.php",
+      "root_cause": "Had \"ml-10\"",
+      "fix": "Changed to \"margin-left: 10px;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:52:11.283Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-05-13T08:50:43.840Z",
+      "error_message": "Significant refactor of ",
+      "file": "vistas/estudiantes/mensajes/detalles.php",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4→4 lines (3 removed) | Also: <div class=\"margen-arriba p-20 bg-gris-suave round; <h4 class=\"mb-10 text-uppercase color-primario\"><?",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:51:49.912Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-05-13T08:50:49.602Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/estudiantes/perfil/editar.php",
+      "root_cause": "Had \"titulo-tarjeta mt-30\"",
+      "fix": "Changed to \"titulo-tarjeta\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-13T08:56:49.312Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-05-13T08:51:09.014Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/modulos/verModulos.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:09.014Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-05-13T08:51:13.628Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/estudiantes/verEstudiantes.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:13.628Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-05-13T08:51:18.205Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/pagos/verPagosGeneral.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:18.205Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-05-13T08:51:24.912Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/profesores/verProfesores.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:24.912Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-05-13T08:51:29.864Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/ciclos/verCiclos.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:29.864Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-05-13T08:51:34.666Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/retos/verRetos.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:34.666Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-05-13T08:51:39.095Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/anuncios/detallesAnuncio.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:55:31.277Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-05-13T08:51:54.493Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/inventario/verInventario.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:51:54.493Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-05-13T08:52:00.589Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/estudiantes/verDetallesEstudiantes.php",
+      "root_cause": "Had \"texto-pequeno texto-atenuado mt-5\"",
+      "fix": "Changed to \"texto-pequeno texto-atenuado\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:52:00.589Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-05-13T08:52:16.376Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/inventario/gestionarPrestamos.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:52:16.376Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-05-13T08:52:20.868Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/directores/verDirectores.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:52:20.868Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-05-13T08:52:25.072Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/anuncios/gestionAnuncios.php",
+      "root_cause": "Had \"d-inline\"",
+      "fix": "Changed to \"display: inline;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:52:25.072Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-05-13T08:52:35.496Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/anuncios/agregarAnuncios.php",
+      "root_cause": "Had \"form-acciones mt-20\"",
+      "fix": "Changed to \"form-acciones\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:52:35.496Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-05-13T08:55:35.529Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/estudiantes/pfc/subir.php",
+      "root_cause": "Had \"form-estandar mt-30\"",
+      "fix": "Changed to \"form-estandar\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:55:35.529Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-05-13T08:55:59.670Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/inicio/dashboard.php",
+      "root_cause": "Had \"mt-5\"",
+      "fix": "Changed to \"margin-top: 5px;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:56:35.603Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-05-13T08:56:12.466Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/retos/modificarRetos.php",
+      "root_cause": "Had \"tarjeta-gris-suave scroll-vertical mt-5\"",
+      "fix": "Changed to \"tarjeta-gris-suave scroll-vertical\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:56:12.466Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-05-13T08:56:15.837Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/retos/calificarReto.php",
+      "root_cause": "Had \"botones-formulario mt-20\"",
+      "fix": "Changed to \"botones-formulario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:56:15.837Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-05-13T08:56:19.958Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/profesores/agregarProfesores.php",
+      "root_cause": "Had \"texto-atenuado text-center p-20\"",
+      "fix": "Changed to \"texto-atenuado\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:56:24.020Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-05-13T08:56:27.813Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/retos/agregarRetos.php",
+      "root_cause": "Had \"campo-formulario mt-20\"",
+      "fix": "Changed to \"campo-formulario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-13T08:56:32.079Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-05-13T08:56:53.510Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/calificaciones/tfg.php",
+      "root_cause": "Had \"form-estandar mt-20\"",
+      "fix": "Changed to \"form-estandar\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T08:56:53.510Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-05-13T09:00:32.485Z",
+      "error_message": "CSS fix: color, border-color, display",
+      "file": "public/css/estilo.css",
+      "root_cause": "color: #dc2626 !important → #dc2626; border-color: #dc2626 !important → #dc2626; display: block !important → none !important",
+      "fix": "Changed color: #dc2626 !important → #dc2626; border-color: #dc2626 !important → #dc2626; display: block !important → none !important",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-13T09:00:48.909Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-05-13T09:00:58.343Z",
+      "error_message": "Significant refactor of ",
+      "file": "public/css/estilo.css",
+      "root_cause": "30 lines replaced/restructured",
+      "fix": "Rewrote 41→41 lines (30 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T09:00:58.343Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-05-13T09:03:45.297Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/profesores/agregarProfesores.php",
+      "root_cause": "Had \"texto-negrita color-primario pb-3\"",
+      "fix": "Changed to \"texto-negrita color-primario\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T09:03:45.297Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-05-13T10:18:27.013Z",
+      "error_message": "CSS fix: color",
+      "file": "public/css/estilo.css",
+      "root_cause": "color: #ffffff → white",
+      "fix": "Changed color: #ffffff → white",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-13T10:18:27.014Z"
+    }
+  ]
 }

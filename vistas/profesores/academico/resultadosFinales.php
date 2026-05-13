@@ -145,7 +145,7 @@ if ($id_ciclo_elegido) {
                     <?php } ?>
                 </select>
             </div>
-            <button type="button" class="boton-secundario ml-10" onclick="window.location.href = window.location.pathname;">
+            <button type="button" class="boton-secundario" style="margin-left: 10px;" onclick="window.location.href = window.location.pathname;">
                 <i class="fas fa-eraser"></i> LIMPIAR
             </button>
         </form>

@@ -88,12 +88,32 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div>
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
                 <span class="estado-bolita activo-verde">ENTREGADO</span>
-                <p class="texto-pequeno texto-atenuado mt-5">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
+                <p class="texto-pequeno texto-atenuado" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
             <?php } else { ?>
                 <span class="estado-bolita inactivo-rojo">PENDIENTE / NO SUBIDO</span>
             <?php } ?>
         </div>
+        
+        <?php 
+        require_once __DIR__ . "/../../../modelos/tfg.php";
+        $notaTFG = obtenerCalificacionTFG($idEstudiante);
+        if ($notaTFG) {
+        ?>
+            <div style="text-align: right;">
+                <p class="etiqueta-detalle" style="margin-bottom: 5px;">CALIFICACIÓN TFG</p>
+                <span class="texto-negrita <?= $notaTFG['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>" style="font-size: 1.5em;">
+                    <?= $notaTFG['nota'] ?> / 10
+                </span>
+            </div>
+        <?php } ?>
     </div>
+    
+    <?php if ($notaTFG && !empty($notaTFG['observaciones'])) { ?>
+        <div class="margen-arriba tarjeta-gris-suave" style="padding: 15px;">
+            <p class="texto-negrita" style="font-size: 13px; color: #718096; margin-bottom: 5px;">FEEDBACK DEL TFG:</p>
+            <p class="texto-pequeno"><?= nl2br($notaTFG['observaciones']) ?></p>
+        </div>
+    <?php } ?>
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

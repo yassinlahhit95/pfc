@@ -53,7 +53,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
                         <td><strong><?= $nota['nombreReto'] ?></strong></td>
                         <td><?= $nota['fechaInicio'] ?></td>
                         <td><?= $nota['fechaFin'] ?></td>
-                        <td class="texto-negrita color-primario font-size-11">
+                        <td class="texto-negrita color-primario" style="font-size: 1.1em;">
                             <?= $nota['nota'] ?>
                         </td>
                     </tr>

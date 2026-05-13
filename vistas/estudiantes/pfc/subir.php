@@ -97,7 +97,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     <?php } ?>
 
-    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar mt-30">
+    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar" style="margin-top: 30px;">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
         <div class="campo-formulario">

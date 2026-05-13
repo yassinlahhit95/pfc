@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <button type="button" class="btn-accion btn-editar" title="Calificar TFG" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" class="display-inline">
+                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" style="display: inline;">
                                         <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
                                         <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
                                             <i class="fas fa-trash"></i>

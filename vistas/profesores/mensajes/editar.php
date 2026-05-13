@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="tarjeta-gris-suave margen-abajo">
         <p class="texto-negrita"><?= $mensaje['asunto'] ?></p>
-        <hr class="mt-5 margen-abajo">
+        <hr class="margen-abajo" style="margin-top: 5px;">
         <p><?= nl2br($mensaje['descripcion']) ?></p>
     </div>
 
