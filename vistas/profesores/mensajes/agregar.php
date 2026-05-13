@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="">-- Todos mis alumnos --</option>
                     <?php foreach ($listaDeCiclos as $ciclo) { ?>
                         <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : '') ?>>
-                            <?= $ciclo['nombreCiclo'] ?>
+                            <?= $ciclo['abreviaturaCiclo'] ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -79,7 +79,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $selected = ($datos['idEstudiante'] ?? '') == $estudiante['idEstudiante'] ? 'selected' : '';
                     ?>
                         <option value="<?= $estudiante['idEstudiante'] ?>" <?= $selected ?>>
-                            <?= $estudiante['nombreEstudiante'] ?> (<?= $estudiante['nombreCiclo'] ?>)
+                            <?= $estudiante['nombreEstudiante'] ?> (<?= $estudiante['abreviaturaCiclo'] ?>)
                         </option>
                     <?php } ?>
                 </optgroup>

@@ -16,10 +16,17 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $datosEst = obtenerEstudiantePorId($idEst);
+if (!$datosEst) {
+    $_SESSION['error'] = "ERROR AL RECUPERAR DATOS DEL ESTUDIANTE.";
+    header("Location: ../inicio/dashboard.php");
+    exit;
+}
+
 $idCiclo = $datosEst['idCiclo'] ?? 0;
+$nombreCiclo = $datosEst['nombreCiclo'] ?? 'SIN ASIGNAR';
 
 // Obtenemos los retos específicos del ciclo del estudiante
-$retos = obtenerRetosPorCiclo($idCiclo);
+$retos = ($idCiclo > 0) ? obtenerRetosPorCiclo($idCiclo) : [];
 
 $tituloDelPagina = "AULAPRO | MIS RETOS";
 $seccionActual = 'retos';
@@ -28,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="encabezado-pagina">
     <h1>MIS RETOS</h1>
-    <p class="subtitulo">Retos asignados a tu ciclo: <?= $datosEst['nombreCiclo'] ?></p>
+    <p class="subtitulo">Retos asignados a tu ciclo: <?= $nombreCiclo ?></p>
 </div>
 
 <?php if ($error) { ?>

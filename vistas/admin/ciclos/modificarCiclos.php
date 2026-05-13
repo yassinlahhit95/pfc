@@ -89,7 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="cuadricula-secundaria mt-25">
+        <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
                 <h4 class="margen-abajo">Asignar Tutores/Profesores</h4>
                 <div class="lista-checkboxes">

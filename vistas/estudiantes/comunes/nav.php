@@ -15,12 +15,14 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idEst = $_SESSION['idEstudiante'];
+$datosEst_menu = obtenerEstudiantePorId($idEst);
+$idCicloEst_menu = $datosEst_menu['idCiclo'] ?? 0;
 
 $totalMensajes_menu = count(listarMensajesDeEstudiante($idEst));
 $totalSinLeer_menu = contarMensajesNoLeidosEstudiante($idEst);
 $totalAnuncios_menu = count(listarAnunciosPorRol('estudiantes'));
 $totalPagos_menu = contarPagosEstudiante($idEst);
-$totalRetos_menu = count(listarCalificacionesRetoPorEstudiante($idEst));
+$totalRetos_menu = count(obtenerRetosPorCiclo($idCicloEst_menu));
 ?>
 <!DOCTYPE html>
 <html lang="es">

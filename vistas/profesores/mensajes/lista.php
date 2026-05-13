@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 }
                             ?></strong>
                         </td>
-                        <td><?= $mensaje['nombreCiclo'] ?? '-' ?></td>
+                        <td><?= $mensaje['abreviaturaCiclo'] ?? '-' ?></td>
                         <td><p class="texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">

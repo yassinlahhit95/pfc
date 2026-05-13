@@ -87,7 +87,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($todos_los_ciclos as $ciclo) { ?>
                         <option value="<?= $ciclo['idCiclo'] ?>" data-nivel="<?= $ciclo['idNivel'] ?>"
                             <?php if ($ciclo['idCiclo'] == $estudiante['idCiclo']) { echo 'selected'; } ?>
-                            <?php if ($nivelActual !== '' && $ciclo['idNivel'] != $nivelActual) { echo 'style="display:none"'; } ?>>
+                            <?php if ($nivelActual !== '' && $ciclo['idNivel'] != $nivelActual) { echo 'style="display: none"'; } ?>>
                             <?= $ciclo['nombreCiclo'] ?>
                         </option>
                     <?php } ?>

@@ -127,7 +127,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                    class="btn-accion btn-editar" title="Editar módulo">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="../../../controladores/admin/modulos/borrar.php" style="display: inline;" onsubmit="return confirm('¿Eliminar este módulo?')">
+                                <form method="POST" action="../../../controladores/admin/modulos/borrar.php" onsubmit="return confirm('¿Eliminar este módulo?')">
                                     <input type="hidden" name="idModulo" value="<?= $moduloIndividual['idModulo'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar" title="Borrar">
                                         <i class="fas fa-trash"></i>

@@ -58,7 +58,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarDirectores.php?idDirector=<?= $director['idDirector'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/directores/borrar.php" method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este director?')">
+                                <form action="../../../controladores/admin/directores/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este director?')">
                                     <input type="hidden" name="idDirector" value="<?= $director['idDirector'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

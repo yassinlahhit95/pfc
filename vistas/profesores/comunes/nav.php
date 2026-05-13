@@ -109,11 +109,6 @@ $totalRetos_menu = count(obtenerRetosDeProfesor($idProf));
                 <a href="../academico/resultadosFinales.php" class="enlace-menu <?= ($seccionActual == 'resultados_finales') ? 'activo' : '' ?>">
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
-
-                <a href="../pfc/lista.php" class="enlace-menu <?= ($seccionActual == 'tfg') ? 'activo' : '' ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
-                    <span class="etiqueta-contador"><?= $totalTfgs_menu ?></span>
-                </a>
             </div>
 
             <div class="seccion-del-menu">

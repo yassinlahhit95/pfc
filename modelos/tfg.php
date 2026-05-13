@@ -213,8 +213,8 @@ function eliminarArchivoTFG($idEstudiante) {
 // Nueva función para listar estudiantes y poder calificarlos (aunque no hayan subido archivo)
 function listarEvaluacionTFG($idCiclo = null) {
     $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, 
-                   c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+                   c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante";

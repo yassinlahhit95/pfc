@@ -21,7 +21,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $profeActual = obtenerProfesorPorId($_SESSION['idProfesor']);
 $nombreProfeParaVista = $profeActual['nombreProfesor'] ?? 'Profesor';
 
-if (!$mensaje['leido'] && $mensaje['emisor_rol'] == 'estudiante' && $mensaje['idProfesor'] == $_SESSION['idProfesor']) {
+if (!$mensaje['leido'] && $mensaje['emisor_rol'] != 'profesor' && $mensaje['idProfesor'] == $_SESSION['idProfesor']) {
     marcarMensajeComoLeido($idReclamacion);
     $mensaje['leido'] = 1;
 }
@@ -76,9 +76,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
 
-    <div class="margen-arriba bg-gris-suave break-word ancho-total" style="padding: 20px; border-radius: 8px;">
+    <div class="margen-arriba bg-gris-suave ancho-total" style="padding: 20px; border-radius: 8px; word-break: break-word;">
         <label for="contenidoMensaje" class="texto-atenuado texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
-        <div id="contenidoMensaje" class="max-ancho-completo" style="line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
+        <div id="contenidoMensaje" style="max-width: 100%; line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

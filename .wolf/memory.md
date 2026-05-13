@@ -2,6 +2,8 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 13-05 | Deleted vistas/admin/reportes/ (3 files), controladores/admin/reportes/ (2 files), lib/fpdf/ | feature removed by user | ~0 |
+| 13-05 | Edited vistas/admin/comunes/nav.php | removed REPORTES section from sidebar | ~0 |
 | 20:40 | Edited vistas/admin/modulos/agregarModulos.php | modified if() | ~155 |
 | 20:40 | Edited vistas/admin/modulos/agregarModulos.php | 3→3 lines | ~38 |
 | 20:40 | Edited vistas/admin/modulos/modificarModulos.php | modified if() | ~164 |
@@ -149,3 +151,96 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 12:44 | Edited vistas/admin/comunes/nav.php | removed 18 lines | ~30 |
+| 12:44 | Session end: 1 writes across 1 files (nav.php) | 4 reads | ~6687 tok |
+| 12:48 | Edited modelos/tfg.php | 5→5 lines | ~94 |
+| 12:48 | Edited controladores/admin/pfc/calificar.php | 3→4 lines | ~20 |
+| 12:48 | Edited controladores/admin/pfc/calificar.php | 7→2 lines | ~22 |
+| 12:48 | Edited vistas/admin/inicio/dashboard.php | 2→1 lines | ~10 |
+| 12:48 | Edited vistas/admin/inicio/dashboard.php | removed 6 lines | ~12 |
+| 12:48 | Edited vistas/admin/inicio/dashboard.php | 4→4 lines | ~45 |
+| 12:48 | Edited vistas/admin/inicio/dashboard.php | — | ~0 |
+| 12:49 | Created vistas/admin/academico/calificacionesTFG.php | — | ~2252 |
+| 12:49 | Edited vistas/admin/comunes/nav.php | — | ~0 |
+| 12:49 | Edited vistas/admin/comunes/nav.php | — | ~0 |
+| 12:51 | Edited public/css/estilo.css | reduced (-14 lines) | ~317 |
+| 12:51 | Session end: 12 writes across 6 files (nav.php, tfg.php, calificar.php, dashboard.php, calificacionesTFG.php) | 10 reads | ~23525 tok |
+| 15:38 | Edited public/css/estilo.css | CSS: display | ~39 |
+| 15:38 | Edited public/css/estilo.css | — | ~0 |
+| 15:40 | Edited public/css/estilo.css | 4→8 lines | ~27 |
+| 15:40 | Edited vistas/admin/academico/calificacionesTFG.php | "mb-15" → "margin-bottom: 15px;" | ~12 |
+| 15:40 | Edited vistas/admin/inicio/dashboard.php | 2→2 lines | ~46 |
+| 15:40 | Edited vistas/admin/academico/calificacionesTFG.php | inline fix | ~31 |
+| 15:40 | Edited vistas/estudiantes/inicio/dashboard.php | "cuadricula-secundaria mt-" → "cuadricula-secundaria" | ~17 |
+| 15:40 | Edited vistas/estudiantes/inicio/dashboard.php | 2→2 lines | ~59 |
+| 15:40 | Edited vistas/admin/anuncios/detallesAnuncio.php | "cabecera-detalles mb-20" → "cabecera-detalles" | ~18 |
+| 15:40 | Edited vistas/admin/anuncios/detallesAnuncio.php | inline fix | ~42 |
+| 15:41 | Edited vistas/admin/mensajes/detalles.php | 3→3 lines | ~70 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | "disposicion-flexible sepa" → "disposicion-flexible sepa" | ~24 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | "margen-abajo opacity-0-2" → "margen-abajo" | ~14 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | inline fix | ~29 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | inline fix | ~18 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | inline fix | ~16 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | inline fix | ~21 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | inline fix | ~22 |
+| 15:41 | Edited vistas/admin/mensajes/agregar.php | "tarjeta-blanca p-25" → "tarjeta-blanca" | ~8 |
+
+## Session: 2026-05-13 15:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:44 | Edited vistas/admin/anuncios/gestionAnuncios.php | inline fix | ~44 |
+| 15:44 | Edited vistas/admin/ciclos/verCiclos.php | inline fix | ~43 |
+| 15:44 | Edited vistas/admin/directores/verDirectores.php | inline fix | ~44 |
+| 15:44 | Edited vistas/admin/estudiantes/verEstudiantes.php | inline fix | ~50 |
+| 15:44 | Edited vistas/admin/eventos/gestionEventos.php | inline fix | ~43 |
+| 15:44 | Edited vistas/admin/inventario/verInventario.php | inline fix | ~48 |
+| 15:44 | Edited vistas/admin/inventario/gestionarPrestamos.php | inline fix | ~32 |
+| 15:44 | Edited vistas/admin/modulos/verModulos.php | inline fix | ~43 |
+| 15:44 | Edited vistas/admin/pagos/verPagosGeneral.php | inline fix | ~49 |
+| 15:44 | Edited vistas/admin/profesores/verProfesores.php | inline fix | ~49 |
+| 15:44 | Edited vistas/admin/retos/verRetos.php | inline fix | ~42 |
+| 15:44 | Edited vistas/profesores/retos/lista.php | inline fix | ~51 |
+| 15:44 | Edited vistas/admin/estudiantes/agregarEstudiantes.php | inline fix | ~36 |
+| 15:44 | Edited vistas/admin/estudiantes/modificarEstudiantes.php | inline fix | ~36 |
+| 15:45 | Edited vistas/admin/modulos/agregarModulos.php | inline fix | ~35 |
+| 15:45 | Edited vistas/admin/modulos/modificarModulos.php | inline fix | ~36 |
+| 15:45 | Edited vistas/admin/estudiantes/agregarEstudiantes.php | modified if() | ~192 |
+| 15:45 | Edited vistas/admin/estudiantes/modificarEstudiantes.php | modified if() | ~192 |
+| 15:45 | Edited vistas/admin/modulos/agregarModulos.php | modified if() | ~192 |
+| 15:45 | Edited vistas/admin/modulos/modificarModulos.php | modified if() | ~192 |
+| 15:45 | Edited vistas/admin/profesores/agregarProfesores.php | "cuadricula-secundaria mt-" → "cuadricula-secundaria" | ~19 |
+| 15:45 | Edited vistas/admin/profesores/agregarProfesores.php | inline fix | ~31 |
+| 15:45 | Edited vistas/admin/profesores/agregarProfesores.php | 2→2 lines | ~58 |
+| 15:46 | Edited vistas/admin/profesores/agregarProfesores.php | "form-acciones mt-25" → "form-acciones" | ~17 |
+| 15:46 | Edited vistas/admin/anuncios/agregarAnuncios.php | "form-acciones mt-20" → "form-acciones" | ~11 |
+| 15:46 | Edited vistas/admin/estudiantes/verDetallesEstudiantes.php | "texto-pequeno texto-atenu" → "texto-pequeno texto-atenu" | ~44 |
+| 15:46 | Edited vistas/admin/pagos/agregarPagos.php | inline fix | ~45 |
+| 15:46 | Edited vistas/admin/retos/agregarRetos.php | 3→3 lines | ~68 |
+| 15:46 | Edited vistas/admin/retos/calificarReto.php | 3→3 lines | ~73 |
+| 15:46 | Edited vistas/admin/retos/calificarReto.php | 1→2 lines | ~42 |
+| 15:46 | Edited vistas/admin/retos/modificarRetos.php | "tarjeta-gris-suave scroll" → "tarjeta-gris-suave scroll" | ~23 |
+| 15:47 | Edited vistas/estudiantes/academico/resultadosFinales.php | "text-right" → "text-align: right;" | ~11 |
+| 15:47 | Edited vistas/estudiantes/anuncios/lista.php | "anuncio-titulo m-0" → "anuncio-titulo" | ~32 |
+| 15:47 | Edited vistas/estudiantes/anuncios/lista.php | 2→2 lines | ~35 |
+| 15:47 | Edited vistas/estudiantes/anuncios/lista.php | "texto-atenuado text-cente" → "texto-atenuado" | ~33 |
+| 15:47 | Edited vistas/estudiantes/calificaciones/retos.php | "texto-negrita color-prima" → "texto-negrita color-prima" | ~25 |
+| 15:47 | Edited vistas/estudiantes/perfil/editar.php | 2→2 lines | ~70 |
+| 15:47 | Edited vistas/estudiantes/pfc/lista.php | "mt-5" → "margin-top: 5px;" | ~12 |
+| 15:47 | Edited vistas/estudiantes/pfc/lista.php | "texto-pequeno texto-atenu" → "texto-pequeno texto-atenu" | ~23 |
+| 15:47 | Edited vistas/estudiantes/pfc/lista.php | inline fix | ~56 |
+| 15:47 | Edited vistas/estudiantes/pfc/subir.php | "texto-verde texto-negrita" → "texto-verde texto-negrita" | ~16 |
+| 15:47 | Edited vistas/estudiantes/pfc/subir.php | "texto-rojo texto-negrita " → "texto-rojo texto-negrita" | ~16 |
+| 15:47 | Edited vistas/estudiantes/pfc/subir.php | "texto-atenuado mt-5" → "texto-atenuado" | ~23 |
+| 15:47 | Edited vistas/estudiantes/pfc/subir.php | inline fix | ~44 |
+| 15:47 | Edited vistas/estudiantes/pfc/subir.php | inline fix | ~28 |
+| 15:48 | Edited vistas/profesores/academico/resultadosFinales.php | inline fix | ~39 |
+| 15:48 | Edited vistas/profesores/mensajes/detalles.php | "margen-arriba bg-gris-sua" → "margen-arriba bg-gris-sua" | ~34 |
+| 15:48 | Edited vistas/profesores/mensajes/detalles.php | inline fix | ~27 |
+| 15:48 | Edited vistas/admin/ciclos/agregarCiclos.php | "cuadricula-secundaria mt-" → "cuadricula-secundaria" | ~19 |
+| 15:48 | Edited vistas/admin/ciclos/modificarCiclos.php | "cuadricula-secundaria mt-" → "cuadricula-secundaria" | ~19 |
+| 15:48 | Edited vistas/estudiantes/mensajes/agregar.php | inline fix | ~39 |
+| 15:48 | Edited vistas/admin/profesores/agregarProfesores.php | "item-checkbox pl-10" → "item-checkbox" | ~24 |
+| 15:48 | Edited vistas/admin/mensajes/agregar.php | — | ~0 |
+| 15:49 | Removed all utility CSS class usages from views (d-inline, d-none, mt-*, mb-*, text-*, fs-*, lh-*, etc.) | 30+ PHP files in vistas/ | replaced with inline styles or proper class alternatives | ~4000 |
+| 15:49 | Session end: 53 writes across 31 files (gestionAnuncios.php, verCiclos.php, verDirectores.php, verEstudiantes.php, gestionEventos.php) | 35 reads | ~43334 tok |

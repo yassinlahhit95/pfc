@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca margen-abajo">
-    <form method="GET" action="" class="disposicion-flexible alinear-fin envoltura-flexible" style="gap: 15px">
+    <form method="GET" action="" class="disposicion-flexible alinear-fin envoltura-flexible separacion-media">
         <div class="campo-formulario flexible-rellenar">
             <label for="idCiclo">1. Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">

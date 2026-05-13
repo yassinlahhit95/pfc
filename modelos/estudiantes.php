@@ -3,7 +3,7 @@ require_once __DIR__ . "/conectar.php";
 
 function listarEstudiantes() {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.idNivel
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
             FROM estudiantes
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             ORDER BY estudiantes.idEstudiante ASC";
@@ -59,7 +59,7 @@ function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaN
 
 function listarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT DISTINCT e.*, c.nombreCiclo, c.idNivel
+    $sql = "SELECT DISTINCT e.*, c.nombreCiclo, c.abreviaturaCiclo, c.idNivel
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo 
             LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
@@ -82,7 +82,7 @@ function listarEstudiantesDeProfesor($idProfesor) {
 
 function listarEstudiantesPorCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC";
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -107,7 +107,7 @@ function eliminarEstudiante($idEstudiante) {
 
 function obtenerEstudiantePorId($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);

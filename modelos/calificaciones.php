@@ -84,10 +84,11 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
 
     // Si se filtra por módulo concreto
     if ($idModulo > 0) {
-        $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
-                FROM calificaciones_modulos cm
-                JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
-                JOIN modulos m ON cm.idModulo = m.idModulo
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo, 
+                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+                FROM modulos m
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idModulo = ?
                 AND (
                     m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
@@ -99,30 +100,32 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
 
     // Si se filtra por ciclo
     } elseif ($idCiclo > 0) {
-        $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
-                FROM calificaciones_modulos cm
-                JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
-                JOIN modulos m ON cm.idModulo = m.idModulo
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo, 
+                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+                FROM modulos m
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idCiclo = ?
                 AND (
                     m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
                     OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
                 )
-                ORDER BY e.nombreEstudiante ASC";
+                ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "iii", $idCiclo, $idProfesor, $idProfesor);
 
-    // Sin filtro, se devuelven todas las calificaciones del profesor
+    // Sin filtro, se devuelven todas las posibles calificaciones del profesor
     } else {
-        $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
-                FROM calificaciones_modulos cm
-                JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
-                JOIN modulos m ON cm.idModulo = m.idModulo
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo, 
+                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+                FROM modulos m
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE (
                     m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
                     OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
                 )
-                ORDER BY e.nombreEstudiante ASC";
+                ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     }
@@ -229,8 +232,7 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     $resumen['obs_tfg'] = $calificacionTFG ? $calificacionTFG['observaciones'] : '';
 
     // Variables para acumular los datos de todos los módulos
-...
-
+    $sumaModulos     = 0;
     $sumaRetos       = 0;
     $modulosConNotas = 0;
     $totalModulos    = count($listaModulos);

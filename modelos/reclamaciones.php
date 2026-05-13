@@ -23,7 +23,7 @@ function listarTodosLosMensajes() {
 
 function obtenerMensajePorId($idReclamacion) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor, c.nombreCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN profesores p ON r.idProfesor = p.idProfesor LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.idReclamacion = ?";
+    $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN profesores p ON r.idProfesor = p.idProfesor LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.idReclamacion = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idReclamacion);
     mysqli_stmt_execute($stmt);
@@ -86,7 +86,7 @@ function listarMensajesDeEstudiante($idEstudiante) {
 
 function listarMensajesParaProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.idProfesor = ? OR (r.emisor_rol = 'profesor' AND r.idProfesor = ?) ORDER BY r.idReclamacion DESC";
+    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.idProfesor = ? OR (r.emisor_rol = 'profesor' AND r.idProfesor = ?) ORDER BY r.idReclamacion DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);

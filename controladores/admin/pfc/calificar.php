@@ -2,6 +2,7 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
+
 if (isset($_POST['calificarTFG'])) {
     $idEstudiante = trim($_POST['idEstudiante']);
     $nota = trim($_POST['nota']);
@@ -38,11 +39,6 @@ if (isset($_POST['calificarTFG'])) {
     }
 }
 
-$origen = $_POST['origen'] ?? '';
-if ($origen === 'calificacionesTFG') {
-    header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
-} else {
-    header("Location: ../../../vistas/admin/pfc/verTFGs.php");
-}
+header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
 exit;
 ?>

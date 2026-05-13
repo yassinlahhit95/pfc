@@ -114,7 +114,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
             </div>
         </div>
 
-        <div class="cuadricula-secundaria mt-25">
+        <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
                 <h4 class="margen-abajo"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
                 <div class="lista-checkboxes scroll-vertical-200">
@@ -135,12 +135,12 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos oculto" data-ciclo-id="<?= $idCiclo ?>" style="margin-bottom: 15px;">
-                            <p class="texto-negrita color-primario" style="margin-bottom: 10px; padding-bottom: 3px; border-bottom: none;">
+                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" data-ciclo-id="<?= $idCiclo ?>">
+                            <p class="texto-negrita color-primario" style="margin-bottom: 10px;">
                                 <?= $grupo['nombre'] ?>
                             </p>
                             <?php foreach ($grupo['modulos'] as $mod) { ?>
-                                <label class="item-checkbox pl-10">
+                                <label class="item-checkbox" style="padding-left: 10px;">
                                     <input type="checkbox" name="modulos[]" value="<?= $mod['idModulo'] ?>"
                                         <?php if (in_array($mod['idModulo'], $modulosElegidos)) { echo 'checked'; } ?>>
                                     <span><?= $mod['nombreModulo'] ?></span>
@@ -152,7 +152,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
             </div>
         </div>
 
-        <div class="form-acciones mt-25">
+        <div class="form-acciones" style="margin-top: 25px;">
             <button type="submit" name="guardarProfesor" class="boton-primario">
                 <i class="fas fa-save"></i> REGISTRAR PROFESOR
             </button>

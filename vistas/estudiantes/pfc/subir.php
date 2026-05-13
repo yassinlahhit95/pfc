@@ -83,21 +83,21 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <?php if (!empty($notaTFG)) { ?>
         <div class="fila-detalle">
-            <div class="etiqueta-detalle">Calificación TFG</div>
+            <div class="etiqueta-detalle">Nota Final</div>
             <div class="valor-detalle">
                 <?php if ($notaTFG['nota'] >= 5) { ?>
                     <span class="texto-verde texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — APROBADO</span>
                 <?php } else { ?>
                     <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — SUSPENSO</span>
                 <?php } ?>
-                <?php if (!empty($notaTFG['observaciones'])) { ?>
-                    <p class="texto-atenuado" style="margin-top: 5px;"><em>Observaciones: <?= $notaTFG['observaciones'] ?></em></p>
-                <?php } ?>
+                <p class="texto-atenuado" style="margin-top: 5px;"><em>Observaciones: <?= $notaTFG['observaciones'] ?></em></p>
             </div>
         </div>
-    <?php } ?>
+        <?php } ?>
+        </div>
+        </div>
 
-    <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar" style="margin-top: 30px;">
+        <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar" style="margin-top: 30px;">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
         <div class="campo-formulario">
@@ -112,7 +112,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="submit" name="subirTFG" class="boton-primario">
                 <i class="fas fa-upload"></i> <?= empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG' ?>
             </button>
-            <button type="button" class="boton-secundario px-25" onclick="window.location.href = 'subir.php';">
+            <button type="button" class="boton-secundario" onclick="window.location.href = 'subir.php';">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>
         </div>

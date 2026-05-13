@@ -61,7 +61,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>" class="btn-accion btn-editar" title="Editar datos">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/inventario/borrar.php" method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este artículo del inventario?')">
+                                <form action="../../../controladores/admin/inventario/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este artículo del inventario?')">
                                     <input type="hidden" name="idArticulo" value="<?= $art['idArticulo'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

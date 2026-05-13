@@ -22,7 +22,6 @@ $totalModulos_menu = contarModulos();
 $totalRetos_menu = contarRetos();
 $totalInventario_menu = contarInventario();
 $totalPrestamos_menu = contarPrestamosActivos();
-$totalTfgs_menu = contarTFGsSubidos();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -108,26 +107,6 @@ $totalTfgs_menu = contarTFGsSubidos();
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
 
-                <a href="../pfc/verTFGs.php" class="enlace-menu <?= ($seccion == 'tfg') ? 'activo' : '' ?>">
-                    <i class="fas fa-file-pdf"></i> <span>GESTIÓN TFG</span>
-                    <span class="etiqueta-contador"><?= $totalTfgs_menu ?></span>
-                </a>
-            </div>
-
-            <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">REPORTES</p>
-
-                <a href="../reportes/certificados.php" class="enlace-menu <?= ($seccion == 'reportes_cert') ? 'activo' : '' ?>">
-                    <i class="fas fa-stamp"></i> <span>CERTIFICADOS</span>
-                </a>
-
-                <a href="../reportes/boletines.php" class="enlace-menu <?= ($seccion == 'reportes_boletin') ? 'activo' : '' ?>">
-                    <i class="fas fa-scroll"></i> <span>BOLETINES DE NOTAS</span>
-                </a>
-
-                <a href="../reportes/sobre.php" class="enlace-menu <?= ($seccion == 'sobre') ? 'activo' : '' ?>">
-                    <i class="fas fa-info-circle"></i> <span>SOBRE EL PROYECTO</span>
-                </a>
             </div>
 
             <div class="seccion-del-menu">
@@ -174,6 +153,13 @@ $totalTfgs_menu = contarTFGsSubidos();
                 <a href="../inventario/gestionarPrestamos.php" class="enlace-menu <?= ($seccion == 'prestamos') ? 'activo' : '' ?>">
                     <i class="fas fa-hand-holding"></i> <span>PRÉSTAMOS</span>
                     <span class="etiqueta-contador"><?= $totalPrestamos_menu ?></span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">EXTERNO</p>
+                <a href="https://yassin.agency" target="_blank" class="enlace-menu">
+                    <i class="fas fa-external-link-alt"></i> <span>YASSIN.AGENCY</span>
                 </a>
             </div>
 

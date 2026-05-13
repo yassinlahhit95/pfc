@@ -59,7 +59,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este anuncio?')">
+                                <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este anuncio?')">
                                     <input type="hidden" name="idAnuncio" value="<?= $anuncio['idAnuncio'] ?>">
                                     <button type="submit" class="btn-accion btn-eliminar">
                                         <i class="fas fa-trash"></i>

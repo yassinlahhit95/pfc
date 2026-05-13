@@ -65,9 +65,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </span>
                         </td>
                         <td>
-                            <input type="text" name="notas[<?= $estudiante['idEstudiante'] ?>]" 
+                            <input type="text" name="notas[<?= $estudiante['idEstudiante'] ?>]"
                                    value="<?= $notaActual ?>"
-                                   class="p-5 w-80 br-4 border-ddd">
+                                   style="padding: 5px; width: 80px; border-radius: 4px; border: 1px solid #ddd;">
                         </td>
                     </tr>
                     <?php } ?>
@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </tbody>
         </table>
         
-       <div class="botones-formulario" style="margin-top: 20px;">
+        <div class="botones-formulario" style="margin-top: 20px;">
             <button type="submit" class="boton-primario">Guardar Calificaciones</button>
         </div>
     </form>

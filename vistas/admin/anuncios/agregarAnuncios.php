@@ -54,7 +54,7 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
                 <?php } ?>
             </div>
 
-            <div class="form-acciones" style="margin-top: 20px;">
+            <div class="form-acciones">
                 <button type="submit" name="guardarAnuncio" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> PUBLICAR ANUNCIO
                 </button>

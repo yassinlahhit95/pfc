@@ -97,13 +97,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <tr>
                             <td><?= $nota['nombreEstudiante'] ?></td>
                             <td class="texto-negrita"><?= $nota['nombreModulo'] ?></td>
-                            <td><?= $nota['nota_1ev'] ?></td>
-                            <td class="texto-negrita"><?= $nota['nota_1final'] ?></td>
-                            <td><?= $nota['nota_2ev'] ?></td>
-                            <td class="texto-negrita"><?= $nota['nota_2final'] ?></td>
+                            <td><?= $nota['nota_1ev'] ?? '---' ?></td>
+                            <td class="texto-negrita"><?= $nota['nota_1final'] ?? '---' ?></td>
+                            <td><?= $nota['nota_2ev'] ?? '---' ?></td>
+                            <td class="texto-negrita"><?= $nota['nota_2final'] ?? '---' ?></td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                    <?php if ($nota['idCalificacion']) { ?>
+                                        <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar" title="Editar Nota"><i class="fas fa-edit"></i></a>
+                                    <?php } else { ?>
+                                        <a href="agregar.php?idCiclo=<?= $idCiclo ?>&idModulo=<?= $nota['idModulo'] ?>" class="btn-accion btn-ver" style="background: #27ae60;" title="Calificar"><i class="fas fa-plus"></i></a>
+                                    <?php } ?>
                                 </div>
                             </td>
                         </tr>

@@ -66,6 +66,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-detalle">
+        <div class="etiqueta-detalle">Contenido</div>
+        <div class="valor-detalle valor-mensaje"><?= $mensaje['descripcion'] ?></div>
+    </div>
+
+    <div class="fila-detalle">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
@@ -74,11 +79,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <span class="estado-bolita inactivo-rojo">NUEVO / SIN LEER</span>
             <?php } ?>
         </div>
-    </div>
-
-    <div class="margen-arriba bg-gris-suave" style="padding: 20px; border-radius: 8px;">
-        <label class="texto-atenuado texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
-        <div style="line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
     </div>
 </div>
 

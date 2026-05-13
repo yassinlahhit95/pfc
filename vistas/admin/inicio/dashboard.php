@@ -34,17 +34,11 @@ $recaudado = obtenerTotalRecaudado();
 $totalCobros = contarPagosRealizados();
 
 $totalTFGs = contarTFGsEntregados();
-$totalTFGCalificados = contarTFGsCalificados();
 
 $adminInfo = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
-// Lógica de paginación para los anuncios, para que no se llene la pantalla
-$porPagina = 5;
-$pagina = max(1, intval($_GET['p_anuncios'] ?? 1));
-$totalAnuncios = intval(contarAnunciosQueEstanActivos());
-$totalPaginas = ceil($totalAnuncios / $porPagina);
-$listaAnuncios = listarAnunciosPaginados($pagina, $porPagina);
+$listaAnuncios = listarTodosLosAnuncios();
 
 $eventos = listarEventosProximos();
 $titulo_pagina = "AULAPRO | PANEL DE CONTROL";
@@ -86,7 +80,7 @@ include __DIR__ . '/../comunes/nav.php';
     <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-morada">
-    <div class="info-estadistica"><h3><?= $totalTFGs ?> / <?= $totalTFGCalificados ?></h3><p>TFG (ENTREGADOS/OK)</p></div>
+    <div class="info-estadistica"><h3><?= $totalTFGs ?></h3><p>TFGs Entregados</p></div>
   </div>
 </div>
 
@@ -127,17 +121,6 @@ include __DIR__ . '/../comunes/nav.php';
             <?php } ?>
         </div>
 
-        <?php if ($totalPaginas > 1) { ?>
-        <div class="paginacion">
-            <?php if ($pagina > 1) { ?>
-                <a href="dashboard.php?p_anuncios=<?= $pagina - 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-left"></i></a>
-            <?php } ?>
-            <span class="boton-paginacion activo"><?= $pagina ?> / <?= $totalPaginas ?></span>
-            <?php if ($pagina < $totalPaginas) { ?>
-                <a href="dashboard.php?p_anuncios=<?= $pagina + 1 ?>" class="boton-paginacion"><i class="fas fa-chevron-right"></i></a>
-            <?php } ?>
-        </div>
-        <?php } ?>
 
       <?php } else { ?>
         <p class="texto-atenuado">No hay anuncios activos por ahora.</p>
