@@ -48,6 +48,11 @@ if ($id_ciclo_elegido) {
         $id_est = $estudianteIndividual['idEstudiante'];
         $nombre_est = mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8');
         
+        // Obtener calificación TFG
+        require_once __DIR__ . "/../../../modelos/tfg.php";
+        $notaTFG_raw = obtenerCalificacionTFG($id_est);
+        $notaTFG = $notaTFG_raw ? $notaTFG_raw['nota'] : '—';
+
         $suma_total_modulos = 0;
         $contador_total_notas_modulos = 0;
         $suma_total_retos = 0;
@@ -105,6 +110,7 @@ if ($id_ciclo_elegido) {
             'nombre' => $nombre_est,
             'media_modulo' => round($media_global_modulo, 2),
             'media_reto' => round($media_global_reto, 2),
+            'nota_tfg' => $notaTFG,
             'nota_final' => round($nota_final, 2),
             'estado' => $estado,
             'alert' => $hayModuloSuspenso
@@ -164,13 +170,14 @@ if ($id_ciclo_elegido) {
                         <th>Estudiante</th>
                         <th>Media Módulos (75%)</th>
                         <th>Media Retos (25%)</th>
+                        <th>Nota TFG</th>
                         <th>Nota Final</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($datos_finales)) { ?>
-                        <tr><td colspan="5" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
+                        <tr><td colspan="6" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($datos_finales as $filaIndividual) { 
                             $clase_estado = "texto-rojo";
@@ -181,6 +188,7 @@ if ($id_ciclo_elegido) {
                             <td><strong><?= $filaIndividual['nombre'] ?></strong></td>
                             <td><?= $filaIndividual['media_modulo'] ?></td>
                             <td><?= $filaIndividual['media_reto'] ?></td>
+                            <td class="color-primario texto-negrita"><?= $filaIndividual['nota_tfg'] ?></td>
                             <td class="texto-negrita"><?= $filaIndividual['nota_final'] ?></td>
                             <td class="<?= $clase_estado ?> texto-negrita">
                                 <?= $filaIndividual['estado'] ?>

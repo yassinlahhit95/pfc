@@ -63,6 +63,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td class="<?= $clase ?> texto-negrita"><?= $fila['estado'] ?></td>
                     </tr>
                     <?php } ?>
+                    <!-- TFG -->
+                    <tr>
+                        <td class="texto-negrita color-primario">TFG — TRABAJO FIN DE GRADO</td>
+                        <td colspan="2" class="texto-atenuado">Calificación Directa</td>
+                        <td class="texto-negrita color-primario">
+                            <?= $resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : '—' ?>
+                        </td>
+                        <td class="texto-negrita">
+                            <?php 
+                            if ($resumenFinal['nota_tfg'] === null) echo '<span class="texto-gris">Pendiente</span>';
+                            elseif ($resumenFinal['nota_tfg'] >= 5) echo '<span class="texto-verde">Aprobado</span>';
+                            else echo '<span class="texto-rojo">Suspenso</span>';
+                            ?>
+                        </td>
+                    </tr>
                 <?php } ?>
             </tbody>
         </table>

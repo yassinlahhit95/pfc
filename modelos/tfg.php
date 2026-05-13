@@ -210,4 +210,70 @@ function eliminarArchivoTFG($idEstudiante) {
     return $resultado;
 }
 
+// Nueva función para listar estudiantes y poder calificarlos (aunque no hayan subido archivo)
+function listarEvaluacionTFG($idCiclo = null) {
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, 
+                   c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante";
+    
+    if ($idCiclo) {
+        $sql .= " WHERE e.idCiclo = ?";
+    }
+    
+    $sql .= " ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
+    
+    $stmt = mysqli_prepare($con, $sql);
+    if ($idCiclo) {
+        mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    }
+    
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($con);
+    return $lista;
+}
+
+// Listar evaluación TFG para los alumnos de un profesor concreto
+function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
+    $con = obtenerConexion();
+    $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, 
+                            c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo
+            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
+            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
+            LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
+            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
+            
+    if ($idCiclo) {
+        $sql .= " AND e.idCiclo = ?";
+    }
+    
+    $sql .= " ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
+    
+    $stmt = mysqli_prepare($con, $sql);
+    if ($idCiclo) {
+        mysqli_stmt_bind_param($stmt, "iii", $idProfesor, $idProfesor, $idCiclo);
+    } else {
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
+    }
+    
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($con);
+    return $lista;
+}
+
 ?>

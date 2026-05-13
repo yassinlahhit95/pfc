@@ -38,6 +38,11 @@ if (isset($_POST['calificarTFG'])) {
     }
 }
 
-header("Location: ../../../vistas/profesores/pfc/lista.php");
+$origen = $_POST['origen'] ?? '';
+if ($origen === 'calificacionesTFG') {
+    header("Location: ../../../vistas/profesores/calificaciones/tfg.php");
+} else {
+    header("Location: ../../../vistas/profesores/pfc/lista.php");
+}
 exit;
 ?>

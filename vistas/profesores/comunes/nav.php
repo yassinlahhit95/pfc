@@ -102,6 +102,10 @@ $totalRetos_menu = count(obtenerRetosDeProfesor($idProf));
                     <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 
+                <a href="../calificaciones/tfg.php" class="enlace-menu <?= ($seccionActual == 'notas_tfg') ? 'activo' : '' ?>">
+                    <i class="fas fa-star"></i> <span>NOTAS TFG</span>
+                </a>
+
                 <a href="../academico/resultadosFinales.php" class="enlace-menu <?= ($seccionActual == 'resultados_finales') ? 'activo' : '' ?>">
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>

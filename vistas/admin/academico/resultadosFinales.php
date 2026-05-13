@@ -85,13 +85,14 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <th>Estudiante</th>
                         <th>Media Global Módulos (75%)</th>
                         <th>Media Global Retos (25%)</th>
+                        <th>Nota TFG</th>
                         <th>Nota Final Ciclo</th>
                         <th>Estado Final</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($listaDeDatosFinalesAMostrar)) { ?>
-                        <tr><td colspan="5" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
+                        <tr><td colspan="6" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($listaDeDatosFinalesAMostrar as $fila) { 
                             $claseDelColor = "texto-rojo";
@@ -102,6 +103,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>
                             <td><?= $fila['media_modulos'] ?></td>
                             <td><?= $fila['media_retos'] ?></td>
+                            <td class="color-primario texto-negrita"><?= $fila['nota_tfg'] ?? '—' ?></td>
                             <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
                             <td class="<?= $claseDelColor ?> texto-negrita">
                                 <?= $fila['estado_global'] ?>

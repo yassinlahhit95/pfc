@@ -100,6 +100,10 @@ $totalTfgs_menu = contarTFGsSubidos();
                     <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 
+                <a href="../academico/calificacionesTFG.php" class="enlace-menu <?= ($seccion == 'notas_tfg') ? 'activo' : '' ?>">
+                    <i class="fas fa-star"></i> <span>NOTAS TFG</span>
+                </a>
+
                 <a href="../academico/resultadosFinales.php" class="enlace-menu <?= ($seccion == 'resultados_modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>

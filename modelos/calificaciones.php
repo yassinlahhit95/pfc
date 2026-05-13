@@ -222,8 +222,15 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     $resumen['estado_global']    = 'PENDIENTE';
     $resumen['tiene_suspensos']  = false;
 
+    // Añadimos calificación de TFG
+    require_once __DIR__ . "/tfg.php";
+    $calificacionTFG = obtenerCalificacionTFG($idEstudiante);
+    $resumen['nota_tfg'] = $calificacionTFG ? $calificacionTFG['nota'] : null;
+    $resumen['obs_tfg'] = $calificacionTFG ? $calificacionTFG['observaciones'] : '';
+
     // Variables para acumular los datos de todos los módulos
-    $sumaModulos     = 0;
+...
+
     $sumaRetos       = 0;
     $modulosConNotas = 0;
     $totalModulos    = count($listaModulos);
