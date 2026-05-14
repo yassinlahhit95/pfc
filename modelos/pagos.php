@@ -105,7 +105,7 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     return [
         'totalPagado' => $pagado,
         'precioCiclo' => $precio,
-        'restante'    => $precio - $pagado
+        'restante' => $precio - $pagado
     ];
 }
 
@@ -128,11 +128,6 @@ function obtenerPagoPorId($idPago) {
     $resultado = mysqli_stmt_get_result($stmt);
     $pago = mysqli_fetch_assoc($resultado);
 
-    if ($pago) {
-        $pago['conceptoPago'] = $pago['tipoPago'];
-        $pago['cantidadPago'] = $pago['monto'];
-    }
-
     mysqli_close($con);
     return $pago;
 }
@@ -146,10 +141,6 @@ function contarPagosEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    $total = 0;
-    if ($fila != null && $fila['total'] != null) {
-        $total = intval($fila['total']);
-    }
-    return $total;
+    return intval($fila['total']);
 }
 ?>

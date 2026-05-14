@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-13T13:48:57.231Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-13T14:10:53.556Z
 > Files: 342 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -321,20 +321,20 @@
 ## modelos/
 
 - `anuncios.php` — listarTodosLosAnuncios: insertarAnuncio, eliminarAnuncio, obtenerAnuncioPorId + 4 more (~1107 tok)
-- `calificaciones.php` — Devuelve las notas de un estudiante en un módulo concreto (~3992 tok)
+- `calificaciones.php` — obtenerNotasModulo: listarCalificacionesGeneral, obtenerCalificacionPorId, eliminarCalificacion + 6  (~3126 tok)
 - `ciclos.php` — listarTodosLosCiclos: obtenerCiclosDeProfesor, checkCicloExistente, insertarNuevoCiclo + 5 more (~1508 tok)
 - `conectar.php` — Declares obtenerConexion (~132 tok)
 - `directores.php` — listarDirectores: checkDirectorExistente, insertarDirector, actualizarDirector + 8 more (~1584 tok)
-- `estudiantes.php` — listarEstudiantes: checkEstudianteExistente, insertarEstudiante, actualizarEstudiante + 10 more (~2101 tok)
+- `estudiantes.php` — listarEstudiantes: checkEstudianteExistente, insertarEstudiante, actualizarEstudiante + 10 more (~2050 tok)
 - `eventos.php` — listarEventosProximos: insertarEvento, eliminarEvento, obtenerEventoPorId, actualizarEvento (~597 tok)
 - `inventario.php` — listarTodosLosPrestamos: listarArticulos, listarPrestamosActivos, checkArticuloExistente + 6 more (~1681 tok)
 - `modulos.php` — listarModulos: obtenerModulosDeProfesor, obtenerModulosDeProfesorPorCiclo, obtenerModulosPorCiclo + 10 more (~1953 tok)
 - `niveles.php` — Declares listarNiveles (~101 tok)
-- `pagos.php` — listarTodosLosPagos: listarPagosFiltrados, obtenerPagosPorEstudiante, insertarPagoCompleto + 6 more (~1426 tok)
+- `pagos.php` — listarTodosLosPagos: listarPagosFiltrados, obtenerPagosPorEstudiante, insertarPagoCompleto + 6 more (~1366 tok)
 - `panelDeControl.php` — contarEstudiantes: contarProfesores, contarDirectores, contarAnuncios + 11 more (~1424 tok)
-- `profesores.php` — listarProfesores: checkProfesorExistente, insertarProfesor, actualizarProfesor + 15 more (~2376 tok)
+- `profesores.php` — listarProfesores: checkProfesorExistente, insertarProfesor, actualizarProfesor + 15 more (~2353 tok)
 - `reclamaciones.php` — listarTodosLosMensajes: obtenerMensajePorId, marcarMensajeComoLeido, responderMensaje + 9 more (~1870 tok)
-- `retos.php` — listarRetos: listarRetosFiltrados, obtenerRetosDeProfesor, insertarReto + 12 more (~2701 tok)
+- `retos.php` — listarRetos: listarRetosFiltrados, obtenerRetosDeProfesor, insertarReto + 12 more (~2690 tok)
 - `tfg.php` — listarTodosLosTFGs: listarTFGsFiltrados, obtenerTFGporEstudiante, actualizarTFG + 10 more (~2782 tok)
 
 ## public/css/

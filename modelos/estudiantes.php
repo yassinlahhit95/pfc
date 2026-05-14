@@ -31,30 +31,30 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     return $existe;
 }
 
-function insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 1) {
+function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 1) {
     if (checkEstudianteExistente($dni, $email)) {
         return false;
     }
     $con = obtenerConexion();
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssii", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
-    $resultado = mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "ssssssssssii", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
+    $res = mysqli_stmt_execute($stmt);
     mysqli_close($con);
-    return $resultado;
+    return $res;
 }
 
-function actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso = 1) {
-    if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
+function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 1) {
+    if (checkEstudianteExistente($dni, $email, $id)) {
         return false;
     }
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssiii", $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $idEstudiante);
-    $resultado = mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "ssssssssssiii", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $id);
+    $res = mysqli_stmt_execute($stmt);
     mysqli_close($con);
-    return $resultado;
+    return $res;
 }
 
 function listarEstudiantesDeProfesor($idProfesor) {
@@ -143,9 +143,7 @@ function obtenerTokensEstudiantes() {
     $resultado = mysqli_query($con, $sql);
     $listaTokens = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        if ($fila['fcm_token'] != null) {
-            $listaTokens[] = $fila['fcm_token'];
-        }
+        $listaTokens[] = $fila['fcm_token'];
     }
     mysqli_close($con);
     return $listaTokens;
@@ -182,7 +180,7 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     $token = null;
-    if ($fila != null && $fila['fcm_token'] != null) {
+    if ($fila != null) {
         $token = $fila['fcm_token'];
     }
     mysqli_close($con);

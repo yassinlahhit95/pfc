@@ -195,7 +195,7 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
     $fila = mysqli_fetch_assoc($resultado);
 
     $nota = "";
-    if ($fila != null && $fila['nota'] != null) {
+    if ($fila != null) {
         $nota = $fila['nota'];
     }
 
@@ -261,7 +261,7 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     $promedio = 0;
-    if ($fila != null && $fila['promedio'] != null) {
+    if ($fila['promedio'] != null) {
         $promedio = floatval($fila['promedio']);
     }
     mysqli_close($con);

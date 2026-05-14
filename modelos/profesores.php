@@ -199,9 +199,7 @@ function obtenerTokensProfesores() {
     $resultado = mysqli_query($con, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        if ($fila['fcm_token'] != null) {
-            $lista[] = $fila['fcm_token'];
-        }
+        $lista[] = $fila['fcm_token'];
     }
     mysqli_close($con);
     return $lista;
@@ -238,7 +236,7 @@ function obtenerTokenFCMProfesor($id) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     $token = null;
-    if ($fila != null && $fila['fcm_token'] != null) {
+    if ($fila != null) {
         $token = $fila['fcm_token'];
     }
     mysqli_close($con);

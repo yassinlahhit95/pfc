@@ -1,6 +1,8 @@
-# Diagramas del Proyecto
+# Diagramas de AulaPro
 
-## Diagrama ER (Entidad-Relación)
+Aquí están los esquemas de cómo está montada la base de datos y cómo funciona la parte de las notas.
+
+## Diagrama Entidad-Relación (Base de Datos)
 
 ```mermaid
 erDiagram
@@ -147,78 +149,53 @@ erDiagram
     ESTUDIANTES ||--o{ CALIFICACIONES_TFG : "recibe nota"
 ```
 
-## Diagrama de Secuencia (Flujo de Calificación de Reto)
+## Flujo de Calificación (Secuencia)
 
 ```mermaid
 sequenceDiagram
     participant P as Profesor
-    participant S as Sistema (Portal Profesor)
-    participant M as Modelo (Retos/Calificaciones)
-    participant B as Base de Datos
+    participant S as Sistema
+    participant M as Modelo
+    participant B as BD
     participant E as Estudiante
 
-    P->>S: Selecciona Ciclo y Módulo
-    S->>M: obtenerRetosPorModulo($idModulo)
-    M->>B: SELECT * FROM retos...
-    B-->>M: Lista de retos
-    M-->>S: Retos disponibles
-    S-->>P: Muestra lista de retos
+    P->>S: Selecciona Módulo
+    S->>M: buscarRetos($idModulo)
+    M->>B: SELECT...
+    B-->>M: Retos
+    M-->>S: Lista
+    S-->>P: Muestra retos
 
-    P->>S: Selecciona Reto y Estudiante
-    P->>S: Introduce nota (0-10)
-    S->>M: guardarCalificacionReto($idEstudiante, $idReto, $nota)
-    M->>B: INSERT/UPDATE calificaciones_retos...
-    B-->>M: Éxito
-    M-->>S: Confirmación
-    S-->>P: Mensaje "Nota guardada correctamente"
+    P->>S: Pone la nota
+    S->>M: guardarNota($idEstu, $idReto, $nota)
+    M->>B: INSERT/UPDATE...
+    B-->>M: OK
+    M-->>S: OK
+    S-->>P: Guardado
 
-    Note over S,E: El estudiante recibe notificación
-    E->>S: Accede a su portal
-    S->>M: obtenerCalificacionesRetos($idEstudiante)
-    M->>B: SELECT * FROM calificaciones_retos...
-    B-->>M: Notas
+    Note over S,E: Notificación al alumno
+    E->>S: Mira sus notas
+    S->>M: verNotas($idEstu)
+    M->>B: SELECT...
+    B-->>M: Datos
     M-->>S: Calificaciones
-    S-->>E: Muestra sus notas actualizadas
+    S-->>E: Ver notas
 ```
-## Tablas de la base de datos
 
-- `niveles`: grados formativos del centro (Grado Medio/Superior).
-- `ciclos`: ciclos formativos como DAW, DAM y SMR.
-- `modulos`: módulos que pertenecen a cada ciclo.
-- `profesores`: profesores con sus datos y credenciales.
-- `estudiantes`: estudiantes con ciclo asignado y archivo TFG.
-- `directores`: directores y administrador del sistema.
-- `retos`: retos del curso con fechas y horas.
-- `modulo_reto`: relación de qué módulos participan en cada reto.
-- `calificaciones_retos`: notas de reto por estudiante.
-- `calificaciones_modulos`: notas de módulo por estudiante.
-- `dispositivos`: inventario de dispositivos.
-- `prestamos`: préstamos de dispositivos a estudiantes.
-- `anuncios`: comunicados para todos, estudiantes o profesores.
-- `eventos`: eventos del centro con fecha y ubicación.
-- `reclamaciones`: reclamaciones de estudiantes o profesores.
-- `pagos`: pagos realizados por estudiantes.
-- `ciclo_profesor`: asignaciones de profesores a ciclos.
-- `profesor_modulo`: módulos que imparte cada profesor.
-
-## Cómo funciona el proyecto
-
-- El sistema usa roles reales: `directores` (incluye admin), `profesores` y `estudiantes`.
-- `ciclos` se agrupan por `niveles` y contienen `modulos`.
-- Los profesores se asignan a ciclos y módulos mediante `ciclo_profesor` y `profesor_modulo`.
-- Los retos se vinculan a módulos con `modulo_reto`.
-- Las notas se guardan en `calificaciones_retos` para retos y `calificaciones_modulos` para módulos.
-- Los estudiantes pueden pagar con registros en `pagos`, enviar reclamaciones en `reclamaciones`, ver anuncios y eventos.
-- El inventario usa `dispositivos` y `prestamos` para controlar equipos prestados.
-
-## Datos del proyecto reales en `database.sql`
-
-- Hay ciclos de ejemplo: `Desarrollo de Aplicaciones Web` (DAW), `Desarrollo de Aplicaciones Multiplataforma` (DAM), `Sistemas Microinformáticos y Redes` (SMR).
-- Hay módulos como `Programación`, `Bases de Datos`, `Desarrollo Web en Entorno Cliente` y `Desarrollo Web en Entorno Servidor`.
-- Hay dos profesores de prueba y cuatro estudiantes de ejemplo.
-- Se crearon dos retos: `PROYECTO E-COMMERCE PHP` y `CONFIGURACIÓN RED CORPORATIVA`.
-- También hay anuncios de mantenimiento y entrega de proyectos, y eventos como ciberseguridad y graduación.
-## Cómo usar estos diagramas
-
-- Abre `diagramas.md` en VS Code con la extensión Mermaid.
-- O copia el contenido a https://mermaid.live/ para ver las imágenes.
+## Listado de Tablas
+- `niveles`: Grado Medio o Superior.
+- `ciclos`: DAW, DAM, SMR, etc.
+- `modulos`: Asignaturas.
+- `profesores`: Datos del equipo docente.
+- `estudiantes`: Alumnos matriculados.
+- `directores`: Administradores.
+- `retos`: Proyectos ABP.
+- `modulo_reto`: Qué retos van con qué módulos.
+- `calificaciones_retos`: Notas de los proyectos.
+- `calificaciones_modulos`: Notas de exámenes.
+- `dispositivos` y `prestamos`: Gestión de portátiles.
+- `anuncios`: Tablón de avisos.
+- `eventos`: Calendario escolar.
+- `reclamaciones`: Mensajes internos.
+- `pagos`: Control de cuotas.
+- `ciclo_profesor` y `profesor_modulo`: Asignaciones de trabajo.
