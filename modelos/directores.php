@@ -101,9 +101,7 @@ function obtenerTokensDirectores() {
 
     $listaTokens = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        if ($fila['fcm_token'] != null) {
-            $listaTokens[] = $fila['fcm_token'];
-        }
+        $listaTokens[] = $fila['fcm_token'];
     }
     mysqli_close($con);
     return $listaTokens;
@@ -140,7 +138,7 @@ function obtenerTokenFCMDirector($idDirector) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     $token = null;
-    if ($fila != null && $fila['fcm_token'] != null) {
+    if ($fila && $fila['fcm_token']) {
         $token = $fila['fcm_token'];
     }
     mysqli_close($con);

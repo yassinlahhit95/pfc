@@ -60,7 +60,7 @@ function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
     $con = obtenerConexion();
     $fechaHoraActual = date('Y-m-d H:i:s');
 
-    if ($nombreArchivo != null) {
+    if ($nombreArchivo) {
         $sql = "UPDATE estudiantes SET tituloTFG = ?, archivoTFG = ?, fechaSubidaTFG = ? WHERE idEstudiante = ?";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "sssi", $tituloTFG, $nombreArchivo, $fechaHoraActual, $idEstudiante);
@@ -92,7 +92,7 @@ function contarTFGsSubidos() {
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     $total = 0;
-    if ($fila != null && $fila['total'] != null) {
+    if ($fila) {
         $total = intval($fila['total']);
     }
     return $total;
@@ -116,7 +116,7 @@ function contarTFGsDeProfesor($idProfesor) {
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     $total = 0;
-    if ($fila != null && $fila['total'] != null) {
+    if ($fila) {
         $total = intval($fila['total']);
     }
     return $total;
@@ -124,8 +124,6 @@ function contarTFGsDeProfesor($idProfesor) {
 
 function listarTFGsPorProfesor($idProfesor) {
     $con = obtenerConexion();
-    // Mejoramos la consulta para que incluya ciclos donde el profesor tiene módulos asignados 
-    // o está asignado directamente al ciclo
     $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
             FROM estudiantes e 
             JOIN ciclos c ON e.idCiclo = c.idCiclo 
@@ -194,7 +192,7 @@ function eliminarArchivoTFG($idEstudiante) {
     $resultadoBusqueda = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultadoBusqueda);
 
-    if ($fila != null && $fila['archivoTFG'] != null) {
+    if ($fila && $fila['archivoTFG']) {
         $rutaFisica = __DIR__ . "/../public/uploads/pfc/" . $fila['archivoTFG'];
         if (file_exists($rutaFisica)) {
             unlink($rutaFisica);
@@ -210,7 +208,6 @@ function eliminarArchivoTFG($idEstudiante) {
     return $resultado;
 }
 
-// Nueva función para listar estudiantes y poder calificarlos (aunque no hayan subido archivo)
 function listarEvaluacionTFG($idCiclo = null) {
     $con = obtenerConexion();
     $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
@@ -240,7 +237,6 @@ function listarEvaluacionTFG($idCiclo = null) {
     return $lista;
 }
 
-// Listar evaluación TFG para los alumnos de un profesor concreto
 function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, 

@@ -72,7 +72,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" download="<?= $nombreDescarga ?>" title="Descargar"><i class="fas fa-download"></i></a>
+                                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" title="Descargar"><i class="fas fa-download"></i></a>
                                     <button type="button" class="btn-accion btn-editar" title="Calificar TFG" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
                                         <i class="fas fa-star"></i>
                                     </button>

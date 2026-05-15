@@ -1,6 +1,5 @@
 <?php
 function sendEmail($to, $subject, $htmlContent) {
-    // Busca la API KEY en config/secrets.php
     $pathSecrets = __DIR__ . '/../../config/secrets.php';
     $apiKey = '';
 

@@ -106,8 +106,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <!-- Modal para calificar -->
-<div id="modalCalificar" class="oculto" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center;">
-    <div class="tarjeta-blanca" style="max-width:500px; width:90%; position:relative;">
+<div id="modalCalificar" class="oculto" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:2000; display:flex; align-items:center; justify-content:center;">
+    <div class="modal-fondo"></div>
+    <div class="tarjeta-blanca" style="max-width:500px; width:90%; position:relative; z-index:1;">
         <h2 id="modalTitulo">Calificar TFG</h2>
         <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="form-estandar" style="margin-top: 20px;">
             <input type="hidden" name="idEstudiante" id="modalIdEstudiante">

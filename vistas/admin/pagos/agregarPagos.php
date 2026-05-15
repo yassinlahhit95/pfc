@@ -147,10 +147,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 function actualizarMontoRapido() {
-    const tipo = document.getElementById('tipoPago').value;
-    const precioTotal = <?= $infoFinanciera['precioCiclo'] ?>;
-    const restante = <?= $infoFinanciera['restante'] ?>;
-    let cuota = 0;
+    var tipo = document.getElementById('tipoPago').value;
+    var precioTotal = <?= $infoFinanciera['precioCiclo'] ?>;
+    var restante = <?= $infoFinanciera['restante'] ?>;
+    var cuota = 0;
 
     if (tipo === 'mensual') cuota = precioTotal / 10;
     else if (tipo === 'trimestral') cuota = precioTotal / 4;

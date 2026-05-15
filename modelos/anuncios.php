@@ -78,7 +78,7 @@ function contarAnunciosQueEstanActivos() {
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     $total = 0;
-    if ($fila != null && $fila['total'] != null) {
+    if ($fila) {
         $total = intval($fila['total']);
     }
     return $total;

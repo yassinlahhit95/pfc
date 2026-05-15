@@ -25,7 +25,6 @@ $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $listaAnuncios = listarTodosLosAnuncios();
 $listaEventosProximos = listarEventosProximos();
 
-// Datos TFG
 $tfgActual = obtenerTFGporEstudiante($idEstudiante);
 $califTFG = obtenerCalificacionTFG($idEstudiante);
 

@@ -28,7 +28,6 @@ $listaModulos = obtenerModulosDeProfesor($idProfesor);
 $listaRetos = obtenerRetosDeProfesor($idProfesor);
 $listaEventos = listarEventosProximos();
 
-// Estadísticas TFG para el profesor
 $listaTFGsProfesor = listarTFGsPorProfesor($idProfesor);
 $totalTFGsProfesor = count($listaTFGsProfesor);
 $calificadosTFGsProfesor = 0;
@@ -92,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
         <a href="../mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
         <a href="../perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
-        <a href="#" class="accion-rapida" style="background: #3498db; color: white;" onclick="const f = document.getElementById('formMasivo'); f.classList.contains('oculto') ? f.classList.remove('oculto') : f.classList.add('oculto'); return false;">
+        <a href="#" class="accion-rapida" style="background: #3498db; color: white;" onclick="var f = document.getElementById('formMasivo'); if (f.classList.contains('oculto')) { f.classList.remove('oculto'); } else { f.classList.add('oculto'); } return false;">
           <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
         </a>
       </div>

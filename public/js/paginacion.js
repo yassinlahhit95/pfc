@@ -19,7 +19,6 @@ function _mostrarPaginaTabla(tablaId, pagina) {
 
     var todasLasFilas = Array.from(config.tabla.querySelectorAll('tbody tr'));
 
-    // Solo contamos las filas que no están ocultas por el filtro
     var filasActivas = todasLasFilas.filter(function(tr) {
         return !tr.classList.contains('fila-filtro-oculta');
     });
@@ -33,7 +32,6 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var inicio = (pagina - 1) * config.filasPorPagina;
     var fin = inicio + config.filasPorPagina;
 
-    // Mostramos solo las filas de la página actual (de las activas)
     filasActivas.forEach(function(tr, idx) {
         tr.style.display = (idx >= inicio && idx < fin) ? '' : 'none';
     });
@@ -76,7 +74,6 @@ function irAPagina(tablaId, pagina) {
     _mostrarPaginaTabla(tablaId, pagina);
 }
 
-// Llamado por filtros.js después de filtrar para volver a la página 1
 function resetearPaginacion(tablaId) {
     _mostrarPaginaTabla(tablaId, 1);
 }

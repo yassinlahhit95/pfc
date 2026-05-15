@@ -34,25 +34,19 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <div class="tarjeta-blanca">
     <form method="GET" action="calificacionesRetos.php" class="disposicion-flexible alinear-centro separacion-grande formulario-filtros-retos">
         <div class="campo-formulario flexible-rellenar">
-            <label>1. Nivel Formativo:</label>
-            <select id="filtroNivelReto" onchange="filtrarCiclosRetos()">
-                <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $nivel) { ?>
-                    <option value="<?= $nivel['idNivel'] ?>">
-                        <?= $nivel['nombreNivel'] ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-
-        <div class="campo-formulario flexible-rellenar">
-            <label>2. Seleccione Ciclo:</label>
+            <label>Seleccione Ciclo:</label>
             <select name="idCiclo" id="selectCicloReto" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($todos_los_ciclos as $cicItem) { ?>
-                    <option value="<?= $cicItem['idCiclo'] ?>" data-nivel="<?= $cicItem['idNivel'] ?>" <?= ($id_ciclo_elegido == $cicItem['idCiclo']) ? 'selected' : '' ?>>
-                        <?= $cicItem['nombreCiclo'] ?>
-                    </option>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <optgroup label="<?= $nivel['nombreNivel'] ?>">
+                        <?php foreach ($todos_los_ciclos as $cicItem) { ?>
+                            <?php if ($cicItem['idNivel'] == $nivel['idNivel']) { ?>
+                                <option value="<?= $cicItem['idCiclo'] ?>" <?= ($id_ciclo_elegido == $cicItem['idCiclo']) ? 'selected' : '' ?>>
+                                    <?= $cicItem['nombreCiclo'] ?>
+                                </option>
+                            <?php } ?>
+                        <?php } ?>
+                    </optgroup>
                 <?php } ?>
             </select>
         </div>
@@ -142,24 +136,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-<script>
-function filtrarCiclosRetos() {
-    var idNivel = document.getElementById('filtroNivelReto').value;
-    var selectCiclo = document.getElementById('selectCicloReto');
-    var opciones = selectCiclo.querySelectorAll('option');
-
-    opciones.forEach(function(opcion) {
-        if (opcion.value === '') {
-            opcion.style.display = '';
-            return;
-        }
-        if (idNivel === '' || opcion.getAttribute('data-nivel') === idNivel) {
-            opcion.style.display = '';
-        } else {
-            opcion.style.display = 'none';
-        }
-    });
-
-    selectCiclo.value = '';
-}
 </script>

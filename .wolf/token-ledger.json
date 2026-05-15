@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-12T18:31:52.338Z",
   "lifetime": {
-    "total_tokens_estimated": 306142,
-    "total_reads": 193,
-    "total_writes": 314,
-    "total_sessions": 7,
-    "anatomy_hits": 185,
+    "total_tokens_estimated": 877158,
+    "total_reads": 482,
+    "total_writes": 925,
+    "total_sessions": 10,
+    "anatomy_hits": 474,
     "anatomy_misses": 0,
-    "repeated_reads_blocked": 29,
-    "estimated_savings_vs_bare_cli": 196052
+    "repeated_reads_blocked": 298,
+    "estimated_savings_vs_bare_cli": 1004953
   },
   "sessions": [
     {
@@ -2942,6 +2942,5151 @@
         "writes_count": 1,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:20:04.871Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3126,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 5960,
+        "output_tokens_estimated": 0,
+        "reads_count": 3,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:21:47.156Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3126,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 5960,
+        "output_tokens_estimated": 290,
+        "reads_count": 3,
+        "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:24:52.538Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3104,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 5938,
+        "output_tokens_estimated": 357,
+        "reads_count": 3,
+        "writes_count": 5,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:31:20.928Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3104,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2782,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2690,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20457,
+        "output_tokens_estimated": 550,
+        "reads_count": 10,
+        "writes_count": 18,
+        "repeated_reads_blocked": 5,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:39:43.686Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3078,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20396,
+        "output_tokens_estimated": 550,
+        "reads_count": 10,
+        "writes_count": 18,
+        "repeated_reads_blocked": 10,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:42:09.582Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3078,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20396,
+        "output_tokens_estimated": 550,
+        "reads_count": 10,
+        "writes_count": 18,
+        "repeated_reads_blocked": 10,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:44:22.021Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3078,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 48,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20396,
+        "output_tokens_estimated": 649,
+        "reads_count": 10,
+        "writes_count": 20,
+        "repeated_reads_blocked": 11,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:44:41.080Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3078,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 48,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20396,
+        "output_tokens_estimated": 649,
+        "reads_count": 10,
+        "writes_count": 20,
+        "repeated_reads_blocked": 11,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:48:10.807Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3102,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 48,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20420,
+        "output_tokens_estimated": 649,
+        "reads_count": 10,
+        "writes_count": 20,
+        "repeated_reads_blocked": 12,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:50:34.859Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3102,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 80,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20420,
+        "output_tokens_estimated": 729,
+        "reads_count": 10,
+        "writes_count": 21,
+        "repeated_reads_blocked": 12,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T07:53:34.025Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3102,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 5510,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 4232,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 80,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 30162,
+        "output_tokens_estimated": 729,
+        "reads_count": 12,
+        "writes_count": 21,
+        "repeated_reads_blocked": 12,
+        "anatomy_lookups": 12
+      }
+    },
+    {
+      "id": "session-2026-05-15-0909",
+      "started": "2026-05-15T07:09:51.262Z",
+      "ended": "2026-05-15T08:00:03.622Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 3102,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/academico/calificarModulos.php",
+          "tokens_estimated": 833,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 1107,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 1584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 2050,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1953,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 2353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 5510,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 4232,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesTFG.php",
+          "tokens_estimated": 2252,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/pfc/lista.php",
+          "tokens_estimated": 1778,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/pfc/subir.php",
+          "tokens_estimated": 1386,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/anuncios.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/directores.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
+          "tokens_estimated": 80,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 1,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 64,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 1,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 36,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 109,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesTFG.php",
+          "tokens_estimated": 31,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/pfc/lista.php",
+          "tokens_estimated": 36,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/pfc/subir.php",
+          "tokens_estimated": 30,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 35578,
+        "output_tokens_estimated": 1206,
+        "reads_count": 15,
+        "writes_count": 36,
+        "repeated_reads_blocked": 12,
+        "anatomy_lookups": 15
+      }
+    },
+    {
+      "id": "session-2026-05-15-1007",
+      "started": "2026-05-15T08:07:18.584Z",
+      "ended": "2026-05-15T08:12:14.546Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 3827,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 5351,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9178,
+        "output_tokens_estimated": 203,
+        "reads_count": 2,
+        "writes_count": 30,
+        "repeated_reads_blocked": 17,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-15-1007",
+      "started": "2026-05-15T08:07:18.584Z",
+      "ended": "2026-05-15T08:17:21.055Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 3827,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 5270,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/calificaciones/tfg.php",
+          "tokens_estimated": 2021,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 49,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/calificaciones/tfg.php",
+          "tokens_estimated": 89,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 11118,
+        "output_tokens_estimated": 341,
+        "reads_count": 3,
+        "writes_count": 32,
+        "repeated_reads_blocked": 19,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-15-1007",
+      "started": "2026-05-15T08:07:18.584Z",
+      "ended": "2026-05-15T08:31:08.955Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 3827,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 5270,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/calificaciones/tfg.php",
+          "tokens_estimated": 2021,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 2001,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/agregarModulos.php",
+          "tokens_estimated": 1415,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/resultadosFinales.php",
+          "tokens_estimated": 1881,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesRetos.php",
+          "tokens_estimated": 1884,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/verRetos.php",
+          "tokens_estimated": 1508,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/verEstudiantes.php",
+          "tokens_estimated": 1844,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/agregarEstudiantes.php",
+          "tokens_estimated": 2128,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/verModulos.php",
+          "tokens_estimated": 1986,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/modificarModulos.php",
+          "tokens_estimated": 1540,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/estudiantes/agregar.php",
+          "tokens_estimated": 2339,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/modificarEstudiantes.php",
+          "tokens_estimated": 2383,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/estudiantes/editar.php",
+          "tokens_estimated": 2233,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 162,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/agregarRetos.php",
+          "tokens_estimated": 1080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 393,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/insertar.php",
+          "tokens_estimated": 844,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
+          "tokens_estimated": 2680,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/modificarRetos.php",
+          "tokens_estimated": 1194,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/actualizar.php",
+          "tokens_estimated": 903,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/estilo.css",
+          "tokens_estimated": 49,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/calificaciones/tfg.php",
+          "tokens_estimated": 89,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 272,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesModulos.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/resultadosFinales.php",
+          "tokens_estimated": 320,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/resultadosFinales.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesRetos.php",
+          "tokens_estimated": 275,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesRetos.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesTFG.php",
+          "tokens_estimated": 273,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/academico/calificacionesTFG.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/verModulos.php",
+          "tokens_estimated": 289,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/verModulos.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/agregarModulos.php",
+          "tokens_estimated": 382,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/agregarModulos.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/modificarModulos.php",
+          "tokens_estimated": 390,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/modulos/modificarModulos.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/agregarEstudiantes.php",
+          "tokens_estimated": 406,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/modificarEstudiantes.php",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/agregarEstudiantes.php",
+          "tokens_estimated": 3,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/modificarEstudiantes.php",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/modificarEstudiantes.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/agregarEstudiantes.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/estudiantes/agregar.php",
+          "tokens_estimated": 400,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/estudiantes/editar.php",
+          "tokens_estimated": 371,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/estudiantes/agregar.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/estudiantes/editar.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/verEstudiantes.php",
+          "tokens_estimated": 31,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/verRetos.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/estudiantes/verEstudiantes.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/verRetos.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/verRetos.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/agregarRetos.php",
+          "tokens_estimated": 41,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/agregarRetos.php",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/agregarRetos.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/modificarRetos.php",
+          "tokens_estimated": 76,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/modificarRetos.php",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/modificarRetos.php",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/modificarRetos.php",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/retos/modificarRetos.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/insertar.php",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/insertar.php",
+          "tokens_estimated": 103,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/insertar.php",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/actualizar.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/actualizar.php",
+          "tokens_estimated": 111,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/admin/retos/actualizar.php",
+          "tokens_estimated": 42,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 41516,
+        "output_tokens_estimated": 5295,
+        "reads_count": 22,
+        "writes_count": 75,
+        "repeated_reads_blocked": 41,
+        "anatomy_lookups": 22
+      }
+    },
+    {
+      "id": "session-2026-05-15-1035",
+      "started": "2026-05-15T08:35:57.486Z",
+      "ended": "2026-05-15T08:43:13.354Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 2040,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 1516,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 1934,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 1774,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 519,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 2843,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 2935,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 2382,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 503,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase-init.js",
+          "tokens_estimated": 116,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 535,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 6299,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 204,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 1708,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 81,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 143,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 1640,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 27,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 23585,
+        "output_tokens_estimated": 4715,
+        "reads_count": 13,
+        "writes_count": 19,
+        "repeated_reads_blocked": 7,
+        "anatomy_lookups": 13
+      }
+    },
+    {
+      "id": "session-2026-05-15-1035",
+      "started": "2026-05-15T08:35:57.486Z",
+      "ended": "2026-05-15T08:47:32.197Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 2040,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 1475,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 1938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 1774,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 519,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 2843,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 2935,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 2382,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 503,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase-init.js",
+          "tokens_estimated": 116,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 535,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 6299,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 2413,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 712,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 697,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 1560,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 458,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 1312,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 656,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1943,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 162,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 393,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 744,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 799,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 264,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 204,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 1708,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 81,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 143,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 1640,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 123,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 322,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 685,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 456,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 223,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 39148,
+        "output_tokens_estimated": 6881,
+        "reads_count": 28,
+        "writes_count": 47,
+        "repeated_reads_blocked": 13,
+        "anatomy_lookups": 28
+      }
+    },
+    {
+      "id": "session-2026-05-15-1035",
+      "started": "2026-05-15T08:35:57.486Z",
+      "ended": "2026-05-15T08:49:31.654Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 2040,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 1459,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 1938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 1774,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 519,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 2843,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 2935,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 2382,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 503,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase-init.js",
+          "tokens_estimated": 116,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 535,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 6299,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 2413,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 712,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 697,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 1560,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 458,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 1312,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 656,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1943,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 162,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 393,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 744,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 799,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 264,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 204,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 1708,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 81,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 143,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 1640,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 123,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 322,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 685,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 456,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 223,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 39132,
+        "output_tokens_estimated": 6913,
+        "reads_count": 28,
+        "writes_count": 50,
+        "repeated_reads_blocked": 16,
+        "anatomy_lookups": 28
+      }
+    },
+    {
+      "id": "session-2026-05-15-1035",
+      "started": "2026-05-15T08:35:57.486Z",
+      "ended": "2026-05-15T08:54:27.606Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 2040,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 1459,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 1938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 1774,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 519,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 2843,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 2872,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 2382,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 503,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase-init.js",
+          "tokens_estimated": 116,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 535,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 6299,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 2413,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 712,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 697,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 1560,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 458,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 1312,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 656,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1943,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 162,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 393,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 744,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 799,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 264,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 3822,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 204,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 1708,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 81,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 143,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 1640,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 123,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 322,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 685,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 456,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 223,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 9,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 42891,
+        "output_tokens_estimated": 6977,
+        "reads_count": 29,
+        "writes_count": 53,
+        "repeated_reads_blocked": 20,
+        "anatomy_lookups": 29
+      }
+    },
+    {
+      "id": "session-2026-05-15-1035",
+      "started": "2026-05-15T08:35:57.486Z",
+      "ended": "2026-05-15T08:55:36.305Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 2040,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 1459,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 1938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 1774,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 519,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 2843,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 2872,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 2382,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 503,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase-init.js",
+          "tokens_estimated": 116,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 535,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 6299,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 2413,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 712,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 697,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 1560,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 458,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 1312,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 656,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1943,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 162,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 393,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 744,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 799,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 264,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 3822,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 204,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 1708,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 81,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 143,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 1640,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 123,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 322,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 685,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 456,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 223,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 9,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 42891,
+        "output_tokens_estimated": 6977,
+        "reads_count": 29,
+        "writes_count": 53,
+        "repeated_reads_blocked": 20,
+        "anatomy_lookups": 29
+      }
+    },
+    {
+      "id": "session-2026-05-15-1035",
+      "started": "2026-05-15T08:35:57.486Z",
+      "ended": "2026-05-15T08:58:14.580Z",
+      "reads": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 2040,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 1459,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 1938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 1774,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 519,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 2843,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 2872,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 2382,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 503,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase-init.js",
+          "tokens_estimated": 116,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 535,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 6299,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 2413,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 712,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 697,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 1560,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 458,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 1312,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 656,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 1943,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 2757,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 162,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 393,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 744,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 799,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 264,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/landing.css",
+          "tokens_estimated": 3822,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/pagos/agregarPagos.php",
+          "tokens_estimated": 204,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/login.css",
+          "tokens_estimated": 1708,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 81,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/agregarProfesores.php",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/profesores-form.js",
+          "tokens_estimated": 143,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/notificaciones.css",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 1640,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/index.html",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/academico/resultadosFinales.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/retos/lista.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/profesores/inicio/dashboard.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/profesores/asignarModulos.php",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/estudiantes/inicio/dashboard.php",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/validacion.php",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/comunes/email_helper.php",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/insertar.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/profesores/estudiantes/actualizar.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 9,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/controladores/firebase/firebase_helper.php",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/modulos.php",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/modelos/tfg.php",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/filtros.js",
+          "tokens_estimated": 123,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/retos.js",
+          "tokens_estimated": 322,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/paginacion.js",
+          "tokens_estimated": 685,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/firebase.js",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/firebase/notificaciones-ui.js",
+          "tokens_estimated": 456,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/js/menu.js",
+          "tokens_estimated": 223,
+          "action": "create"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/admin/inicio/dashboard.php",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/vistas/login.php",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "C:/xampp/htdocs/pfc/public/css/responsive.css",
+          "tokens_estimated": 9,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 42891,
+        "output_tokens_estimated": 6977,
+        "reads_count": 29,
+        "writes_count": 53,
+        "repeated_reads_blocked": 20,
+        "anatomy_lookups": 29
       }
     }
   ],

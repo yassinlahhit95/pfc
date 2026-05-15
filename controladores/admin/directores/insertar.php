@@ -9,7 +9,7 @@ if (isset($_POST['guardarDirector'])) {
     $telefono = trim($_POST['telefonoDirector']);
     $fechaAlta = date('Y-m-d');
     
-    $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '2000-01-01');
+    $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '1995-08-12');
     $direccion = trim($_POST['direccionDirector']);
     $ciudad = trim($_POST['ciudadDirector']);
     $codigoPostal = trim($_POST['codigoPostalDirector']);

@@ -163,10 +163,18 @@ function obtenerResultadosFinalesCiclo($idCiclo) {
     return $listaResultados;
 }
 
+function calcularNotaDefinitiva($notaBase, $notaRecuperacion) {
+    if ($notaBase === null) return null;
+    if ($notaRecuperacion !== null && $notaRecuperacion > $notaBase) {
+        return $notaRecuperacion;
+    }
+    return $notaBase;
+}
+
 function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null) {
     $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
 
-    if ($listaModulos == null) {
+    if ($listaModulos === null) {
         $listaModulos = obtenerModulosPorCiclo($datosEstudiante['idCiclo']);
     }
 
@@ -199,35 +207,20 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $idModuloActual = $modulo['idModulo'];
         $notas = obtenerNotasModulo($idEstudiante, $idModuloActual);
 
-        $nota1ev = null;
-        $nota1recuperacion = null;
-        $nota2ev = null;
-        $nota2recuperacion = null;
+        $nota1ev    = null;
+        $nota1final = null;
+        $nota2ev    = null;
+        $nota2final = null;
 
-        if ($notas != null) {
-            if ($notas['nota_1ev'] != null) {
-                $nota1ev = floatval($notas['nota_1ev']);
-            }
-            if ($notas['nota_1final'] != null) {
-                $nota1recuperacion = floatval($notas['nota_1final']);
-            }
-            if ($notas['nota_2ev'] != null) {
-                $nota2ev = floatval($notas['nota_2ev']);
-            }
-            if ($notas['nota_2final'] != null) {
-                $nota2recuperacion = floatval($notas['nota_2final']);
-            }
+        if ($notas) {
+            if ($notas['nota_1ev'] != null)    { $nota1ev    = floatval($notas['nota_1ev']); }
+            if ($notas['nota_1final'] != null) { $nota1final = floatval($notas['nota_1final']); }
+            if ($notas['nota_2ev'] != null)    { $nota2ev    = floatval($notas['nota_2ev']); }
+            if ($notas['nota_2final'] != null) { $nota2final = floatval($notas['nota_2final']); }
         }
 
-        $notaDefinitiva1 = $nota1ev;
-        if ($nota1recuperacion != null && $nota1recuperacion > $nota1ev) {
-            $notaDefinitiva1 = $nota1recuperacion;
-        }
-
-        $notaDefinitiva2 = $nota2ev;
-        if ($nota2recuperacion != null && $nota2recuperacion > $nota2ev) {
-            $notaDefinitiva2 = $nota2recuperacion;
-        }
+        $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
+        $notaDefinitiva2 = calcularNotaDefinitiva($nota2ev, $nota2final);
 
         $sumaEvaluaciones = 0;
         $evaluacionesConNota = 0;
@@ -296,18 +289,11 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $resumen['promedio_global'] = round($promedioGlobal, 2);
         $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
 
-        if ($resumen['calculo_completo']) {
-            if ($promedioGlobal >= 5 && !$resumen['tiene_suspensos']) {
-                $resumen['estado_global'] = 'APROBADO';
-            } else {
-                $resumen['estado_global'] = 'SUSPENSO';
-            }
-        } else {
-            if ($resumen['tiene_suspensos']) {
-                $resumen['estado_global'] = 'SUSPENSO';
-            } else {
-                $resumen['estado_global'] = 'PENDIENTE';
-            }
+        $resumen['estado_global'] = 'PENDIENTE';
+        if ($resumen['tiene_suspensos']) {
+            $resumen['estado_global'] = 'SUSPENSO';
+        } elseif ($resumen['calculo_completo'] && $promedioGlobal >= 5) {
+            $resumen['estado_global'] = 'APROBADO';
         }
     } else {
         $resumen['media_modulos'] = "-";

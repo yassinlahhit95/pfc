@@ -85,7 +85,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
                         $idCicloReto = !empty($modulos) ? $modulos[0]['idCiclo'] : '';
                     ?>
-                    <tr data-ciclo-id="<?= $idCicloReto ?>" data-nivel="<?= $mapaCicloNivel[$idCicloReto] ?? '' ?>">
+                    <tr class="fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= $mapaCicloNivel[$idCicloReto] ?? '' ?>">
                         <td><strong><?= $reto['nombreReto'] ?></strong></td>
                         <td><?= $textoModulos ?></td>
                         <td><?= $reto['horasReto'] ?>h</td>
@@ -124,10 +124,10 @@ function aplicarFiltrosRetos() {
         var pasaCiclo = true;
 
         if (idNivel !== '') {
-            pasaNivel = fila.getAttribute('data-nivel') === idNivel;
+            pasaNivel = fila.classList.contains('fila-nivel-' + idNivel);
         }
         if (idCiclo !== '') {
-            pasaCiclo = fila.getAttribute('data-ciclo-id') === idCiclo;
+            pasaCiclo = fila.classList.contains('fila-ciclo-' + idCiclo);
         }
 
         if (pasaNivel && pasaCiclo) {

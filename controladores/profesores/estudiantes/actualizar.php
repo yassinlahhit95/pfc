@@ -34,7 +34,6 @@ if (isset($_POST['actualizarEstudiante'])) {
     }
 
     if (empty($errores)) {
-        // Obtenemos la fecha de alta original para no perderla
         $estudianteOriginal = obtenerEstudiantePorId($idEstudiante);
         $fechaAlta = $estudianteOriginal['fechaAltaEstudiante'];
 

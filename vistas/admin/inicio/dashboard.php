@@ -8,7 +8,6 @@
 
 session_start();
 
-// Seguridad ante todo: si no eres admin, fuera de aquí
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -24,7 +23,6 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-// Aquí pedimos todos los datos para las tarjetitas de arriba
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores = contarProfesores();
 $totalRetos = intval(contarRetos());

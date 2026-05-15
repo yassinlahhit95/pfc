@@ -25,7 +25,6 @@ if (!$datosEst) {
 $idCiclo = $datosEst['idCiclo'] ?? 0;
 $nombreCiclo = $datosEst['nombreCiclo'] ?? 'SIN ASIGNAR';
 
-// Obtenemos los retos específicos del ciclo del estudiante
 $retos = ($idCiclo > 0) ? obtenerRetosPorCiclo($idCiclo) : [];
 
 $tituloDelPagina = "AULAPRO | MIS RETOS";

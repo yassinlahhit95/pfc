@@ -2,7 +2,6 @@ $(document).ready(function() {
     var form = $('#formReto');
     if (!form.length) return;
 
-    // Valida las fechas y las horas al enviar el formulario
     form.on('submit', function(e) {
         var inicio = $('#fechaInicioReto').val();
         var fin = $('#fechaFinReto').val();
@@ -13,14 +12,12 @@ $(document).ready(function() {
         var fechaInicio = new Date(inicio);
         var fechaFin = new Date(fin);
 
-        // La fecha de inicio no puede ser posterior a la de fin
         if (fechaInicio > fechaFin) {
             e.preventDefault();
             alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
             return;
         }
 
-        // Cuenta los días laborables (lunes a viernes) entre las dos fechas
         var dias = 0;
         var actual = new Date(fechaInicio);
         while (actual <= fechaFin) {
@@ -29,7 +26,6 @@ $(document).ready(function() {
             actual.setDate(actual.getDate() + 1);
         }
 
-        // Máximo 6 horas por día laborable
         var maxHoras = dias * 6;
         if (horas > maxHoras) {
             e.preventDefault();

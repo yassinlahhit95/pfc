@@ -9,7 +9,6 @@
 
 session_start();
 
-// Si ya hay sesión, mandamos al usuario a su sitio sin que tenga que loguearse otra vez
 if (isset($_SESSION['idAdmin'])) {
     header("Location: admin/inicio/dashboard.php");
     exit;
@@ -25,7 +24,6 @@ $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_login'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_login']);
 
-// Consolidar errores en un solo mensaje si existe alguno
 $mensajeError = "";
 if (!empty($errores)) {
     if (isset($errores['usuario']) && isset($errores['contrasena'])) {
@@ -40,13 +38,12 @@ if (!empty($errores)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal de acceso al sistema de gestión de AulaPro. Gestión de asistencia, retos y seguimiento académico.">
     <title>Acceso al Sistema - AulaPro</title>
     <link rel="icon" href="../public/imagenes/favicon.ico" type="image/x-icon">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../public/css/login.css">
@@ -81,7 +78,7 @@ if (!empty($errores)) {
             <label for="contrasena">Contraseña</label>
             <div class="password-wrapper">
                 <input type="password" id="contrasena" name="contrasena" placeholder="••••••••">
-                <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar/Ocultar contraseña">
+                <button type="button" class="toggle-password" id="togglePassword">
                     <span class="eye-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -103,18 +100,16 @@ if (!empty($errores)) {
 </main>
 
 <script>
-    // Toggle Password Visibility
-    const togglePassword = document.getElementById("togglePassword");
-    const passwordField = document.getElementById("contrasena");
+    var togglePassword = document.getElementById("togglePassword");
+    var passwordField = document.getElementById("contrasena");
 
     if (togglePassword && passwordField) {
-        togglePassword.addEventListener("click", (e) => {
+        togglePassword.addEventListener("click", function(e) {
             e.preventDefault();
-            const isPassword = passwordField.type === "password";
+            var isPassword = passwordField.type === "password";
             passwordField.type = isPassword ? "text" : "password";
-            
-            // Optional: change icon based on state
-            const svg = togglePassword.querySelector('svg');
+
+            var svg = togglePassword.querySelector('svg');
             if (isPassword) {
                 svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
             } else {
@@ -123,10 +118,9 @@ if (!empty($errores)) {
         });
     }
 
-    // Auto-focus on password if user is already provided (from landing)
     <?php if (!empty($_GET['u'])) { ?>
-    document.addEventListener('DOMContentLoaded', () => {
-        const pwd = document.getElementById('contrasena');
+    document.addEventListener('DOMContentLoaded', function() {
+        var pwd = document.getElementById('contrasena');
         if (pwd) pwd.focus();
     });
     <?php } ?>

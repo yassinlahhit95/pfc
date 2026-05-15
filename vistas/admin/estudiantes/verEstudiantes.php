@@ -95,7 +95,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
-                    <tr data-nivel="<?= $mapaCicloNivel[$estudianteIndividual['idCiclo']] ?? '' ?>">
+                    <tr class="fila-nivel-<?= $mapaCicloNivel[$estudianteIndividual['idCiclo']] ?? '' ?>">
                         <td><?= $estudianteIndividual['idEstudiante'] ?></td>
                         <td>
                             <span class="etiqueta-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
@@ -142,7 +142,7 @@ function aplicarFiltrosEstudiantes() {
         var pasaCiclo = true;
 
         if (idNivel !== '') {
-            pasaNivel = fila.getAttribute('data-nivel') === idNivel;
+            pasaNivel = fila.classList.contains('fila-nivel-' + idNivel);
         }
         if (textoCiclo !== '') {
             var celdaCiclo = fila.cells[4] ? fila.cells[4].innerText.toLowerCase() : '';

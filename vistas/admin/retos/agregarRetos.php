@@ -29,9 +29,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form action="../../../controladores/admin/retos/insertar.php" method="POST" id="formReto">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
+    <form action="../../../controladores/admin/retos/insertar.php" method="POST" class="form-estandar">
+        <div class="campo-formulario">
                 <label for="nombreReto">Nombre del Reto *</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
                 <?php if (isset($errores['nombreReto'])) { ?>
@@ -62,19 +61,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <strong class="error-campo"><?= $errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
-        </div>
 
-        <div class="campo-formulario" style="margin-top: 20px;">
-            <label><strong>Vincular Módulos (Obligatorio seleccionar al menos uno) *</strong></label>
-            <div class="tarjeta-gris-suave scroll-vertical" style="margin-top: 5px;">
+        <div class="campo-formulario">
+            <label for="modulosReto">Módulo Asociado *</label>
+            <select name="modulosReto" id="modulosReto">
+                <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
-                    <div class="item-seleccionable">
-                        <input type="checkbox" name="modulosReto[]" id="modulo_<?= $modulo['idModulo'] ?>" value="<?= $modulo['idModulo'] ?>" 
-                            <?= (isset($datos['modulosReto']) && in_array($modulo['idModulo'], $datos['modulosReto'])) ? 'checked' : '' ?>>
-                        <label for="modulo_<?= $modulo['idModulo'] ?>"><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</label>
-                    </div>
+                    <option value="<?= $modulo['idModulo'] ?>" <?= ($datos['modulosReto'] ?? '') == $modulo['idModulo'] ? 'selected' : '' ?>>
+                        <?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)
+                    </option>
                 <?php } ?>
-            </div>
+            </select>
             <?php if (isset($errores['modulosReto'])) { ?>
                 <strong class="error-campo"><?= $errores['modulosReto'] ?></strong>
             <?php } ?>
@@ -89,7 +86,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<script src="../../../public/js/retos.js"></script>
 
 <?php include '../comunes/footer.php'; ?>
 

@@ -1328,6 +1328,630 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-13T14:08:49.907Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-05-15T07:21:29.684Z",
+      "error_message": "Null/undefined access in ",
+      "file": "modelos/calificaciones.php",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:21:29.684Z"
+    },
+    {
+      "id": "bug-085",
+      "timestamp": "2026-05-15T07:21:39.704Z",
+      "error_message": "Significant refactor of ",
+      "file": "modelos/calificaciones.php",
+      "root_cause": "18 lines replaced/restructured",
+      "fix": "Rewrote 29→14 lines (18 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:21:39.704Z"
+    },
+    {
+      "id": "bug-086",
+      "timestamp": "2026-05-15T07:24:36.755Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/calificaciones.php",
+      "root_cause": "Condition was: if ($listaModulos == null)",
+      "fix": "Changed to: if ($listaModulos === null)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-15T07:24:45.190Z"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-05-15T07:30:19.880Z",
+      "error_message": "Null/undefined access in ",
+      "file": "modelos/calificaciones.php",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:30:19.880Z"
+    },
+    {
+      "id": "bug-088",
+      "timestamp": "2026-05-15T07:30:24.315Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/anuncios.php",
+      "root_cause": "Condition was: if ($fila != null && $fila['total'] != null)",
+      "fix": "Changed to: if ($fila)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:30:24.315Z"
+    },
+    {
+      "id": "bug-089",
+      "timestamp": "2026-05-15T07:30:34.115Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/directores.php",
+      "root_cause": "Condition was: if ($fila != null && $fila['fcm_token'] != null)",
+      "fix": "Changed to: if ($fila && $fila['fcm_token'])",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:30:34.115Z"
+    },
+    {
+      "id": "bug-090",
+      "timestamp": "2026-05-15T07:30:37.866Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/estudiantes.php",
+      "root_cause": "Condition was: if ($fila != null)",
+      "fix": "Changed to: if ($fila)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:30:37.866Z"
+    },
+    {
+      "id": "bug-091",
+      "timestamp": "2026-05-15T07:30:44.935Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/modulos.php",
+      "root_cause": "Condition was: if ($datosSuma != null && $datosSuma['total'] != null)",
+      "fix": "Changed to: if ($datosSuma)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:30:44.935Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-05-15T07:30:48.379Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/profesores.php",
+      "root_cause": "Condition was: if ($fila != null)",
+      "fix": "Changed to: if ($fila)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:30:48.379Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-05-15T07:30:51.640Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/tfg.php",
+      "root_cause": "Condition was: if ($nombreArchivo != null)",
+      "fix": "Changed to: if ($nombreArchivo)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-15T07:30:58.491Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-05-15T07:31:03.112Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/retos.php",
+      "root_cause": "Condition was: if ($fila != null)",
+      "fix": "Changed to: if ($fila)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-15T07:31:09.518Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-05-15T07:44:11.445Z",
+      "error_message": "Wrong condition in logic",
+      "file": "modelos/calificaciones.php",
+      "root_cause": "Condition was: if ($notaDefinitiva1 !== null)",
+      "fix": "Changed to: if ($notaDefinitiva1 != null)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:44:11.445Z"
+    },
+    {
+      "id": "bug-096",
+      "timestamp": "2026-05-15T07:50:31.089Z",
+      "error_message": "Significant refactor of ",
+      "file": "modelos/calificaciones.php",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 13→6 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:50:31.089Z"
+    },
+    {
+      "id": "bug-097",
+      "timestamp": "2026-05-15T07:58:39.699Z",
+      "error_message": "CSS fix: font-family",
+      "file": "public/css/landing.css",
+      "root_cause": "font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif → \"Segoe UI\", Arial, sans-serif",
+      "fix": "Changed font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif → \"Segoe UI\", Arial, sans-serif",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-15T07:59:23.827Z"
+    },
+    {
+      "id": "bug-098",
+      "timestamp": "2026-05-15T07:59:15.408Z",
+      "error_message": "Wrong reference: clamp should be 1",
+      "file": "public/css/landing.css",
+      "root_cause": "Used \"clamp\" instead of \"1\"",
+      "fix": "Changed clamp → 1",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:59:15.408Z"
+    },
+    {
+      "id": "bug-099",
+      "timestamp": "2026-05-15T07:59:35.643Z",
+      "error_message": "CSS fix: font-weight, font-size",
+      "file": "public/css/estilo.css",
+      "root_cause": "font-weight: 900 → 600; font-size: 18px → 14px",
+      "fix": "Changed font-weight: 900 → 600; font-size: 18px → 14px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:59:35.643Z"
+    },
+    {
+      "id": "bug-100",
+      "timestamp": "2026-05-15T07:59:46.313Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/academico/calificacionesTFG.php",
+      "root_cause": "Had \"<?= $nombreDescarga ?>\"",
+      "fix": "Changed to \"_blank\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:59:46.313Z"
+    },
+    {
+      "id": "bug-101",
+      "timestamp": "2026-05-15T07:59:50.123Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/pfc/lista.php",
+      "root_cause": "Had \"<?= $nombreDescarga ?>\"",
+      "fix": "Changed to \"Descargar\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T07:59:50.123Z"
+    },
+    {
+      "id": "bug-102",
+      "timestamp": "2026-05-15T08:04:34.001Z",
+      "error_message": "Wrong reference: rgba should be 888888",
+      "file": "public/css/estilo.css",
+      "root_cause": "Used \"rgba\" instead of \"888888\"",
+      "fix": "Changed rgba → 888888",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 11,
+      "last_seen": "2026-05-15T08:10:08.071Z"
+    },
+    {
+      "id": "bug-103",
+      "timestamp": "2026-05-15T08:10:04.301Z",
+      "error_message": "Wrong reference: rgba should be d9d9d9",
+      "file": "public/css/landing.css",
+      "root_cause": "Used \"rgba\" instead of \"d9d9d9\"",
+      "fix": "Changed rgba → d9d9d9",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 10,
+      "last_seen": "2026-05-15T08:12:03.378Z"
+    },
+    {
+      "id": "bug-104",
+      "timestamp": "2026-05-15T08:10:26.108Z",
+      "error_message": "CSS fix: background",
+      "file": "public/css/estilo.css",
+      "root_cause": "background: rgba(0, 0, 0, 0.5) → #000000",
+      "fix": "Changed background: rgba(0, 0, 0, 0.5) → #000000",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-15T08:10:31.140Z"
+    },
+    {
+      "id": "bug-105",
+      "timestamp": "2026-05-15T08:11:09.228Z",
+      "error_message": "CSS fix: background, border-color",
+      "file": "public/css/landing.css",
+      "root_cause": "background: rgba(255, 255, 255, 0.1) → #333060; border-color: rgba(255, 255, 255, 0.6) → #aaaaaa",
+      "fix": "Changed background: rgba(255, 255, 255, 0.1) → #333060; border-color: rgba(255, 255, 255, 0.6) → #aaaaaa",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-15T08:11:52.399Z"
+    },
+    {
+      "id": "bug-106",
+      "timestamp": "2026-05-15T08:17:07.213Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/calificaciones/tfg.php",
+      "root_cause": "Had \"position:fixed; top:0; left:0; width:100%; height",
+      "fix": "Changed to \"position:fixed; top:0; left:0; width:100%; height",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:17:07.213Z"
+    },
+    {
+      "id": "bug-107",
+      "timestamp": "2026-05-15T08:24:37.123Z",
+      "error_message": "Significant refactor of ",
+      "file": "vistas/admin/estudiantes/modificarEstudiantes.php",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 10→21 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:24:37.123Z"
+    },
+    {
+      "id": "bug-108",
+      "timestamp": "2026-05-15T08:26:31.459Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/estudiantes/verEstudiantes.php",
+      "root_cause": "Had \"<?= $mapaCicloNivel[$estudianteIndividual['",
+      "fix": "Changed to \"fila-nivel-<?= $mapaCicloNivel[$estudianteIndivid",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-15T08:26:39.275Z"
+    },
+    {
+      "id": "bug-109",
+      "timestamp": "2026-05-15T08:26:32.694Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/retos/verRetos.php",
+      "root_cause": "Had \"<?= $idCicloReto ?>\"",
+      "fix": "Changed to \"fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= $ma",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-15T08:26:45.330Z"
+    },
+    {
+      "id": "bug-110",
+      "timestamp": "2026-05-15T08:29:04.204Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/retos/agregarRetos.php",
+      "root_cause": "Had \"formReto\"",
+      "fix": "Changed to \"form-estandar\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:29:04.204Z"
+    },
+    {
+      "id": "bug-111",
+      "timestamp": "2026-05-15T08:29:17.230Z",
+      "error_message": "Null/undefined access in ",
+      "file": "vistas/admin/retos/agregarRetos.php",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:29:17.230Z"
+    },
+    {
+      "id": "bug-112",
+      "timestamp": "2026-05-15T08:29:28.926Z",
+      "error_message": "Null/undefined access in ",
+      "file": "vistas/admin/retos/modificarRetos.php",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:29:28.926Z"
+    },
+    {
+      "id": "bug-113",
+      "timestamp": "2026-05-15T08:30:40.851Z",
+      "error_message": "Wrong reference: $listaModulos should be $idModulo",
+      "file": "controladores/admin/retos/insertar.php",
+      "root_cause": "Used \"$listaModulos\" instead of \"$idModulo\"",
+      "fix": "Changed $listaModulos → $idModulo",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:30:40.851Z"
+    },
+    {
+      "id": "bug-114",
+      "timestamp": "2026-05-15T08:30:56.476Z",
+      "error_message": "Wrong reference: $listaModulosAsociados should be $idModuloAsociado",
+      "file": "controladores/admin/retos/actualizar.php",
+      "root_cause": "Used \"$listaModulosAsociados\" instead of \"$idModuloAsociado\"",
+      "fix": "Changed $listaModulosAsociados → $idModuloAsociado",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:30:56.476Z"
+    },
+    {
+      "id": "bug-115",
+      "timestamp": "2026-05-15T08:36:20.842Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/profesores/inicio/dashboard.php",
+      "root_cause": "Had \"const f = document.getElementById('",
+      "fix": "Changed to \"var f = document.getElementById('",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:36:20.842Z"
+    },
+    {
+      "id": "bug-116",
+      "timestamp": "2026-05-15T08:39:55.366Z",
+      "error_message": "CSS fix: background, flex",
+      "file": "public/css/responsive.css",
+      "root_cause": "background: rgba(0, 0, 0, 0.4) → #000000; flex: 1 1 calc(50% - 10px) → 1 1 48%",
+      "fix": "Changed background: rgba(0, 0, 0, 0.4) → #000000; flex: 1 1 calc(50% - 10px) → 1 1 48%",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-15T08:40:12.230Z"
+    },
+    {
+      "id": "bug-117",
+      "timestamp": "2026-05-15T08:40:15.636Z",
+      "error_message": "Wrong reference: rgba should be d9d9d9",
+      "file": "public/css/responsive.css",
+      "root_cause": "Used \"rgba\" instead of \"d9d9d9\"",
+      "fix": "Changed rgba → d9d9d9",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:40:15.636Z"
+    },
+    {
+      "id": "bug-118",
+      "timestamp": "2026-05-15T08:40:53.160Z",
+      "error_message": "Incorrect value in code",
+      "file": "vistas/admin/profesores/agregarProfesores.php",
+      "root_cause": "Had \"<?= $idCiclo ?>\"",
+      "fix": "Changed to \"grupo-ciclo-<?= $idCiclo ?>\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:40:53.160Z"
+    },
+    {
+      "id": "bug-119",
+      "timestamp": "2026-05-15T08:41:36.241Z",
+      "error_message": "Wrong reference: rgba should be d4d4d4",
+      "file": "public/css/notificaciones.css",
+      "root_cause": "Used \"rgba\" instead of \"d4d4d4\"",
+      "fix": "Changed rgba → d4d4d4",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-15T08:41:37.040Z"
+    },
+    {
+      "id": "bug-120",
+      "timestamp": "2026-05-15T08:42:58.380Z",
+      "error_message": "Incorrect value in code",
+      "file": "index.html",
+      "root_cause": "Had \"AulaPro_Demo.mp4\"",
+      "fix": "Changed to \"boton boton-secundario-landing\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:42:58.380Z"
+    },
+    {
+      "id": "bug-121",
+      "timestamp": "2026-05-15T08:45:45.648Z",
+      "error_message": "Wrong reference: Consolidar should be $mensajeError",
+      "file": "vistas/login.php",
+      "root_cause": "Used \"Consolidar\" instead of \"$mensajeError\"",
+      "fix": "Changed Consolidar → $mensajeError",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "php"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T08:45:45.648Z"
+    },
+    {
+      "id": "bug-122",
+      "timestamp": "2026-05-15T08:54:09.395Z",
+      "error_message": "CSS fix: min-width",
+      "file": "public/css/responsive.css",
+      "root_cause": "min-width: 769px and max-width: 1024px → 769px and max-width: 1024px */",
+      "fix": "Changed min-width: 769px and max-width: 1024px → 769px and max-width: 1024px */",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-15T08:54:16.974Z"
     }
   ]
 }

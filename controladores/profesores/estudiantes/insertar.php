@@ -13,7 +13,7 @@ if (isset($_POST['guardarEstudiante'])) {
     $dni = trim($_POST['dniEstudiante']);
     $telefono = trim($_POST['telefonoEstudiante']);
     $fechaNacimiento = trim($_POST['fechaNacimientoEstudiante']);
-    $fechaAlta = date('Y-m-d'); // Fecha actual por defecto para profesores
+    $fechaAlta = date('Y-m-d');
     $direccion = trim($_POST['direccionEstudiante']);
     $ciudad = trim($_POST['ciudadEstudiante']);
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);

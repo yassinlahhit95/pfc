@@ -8,7 +8,7 @@ if (isset($_POST['actualizarReto'])) {
     $horasDelReto = trim($_POST['horasReto']);
     $fechaInicioDelReto = trim($_POST['fechaInicioReto']);
     $fechaFinDelReto = trim($_POST['fechaFinReto']);
-    $listaModulosAsociados = $_POST['modulosReto'] ?? [];
+    $idModuloAsociado = trim($_POST['modulosReto'] ?? '');
 
     $errores = [];
 
@@ -46,19 +46,16 @@ if (isset($_POST['actualizarReto'])) {
             $errores['horasReto'] = "Las horas estimadas superan el máximo de $maxHorasPermitidas h para el periodo seleccionado (6h/día laborable).";
         }
     }
-    if (empty($listaModulosAsociados)) {
-        $errores['modulosReto'] = "Debe seleccionar al menos un módulo.";
+    if (empty($idModuloAsociado) || !is_numeric($idModuloAsociado)) {
+        $errores['modulosReto'] = "Debes seleccionar un módulo.";
     } else if (is_numeric($horasDelReto)) {
-        foreach ($listaModulosAsociados as $idModuloParaValidar) {
-            if (!comprobarHorasDisponiblesModulo($idModuloParaValidar, $horasDelReto, $idRetoActualizar)) {
-                $errores['modulosReto'] = "Un módulo seleccionado no tiene suficientes horas.";
-                break;
-            }
+        if (!comprobarHorasDisponiblesModulo($idModuloAsociado, $horasDelReto, $idRetoActualizar)) {
+            $errores['modulosReto'] = "El módulo no tiene suficientes horas disponibles.";
         }
     }
 
     if (empty($errores)) {
-        if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, $listaModulosAsociados)) {
+        if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, [$idModuloAsociado])) {
             $_SESSION['exito'] = "Reto actualizado correctamente.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");
             exit;

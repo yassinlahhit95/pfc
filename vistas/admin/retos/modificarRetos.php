@@ -12,18 +12,11 @@ if (!$reto) {
 }
 
 $modulos_del_reto = obtenerModulosDeReto($id_reto);
-$ids_modulos_viculados = [];
-foreach ($modulos_del_reto as $m) {
-    $ids_modulos_viculados[] = $m['idModulo'];
-}
+$idModuloActual = !empty($modulos_del_reto) ? $modulos_del_reto[0]['idModulo'] : '';
 
 if (isset($_SESSION['datos_reto'])) {
     $reto = $_SESSION['datos_reto'];
-    if (isset($reto['modulosReto'])) {
-        $ids_modulos_viculados = $reto['modulosReto'];
-    } else {
-        $ids_modulos_viculados = [];
-    }
+    $idModuloActual = $reto['modulosReto'] ?? '';
 }
 
 $todos_los_modulos = listarModulos();
@@ -52,11 +45,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="tarjeta-blanca">
-    <form method="POST" action="../../../controladores/admin/retos/actualizar.php" id="formReto">
+    <form method="POST" action="../../../controladores/admin/retos/actualizar.php" class="form-estandar">
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
-        
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
+
+        <div class="campo-formulario">
                 <label for="nombreReto">Nombre del Reto *</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>">
                 <?php if (isset($errores['nombreReto'])) { ?>
@@ -87,19 +79,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <strong class="error-campo"><?= $errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
-        </div>
 
-        <div class="campo-formulario margen-arriba">
-            <label><strong>Vincular Módulos *</strong></label>
-            <div class="tarjeta-gris-suave scroll-vertical" style="margin-top: 5px;">
+        <div class="campo-formulario">
+            <label for="modulosReto">Módulo Asociado *</label>
+            <select name="modulosReto" id="modulosReto">
+                <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
-                    <div class="item-seleccionable">
-                        <input type="checkbox" name="modulosReto[]" id="modulo_<?= $modulo['idModulo'] ?>" value="<?= $modulo['idModulo'] ?>" 
-                            <?= in_array($modulo['idModulo'], $ids_modulos_viculados) ? 'checked' : '' ?>>
-                        <label for="modulo_<?= $modulo['idModulo'] ?>"><?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)</label>
-                    </div>
+                    <option value="<?= $modulo['idModulo'] ?>" <?= $idModuloActual == $modulo['idModulo'] ? 'selected' : '' ?>>
+                        <?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)
+                    </option>
                 <?php } ?>
-            </div>
+            </select>
             <?php if (isset($errores['modulosReto'])) { ?>
                 <strong class="error-campo"><?= $errores['modulosReto'] ?></strong>
             <?php } ?>
@@ -114,7 +104,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<script src="../../../public/js/retos.js"></script>
 
 <?php include '../comunes/footer.php'; ?>
 

@@ -25,25 +25,19 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <div class="tarjeta-blanca">
     <form method="GET" action="calificacionesTFG.php" class="disposicion-flexible alinear-centro separacion-grande envoltura-flexible">
         <div class="campo-formulario flexible-rellenar">
-            <label>Filtrar por Nivel:</label>
-            <select id="filtroNivelTFG" onchange="filtrarCiclosTFG()">
-                <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $nivel) { ?>
-                    <option value="<?= $nivel['idNivel'] ?>">
-                        <?= $nivel['nombreNivel'] ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-
-        <div class="campo-formulario flexible-rellenar">
             <label>Filtrar por Ciclo:</label>
             <select name="idCiclo" id="selectCicloTFG" onchange="this.form.submit()">
                 <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($listaCiclos as $ciclo) { ?>
-                    <option value="<?= $ciclo['idCiclo'] ?>" data-nivel="<?= $ciclo['idNivel'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        <?= $ciclo['abreviaturaCiclo'] ?>
-                    </option>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <optgroup label="<?= $nivel['nombreNivel'] ?>">
+                        <?php foreach ($listaCiclos as $ciclo) { ?>
+                            <?php if ($ciclo['idNivel'] == $nivel['idNivel']) { ?>
+                                <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                                    <?= $ciclo['abreviaturaCiclo'] ?>
+                                </option>
+                            <?php } ?>
+                        <?php } ?>
+                    </optgroup>
                 <?php } ?>
             </select>
         </div>
@@ -102,7 +96,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         </td>
                         <td>
                             <?php if (!empty($item['archivoTFG'])) { ?>
-                                <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" download="<?= $nombreDescarga ?>" class="btn-accion btn-ver">
+                                <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver">
                                     <i class="fas fa-file-pdf"></i> Descargar
                                 </a>
                             <?php } else { ?>
@@ -154,25 +148,6 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <script>
-function filtrarCiclosTFG() {
-    var idNivel = document.getElementById('filtroNivelTFG').value;
-    var selectCiclo = document.getElementById('selectCicloTFG');
-    var opciones = selectCiclo.querySelectorAll('option');
-
-    opciones.forEach(function(opcion) {
-        if (opcion.value === '') {
-            opcion.style.display = '';
-            return;
-        }
-        if (idNivel === '' || opcion.getAttribute('data-nivel') === idNivel) {
-            opcion.style.display = '';
-        } else {
-            opcion.style.display = 'none';
-        }
-    });
-    selectCiclo.value = '';
-}
-
 function toggleFormCalificar(idFormulario) {
     var formulario = document.getElementById(idFormulario);
     if (formulario.style.display === 'none') {

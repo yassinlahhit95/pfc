@@ -180,7 +180,7 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     $token = null;
-    if ($fila != null) {
+    if ($fila) {
         $token = $fila['fcm_token'];
     }
     mysqli_close($con);

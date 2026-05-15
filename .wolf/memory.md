@@ -281,3 +281,211 @@
 |------|--------|---------|---------|--------|
 | 10:05 | Created genera-memoria.ps1 | — | ~8113 |
 | 10:11 | Session end: 1 writes across 1 files (genera-memoria.ps1) | 5 reads | ~16772 tok |
+
+## Session: 2026-05-15 09:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:21 | Edited modelos/calificaciones.php | added 2 condition(s) | ~87 |
+| 09:21 | Edited modelos/calificaciones.php | modified if() | ~184 |
+| 09:21 | Session end: 2 writes across 1 files (calificaciones.php) | 3 reads | ~6250 tok |
+| 09:24 | Edited modelos/calificaciones.php | inline fix | ~9 |
+| 09:24 | Edited modelos/calificaciones.php | inline fix | ~6 |
+| 09:24 | Edited modelos/calificaciones.php | modified if() | ~48 |
+| 09:24 | Session end: 5 writes across 1 files (calificaciones.php) | 3 reads | ~6295 tok |
+| 09:30 | Edited modelos/calificaciones.php | added nullish coalescing | ~20 |
+| 09:30 | Edited modelos/anuncios.php | inline fix | ~5 |
+| 09:30 | Edited modelos/directores.php | 3→1 lines | ~12 |
+| 09:30 | Edited modelos/directores.php | inline fix | ~11 |
+| 09:30 | Edited modelos/estudiantes.php | modified if() | ~16 |
+| 09:30 | Edited modelos/modulos.php | inline fix | ~6 |
+| 09:30 | Edited modelos/profesores.php | modified if() | ~16 |
+| 09:30 | Edited modelos/tfg.php | inline fix | ~7 |
+| 09:30 | Edited modelos/tfg.php | inline fix | ~5 |
+| 09:30 | Edited modelos/tfg.php | inline fix | ~11 |
+| 09:31 | Edited modelos/retos.php | modified if() | ~51 |
+| 09:31 | Edited modelos/retos.php | modified if() | ~15 |
+| 09:31 | Edited modelos/retos.php | inline fix | ~8 |
+| 09:31 | Session end: 18 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~21007 tok |
+| 09:39 | Session end: 18 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~20946 tok |
+| 09:42 | Session end: 18 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~20946 tok |
+| 09:44 | Edited modelos/calificaciones.php | modified if() | ~47 |
+| 09:44 | Edited modelos/calificaciones.php | added 1 condition(s) | ~44 |
+| 09:44 | Session end: 20 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~21045 tok |
+| 09:44 | Session end: 20 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~21045 tok |
+| 09:48 | Session end: 20 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~21069 tok |
+| 09:50 | Edited modelos/calificaciones.php | modified if() | ~75 |
+| 09:50 | Session end: 21 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 10 reads | ~21149 tok |
+| 09:53 | Session end: 21 writes across 8 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 12 reads | ~30891 tok |
+| 09:58 | Edited public/css/landing.css | 5→4 lines | ~32 |
+| 09:58 | Edited public/css/landing.css | 7→6 lines | ~30 |
+| 09:58 | Edited public/css/landing.css | removed 12 lines | ~1 |
+| 09:58 | Edited public/css/landing.css | 5→4 lines | ~27 |
+| 09:59 | Edited public/css/landing.css | 8→7 lines | ~64 |
+| 09:59 | Edited public/css/landing.css | removed 9 lines | ~1 |
+| 09:59 | Edited public/css/landing.css | 8→7 lines | ~36 |
+| 09:59 | Edited public/css/landing.css | inline fix | ~6 |
+| 09:59 | Edited public/css/landing.css | 7→6 lines | ~28 |
+| 09:59 | Edited public/css/landing.css | CSS: flex-wrap | ~27 |
+| 09:59 | Edited public/css/estilo.css | 4→3 lines | ~19 |
+| 09:59 | Edited public/css/estilo.css | reduced (-20 lines) | ~109 |
+| 09:59 | Edited vistas/admin/academico/calificacionesTFG.php | inline fix | ~29 |
+| 09:59 | Edited vistas/profesores/pfc/lista.php | inline fix | ~34 |
+| 09:59 | Edited vistas/estudiantes/pfc/subir.php | inline fix | ~28 |
+| 10:00 | Session end: 36 writes across 13 files (calificaciones.php, anuncios.php, directores.php, estudiantes.php, modulos.php) | 15 reads | ~36784 tok |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:04 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:05 | Edited public/css/estilo.css | inline fix | ~8 |
+| 10:05 | Edited public/css/estilo.css | inline fix | ~2 |
+
+## Session: 2026-05-15 10:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:10 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:10 | Edited public/css/landing.css | inline fix | ~2 |
+| 10:10 | Edited public/css/estilo.css | inline fix | ~2 |
+| 10:10 | Edited public/css/landing.css | inline fix | ~2 |
+| 10:10 | Edited public/css/landing.css | inline fix | ~2 |
+| 10:10 | Edited public/css/landing.css | inline fix | ~2 |
+| 10:10 | Edited public/css/landing.css | inline fix | ~2 |
+| 10:10 | Edited public/css/landing.css | inline fix | ~2 |
+| 10:10 | Edited public/css/estilo.css | — | ~0 |
+| 10:10 | Edited public/css/estilo.css | CSS: opacity | ~11 |
+| 10:10 | Edited public/css/estilo.css | — | ~0 |
+| 10:10 | Edited public/css/estilo.css | 3→3 lines | ~21 |
+| 10:10 | Edited public/css/estilo.css | — | ~0 |
+| 10:10 | Edited public/css/estilo.css | — | ~0 |
+| 10:10 | Edited public/css/estilo.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:10 | Edited public/css/landing.css | — | ~0 |
+| 10:11 | Edited public/css/landing.css | 4→4 lines | ~28 |
+| 10:11 | Edited public/css/landing.css | 8→8 lines | ~48 |
+| 10:11 | Edited public/css/landing.css | 2→2 lines | ~15 |
+| 10:11 | Edited public/css/landing.css | inline fix | ~5 |
+| 10:11 | Edited public/css/landing.css | inline fix | ~5 |
+| 10:11 | Edited public/css/landing.css | inline fix | ~6 |
+| 10:11 | Edited public/css/landing.css | 7→7 lines | ~43 |
+| 10:12 | Edited public/css/landing.css | inline fix | ~5 |
+| 10:12 | Session end: 30 writes across 2 files (estilo.css, landing.css) | 2 reads | ~9381 tok |
+| 10:17 | Edited public/css/estilo.css | expanded (+10 lines) | ~49 |
+| 10:17 | Edited vistas/profesores/calificaciones/tfg.php | 2→3 lines | ~83 |
+| 10:17 | Session end: 32 writes across 3 files (estilo.css, landing.css, tfg.php) | 3 reads | ~11459 tok |
+| 10:22 | Edited vistas/admin/academico/calificacionesModulos.php | added 1 condition(s) | ~254 |
+| 10:22 | Edited vistas/admin/academico/calificacionesModulos.php | — | ~0 |
+| 10:22 | Edited vistas/admin/academico/resultadosFinales.php | added 1 condition(s) | ~299 |
+| 10:22 | Edited vistas/admin/academico/resultadosFinales.php | — | ~0 |
+| 10:22 | Edited vistas/admin/academico/calificacionesRetos.php | added 1 condition(s) | ~256 |
+| 10:22 | Edited vistas/admin/academico/calificacionesRetos.php | — | ~0 |
+| 10:23 | Edited vistas/admin/academico/calificacionesTFG.php | added 1 condition(s) | ~255 |
+| 10:23 | Edited vistas/admin/academico/calificacionesTFG.php | removed 21 lines | ~10 |
+| 10:23 | Edited vistas/admin/modulos/verModulos.php | added 1 condition(s) | ~270 |
+| 10:23 | Edited vistas/admin/modulos/verModulos.php | — | ~0 |
+| 10:23 | Edited vistas/admin/modulos/agregarModulos.php | modified foreach() | ~357 |
+| 10:24 | Edited vistas/admin/modulos/agregarModulos.php | removed 35 lines | ~12 |
+| 10:24 | Edited vistas/admin/modulos/modificarModulos.php | modified foreach() | ~364 |
+| 10:24 | Edited vistas/admin/modulos/modificarModulos.php | removed 34 lines | ~12 |
+| 10:24 | Edited vistas/admin/estudiantes/agregarEstudiantes.php | modified foreach() | ~379 |
+| 10:24 | Edited vistas/admin/estudiantes/modificarEstudiantes.php | added 1 condition(s) | ~338 |
+| 10:24 | Edited vistas/admin/estudiantes/agregarEstudiantes.php | removed 30 lines | ~3 |
+| 10:24 | Edited vistas/admin/estudiantes/modificarEstudiantes.php | removed 11 lines | ~28 |
+| 10:24 | Edited vistas/admin/estudiantes/modificarEstudiantes.php | — | ~0 |
+| 10:25 | Edited vistas/admin/estudiantes/agregarEstudiantes.php | — | ~0 |
+| 10:25 | Edited vistas/profesores/estudiantes/agregar.php | modified foreach() | ~373 |
+| 10:25 | Edited vistas/profesores/estudiantes/editar.php | modified foreach() | ~347 |
+| 10:25 | Edited vistas/profesores/estudiantes/agregar.php | removed 34 lines | ~15 |
+| 10:25 | Edited vistas/profesores/estudiantes/editar.php | removed 34 lines | ~15 |
+| 10:26 | Edited vistas/admin/estudiantes/verEstudiantes.php | "<?= $mapaCicloNivel[$estu" → "fila-nivel-<?= $mapaCiclo" | ~29 |
+| 10:26 | Edited vistas/admin/retos/verRetos.php | "<?= $idCicloReto ?>" → "fila-ciclo-<?= $idCicloRe" | ~32 |
+| 10:26 | Edited vistas/admin/estudiantes/verEstudiantes.php | "data-nivel" → "fila-nivel-" | ~20 |
+| 10:26 | Edited vistas/admin/retos/verRetos.php | "data-nivel" → "fila-nivel-" | ~20 |
+| 10:26 | Edited vistas/admin/retos/verRetos.php | "data-ciclo-id" → "fila-ciclo-" | ~20 |
+| 10:29 | Edited vistas/admin/retos/agregarRetos.php | 3→2 lines | ~38 |
+| 10:29 | Edited vistas/admin/retos/agregarRetos.php | added nullish coalescing | ~215 |
+| 10:29 | Edited vistas/admin/retos/agregarRetos.php | — | ~0 |
+| 10:29 | Edited vistas/admin/retos/modificarRetos.php | added nullish coalescing | ~71 |
+| 10:29 | Edited vistas/admin/retos/modificarRetos.php | 5→4 lines | ~57 |
+| 10:29 | Edited vistas/admin/retos/modificarRetos.php | modified foreach() | ~210 |
+| 10:29 | Edited vistas/admin/retos/modificarRetos.php | — | ~0 |
+| 10:30 | Edited vistas/admin/retos/modificarRetos.php | 5→4 lines | ~33 |
+| 10:30 | Edited controladores/admin/retos/insertar.php | inline fix | ~14 |
+| 10:30 | Edited controladores/admin/retos/insertar.php | 10→7 lines | ~96 |
+| 10:30 | Edited controladores/admin/retos/insertar.php | inline fix | ~28 |
+| 10:30 | Edited controladores/admin/retos/actualizar.php | inline fix | ~16 |
+| 10:30 | Edited controladores/admin/retos/actualizar.php | 10→7 lines | ~104 |
+| 10:30 | Edited controladores/admin/retos/actualizar.php | inline fix | ~39 |
+| 10:31 | Session end: 75 writes across 20 files (estilo.css, landing.css, tfg.php, calificacionesModulos.php, resultadosFinales.php) | 22 reads | ~46811 tok |
+
+## Session: 2026-05-15 10:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:36 | Edited vistas/admin/pagos/agregarPagos.php | modified actualizarMontoRapido() | ~191 |
+| 10:36 | Edited vistas/login.php | modified if() | ~318 |
+| 10:36 | Edited vistas/profesores/inicio/dashboard.php | "const f = document.getEle" → "var f = document.getEleme" | ~47 |
+| 10:37 | Edited vistas/login.php | inline fix | ~18 |
+| 10:39 | Created public/css/login.css | — | ~1708 |
+| 10:39 | Edited public/css/responsive.css | CSS: opacity | ~91 |
+| 10:40 | Edited public/css/responsive.css | 20→20 lines | ~129 |
+| 10:40 | Edited public/css/responsive.css | CSS: opacity | ~138 |
+| 10:40 | Edited public/css/responsive.css | 2→2 lines | ~24 |
+| 10:40 | Edited public/css/responsive.css | 3→3 lines | ~20 |
+| 10:40 | Edited vistas/login.php | 2→1 lines | ~13 |
+| 10:40 | Edited vistas/login.php | 3→3 lines | ~75 |
+| 10:40 | Edited vistas/admin/profesores/agregarProfesores.php | inline fix | ~32 |
+| 10:40 | Edited vistas/admin/profesores/agregarProfesores.php | inline fix | ~32 |
+| 10:40 | Created public/js/profesores-form.js | — | ~143 |
+| 10:41 | Edited public/css/notificaciones.css | inline fix | ~10 |
+| 10:41 | Edited public/css/notificaciones.css | inline fix | ~7 |
+| 10:42 | Edited index.html | modified actualizarNavbar() | ~1531 |
+| 10:42 | Edited index.html | inline fix | ~25 |
+| 10:43 | Session end: 19 writes across 9 files (agregarPagos.php, login.php, dashboard.php, login.css, responsive.css) | 13 reads | ~28300 tok |
+| 10:45 | Edited vistas/profesores/academico/resultadosFinales.php | 2→1 lines | ~16 |
+| 10:45 | Edited vistas/login.php | 2→1 lines | ~6 |
+| 10:45 | Edited vistas/estudiantes/retos/lista.php | modified obtenerRetosPorCiclo() | ~17 |
+| 10:45 | Edited vistas/profesores/inicio/dashboard.php | 2→1 lines | ~15 |
+| 10:45 | Edited vistas/admin/profesores/asignarModulos.php | inline fix | ~10 |
+| 10:45 | Edited vistas/estudiantes/inicio/dashboard.php | 2→1 lines | ~14 |
+| 10:45 | Edited controladores/validacion.php | 2→1 lines | ~7 |
+| 10:45 | Edited controladores/validacion.php | 2→1 lines | ~23 |
+| 10:45 | Edited controladores/comunes/email_helper.php | 2→1 lines | ~16 |
+| 10:45 | Edited controladores/profesores/estudiantes/insertar.php | inline fix | ~9 |
+| 10:45 | Edited controladores/profesores/estudiantes/actualizar.php | 2→1 lines | ~19 |
+| 10:46 | Edited controladores/firebase/firebase_helper.php | 4→3 lines | ~17 |
+| 10:46 | Edited controladores/firebase/firebase_helper.php | inline fix | ~9 |
+| 10:46 | Edited controladores/firebase/firebase_helper.php | 2→1 lines | ~18 |
+| 10:46 | Edited controladores/firebase/firebase_helper.php | inline fix | ~10 |
+| 10:46 | Edited controladores/firebase/firebase_helper.php | 2→2 lines | ~22 |
+| 10:46 | Edited modelos/modulos.php | modified obtenerNombresProfesoresDeModulo() | ~15 |
+| 10:46 | Edited modelos/tfg.php | removed 3 lines | ~8 |
+| 10:46 | Edited modelos/tfg.php | modified listarEvaluacionTFG() | ~13 |
+| 10:46 | Edited modelos/tfg.php | modified listarEvaluacionTFGporProfesor() | ~19 |
+| 10:46 | Created public/js/filtros.js | — | ~123 |
+| 10:46 | Created public/js/retos.js | — | ~322 |
+| 10:46 | Created public/js/paginacion.js | — | ~685 |
+| 10:46 | Edited public/js/firebase/firebase.js | 2→1 lines | ~22 |
+| 10:46 | Edited public/js/firebase/firebase.js | 2→1 lines | ~23 |
+| 10:46 | Edited public/js/firebase/firebase.js | 3→1 lines | ~13 |
+| 10:46 | Created public/js/firebase/notificaciones-ui.js | — | ~456 |
+| 10:47 | Created public/js/menu.js | — | ~223 |
+| 10:47 | Session end: 47 writes across 25 files (agregarPagos.php, login.php, dashboard.php, login.css, responsive.css) | 28 reads | ~46029 tok |
+| 10:49 | Edited vistas/admin/inicio/dashboard.php | 2→1 lines | ~10 |
+| 10:49 | Edited vistas/admin/inicio/dashboard.php | 2→1 lines | ~11 |
+| 10:49 | Edited vistas/login.php | 2→1 lines | ~10 |
+| 10:49 | Session end: 50 writes across 25 files (agregarPagos.php, login.php, dashboard.php, login.css, responsive.css) | 28 reads | ~46045 tok |
+| 10:54 | Edited public/css/responsive.css | CSS: flex-direction | ~39 |
+| 10:54 | Edited public/css/responsive.css | 3→1 lines | ~16 |
+| 10:54 | Edited public/css/responsive.css | 3→1 lines | ~9 |
+| 10:54 | Session end: 53 writes across 25 files (agregarPagos.php, login.php, dashboard.php, login.css, responsive.css) | 29 reads | ~49868 tok |
+| 10:55 | Session end: 53 writes across 25 files (agregarPagos.php, login.php, dashboard.php, login.css, responsive.css) | 29 reads | ~49868 tok |
+| 10:58 | Session end: 53 writes across 25 files (agregarPagos.php, login.php, dashboard.php, login.css, responsive.css) | 29 reads | ~49868 tok |

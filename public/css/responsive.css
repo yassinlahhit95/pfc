@@ -1,6 +1,4 @@
-/* =======================================================
-   TABLETA — min-width: 769px and max-width: 1024px
-   ======================================================= */
+/* TABLETA — min-width: 769px and max-width: 1024px */
 @media (min-width: 769px) and (max-width: 1024px) {
 
     /* Navegación superior */
@@ -79,13 +77,14 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.4);
+        background: #000000;
+        opacity: 0.4;
         z-index: 998;
     }
 
     /* Dashboard */
     .cuadricula-estadisticas > * {
-        flex: 1 1 calc(50% - 10px);
+        flex: 1 1 48%;
     }
 
     .cuadricula-secundaria {
@@ -108,8 +107,8 @@
         align-items: stretch;
         padding: 16px 24px 20px;
         gap: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid #333060;
+        box-shadow: 0 8px 24px #cccccc;
         transform: translateY(-8px);
         opacity: 0;
         visibility: hidden;
@@ -126,7 +125,7 @@
     .menu-enlace-landing {
         width: 100%;
         display: block;
-        color: rgba(255, 255, 255, 0.85);
+        color: #d9d9d9;
     }
 
     .menu-landing .btn-acceso-nav {
@@ -146,9 +145,7 @@
 }
 
 
-/* =======================================================
-   MÓVIL — max-width: 768px
-   ======================================================= */
+/* MÓVIL — max-width: 768px */
 @media (max-width: 768px) {
 
     /* Navegación superior */
@@ -217,7 +214,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: #000000;
+        opacity: 0.5;
         z-index: 998;
     }
 
@@ -228,7 +226,7 @@
 
     /* Estadísticas del dashboard de estudiantes — 2 por fila */
     .disposicion-flexible.envoltura-flexible .tarjeta-estadistica {
-        flex: 1 1 calc(50% - 10px);
+        flex: 1 1 48%;
     }
 
     .cuadricula-secundaria {
@@ -328,8 +326,8 @@
         align-items: stretch;
         padding: 16px 24px 20px;
         gap: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid #333060;
+        box-shadow: 0 8px 24px #cccccc;
         transform: translateY(-8px);
         opacity: 0;
         visibility: hidden;
@@ -359,7 +357,7 @@
     }
 
     .menu-landing .menu-enlace-landing {
-        color: rgba(255, 255, 255, 0.85);
+        color: #d9d9d9;
     }
 
     .nav-scrolled .menu-landing {
@@ -450,7 +448,7 @@
 
     /* Landing — pie de página */
     .pie-grid-landing {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 30px;
         text-align: center;
     }

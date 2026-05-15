@@ -42,24 +42,19 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="disposicion-flexible alinear-centro separacion-grande">
         <form method="GET" action="resultadosFinales.php" class="flexible-rellenar disposicion-flexible alinear-centro">
             <div class="campo-formulario flexible-rellenar">
-                <label>Nivel Formativo:</label>
-                <select id="filtroNivelFinal" onchange="filtrarCiclosFinales()">
-                    <option value="">-- Todos los Niveles --</option>
-                    <?php foreach ($listaNiveles as $nivel) { ?>
-                        <option value="<?= $nivel['idNivel'] ?>">
-                            <?= $nivel['nombreNivel'] ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-            <div class="campo-formulario flexible-rellenar">
                 <label>Seleccione un Ciclo formativo para ver el resumen:</label>
                 <select name="idCiclo" id="selectCicloFinal" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                        <option value="<?= $cicloItem['idCiclo'] ?>" data-nivel="<?= $cicloItem['idNivel'] ?>" <?php if($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo "selected"; } ?>>
-                            <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
-                        </option>
+                    <?php foreach ($listaNiveles as $nivel) { ?>
+                        <optgroup label="<?= $nivel['nombreNivel'] ?>">
+                            <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
+                                <?php if ($cicloItem['idNivel'] == $nivel['idNivel']) { ?>
+                                    <option value="<?= $cicloItem['idCiclo'] ?>" <?php if ($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo 'selected'; } ?>>
+                                        <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
+                                    </option>
+                                <?php } ?>
+                            <?php } ?>
+                        </optgroup>
                     <?php } ?>
                 </select>
             </div>
@@ -119,33 +114,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </div>
         
         <div class="tarjeta-alerta-info">
-            <p><i class="fas fa-info-circle"></i> <strong>Cálculo Global:</strong> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
-            <p><i class="fas fa-info-circle"></i> <strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
+            <p><strong>Cálculo Global:</strong> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
+            <p><strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
         </div>
     </div>
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-<script>
-function filtrarCiclosFinales() {
-    var idNivel = document.getElementById('filtroNivelFinal').value;
-    var selectCiclo = document.getElementById('selectCicloFinal');
-    var opciones = selectCiclo.querySelectorAll('option');
-
-    opciones.forEach(function(opcion) {
-        if (opcion.value === '') {
-            opcion.style.display = '';
-            return;
-        }
-        if (idNivel === '' || opcion.getAttribute('data-nivel') === idNivel) {
-            opcion.style.display = '';
-        } else {
-            opcion.style.display = 'none';
-        }
-    });
-
-    selectCiclo.value = '';
-}
 </script>
 
 

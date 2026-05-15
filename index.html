@@ -151,7 +151,7 @@
           Tu navegador no soporta videos HTML5.
         </video>
         <div class="video-acciones-landing animar" style="margin-top: 25px;">
-          <a href="public/videos/intro.mp4" download="AulaPro_Demo.mp4" class="boton boton-secundario-landing">
+          <a href="public/videos/intro.mp4" download class="boton boton-secundario-landing">
             <i class="fas fa-download"></i> Descargar Video de Presentación
           </a>
         </div>
@@ -353,49 +353,50 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const botonMenu = document.getElementById('menu-boton');
-      const listaMenu = document.getElementById('menu');
+    document.addEventListener('DOMContentLoaded', function() {
+      var botonMenu = document.getElementById('menu-boton');
+      var listaMenu = document.getElementById('menu');
 
       if (botonMenu && listaMenu) {
-        botonMenu.addEventListener('click', () => {
+        botonMenu.addEventListener('click', function() {
           listaMenu.classList.toggle('activo');
         });
       }
 
-      const cabecera = document.getElementById('cabecera');
+      var cabecera = document.getElementById('cabecera');
       function actualizarNavbar() {
         cabecera.classList.toggle('nav-scrolled', window.scrollY > 40);
       }
-      window.addEventListener('scroll', actualizarNavbar, { passive: true });
+      window.addEventListener('scroll', actualizarNavbar);
       actualizarNavbar();
 
-      const alturaHeader = document.querySelector('.cabecera-landing')?.offsetHeight ?? 72;
+      var elCabecera = document.querySelector('.cabecera-landing');
+      var alturaHeader = elCabecera ? elCabecera.offsetHeight : 72;
 
-      document.querySelectorAll('a[href^="#"]').forEach(enlace => {
-        enlace.addEventListener('click', (e) => {
-          const href = enlace.getAttribute('href');
-          const destino = document.querySelector(href);
+      document.querySelectorAll('a[href^="#"]').forEach(function(enlace) {
+        enlace.addEventListener('click', function(e) {
+          var href = enlace.getAttribute('href');
+          var destino = document.querySelector(href);
           if (!destino) return;
           e.preventDefault();
 
-          const y = destino.getBoundingClientRect().top + window.scrollY - alturaHeader - 16;
+          var y = destino.getBoundingClientRect().top + window.scrollY - alturaHeader - 16;
           window.scrollTo({ top: y, behavior: 'smooth' });
 
           if (listaMenu && listaMenu.classList.contains('activo')) {
             listaMenu.classList.remove('activo');
           }
 
-          const planElegido = enlace.dataset.plan;
+          var planElegido = enlace.getAttribute('data-plan');
           if (planElegido) {
-            const selectPlan = document.getElementById('cf-plan');
+            var selectPlan = document.getElementById('cf-plan');
             if (selectPlan) selectPlan.value = planElegido;
           }
         });
       });
 
-      const observador = new IntersectionObserver((entradas) => {
-        entradas.forEach(entrada => {
+      var observador = new IntersectionObserver(function(entradas) {
+        entradas.forEach(function(entrada) {
           if (entrada.isIntersecting) {
             entrada.target.classList.add('visible');
             observador.unobserve(entrada.target);
@@ -406,41 +407,41 @@
         rootMargin: '0px 0px -40px 0px'
       });
 
-      document.querySelectorAll('.animar').forEach(el => observador.observe(el));
+      document.querySelectorAll('.animar').forEach(function(el) { observador.observe(el); });
 
-      const btnMensual = document.getElementById('btn-mensual');
-      const btnAnual = document.getElementById('btn-anual');
+      var btnMensual = document.getElementById('btn-mensual');
+      var btnAnual = document.getElementById('btn-anual');
       if (btnMensual && btnAnual) {
-        const cantidades = document.querySelectorAll('.precio-cantidad');
-        const notasMensual = document.querySelectorAll('.mensual-nota');
-        const notasAnual = document.querySelectorAll('.anual-nota');
+        var cantidades = document.querySelectorAll('.precio-cantidad');
+        var notasMensual = document.querySelectorAll('.mensual-nota');
+        var notasAnual = document.querySelectorAll('.anual-nota');
 
-        btnMensual.addEventListener('click', () => {
+        btnMensual.addEventListener('click', function() {
           btnMensual.classList.add('activo');
           btnAnual.classList.remove('activo');
-          cantidades.forEach(el => el.textContent = el.dataset.mensual);
-          notasMensual.forEach(el => el.style.display = '');
-          notasAnual.forEach(el => el.style.display = 'none');
+          cantidades.forEach(function(el) { el.textContent = el.getAttribute('data-mensual'); });
+          notasMensual.forEach(function(el) { el.style.display = ''; });
+          notasAnual.forEach(function(el) { el.style.display = 'none'; });
         });
 
-        btnAnual.addEventListener('click', () => {
+        btnAnual.addEventListener('click', function() {
           btnAnual.classList.add('activo');
           btnMensual.classList.remove('activo');
-          cantidades.forEach(el => el.textContent = el.dataset.anual);
-          notasMensual.forEach(el => el.style.display = 'none');
-          notasAnual.forEach(el => el.style.display = 'block');
+          cantidades.forEach(function(el) { el.textContent = el.getAttribute('data-anual'); });
+          notasMensual.forEach(function(el) { el.style.display = 'none'; });
+          notasAnual.forEach(function(el) { el.style.display = 'block'; });
         });
       }
 
-      const formContacto = document.getElementById('form-contacto');
+      var formContacto = document.getElementById('form-contacto');
       if (formContacto) {
-        formContacto.addEventListener('submit', async (e) => {
+        formContacto.addEventListener('submit', function(e) {
           e.preventDefault();
-          const btn = document.getElementById('btn-enviar');
-          const feedback = document.getElementById('form-feedback');
-          const nombre = document.getElementById('cf-nombre').value.trim();
-          const email = document.getElementById('cf-email').value.trim();
-          const centro = document.getElementById('cf-centro').value.trim();
+          var btn = document.getElementById('btn-enviar');
+          var feedback = document.getElementById('form-feedback');
+          var nombre = document.getElementById('cf-nombre').value.trim();
+          var email = document.getElementById('cf-email').value.trim();
+          var centro = document.getElementById('cf-centro').value.trim();
 
           if (!nombre || !email || !centro) {
             feedback.className = 'feedback-error';
@@ -453,17 +454,14 @@
           feedback.innerHTML = '';
           feedback.className = '';
 
-          const endpoint = new URL('controladores/contacto_landing.php', window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/'));
-
-          try {
-            const res = await fetch(endpoint.href, {
-              method: 'POST',
-              body: new FormData(formContacto)
-            });
-
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const data = await res.json();
-
+          fetch('controladores/contacto_landing.php', {
+            method: 'POST',
+            body: new FormData(formContacto)
+          })
+          .then(function(res) {
+            return res.json();
+          })
+          .then(function(data) {
             if (data.ok) {
               feedback.className = 'feedback-exito';
               feedback.textContent = data.msg;
@@ -475,26 +473,27 @@
               btn.disabled = false;
               btn.textContent = 'Enviar consulta';
             }
-          } catch {
+          })
+          .catch(function(err) {
             feedback.className = 'feedback-error';
             feedback.textContent = 'Error de conexión. Inténtalo de nuevo más tarde.';
             btn.disabled = false;
             btn.textContent = 'Enviar consulta';
-          }
+          });
         });
       }
 
-      const video = document.querySelector('#visual video');
+      var video = document.querySelector('#visual video');
       if (video) {
-        const reproducirVideo = () => {
-          const promesa = video.play();
+        function reproducirVideo() {
+          var promesa = video.play();
           if (promesa !== undefined) {
-            promesa.catch(() => {});
+            promesa.catch(function() {});
           }
-        };
+        }
         reproducirVideo();
-        const observerVideo = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
+        var observerVideo = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
             if (entry.isIntersecting) {
               reproducirVideo();
             }

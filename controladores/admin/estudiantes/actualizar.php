@@ -62,7 +62,7 @@ if (isset($_POST['actualizarEstudiante'])) {
             exit;
         }
 
-        $_SESSION['error'] = "Hubo un problema al intentar actualizar los datos del estudiante o no hubo cambios.";
+        $_SESSION['error'] = "Hay un problema al intentar actualizar los datos del estudiante.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_estudiante'] = $_POST;

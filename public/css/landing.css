@@ -5,11 +5,10 @@ html.landing-page {
 body.landing-body {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background-color: #fafafa;
   color: #111827;
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
 }
 
 .contenedor {
@@ -33,13 +32,11 @@ body.landing-body {
   border-radius: 14px;
   padding: 28px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .tarjeta:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
 }
 
 .titulo-seccion {
@@ -47,7 +44,6 @@ body.landing-body {
   font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 12px;
-  letter-spacing: -0.02em;
 }
 
 .descripcion-seccion {
@@ -94,13 +90,13 @@ body.landing-body {
 }
 
 .hero-landing .boton-secundario-landing {
-  color: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 0.3);
+  color: #d9d9d9;
+  border-color: #666666;
 }
 
 .hero-landing .boton-secundario-landing:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: #333060;
+  border-color: #aaaaaa;
 }
 
 .ancho-total {
@@ -108,16 +104,6 @@ body.landing-body {
   box-sizing: border-box;
 }
 
-.animar {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.animar.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 .cabecera-landing {
   position: fixed;
@@ -132,8 +118,7 @@ body.landing-body {
 }
 
 .cabecera-landing.nav-scrolled {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
+  background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -175,7 +160,7 @@ body.landing-body {
 }
 
 .menu-enlace-landing {
-  color: rgba(255, 255, 255, 0.85);
+  color: #d9d9d9;
   text-decoration: none;
   font-weight: 500;
   font-size: 1.05rem;
@@ -232,14 +217,13 @@ body.landing-body {
 .btn-acceso-nav {
   padding: 9px 18px !important;
   font-size: 0.9rem !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: #2e2c6e !important;
+  border: 1px solid #666666 !important;
   color: #ffffff !important;
-  backdrop-filter: blur(4px);
 }
 
 .btn-acceso-nav:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
+  background: #4a4888 !important;
 }
 
 .nav-scrolled .btn-acceso-nav {
@@ -260,20 +244,13 @@ body.landing-body {
   overflow: hidden;
 }
 
-.hero-landing::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
-  pointer-events: none;
-}
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(99, 102, 241, 0.2);
-  border: 1px solid rgba(165, 180, 252, 0.3);
+  background: #3a3882;
+  border: 1px solid #6b75c0;
   color: #e0e7ff;
   padding: 10px 24px;
   border-radius: 24px;
@@ -284,10 +261,9 @@ body.landing-body {
 }
 
 .titulo-hero-landing {
-  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  font-size: 2.8rem;
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
+  line-height: 1.2;
   margin-bottom: 20px;
   color: #ffffff;
 }
@@ -297,8 +273,8 @@ body.landing-body {
 }
 
 .subtitulo-hero-landing {
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.1rem;
+  color: #b8b8b8;
   max-width: 680px;
   margin: 0 auto 40px auto;
   line-height: 1.65;
@@ -314,7 +290,7 @@ body.landing-body {
 .hero-motivacion {
   margin-top: 36px;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #b3b3b3;
   max-width: 520px;
   margin-left: auto;
   margin-right: auto;
@@ -374,7 +350,6 @@ body.landing-body {
   margin: 0 auto;
   border-radius: 12px;
   display: block;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
   border: 1px solid #e5e7eb;
 }
 
@@ -383,7 +358,7 @@ body.landing-body {
 }
 
 .beneficios-landing .titulo-seccion     { color: #ffffff; }
-.beneficios-landing .descripcion-seccion { color: rgba(255, 255, 255, 0.55); }
+.beneficios-landing .descripcion-seccion { color: #8c8c8c; }
 
 .beneficios-landing .tarjeta {
   background: #16152b;
@@ -398,7 +373,7 @@ body.landing-body {
 }
 
 .beneficios-landing .tarjeta-titulo-landing { color: #e5e7eb; }
-.beneficios-landing .tarjeta-texto-landing  { color: rgba(255, 255, 255, 0.5); }
+.beneficios-landing .tarjeta-texto-landing  { color: #808080; }
 
 .beneficio-numero-landing {
   font-size: 2.2rem;
@@ -453,7 +428,6 @@ body.landing-body {
 .billing-btn.activo {
   background: #ffffff;
   color: #111827;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .billing-badge-ahorro {
@@ -488,8 +462,7 @@ body.landing-body {
 
 .tarjeta-plan-landing.destacado {
   border-color: #4f46e5;
-  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.14);
-  background: #fafafe;
+  background: #fafafa;
 }
 
 .plan-badge {
@@ -545,7 +518,6 @@ body.landing-body {
   font-weight: 800;
   color: #111827;
   line-height: 1;
-  letter-spacing: -0.03em;
 }
 
 .precio-periodo {
@@ -614,7 +586,6 @@ body.landing-body {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 40px;
-  box-shadow: 0 4px 24px rgba(79, 70, 229, 0.06);
 }
 
 .contacto-form-landing {
@@ -665,7 +636,6 @@ body.landing-body {
 .form-campo-landing select:focus,
 .form-campo-landing textarea:focus {
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
   background: #ffffff;
 }
 
@@ -702,7 +672,7 @@ body.landing-body {
 }
 
 .tecnica-landing .titulo-seccion     { color: #ffffff; }
-.tecnica-landing .descripcion-seccion { color: rgba(255, 255, 255, 0.55); }
+.tecnica-landing .descripcion-seccion { color: #8c8c8c; }
 
 .tecnica-rejilla-landing {
   display: flex;
@@ -717,31 +687,31 @@ body.landing-body {
 .tarjeta-tecnica-landing {}
 
 .tecnica-landing .tarjeta-tecnica-landing {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: #232040;
+  border-color: #2d2a52;
 }
 
 .tecnica-landing .tarjeta-tecnica-landing:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(99, 102, 241, 0.5);
+  background: #242038;
+  border-color: #6366f1;
   transform: translateY(-3px);
 }
 
 .tecnica-landing .tarjeta-titulo-landing { color: #c7d2fe; }
-.tecnica-landing .tarjeta-texto-landing  { color: rgba(255, 255, 255, 0.55); }
+.tecnica-landing .tarjeta-texto-landing  { color: #8c8c8c; }
 
 .pie-pagina-landing {
   background: #0d0c1d;
   border-top: 1px solid #1e1b4b;
   padding: 36px 0 20px;
-  color: rgba(255, 255, 255, 0.45);
+  color: #737373;
   font-size: 0.9rem;
   text-align: left;
 }
 
 .pie-grid-landing {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 40px;
   margin-bottom: 40px;
 }
@@ -764,7 +734,7 @@ body.landing-body {
 }
 
 .pie-sociales a {
-  color: rgba(255, 255, 255, 0.6);
+  color: #999999;
   font-size: 1.2rem;
   transition: color 0.3s;
 }
@@ -790,7 +760,7 @@ body.landing-body {
 }
 
 .pie-columna-links ul li a {
-  color: rgba(255, 255, 255, 0.45);
+  color: #737373;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -816,7 +786,7 @@ body.landing-body {
 
 .pie-linea-landing {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: #242038;
   width: 100%;
   margin: 30px 0;
 }

@@ -7,7 +7,7 @@ if (isset($_POST['guardarReto'])) {
     $horasReto = trim($_POST['horasReto']);
     $fechaInicioReto = trim($_POST['fechaInicioReto']);
     $fechaFinReto = trim($_POST['fechaFinReto']);
-    $listaModulos = $_POST['modulosReto'] ?? [];
+    $idModulo = trim($_POST['modulosReto'] ?? '');
 
     $listaDeErrores = [];
 
@@ -50,19 +50,16 @@ if (isset($_POST['guardarReto'])) {
         }
     }
 
-    if (empty($listaModulos)) {
-        $listaDeErrores['modulosReto'] = "Debes seleccionar al menos un módulo.";
+    if (empty($idModulo) || !is_numeric($idModulo)) {
+        $listaDeErrores['modulosReto'] = "Debes seleccionar un módulo.";
     } else if (is_numeric($horasReto)) {
-        foreach ($listaModulos as $idModulo) {
-            if (!comprobarHorasDisponiblesModulo($idModulo, $horasReto, null)) {
-                $listaDeErrores['modulosReto'] = "Un módulo no tiene suficientes horas.";
-                break;
-            }
+        if (!comprobarHorasDisponiblesModulo($idModulo, $horasReto, null)) {
+            $listaDeErrores['modulosReto'] = "El módulo no tiene suficientes horas disponibles.";
         }
     }
 
     if (empty($listaDeErrores)) {
-        $resultado = insertarReto($nombreReto, $fechaInicioReto, $fechaFinReto, $horasReto, $listaModulos);
+        $resultado = insertarReto($nombreReto, $fechaInicioReto, $fechaFinReto, $horasReto, [$idModulo]);
         if ($resultado) {
             $_SESSION['exito'] = "Reto creado correctamente.";
             header("Location: ../../../vistas/admin/retos/verRetos.php");

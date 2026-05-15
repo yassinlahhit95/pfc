@@ -15,7 +15,6 @@ if (isset($_POST["enviar"])) {
 
     $errores = [];
 
-    // Chequeo de campos vacíos
     if (empty($email)) {
         $errores['usuario'] = "El correo electrónico es obligatorio.";
     }
@@ -31,7 +30,6 @@ if (isset($_POST["enviar"])) {
         exit;
     }
 
-    // Limpiamos sesiones previas
     unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante']);
 
     // 1. ¿Es Admin?

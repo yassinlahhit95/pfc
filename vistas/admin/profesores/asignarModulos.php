@@ -22,7 +22,7 @@ if (!$profesor) {
 }
 
 $modulos_asignados = obtenerIdsModulosDeProfesor($idProfesor);
-$todos_los_modulos = listarModulos(); // Incluye nombre de ciclo por el JOIN
+$todos_los_modulos = listarModulos();
 $ciclos = listarTodosLosCiclos();
 
 $modulos_por_ciclo = [];

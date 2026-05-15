@@ -82,9 +82,9 @@ function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExclui
     mysqli_close($con);
     $maximo = 0;
     $ocupadas = 0;
-    if ($fila != null) {
-        if ($fila['horasMaximas'] != null) { $maximo = intval($fila['horasMaximas']); }
-        if ($fila['horasOcupadas'] != null) { $ocupadas = intval($fila['horasOcupadas']); }
+    if ($fila) {
+        if ($fila['horasMaximas'])  { $maximo   = intval($fila['horasMaximas']); }
+        if ($fila['horasOcupadas']) { $ocupadas = intval($fila['horasOcupadas']); }
     }
     return ($ocupadas + $horasNuevas) <= $maximo;
 }
@@ -195,7 +195,7 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
     $fila = mysqli_fetch_assoc($resultado);
 
     $nota = "";
-    if ($fila != null) {
+    if ($fila) {
         $nota = $fila['nota'];
     }
 
@@ -261,7 +261,7 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     $promedio = 0;
-    if ($fila['promedio'] != null) {
+    if ($fila['promedio']) {
         $promedio = floatval($fila['promedio']);
     }
     mysqli_close($con);

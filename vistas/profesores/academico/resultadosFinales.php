@@ -48,7 +48,6 @@ if ($id_ciclo_elegido) {
         $id_est = $estudianteIndividual['idEstudiante'];
         $nombre_est = mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8');
         
-        // Obtener calificación TFG
         require_once __DIR__ . "/../../../modelos/tfg.php";
         $notaTFG_raw = obtenerCalificacionTFG($id_est);
         $notaTFG = $notaTFG_raw ? $notaTFG_raw['nota'] : '—';

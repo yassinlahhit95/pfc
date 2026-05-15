@@ -45,24 +45,19 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <div class="tarjeta-blanca margen-abajo">
     <div class="disposicion-flexible envoltura-flexible separacion-grande">
         <div class="campo-formulario flexible-rellenar">
-            <label>FILTRAR POR NIVEL:</label>
-            <select id="selectFiltroNivel" onchange="filtrarNivelModulos()">
-                <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
-                    <option value="<?= $nivelFiltro['idNivel'] ?>">
-                        <?= $nivelFiltro['nombreNivel'] ?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-        <div class="campo-formulario flexible-rellenar">
             <label>FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaModulos')">
                 <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>" data-nivel="<?= $cicloFiltro['idNivel'] ?>">
-                        <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
-                    </option>
+                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
+                    <optgroup label="<?= $nivelFiltro['nombreNivel'] ?>">
+                        <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                            <?php if ($cicloFiltro['idNivel'] == $nivelFiltro['idNivel']) { ?>
+                                <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
+                                    <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
+                                </option>
+                            <?php } ?>
+                        <?php } ?>
+                    </optgroup>
                 <?php } ?>
             </select>
         </div>
@@ -144,28 +139,6 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-<script>
-function filtrarNivelModulos() {
-    var idNivel = document.getElementById('selectFiltroNivel').value;
-    var selectCiclo = document.getElementById('selectFiltroCiclo');
-    var opciones = selectCiclo.querySelectorAll('option');
-
-    opciones.forEach(function(opcion) {
-        if (opcion.value === '') {
-            opcion.style.display = '';
-            return;
-        }
-        if (idNivel === '' || opcion.getAttribute('data-nivel') === idNivel) {
-            opcion.style.display = '';
-        } else {
-            opcion.style.display = 'none';
-        }
-    });
-
-    selectCiclo.value = '';
-    filtrarTabla('selectFiltroCiclo', 'tablaModulos');
-}
-</script>
 
 
 

@@ -21,13 +21,11 @@ export async function requestPermissionAndGetToken(userId, userRole) {
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            // FORZAR LIMPIEZA: Desregistramos cualquier SW antiguo para evitar duplicados
             const regs = await navigator.serviceWorker.getRegistrations();
             for (let reg of regs) {
                 await reg.unregister();
             }
 
-            // Registramos el nuevo SW limpio
             const registration = await navigator.serviceWorker.register(swPath);
             await navigator.serviceWorker.ready;
 
@@ -57,8 +55,6 @@ onMessage(messaging, (payload) => {
     const titulo = (payload.data && payload.data.title) ? payload.data.title : (payload.notification ? payload.notification.title : "Notificación");
     const mensaje = (payload.data && payload.data.body) ? payload.data.body : (payload.notification ? payload.notification.body : "Nuevo mensaje recibido");
 
-    // Mostramos SOLO la UI personalizada cuando el usuario está navegando
-    // Esto evita que salga el aviso de Windows + el aviso azul de la web
     mostrarNotificacionUI(titulo, mensaje);
 });
 

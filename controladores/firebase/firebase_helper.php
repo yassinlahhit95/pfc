@@ -7,7 +7,6 @@ function obtenerAccessToken() {
     $rutaConfig = __DIR__ . '/../../config/service-account.json';
 
     if (!file_exists($rutaConfig)) {
-        // Null if Firebase not configured (optional feature)
         return null;
     }
 
@@ -67,7 +66,7 @@ function obtenerAccessToken() {
 function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     if (empty($token)) return false;
 
-    $idProyecto = "pfc1-5c23c"; // ID del proyecto en Firebase Console
+    $idProyecto = "pfc1-5c23c";
     $urlFCM = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
 
     $accessToken = obtenerAccessToken();
@@ -76,7 +75,6 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
         return false;
     }
 
-    // URL absoluta del logo para que Firebase la encuentre siempre
     $urlLogo = "https://yassin.agency/public/imagenes/aulapro.png";
 
     $cuerpoCarga = [
@@ -85,7 +83,7 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
             'notification' => [
                 'title' => $titulo,
                 'body' => $mensaje,
-                'image' => $urlLogo // Imagen opcional (grande)
+                'image' => $urlLogo
             ],
             'data' => [
                 'title' => $titulo,
@@ -94,8 +92,8 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
             ],
             'webpush' => [
                 'notification' => [
-                    'icon' => $urlLogo, // Icono pequeño
-                    'badge' => $urlLogo  // Icono de la barra de estado
+                    'icon' => $urlLogo,
+                    'badge' => $urlLogo
                 ]
             ]
         ]

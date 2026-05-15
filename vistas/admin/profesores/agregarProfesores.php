@@ -120,7 +120,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
                 <div class="lista-checkboxes scroll-vertical-200">
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="item-checkbox">
-                            <input type="checkbox" name="ciclos[]" value="<?= $ciclo['idCiclo'] ?>" class="check-ciclo" data-id="<?= $ciclo['idCiclo'] ?>"
+                            <input type="checkbox" name="ciclos[]" value="<?= $ciclo['idCiclo'] ?>" class="check-ciclo"
                                 <?php if (in_array($ciclo['idCiclo'], $ciclosElegidos)) { echo 'checked'; } ?>>
                             <span><?= $ciclo['nombreCiclo'] ?></span>
                         </label>
@@ -135,7 +135,7 @@ unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
                     <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" data-ciclo-id="<?= $idCiclo ?>">
+                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" id="grupo-ciclo-<?= $idCiclo ?>">
                             <p class="texto-negrita color-primario" style="margin-bottom: 10px;">
                                 <?= $grupo['nombre'] ?>
                             </p>
