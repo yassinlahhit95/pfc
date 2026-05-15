@@ -1,124 +1,47 @@
 {
-  "session_id": "session-2026-05-13-1607",
-  "started": "2026-05-13T14:07:40.259Z",
+  "session_id": "session-2026-05-14-0953",
+  "started": "2026-05-14T07:53:45.910Z",
   "files_read": {
-    "C:/xampp/htdocs/pfc/modelos/profesores.php": {
+    "C:/xampp/htdocs/pfc/escribir.md": {
       "count": 1,
-      "tokens": 2376,
-      "first_read": "2026-05-13T14:07:46.304Z"
+      "tokens": 533,
+      "first_read": "2026-05-14T07:55:40.011Z"
     },
-    "C:/xampp/htdocs/pfc/modelos/retos.php": {
+    "C:/xampp/htdocs/pfc/features.txt": {
       "count": 1,
-      "tokens": 2701,
-      "first_read": "2026-05-13T14:07:46.581Z"
+      "tokens": 323,
+      "first_read": "2026-05-14T07:55:40.153Z"
     },
-    "C:/xampp/htdocs/pfc/modelos/pagos.php": {
+    "C:/xampp/htdocs/pfc/diagramas.md": {
       "count": 1,
-      "tokens": 1426,
-      "first_read": "2026-05-13T14:07:47.431Z"
+      "tokens": 1755,
+      "first_read": "2026-05-14T07:55:42.994Z"
     },
-    "C:/xampp/htdocs/pfc/modelos/calificaciones.php": {
+    "C:/xampp/htdocs/pfc/IMPLEMENTACION_COMPLETA.md": {
       "count": 1,
-      "tokens": 3050,
-      "first_read": "2026-05-13T14:09:52.261Z"
+      "tokens": 3775,
+      "first_read": "2026-05-14T07:55:43.233Z"
+    },
+    "C:/xampp/htdocs/pfc/TFG_Proyecto.txt": {
+      "count": 1,
+      "tokens": 1693,
+      "first_read": "2026-05-14T07:55:48.820Z"
     }
   },
   "files_written": [
     {
-      "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
-      "action": "edit",
-      "tokens": 46,
-      "at": "2026-05-13T14:08:32.604Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
-      "action": "edit",
-      "tokens": 50,
-      "at": "2026-05-13T14:08:33.521Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/profesores.php",
-      "action": "edit",
-      "tokens": 50,
-      "at": "2026-05-13T14:08:37.820Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/estudiantes.php",
-      "action": "edit",
-      "tokens": 50,
-      "at": "2026-05-13T14:08:39.273Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
-      "action": "edit",
-      "tokens": 35,
-      "at": "2026-05-13T14:08:43.339Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/retos.php",
-      "action": "edit",
-      "tokens": 45,
-      "at": "2026-05-13T14:08:44.503Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/pagos.php",
-      "action": "edit",
-      "tokens": 12,
-      "at": "2026-05-13T14:08:48.462Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/pagos.php",
-      "action": "edit",
-      "tokens": 30,
-      "at": "2026-05-13T14:08:49.899Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/pagos.php",
-      "action": "edit",
-      "tokens": 37,
-      "at": "2026-05-13T14:08:51.558Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
-      "action": "edit",
-      "tokens": 92,
-      "at": "2026-05-13T14:10:34.424Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
-      "action": "edit",
-      "tokens": 154,
-      "at": "2026-05-13T14:10:39.638Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
-      "action": "edit",
-      "tokens": 97,
-      "at": "2026-05-13T14:10:44.748Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
-      "action": "edit",
-      "tokens": 71,
-      "at": "2026-05-13T14:10:49.288Z"
-    },
-    {
-      "file": "C:/xampp/htdocs/pfc/modelos/calificaciones.php",
-      "action": "edit",
-      "tokens": 64,
-      "at": "2026-05-13T14:10:53.597Z"
+      "file": "C:/xampp/htdocs/pfc/genera-memoria.ps1",
+      "action": "create",
+      "tokens": 8693,
+      "at": "2026-05-14T08:05:31.411Z"
     }
   ],
   "edit_counts": {
-    "modelos/profesores.php": 2,
-    "modelos/estudiantes.php": 2,
-    "modelos/retos.php": 2,
-    "modelos/pagos.php": 3,
-    "modelos/calificaciones.php": 5
+    "genera-memoria.ps1": 1
   },
-  "anatomy_hits": 3,
+  "anatomy_hits": 5,
   "anatomy_misses": 0,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 1
 }

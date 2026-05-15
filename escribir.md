@@ -1,48 +1,66 @@
-# Guía para escribir la documentación del Proyecto Final DAW
+# Guía de Redacción de la Memoria del TFG - DAW
 
-## INTRODUCCIÓN
+Esta guía proporciona la estructura y el contenido recomendado para elaborar la memoria oficial de tu Trabajo de Fin de Grado.
 
-### Qué se espera en DAW real:
-- Presentar el proyecto de forma clara y concisa
-- Justificar la importancia y utilidad
-- Mostrar objetivos generales
-- Indicar alcance y limitaciones
-- Estructura del documento
+## 1. INTRODUCCIÓN Y OBJETIVOS
+*¿De qué trata el proyecto y por qué es importante?*
 
-### Ideas que debes escribir:
-- ¿Por qué elegiste este tema?
-- ¿Qué problema resuelve tu sistema?
-- ¿Qué aporta al centro educativo?
-- ¿Cuáles son los objetivos principales?
-- ¿Qué tecnologías usas y por qué?
+- **Presentación:** Describe AulaPro como una solución integral para centros de FP.
+- **Justificación:** Explica el problema de la dispersión de datos en Excels y la necesidad de una plataforma centralizada.
+- **Objetivos:**
+    - Digitalizar la gestión de notas (módulos y retos).
+    - Automatizar la generación de boletines PDF.
+    - Mejorar la comunicación vía push y email.
+    - Centralizar la gestión de inventario y pagos.
 
-### Ejemplos cortos:
-"Este proyecto desarrolla un sistema web para gestionar..."
-"El objetivo es facilitar la administración académica..."
-"Se ha utilizado PHP y MySQL por su robustez..."
+## 2. ANÁLISIS DEL SISTEMA
+*¿Qué necesita el sistema para funcionar?*
 
-### Preguntas sobre TU sistema:
-- ¿Cuántos usuarios maneja tu plataforma actualmente?
-  Ahora mismo tiene como 200 estudiantes, 20 profesores y 5 admins, pero puede crecer más si quieren.
+- **Requisitos Funcionales:**
+    - Gestión multirrol (Admin, Profe, Alumno).
+    - Sistema de evaluación ABP (75% módulos, 25% retos).
+    - Módulo de préstamos de dispositivos.
+    - Buzón de reclamaciones y anuncios.
+- **Requisitos No Funcionales:**
+    - Interfaz responsive para móviles y tablets.
+    - Seguridad en el acceso mediante contraseñas cifradas.
+    - Escalabilidad para soportar cientos de alumnos.
 
-- ¿Qué módulos son los más importantes para el centro?
-  Los más importantes son las calificaciones y los pagos, porque el centro necesita controlar eso bien para no tener problemas.
+## 3. DISEÑO Y ARQUITECTURA
+*¿Cómo está construido por dentro?*
 
-- ¿Has tenido feedback de profesores o directores?
-  Sí, algunos profesores me han dicho que es fácil de usar para poner notas, y el director quiere más cosas como estadísticas de alumnos.
+- **Arquitectura:** Patrón **MVC (Modelo-Vista-Controlador)** implementado en PHP nativo.
+- **Base de Datos:** Explicar el modelo relacional (puedes referenciar `diagramas.md`).
+- **Interfaz de Usuario:** Uso de CSS nativo para un diseño ligero y responsive.
 
-- ¿Qué diferencia tu sistema de otros existentes?
-  Mi sistema es más barato porque usa PHP normal y MySQL, no necesita licencias caras como otros sistemas comerciales, y está hecho justo para centros como el mío.
+## 4. DESARROLLO TÉCNICO
+*Las tripas del código.*
 
-- ¿Cómo gestionas los Trabajos de Fin de Grado (TFG)?
-  Los estudiantes suben su PDF directamente al sistema, y el administrador puede revisarlos, descargarlos y ponerles la nota final con observaciones, todo desde el panel de control.
+- **Backend:** Uso de PHP 8.2 y PDO para la conexión segura a la DB.
+- **APIs de Terceros:**
+    - **Firebase (FCM):** Explicar cómo se guardan los tokens y cómo se envían las notificaciones.
+    - **Brevo API:** Explicar el flujo de envío de correos electrónicos.
+- **Generación de PDFs:** Uso de la librería FPDF para maquetar boletines oficiales.
 
-- ¿Qué tipo de documentos genera el sistema?
-  Genera boletines de notas oficiales, certificados de matriculación y sobres para el envío de documentación, todo en formato PDF profesional usando la librería FPDF.
+## 5. PRUEBAS Y VALIDACIÓN
+*¿Cómo sabemos que funciona bien?*
 
-### Frases guía para completar:
-- "El presente proyecto consiste en..."
-- "Se ha desarrollado con el fin de..."
-- "Los objetivos principales son..."
-- "El alcance incluye..."
-- "La documentación se estructura en..."
+- **Pruebas Unitarias:** Validación de formularios (campos vacíos, formatos de email).
+- **Pruebas de Integración:** Verificar que al poner una nota, el alumno recibe la notificación correctamente.
+- **Feedback Real:** Menciona que los profesores han valorado positivamente la facilidad para calificar retos.
+
+---
+
+### 💡 Preguntas Frecuentes para tu Defensa (FAQs)
+
+- **¿Por qué no usaste un Framework como Laravel?**
+  *Respuesta:* "Para demostrar un conocimiento profundo de la arquitectura MVC y la lógica subyacente de PHP, evitando la 'magia' de los frameworks y manteniendo el sistema ligero y fácil de desplegar en cualquier servidor XAMPP estándar."
+
+- **¿Cómo calculas la nota final?**
+  *Respuesta:* "El sistema realiza un cálculo dinámico: obtiene el promedio de las notas de los módulos (75%) y lo suma al promedio de los retos asociados (25%), permitiendo una evaluación continua real."
+
+- **¿Es seguro el sistema?**
+  *Respuesta:* "Se han implementado validaciones en todos los controladores, sesiones seguras por rol y se ha preparado la estructura para el uso de sentencias preparadas contra inyección SQL."
+
+- **¿Qué es lo más difícil que has hecho?**
+  *Respuesta:* "La integración de las notificaciones push de Firebase y la lógica de asignación dinámica de retos a múltiples módulos."

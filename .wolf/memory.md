@@ -2,6 +2,7 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 14-05 | Regenerado memoria-tfg.docx completo para AulaPro con contenido actualizado, nivel A2 español humanizado, y marcadores de diagramas y capturas | memoria-tfg.docx | OK ~4000 palabras | ~1200 |
 | 13-05 | Deleted vistas/admin/reportes/ (3 files), controladores/admin/reportes/ (2 files), lib/fpdf/ | feature removed by user | ~0 |
 | 13-05 | Edited vistas/admin/comunes/nav.php | removed REPORTES section from sidebar | ~0 |
 | 20:40 | Edited vistas/admin/modulos/agregarModulos.php | modified if() | ~155 |
@@ -268,3 +269,15 @@
 | 16:10 | Edited modelos/calificaciones.php | 5→5 lines | ~67 |
 | 16:10 | Edited modelos/calificaciones.php | added 1 condition(s) | ~59 |
 | 16:10 | Session end: 14 writes across 5 files (profesores.php, estudiantes.php, retos.php, pagos.php, calificaciones.php) | 4 reads | ~10386 tok |
+
+## Session: 2026-05-14 09:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-14 09:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:05 | Created genera-memoria.ps1 | — | ~8113 |
+| 10:11 | Session end: 1 writes across 1 files (genera-memoria.ps1) | 5 reads | ~16772 tok |

@@ -1,8 +1,10 @@
 # Diagramas de AulaPro
 
-Aquí están los esquemas de cómo está montada la base de datos y cómo funciona la parte de las notas.
+Este documento contiene la representación visual de la arquitectura de datos y los flujos de trabajo principales del sistema AulaPro.
 
-## Diagrama Entidad-Relación (Base de Datos)
+## 1. Diagrama Entidad-Relación (Base de Datos)
+
+El sistema utiliza una base de datos relacional MySQL con 20 tablas organizadas para soportar la gestión multi-rol.
 
 ```mermaid
 erDiagram
@@ -22,27 +24,36 @@ erDiagram
         string nombreModulo
         int horasMaximas
         int idCiclo FK
+        int curso
     }
     PROFESORES {
         int idProfesor PK
         string nombreProfesor
         string emailProfesor
-        string telefonoProfesor
+        string password
         string dniProfesor
+        string telefonoProfesor
+        string direccionProfesor
         string fcm_token
     }
     ESTUDIANTES {
         int idEstudiante PK
         string nombreEstudiante
         string emailEstudiante
+        string password
+        string dniEstudiante
         int idCiclo FK
         string archivoTFG
+        string tituloTFG
+        datetime fechaSubidaTFG
         string fcm_token
     }
     DIRECTORES {
         int idDirector PK
         string nombreDirector
         string emailDirector
+        string password
+        string dniDirector
         string fcm_token
     }
     RETOS {
@@ -76,6 +87,7 @@ erDiagram
         decimal nota_1final
         decimal nota_2ev
         decimal nota_2final
+        text observaciones
     }
     DISPOSITIVOS {
         int idDispositivo PK
@@ -88,12 +100,14 @@ erDiagram
         int idEstudiante FK
         string numeroSerie
         date fechaPrestamo
+        date fechaDevolucion
         enum estadoPrestamo
     }
     ANUNCIOS {
         int idAnuncio PK
         string titulo
         text mensaje
+        datetime fechaAnuncio
         date fechaExpiracion
         enum dirigidoA
     }
@@ -104,7 +118,10 @@ erDiagram
         enum emisor_rol
         string asunto
         text descripcion
+        date fecha
         enum estadoReclamacion
+        boolean leido
+        text respuesta
     }
     PAGOS {
         int idPago PK
@@ -113,6 +130,7 @@ erDiagram
         date fechaPago
         date fechaProximoPago
         enum tipoPago
+        string comprobante
     }
     EVENTOS {
         int idEvento PK
@@ -131,71 +149,54 @@ erDiagram
         int idModulo FK
     }
 
-    NIVELES ||--o{ CICLOS : "contiene"
-    CICLOS ||--o{ MODULOS : "incluye"
-    CICLOS ||--o{ ESTUDIANTES : "ofrece"
+    NIVELES ||--o{ CICLOS : "agrupa"
+    CICLOS ||--o{ MODULOS : "contiene"
+    CICLOS ||--o{ ESTUDIANTES : "matricula a"
     CICLOS ||--o{ CICLO_PROFESOR : "asocia"
-    MODULOS ||--o{ MODULO_RETO : "relaciona"
-    MODULOS ||--o{ PROFESOR_MODULO : "asigna"
-    RETOS ||--o{ MODULO_RETO : "agrega"
+    MODULOS ||--o{ MODULO_RETO : "participa en"
+    MODULOS ||--o{ PROFESOR_MODULO : "impartido por"
+    RETOS ||--o{ MODULO_RETO : "abarca"
     PROFESORES ||--o{ PROFESOR_MODULO : "imparte"
-    PROFESORES ||--o{ CICLO_PROFESOR : "participa"
+    PROFESORES ||--o{ CICLO_PROFESOR : "participa en"
     ESTUDIANTES ||--o{ CALIFICACIONES_RETOS : "recibe"
     ESTUDIANTES ||--o{ CALIFICACIONES_MODULOS : "recibe"
-    ESTUDIANTES ||--o{ PRESTAMOS : "toma"
-    ESTUDIANTES ||--o{ PAGOS : "paga"
-    ESTUDIANTES ||--o{ RECLAMACIONES : "envía"
-    PROFESORES ||--o{ RECLAMACIONES : "recibe"
     ESTUDIANTES ||--o{ CALIFICACIONES_TFG : "recibe nota"
+    ESTUDIANTES ||--o{ PRESTAMOS : "solicita"
+    DISPOSITIVOS ||--o{ PRESTAMOS : "es prestado"
+    ESTUDIANTES ||--o{ PAGOS : "realiza"
+    ESTUDIANTES ||--o{ RECLAMACIONES : "envía/recibe"
+    PROFESORES ||--o{ RECLAMACIONES : "recibe/envía"
 ```
 
-## Flujo de Calificación (Secuencia)
+## 2. Flujo de Calificación y Notificación
 
 ```mermaid
 sequenceDiagram
     participant P as Profesor
-    participant S as Sistema
-    participant M as Modelo
-    participant B as BD
+    participant S as Servidor (PHP)
+    participant B as Base de Datos
+    participant F as Firebase/Brevo
     participant E as Estudiante
 
-    P->>S: Selecciona Módulo
-    S->>M: buscarRetos($idModulo)
-    M->>B: SELECT...
-    B-->>M: Retos
-    M-->>S: Lista
-    S-->>P: Muestra retos
+    P->>S: Introduce nota de Módulo/Reto
+    S->>B: INSERT/UPDATE Calificación
+    B-->>S: Confirmación
+    
+    rect rgb(240, 240, 240)
+    Note over S,F: Proceso de Notificación
+    S->>F: Enviar Push (FCM) / Email (Brevo)
+    F-->>E: Notificación recibida
+    end
 
-    P->>S: Pone la nota
-    S->>M: guardarNota($idEstu, $idReto, $nota)
-    M->>B: INSERT/UPDATE...
-    B-->>M: OK
-    M-->>S: OK
-    S-->>P: Guardado
-
-    Note over S,E: Notificación al alumno
-    E->>S: Mira sus notas
-    S->>M: verNotas($idEstu)
-    M->>B: SELECT...
-    B-->>M: Datos
-    M-->>S: Calificaciones
-    S-->>E: Ver notas
+    E->>S: Accede a Portal Estudiante
+    S->>B: SELECT Calificaciones
+    B-->>S: Datos del estudiante
+    S-->>E: Muestra boletín actualizado
 ```
 
-## Listado de Tablas
-- `niveles`: Grado Medio o Superior.
-- `ciclos`: DAW, DAM, SMR, etc.
-- `modulos`: Asignaturas.
-- `profesores`: Datos del equipo docente.
-- `estudiantes`: Alumnos matriculados.
-- `directores`: Administradores.
-- `retos`: Proyectos ABP.
-- `modulo_reto`: Qué retos van con qué módulos.
-- `calificaciones_retos`: Notas de los proyectos.
-- `calificaciones_modulos`: Notas de exámenes.
-- `dispositivos` y `prestamos`: Gestión de portátiles.
-- `anuncios`: Tablón de avisos.
-- `eventos`: Calendario escolar.
-- `reclamaciones`: Mensajes internos.
-- `pagos`: Control de cuotas.
-- `ciclo_profesor` y `profesor_modulo`: Asignaciones de trabajo.
+## 3. Descripción de Bloques Funcionales
+- **Estructura Académica:** Control de Niveles, Ciclos y Módulos.
+- **Gestión de Usuarios:** Repositorio centralizado de Directores, Profesores y Estudiantes con autenticación propia.
+- **Evaluación Mixta:** Sistema que combina calificaciones tradicionales de módulos con la metodología ABP (Retos).
+- **Servicios del Centro:** Gestión de inventario tecnológico, control de cobros (Pagos) y organización de eventos.
+- **Comunicación Interna:** Tablón de anuncios, mensajería de reclamaciones y sistema de notificaciones push.
