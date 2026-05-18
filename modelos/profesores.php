@@ -136,9 +136,10 @@ function limpiarModulosProfesor($idProf) {
 
 function actualizarPasswordProfesor($id, $pass) {
     $con = obtenerConexion();
+    $passwordHasheada = password_hash($pass, PASSWORD_DEFAULT);
     $sql = "UPDATE profesores SET password = ? WHERE idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $pass, $id);
+    mysqli_stmt_bind_param($stmt, "si", $passwordHasheada, $id);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
@@ -207,14 +208,18 @@ function obtenerTokensProfesores() {
 
 function validarLoginProfesor($email, $pass) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM profesores WHERE emailProfesor = ? AND password = ?";
+    $sql = "SELECT * FROM profesores WHERE emailProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $email, $pass);
+    mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datos = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return $datos;
+
+    if ($datos && password_verify($pass, $datos['password'])) {
+        return $datos;
+    }
+    return null;
 }
 
 function actualizarTokenFCMProfesor($id, $token) {

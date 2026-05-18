@@ -15,7 +15,7 @@ if (isset($_POST['actualizarEstudiante'])) {
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = trim($_POST['observacionesEstudiante']);
     $idCiclo = trim($_POST['idCiclo']);
-    $curso = intval($_POST['curso'] ?? 1);
+    $curso = isset($_POST['curso']) ? trim($_POST['curso']) : 'Grado Medio';
 
     if (empty($idEstudiante)) {
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");

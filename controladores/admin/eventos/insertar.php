@@ -11,22 +11,33 @@ if (isset($_POST['guardarEvento'])) {
 
     $errores = [];
 
-    if (empty($titulo) || empty($fechaEvento)) {
-        $errores['datos'] = "Faltan datos.";
+    if (empty($titulo)) {
+        $errores['tituloEvento'] = "El título es obligatorio.";
+    }
+    if (empty($ubicacionEvento)) {
+        $errores['ubicacionEvento'] = "La ubicación es obligatoria.";
+    }
+    if (empty($fechaEvento)) {
+        $errores['fechaEvento'] = "La fecha es obligatoria.";
+    }
+    if (empty($horaEvento)) {
+        $errores['horaEvento'] = "La hora es obligatoria.";
     }
 
     if (empty($errores)) {
         $resultado = insertarEvento($titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento);
         if ($resultado) {
             $_SESSION['exito'] = "Evento publicado.";
-        } else {
-            $_SESSION['error'] = "No se pudo guardar el evento.";
+            header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
+            exit;
         }
+        $_SESSION['error'] = "No se pudo guardar el evento.";
     } else {
-        $_SESSION['error'] = $errores['datos'];
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_evento'] = $_POST;
     }
-}
 
-header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
-exit;
+    header("Location: ../../../vistas/admin/eventos/agregarEvento.php");
+    exit;
+}
 ?>

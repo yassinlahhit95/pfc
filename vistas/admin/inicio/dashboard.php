@@ -27,7 +27,6 @@ $totalEstudiantes = contarEstudiantes();
 $totalProfesores = contarProfesores();
 $totalRetos = intval(contarRetos());
 $totalModulos = intval(contarModulos());
-$pctAprobados = obtenerPorcentajeAprobadosGlobal();
 $recaudado = obtenerTotalRecaudado();
 $totalCobros = contarPagosRealizados();
 
@@ -64,9 +63,6 @@ include __DIR__ . '/../comunes/nav.php';
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
     <div class="info-estadistica"><h3><?= $totalRetos ?></h3><p>Retos</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?= $pctAprobados ?>%</h3><p>Aprobados</p></div>
   </div>
 </div>
 

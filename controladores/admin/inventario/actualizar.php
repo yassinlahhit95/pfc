@@ -8,8 +8,11 @@ if (isset($_POST['actualizarArticulo'])) {
     $numeroSerie = trim($_POST['numeroSerie']);
 
     $errores_campos = [];
-    if (empty($nombreArticulo) || empty($numeroSerie)) {
-        $errores_campos['datos'] = "Faltan datos.";
+    if (empty($nombreArticulo)) {
+        $errores_campos['nombreArticulo'] = "El nombre es obligatorio.";
+    }
+    if (empty($numeroSerie)) {
+        $errores_campos['numeroSerie'] = "El número de serie es obligatorio.";
     }
 
     if (empty($errores_campos)) {

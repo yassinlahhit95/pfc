@@ -115,39 +115,25 @@ if (!empty($datos['idCiclo'])) {
             </div>
 
             <div class="campo-formulario">
-                <label for="idCiclo">Ciclo Formativo *</label>
-                <select name="idCiclo" id="idCiclo">
-                    <option value="">-- Selecciona un ciclo --</option>
-                    <optgroup label="Grado Medio">
-                        <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                            <?php if ($ciclo['idNivel'] == 1) { ?>
-                                <option value="<?= $ciclo['idCiclo'] ?>" <?php if (isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>>
-                                    <?= $ciclo['nombreCiclo'] ?>
-                                </option>
-                            <?php } ?>
-                        <?php } ?>
-                    </optgroup>
-                    <optgroup label="Grado Superior">
-                        <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                            <?php if ($ciclo['idNivel'] == 2) { ?>
-                                <option value="<?= $ciclo['idCiclo'] ?>" <?php if (isset($datos['idCiclo']) && $datos['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>>
-                                    <?= $ciclo['nombreCiclo'] ?>
-                                </option>
-                            <?php } ?>
-                        <?php } ?>
-                    </optgroup>
+                <label for="curso">Grado *</label>
+                <select name="curso" id="curso" onchange="filtrarCiclos()">
+                    <option value="">-- Selecciona un grado --</option>
+                    <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
                 </select>
-                <?php if (isset($errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
+                <?php if (isset($errores['curso'])) { ?>
+                    <strong class="error-campo"><?= $errores['curso'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label for="curso">Curso *</label>
-                <select name="curso" id="curso">
-                    <option value="1" <?php if (isset($datos['curso']) && $datos['curso'] == 1) { echo 'selected'; } ?>>1º Curso</option>
-                    <option value="2" <?php if (isset($datos['curso']) && $datos['curso'] == 2) { echo 'selected'; } ?>>2º Curso</option>
+                <label for="idCiclo">Ciclo Formativo *</label>
+                <select name="idCiclo" id="idCiclo">
+                    <option value="">-- Selecciona primero un grado --</option>
                 </select>
+                <?php if (isset($errores['idCiclo'])) { ?>
+                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
+                <?php } ?>
             </div>
         </div>
 
@@ -160,5 +146,35 @@ if (!empty($datos['idCiclo'])) {
     </form>
 </div>
 
+
+<script>
+var todosCiclos = <?= json_encode($todos_los_ciclos) ?>;
+
+function filtrarCiclos() {
+    var grado = document.getElementById('curso').value;
+    var cicloSelect = document.getElementById('idCiclo');
+    var nivelId = grado === 'Grado Medio' ? 1 : (grado === 'Grado Superior' ? 2 : 0);
+
+    cicloSelect.innerHTML = '<option value="">' + (grado ? '-- Selecciona un ciclo --' : '-- Selecciona primero un grado --') + '</option>';
+
+    if (nivelId > 0) {
+        todosCiclos.forEach(function(ciclo) {
+            if (parseInt(ciclo.idNivel) === nivelId) {
+                var opt = document.createElement('option');
+                opt.value = ciclo.idCiclo;
+                opt.textContent = ciclo.nombreCiclo;
+                cicloSelect.appendChild(opt);
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    filtrarCiclos();
+    <?php if (!empty($datos['idCiclo'])) { ?>
+    document.getElementById('idCiclo').value = '<?= $datos['idCiclo'] ?>';
+    <?php } ?>
+});
+</script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

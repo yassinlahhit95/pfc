@@ -86,9 +86,10 @@ function obtenerDirectorPorId($idDirector) {
 
 function actualizarPasswordDirector($idDirector, $nuevaPassword) {
     $con = obtenerConexion();
+    $passwordHasheada = password_hash($nuevaPassword, PASSWORD_DEFAULT);
     $sql = "UPDATE directores SET password = ? WHERE idDirector = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $nuevaPassword, $idDirector);
+    mysqli_stmt_bind_param($stmt, "si", $passwordHasheada, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
@@ -109,14 +110,18 @@ function obtenerTokensDirectores() {
 
 function validarLoginDirector($email, $password) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM directores WHERE emailDirector = ? AND password = ?";
+    $sql = "SELECT * FROM directores WHERE emailDirector = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $email, $password);
+    mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosUsuario = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return $datosUsuario;
+
+    if ($datosUsuario && password_verify($password, $datosUsuario['password'])) {
+        return $datosUsuario;
+    }
+    return null;
 }
 
 function actualizarTokenFCMDirector($idDirector, $nuevoToken) {

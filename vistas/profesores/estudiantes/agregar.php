@@ -141,10 +141,10 @@ if (!empty($datos['idCiclo'])) {
             </div>
 
             <div class="campo-formulario">
-                <label for="curso">Curso *</label>
+                <label for="curso">Grado *</label>
                 <select name="curso" id="curso">
-                    <option value="1" <?php if (isset($datos['curso']) && $datos['curso'] == 1) { echo 'selected'; } ?>>1º Curso</option>
-                    <option value="2" <?php if (isset($datos['curso']) && $datos['curso'] == 2) { echo 'selected'; } ?>>2º Curso</option>
+                    <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
                 </select>
             </div>
         </div>

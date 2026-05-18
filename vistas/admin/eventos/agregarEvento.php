@@ -10,7 +10,9 @@ $seccion = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? '';
-unset($_SESSION['error']);
+$errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_evento'] ?? [];
+unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_evento']);
 ?>
 
 <div class="encabezado-pagina">
@@ -27,27 +29,39 @@ unset($_SESSION['error']);
         <div class="form-estandar">
             <div class="campo-formulario">
                 <label for="tituloEvento">Título del Evento *</label>
-                <input type="text" name="tituloEvento" id="tituloEvento" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <input type="text" name="tituloEvento" id="tituloEvento" value="<?= $datos['tituloEvento'] ?? '' ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <?php if (isset($errores['tituloEvento'])) { ?>
+                    <strong class="error-campo"><?= $errores['tituloEvento'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label for="ubicacionEvento">Ubicación</label>
-                <input type="text" name="ubicacionEvento" id="ubicacionEvento" placeholder="Ej: Salón de Actos, Biblioteca...">
+                <label for="ubicacionEvento">Ubicación *</label>
+                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= $datos['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
+                <?php if (isset($errores['ubicacionEvento'])) { ?>
+                    <strong class="error-campo"><?= $errores['ubicacionEvento'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="fechaEvento">Fecha *</label>
-                <input type="date" name="fechaEvento" id="fechaEvento" value="<?= date('Y-m-d') ?>">
+                <input type="date" name="fechaEvento" id="fechaEvento" value="<?= $datos['fechaEvento'] ?? date('Y-m-d') ?>">
+                <?php if (isset($errores['fechaEvento'])) { ?>
+                    <strong class="error-campo"><?= $errores['fechaEvento'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
-                <label for="horaEvento">Hora</label>
-                <input type="time" name="horaEvento" id="horaEvento" value="09:00">
+                <label for="horaEvento">Hora *</label>
+                <input type="time" name="horaEvento" id="horaEvento" value="<?= $datos['horaEvento'] ?? '09:00' ?>">
+                <?php if (isset($errores['horaEvento'])) { ?>
+                    <strong class="error-campo"><?= $errores['horaEvento'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="descripcionEvento">Descripción</label>
-                <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."></textarea>
+                <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."><?= $datos['descripcionEvento'] ?? '' ?></textarea>
             </div>
         </div>
 

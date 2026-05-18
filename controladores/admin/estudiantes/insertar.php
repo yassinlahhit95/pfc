@@ -14,7 +14,7 @@ if (isset($_POST['guardarEstudiante'])) {
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = trim($_POST['observacionesEstudiante']);
     $idCiclo = trim($_POST['idCiclo']);
-    $curso = intval($_POST['curso'] ?? 1);
+    $curso = isset($_POST['curso']) ? trim($_POST['curso']) : '';
 
     $errores = [];
 
@@ -47,6 +47,9 @@ if (isset($_POST['guardarEstudiante'])) {
         $errores['codigoPostalEstudiante'] = "El código postal es obligatorio.";
     } elseif (!is_numeric($codigoPostal)) {
         $errores['codigoPostalEstudiante'] = "El código postal debe ser numérico.";
+    }
+    if (empty($curso)) {
+        $errores['curso'] = "Debe seleccionar un grado.";
     }
     if (empty($idCiclo)) {
         $errores['idCiclo'] = "Debe seleccionar un ciclo.";

@@ -99,7 +99,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                         <td><?= $estudianteIndividual['idEstudiante'] ?></td>
                         <td>
                             <span class="etiqueta-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                            <span class="etiqueta-estado gris"><?= $estudianteIndividual['curso'] == 1 ? '1º Curso' : '2º Curso' ?></span>
+                            <span class="etiqueta-estado gris"><?= $estudianteIndividual['curso'] ?></span>
                         </td>
                         <td><strong><?= mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8') ?></strong></td>
                         <td><?= $estudianteIndividual['emailEstudiante'] ?></td>

@@ -31,27 +31,27 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     return $existe;
 }
 
-function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 1) {
+function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
     if (checkEstudianteExistente($dni, $email)) {
         return false;
     }
     $con = obtenerConexion();
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssii", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
+    mysqli_stmt_bind_param($stmt, "ssssssssssis", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
     $res = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $res;
 }
 
-function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 1) {
+function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
     if (checkEstudianteExistente($dni, $email, $id)) {
         return false;
     }
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssiii", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $id);
+    mysqli_stmt_bind_param($stmt, "ssssssssssisi", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $id);
     $res = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $res;
@@ -119,9 +119,10 @@ function obtenerEstudiantePorId($idEstudiante) {
 
 function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $con = obtenerConexion();
+    $passwordHasheada = password_hash($nuevaPassword, PASSWORD_DEFAULT);
     $sql = "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $nuevaPassword, $idEstudiante);
+    mysqli_stmt_bind_param($stmt, "si", $passwordHasheada, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
@@ -151,14 +152,18 @@ function obtenerTokensEstudiantes() {
 
 function validarLoginEstudiante($email, $password) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND password = ?";
+    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $email, $password);
+    mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosUsuario = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    return $datosUsuario;
+
+    if ($datosUsuario && password_verify($password, $datosUsuario['password'])) {
+        return $datosUsuario;
+    }
+    return null;
 }
 
 function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {

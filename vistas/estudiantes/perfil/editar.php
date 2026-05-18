@@ -38,7 +38,15 @@ include_once "../comunes/nav.php";
     <form action="../../../controladores/estudiantes/perfil/actualizar.php" method="POST" class="form-estandar">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
-        <div class="titulo-tarjeta"><h3>DATOS DE CONTACTO</h3></div>
+        <div class="titulo-tarjeta"><h3>DATOS PERSONALES Y CONTACTO</h3></div>
+
+        <div class="campo-formulario">
+            <label for="nombreEstudiante">Nombre Completo</label>
+            <input type="text" id="nombreEstudiante" name="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? $est['nombreEstudiante'] ?>" class="<?= isset($errs['nombreEstudiante']) ? 'input-error' : '' ?>">
+            <?php if (isset($errs['nombreEstudiante'])) { ?>
+                <strong class="error-campo"><?= $errs['nombreEstudiante'] ?></strong>
+            <?php } ?>
+        </div>
 
         <div class="campo-formulario">
             <label for="emailEstudiante">Correo Electrónico</label>
@@ -87,4 +95,3 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-'; ?>

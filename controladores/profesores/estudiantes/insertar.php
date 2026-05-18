@@ -19,7 +19,7 @@ if (isset($_POST['guardarEstudiante'])) {
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = isset($_POST['observacionesEstudiante']) ? trim($_POST['observacionesEstudiante']) : '';
     $idCiclo = trim($_POST['idCiclo']);
-    $curso = intval($_POST['curso'] ?? 1);
+    $curso = isset($_POST['curso']) ? trim($_POST['curso']) : 'Grado Medio';
 
     $errores = [];
 

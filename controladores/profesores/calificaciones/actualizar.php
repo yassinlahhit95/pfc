@@ -16,16 +16,19 @@ if (isset($_POST['actualizarNota'])) {
     $nota2Ev = str_replace(',', '.', $nota2Ev);
     $nota2Final = str_replace(',', '.', $nota2Final);
 
-    $notasCheck = [$nota1Ev, $nota1Final, $nota2Ev, $nota2Final];
-    
     $errores = [];
-    foreach ($notasCheck as $nota) {
-        if (!empty($nota)) {
-            if (!is_numeric($nota) || $nota < 0 || $nota > 10) {
-                $errores['notas'] = "Notas deben estar entre 0 y 10.";
-                break;
-            }
-        }
+
+    if (!empty($nota1Ev) && (!is_numeric($nota1Ev) || $nota1Ev < 0 || $nota1Ev > 10)) {
+        $errores['nota_1ev'] = "La nota debe estar entre 0 y 10.";
+    }
+    if (!empty($nota1Final) && (!is_numeric($nota1Final) || $nota1Final < 0 || $nota1Final > 10)) {
+        $errores['nota_1final'] = "La nota debe estar entre 0 y 10.";
+    }
+    if (!empty($nota2Ev) && (!is_numeric($nota2Ev) || $nota2Ev < 0 || $nota2Ev > 10)) {
+        $errores['nota_2ev'] = "La nota debe estar entre 0 y 10.";
+    }
+    if (!empty($nota2Final) && (!is_numeric($nota2Final) || $nota2Final < 0 || $nota2Final > 10)) {
+        $errores['nota_2final'] = "La nota debe estar entre 0 y 10.";
     }
 
     if (empty($errores)) {
@@ -42,7 +45,7 @@ if (isset($_POST['actualizarNota'])) {
         }
         $_SESSION['error'] = "Error al guardar.";
     } else {
-        $_SESSION['error'] = $errores['notas'];
+        $_SESSION['errores'] = $errores;
     }
 
     header("Location: ../../../vistas/profesores/calificaciones/editar.php?id=" . $idCalificacion);

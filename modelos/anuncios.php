@@ -94,6 +94,8 @@ function listarAnunciosPorRol($rolUsuario) {
     $resultado = mysqli_stmt_get_result($stmt);
     $listaAnuncios = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
+        $fila['tituloAnuncio'] = $fila['titulo'];
+        $fila['contenidoAnuncio'] = $fila['mensaje'];
         $listaAnuncios[] = $fila;
     }
     mysqli_close($con);
@@ -113,6 +115,8 @@ function listarAnunciosPaginados($paginaActual, $limitePorPagina) {
 
     $listaAnuncios = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
+        $fila['tituloAnuncio'] = $fila['titulo'];
+        $fila['contenidoAnuncio'] = $fila['mensaje'];
         $listaAnuncios[] = $fila;
     }
 

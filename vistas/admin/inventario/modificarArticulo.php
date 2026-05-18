@@ -19,6 +19,10 @@ if (!$articulo) {
 $titulo_pagina = "AULAPRO | MODIFICAR ARTÍCULO";
 $seccion = 'inventario';
 include_once __DIR__ . "/../comunes/nav.php";
+
+$errores = $_SESSION['errores'] ?? [];
+$datos = $_SESSION['datos_inventario'] ?? [];
+unset($_SESSION['errores'], $_SESSION['datos_inventario']);
 ?>
 
 <div class="encabezado-pagina">
@@ -33,12 +37,18 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="form-estandar">
             <div class="campo-formulario">
                 <label for="nombreArticulo">Nombre del Artículo *</label>
-                <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $articulo['nombreArticulo'] ?>">
+                <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? $articulo['nombreArticulo'] ?>">
+                <?php if (isset($errores['nombreArticulo'])) { ?>
+                    <strong class="error-campo"><?= $errores['nombreArticulo'] ?></strong>
+                <?php } ?>
             </div>
 
             <div class="campo-formulario">
                 <label for="numeroSerie">Número de Serie *</label>
-                <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $articulo['numeroSerie'] ?>">
+                <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? $articulo['numeroSerie'] ?>">
+                <?php if (isset($errores['numeroSerie'])) { ?>
+                    <strong class="error-campo"><?= $errores['numeroSerie'] ?></strong>
+                <?php } ?>
             </div>
         </div>
 

@@ -12,8 +12,17 @@ if (isset($_POST['actualizarEvento'])) {
 
     $errores = [];
 
-    if (empty($titulo) || empty($fechaEvento)) {
-        $errores['datos'] = "Faltan datos.";
+    if (empty($titulo)) {
+        $errores['tituloEvento'] = "El título es obligatorio.";
+    }
+    if (empty($ubicacionEvento)) {
+        $errores['ubicacionEvento'] = "La ubicación es obligatoria.";
+    }
+    if (empty($fechaEvento)) {
+        $errores['fechaEvento'] = "La fecha es obligatoria.";
+    }
+    if (empty($horaEvento)) {
+        $errores['horaEvento'] = "La hora es obligatoria.";
     }
 
     if (empty($errores)) {
@@ -25,7 +34,8 @@ if (isset($_POST['actualizarEvento'])) {
         }
         $_SESSION['error'] = "Error al actualizar.";
     } else {
-        $_SESSION['error'] = $errores['datos'];
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_evento'] = $_POST;
     }
     
     header("Location: ../../../vistas/admin/eventos/modificarEvento.php?idEvento=" . $idEvento);

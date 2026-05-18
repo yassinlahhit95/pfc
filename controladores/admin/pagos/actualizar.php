@@ -12,8 +12,14 @@ if (isset($_POST['actualizarPago'])) {
 
     $errores = [];
 
-    if (empty($idEstudiante) || empty($monto) || $monto <= 0 || empty($fechaPago)) {
-        $errores['datos'] = "Error al actualizar.";
+    if (empty($idEstudiante)) {
+        $errores['idEstudiante'] = "Debe seleccionar un estudiante.";
+    }
+    if (empty($monto) || $monto <= 0) {
+        $errores['cantidadPago'] = "La cantidad debe ser un número positivo.";
+    }
+    if (empty($fechaPago)) {
+        $errores['fechaPago'] = "La fecha de pago es obligatoria.";
     }
 
     if (empty($errores)) {
@@ -25,7 +31,8 @@ if (isset($_POST['actualizarPago'])) {
         }
         $_SESSION['error'] = "Error al actualizar.";
     } else {
-        $_SESSION['error'] = $errores['datos'];
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_pago'] = $_POST;
     }
 
     header("Location: ../../../vistas/admin/pagos/modificarPagos.php?idPago=$idPago");

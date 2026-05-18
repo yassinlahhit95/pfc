@@ -33,7 +33,7 @@ if (isset($_POST['guardarArticulo'])) {
         $_SESSION['datos_inventario'] = $_POST;
     }
 
-    header("Location: ../../../vistas/admin/inventario/verInventario.php");
+    header("Location: ../../../vistas/admin/inventario/agregarArticulo.php");
     exit;
 }
 

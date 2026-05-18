@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <tr>
                             <td>
                                 <span class="etiqueta-estado <?= $est['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                                <span class="etiqueta-estado gris"><?= $est['curso'] == 1 ? '1º Curso' : '2º Curso' ?></span>
+                                <span class="etiqueta-estado gris"><?= $est['curso'] ?></span>
                             </td>
                             <td class="texto-negrita"><?= $est['nombreEstudiante'] ?></td>
                             <td><?= $est['emailEstudiante'] ?></td>
