@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | CICLOS FORMATIVOS";
 $seccion = 'ciclos';
@@ -15,7 +15,7 @@ $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>CICLOS FORMATIVOS</h1>
     <a href="agregarCiclos.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO CICLO
@@ -30,8 +30,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
+<div class="panel margen-abajo">
+    <div class="campo">
         <label>FILTRAR POR NIVEL:</label>
         <select id="selectFiltroNivel" onchange="filtrarTabla('selectFiltroNivel', 'tablaCiclos')">
             <option value="">-- Todos los Niveles --</option>
@@ -44,8 +44,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     </div>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaCiclos">
             <thead>
                 <tr>
@@ -58,15 +58,15 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_ciclos)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay ciclos configurados</td></tr>
+                    <tr><td colspan="5" class="vacio">No hay ciclos configurados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_ciclos as $ciclo) { 
-                        $nombresTutores = obtenerNombresTutoresCiclo($ciclo['idCiclo']);
-                        $textoTutores = !empty($nombresTutores) ? implode(", ", $nombresTutores) : '<span class="texto-atenuado">Sin asignar</span>';
+                        $nombresTutores = listarNombresTutoresCiclo($ciclo['idCiclo']);
+                        $textoTutores = !empty($nombresTutores) ? implode(", ", $nombresTutores) : '<span class="atenuado">Sin asignar</span>';
                     ?>
                     <tr>
                         <td><?= $ciclo['idCiclo'] ?></td>
-                        <td><strong><?= $ciclo['nombreCiclo'] ?></strong></td>
+                        <td><b><?= $ciclo['nombreCiclo'] ?></b></td>
                         <td><?= $ciclo['nombreNivel'] ?></td>
                         <td><?= $textoTutores ?></td>
                         <td>

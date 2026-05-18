@@ -1,17 +1,13 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idCicloElegido = $_GET['idCiclo'] ?? '';
-$mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
+$mis_ciclos = listarCiclosDeProfesor($idProfesor);
 $listaEvaluacion = listarEvaluacionTFGporProfesor($idProfesor, $idCicloElegido);
 
 $error = $_SESSION['error'] ?? '';
@@ -23,13 +19,13 @@ $seccionActual = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>EVALUACIÓN DE TFGS (ALUMNOS ASIGNADOS)</h1>
 </div>
 
-<div class="tarjeta-blanca margen-abajo">
-    <form method="GET" action="tfg.php" class="disposicion-flexible alinear-fin separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel margen-abajo">
+    <form method="GET" action="tfg.php" class="d-flex al-fin sep-g">
+        <div class="campo relleno">
             <label for="idCiclo">Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Todos mis Ciclos --</option>
@@ -51,8 +47,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
 <?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -67,19 +63,19 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($listaEvaluacion)) { ?>
                     <tr>
-                        <td colspan="6" class="sin-datos">No hay estudiantes asignados en estos ciclos.</td>
+                        <td colspan="6" class="vacio">No hay estudiantes asignados en estos ciclos.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaEvaluacion as $item) { ?>
                         <tr>
-                            <td><strong><?= $item['nombreEstudiante'] ?></strong></td>
+                            <td><?= $item['nombreEstudiante'] ?></td>
                             <td><?= $item['nombreCiclo'] ?></td>
                             <td>
                                 <?php if (!empty($item['archivoTFG'])) { ?>
-                                    <span class="estado-bolita activo-verde">ENTREGADO</span>
+                                    <span class="bolita activo-verde">ENTREGADO</span>
                                     <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" target="_blank" class="color-primario" style="margin-left: 10px;"><i class="fas fa-file-pdf"></i></a>
                                 <?php } else { ?>
-                                    <span class="estado-bolita inactivo-rojo">PENDIENTE</span>
+                                    <span class="bolita inactivo-rojo">PENDIENTE</span>
                                 <?php } ?>
                             </td>
                             <td>
@@ -88,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <?= $item['nota'] ?>
                                     </span>
                                 <?php } else { ?>
-                                    <span class="texto-atenuado">---</span>
+                                    <span class="atenuado">---</span>
                                 <?php } ?>
                             </td>
                             <td class="cuerpo-mensaje-tabla"><?= $item['observaciones'] ?? '<em>Sin observaciones</em>' ?></td>
@@ -108,30 +104,30 @@ include_once __DIR__ . "/../comunes/nav.php";
 <!-- Modal para calificar -->
 <div id="modalCalificar" class="oculto" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:2000; display:flex; align-items:center; justify-content:center;">
     <div class="modal-fondo"></div>
-    <div class="tarjeta-blanca" style="max-width:500px; width:90%; position:relative; z-index:1;">
+    <div class="panel" style="max-width:500px; width:90%; position:relative; z-index:1;">
         <h2 id="modalTitulo">Calificar TFG</h2>
-        <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="form-estandar" style="margin-top: 20px;">
+        <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="formulario" style="margin-top: 20px;">
             <input type="hidden" name="idEstudiante" id="modalIdEstudiante">
             <input type="hidden" name="origen" value="calificacionesTFG">
             
-            <div class="campo-formulario">
+            <div class="campo">
                 <label>Nota Final (0-10):</label>
                 <input type="number" name="nota" id="modalNota" step="0.1" min="0" max="10" required>
             </div>
             
-            <div class="campo-formulario">
+            <div class="campo">
                 <label>Observaciones / Feedback:</label>
                 <textarea name="observaciones" id="modalObservaciones" rows="4"></textarea>
             </div>
             
-            <div class="campo-formulario">
+            <div class="campo">
                 <label class="campo-checkbox">
                     <input type="checkbox" name="notificarEstudiante" value="1" checked>
                     Notificar al estudiante (Email + Push)
                 </label>
             </div>
             
-            <div class="form-acciones">
+            <div class="acciones">
                 <button type="submit" name="calificarTFG" class="boton-primario">
                     <i class="fas fa-save"></i> Guardar Calificación
                 </button>

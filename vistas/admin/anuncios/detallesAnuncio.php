@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
@@ -21,34 +21,34 @@ $seccion = 'anuncios';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>DETALLES DEL ANUNCIO</h1>
     <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="cabecera-detalles" style="margin-bottom: 20px;">
         <h2 class="texto-azul"><?= $anuncio['tituloAnuncio'] ?></h2>
     </div>
     
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Publicado</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Dirigido a</div>
-        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
+        <div class="valor-detalle"><span class="bolita activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
     </div>
 
     <div class="margen-arriba">
-        <div class="fila-detalle">
+        <div class="fila-dat">
             <div class="etiqueta-detalle">Contenido</div>
             <div class="valor-detalle">
                 <?php if (!empty($anuncio['contenidoAnuncio'])) { ?>
                     <?= $anuncio['contenidoAnuncio'] ?>
                 <?php } else { ?>
-                    <span class="texto-atenuado">Sin contenido.</span>
+                    <span class="atenuado">Sin contenido.</span>
                 <?php } ?>
             </div>
         </div>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | INVENTARIO DEL CENTRO";
 $seccion = 'inventario';
@@ -13,7 +13,7 @@ $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>GESTIÓN DE INVENTARIO</h1>
     <a href="agregarArticulo.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO ARTÍCULO
@@ -28,8 +28,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaInventario">
             <thead>
                 <tr>
@@ -41,18 +41,18 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_articulos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay artículos en el inventario</td></tr>
+                    <tr><td colspan="4" class="vacio">No hay artículos en el inventario</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_articulos as $art) { ?>
                     <tr>
-                        <td><strong><?= $art['nombreArticulo'] ?></strong></td>
+                        <td><b><?= $art['nombreArticulo'] ?></b></td>
                         <td><?= $art['numeroSerie'] ?></td>
                         <td>
                             <?php
                             $clase_estado = "activo-verde";
                             if ($art['estado'] != 'disponible') { $clase_estado = "inactivo-rojo"; }
                             ?>
-                            <span class="estado-bolita <?= $clase_estado ?>">
+                            <span class="bolita <?= $clase_estado ?>">
                                 <?= $art['estado'] ?>
                             </span>
                         </td>

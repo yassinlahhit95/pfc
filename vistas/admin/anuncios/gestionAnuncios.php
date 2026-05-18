@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | GESTIÓN DE ANUNCIOS";
 $seccion = 'anuncios';
@@ -13,7 +13,7 @@ $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>ANUNCIOS DEL SISTEMA</h1>
     <a href="agregarAnuncios.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO ANUNCIO
@@ -28,11 +28,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>Anuncios Recientes</h3>
     </div>
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -44,11 +44,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_anuncios)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay anuncios publicados</td></tr>
+                    <tr><td colspan="4" class="vacio">No hay anuncios publicados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_anuncios as $anuncio) { ?>
                     <tr>
-                        <td><strong><?= $anuncio['tituloAnuncio'] ?></strong></td>
+                        <td><b><?= $anuncio['tituloAnuncio'] ?></b></td>
                         <td><small><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</small></td>
                         <td><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></td>
                         <td>

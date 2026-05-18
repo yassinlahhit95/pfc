@@ -1,58 +1,48 @@
-<?php
+﻿<?php
 session_start();
-$titulo_pagina = "AULAPRO | NOTAS DE RETOS";
-$seccion = 'notas_retos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../../modelos/niveles.php";
 
-$id_ciclo_elegido = $_GET['idCiclo'] ?? 0;
-$id_modulo_elegido = $_GET['idModulo'] ?? 0;
-$id_reto_elegido = $_GET['idReto'] ?? 0;
+$id_ciclo_elegido = $_GET['idCiclo'] ?? '';
+$id_modulo_elegido = $_GET['idModulo'] ?? '';
+$id_reto_elegido = $_GET['idReto'] ?? '';
 
 $todos_los_ciclos = listarTodosLosCiclos();
-$listaNiveles = listarNiveles();
-
-$modulos_filtrados = !empty($id_ciclo_elegido) ? obtenerModulosPorCiclo($id_ciclo_elegido) : [];
+$modulos_filtrados = !empty($id_ciclo_elegido) ? listarModulosPorCiclo($id_ciclo_elegido) : [];
 $retos_filtrados = !empty($id_modulo_elegido) ? listarRetosFiltrados($id_modulo_elegido) : [];
 $estudiantes_lista = !empty($id_reto_elegido) ? listarEstudiantesPorCiclo($id_ciclo_elegido) : [];
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-
 unset($_SESSION['error'], $_SESSION['exito']);
+
+$titulo_pagina = "AULAPRO | NOTAS DE RETOS";
+$seccion = 'notas_retos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>CALIFICACIONES POR RETO</h1>
 </div>
 
-<div class="tarjeta-blanca">
-    <form method="GET" action="calificacionesRetos.php" class="disposicion-flexible alinear-centro separacion-grande formulario-filtros-retos">
-        <div class="campo-formulario flexible-rellenar">
-            <label>Seleccione Ciclo:</label>
+<div class="panel">
+    <form method="GET" action="calificacionesRetos.php" class="d-flex alinear-centro sep-g envoltura-flexible">
+        <div class="campo relleno">
+            <label for="selectCicloReto">1. Seleccione Ciclo:</label>
             <select name="idCiclo" id="selectCicloReto" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
-                <?php foreach ($listaNiveles as $nivel) { ?>
-                    <optgroup label="<?= $nivel['nombreNivel'] ?>">
-                        <?php foreach ($todos_los_ciclos as $cicItem) { ?>
-                            <?php if ($cicItem['idNivel'] == $nivel['idNivel']) { ?>
-                                <option value="<?= $cicItem['idCiclo'] ?>" <?= ($id_ciclo_elegido == $cicItem['idCiclo']) ? 'selected' : '' ?>>
-                                    <?= $cicItem['nombreCiclo'] ?>
-                                </option>
-                            <?php } ?>
-                        <?php } ?>
-                    </optgroup>
+                <?php foreach ($todos_los_ciclos as $cicItem) { ?>
+                    <option value="<?= $cicItem['idCiclo'] ?>" <?= ($id_ciclo_elegido == $cicItem['idCiclo']) ? 'selected' : '' ?>>
+                        [<?= $cicItem['nombreNivel'] ?>] <?= $cicItem['nombreCiclo'] ?>
+                    </option>
                 <?php } ?>
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
-            <label>3. Seleccione Módulo:</label>
+        <div class="campo relleno">
+            <label>2. Seleccione Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($id_ciclo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>
@@ -63,8 +53,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
-            <label>4. Seleccione Reto:</label>
+        <div class="campo relleno">
+            <label>3. Seleccione Reto:</label>
             <select name="idReto" onchange="this.form.submit()" <?= empty($id_modulo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($retos_filtrados as $retoItem) { ?>
@@ -85,13 +75,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php if (!empty($id_reto_elegido)) { ?>
-    <div class="tarjeta-blanca margen-arriba">
+    <div class="panel margen-arriba">
         <form action="../../../controladores/admin/academico/calificarRetos.php" method="POST">
             <input type="hidden" name="idReto" value="<?= $id_reto_elegido ?>">
             <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
             <input type="hidden" name="idModulo" value="<?= $id_modulo_elegido ?>">
 
-            <div class="contenedor-tabla">
+            <div class="tcont">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -102,7 +92,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <tbody>
                         <?php if (empty($estudiantes_lista)) { ?>
                             <tr>
-                                <td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td>
+                                <td colspan="2" class="vacio">No hay estudiantes en este ciclo</td>
                             </tr>
                         <?php } else { ?>
                             <?php foreach ($estudiantes_lista as $estudianteItem) {
@@ -111,7 +101,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             ?>
                                 <tr>
                                     <td>
-                                        <strong><?= mb_strtoupper($estudianteItem['nombreEstudiante'], 'UTF-8') ?></strong>
+                                        <?= strtoupper($estudianteItem['nombreEstudiante']) ?>
                                         <input type="hidden" name="estudiantes[]" value="<?= $idEstudianteFila ?>">
                                     </td>
                                     <td>
@@ -136,4 +126,3 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-</script>

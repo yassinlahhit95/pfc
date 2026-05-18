@@ -39,7 +39,7 @@ if (!empty($errores)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso al Sistema - AulaPro</title>
-    <link rel="icon" href="../public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +48,7 @@ if (!empty($errores)) {
 
     <link rel="stylesheet" href="../public/css/login.css">
 </head>
-<body class="login-page">
+<body>
 
 <main class="login-wrapper">
     <div class="left">
@@ -73,7 +73,7 @@ if (!empty($errores)) {
 
         <form action="../controladores/validacion.php" method="POST" id="loginForm">
             <label for="usuario">Usuario / Email</label>
-            <input type="text" id="usuario" name="usuario" placeholder="nombre@aulapro.com" value="<?php echo htmlspecialchars($datos['usuario'] ?? $_GET['u'] ?? ''); ?>" autofocus>
+            <input type="text" id="usuario" name="usuario" placeholder="nombre@aulapro.com" value="<?= $datos['usuario'] ?? $_GET['u'] ?? '' ?>" autofocus>
             
             <label for="contrasena">Contraseña</label>
             <div class="password-wrapper">

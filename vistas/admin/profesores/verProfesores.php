@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -19,7 +19,7 @@ $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>PROFESORES DEL CENTRO</h1>
     <a href="agregarProfesores.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO PROFESOR
@@ -34,8 +34,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaProfesores">
             <thead>
                 <tr>
@@ -48,13 +48,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
             <tbody>
                 <?php if (empty($listaDeTodosLosProfesores)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay profesores registrados en el sistema.</td>
+                        <td colspan="4" class="vacio">No hay profesores registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
                     <tr>
                         <td><?= $profesorIndividual['idProfesor'] ?></td>
-                        <td><strong><?= mb_strtoupper($profesorIndividual['nombreProfesor'], 'UTF-8') ?></strong></td>
+                        <td><b><?= strtoupper($profesorIndividual['nombreProfesor']) ?></b></td>
                         <td><?= $profesorIndividual['emailProfesor'] ?></td>
                         <td>
                             <div class="botones-accion">

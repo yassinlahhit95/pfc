@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -22,7 +22,7 @@ $seccionActual = 'resultados_finales';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MIS RESULTADOS FINALES</h1>
     <p class="subtitulo">Ciclo: <?= $resumenFinal['nombreCiclo'] ?></p>
 </div>
@@ -34,8 +34,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -48,7 +48,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($resumenFinal['detalles_modulos'])) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay módulos registrados en su ciclo.</td></tr>
+                    <tr><td colspan="5" class="vacio">No hay módulos registrados en su ciclo.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { 
                         $clase = "texto-rojo";
@@ -66,7 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <!-- TFG -->
                     <tr>
                         <td class="texto-negrita color-primario">TFG — TRABAJO FIN DE GRADO</td>
-                        <td colspan="2" class="texto-atenuado">Calificación Directa</td>
+                        <td colspan="2" class="atenuado">Calificación Directa</td>
                         <td class="texto-negrita color-primario">
                             <?= $resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : '—' ?>
                         </td>
@@ -84,16 +84,16 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta"><h3>RESUMEN GLOBAL DEL CICLO</h3></div>
-    <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
+    <div class="d-flex espacio-entre-elementos alinear-centro">
         <div>
-            <p class="texto-atenuado">Promedio General:</p>
+            <p class="atenuado">Promedio General:</p>
             <h2 class="color-primario"><?= $resumenFinal['promedio_global'] ?></h2>
         </div>
         <div style="text-align: right;">
-            <p class="texto-atenuado">Estado Académico:</p>
-            <span class="estado-bolita <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
+            <p class="atenuado">Estado Académico:</p>
+            <span class="bolita <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
                 <?= $resumenFinal['estado_global'] ?>
             </span>
         </div>
@@ -101,8 +101,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><strong>Nota:</strong> El cálculo se basa en el 75% de las notas de evaluación y el 25% de la media de los retos del módulo.</p>
-    <p><strong>Estados:</strong> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
+    <p><b>Nota:</b> El cálculo se basa en el 75% de las notas de evaluación y el 25% de la media de los retos del módulo.</p>
+    <p><b>Estados:</b> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

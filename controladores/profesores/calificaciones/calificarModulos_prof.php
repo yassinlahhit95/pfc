@@ -3,15 +3,15 @@ session_start();
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
 if (isset($_POST['guardarNotas'])) {
-    $idModulo = trim($_POST['idModulo']);
-    $idCiclo = trim($_POST['idCiclo']); 
-    $estudiantes = $_POST['estudiantes'];
-    
-    $notas_1ra_evaluacion = $_POST['notas_1ev'];
-    $notas_1ra_final      = $_POST['notas_1final'];
-    $notas_2da_evaluacion = $_POST['notas_2ev'];
-    $notas_2da_final      = $_POST['notas_2final'];
-    $todas_las_observaciones = $_POST['observaciones'];
+    $idModulo = trim($_POST['idModulo'] ?? '');
+    $idCiclo = trim($_POST['idCiclo'] ?? '');
+    $estudiantes = $_POST['estudiantes'] ?? [];
+
+    $notas_1ra_evaluacion = $_POST['notas_1ev'] ?? [];
+    $notas_1ra_final      = $_POST['notas_1final'] ?? [];
+    $notas_2da_evaluacion = $_POST['notas_2ev'] ?? [];
+    $notas_2da_final      = $_POST['notas_2final'] ?? [];
+    $todas_las_observaciones = $_POST['observaciones'] ?? [];
 
     $hayError = false;
 
@@ -23,13 +23,10 @@ if (isset($_POST['guardarNotas'])) {
         $nota4 = trim($notas_2da_final[$indice]);
         $comentario = trim($todas_las_observaciones[$indice]);
 
-        $notas_del_alumno = [$nota1, $nota2, $nota3, $nota4];
-        foreach ($notas_del_alumno as $nota) {
-            if (!empty($nota) && (!is_numeric($nota) || $nota < 0 || $nota > 10)) {
-                $hayError = true;
-                break;
-            }
-        }
+        if (!empty($nota1) && (!is_numeric($nota1) || $nota1 < 0 || $nota1 > 10)) { $hayError = true; }
+        if (!$hayError && !empty($nota2) && (!is_numeric($nota2) || $nota2 < 0 || $nota2 > 10)) { $hayError = true; }
+        if (!$hayError && !empty($nota3) && (!is_numeric($nota3) || $nota3 < 0 || $nota3 > 10)) { $hayError = true; }
+        if (!$hayError && !empty($nota4) && (!is_numeric($nota4) || $nota4 < 0 || $nota4 > 10)) { $hayError = true; }
 
         if (!$hayError) {
             $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1, $nota2, $nota3, $nota4, $comentario);

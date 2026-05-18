@@ -7,38 +7,38 @@ if (isset($_POST['guardarModulo'])) {
     $nombreModuloActualizar = trim($_POST['nombreModulo']);
     $idCicloAsociado = trim($_POST['idCiclo']);
     $horasMaximasModulo = trim($_POST['horasMaximas']);
-    $cursoModulo = intval($_POST['curso'] ?? 1);
 
     $errores = [];
 
     if (empty($nombreModuloActualizar)) {
-        $errores['nombreModulo'] = "Nombre de módulo obligatorio.";
+        $errores['nombreModulo'] = "Nombre del módulo obligatorio.";
     }
-    
+
     if (empty($idCicloAsociado)) {
-        $errores['idCiclo'] = "Seleccione un ciclo.";
+        $errores['idCiclo'] = "Seleccione un ciclo formativo.";
     }
-    
+
     if (empty($horasMaximasModulo)) {
-        $errores['horasMaximas'] = "Horas máximas obligatorias.";
+        $errores['horasMaximas'] = "Las horas totales son obligatorias.";
     } else {
         if (!is_numeric($horasMaximasModulo)) {
-            $errores['horasMaximas'] = "Las horas deben ser numéricas.";
+            $errores['horasMaximas'] = "Las horas deben ser un valor numérico.";
         }
     }
 
     if (empty($errores)) {
         if (checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
-            $errores['nombreModulo'] = "Este módulo ya existe en este ciclo.";
+            $errores['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo elegido.";
         }
     }
 
     if (empty($errores)) {
-        if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo, $cursoModulo)) {
-            $_SESSION['exito'] = "Módulo actualizado.";
+        if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
+            $_SESSION['exito'] = "Módulo actualizado correctamente.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;
         }
+
         $_SESSION['error'] = "No se pudo actualizar el módulo.";
     } else {
         $_SESSION['errores'] = $errores;

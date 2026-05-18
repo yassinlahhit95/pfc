@@ -1,11 +1,7 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -19,7 +15,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $id = $_GET['id'] ?? null;
 
 if (!$id || !is_numeric($id)) {
-    $_SESSION['error'] = mb_strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.", 'UTF-8');
+    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
     header("Location: lista.php");
     exit;
 }
@@ -27,7 +23,7 @@ if (!$id || !is_numeric($id)) {
 $nota = obtenerCalificacionPorId($id);
 
 if (!$nota) {
-    $_SESSION['error'] = mb_strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.", 'UTF-8');
+    $_SESSION['error'] = strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.");
     header("Location: lista.php");
     exit;
 }
@@ -40,7 +36,7 @@ $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>EDITAR CALIFICACIÓN</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -52,11 +48,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <form action="../../../controladores/profesores/calificaciones/actualizar.php" method="POST" class="form-estandar">
+<div class="panel">
+    <form action="../../../controladores/profesores/calificaciones/actualizar.php" method="POST" class="formulario">
         <input type="hidden" name="idCalificacion" value="<?= $id ?>">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
+        <div class="form-cols">
+            <div class="campo">
                 <label for="idEstudiante">Estudiante *</label>
                 <select name="idEstudiante" id="idEstudiante" disabled>
                     <?php foreach ($estudiantes as $est) { ?>
@@ -66,7 +62,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <input type="hidden" name="idEstudiante" value="<?= $nota['idEstudiante'] ?? '' ?>">
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="idModulo">Módulo *</label>
                 <select name="idModulo" id="idModulo" disabled>
                     <?php foreach ($modulos as $mod) { ?>
@@ -76,40 +72,40 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <input type="hidden" name="idModulo" value="<?= $nota['idModulo'] ?? '' ?>">
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="nota_1ev">1ª Evaluación</label>
                 <input type="text" name="nota_1ev" id="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>" class="<?= isset($errores['nota_1ev']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_1ev'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_1ev'] ?></strong>
+                    <strong class="error-campo"><?= $errores['nota_1ev'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="nota_1final">1ª Final</label>
                 <input type="text" name="nota_1final" id="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>" class="<?= isset($errores['nota_1final']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_1final'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_1final'] ?></strong>
+                    <strong class="error-campo"><?= $errores['nota_1final'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="nota_2ev">2ª Evaluación</label>
                 <input type="text" name="nota_2ev" id="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>" class="<?= isset($errores['nota_2ev']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_2ev'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_2ev'] ?></strong>
+                    <strong class="error-campo"><?= $errores['nota_2ev'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="nota_2final">2ª Final</label>
                 <input type="text" name="nota_2final" id="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>" class="<?= isset($errores['nota_2final']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['nota_2final'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_2final'] ?></strong>
+                    <strong class="error-campo"><?= $errores['nota_2final'] ?></b>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="actualizarNota" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
@@ -125,7 +121,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

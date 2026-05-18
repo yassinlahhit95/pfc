@@ -1,9 +1,5 @@
-<?php
+﻿<?php
 session_start();
-$titulo_pagina = "AULAPRO | NUEVO PRÉSTAMO";
-$seccion = 'prestamos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/inventario.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -24,9 +20,13 @@ $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_prestamo'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
+
+$titulo_pagina = "AULAPRO | NUEVO PRÉSTAMO";
+$seccion = 'prestamos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>REGISTRAR NUEVO PRÉSTAMO</h1>
     <a href="gestionarPrestamos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -35,9 +35,9 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <form method="GET" action="agregarPrestamo.php" class="margen-abajo">
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Filtrar Estudiantes por Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Todos los ciclos --</option>
@@ -51,9 +51,9 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
     </form>
 
     <form method="POST" action="../../../controladores/admin/inventario/prestar.php">
-        <div class="formulario-cuadricula">
+        <div class="form-cols">
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label>Recurso (Solo disponibles) *</label>
                 <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
@@ -66,11 +66,11 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idArticulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idArticulo'] ?></strong>
+                    <strong class="error-campo"><?= $errores['idArticulo'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label>Estudiante *</label>
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
@@ -81,21 +81,21 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_prestamo']);
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
+                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label>Fecha de Préstamo *</label>
                 <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
                 <?php if (isset($errores['fechaPrestamo'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaPrestamo'] ?></strong>
+                    <strong class="error-campo"><?= $errores['fechaPrestamo'] ?></b>
                 <?php } ?>
             </div>
 
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="registrarPrestamo" class="boton-primario">
                 <i class="fas fa-save"></i> Registrar Préstamo
             </button>

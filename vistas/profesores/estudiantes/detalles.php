@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idProfesor'])) {
@@ -25,72 +25,72 @@ $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>FICHA DE ESTUDIANTE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-user-graduate"></i> INFORMACIÓN PERSONAL</h3>
     </div>
     
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8') ?></div>
+        <div class="valor-detalle texto-negrita"><?= strtoupper($estudiante['nombreEstudiante']) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Email</div>
         <div class="valor-detalle"><?= $estudiante['emailEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">DNI</div>
         <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Ciclo Formativo</div>
         <div class="valor-detalle">
-            <span class="estado-bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span>
+            <span class="bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Fecha de Nacimiento</div>
         <div class="valor-detalle"><?= date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Ciudad / Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Observaciones</div>
         <div class="valor-detalle">
-            <?= !empty($estudiante['observacionesEstudiante']) ? nl2br($estudiante['observacionesEstudiante']) : '<span class="texto-atenuado">Sin observaciones registradas.</span>' ?>
+            <?= !empty($estudiante['observacionesEstudiante']) ? nl2br($estudiante['observacionesEstudiante']) : '<span class="atenuado">Sin observaciones registradas.</span>' ?>
         </div>
     </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-file-pdf"></i> SITUACIÓN DEL TFG</h3>
     </div>
-    <div class="disposicion-flexible alinear-centro espacio-entre-elementos">
+    <div class="d-flex alinear-centro espacio-entre-elementos">
         <div>
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
-                <span class="estado-bolita activo-verde">ENTREGADO</span>
-                <p class="texto-pequeno texto-atenuado" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
+                <span class="bolita activo-verde">ENTREGADO</span>
+                <p class="texto-pequeno atenuado" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
             <?php } else { ?>
-                <span class="estado-bolita inactivo-rojo">PENDIENTE / NO SUBIDO</span>
+                <span class="bolita inactivo-rojo">PENDIENTE / NO SUBIDO</span>
             <?php } ?>
         </div>
         

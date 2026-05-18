@@ -1,12 +1,8 @@
-<?php
+﻿<?php
 session_start();
-$titulo_pagina = "AULAPRO | MODIFICAR ANUNCIO";
-$seccion = 'anuncios';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-$id_anuncio = $_GET['idAnuncio'];
+$id_anuncio = $_GET['idAnuncio'] ?? '';
 $anuncio = obtenerAnuncioPorId($id_anuncio);
 
 if (!$anuncio) {
@@ -22,9 +18,13 @@ $error = $_SESSION['error'] ?? "";
 $errores = $_SESSION['errores'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
+
+$titulo_pagina = "AULAPRO | MODIFICAR ANUNCIO";
+$seccion = 'anuncios';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MODIFICAR ANUNCIO</h1>
     <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -33,27 +33,27 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <form method="POST" action="../../../controladores/admin/anuncios/actualizar.php">
         <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
         
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="tituloAnuncio">Título del Anuncio *</label>
             <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
             <?php if (isset($errores['tituloAnuncio'])) { ?>
-                <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
+                <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario margen-arriba">
+        <div class="campo margen-arriba">
             <label for="contenidoAnuncio">Contenido del Anuncio *</label>
             <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
             <?php if (isset($errores['contenidoAnuncio'])) { ?>
-                <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
+                <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="actualizarAnuncio" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
@@ -65,8 +65,4 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,7 +20,7 @@ $seccionActual = 'perfil';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <div>
         <h1>MI PERFIL</h1>
         <p class="subtitulo">Información de tu cuenta de estudiante</p>
@@ -39,42 +39,42 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-user-circle"></i> DATOS PERSONALES</h3>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8') ?></div>
+        <div class="valor-detalle texto-negrita"><?= strtoupper($estudiante['nombreEstudiante']) ?></div>
     </div> 
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Ciclo Formativo</div>
-        <div class="valor-detalle"><span class="estado-bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span></div>
+        <div class="valor-detalle"><span class="bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Email</div>
         <div class="valor-detalle"><?= $estudiante['emailEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">DNI / Identificación</div>
         <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Ciudad</div>
         <div class="valor-detalle"><?= $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] ?></div>
     </div>

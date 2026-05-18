@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
@@ -15,10 +15,12 @@ if (!$ciclo) {
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
-$profesoresAsignados = obtenerProfesoresDeUnCiclo($id_ciclo);
+$profesoresAsignados = listarProfesoresDeUnCiclo($id_ciclo);
 if (!is_array($profesoresAsignados)) {
     $profesoresAsignados = [];
 }
+$mapaProfesoresAsignados = [];
+foreach ($profesoresAsignados as $idP) { $mapaProfesoresAsignados[$idP] = true; }
 
 if (isset($_SESSION['datos_ciclos'])) {
     foreach ($_SESSION['datos_ciclos'] as $key => $value) {
@@ -39,7 +41,7 @@ $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MODIFICAR CICLO: <?= $ciclo['nombreCiclo'] ?></h1>
     <a href="verCiclos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -48,28 +50,28 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <form method="POST" action="../../../controladores/admin/ciclos/actualizar.php">
         <input type="hidden" name="idCiclo" value="<?= $id_ciclo ?>">
         
-        <div class="form-estandar">
-            <div class="campo-formulario">
+        <div class="formulario">
+            <div class="campo">
                 <label for="nombreCiclo">Nombre del Ciclo *</label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
                 <?php if (isset($errores['nombreCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></strong>
+                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="abreviaturaCiclo">Abreviatura *</label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
                 <?php if (isset($errores['abreviaturaCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></strong>
+                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="idNivel">Nivel Formativo *</label>
                 <select id="idNivel" name="idNivel">
                     <?php foreach ($listaNiveles as $nivel) { ?>
@@ -79,11 +81,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idNivel'])) { ?>
-                    <strong class="error-campo"><?= $errores['idNivel'] ?></strong>
+                    <strong class="error-campo"><?= $errores['idNivel'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
             </div>
@@ -92,11 +94,11 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
                 <h4 class="margen-abajo">Asignar Tutores/Profesores</h4>
-                <div class="lista-checkboxes">
+                <div class="checks">
                     <?php foreach ($listaProfesores as $prof) { ?>
-                        <label class="item-checkbox">
+                        <label class="check-item">
                             <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
-                                <?php if (in_array($prof['idProfesor'], $profesoresAsignados)) { ?>checked<?php } ?>>
+                                <?php if (isset($mapaProfesoresAsignados[$prof['idProfesor']])) { ?>checked<?php } ?>>
                             <span><?= $prof['nombreProfesor'] ?></span>
                         </label>
                     <?php } ?>
@@ -104,7 +106,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="actualizarCiclo" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>
@@ -116,7 +118,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

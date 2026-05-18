@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,7 +20,7 @@ $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MIS MENSAJES</h1>
     <a href="../../../vistas/estudiantes/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO MENSAJE
@@ -34,8 +34,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -49,22 +49,22 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No has enviado mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="vacio">No has enviado mensajes aún.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
                     ?>
                     <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?php 
+                            <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
                                     echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
                                 } else {
                                     echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
                                 }
-                            ?></strong>
+                            ?></b>
                         </td>
-                        <td><p class="texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></p></td>
+                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
                                 <?= substr($mensaje['descripcion'], 0, 80) ?>...
@@ -73,9 +73,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="estado-bolita activo-verde">VISTO</span>
+                                <span class="bolita activo-verde">VISTO</span>
                             <?php } else { ?>
-                                <span class="estado-bolita inactivo-rojo">ENVIADO</span>
+                                <span class="bolita inactivo-rojo">ENVIADO</span>
                             <?php } ?>
                         </td>
                         <td>

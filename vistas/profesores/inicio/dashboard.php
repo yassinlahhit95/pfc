@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -24,8 +24,8 @@ $profesorActual = obtenerProfesorPorId($idProfesor);
 $listaAnuncios = listarTodosLosAnuncios();
 $listaMensajes = listarMensajesParaProfesor($idProfesor);
 $listaEstudiantes = listarEstudiantesDeProfesor($idProfesor);
-$listaModulos = obtenerModulosDeProfesor($idProfesor);
-$listaRetos = obtenerRetosDeProfesor($idProfesor);
+$listaModulos = listarModulosDeProfesor($idProfesor);
+$listaRetos = listarRetosDeProfesor($idProfesor);
 $listaEventos = listarEventosProximos();
 
 $listaTFGsProfesor = listarTFGsPorProfesor($idProfesor);
@@ -49,7 +49,7 @@ $seccionActual = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
+<div class="espacio-entre-elementos alinear-centro margen-abajo d-flex">
   <div>
     <h1>BIENVENIDO/A, <?= $profesorActual['nombreProfesor'] ?? '' ?></h1>
   </div>
@@ -82,9 +82,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="cuadricula-secundaria">
-  <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
+  <div class="d-flex direccion-columna sep-g relleno">
 
-    <div class="tarjeta-blanca">
+    <div class="panel">
       <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="../calificaciones/lista.php" class="accion-rapida"><span>Poner Notas</span></a>
@@ -104,8 +104,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php
             $ciclosVistos = [];
             foreach ($listaModulos as $m) {
-                if (!in_array($m['idCiclo'], $ciclosVistos)) {
-                    $ciclosVistos[] = $m['idCiclo'];
+                if (!isset($ciclosVistos[$m['idCiclo']])) {
+                    $ciclosVistos[$m['idCiclo']] = true;
             ?>
                 <option value="<?= $m['idCiclo'] ?>"><?= $m['nombreCiclo'] ?></option>
             <?php } } ?>
@@ -115,7 +115,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       </div>
     </div>
 
-    <div class="tarjeta-blanca">
+    <div class="panel">
       <div class="titulo-tarjeta">
         <h3>Últimos Avisos</h3>
       </div>
@@ -128,7 +128,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
-                    <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
+                    <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></b>
                     <p class="texto-pequeno" style="margin: 0;"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
                 </div>
             </div>
@@ -138,32 +138,32 @@ include_once __DIR__ . "/../comunes/nav.php";
             } ?>
         </div>
       <?php } else { ?>
-        <p class="texto-atenuado">No hay anuncios activos.</p>
+        <p class="atenuado">No hay anuncios activos.</p>
       <?php } ?>
     </div>
   </div>
 
-  <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    <div class="tarjeta-blanca">
+  <div class="d-flex direccion-columna sep-g relleno">
+    <div class="panel">
       <div class="titulo-tarjeta">
         <h3>Próximos Eventos</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos.</p>
+            <p class="atenuado">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php
             $ce = 0;
             foreach ($listaEventos as $ev) {
                 if ($ce < 4) {
                     $d = date('d', strtotime($ev['fechaEvento']));
-                    $m = mb_strtoupper(date('M', strtotime($ev['fechaEvento'])), 'UTF-8');
+                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
             ?>
             <div class="elemento-evento">
               <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>
               <div>
                 <p class="texto-negrita"><?= $ev['tituloEvento'] ?></p>
-                <p class="texto-atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
+                <p class="atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
               </div>
             </div>
             <?php

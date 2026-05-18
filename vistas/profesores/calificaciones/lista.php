@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -14,12 +14,12 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $idCiclo = intval($_GET['idCiclo'] ?? 0);
 $idModulo = intval($_GET['idModulo'] ?? 0);
 
-$mis_ciclos = obtenerCiclosDeProfesor($idProfesor);
+$mis_ciclos = listarCiclosDeProfesor($idProfesor);
 $mis_modulos = [];
 if ($idCiclo > 0) {
-    $mis_modulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
+    $mis_modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
 } else {
-    $mis_modulos = obtenerModulosDeProfesor($idProfesor);
+    $mis_modulos = listarModulosDeProfesor($idProfesor);
 }
 
 $calificaciones = listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo, $idModulo);
@@ -33,7 +33,7 @@ $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>NOTAS DE ALUMNOS</h1>
     <a href="agregar.php" class="boton-primario">ASIGNAR NOTA</a>
 </div>
@@ -45,9 +45,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <form method="GET" action="" class="disposicion-flexible alinear-fin separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel margen-abajo">
+    <form method="GET" action="" class="d-flex al-fin sep-g">
+        <div class="campo relleno">
             <label for="idCiclo">Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Ciclos --</option>
@@ -58,7 +58,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
         </div>
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label for="idModulo">Filtrar por Módulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Módulos --</option>
@@ -77,8 +77,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaNotasProf">
             <thead>
                 <tr>
@@ -114,7 +114,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="7" class="sin-datos">No hay calificaciones que coincidan con los filtros.</td>
+                        <td colspan="7" class="vacio">No hay calificaciones que coincidan con los filtros.</td>
                     </tr>
                 <?php } ?>
             </tbody>

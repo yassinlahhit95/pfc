@@ -1,4 +1,4 @@
-/* TABLETA — min-width: 769px and max-width: 1024px */
+﻿/* TABLETA — min-width: 769px and max-width: 1024px */
 @media (min-width: 769px) and (max-width: 1024px) {
 
     /* Navegación superior */
@@ -67,6 +67,11 @@
         padding: 20px;
         padding-top: 85px;
         transition: all 0.3s ease;
+    }
+
+    .barra-lateral.activo ~ .contenido-principal,
+    .barra-lateral.activo ~ .contenido-derecha {
+        margin-left: 260px !important;
     }
 
     /* Overlay al abrir el menú en tableta */
@@ -225,7 +230,7 @@
     }
 
     /* Estadísticas del dashboard de estudiantes — 2 por fila */
-    .disposicion-flexible.envoltura-flexible .tarjeta-estadistica {
+    .d-flex.envoltura-flexible .tarjeta-estadistica {
         flex: 1 1 48%;
     }
 
@@ -246,7 +251,7 @@
     }
 
     /* Tablas */
-    .contenedor-tabla {
+    .tcont {
         overflow-x: auto;
     }
 
@@ -255,7 +260,7 @@
     }
 
     /* Tarjetas y tipografía */
-    .tarjeta-blanca {
+    .panel {
         padding: 15px;
     }
 
@@ -268,49 +273,44 @@
     }
 
     /* Filas de detalle */
-    .fila-detalle {
+    .fila-dat {
         flex-wrap: wrap;
         padding: 12px 0;
         gap: 4px;
         border-bottom: 1px solid #edf2f7;
     }
 
-    .fila-detalle:last-child {
+    .fila-dat:last-child {
         border-bottom: none;
     }
 
-    .fila-detalle .etiqueta-detalle {
+    .fila-dat .etiqueta-detalle {
         flex: 0 0 100%;
         font-size: 11px;
         margin-bottom: 4px;
     }
 
-    .fila-detalle .valor-detalle {
+    .fila-dat .valor-detalle {
         flex: 0 0 100%;
         font-size: 14px;
         word-break: break-word;
     }
 
     /* Botones de formulario */
-    .form-acciones {
+    .acciones {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .form-acciones .boton-primario,
-    .form-acciones .boton-secundario {
+    .acciones .boton-primario,
+    .acciones .boton-secundario {
         width: 100%;
         min-width: unset;
         justify-content: center;
     }
 
-    /* Filtros */
-    .formulario-filtros-retos {
-        flex-direction: column;
-    }
-
     /* Cuadrícula de formularios */
-    .formulario-cuadricula {
+    .form-cols {
         gap: 12px;
     }
 

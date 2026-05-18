@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -21,7 +21,7 @@ $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>RETOS / PROYECTOS</h1>
     <a href="agregarRetos.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO RETO
@@ -35,9 +35,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="disposicion-flexible envoltura-flexible separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel margen-abajo">
+    <div class="d-flex envoltura-flexible sep-g">
+        <div class="campo relleno">
             <label>FILTRAR POR NIVEL:</label>
             <select id="selectFiltroNivel" onchange="aplicarFiltrosRetos()">
                 <option value="">-- Todos los Niveles --</option>
@@ -48,7 +48,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
         </div>
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label>FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosRetos()">
                 <option value="">-- Todos los Ciclos --</option>
@@ -62,8 +62,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaRetos">
             <thead>
                 <tr>
@@ -77,16 +77,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($todos_los_retos)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No hay retos configurados</td></tr>
+                    <tr><td colspan="6" class="vacio">No hay retos configurados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_retos as $reto) {
-                        $modulos = obtenerModulosDeReto($reto['idReto']);
+                        $modulos = listarModulosDeReto($reto['idReto']);
                         $nombresModulos = array_column($modulos, 'nombreModulo');
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
                         $idCicloReto = !empty($modulos) ? $modulos[0]['idCiclo'] : '';
                     ?>
                     <tr class="fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= $mapaCicloNivel[$idCicloReto] ?? '' ?>">
-                        <td><strong><?= $reto['nombreReto'] ?></strong></td>
+                        <td><b><?= $reto['nombreReto'] ?></b></td>
                         <td><?= $textoModulos ?></td>
                         <td><?= $reto['horasReto'] ?>h</td>
                         <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -18,7 +18,7 @@ $seccionActual = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>PRÓXIMOS EVENTOS Y FECHAS CLAVE</h1>
 </div>
 
@@ -29,8 +29,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -43,13 +43,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($eventos)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay eventos programados próximamente.</td></tr>
+                    <tr><td colspan="5" class="vacio">No hay eventos programados próximamente.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($eventos as $ev) { ?>
                     <tr>
                         <td class="texto-negrita"><?= date('d/m/Y', strtotime($ev['fechaEvento'])) ?></td>
                         <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
-                        <td><strong><?= mb_strtoupper($ev['tituloEvento'], 'UTF-8') ?></strong></td>
+                        <td><b><?= strtoupper($ev['tituloEvento']) ?></b></td>
                         <td><p class="texto-pequeno"><?= $ev['descripcionEvento'] ?></p></td>
                         <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>

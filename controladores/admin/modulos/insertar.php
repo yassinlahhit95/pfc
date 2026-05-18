@@ -4,9 +4,8 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 
 if (isset($_POST['guardarModulo'])) {
     $nombreNuevoModulo = trim($_POST['nombreModulo']);
-    $idCicloNuevoModulo = trim($_POST['idCiclo']);
+    $idCicloNuevoModulo = $_POST['idCiclo'];
     $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
-    $cursoNuevoModulo = intval($_POST['curso'] ?? 1);
 
     $errores = [];
 
@@ -33,7 +32,7 @@ if (isset($_POST['guardarModulo'])) {
     }
 
     if (empty($errores)) {
-        if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo, $cursoNuevoModulo)) {
+        if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
             $_SESSION['exito'] = "Módulo registrado.";
             header("Location: ../../../vistas/admin/modulos/verModulos.php");
             exit;

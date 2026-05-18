@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -25,7 +25,7 @@ $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>GESTIÓN DE TFGS ENTREGADOS</h1>
 </div>
 
@@ -36,8 +36,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -56,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $notaTFG = $calificacionesTFG[$tfg['idEstudiante']];
                     ?>
                         <tr>
-                            <td><strong><?= $tfg['nombreEstudiante'] ?></strong></td>
+                            <td><?= $tfg['nombreEstudiante'] ?></td>
                             <td><?= $tfg['nombreCiclo'] ?></td>
                             <td><?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></td>
                             <td>
@@ -67,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <span class="texto-rojo texto-negrita"><?= $notaTFG['nota'] ?></span>
                                     <?php } ?>
                                 <?php } else { ?>
-                                    <span class="texto-atenuado">Sin calificar</span>
+                                    <span class="atenuado">Sin calificar</span>
                                 <?php } ?>
                             </td>
                             <td>
@@ -85,17 +85,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 </div>
 
                                 <div id="form-<?= $tfg['idEstudiante'] ?>" style="display: none; margin-top: 10px;">
-                                    <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="form-estandar">
+                                    <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="formulario">
                                         <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
-                                        <div class="campo-formulario">
+                                        <div class="campo">
                                             <label>Nota (0-10):</label>
                                             <input type="text" name="nota" value="<?= !empty($notaTFG) ? $notaTFG['nota'] : '' ?>" placeholder="Ej: 7.5" class="input-pequeno">
                                         </div>
-                                        <div class="campo-formulario">
+                                        <div class="campo">
                                             <label>Observaciones:</label>
                                             <textarea name="observaciones" rows="2" placeholder="Comentarios opcionales..."><?= !empty($notaTFG) ? $notaTFG['observaciones'] : '' ?></textarea>
                                         </div>
-                                        <div class="campo-formulario">
+                                        <div class="campo">
                                             <label>
                                                 <input type="checkbox" name="notificarEstudiante" value="1">
                                                 Notificar al estudiante por email y push
@@ -111,7 +111,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">No hay TFGs subidos todavía.</td>
+                        <td colspan="5" class="vacio">No hay TFGs subidos todavía.</td>
                     </tr>
                 <?php } ?>
             </tbody>

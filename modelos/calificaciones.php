@@ -1,10 +1,11 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 require_once __DIR__ . "/modulos.php";
 require_once __DIR__ . "/estudiantes.php";
 require_once __DIR__ . "/retos.php";
 
-function obtenerNotasModulo($idEstudiante, $idModulo) {
+function obtenerNotasModulo($idEstudiante, $idModulo)
+{
     $con = obtenerConexion();
     $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -16,7 +17,8 @@ function obtenerNotasModulo($idEstudiante, $idModulo) {
     return $notas;
 }
 
-function listarCalificacionesGeneral() {
+function listarCalificacionesGeneral()
+{
     $con = obtenerConexion();
     $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
             FROM calificaciones_modulos cm
@@ -32,7 +34,8 @@ function listarCalificacionesGeneral() {
     return $lista;
 }
 
-function obtenerCalificacionPorId($idCalificacion) {
+function obtenerCalificacionPorId($idCalificacion)
+{
     $con = obtenerConexion();
     $sql = "SELECT * FROM calificaciones_modulos WHERE idCalificacion = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -44,7 +47,8 @@ function obtenerCalificacionPorId($idCalificacion) {
     return $datos;
 }
 
-function eliminarCalificacion($idCalificacion) {
+function eliminarCalificacion($idCalificacion)
+{
     $con = obtenerConexion();
     $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -54,7 +58,8 @@ function eliminarCalificacion($idCalificacion) {
     return $exito;
 }
 
-function listarCalificacionesPorEstudiante($idEstudiante) {
+function listarCalificacionesPorEstudiante($idEstudiante)
+{
     $con = obtenerConexion();
     $sql = "SELECT cm.*, m.nombreModulo
             FROM calificaciones_modulos cm
@@ -72,7 +77,8 @@ function listarCalificacionesPorEstudiante($idEstudiante) {
     return $lista;
 }
 
-function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0) {
+function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0)
+{
     $con = obtenerConexion();
 
     $filtro = "";
@@ -109,7 +115,8 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
     return $lista;
 }
 
-function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones) {
+function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones)
+{
     $con = obtenerConexion();
 
     $sqlBuscar = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
@@ -133,7 +140,8 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1
     return $exito;
 }
 
-function listarCalificacionesPorModulo($idModulo) {
+function listarCalificacionesPorModulo($idModulo)
+{
     $con = obtenerConexion();
     $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev AS calificacion, cm.observaciones
             FROM modulos mo
@@ -153,9 +161,10 @@ function listarCalificacionesPorModulo($idModulo) {
     return $lista;
 }
 
-function obtenerResultadosFinalesCiclo($idCiclo) {
+function listarResultadosFinalesCiclo($idCiclo)
+{
     $listaEstudiantes = listarEstudiantesPorCiclo($idCiclo);
-    $listaModulos = obtenerModulosPorCiclo($idCiclo);
+    $listaModulos = listarModulosPorCiclo($idCiclo);
     $listaResultados = [];
     foreach ($listaEstudiantes as $estudiante) {
         $listaResultados[] = obtenerResultadosFinalesEstudiante($estudiante['idEstudiante'], $listaModulos);
@@ -163,7 +172,8 @@ function obtenerResultadosFinalesCiclo($idCiclo) {
     return $listaResultados;
 }
 
-function calcularNotaDefinitiva($notaBase, $notaRecuperacion) {
+function calcularNotaDefinitiva($notaBase, $notaRecuperacion)
+{
     if ($notaBase === null) return null;
     if ($notaRecuperacion !== null && $notaRecuperacion > $notaBase) {
         return $notaRecuperacion;
@@ -171,11 +181,12 @@ function calcularNotaDefinitiva($notaBase, $notaRecuperacion) {
     return $notaBase;
 }
 
-function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null) {
+function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
+{
     $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
 
     if ($listaModulos === null) {
-        $listaModulos = obtenerModulosPorCiclo($datosEstudiante['idCiclo']);
+        $listaModulos = listarModulosPorCiclo($datosEstudiante['idCiclo']);
     }
 
     $resumen = [];
@@ -213,10 +224,18 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $nota2final = null;
 
         if ($notas) {
-            if ($notas['nota_1ev'] != null)    { $nota1ev    = floatval($notas['nota_1ev']); }
-            if ($notas['nota_1final'] != null) { $nota1final = floatval($notas['nota_1final']); }
-            if ($notas['nota_2ev'] != null)    { $nota2ev    = floatval($notas['nota_2ev']); }
-            if ($notas['nota_2final'] != null) { $nota2final = floatval($notas['nota_2final']); }
+            if ($notas['nota_1ev'] != null) {
+                $nota1ev    = floatval($notas['nota_1ev']);
+            }
+            if ($notas['nota_1final'] != null) {
+                $nota1final = floatval($notas['nota_1final']);
+            }
+            if ($notas['nota_2ev'] != null) {
+                $nota2ev    = floatval($notas['nota_2ev']);
+            }
+            if ($notas['nota_2final'] != null) {
+                $nota2final = floatval($notas['nota_2final']);
+            }
         }
 
         $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
@@ -305,4 +324,3 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
 
     return $resumen;
 }
-?>

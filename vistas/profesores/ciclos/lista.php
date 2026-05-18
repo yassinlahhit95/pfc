@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -9,7 +9,7 @@ if (!$idProfesor) {
 
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$ciclos = obtenerCiclosDeProfesor($idProfesor);
+$ciclos = listarCiclosDeProfesor($idProfesor);
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -20,7 +20,7 @@ $seccionActual = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MIS CICLOS FORMATIVOS</h1>
 </div>
 
@@ -31,8 +31,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="3" class="sin-datos">No tiene ciclos asignados.</td>
+                        <td colspan="3" class="vacio">No tiene ciclos asignados.</td>
                     </tr>
                 <?php } ?>
             </tbody>

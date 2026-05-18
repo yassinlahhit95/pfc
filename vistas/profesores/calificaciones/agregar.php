@@ -1,11 +1,7 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -16,15 +12,17 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $idCiclo = intval($_GET['idCiclo'] ?? 0);
 $idModulo = intval($_GET['idModulo'] ?? 0);
 
-$listaDeCiclos = obtenerCiclosDeProfesor($idProfesor);
+$listaDeCiclos = listarCiclosDeProfesor($idProfesor);
 $listaDeModulos = [];
 
 if ($idCiclo) {
-    $todosLosModulosDelCiclo = obtenerModulosPorCiclo($idCiclo);
-    $misModulosAsignados = obtenerIdsModulosDeProfesor($idProfesor);
-    
+    $todosLosModulosDelCiclo = listarModulosPorCiclo($idCiclo);
+    $misModulosAsignados = listarIdsModulosDeProfesor($idProfesor);
+    $mapaModulosAsignados = [];
+    foreach ($misModulosAsignados as $idM) { $mapaModulosAsignados[$idM] = true; }
+
     foreach ($todosLosModulosDelCiclo as $moduloItem) {
-        if (in_array($moduloItem['idModulo'], $misModulosAsignados)) {
+        if (isset($mapaModulosAsignados[$moduloItem['idModulo']])) {
             $listaDeModulos[] = $moduloItem;
         }
     }
@@ -45,14 +43,14 @@ $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>CALIFICACIONES POR MÓDULO</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
-    <form method="GET" action="../../../vistas/profesores/calificaciones/agregar.php" class="disposicion-flexible alinear-centro separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel">
+    <form method="GET" action="../../../vistas/profesores/calificaciones/agregar.php" class="d-flex alinear-centro sep-g">
+        <div class="campo relleno">
             <label for="idCiclo">1. Selecciona el Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Elige un ciclo --</option>
@@ -64,7 +62,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label for="idModulo">2. Selecciona el Módulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
                 <option value="">-- Elige un módulo --</option>
@@ -86,12 +84,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php if ($idModulo) { ?>
-    <div class="tarjeta-blanca margen-arriba">
+    <div class="panel margen-arriba">
         <form action="../../../controladores/profesores/calificaciones/calificarModulos_prof.php" method="POST">
             <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             
-            <div class="contenedor-tabla">
+            <div class="tcont">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -105,7 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </thead>
                     <tbody>
                         <?php if (empty($listaDeEstudiantes)) { ?>
-                            <tr><td colspan="6" class="sin-datos">No hay alumnos en este ciclo todavía.</td></tr>
+                            <tr><td colspan="6" class="vacio">No hay alumnos en este ciclo todavía.</td></tr>
                         <?php } else { ?>
                             <?php foreach ($listaDeEstudiantes as $estudiante) { 
                                 $idEstudiante = $estudiante['idEstudiante'];
@@ -119,7 +117,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?= $estudiante['nombreEstudiante'] ?></strong>
+                                    <?= $estudiante['nombreEstudiante'] ?>
                                     <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>
@@ -145,7 +143,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
             
             <?php if (!empty($listaDeEstudiantes)) { ?>
-                <div class="form-acciones">
+                <div class="acciones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> GUARDAR CALIFICACIONES
                     </button>

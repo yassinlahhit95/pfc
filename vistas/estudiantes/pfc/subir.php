@@ -1,15 +1,10 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
 $errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
-
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -27,7 +22,7 @@ $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MI TRABAJO FIN DE GRADO (TFG)</h1>
 </div>
 
@@ -38,35 +33,35 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>ESTADO DE LA ENTREGA Y GESTIÓN</h3>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
             <?php if (!empty($tfg['archivoTFG'])) { ?>
-                <span class="estado-bolita activo-verde">ENTREGADO</span>
+                <span class="bolita activo-verde">ENTREGADO</span>
             <?php } else { ?>
-                <span class="estado-bolita inactivo-rojo">NO ENTREGADO</span>
+                <span class="bolita inactivo-rojo">NO ENTREGADO</span>
             <?php } ?>
         </div>
     </div>
 
     <?php if (!empty($tfg['archivoTFG'])) { ?>
-        <div class="fila-detalle">
+        <div class="fila-dat">
             <div class="etiqueta-detalle">Archivo subido</div>
             <div class="valor-detalle">
                 <p class="texto-negrita"><?= $tfg['archivoTFG'] ?></p>
-                <small class="texto-atenuado">Fecha de entrega: <?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></small>
+                <small class="atenuado">Fecha de entrega: <?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></small>
             </div>
         </div>
 
-        <div class="fila-detalle">
+        <div class="fila-dat">
             <div class="etiqueta-detalle">Acciones</div>
             <div class="valor-detalle">
-                <div class="disposicion-flexible separacion-media">
+                <div class="d-flex separacion-media">
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario">
                         <i class="fas fa-download"></i> DESCARGAR
                     </a>
@@ -82,7 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } ?>
 
     <?php if (!empty($notaTFG)) { ?>
-        <div class="fila-detalle">
+        <div class="fila-dat">
             <div class="etiqueta-detalle">Nota Final</div>
             <div class="valor-detalle">
                 <?php if ($notaTFG['nota'] >= 5) { ?>
@@ -90,25 +85,25 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — SUSPENSO</span>
                 <?php } ?>
-                <p class="texto-atenuado" style="margin-top: 5px;"><em>Observaciones: <?= $notaTFG['observaciones'] ?></em></p>
+                <p class="atenuado" style="margin-top: 5px;"><em>Observaciones: <?= $notaTFG['observaciones'] ?></em></p>
             </div>
         </div>
         <?php } ?>
         </div>
         </div>
 
-        <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="form-estandar" style="margin-top: 30px;">
+        <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="formulario" style="margin-top: 30px;">
         <input type="hidden" name="idEstudiante" value="<?= $id ?>">
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Sustituir Archivo : Formatos aceptados: PDF, Word (.doc, .docx)</label>
             <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx" class="<?= isset($errores['archivoTFG']) ? 'input-error' : '' ?>">
             <?php if (isset($errores['archivoTFG'])) { ?>
-                <strong class="error-campo"><?= $errores['archivoTFG'] ?></strong>
+                <strong class="error-campo"><?= $errores['archivoTFG'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="subirTFG" class="boton-primario">
                 <i class="fas fa-upload"></i> <?= empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG' ?>
             </button>
@@ -120,5 +115,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

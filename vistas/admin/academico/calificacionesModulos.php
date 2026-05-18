@@ -1,54 +1,46 @@
-<?php
+﻿<?php
 session_start();
-$titulo_pagina = "AULAPRO | NOTAS DE MÓDULOS";
-$seccion = 'notas_modulos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
-require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $idCicloElegido = $_GET['idCiclo'] ?? '';
 $idModuloElegido = $_GET['idModulo'] ?? '';
 
 $listaCiclos = listarTodosLosCiclos();
-$listaNiveles = listarNiveles();
-$listaModulos = !empty($idCicloElegido) ? obtenerModulosPorCiclo($idCicloElegido) : [];
+$listaModulos = !empty($idCicloElegido) ? listarModulosPorCiclo($idCicloElegido) : [];
 $listaEstudiantes = !empty($idModuloElegido) ? listarCalificacionesPorModulo($idModuloElegido) : [];
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
+
+$titulo_pagina = "AULAPRO | NOTAS DE MÓDULOS";
+$seccion = 'notas_modulos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>CALIFICACIONES POR MÓDULO</h1>
 </div>
 
-<div class="tarjeta-blanca">
-    <form method="GET" action="calificacionesModulos.php" class="disposicion-flexible alinear-centro separacion-grande envoltura-flexible">
-        <div class="campo-formulario flexible-rellenar">
-            <label>Seleccione un Ciclo:</label>
+<div class="panel">
+    <form method="GET" action="calificacionesModulos.php" class="d-flex alinear-centro sep-g envoltura-flexible">
+        <div class="campo relleno">
+            <label for="selectCicloMod">1. Seleccione un Ciclo:</label>
             <select name="idCiclo" id="selectCicloMod" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Ciclo --</option>
-                <?php foreach ($listaNiveles as $nivel) { ?>
-                    <optgroup label="<?= $nivel['nombreNivel'] ?>">
-                        <?php foreach ($listaCiclos as $ciclo) { ?>
-                            <?php if ($ciclo['idNivel'] == $nivel['idNivel']) { ?>
-                                <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                                    <?= $ciclo['nombreCiclo'] ?>
-                                </option>
-                            <?php } ?>
-                        <?php } ?>
-                    </optgroup>
+                <?php foreach ($listaCiclos as $ciclo) { ?>
+                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        [<?= $ciclo['nombreNivel'] ?>] <?= $ciclo['nombreCiclo'] ?>
+                    </option>
                 <?php } ?>
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
-            <label>3. Seleccione un Módulo:</label>
+        <div class="campo relleno">
+            <label>2. Seleccione un Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar Módulo --</option>
                 <?php foreach ($listaModulos as $modulo) { ?>
@@ -65,11 +57,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
 
 <?php if (!empty($idModuloElegido)) { ?>
-    <div class="tarjeta-blanca margen-arriba">
+    <div class="panel margen-arriba">
         <form action="../../../controladores/admin/academico/calificarModulos.php" method="POST">
             <input type="hidden" name="idModulo" value="<?= $idModuloElegido ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
-            <div class="contenedor-tabla">
+            <div class="tcont">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -84,7 +76,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <tbody>
                         <?php if (empty($listaEstudiantes)) { ?>
                             <tr>
-                                <td colspan="6" class="sin-datos">No hay estudiantes matriculados en este ciclo</td>
+                                <td colspan="6" class="vacio">No hay estudiantes matriculados en este ciclo</td>
                             </tr>
                         <?php } else { ?>
                             <?php foreach ($listaEstudiantes as $alumno) {
@@ -93,7 +85,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             ?>
                                 <tr>
                                     <td>
-                                        <strong><?= mb_strtoupper($alumno['nombreEstudiante'], 'UTF-8') ?></strong>
+                                        <?= strtoupper($alumno['nombreEstudiante']) ?>
                                         <input type="hidden" name="estudiantes[]" value="<?= $idEst ?>">
                                     </td>
                                     <td><input type="text" name="notas_1ev[]" value="<?= $notas['nota_1ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
@@ -109,7 +101,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </div>
 
             <?php if (!empty($listaEstudiantes)) { ?>
-                <div class="form-acciones">
+                <div class="acciones">
                     <button type="submit" name="guardarNotas" class="boton-primario">
                         <i class="fas fa-save"></i> GUARDAR TODAS LAS NOTAS
                     </button>

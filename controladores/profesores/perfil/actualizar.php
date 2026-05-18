@@ -8,8 +8,8 @@ if (isset($_POST['actualizarPerfil'])) {
     $email = strtolower(trim($_POST['emailProfesor']));
     $telefono = trim($_POST['telefonoProfesor']);
 
-    $passwordActual = trim($_POST['current_password']);
-    $passwordNueva = trim($_POST['new_password']);
+    $passwordActual = trim($_POST['current_password'] ?? '');
+    $passwordNueva = trim($_POST['new_password'] ?? '');
 
     $errores = [];
 
@@ -28,7 +28,7 @@ if (isset($_POST['actualizarPerfil'])) {
             $errores['current_password'] = "Ingresa la contraseña actual.";
         } else {
             $datosProfesor = obtenerProfesorPorId($idProfesor);
-            if (!$datosProfesor || $datosProfesor['password'] !== $passwordActual) {
+            if (!$datosProfesor || !password_verify($passwordActual, $datosProfesor['password'])) {
                 $errores['current_password'] = "Contraseña actual incorrecta.";
             } else if (strlen($passwordNueva) < 6) {
                 $errores['new_password'] = "Mínimo 6 caracteres.";

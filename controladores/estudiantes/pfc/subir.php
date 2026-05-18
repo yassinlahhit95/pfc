@@ -19,9 +19,8 @@ if (isset($_POST['subirTFG'])) {
         }
     } else {
         $ext = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
-        $permitidos = ['pdf', 'doc', 'docx'];
-        
-        if (!in_array($ext, $permitidos)) {
+
+        if ($ext != 'pdf' && $ext != 'doc' && $ext != 'docx') {
             $listaErrores['archivoTFG'] = "Solo se permiten archivos PDF o Word (.doc, .docx).";
         }
     }

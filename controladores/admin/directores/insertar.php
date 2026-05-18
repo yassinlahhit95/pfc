@@ -8,7 +8,6 @@ if (isset($_POST['guardarDirector'])) {
     $dni = trim($_POST['dniDirector']);
     $telefono = trim($_POST['telefonoDirector']);
     $fechaAlta = date('Y-m-d');
-    
     $fechaNacimiento = trim($_POST['fechaNacimientoDirector'] ?? '1995-08-12');
     $direccion = trim($_POST['direccionDirector']);
     $ciudad = trim($_POST['ciudadDirector']);
@@ -18,23 +17,23 @@ if (isset($_POST['guardarDirector'])) {
     $errores = [];
 
     if (empty($nombre)) {
-        $errores['nombreDirector'] = "El nombre es obligatorio.";
+        $errores['nombreDirector'] = "Falta el nombre";
     }
     if (empty($email)) {
         $errores['emailDirector'] = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailDirector'] = "El formato del email no es válido.";
+        $errores['emailDirector'] = "Email no válido";
     }
     if (empty($dni)) {
         $errores['dniDirector'] = "El DNI es obligatorio.";
     }
     if (empty($telefono)) {
-        $errores['telefonoDirector'] = "El teléfono es obligatorio.";
+        $errores['telefonoDirector'] = "Teléfono obligatorio";
     } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoDirector'] = "El teléfono debe tener exactamente 9 dígitos.";
+        $errores['telefonoDirector'] = "9 dígitos exactos";
     }
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
-        $errores['codigoPostalDirector'] = "El código postal debe ser numérico.";
+        $errores['codigoPostalDirector'] = "Código postal no válido";
     }
 
     if (empty($errores)) {

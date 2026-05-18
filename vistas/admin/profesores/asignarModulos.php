@@ -1,9 +1,5 @@
-<?php
+﻿<?php
 session_start();
-$titulo_pagina = "AULAPRO | ASIGNAR MÓDULOS A PROFESOR";
-$seccion = 'profesores';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -21,7 +17,9 @@ if (!$profesor) {
     exit;
 }
 
-$modulos_asignados = obtenerIdsModulosDeProfesor($idProfesor);
+$modulos_asignados = listarIdsModulosDeProfesor($idProfesor);
+$mapaModulosAsignados = [];
+foreach ($modulos_asignados as $idM) { $mapaModulosAsignados[$idM] = true; }
 $todos_los_modulos = listarModulos();
 $ciclos = listarTodosLosCiclos();
 
@@ -29,14 +27,18 @@ $modulos_por_ciclo = [];
 foreach ($todos_los_modulos as $m) {
     $modulos_por_ciclo[$m['nombreCiclo']][] = $m;
 }
+
+$titulo_pagina = "AULAPRO | ASIGNAR MÓDULOS A PROFESOR";
+$seccion = 'profesores';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>ASIGNAR MÓDULOS: <?= $profesor['nombreProfesor'] ?></h1>
     <a href="verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>Seleccione los módulos que impartirá este profesor</h3>
     </div>
@@ -51,7 +53,7 @@ foreach ($todos_los_modulos as $m) {
                 </h4>
                 <div class="cuadricula-asignacion">
                     <?php foreach ($modulos as $mod) { 
-                        $checked = in_array($mod['idModulo'], $modulos_asignados) ? "checked" : "";
+                        $checked = isset($mapaModulosAsignados[$mod['idModulo']]) ? "checked" : "";
                     ?>
                         <label class="elemento-asignacion">
                             <input type="checkbox" name="modulos[]" value="<?= $mod['idModulo'] ?>" <?= $checked ?> class="checkbox-grande">
@@ -71,8 +73,4 @@ foreach ($todos_los_modulos as $m) {
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
 

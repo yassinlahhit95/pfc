@@ -3,8 +3,8 @@ session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 if (isset($_POST['guardarPago'])) {
-    $idEstudiante = trim($_POST['idEstudiante']);
-    $tipoPago     = trim($_POST['tipoPago']);
+    $idEstudiante = $_POST['idEstudiante'];
+    $tipoPago     = $_POST['tipoPago'];
     $monto        = trim($_POST['monto']);
     $fechaPago    = trim($_POST['fechaPago']);
 

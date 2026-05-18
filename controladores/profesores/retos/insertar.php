@@ -11,17 +11,44 @@ if (isset($_POST['insertarReto'])) {
 
     $errores = [];
 
-    if (empty($nombreReto)) $errores['nombreReto'] = "El nombre del reto es obligatorio.";
+    if (empty($nombreReto)) $errores['nombreReto'] = "Falta el nombre del reto";
     if (empty($fechaInicio)) $errores['fechaInicio'] = "La fecha de inicio es obligatoria.";
-    if (empty($fechaFin)) $errores['fechaFin'] = "La fecha de fin es obligatoria.";
+    if (empty($fechaFin)) $errores['fechaFin'] = "Falta la fecha de fin";
     if (empty($horasReto)) {
-        $errores['horasReto'] = "Las horas son obligatorias.";
+        $errores['horasReto'] = "Horas requeridas";
     } elseif (!is_numeric($horasReto)) {
-        $errores['horasReto'] = "Las horas deben ser un valor numérico.";
+        $errores['horasReto'] = "Pon un número de horas";
+    }
+
+    if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicio <= $fechaFin) {
+        $fechaInicioObj = new DateTime($fechaInicio);
+        $fechaFinObj = new DateTime($fechaFin);
+        $diasLaborables = 0;
+
+        $tempIter = clone $fechaInicioObj;
+        while ($tempIter <= $fechaFinObj) {
+            if ($tempIter->format('N') < 6) {
+                $diasLaborables++;
+            }
+            $tempIter->modify('+1 day');
+        }
+
+        $maxHorasPermitidas = $diasLaborables * 6;
+        if ($horasReto > $maxHorasPermitidas) {
+            $errores['horasReto'] = "Las horas estimadas ($horasReto h) superan el máximo de $maxHorasPermitidas h para el periodo seleccionado ($diasLaborables días laborables x 6h).";
+        }
     }
 
     if (empty($modulosSeleccionados)) {
-        $errores['modulos'] = "Debe seleccionar al menos un módulo para este reto.";
+        $errores['modulos'] = "Selecciona al menos un módulo";
+    } else if (is_numeric($horasReto)) {
+        foreach ($modulosSeleccionados as $idModulo) {
+            $detalle = obtenerDetalleHorasModulo($idModulo);
+            if ($horasReto > $detalle['disponibles']) {
+                $errores['modulos'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+                break;
+            }
+        }
     }
 
     if (!empty($errores)) {

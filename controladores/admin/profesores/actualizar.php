@@ -3,14 +3,13 @@ session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
 if (isset($_POST['actualizarProfesor'])) {
-    $idProfesorActualizar = trim($_POST['idProfesor']);
+    $idProfesorActualizar = $_POST['idProfesor'];
     $nombreProfesorActualizar = trim($_POST['nombreProfesor']);
     $emailProfesorActualizar = trim($_POST['emailProfesor']);
     $dniProfesorActualizar = trim($_POST['dniProfesor']);
     $telefonoProfesorActualizar = trim($_POST['telefonoProfesor']);
     $direccionProfesorActualizar = trim($_POST['direccionProfesor']);
-    
-    $fechaNacimientoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '1980-01-01');
+    $fechaNacimientoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '');
     $fechaAltaProfesor = trim($_POST['fechaAltaProfesor'] ?? '2026-01-01');
     $ciudadProfesor = trim($_POST['ciudadProfesor']);
     $codigoPostalProfesor = trim($_POST['codigoPostalProfesor']);
@@ -22,23 +21,31 @@ if (isset($_POST['actualizarProfesor'])) {
         $errores['nombreProfesor'] = "El nombre es obligatorio.";
     }
     if (empty($emailProfesorActualizar)) {
-        $errores['emailProfesor'] = "El email es obligatorio.";
+        $errores['emailProfesor'] = "Falta el email";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailProfesorActualizar)) {
-        $errores['emailProfesor'] = "El formato del email no es válido.";
+        $errores['emailProfesor'] = "Email no válido";
     }
     if (empty($dniProfesorActualizar)) {
         $errores['dniProfesor'] = "El DNI es obligatorio.";
     }
     if (empty($telefonoProfesorActualizar)) {
-        $errores['telefonoProfesor'] = "El teléfono es obligatorio.";
+        $errores['telefonoProfesor'] = "Teléfono requerido";
     } else if (!is_numeric($telefonoProfesorActualizar)) {
         $errores['telefonoProfesor'] = "El teléfono debe ser numérico.";
     }
     if (empty($direccionProfesorActualizar)) {
-        $errores['direccionProfesor'] = "La dirección es obligatoria.";
+        $errores['direccionProfesor'] = "Dirección obligatoria";
     }
-    if (!empty($codigoPostalProfesor) && !is_numeric($codigoPostalProfesor)) {
-        $errores['codigoPostalProfesor'] = "El código postal debe ser numérico.";
+    if (empty($ciudadProfesor)) {
+        $errores['ciudadProfesor'] = "La ciudad es obligatoria.";
+    }
+    if (empty($codigoPostalProfesor)) {
+        $errores['codigoPostalProfesor'] = "Falta el código postal";
+    } else if (!is_numeric($codigoPostalProfesor)) {
+        $errores['codigoPostalProfesor'] = "Código postal incorrecto";
+    }
+    if (empty($fechaNacimientoProfesor)) {
+        $errores['fechaNacimientoProfesor'] = "Falta la fecha de nacimiento";
     }
 
     if (empty($errores)) {
@@ -49,6 +56,20 @@ if (isset($_POST['actualizarProfesor'])) {
 
     if (empty($errores)) {
         if (actualizarProfesor($idProfesorActualizar, $nombreProfesorActualizar, $emailProfesorActualizar, $telefonoProfesorActualizar, $dniProfesorActualizar, $direccionProfesorActualizar, $fechaNacimientoProfesor, $fechaAltaProfesor, $ciudadProfesor, $codigoPostalProfesor, $observacionesProfesor)) {
+            limpiarCiclosProfesor($idProfesorActualizar);
+            if (isset($_POST['ciclos']) && is_array($_POST['ciclos'])) {
+                foreach ($_POST['ciclos'] as $idCic) {
+                    asociarCicloProfesor($idCic, $idProfesorActualizar);
+                }
+            }
+
+            limpiarModulosProfesor($idProfesorActualizar);
+            if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
+                foreach ($_POST['modulos'] as $idMod) {
+                    asociarModuloProfesor($idMod, $idProfesorActualizar);
+                }
+            }
+
             $_SESSION['exito'] = "Profesor actualizado correctamente.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;

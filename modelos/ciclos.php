@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosCiclos() {
@@ -17,7 +17,7 @@ function listarTodosLosCiclos() {
     return $listaCiclos;
 }
 
-function obtenerCiclosDeProfesor($idProfesor) {
+function listarCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT c.*, n.nombreNivel 
             FROM ciclos c 
@@ -52,9 +52,6 @@ function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = 0) {
 }
 
 function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
-    if (checkCicloExistente($nombreCiclo, $abreviaturaCiclo)) {
-        return false;
-    }
     $con = obtenerConexion();
 
     $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)";
@@ -76,9 +73,6 @@ function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIds
 }
 
 function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
-    if (checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idCiclo)) {
-        return false;
-    }
     $con = obtenerConexion();
 
     $sql = "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?";
@@ -124,7 +118,7 @@ function obtenerCicloPorId($idCiclo) {
     return $datosCiclo;
 }
 
-function obtenerProfesoresDeUnCiclo($idCiclo) {
+function listarProfesoresDeUnCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT idProfesor FROM ciclo_profesor WHERE idCiclo = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -139,7 +133,7 @@ function obtenerProfesoresDeUnCiclo($idCiclo) {
     return $listaIdsProfesores;
 }
 
-function obtenerNombresTutoresCiclo($idCiclo) {
+function listarNombresTutoresCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT p.nombreProfesor 
             FROM profesores p 

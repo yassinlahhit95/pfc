@@ -4,14 +4,13 @@ require_once __DIR__ . "/conectar.php";
 function listarDirectores() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM directores ORDER BY idDirector ASC";
-    $resultado = mysqli_query($con, $sql);
-
-    $listaDirectores = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $listaDirectores[] = $fila;
+    $res = mysqli_query($con, $sql);
+    $todos = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $todos[] = $fila;
     }
     mysqli_close($con);
-    return $listaDirectores;
+    return $todos;
 }
 
 function checkDirectorExistente($dni, $email, $idExcluir = 0) {
@@ -27,9 +26,6 @@ function checkDirectorExistente($dni, $email, $idExcluir = 0) {
 }
 
 function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
-    if (checkDirectorExistente($dni, $email)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
@@ -40,9 +36,6 @@ function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNa
 }
 
 function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
-    if (checkDirectorExistente($dni, $email, $idDirector)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "UPDATE directores SET nombreDirector=?, emailDirector=?, dniDirector=?, telefonoDirector=?, fechaAltaDirector=?, fechaNacimientoDirector=?, direccionDirector=?, ciudadDirector=?, codigoPostalDirector=?, observacionesDirector=? WHERE idDirector=?";
     $stmt = mysqli_prepare($con, $sql);

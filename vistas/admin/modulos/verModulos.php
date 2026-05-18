@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -23,7 +23,7 @@ $error = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <div>
         <h1>MÓDULOS PROFESIONALES</h1>
     </div>
@@ -42,30 +42,24 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="disposicion-flexible envoltura-flexible separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel margen-abajo">
+    <div class="d-flex envoltura-flexible sep-g">
+        <div class="campo relleno">
             <label>FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaModulos')">
                 <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($listaNiveles as $nivelFiltro) { ?>
-                    <optgroup label="<?= $nivelFiltro['nombreNivel'] ?>">
-                        <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                            <?php if ($cicloFiltro['idNivel'] == $nivelFiltro['idNivel']) { ?>
-                                <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
-                                    <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
-                                </option>
-                            <?php } ?>
-                        <?php } ?>
-                    </optgroup>
+                <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
+                    <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
+                        [<?= $cicloFiltro['nombreNivel'] ?>] <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
+                    </option>
                 <?php } ?>
             </select>
         </div>
     </div>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaModulos">
             <thead>
                 <tr>
@@ -81,24 +75,23 @@ unset($_SESSION['exito'], $_SESSION['error']);
             <tbody>
                 <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
-                        <td colspan="7" class="sin-datos">No hay módulos registrados en el sistema.</td>
+                        <td colspan="7" class="vacio">No hay módulos registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeModulosActuales as $moduloIndividual) {
-                        $nombresProfesores = obtenerNombresProfesoresDeModulo($moduloIndividual['idModulo']);
+                        $nombresProfesores = listarNombresProfesoresDeModulo($moduloIndividual['idModulo']);
                     ?>
                     <tr>
                         <td><?= $moduloIndividual['idModulo'] ?></td>
                         <td>
                             <span class="etiqueta-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                            <span class="etiqueta-estado gris"><?= $moduloIndividual['curso'] == 1 ? '1º Curso' : '2º Curso' ?></span>
                         </td>
-                        <td><strong><?= mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8') ?></strong></td>
+                        <td><b><?= strtoupper($moduloIndividual['nombreModulo']) ?></b></td>
                         <td>
                             <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
-                                <strong>[<?= $moduloIndividual['abreviaturaCiclo'] ?>]</strong> 
+                                <b>[<?= $moduloIndividual['abreviaturaCiclo'] ?>]</b> 
                             <?php } ?>
-                            <?= mb_strtoupper($moduloIndividual['nombreCiclo'], 'UTF-8') ?>
+                            <?= strtoupper($moduloIndividual['nombreCiclo']) ?>
                         </td>
                         <td>
                             <?php if (empty($nombresProfesores)) { ?>
@@ -107,7 +100,14 @@ unset($_SESSION['exito'], $_SESSION['error']);
                                 </span>
                             <?php } else { ?>
                                 <div class="texto-pequeno">
-                                    <?= implode(", ", array_map('strtoupper', $nombresProfesores)) ?>
+                                    <?php
+                                $listaNombres = '';
+                                foreach ($nombresProfesores as $np) {
+                                    if ($listaNombres) $listaNombres .= ', ';
+                                    $listaNombres .= strtoupper($np);
+                                }
+                                echo $listaNombres;
+                                ?>
                                 </div>
                             <?php } ?>
                         </td>

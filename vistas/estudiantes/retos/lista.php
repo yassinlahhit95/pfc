@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -25,14 +25,14 @@ if (!$datosEst) {
 $idCiclo = $datosEst['idCiclo'] ?? 0;
 $nombreCiclo = $datosEst['nombreCiclo'] ?? 'SIN ASIGNAR';
 
-$retos = ($idCiclo > 0) ? obtenerRetosPorCiclo($idCiclo) : [];
+$retos = ($idCiclo > 0) ? listarRetosPorCiclo($idCiclo) : [];
 
 $tituloDelPagina = "AULAPRO | MIS RETOS";
 $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MIS RETOS</h1>
     <p class="subtitulo">Retos asignados a tu ciclo: <?= $nombreCiclo ?></p>
 </div>
@@ -44,12 +44,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>Lista de Retos Disponibles</h3>
     </div>
     
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -62,12 +62,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($retos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay retos registrados para este ciclo formativo.</td>
+                        <td colspan="4" class="vacio">No hay retos registrados para este ciclo formativo.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= mb_strtoupper($reto['nombreReto'], 'UTF-8') ?></td>
+                            <td class="texto-negrita"><?= strtoupper($reto['nombreReto']) ?></td>
                             <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
                             <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
                             <td><?= $reto['horasReto'] ?> h</td>

@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 $hayError = false;
 
 if (isset($_POST['guardarNotas'])) {
-    $idModulo = trim($_POST['idModulo']);
+    $idModulo = trim($_POST['idModulo'] ?? '');
     $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
     $listaNotas1Ev = $_POST['notas_1ev'] ?? [];
     $listaNotas1Final = $_POST['notas_1final'] ?? [];
@@ -23,16 +23,10 @@ if (isset($_POST['guardarNotas'])) {
         $nota2Final = trim($listaNotas2Final[$i]);
         $observacion = trim($listaObservaciones[$i]);
 
-        $arrayTemporalNotas = [$nota1Ev, $nota1Final, $nota2Ev, $nota2Final];
-        
-        foreach ($arrayTemporalNotas as $notaIndividual) {
-            if (!empty($notaIndividual)) {
-                if (!is_numeric($notaIndividual) || $notaIndividual < 0 || $notaIndividual > 10) {
-                    $hayError = true;
-                    break;
-                }
-            }
-        }
+        if (!empty($nota1Ev) && (!is_numeric($nota1Ev) || $nota1Ev < 0 || $nota1Ev > 10)) { $hayError = true; }
+        if (!$hayError && !empty($nota1Final) && (!is_numeric($nota1Final) || $nota1Final < 0 || $nota1Final > 10)) { $hayError = true; }
+        if (!$hayError && !empty($nota2Ev) && (!is_numeric($nota2Ev) || $nota2Ev < 0 || $nota2Ev > 10)) { $hayError = true; }
+        if (!$hayError && !empty($nota2Final) && (!is_numeric($nota2Final) || $nota2Final < 0 || $nota2Final > 10)) { $hayError = true; }
 
         if (!$hayError) {
             $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1Ev, $nota1Final, $nota2Ev, $nota2Final, $observacion);
@@ -74,7 +68,7 @@ if (isset($_POST['guardarNotas'])) {
         $_SESSION['error'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
     }
 
-    $idCiclo = trim($_POST['idCiclo']);
+    $idCiclo = trim($_POST['idCiclo'] ?? '');
     header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idCiclo=" . $idCiclo . "&idModulo=" . $idModulo);
     exit;
 }

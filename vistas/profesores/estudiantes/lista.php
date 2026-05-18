@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $estudiantes = listarEstudiantesDeProfesor($idProfesor);
-$listaDeCiclosParaFiltro = obtenerCiclosDeProfesor($idProfesor);
+$listaDeCiclosParaFiltro = listarCiclosDeProfesor($idProfesor);
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -22,7 +22,7 @@ $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>GESTIÓN DE ESTUDIANTES</h1>
     <div class="acciones-pagina">
         <a href="agregar.php" class="boton-primario">
@@ -38,26 +38,26 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <div class="campo-formulario">
+<div class="panel margen-abajo">
+    <div class="campo">
         <label for="selectFiltroCicloProf">FILTRAR POR CICLO:</label>
         <select id="selectFiltroCicloProf" name="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
-                    <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
+                <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
+                    <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                 </option>
             <?php } ?>
         </select>
     </div>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>Estudiantes Registrados</h3>
     </div>
 
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaEstudiantesProf">
             <thead>
                 <tr>
@@ -101,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">No hay estudiantes registrados.</td>
+                        <td colspan="5" class="vacio">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>

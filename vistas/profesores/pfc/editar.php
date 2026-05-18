@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,7 +21,7 @@ $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>EDITAR DATOS TFG</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -33,25 +33,25 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <form action="../../../controladores/profesores/pfc/actualizar.php" method="POST">
         <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
+        <div class="form-cols">
+            <div class="campo">
                 <label for="nombreEstudiante">Estudiante</label>
                 <input type="text" id="nombreEstudiante" value="<?= $datosTFG['nombreEstudiante'] ?? '' ?>" disabled>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="tituloTFG">Título del TFG *</label>
                 <input type="text" id="tituloTFG" name="tituloTFG" value="<?= $datosTFG['tituloTFG'] ?? '' ?>" class="<?= isset($errores['tituloTFG']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['tituloTFG'])) { ?>
-                    <strong class="error-campo"><?= $errores['tituloTFG'] ?></strong>
+                    <strong class="error-campo"><?= $errores['tituloTFG'] ?></b>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="actualizarTFG" class="boton-primario">
                 <i class="fas fa-save"></i> ACTUALIZAR TFG
             </button>

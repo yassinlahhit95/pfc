@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | GESTIÓN DE PRÉSTAMOS";
 $seccion = 'prestamos';
@@ -14,7 +14,7 @@ $exito = $_SESSION['exito'] ?? "";
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>PRÉSTAMOS DE MATERIAL</h1>
     <a href="agregarPrestamo.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO PRÉSTAMO
@@ -29,8 +29,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -44,11 +44,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_prestamos)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No hay registros de préstamos</td></tr>
+                    <tr><td colspan="6" class="vacio">No hay registros de préstamos</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_prestamos as $p) { ?>
                     <tr>
-                        <td><strong><?= $p['nombreEstudiante'] ?></strong></td>
+                        <td><b><?= $p['nombreEstudiante'] ?></b></td>
                         <td><?= $p['nombreArticulo'] ?></td>
                         <td><?= date('d/m/Y', strtotime($p['fechaPrestamo'])) ?></td>
                         <td>
@@ -63,7 +63,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             $clase_estado = "inactivo-rojo";
                             if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
                             ?>
-                            <span class="estado-bolita <?= $clase_estado ?>">
+                            <span class="bolita <?= $clase_estado ?>">
                                 <?= $p['estadoPrestamo'] ?>
                             </span>
                         </td>

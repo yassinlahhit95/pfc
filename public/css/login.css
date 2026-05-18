@@ -142,19 +142,6 @@ body::after {
     gap: 10px;
 }
 
-.success-message {
-    background: #0e2e22;
-    border: 1px solid #0d9967;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-    color: #a7f3d0;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .login-card label {
     font-size: 13px;
     margin-bottom: 8px;

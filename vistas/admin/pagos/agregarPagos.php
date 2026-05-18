@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -20,7 +20,6 @@ if (!empty($idEstudianteElegido)) {
     $infoFinanciera = obtenerEstadoFinancieroEstudiante($idEstudianteElegido);
 }
 
-// pagos cerrados después del 30 de junio
 $hoy = date('Y-m-d');
 $fechaLimite = date('Y') . '-06-30';
 $esDespuesDeJunio = ($hoy > $fechaLimite);
@@ -35,7 +34,7 @@ $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>REGISTRAR NUEVO PAGO</h1>
     <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -50,9 +49,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
-    <form method="GET" action="" class="disposicion-flexible alinear-fin envoltura-flexible separacion-media">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel margen-abajo">
+    <form method="GET" action="" class="d-flex al-fin envoltura-flexible separacion-media">
+        <div class="campo relleno">
             <label for="idCiclo">1. Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Todos los Ciclos --</option>
@@ -64,7 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label for="idEstudiante">2. Seleccionar Estudiante:</label>
             <select name="idEstudiante" id="idEstudiante" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Estudiante --</option>
@@ -83,20 +82,20 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($infoFinanciera) { ?>
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>Estado Financiero de Estudiante</h3>
     </div>
-    <div class="formulario-cuadricula">
-        <div class="campo-formulario">
+    <div class="form-cols">
+        <div class="campo">
             <label>Precio del Ciclo</label>
-            <p><strong><?= number_format($infoFinanciera['precioCiclo'], 2) ?> €</strong></p>
+            <p><b><?= number_format($infoFinanciera['precioCiclo'], 2) ?> €</b></p>
         </div>
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Ya Pagado</label>
             <p><?= number_format($infoFinanciera['totalPagado'], 2) ?> €</p>
         </div>
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Pendiente</label>
             <p class="color-error texto-negrita"><?= number_format($infoFinanciera['restante'], 2) ?> €</p>
         </div>
@@ -113,7 +112,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
             <input type="hidden" name="fechaPago" value="<?= $hoy ?>">
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="tipoPago">Tipo de Pago *</label>
                 <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()">
                     <option value="">-- Elegir --</option>
@@ -123,20 +122,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>     
                 </select>
                 <?php if (isset($errores['tipoPago'])) { ?>
-                    <strong class="error-campo"><?= $errores['tipoPago'] ?></strong>
+                    <strong class="error-campo"><?= $errores['tipoPago'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="montoInput">Cantidad a Cobrar (€) *</label>
                 <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= $datos_pago['monto'] ?? '' ?>">
                 <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</small>
                 <?php if (isset($errores['monto'])) { ?>
-                    <strong class="error-campo"><?= $errores['monto'] ?></strong>
+                    <strong class="error-campo"><?= $errores['monto'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="form-acciones">
+            <div class="acciones">
                 <button type="submit" name="guardarPago" class="boton-primario">
                     <i class="fas fa-check"></i> Confirmar y Registrar Pago (<?= date('d/m/Y', strtotime($hoy)) ?>)
                 </button>
@@ -169,8 +168,4 @@ if (document.getElementById('tipoPago') && document.getElementById('tipoPago').v
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
 

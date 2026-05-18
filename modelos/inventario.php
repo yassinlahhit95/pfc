@@ -11,7 +11,9 @@ function listarTodosLosPrestamos() {
             JOIN dispositivos ON prestamos.numeroSerie = dispositivos.numeroSerie
             ORDER BY idPrestamo DESC";
 
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaPrestamos = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaPrestamos[] = $fila;
@@ -27,7 +29,9 @@ function listarArticulos() {
             FROM dispositivos
             ORDER BY idDispositivo ASC";
 
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaArticulos = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaArticulos[] = $fila;
@@ -46,7 +50,9 @@ function listarPrestamosActivos() {
             WHERE prestamos.estadoPrestamo = 'en curso'
             ORDER BY idPrestamo DESC";
 
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaPrestamosActivos = [];
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaPrestamosActivos[] = $fila;
@@ -68,9 +74,6 @@ function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
 }
 
 function insertarArticulo($nombreArticulo, $numeroSerie) {
-    if (checkArticuloExistente($numeroSerie)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "INSERT INTO dispositivos (nombreDispositivo, numeroSerie, estadoDispositivo) VALUES (?, ?, 'disponible')";
     $stmt = mysqli_prepare($con, $sql);
@@ -154,9 +157,6 @@ function obtenerArticuloPorId($idArticulo) {
 }
 
 function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoDispositivo) {
-    if (checkArticuloExistente($numeroSerie, $idArticulo)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "UPDATE dispositivos SET nombreDispositivo=?, numeroSerie=?, estadoDispositivo=? WHERE idDispositivo=?";
     $stmt = mysqli_prepare($con, $sql);

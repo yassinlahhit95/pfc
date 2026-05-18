@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosPagos() {
@@ -37,7 +37,7 @@ function listarPagosFiltrados($idCiclo) {
     return $lista;
 }
 
-function obtenerPagosPorEstudiante($idEstudiante) {
+function listarPagosPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM pagos WHERE idEstudiante = ? ORDER BY fechaPago DESC";
     $stmt = mysqli_prepare($con, $sql);

@@ -7,7 +7,7 @@ if (empty($_SESSION['idProfesor'])) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (!empty($_POST['idEstudiante'])) {
     $idEstudiante = intval($_POST['idEstudiante'] ?? 0);
 
     if ($idEstudiante > 0) {

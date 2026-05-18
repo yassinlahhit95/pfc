@@ -1,15 +1,7 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) {
-    header("Location: ../../login.php");
-    exit;
-}
-
-$tituloDelPagina = "AULAPRO | NOTAS DE RETOS";
-$seccionActual = 'notas_retos';
-include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -20,10 +12,10 @@ $idCiclo = intval($_GET['idCiclo'] ?? 0);
 $idModulo = intval($_GET['idModulo'] ?? 0);
 $idReto = intval($_GET['idReto'] ?? 0);
 
-$listaDeCiclos = obtenerCiclosDeProfesor($idProfesor);
+$listaDeCiclos = listarCiclosDeProfesor($idProfesor);
 $listaDeModulos = [];
 if ($idCiclo) {
-    $listaDeModulos = obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
+    $listaDeModulos = listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
 }
 
 $listaDeRetos = [];
@@ -40,15 +32,19 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? [];
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
+
+$tituloDelPagina = "AULAPRO | NOTAS DE RETOS";
+$seccionActual = 'notas_retos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>CALIFICACIONES POR RETO</h1>
 </div>
 
-<div class="tarjeta-blanca">
-    <form method="GET" action="../../../vistas/profesores/calificaciones/retos.php" class="disposicion-flexible alinear-centro separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel">
+    <form method="GET" action="../../../vistas/profesores/calificaciones/retos.php" class="d-flex alinear-centro sep-g">
+        <div class="campo relleno">
             <label for="idCiclo">1. Seleccione Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
@@ -60,7 +56,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label for="idModulo">2. Seleccione Módulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
@@ -72,7 +68,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
             </select>
         </div>
 
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label for="idReto">3. Seleccione Reto:</label>
             <select name="idReto" id="idReto" onchange="this.form.submit()" <?= empty($idModulo) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
@@ -100,13 +96,13 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
 <?php } ?>
 
 <?php if ($idReto) { ?>
-    <div class="tarjeta-blanca margen-arriba">
+    <div class="panel margen-arriba">
         <form action="../../../controladores/profesores/calificaciones/calificarRetos.php" method="POST">
             <input type="hidden" name="idReto" value="<?= $idReto ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
             
-            <div class="contenedor-tabla">
+            <div class="tcont">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -116,7 +112,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
                     </thead>
                     <tbody>
                         <?php if (empty($listaDeEstudiantes)) { ?>
-                            <tr><td colspan="2" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
+                            <tr><td colspan="2" class="vacio">No hay estudiantes en este ciclo</td></tr>
                         <?php } else { ?>
                             <?php foreach ($listaDeEstudiantes as $estudiante) { 
                                 $idEstudiante = $estudiante['idEstudiante'];
@@ -124,7 +120,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
                             ?>
                             <tr>
                                 <td>
-                                    <strong><?= mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8') ?></strong>
+                                    <?= strtoupper($estudiante['nombreEstudiante']) ?>
                                     <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>
@@ -138,7 +134,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
             </div>
             
             <?php if (!empty($listaDeEstudiantes)) { ?>
-                <div class="form-acciones">
+                <div class="acciones">
                     <button type="submit" name="guardarNotasReto" class="boton-primario">
                         <i class="fas fa-save"></i> GUARDAR NOTAS DEL RETO
                     </button>

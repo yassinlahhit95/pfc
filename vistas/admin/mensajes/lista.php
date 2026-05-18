@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -20,7 +20,7 @@ $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>BUZÓN CENTRAL DE MENSAJES</h1>
     <a href="agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO MENSAJE
@@ -35,8 +35,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaMensajes">
             <thead>
                 <tr>
@@ -50,7 +50,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="sin-datos">No hay mensajes registrados.</td></tr>
+                    <tr><td colspan="6" class="vacio">No hay mensajes registrados.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         // Lógica de emisor/receptor corregida
@@ -71,18 +71,18 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         }
                     ?>
                     <tr>
-                        <td><strong><?= $emisor ?></strong></td>
+                        <td><b><?= $emisor ?></b></td>
                         <td><?= $receptor ?></td>
                         <td>
                             <p class="texto-negrita"><?= $mensaje['asunto'] ?></p>
-                            <small class="texto-atenuado"><?= substr($mensaje['descripcion'], 0, 40) ?>...</small>
+                            <small class="atenuado"><?= substr($mensaje['descripcion'], 0, 40) ?>...</small>
                         </td>
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="estado-bolita activo-verde">Leído</span>
+                                <span class="bolita activo-verde">Leído</span>
                             <?php } else { ?>
-                                <span class="estado-bolita inactivo-rojo">Nuevo</span>
+                                <span class="bolita inactivo-rojo">Nuevo</span>
                             <?php } ?>
                         </td>
                         <td>

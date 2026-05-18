@@ -7,7 +7,7 @@ if (isset($_POST['guardarReto'])) {
     $horasReto = trim($_POST['horasReto']);
     $fechaInicioReto = trim($_POST['fechaInicioReto']);
     $fechaFinReto = trim($_POST['fechaFinReto']);
-    $idModulo = trim($_POST['modulosReto'] ?? '');
+    $idModulo = $_POST['modulosReto'] ?? '';
 
     $listaDeErrores = [];
 
@@ -34,27 +34,33 @@ if (isset($_POST['guardarReto'])) {
         $listaDeErrores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
     }
 
+    // Validación de horas según duración (6h/día laborable, 5 días/semana)
     if (!empty($fechaInicioReto) && !empty($fechaFinReto) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicioReto <= $fechaFinReto) {
         $fechaInicioObj = new DateTime($fechaInicioReto);
         $fechaFinObj = new DateTime($fechaFinReto);
         $diasLaborables = 0;
-        while ($fechaInicioObj <= $fechaFinObj) {
-            if ($fechaInicioObj->format('N') < 6) {
+        
+        $tempIter = clone $fechaInicioObj;
+        while ($tempIter <= $fechaFinObj) {
+            // N: 1 (lunes) a 7 (domingo). Menor a 6 = lunes a viernes.
+            if ($tempIter->format('N') < 6) {
                 $diasLaborables++;
             }
-            $fechaInicioObj->modify('+1 day');
+            $tempIter->modify('+1 day');
         }
+        
         $maxHorasPermitidas = $diasLaborables * 6;
         if ($horasReto > $maxHorasPermitidas) {
-            $listaDeErrores['horasReto'] = "Las horas estimadas superan el máximo de $maxHorasPermitidas h para el periodo seleccionado (6h/día laborable).";
+            $listaDeErrores['horasReto'] = "Las horas estimadas ($horasReto h) superan el máximo de $maxHorasPermitidas h para el periodo seleccionado ($diasLaborables días laborables x 6h).";
         }
     }
 
     if (empty($idModulo) || !is_numeric($idModulo)) {
         $listaDeErrores['modulosReto'] = "Debes seleccionar un módulo.";
     } else if (is_numeric($horasReto)) {
-        if (!comprobarHorasDisponiblesModulo($idModulo, $horasReto, null)) {
-            $listaDeErrores['modulosReto'] = "El módulo no tiene suficientes horas disponibles.";
+        $detalle = obtenerDetalleHorasModulo($idModulo);
+        if ($horasReto > $detalle['disponibles']) {
+            $listaDeErrores['modulosReto'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
         }
     }
 

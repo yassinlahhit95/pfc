@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -16,7 +16,7 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje || $mensaje['idEstudiante'] != $_SESSION['idEstudiante']) {
-    $_SESSION['error'] = mb_strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.", 'UTF-8');
+    $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.");
     header("Location: lista.php");
     exit;
 }
@@ -31,7 +31,7 @@ $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>DETALLES DEL MENSAJE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -43,40 +43,40 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-envelope-open-text"></i> Información del Mensaje</h3>
     </div>
     
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administración (Sistema)' ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Enviado el</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Contenido</div>
         <div class="valor-detalle valor-mensaje"><?= $mensaje['descripcion'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">VISTO</span>
+                <span class="bolita activo-verde">VISTO</span>
             <?php } else { ?>
-                <span class="estado-bolita inactivo-rojo">NUEVO / SIN LEER</span>
+                <span class="bolita inactivo-rojo">NUEVO / SIN LEER</span>
             <?php } ?>
         </div>
     </div>

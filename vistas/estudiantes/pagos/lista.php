@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -13,7 +13,7 @@ if (empty($_SESSION['idEstudiante'])) {
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idDeEsteEstudiante = $_SESSION['idEstudiante'];
-$listaMisPagos = obtenerPagosPorEstudiante($idDeEsteEstudiante);
+$listaMisPagos = listarPagosPorEstudiante($idDeEsteEstudiante);
 $datosEstadoFinanciero = obtenerEstadoFinancieroEstudiante($idDeEsteEstudiante);
 
 $tituloDelPagina = "AULAPRO | MIS PAGOS";
@@ -21,7 +21,7 @@ $seccionActual = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MIS PAGOS</h1>
     <p class="subtitulo">Consulta tu historial de pagos y estado financiero</p>
 </div>
@@ -54,12 +54,12 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta">
         <h3>HISTORIAL DE PAGOS</h3>
     </div>
     
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -72,14 +72,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($listaMisPagos)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay pagos registrados en su historial.</td>
+                        <td colspan="4" class="vacio">No hay pagos registrados en su historial.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaMisPagos as $pagoIndividual) { ?>
                     <tr>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?= mb_strtoupper($pagoIndividual['tipoPago'], 'UTF-8') ?></span>
+                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td>

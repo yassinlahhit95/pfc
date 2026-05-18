@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarRetos() {
@@ -29,7 +29,7 @@ function listarRetosFiltrados($idModulo) {
     return $listaFiltrada;
 }
 
-function obtenerRetosDeProfesor($idProfesor) {
+function listarRetosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN profesor_modulo pm ON mr.idModulo = pm.idModulo WHERE pm.idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -65,28 +65,42 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
     return $resultado;
 }
 
-function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExcluir = 0) {
+function obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir = 0) {
     $con = obtenerConexion();
     $idRetoAExcluir = intval($idRetoAExcluir);
-    $sql = "SELECT m.horasMaximas, SUM(r.horasReto) AS horasOcupadas
+    $sql = "SELECT m.nombreModulo, m.horasMaximas, SUM(r.horasReto) AS horasOcupadas
             FROM modulos m
             LEFT JOIN modulo_reto mr ON m.idModulo = mr.idModulo
             LEFT JOIN retos r ON mr.idReto = r.idReto AND r.idReto != ?
             WHERE m.idModulo = ?
-            GROUP BY m.idModulo, m.horasMaximas";
+            GROUP BY m.idModulo, m.nombreModulo, m.horasMaximas";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idRetoAExcluir, $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
-    $maximo = 0;
-    $ocupadas = 0;
+
+    $detalle = [
+        'nombreModulo' => '',
+        'maximo' => 0,
+        'ocupadas' => 0,
+        'disponibles' => 0
+    ];
+
     if ($fila) {
-        if ($fila['horasMaximas'])  { $maximo   = intval($fila['horasMaximas']); }
-        if ($fila['horasOcupadas']) { $ocupadas = intval($fila['horasOcupadas']); }
+        $detalle['nombreModulo'] = $fila['nombreModulo'];
+        $detalle['maximo'] = intval($fila['horasMaximas']);
+        $detalle['ocupadas'] = intval($fila['horasOcupadas'] ?? 0);
+        $detalle['disponibles'] = $detalle['maximo'] - $detalle['ocupadas'];
     }
-    return ($ocupadas + $horasNuevas) <= $maximo;
+
+    return $detalle;
+}
+
+function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExcluir = 0) {
+    $detalle = obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir);
+    return ($horasNuevas <= $detalle['disponibles']);
 }
 
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos = null) {
@@ -136,7 +150,7 @@ function obtenerRetoPorId($idReto) {
     return $reto;
 }
 
-function obtenerModulosDeReto($idReto) {
+function listarModulosDeReto($idReto) {
     $con = obtenerConexion();
     $sql = "SELECT m.*, c.nombreCiclo FROM modulos m JOIN ciclos c ON m.idCiclo = c.idCiclo JOIN modulo_reto mr ON m.idModulo = mr.idModulo WHERE mr.idReto = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -237,7 +251,7 @@ function listarCalificacionesRetoPorEstudiante($idEstudiante) {
     return $listaHistorial;
 }
 
-function obtenerRetosPorCiclo($idCiclo) {
+function listarRetosPorCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulos m ON mr.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY r.idReto ASC";
     $stmt = mysqli_prepare($con, $sql);
@@ -258,13 +272,8 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    $promedio = 0;
-    if ($fila['promedio']) {
-        $promedio = floatval($fila['promedio']);
-    }
+    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     mysqli_close($con);
-    return $promedio;
+    return $row['promedio'] ? floatval($row['promedio']) : 0;
 }
 ?>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarModulos() {
@@ -17,7 +17,7 @@ function listarModulos() {
     return $listaModulos;
 }
 
-function obtenerModulosDeProfesor($idProfesor) {
+function listarModulosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo WHERE profesor_modulo.idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -32,7 +32,7 @@ function obtenerModulosDeProfesor($idProfesor) {
     return $listaModulos;
 }
 
-function obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
+function listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos JOIN profesor_modulo ON modulos.idModulo = profesor_modulo.idModulo JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo WHERE profesor_modulo.idProfesor = ? AND modulos.idCiclo = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -47,26 +47,11 @@ function obtenerModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
     return $listaModulos;
 }
 
-function obtenerModulosPorCiclo($idCiclo) {
+function listarModulosPorCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM modulos WHERE idCiclo = ? ORDER BY curso ASC, nombreModulo ASC";
+    $sql = "SELECT * FROM modulos WHERE idCiclo = ? ORDER BY nombreModulo ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $listaModulos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaModulos[] = $fila;
-    }
-    mysqli_close($con);
-    return $listaModulos;
-}
-
-function obtenerModulosPorCicloYCurso($idCiclo, $curso) {
-    $con = obtenerConexion();
-    $sql = "SELECT * FROM modulos WHERE idCiclo = ? AND curso = ? ORDER BY nombreModulo ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $curso);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $listaModulos = [];
@@ -89,27 +74,21 @@ function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = 0) {
     return $existe;
 }
 
-function insertarModulo($nombreModulo, $idCiclo, $horasMaximas, $curso = 1) {
-    if (checkModuloExistente($nombreModulo, $idCiclo)) {
-        return false;
-    }
+function insertarModulo($nombreModulo, $idCiclo, $horasMaximas) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas, curso) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas) VALUES (?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "siii", $nombreModulo, $idCiclo, $horasMaximas, $curso);
+    mysqli_stmt_bind_param($stmt, "sii", $nombreModulo, $idCiclo, $horasMaximas);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
 }
 
-function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas, $curso = 1) {
-    if (checkModuloExistente($nombreModulo, $idCiclo, $idModulo)) {
-        return false;
-    }
+function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
     $con = obtenerConexion();
-    $sql = "UPDATE modulos SET nombreModulo=?, idCiclo=?, horasMaximas=?, curso=? WHERE idModulo=?";
+    $sql = "UPDATE modulos SET nombreModulo=?, idCiclo=?, horasMaximas=? WHERE idModulo=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "siiii", $nombreModulo, $idCiclo, $horasMaximas, $curso, $idModulo);
+    mysqli_stmt_bind_param($stmt, "siii", $nombreModulo, $idCiclo, $horasMaximas, $idModulo);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
@@ -137,7 +116,7 @@ function obtenerModuloPorId($idModulo) {
     return $datosModulo;
 }
 
-function obtenerProfesoresDeModulo($idModulo) {
+function listarProfesoresDeModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT idProfesor FROM profesor_modulo WHERE idModulo = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -178,7 +157,7 @@ function obtenerHorasTotalesRetosModulo($idModulo) {
     return $total;
 }
 
-function obtenerNombresProfesoresDeModulo($idModulo) {
+function listarNombresProfesoresDeModulo($idModulo) {
     $con = obtenerConexion();
     $sql = "SELECT p.nombreProfesor
             FROM profesores p

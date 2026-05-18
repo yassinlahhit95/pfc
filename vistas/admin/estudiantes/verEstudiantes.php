@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -21,7 +21,7 @@ $error = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <div>
         <h1>LISTADO DE ESTUDIANTES</h1>
     </div>
@@ -48,9 +48,9 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
     $mapaCicloNivel[$cicloFiltro['idCiclo']] = $cicloFiltro['idNivel'];
 }
 ?>
-<div class="tarjeta-blanca margen-abajo">
-    <div class="disposicion-flexible envoltura-flexible separacion-grande">
-        <div class="campo-formulario flexible-rellenar">
+<div class="panel margen-abajo">
+    <div class="d-flex envoltura-flexible sep-g">
+        <div class="campo relleno">
             <label>FILTRAR POR NIVEL:</label>
             <select id="selectFiltroNivel" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Niveles --</option>
@@ -61,13 +61,13 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                 <?php } ?>
             </select>
         </div>
-        <div class="campo-formulario flexible-rellenar">
+        <div class="campo relleno">
             <label>FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>">
-                        <?= mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8') ?>
+                    <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
+                        <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -75,8 +75,8 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
     </div>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaEstudiantes">
             <thead>
                 <tr>
@@ -91,7 +91,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
             <tbody>
                 <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
-                        <td colspan="6" class="sin-datos">No hay estudiantes registrados en el sistema.</td>
+                        <td colspan="6" class="vacio">No hay estudiantes registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
@@ -101,9 +101,9 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                             <span class="etiqueta-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
                             <span class="etiqueta-estado gris"><?= $estudianteIndividual['curso'] ?></span>
                         </td>
-                        <td><strong><?= mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8') ?></strong></td>
+                        <td><b><?= mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8') ?></b></td>
                         <td><?= $estudianteIndividual['emailEstudiante'] ?></td>
-                        <td><?= mb_strtoupper($estudianteIndividual['nombreCiclo'], 'UTF-8') ?></td>
+                        <td><?= strtoupper($estudianteIndividual['nombreCiclo']) ?></td>
                         <td>
                             <div class="botones-accion">
                                 <a href="verDetallesEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 

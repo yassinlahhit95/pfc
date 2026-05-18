@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -22,7 +22,7 @@ $seccion = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>CALIFICAR RETO: <?= $retoActual['nombreReto'] ?></h1>
     <a href="verRetos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="contenedor-tabla">
+<div class="tcont">
     <form action="../../../controladores/admin/retos/calificar.php" method="POST">
         <input type="hidden" name="idReto" value="<?= $retoActual['idReto'] ?>">
         
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($listaEstudiantes)) { ?>
                     <tr>
-                        <td colspan="4" class="sin-datos">No hay estudiantes registrados</td>
+                        <td colspan="4" class="vacio">No hay estudiantes registrados</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaEstudiantes as $estudiante) { 
@@ -75,14 +75,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             </tbody>
         </table>
         
-        <div class="botones-formulario" style="margin-top: 20px;">
+        <div class="acciones">
             <button type="submit" class="boton-primario">Guardar Calificaciones</button>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

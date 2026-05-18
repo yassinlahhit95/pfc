@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | DETALLES PROFESOR";
 $seccion = 'profesores';
@@ -17,134 +17,135 @@ if (!$profesor) {
     exit;
 }
 
-$modulosProfesor = obtenerModulosDeProfesor($id);
+$modulosProfesor = listarModulosDeProfesor($id);
+$ciclosTutorizados = listarCiclosTutorizadosProfesor($id);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>FICHA DEL PROFESOR</h1>
     <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>Información General</h3>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Nombre Completo</div>
         <div class="valor-detalle texto-negrita"><?= $profesor['nombreProfesor'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Email</div>
         <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">DNI</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['dniProfesor'])) { ?>
                 <?= $profesor['dniProfesor'] ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Teléfono</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['telefonoProfesor'])) { ?>
                 <?= $profesor['telefonoProfesor'] ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Fecha de Nacimiento</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['fechaNacimientoProfesor']) && $profesor['fechaNacimientoProfesor'] != '0000-00-00') { ?>
                 <?= date('d/m/Y', strtotime($profesor['fechaNacimientoProfesor'])) ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Fecha Alta</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['fechaAltaProfesor'])) { ?>
                 <?= date('d/m/Y', strtotime($profesor['fechaAltaProfesor'])) ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta">
         <h3>Dirección y Contacto</h3>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Dirección</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['direccionProfesor'])) { ?>
                 <?= $profesor['direccionProfesor'] ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Ciudad</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['ciudadProfesor'])) { ?>
                 <?= $profesor['ciudadProfesor'] ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Código Postal</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['codigoPostalProfesor'])) { ?>
                 <?= $profesor['codigoPostalProfesor'] ?>
             <?php } else { ?>
-                <span class="texto-atenuado">No especificado</span>
+                <span class="atenuado">No especificado</span>
             <?php } ?>
         </div>
     </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta">
         <h3>Observaciones</h3>
     </div>
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Observaciones</div>
         <div class="valor-detalle">
             <?php if (!empty($profesor['observacionesProfesor'])) { ?>
                 <?= $profesor['observacionesProfesor'] ?>
             <?php } else { ?>
-                <span class="texto-atenuado">Sin observaciones.</span>
+                <span class="atenuado">Sin observaciones.</span>
             <?php } ?>
         </div>
     </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta">
         <h3>Ciclos Tutorizados</h3>
     </div>
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -154,11 +155,11 @@ $modulosProfesor = obtenerModulosDeProfesor($id);
             </thead>
             <tbody>
                 <?php if (empty($ciclosTutorizados)) { ?>
-                    <tr><td colspan="2" class="sin-datos">No es tutor de ningún ciclo</td></tr>
+                    <tr><td colspan="2" class="vacio">No es tutor de ningún ciclo</td></tr>
                 <?php } else { ?>
                     <?php foreach ($ciclosTutorizados as $c) { ?>
                     <tr>
-                        <td><strong><?= $c['nombreCiclo'] ?></strong></td>
+                        <td><b><?= $c['nombreCiclo'] ?></b></td>
                         <td><?= $c['nombreNivel'] ?></td>
                     </tr>
                     <?php } ?>
@@ -168,11 +169,11 @@ $modulosProfesor = obtenerModulosDeProfesor($id);
     </div>
 </div>
 
-<div class="tarjeta-blanca margen-arriba">
+<div class="panel margen-arriba">
     <div class="titulo-tarjeta">
         <h3>Módulos Impartidos</h3>
     </div>
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -182,11 +183,11 @@ $modulosProfesor = obtenerModulosDeProfesor($id);
             </thead>
             <tbody>
                 <?php if (empty($modulosProfesor)) { ?>
-                    <tr><td colspan="2" class="sin-datos">No tiene módulos asignados</td></tr>
+                    <tr><td colspan="2" class="vacio">No tiene módulos asignados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($modulosProfesor as $m) { ?>
                     <tr>
-                        <td><strong><?= $m['nombreModulo'] ?></strong></td>
+                        <td><b><?= $m['nombreModulo'] ?></b></td>
                         <td><span class="etiqueta-estado azul"><?= $m['abreviaturaCiclo'] ?></span></td>
                     </tr>
                     <?php } ?>

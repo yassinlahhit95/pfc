@@ -1,24 +1,19 @@
-<?php
+﻿<?php
 session_start();
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
-$titulo_pagina = "AULAPRO | PUBLICAR NUEVO ANUNCIO";
-$seccion = 'anuncios';
-include_once __DIR__ . "/../comunes/nav.php";
 
 $error = $_SESSION['error'] ?? '';
 $errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_anuncio'] ?? [];
 
 unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
+
+$titulo_pagina = "AULAPRO | PUBLICAR NUEVO ANUNCIO";
+$seccion = 'anuncios';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="contenedor-formulario-mediano">
-    <div class="encabezado-pagina">
+    <div class="cabecera">
         <h1>NUEVO ANUNCIO</h1>
         <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
@@ -27,17 +22,17 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
         <div class="mensaje-error"><?= $error ?></div>
     <?php } ?>
 
-    <div class="tarjeta-blanca">
-        <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="form-estandar">
-            <div class="campo-formulario">
+    <div class="panel">
+        <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">
+            <div class="campo">
                 <label for="tituloAnuncio">TÍTULO DEL ANUNCIO *</label>
                 <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">
                 <?php if (isset($errores['tituloAnuncio'])) { ?>
-                    <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
+                    <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="dirigidoA">DIRIGIDO A *</label>
                 <select id="dirigidoA" name="dirigidoA">
                     <option value="todos" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'todos') ? 'selected' : '' ?>>Todos los usuarios</option>
@@ -46,15 +41,15 @@ unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
                 </select>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label for="contenidoAnuncio">CONTENIDO DEL ANUNCIO *</label>
                 <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" placeholder="Escriba aquí el mensaje..."><?= $datos['contenidoAnuncio'] ?? '' ?></textarea>
                 <?php if (isset($errores['contenidoAnuncio'])) { ?>
-                    <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
+                    <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="form-acciones">
+            <div class="acciones">
                 <button type="submit" name="guardarAnuncio" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> PUBLICAR ANUNCIO
                 </button>

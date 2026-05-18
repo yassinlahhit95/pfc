@@ -1,10 +1,5 @@
-<?php
+﻿<?php
 session_start();
-
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
@@ -16,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-$listaDeCiclos = obtenerCiclosDeProfesor($idProfesor);
+$listaDeCiclos = listarCiclosDeProfesor($idProfesor);
 $idCicloSeleccionado = $_GET['idCiclo'] ?? "";
 
 if (!empty($idCicloSeleccionado)) {
@@ -30,7 +25,7 @@ $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>REDACTAR MENSAJE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -42,10 +37,10 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <form method="GET" class="margen-abajo">
-        <div class="disposicion-flexible alinear-fin separacion-grande">
-            <div class="campo-formulario flexible-rellenar">
+        <div class="d-flex al-fin sep-g">
+            <div class="campo relleno">
                 <label for="idCiclo">Filtrar Estudiantes por Ciclo:</label>
                 <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos mis alumnos --</option>
@@ -66,10 +61,10 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3><i class="fas fa-paper-plane"></i> NUEVO MENSAJE</h3>
     </div>
 
-    <form action="../../../controladores/profesores/mensajes/insertar.php" method="POST" class="form-estandar">
+    <form action="../../../controladores/profesores/mensajes/insertar.php" method="POST" class="formulario">
         <input type="hidden" name="idProfesor" value="<?= $idProfesor ?>">
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="idEstudiante">Destinatario</label>
             <select name="idEstudiante" id="idEstudiante" class="<?= isset($errores['idEstudiante']) ? 'input-error' : '' ?>">
                 <option value="">-- Seleccionar Destinatario --</option>
@@ -85,27 +80,27 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </optgroup>
             </select>
             <?php if (isset($errores['idEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
+                <strong class="error-campo"><?= $errores['idEstudiante'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="asunto">Asunto del Mensaje</label>
             <input type="text" name="asunto" id="asunto" value="<?= $datos['asunto'] ?? '' ?>" placeholder="Escriba el motivo del mensaje..." class="<?= isset($errores['asunto']) ? 'input-error' : '' ?>">
             <?php if (isset($errores['asunto'])) { ?>
-                <strong class="error-campo"><?= $errores['asunto'] ?></strong>
+                <strong class="error-campo"><?= $errores['asunto'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="descripcion">Mensaje</label>
             <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errores['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
+                <strong class="error-campo"><?= $errores['descripcion'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="enviarMensaje" class="boton-primario">
                 <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
             </button>

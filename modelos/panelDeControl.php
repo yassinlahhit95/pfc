@@ -1,10 +1,12 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 
 function contarEstudiantes() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM estudiantes";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -13,7 +15,9 @@ function contarEstudiantes() {
 function contarProfesores() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM profesores";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -22,7 +26,9 @@ function contarProfesores() {
 function contarDirectores() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM directores";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -31,7 +37,9 @@ function contarDirectores() {
 function contarAnuncios() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM anuncios";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -40,7 +48,9 @@ function contarAnuncios() {
 function contarReclamaciones() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM reclamaciones";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -49,7 +59,9 @@ function contarReclamaciones() {
 function contarCiclos() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM ciclos";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -57,14 +69,14 @@ function contarCiclos() {
 
 function contarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
-            FROM estudiantes e 
-            JOIN ciclos c ON e.idCiclo = c.idCiclo 
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo
             LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
             LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
             WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
-            
+
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
@@ -76,13 +88,13 @@ function contarEstudiantesDeProfesor($idProfesor) {
 
 function contarCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(DISTINCT c.idCiclo) as total 
-            FROM ciclos c 
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
+    $sql = "SELECT COUNT(DISTINCT c.idCiclo) as total
+            FROM ciclos c
+            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo
             LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
             LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
             WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
-            
+
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
@@ -95,7 +107,9 @@ function contarCiclosDeProfesor($idProfesor) {
 function contarModulos() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM modulos";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -104,7 +118,9 @@ function contarModulos() {
 function contarRetos() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM retos";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -113,7 +129,9 @@ function contarRetos() {
 function contarInventario() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM dispositivos";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -122,7 +140,9 @@ function contarInventario() {
 function contarPrestamosActivos() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM prestamos WHERE estadoPrestamo = 'en curso'";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -131,7 +151,9 @@ function contarPrestamosActivos() {
 function obtenerTotalRecaudado() {
     $con = obtenerConexion();
     $sql = "SELECT SUM(monto) as acumulado FROM pagos";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return floatval($fila['acumulado']);
@@ -142,7 +164,9 @@ function obtenerPorcentajeAprobadosGlobal() {
     $sql = "SELECT
                 (SELECT COUNT(*) FROM calificaciones_modulos) AS total,
                 (SELECT COUNT(*) FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5) AS aprobados";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     $total = intval($fila['total']);
@@ -156,7 +180,9 @@ function obtenerPorcentajeAprobadosGlobal() {
 function contarPagosRealizados() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM pagos";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -165,7 +191,9 @@ function contarPagosRealizados() {
 function contarTFGsEntregados() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != '' AND archivoTFG IS NOT NULL";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);
@@ -174,7 +202,9 @@ function contarTFGsEntregados() {
 function contarTFGsCalificados() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM calificaciones_tfg";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return intval($fila['total']);

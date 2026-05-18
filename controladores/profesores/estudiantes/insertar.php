@@ -18,8 +18,8 @@ if (isset($_POST['guardarEstudiante'])) {
     $ciudad = trim($_POST['ciudadEstudiante']);
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = isset($_POST['observacionesEstudiante']) ? trim($_POST['observacionesEstudiante']) : '';
-    $idCiclo = trim($_POST['idCiclo']);
-    $curso = isset($_POST['curso']) ? trim($_POST['curso']) : 'Grado Medio';
+    $idCiclo = $_POST['idCiclo'];
+    $curso = $_POST['curso'] ?? 'Grado Medio';
 
     $errores = [];
 
@@ -27,21 +27,21 @@ if (isset($_POST['guardarEstudiante'])) {
         $errores['nombreEstudiante'] = "El nombre es obligatorio.";
     }
     if (empty($email)) {
-        $errores['emailEstudiante'] = "El email es obligatorio.";
+        $errores['emailEstudiante'] = "Falta el email";
     } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailEstudiante'] = "El formato del email no es válido.";
+        $errores['emailEstudiante'] = "Email no válido";
     }
     if (empty($dni)) {
         $errores['dniEstudiante'] = "El DNI es obligatorio.";
     }
     if (empty($telefono)) {
-        $errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
+        $errores['telefonoEstudiante'] = "Teléfono requerido";
     }
     if (empty($fechaNacimiento)) {
         $errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
     }
     if (empty($idCiclo)) {
-        $errores['idCiclo'] = "Debe seleccionar un ciclo.";
+        $errores['idCiclo'] = "Selecciona un ciclo";
     }
 
     if (empty($errores)) {

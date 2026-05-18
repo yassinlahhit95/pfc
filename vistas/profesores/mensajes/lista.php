@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -20,7 +20,7 @@ $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>BUZÓN DE MENSAJES</h1>
     <a href="../../../vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> REDACTAR MENSAJE
@@ -34,8 +34,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="7" class="sin-datos">No hay mensajes registrados aún.</td></tr>
+                    <tr><td colspan="7" class="vacio">No hay mensajes registrados aún.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
@@ -58,7 +58,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr class="<?= $claseFila ?>">
                         <td>
-                            <strong><?php 
+                            <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
                                     echo 'Tú (Profesor)';
                                 } elseif ($mensaje['emisor_rol'] == 'admin') {
@@ -66,10 +66,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 } else {
                                     echo $mensaje['nombreEstudiante'] ?? 'Estudiante';
                                 }
-                            ?></strong>
+                            ?></b>
                         </td>
                         <td><?= $mensaje['abreviaturaCiclo'] ?? '-' ?></td>
-                        <td><p class="texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></p></td>
+                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
                                 <?= substr($mensaje['descripcion'], 0, 40) ?>...
@@ -77,13 +77,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?= date('d/m/Y', strtotime($mensaje['fecha'])) ?><br>
-                            <small class="texto-atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></small>
+                            <small class="atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></small>
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="estado-bolita activo-verde">Leído</span>
+                                <span class="bolita activo-verde">Leído</span>
                             <?php } else { ?>
-                                <span class="estado-bolita inactivo-rojo">Nuevo</span>
+                                <span class="bolita inactivo-rojo">Nuevo</span>
                             <?php } ?>
                         </td>
                         <td>

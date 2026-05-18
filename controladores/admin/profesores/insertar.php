@@ -8,8 +8,7 @@ if (isset($_POST['guardarProfesor'])) {
     $dniNuevoProfesor = trim($_POST['dniProfesor']);
     $telefonoNuevoProfesor = trim($_POST['telefonoProfesor']);
     $direccionNuevoProfesor = trim($_POST['direccionProfesor']);
-    
-    $fechaNacimientoNuevoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '1980-01-01');
+    $fechaNacimientoNuevoProfesor = trim($_POST['fechaNacimientoProfesor'] ?? '');
     $fechaAltaNuevoProfesor = date('Y-m-d');
     $ciudadNuevoProfesor = trim($_POST['ciudadProfesor']);
     $codigoPostalNuevoProfesor = trim($_POST['codigoPostalProfesor']);
@@ -18,26 +17,34 @@ if (isset($_POST['guardarProfesor'])) {
     $errores = [];
 
     if (empty($nombreNuevoProfesor)) {
-        $errores['nombreProfesor'] = "El nombre es obligatorio.";
+        $errores['nombreProfesor'] = "Nombre obligatorio";
     }
     if (empty($emailNuevoProfesor)) {
         $errores['emailProfesor'] = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailNuevoProfesor)) {
-        $errores['emailProfesor'] = "El formato del email no es válido.";
+        $errores['emailProfesor'] = "Email inválido";
     }
     if (empty($dniNuevoProfesor)) {
-        $errores['dniProfesor'] = "El DNI es obligatorio.";
+        $errores['dniProfesor'] = "Falta el DNI";
     }
     if (empty($telefonoNuevoProfesor)) {
         $errores['telefonoProfesor'] = "El teléfono es obligatorio.";
     } else if (!is_numeric($telefonoNuevoProfesor)) {
-        $errores['telefonoProfesor'] = "El teléfono debe ser numérico.";
+        $errores['telefonoProfesor'] = "Solo números";
     }
     if (empty($direccionNuevoProfesor)) {
         $errores['direccionProfesor'] = "La dirección es obligatoria.";
     }
-    if (!empty($codigoPostalNuevoProfesor) && !is_numeric($codigoPostalNuevoProfesor)) {
-        $errores['codigoPostalProfesor'] = "El código postal debe ser numérico.";
+    if (empty($ciudadNuevoProfesor)) {
+        $errores['ciudadProfesor'] = "Ciudad requerida";
+    }
+    if (empty($codigoPostalNuevoProfesor)) {
+        $errores['codigoPostalProfesor'] = "Falta el código postal";
+    } else if (!is_numeric($codigoPostalNuevoProfesor)) {
+        $errores['codigoPostalProfesor'] = "Código postal incorrecto";
+    }
+    if (empty($fechaNacimientoNuevoProfesor)) {
+        $errores['fechaNacimientoProfesor'] = "La fecha de nacimiento es obligatoria.";
     }
 
     if (empty($errores)) {
@@ -48,8 +55,19 @@ if (isset($_POST['guardarProfesor'])) {
 
     if (empty($errores)) {
         $idNuevoProfesorInsertado = insertarProfesor($nombreNuevoProfesor, $emailNuevoProfesor, $telefonoNuevoProfesor, $dniNuevoProfesor, $direccionNuevoProfesor, $fechaNacimientoNuevoProfesor, $fechaAltaNuevoProfesor, $ciudadNuevoProfesor, $codigoPostalNuevoProfesor, $observacionesNuevoProfesor);
-        
+
         if ($idNuevoProfesorInsertado) {
+            if (isset($_POST['ciclos']) && is_array($_POST['ciclos'])) {
+                foreach ($_POST['ciclos'] as $idCic) {
+                    asociarCicloProfesor($idCic, $idNuevoProfesorInsertado);
+                }
+            }
+            if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
+                foreach ($_POST['modulos'] as $idMod) {
+                    asociarModuloProfesor($idMod, $idNuevoProfesorInsertado);
+                }
+            }
+
             $_SESSION['exito'] = "Profesor registrado correctamente.";
             header("Location: ../../../vistas/admin/profesores/verProfesores.php");
             exit;

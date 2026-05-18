@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,7 +21,7 @@ $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MIS CALIFICACIONES</h1>
     <div class="resumen-global">
         <div class="item-resumen">
@@ -46,12 +46,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3>DETALLE POR MÓDULO (75% EXÁMENES | 25% RETOS)</h3>
     </div>
     
-    <div class="contenedor-tabla">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -68,20 +68,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $isAprobado = ($detalle['estado'] == 'Aprobado');
                     ?>
                         <tr>
-                            <td><strong><?= $detalle['nombreModulo'] ?></strong></td>
+                            <td><b><?= $detalle['nombreModulo'] ?></b></td>
                             <td><?= $detalle['media_notas'] ?></td>
                             <td><?= $detalle['media_retos'] ?></td>
                             <td class="texto-negrita"><?= $detalle['nota_final'] ?></td>
                             <td>
                                 <span class="badge <?= $isAprobado ? 'badge-exito' : ($detalle['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta') ?>">
-                                    <?= mb_strtoupper($detalle['estado'], 'UTF-8') ?>
+                                    <?= strtoupper($detalle['estado']) ?>
                                 </span>
                             </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">
+                        <td colspan="5" class="vacio">
                             No hay calificaciones registradas o módulos asignados.
                         </td>
                     </tr>
@@ -90,41 +90,6 @@ include_once __DIR__ . "/../comunes/nav.php";
         </table>
     </div>
 </div>
-
-<style>
-.resumen-global {
-    display: flex;
-    gap: 30px;
-    margin-top: 15px;
-    background: #f8f9fa;
-    padding: 15px 25px;
-    border-radius: 10px;
-    border-left: 5px solid #3498db;
-}
-.item-resumen {
-    display: flex;
-    flex-direction: column;
-}
-.item-resumen .etiqueta {
-    font-size: 0.75rem;
-    color: #7f8c8d;
-    font-weight: 700;
-    margin-bottom: 2px;
-}
-.item-resumen .valor {
-    font-size: 1.4rem;
-    font-weight: 900;
-}
-.badge {
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-.badge-exito { background: #d4edda; color: #155724; }
-.badge-error { background: #f8d7da; color: #721c24; }
-.badge-alerta { background: #fff3cd; color: #856404; }
-</style>
 
 <?php include '../comunes/footer.php'; ?>
 

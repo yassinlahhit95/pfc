@@ -1,10 +1,5 @@
-<?php
+﻿<?php
 session_start();
-
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 $error = $_SESSION['error'] ?? null;
 $exito = $_SESSION['exito'] ?? null;
@@ -26,7 +21,7 @@ $seccionActual = 'perfil';
 include_once "../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>EDITAR MI PERFIL</h1>
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -38,56 +33,56 @@ include_once "../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <form action="../../../controladores/profesores/perfil/actualizar.php" method="POST" class="form-estandar">
+<div class="panel">
+    <form action="../../../controladores/profesores/perfil/actualizar.php" method="POST" class="formulario">
         <input type="hidden" name="idProfesor" value="<?= $id ?>">
 
         <div class="titulo-tarjeta"><h3><i class="fas fa-user-circle"></i> DATOS DE CONTACTO</h3></div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="nombreProfesor">Nombre Completo</label>
             <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= $nom ?>" class="<?= isset($errs['nombreProfesor']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['nombreProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['nombreProfesor'] ?></strong>
+                <strong class="error-campo"><?= $errs['nombreProfesor'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="emailProfesor">Correo Corporativo</label>
             <input type="text" id="emailProfesor" name="emailProfesor" value="<?= $eml ?>" class="<?= isset($errs['emailProfesor']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['emailProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['emailProfesor'] ?></strong>
+                <strong class="error-campo"><?= $errs['emailProfesor'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="telefonoProfesor">Número de Teléfono</label>
             <input type="tel" id="telefonoProfesor" name="telefonoProfesor" value="<?= $tel ?>" class="<?= isset($errs['telefonoProfesor']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['telefonoProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['telefonoProfesor'] ?></strong>
+                <strong class="error-campo"><?= $errs['telefonoProfesor'] ?></b>
             <?php } ?>
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
-        <p class="texto-atenuado" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
+        <p class="atenuado" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="current_password">Contraseña Actual</label>
             <input type="password" id="current_password" name="current_password" placeholder="Escriba su contraseña actual para validar" class="<?= isset($errs['current_password']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['current_password'])) { ?>
-                <strong class="error-campo"><?= $errs['current_password'] ?></strong>
+                <strong class="error-campo"><?= $errs['current_password'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label for="new_password">Nueva Contraseña</label>
             <input type="password" id="new_password" name="new_password" placeholder="Mínimo 6 caracteres" class="<?= isset($errs['new_password']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['new_password'])) { ?>
-                <strong class="error-campo"><?= $errs['new_password'] ?></strong>
+                <strong class="error-campo"><?= $errs['new_password'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="actualizarPerfil" class="boton-primario">
                 <i class="fas fa-save"></i> GUARDAR CAMBIOS
             </button>

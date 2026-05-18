@@ -1,36 +1,27 @@
-<?php
+﻿<?php
 session_start();
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
-$titulo_pagina = "AULAPRO | RESULTADOS FINALES";
-$seccion = 'resultados_modulos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
-require_once __DIR__ . "/../../../modelos/niveles.php";
 
-$idCicloElegidoParaVer = 0;
 $idCicloElegidoParaVer = (int)($_GET['idCiclo'] ?? 0);
 
 $listaDeTodosLosCiclos = listarTodosLosCiclos();
-$listaNiveles = listarNiveles();
 $listaDeDatosFinalesAMostrar = [];
 
 if (!empty($idCicloElegidoParaVer)) {
-    $listaDeDatosFinalesAMostrar = obtenerResultadosFinalesCiclo($idCicloElegidoParaVer);
+    $listaDeDatosFinalesAMostrar = listarResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
 
 $mensajeExito = $_SESSION['exito'] ?? '';
 $mensajeError = $_SESSION['error'] ?? '';
 unset($_SESSION['exito'], $_SESSION['error']);
+
+$titulo_pagina = "AULAPRO | RESULTADOS FINALES";
+$seccion = 'resultados_modulos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
     <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
 </div>
@@ -38,23 +29,17 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?= $mensajeExito ?></div> <?php } ?>
 <?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?= $mensajeError ?></div> <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="disposicion-flexible alinear-centro separacion-grande">
-        <form method="GET" action="resultadosFinales.php" class="flexible-rellenar disposicion-flexible alinear-centro">
-            <div class="campo-formulario flexible-rellenar">
+<div class="panel">
+    <div class="d-flex alinear-centro sep-g">
+        <form method="GET" action="resultadosFinales.php" class="relleno d-flex alinear-centro">
+            <div class="campo relleno">
                 <label>Seleccione un Ciclo formativo para ver el resumen:</label>
                 <select name="idCiclo" id="selectCicloFinal" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($listaNiveles as $nivel) { ?>
-                        <optgroup label="<?= $nivel['nombreNivel'] ?>">
-                            <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                                <?php if ($cicloItem['idNivel'] == $nivel['idNivel']) { ?>
-                                    <option value="<?= $cicloItem['idCiclo'] ?>" <?php if ($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo 'selected'; } ?>>
-                                        <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
-                                    </option>
-                                <?php } ?>
-                            <?php } ?>
-                        </optgroup>
+                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
+                        <option value="<?= $cicloItem['idCiclo'] ?>" <?php if ($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo 'selected'; } ?>>
+                            [<?= $cicloItem['nombreNivel'] ?>] <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
@@ -72,8 +57,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php if (!empty($idCicloElegidoParaVer)) { ?>
-    <div class="tarjeta-blanca margen-arriba">
-        <div class="contenedor-tabla">
+    <div class="panel margen-arriba">
+        <div class="tcont">
             <table class="tabla-datos">
                 <thead>
                     <tr>
@@ -87,7 +72,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                 </thead>
                 <tbody>
                     <?php if (empty($listaDeDatosFinalesAMostrar)) { ?>
-                        <tr><td colspan="6" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
+                        <tr><td colspan="6" class="vacio">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($listaDeDatosFinalesAMostrar as $fila) { 
                             $claseDelColor = "texto-rojo";
@@ -95,7 +80,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                             if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><strong><?= $fila['nombreEstudiante'] ?></strong></td>
+                            <td><?= $fila['nombreEstudiante'] ?></td>
                             <td><?= $fila['media_modulos'] ?></td>
                             <td><?= $fila['media_retos'] ?></td>
                             <td class="color-primario texto-negrita"><?= $fila['nota_tfg'] ?? '—' ?></td>
@@ -114,14 +99,13 @@ unset($_SESSION['exito'], $_SESSION['error']);
         </div>
         
         <div class="tarjeta-alerta-info">
-            <p><strong>Cálculo Global:</strong> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
-            <p><strong>Estados:</strong> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
+            <p><b>Cálculo Global:</b> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
+            <p><b>Estados:</b> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
         </div>
     </div>
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-</script>
 
 
 

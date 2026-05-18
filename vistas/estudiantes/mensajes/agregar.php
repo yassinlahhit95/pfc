@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -7,20 +7,15 @@ $errs = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_mensaje'] ?? [];
 unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_mensaje']);
 
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 $tituloDelPagina = "AULAPRO | NUEVO MENSAJE";
 $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 
 $idEst = $_SESSION['idEstudiante'];
-$profs = obtenerProfesoresConModulosParaEstudiante($idEst);
+$profs = listarProfesoresConModulosParaEstudiante($idEst);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>NUEVO MENSAJE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -32,11 +27,11 @@ $profs = obtenerProfesoresConModulosParaEstudiante($idEst);
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <form action="../../../controladores/estudiantes/mensajes/insertar.php" method="POST" class="form-estandar">
+<div class="panel">
+    <form action="../../../controladores/estudiantes/mensajes/insertar.php" method="POST" class="formulario">
         <input type="hidden" name="idEstudiante" value="<?= $idEst ?>">
         
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Destinatario (Profesor o Dirección)</label>
             <select name="idProfesor" class="<?= isset($errs['idProfesor']) ? 'input-error' : '' ?>">
                 <option value="">-- Dirección (Administración) --</option>
@@ -47,28 +42,28 @@ $profs = obtenerProfesoresConModulosParaEstudiante($idEst);
                 <?php } ?>
             </select>
             <?php if (isset($errs['idProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['idProfesor'] ?></strong>
+                <strong class="error-campo"><?= $errs['idProfesor'] ?></b>
             <?php } ?>
-            <small class="texto-atenuado">Selecciona a quién quieres dirigir tu consulta.</small>
+            <small class="atenuado">Selecciona a quién quieres dirigir tu consulta.</small>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Asunto del Mensaje</label>
             <input type="text" name="asunto" value="<?= $datos['asunto'] ?? '' ?>" class="<?= isset($errs['asunto']) ? 'input-error' : '' ?>" placeholder="Duda sobre contenido, problema técnico...">
             <?php if (isset($errs['asunto'])) { ?>
-                <strong class="error-campo"><?= $errs['asunto'] ?></strong>
+                <strong class="error-campo"><?= $errs['asunto'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label>Contenido del Mensaje</label>
             <textarea name="descripcion" rows="6" class="<?= isset($errs['descripcion']) ? 'input-error' : '' ?>" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250"><?= $datos['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errs['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errs['descripcion'] ?></strong>
+                <strong class="error-campo"><?= $errs['descripcion'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="submit" name="enviarMensaje" class="boton-primario">
                 <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
             </button>
@@ -80,4 +75,3 @@ $profs = obtenerProfesoresConModulosParaEstudiante($idEst);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

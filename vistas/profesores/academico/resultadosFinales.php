@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -11,7 +11,7 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = mb_strtoupper("Resultados Finales - Portal Profesores", 'UTF-8');
+$tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
 $seccionActual = 'resultados_finales';
 include_once __DIR__ . "/../comunes/nav.php";
 
@@ -21,7 +21,7 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$todos_los_ciclos = obtenerCiclosDeProfesor($idProfesor);
+$todos_los_ciclos = listarCiclosDeProfesor($idProfesor);
 
 $id_ciclo_elegido = intval($_GET['idCiclo'] ?? 0);
 if ($id_ciclo_elegido) {
@@ -42,11 +42,11 @@ $datos_finales = [];
 
 if ($id_ciclo_elegido) {
     $estudiantes_lista = listarEstudiantesPorCiclo($id_ciclo_elegido);
-    $lista_modulos = obtenerModulosPorCiclo($id_ciclo_elegido);
+    $lista_modulos = listarModulosPorCiclo($id_ciclo_elegido);
     
     foreach ($estudiantes_lista as $estudianteIndividual) {
         $id_est = $estudianteIndividual['idEstudiante'];
-        $nombre_est = mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8');
+        $nombre_est = strtoupper($estudianteIndividual['nombreEstudiante']);
         
         require_once __DIR__ . "/../../../modelos/tfg.php";
         $notaTFG_raw = obtenerCalificacionTFG($id_est);
@@ -118,7 +118,7 @@ if ($id_ciclo_elegido) {
 }
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>RESULTADOS FINALES DE MIS ALUMNOS</h1>
     <p class="subtitulo">Resumen global (75% Módulos / 25% Retos)</p>
 </div>
@@ -130,16 +130,16 @@ if ($id_ciclo_elegido) {
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="disposicion-flexible alinear-centro separacion-grande">
-        <form method="GET" action="" class="flexible-rellenar disposicion-flexible alinear-centro">
-            <div class="campo-formulario flexible-rellenar">
+<div class="panel">
+    <div class="d-flex alinear-centro sep-g">
+        <form method="GET" action="" class="relleno d-flex alinear-centro">
+            <div class="campo relleno">
                 <label for="idCiclo">Seleccione Ciclo:</label>
                 <select id="idCiclo" name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
-                            <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
+                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -161,8 +161,8 @@ if ($id_ciclo_elegido) {
 </div>
 
 <?php if ($id_ciclo_elegido) { ?>
-    <div class="tarjeta-blanca margen-arriba">
-        <div class="contenedor-tabla">
+    <div class="panel margen-arriba">
+        <div class="tcont">
             <table class="tabla-datos">
                 <thead>
                     <tr>
@@ -176,7 +176,7 @@ if ($id_ciclo_elegido) {
                 </thead>
                 <tbody>
                     <?php if (empty($datos_finales)) { ?>
-                        <tr><td colspan="6" class="sin-datos">No hay estudiantes en este ciclo</td></tr>
+                        <tr><td colspan="6" class="vacio">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($datos_finales as $filaIndividual) { 
                             $clase_estado = "texto-rojo";
@@ -184,7 +184,7 @@ if ($id_ciclo_elegido) {
                             if ($filaIndividual['estado'] == "PENDIENTE") { $clase_estado = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><strong><?= $filaIndividual['nombre'] ?></strong></td>
+                            <td><b><?= $filaIndividual['nombre'] ?></b></td>
                             <td><?= $filaIndividual['media_modulo'] ?></td>
                             <td><?= $filaIndividual['media_reto'] ?></td>
                             <td class="color-primario texto-negrita"><?= $filaIndividual['nota_tfg'] ?></td>

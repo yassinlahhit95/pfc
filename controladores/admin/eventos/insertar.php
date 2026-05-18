@@ -12,13 +12,13 @@ if (isset($_POST['guardarEvento'])) {
     $errores = [];
 
     if (empty($titulo)) {
-        $errores['tituloEvento'] = "El título es obligatorio.";
+        $errores['tituloEvento'] = "Falta el título";
     }
     if (empty($ubicacionEvento)) {
         $errores['ubicacionEvento'] = "La ubicación es obligatoria.";
     }
     if (empty($fechaEvento)) {
-        $errores['fechaEvento'] = "La fecha es obligatoria.";
+        $errores['fechaEvento'] = "Fecha requerida";
     }
     if (empty($horaEvento)) {
         $errores['horaEvento'] = "La hora es obligatoria.";

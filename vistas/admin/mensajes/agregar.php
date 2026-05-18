@@ -1,11 +1,5 @@
-<?php
+﻿<?php
 session_start();
-
-if (!isset($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -39,7 +33,7 @@ $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>REDACTAR NUEVO MENSAJE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -51,11 +45,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
 
-    <div class="campo-formulario margen-abajo">
+    <div class="campo margen-abajo">
         <label class="texto-negrita">1. Seleccionar Grupo de Destino:</label>
-        <div class="disposicion-flexible separacion-pequena" style="margin-top: 10px;">
+        <div class="d-flex separacion-pequena" style="margin-top: 10px;">
             <a href="?tipoDestinatario=profesor" class="boton-<?= ($tipoDeDestinatario == 'profesor' ? 'primario' : 'secundario') ?>">
                 <i class="fas fa-chalkboard-teacher"></i> Profesores
             </a>
@@ -73,8 +67,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idCicloMasivo" value="<?= $idCicloSeleccionado ?>">
 
         <?php if ($tipoDeDestinatario == 'estudiante') { ?>
-        <div class="formulario-cuadricula margen-abajo">
-            <div class="campo-formulario">
+        <div class="form-cols margen-abajo">
+            <div class="campo">
                 <label class="texto-negrita">2. Filtrar por Ciclo (Opcional):</label>
                 <select onchange="window.location.href='?tipoDestinatario=estudiante&idCiclo='+this.value">
                     <option value="">-- Todos los estudiantes --</option>
@@ -86,8 +80,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </select>
             </div>
 
-            <div class="campo-formulario">
-                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><small class="texto-atenuado">Deja en blanco para enviar a todo el ciclo.</small><?php } ?></label>
+            <div class="campo">
+                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><small class="atenuado">Deja en blanco para enviar a todo el ciclo.</small><?php } ?></label>
                 <select name="idEstudiante" class="ancho-total">
                     <option value="">-- Todos los del ciclo seleccionado --</option>
                     <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
@@ -98,12 +92,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['destinatario'])) { ?>
-                    <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
+                    <strong class="error-campo"><?= $errores['destinatario'] ?></b>
                 <?php } ?>
             </div>
         </div>
         <?php } else { ?>
-        <div class="campo-formulario margen-abajo">
+        <div class="campo margen-abajo">
             <label class="texto-negrita">2. Destinatario Específico *</label>
             <select name="idProfesor" class="ancho-total">
                 <option value="">-- Seleccionar Nombre --</option>
@@ -115,28 +109,28 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
             <?php if (isset($errores['destinatario'])) { ?>
-                <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
+                <strong class="error-campo"><?= $errores['destinatario'] ?></b>
             <?php } ?>
         </div>
         <?php } ?>
 
-        <div class="campo-formulario">
+        <div class="campo">
             <label class="texto-negrita">Asunto del Mensaje *</label>
             <input type="text" name="asunto" class="ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
             <?php if (isset($errores['asunto'])) { ?>
-                <strong class="error-campo"><?= $errores['asunto'] ?></strong>
+                <strong class="error-campo"><?= $errores['asunto'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="campo-formulario margen-arriba">
+        <div class="campo margen-arriba">
             <label class="texto-negrita">Cuerpo del Mensaje *</label>
             <textarea name="descripcion" rows="6" class="ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errores['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
+                <strong class="error-campo"><?= $errores['descripcion'] ?></b>
             <?php } ?>
         </div>
 
-        <div class="form-acciones">
+        <div class="acciones">
             <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
                 <i class="fas fa-eraser"></i> Limpiar
             </button>

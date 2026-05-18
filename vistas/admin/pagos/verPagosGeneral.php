@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -28,7 +28,7 @@ $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>GESTIÓN DE PAGOS</h1>
     <a href="agregarPagos.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO PAGO
@@ -43,16 +43,16 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca margen-abajo">
+<div class="panel margen-abajo">
     <form method="GET" action="verPagosGeneral.php">
-        <div class="disposicion-flexible alinear-fin separacion-grande">
-            <div class="campo-formulario flexible-rellenar">
+        <div class="d-flex al-fin sep-g">
+            <div class="campo relleno">
                 <label>FILTRAR POR CICLO FORMATIVO:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
                     <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $idDelCicloParaFiltrar == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
-                            <?= mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8') ?>
+                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -64,8 +64,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaPagos">
             <thead>
                 <tr>
@@ -81,15 +81,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($listaDePagosAMostrar)) { ?>
                     <tr>
-                        <td colspan="7" class="sin-datos">No hay registros de pagos que coincidan con la búsqueda.</td>
+                        <td colspan="7" class="vacio">No hay registros de pagos que coincidan con la búsqueda.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDePagosAMostrar as $pagoIndividual) { ?>
                     <tr>
-                        <td><strong><?= mb_strtoupper($pagoIndividual['nombreEstudiante'], 'UTF-8') ?></strong></td>
-                        <td><?= mb_strtoupper($pagoIndividual['nombreCiclo'], 'UTF-8') ?></td>
+                        <td><b><?= strtoupper($pagoIndividual['nombreEstudiante']) ?></b></td>
+                        <td><?= strtoupper($pagoIndividual['nombreCiclo']) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?= mb_strtoupper($pagoIndividual['tipoPago'], 'UTF-8') ?></span>
+                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>

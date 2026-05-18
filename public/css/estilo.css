@@ -1,9 +1,9 @@
-/* configuración base y reset */
+﻿/* configuración base y reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: 'Outfit', 'Poppins', sans-serif;
 }
 
 body {
@@ -110,22 +110,6 @@ body {
   border-top: 1px solid #2d3042;
 }
 
-#overlayBarra {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #000000;
-  opacity: 0.5;
-  z-index: 998;
-  display: none;
-}
-
-#overlayBarra.activo {
-  display: block;
-}
-
 .modal-fondo {
   position: fixed;
   top: 0;
@@ -134,18 +118,6 @@ body {
   height: 100%;
   background: #000000;
   opacity: 0.5;
-}
-
-#botonCerrarBarra {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  display: none;
 }
 
 /* navegación superior */
@@ -205,13 +177,13 @@ ul {
   list-style-position: inside;
 }
 
-.tarjeta-blanca ul {
+.panel ul {
   margin: 15px 0;
   padding-left: 20px;
   list-style-type: disc;
 }
 
-.tarjeta-blanca li {
+.panel li {
   margin-bottom: 8px;
   font-size: 14px;
   color: #4a5568;
@@ -277,7 +249,7 @@ ul {
   transition: all 0.3s;
 }
 
-.encabezado-pagina {
+.cabecera {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -291,7 +263,7 @@ ul {
 }
 
 /* tarjetas (cards) */
-.tarjeta-blanca {
+.panel {
   background: white;
   border-radius: 4px;
   padding: 25px;
@@ -319,22 +291,22 @@ ul {
 }
 
 /* utilidades de scroll */
-.scroll-vertical {
+.scroll-v {
   max-height: 250px;
   overflow-y: auto;
 }
 
-.scroll-vertical-200 {
+.scroll-v200 {
   max-height: 200px;
   overflow-y: auto;
 }
 
-.scroll-vertical-400 {
+.scroll-v400 {
   max-height: 400px;
   overflow-y: auto;
 }
 
-.lista-checkboxes {
+.checks {
   border: 1px solid #e2e8f0;
   padding: 10px;
   border-radius: 4px;
@@ -345,13 +317,13 @@ ul {
   background-color: #f8fafc;
 }
 
-.item-checkbox {
+.check-item {
   display: block;
   margin-bottom: 5px;
 }
 
 /* tablas */
-.contenedor-tabla {
+.tcont {
   background: transparent;
   border-radius: 0;
   overflow: hidden;
@@ -387,7 +359,7 @@ ul {
   font-size: 14px;
 }
 
-.sin-datos {
+.vacio {
   text-align: center;
   padding: 30px !important;
   color: #a0aec0;
@@ -491,7 +463,7 @@ ul {
 }
 
 /* estados y mensajes */
-.estado-bolita {
+.bolita {
   padding: 4px 12px;
   border-radius: 4px;
   font-size: 12px;
@@ -742,7 +714,6 @@ ul {
 }
 
 .anuncio-item:hover .anuncio-contenido {
-  transform: scale(0.98);
   border-radius: 20px;
 }
 
@@ -792,7 +763,7 @@ ul {
   color: #2d3748;
 }
 
-.texto-atenuado {
+.atenuado {
   color: #a0aec0;
   font-size: 14px;
 }
@@ -801,7 +772,7 @@ ul {
   font-size: 14px;
 }
 
-.fila-detalle {
+.fila-dat {
   display: flex;
   flex-wrap: wrap; /* Permitir que baje si no cabe */
   align-items: center;
@@ -809,11 +780,11 @@ ul {
   border-bottom: 1px solid #f8fafc; /* Añadimos un separador sutil */
 }
 
-.fila-detalle:last-child {
+.fila-dat:last-child {
   border-bottom: none;
 }
 
-.fila-detalle .etiqueta-detalle {
+.fila-dat .etiqueta-detalle {
   flex: 0 0 200px;
   font-weight: 600;
   color: #718096;
@@ -822,7 +793,7 @@ ul {
   letter-spacing: 0.5px;
 }
 
-.fila-detalle .valor-detalle {
+.fila-dat .valor-detalle {
   flex: 1;
   min-width: 250px; /* Asegura que el valor tenga espacio o baje */
   color: #2d3748;
@@ -840,7 +811,7 @@ ul {
 }
 
 /* utilidades de flex y grid */
-.disposicion-flexible {
+.d-flex {
   display: flex;
 }
 .direccion-columna {
@@ -852,19 +823,19 @@ ul {
 .alinear-centro {
   align-items: center;
 }
-.alinear-fin {
+.al-fin {
   align-items: flex-end;
 }
 .espacio-entre-elementos {
   justify-content: space-between;
 }
-.separacion-grande {
+.sep-g {
   gap: 20px;
 }
 .separacion-media {
   gap: 15px;
 }
-.flexible-rellenar {
+.relleno {
   flex: 1;
 }
 .ancho-total {
@@ -875,6 +846,40 @@ ul {
 .ancho-ajustable-nota {
   width: 60px !important;
 }
+
+/* calificaciones estudiante */
+.resumen-global {
+  display: flex;
+  gap: 30px;
+  margin-top: 15px;
+  background: #f8f9fa;
+  padding: 15px 25px;
+  border-radius: 10px;
+  border-left: 5px solid #3498db;
+}
+.item-resumen {
+  display: flex;
+  flex-direction: column;
+}
+.item-resumen .etiqueta {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.item-resumen .valor {
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.badge-exito { background: #d4edda; color: #155724; }
+.badge-error { background: #f8d7da; color: #721c24; }
+.badge-alerta { background: #fff3cd; color: #856404; }
 .etiqueta-notificacion {
   margin-left: 20px;
   font-weight: bold;
@@ -928,7 +933,7 @@ ul {
 }
 
 /* formularios estándar */
-.form-estandar {
+.formulario {
   width: 100%;
   max-width: 100%; /* Ocupar todo el ancho disponible */
   margin: 0 auto;
@@ -943,21 +948,21 @@ ul {
   gap: 20px;
 }
 
-.campo-formulario {
+.campo {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.campo-formulario label {
+.campo label {
   font-weight: 600;
   font-size: 14px;
   color: #4a5568;
 }
 
-.campo-formulario input,
-.campo-formulario select,
-.campo-formulario textarea {
+.campo input,
+.campo select,
+.campo textarea {
   padding: 12px;
   border: 1px solid #667eea; /* Color solicitado */
   border-radius: 4px;
@@ -967,9 +972,9 @@ ul {
   width: 100%; /* El input ocupa todo el ancho disponible de la columna */
 }
 
-.campo-formulario input:focus,
-.campo-formulario select:focus,
-.campo-formulario textarea:focus {
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
   outline: none;
   border-color: #667eea;
 }
@@ -978,7 +983,7 @@ ul {
   flex: 1 1 250px;
 }
 
-.form-acciones {
+.acciones {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #e2e8f0;
@@ -989,8 +994,8 @@ ul {
   gap: 15px;
 }
 
-.form-acciones .boton-primario,
-.form-acciones .boton-secundario {
+.acciones .boton-primario,
+.acciones .boton-secundario {
   flex: none;
   width: auto;
   min-width: 150px;
@@ -1014,14 +1019,14 @@ ul {
   cursor: pointer;
 }
 
-.formulario-cuadricula {
+.form-cols {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 20px;
 }
 
-.formulario-cuadricula > * {
+.form-cols > * {
   flex: 1 1 300px;
 }
 

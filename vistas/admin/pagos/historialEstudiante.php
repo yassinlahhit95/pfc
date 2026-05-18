@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -10,7 +10,7 @@ if (empty($idEstudiante)) {
 }
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
-$listaPagos = obtenerPagosPorEstudiante($idEstudiante);
+$listaPagos = listarPagosPorEstudiante($idEstudiante);
 
 $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
@@ -21,7 +21,7 @@ $seccion = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>HISTORIAL DE PAGOS: <?= $estudiante['nombreEstudiante'] ?></h1>
     <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -33,8 +33,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaPagos)) { ?>
-                    <tr><td colspan="4" class="sin-datos">No hay registros de pagos para este estudiante</td></tr>
+                    <tr><td colspan="4" class="vacio">No hay registros de pagos para este estudiante</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaPagos as $p) { ?>
                     <tr>

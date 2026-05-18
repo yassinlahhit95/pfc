@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | MODIFICAR RECLAMACIÓN";
 $seccion = 'reclamaciones';
@@ -24,7 +24,7 @@ unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['d
 $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion;
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>MODIFICAR RECLAMACIÓN</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
@@ -37,20 +37,20 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <form method="POST" action="../../../controladores/admin/mensajes/actualizar.php">
         <input type="hidden" name="idReclamacion" value="<?= $id_reclamacion ?>">
 
-        <div class="formulario-cuadricula">
-            <div class="campo-formulario">
+        <div class="form-cols">
+            <div class="campo">
                 <label>Asunto *</label>
                 <input type="text" name="asuntoReclamacion" value="<?= $reclamacion['asuntoReclamacion'] ?? '' ?>">
                 <?php if (isset($errores['asuntoReclamacion'])) { ?>
-                    <strong class="error-campo"><?= $errores['asuntoReclamacion'] ?></strong>
+                    <strong class="error-campo"><?= $errores['asuntoReclamacion'] ?></b>
                 <?php } ?>
             </div>
 
-            <div class="campo-formulario">
+            <div class="campo">
                 <label>Estado *</label>
                 <select name="estadoReclamacion">
                     <option value="Pendiente" <?= ($reclamacion['estadoReclamacion'] == 'Pendiente') ? 'selected' : '' ?>>Pendiente</option>
@@ -59,11 +59,11 @@ $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion
                 </select>
             </div>
 
-            <div class="campo-formulario campo-ancho-total">
+            <div class="campo campo-ancho-total">
                 <label>Descripción *</label>
                 <textarea name="descripcionReclamacion" rows="6"><?= $reclamacion['descripcionReclamacion'] ?? '' ?></textarea>
                 <?php if (isset($errores['descripcionReclamacion'])) { ?>
-                    <strong class="error-campo"><?= $errores['descripcionReclamacion'] ?></strong>
+                    <strong class="error-campo"><?= $errores['descripcionReclamacion'] ?></b>
                 <?php } ?>
             </div>
         </div>

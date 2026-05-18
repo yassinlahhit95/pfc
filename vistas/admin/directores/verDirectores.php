@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $titulo_pagina = "AULAPRO | GESTIÓN DE DIRECTORES";
 $seccion = 'directores';
@@ -14,7 +14,7 @@ $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>DIRECTORES DE CICLO</h1>
     <a href="agregarDirectores.php" class="boton-primario">
         <i class="fas fa-plus"></i> NUEVO DIRECTOR
@@ -28,8 +28,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos" id="tablaDirectores">
             <thead>
                 <tr>
@@ -42,12 +42,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_directores)) { ?>
-                    <tr><td colspan="5" class="sin-datos">No hay directores registrados</td></tr>
+                    <tr><td colspan="5" class="vacio">No hay directores registrados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_directores as $director) { ?>
                     <tr>
                         <td><?= $director['idDirector'] ?></td>
-                        <td><strong><?= $director['nombreDirector'] ?></strong></td>
+                        <td><b><?= $director['nombreDirector'] ?></b></td>
                         <td><?= $director['emailDirector'] ?></td>
                         <td><?= $director['telefonoDirector'] ?></td>
                         <td>

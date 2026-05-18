@@ -26,9 +26,6 @@ function checkProfesorExistente($dni, $email, $idExcluir = 0) {
 }
 
 function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
-    if (checkProfesorExistente($dni, $email)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
@@ -40,9 +37,6 @@ function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $c
 }
 
 function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
-    if (checkProfesorExistente($dni, $email, $id)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=?, dniProfesor=?, direccionProfesor=?, fechaNacimientoProfesor=?, fechaAltaProfesor=?, ciudadProfesor=?, codigoPostalProfesor=?, observacionesProfesor=? WHERE idProfesor=?";
     $stmt = mysqli_prepare($con, $sql);
@@ -109,7 +103,7 @@ function listarProfesoresPorCiclo($idCic) {
     return $lista;
 }
 
-function obtenerIdsModulosDeProfesor($idProf) {
+function listarIdsModulosDeProfesor($idProf) {
     $con = obtenerConexion();
     $sql = "SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
@@ -127,6 +121,16 @@ function obtenerIdsModulosDeProfesor($idProf) {
 function limpiarModulosProfesor($idProf) {
     $con = obtenerConexion();
     $sql = "DELETE FROM profesor_modulo WHERE idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idProf);
+    $resultado = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $resultado;
+}
+
+function limpiarCiclosProfesor($idProf) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM ciclo_profesor WHERE idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProf);
     $resultado = mysqli_stmt_execute($stmt);
@@ -155,7 +159,7 @@ function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
     return $resultado;
 }
 
-function obtenerProfesoresConModulosParaEstudiante($idEst) {
+function listarProfesoresConModulosParaEstudiante($idEst) {
     $con = obtenerConexion();
     $sql = "SELECT p.idProfesor, p.nombreProfesor, m.nombreModulo
             FROM profesores p
@@ -175,7 +179,7 @@ function obtenerProfesoresConModulosParaEstudiante($idEst) {
     return $lista;
 }
 
-function obtenerCiclosTutorizadosProfesor($idProfesor) {
+function listarCiclosTutorizadosProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT c.*, n.nombreNivel 
             FROM ciclos c 

@@ -9,7 +9,7 @@ require_once __DIR__ . "/../../firebase/firebase_helper.php";
 if (isset($_POST['guardarAnuncio'])) {
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
-    $dirigidoA = trim($_POST['dirigidoA']);
+    $dirigidoA = $_POST['dirigidoA'];
 
     $listaErrores = [];
     if (empty($titulo)) {

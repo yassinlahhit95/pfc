@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -13,14 +13,14 @@ if (!isset($_SESSION['idProfesor'])) {
 require_once __DIR__ . "/../../../modelos/retos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-$retos = obtenerRetosDeProfesor($idProfesor);
+$retos = listarRetosDeProfesor($idProfesor);
 
 $tituloDelPagina = "AULAPRO | RETOS";
 $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>GESTIÓN DE RETOS</h1>
     <div class="acciones-pagina">
         <a href="agregar.php" class="boton-primario">NUEVO RETO</a>
@@ -34,8 +34,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<div class="tarjeta-blanca">
-    <div class="contenedor-tabla">
+<div class="panel">
+    <div class="tcont">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -69,7 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="sin-datos">No hay retos registrados.</td>
+                        <td colspan="5" class="vacio">No hay retos registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>

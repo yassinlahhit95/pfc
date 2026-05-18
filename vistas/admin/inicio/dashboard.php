@@ -1,11 +1,4 @@
-<?php
-/* 
-   PANEL DE CONTROL PRINCIPAL - ADMINISTRADORES
-   Este es el corazón del sistema donde se ve todo lo que pasa.
-   Autor: Yassin Lahhit
-   Última revisión: Mayo 2024
-*/
-
+﻿<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -20,7 +13,6 @@ require_once __DIR__ . "/../../../modelos/eventos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
-
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 $totalEstudiantes = contarEstudiantes();
@@ -44,9 +36,9 @@ $seccion = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
-<div class="espacio-entre-elementos alinear-centro margen-abajo disposicion-flexible">
+<div class="espacio-entre-elementos alinear-centro margen-abajo d-flex">
   <div>
-    <h1>BIENVENIDO/A, <?= mb_strtoupper($nombreAdmin, 'UTF-8') ?></h1>
+    <h1>BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
   </div>
 </div>
 
@@ -79,9 +71,9 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div class="cuadricula-secundaria">
-  <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
+  <div class="d-flex direccion-columna sep-g relleno">
 
-    <div class="tarjeta-blanca">
+    <div class="panel">
       <div class="titulo-tarjeta"><h3>ACCIONES RÁPIDAS</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
@@ -93,7 +85,7 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
 
 
-    <div class="tarjeta-blanca">
+    <div class="panel">
       <div class="titulo-tarjeta">
         <h3>TABLÓN DE ANUNCIOS</h3>
       </div>
@@ -102,13 +94,13 @@ include __DIR__ . '/../comunes/nav.php';
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
-                    <div class="disposicion-flexible espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo"><?= mb_strtoupper($anuncio['titulo'], 'UTF-8') ?></strong>
-                        <small class="texto-atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
+                    <div class="d-flex espacio-entre-elementos alinear-centro">
+                        <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></b>
+                        <small class="atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
                     </div>
                     <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= nl2br($anuncio['mensaje']) ?></p>
                     <div style="margin-top: 5px;">
-                        <span class="etiqueta-dirigido-a"><?= mb_strtoupper($anuncio['dirigidoA'], 'UTF-8') ?></span>
+                        <span class="etiqueta-dirigido-a"><?= strtoupper($anuncio['dirigidoA']) ?></span>
                     </div>
                 </div>
             </div>
@@ -117,32 +109,32 @@ include __DIR__ . '/../comunes/nav.php';
 
 
       <?php } else { ?>
-        <p class="texto-atenuado">No hay anuncios activos por ahora.</p>
+        <p class="atenuado">No hay anuncios activos por ahora.</p>
       <?php } ?>
     </div>
   </div>
 
-  <div class="disposicion-flexible direccion-columna separacion-grande flexible-rellenar">
-    <div class="tarjeta-blanca">
+  <div class="d-flex direccion-columna sep-g relleno">
+    <div class="panel">
       <div class="titulo-tarjeta">
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($eventos)) { ?>
-            <p class="texto-atenuado">No hay eventos próximos programados.</p>
+            <p class="atenuado">No hay eventos próximos programados.</p>
         <?php } else { ?>
             <?php
             $i = 0;
             foreach ($eventos as $evento) {
                 if ($i < 4) {
                     $dia = date('d', strtotime($evento['fechaEvento']));
-                    $mes = mb_strtoupper(date('M', strtotime($evento['fechaEvento'])), 'UTF-8');
+                    $mes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
             ?>
             <div class="elemento-evento">
               <div class="fecha-evento azul"><div class="dia"><?= $dia ?></div><div class="mes"><?= $mes ?></div></div>
               <div>
-                <p class="texto-negrita"><?= mb_strtoupper($evento['tituloEvento'], 'UTF-8') ?></p>
-                <p class="texto-atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
+                <p class="texto-negrita"><?= strtoupper($evento['tituloEvento']) ?></p>
+                <p class="atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
               </div>
             </div>
             <?php

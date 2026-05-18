@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -12,7 +12,7 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
-    $_SESSION['error'] = mb_strtoupper("MENSAJE NO ENCONTRADO.", 'UTF-8');
+    $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO.");
     header("Location: lista.php");
     exit;
 }
@@ -31,54 +31,54 @@ $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>DETALLES DEL MENSAJE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-envelope-open-text"></i> INFORMACIÓN DEL MENSAJE</h3>
     </div>
     
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?= ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
             <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Dirección') : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Fecha</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?= mb_strtoupper($mensaje['asunto'], 'UTF-8') ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Estado Actual</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">LEÍDO / VISTO</span>
+                <span class="bolita activo-verde">LEÍDO / VISTO</span>
             <?php } else { ?>
-                <span class="estado-bolita inactivo-rojo">PENDIENTE / NUEVO</span>
+                <span class="bolita inactivo-rojo">PENDIENTE / NUEVO</span>
             <?php } ?>
         </div>
     </div>
 
     <div class="margen-arriba bg-gris-suave ancho-total" style="padding: 20px; border-radius: 8px; word-break: break-word;">
-        <label for="contenidoMensaje" class="texto-atenuado texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
-        <div id="contenidoMensaje" style="max-width: 100%; line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
+        <label for="contenidoMensaje" class="atenuado texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
+        <div id="contenidoMensaje" style="max-width: 100%; line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?? '' ?></div>
     </div>
 </div>
 

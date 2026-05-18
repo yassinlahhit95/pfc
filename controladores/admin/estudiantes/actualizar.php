@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['actualizarEstudiante'])) {
-    $idEstudiante = trim($_POST['idEstudiante']);
+    $idEstudiante = $_POST['idEstudiante'];
     $nombre = trim($_POST['nombreEstudiante']);
     $email = trim($_POST['emailEstudiante']);
     $dni = trim($_POST['dniEstudiante']);
@@ -14,8 +14,8 @@ if (isset($_POST['actualizarEstudiante'])) {
     $ciudad = trim($_POST['ciudadEstudiante']);
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = trim($_POST['observacionesEstudiante']);
-    $idCiclo = trim($_POST['idCiclo']);
-    $curso = isset($_POST['curso']) ? trim($_POST['curso']) : 'Grado Medio';
+    $idCiclo = $_POST['idCiclo'];
+    $curso = $_POST['curso'] ?? 'Grado Medio';
 
     if (empty($idEstudiante)) {
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
@@ -28,23 +28,23 @@ if (isset($_POST['actualizarEstudiante'])) {
         $errores['nombreEstudiante'] = "El nombre es obligatorio.";
     }
     if (empty($email)) {
-        $errores['emailEstudiante'] = "El email es obligatorio.";
+        $errores['emailEstudiante'] = "Email obligatorio";
     } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailEstudiante'] = "El formato del email no es válido.";
+        $errores['emailEstudiante'] = "Formato de email no válido";
     }
     if (empty($dni)) {
-        $errores['dniEstudiante'] = "El DNI es obligatorio.";
+        $errores['dniEstudiante'] = "DNI obligatorio";
     }
     if (empty($telefono)) {
         $errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoEstudiante'] = "El teléfono debe ser numérico y tener exactamente 9 dígitos.";
+        $errores['telefonoEstudiante'] = "9 dígitos, solo números";
     }
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
-        $errores['codigoPostalEstudiante'] = "El código postal debe ser numérico.";
+        $errores['codigoPostalEstudiante'] = "Código postal incorrecto";
     }
     if (empty($idCiclo)) {
-        $errores['idCiclo'] = "Debe seleccionar un ciclo.";
+        $errores['idCiclo'] = "Selecciona el ciclo";
     }
 
     if (empty($errores)) {

@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 if (isset($_POST['actualizarDirector'])) {
-    $idDirector = trim($_POST['idDirector']);
+    $idDirector = $_POST['idDirector'];
     $nombre = trim($_POST['nombreDirector']);
     $email = trim($_POST['emailDirector']);
     $dni = trim($_POST['dniDirector']);

@@ -8,15 +8,15 @@ function listarEstudiantes() {
             LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             ORDER BY estudiantes.idEstudiante ASC";
 
-    $resultado = mysqli_query($con, $sql);
-    $listaEstudiantes = [];
+    $res = mysqli_query($con, $sql);
+    $rows = [];
 
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaEstudiantes[] = $fila;
+    while($fila = mysqli_fetch_assoc($res)) {
+        $rows[] = $fila;
     }
 
     mysqli_close($con);
-    return $listaEstudiantes;
+    return $rows;
 }
 
 function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
@@ -32,9 +32,6 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
 }
 
 function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
-    if (checkEstudianteExistente($dni, $email)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
@@ -45,9 +42,6 @@ function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta
 }
 
 function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
-    if (checkEstudianteExistente($dni, $email, $id)) {
-        return false;
-    }
     $con = obtenerConexion();
     $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
@@ -119,10 +113,10 @@ function obtenerEstudiantePorId($idEstudiante) {
 
 function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $con = obtenerConexion();
-    $passwordHasheada = password_hash($nuevaPassword, PASSWORD_DEFAULT);
+    $hash = password_hash($nuevaPassword, PASSWORD_DEFAULT);
     $sql = "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $passwordHasheada, $idEstudiante);
+    mysqli_stmt_bind_param($stmt, "si", $hash, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;

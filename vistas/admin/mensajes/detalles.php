@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -26,17 +26,17 @@ $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="encabezado-pagina">
+<div class="cabecera">
     <h1>DETALLES DEL MENSAJE</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<div class="tarjeta-blanca">
+<div class="panel">
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-envelope"></i> Información del Mensaje</h3>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
             <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
@@ -66,25 +66,25 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Fecha</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
-    <div class="fila-detalle">
+    <div class="fila-dat">
         <div class="etiqueta-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="estado-bolita activo-verde">Leído</span>
+                <span class="bolita activo-verde">Leído</span>
             <?php } else { ?>
-                <span class="estado-bolita inactivo-rojo">Pendiente</span>
+                <span class="bolita inactivo-rojo">Pendiente</span>
             <?php } ?>
         </div>
     </div>
 
     <div class="margen-arriba bg-gris-suave" style="padding: 20px;">
-        <h4 class="color-primario" style="margin-bottom: 10px;"><?= $mensaje['asunto'] ?></h4>
-        <div style="line-height: 1.5; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?></div>
+        <h4 class="color-primario" style="margin-bottom: 10px;"><?= $mensaje['asunto'] ?? '' ?></h4>
+        <div style="line-height: 1.5; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?? '' ?></div>
     </div>
 </div>
 
