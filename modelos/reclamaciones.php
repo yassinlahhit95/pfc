@@ -171,5 +171,3 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
     return intval($fila['total']);
 }
 
-?>
-

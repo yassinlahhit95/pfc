@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosPrestamos() {
@@ -166,4 +166,3 @@ function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoD
     return $resultado;
 }
 
-?>

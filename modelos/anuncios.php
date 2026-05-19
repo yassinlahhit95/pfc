@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosAnuncios() {
@@ -124,4 +124,3 @@ function listarAnunciosPaginados($paginaActual, $limitePorPagina) {
     return $listaAnuncios;
 }
 
-?>

@@ -143,4 +143,3 @@ function contarPagosEstudiante($idEstudiante) {
     mysqli_close($con);
     return intval($fila['total']);
 }
-?>

@@ -276,4 +276,3 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     mysqli_close($con);
     return $row['promedio'] ? floatval($row['promedio']) : 0;
 }
-?>

@@ -16,64 +16,47 @@ if (isset($_POST['guardarEstudiante'])) {
     $idCiclo = $_POST['idCiclo'];
     $curso = $_POST['curso'] ?? '';
 
-    $errores = [];
-
-    if (empty($nombre)) {
-        $errores['nombreEstudiante'] = "El nombre es obligatorio.";
-    }
+    $avisos = [];
+    if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es obligatorio.";
     if (empty($email)) {
-        $errores['emailEstudiante'] = "Email requerido";
+        $avisos['emailEstudiante'] = "Email requerido";
     } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailEstudiante'] = "Email no válido";
+        $avisos['emailEstudiante'] = "Email no válido";
     }
-    if (empty($dni)) {
-        $errores['dniEstudiante'] = "Falta el DNI";
-    }
+    if (empty($dni)) $avisos['dniEstudiante'] = "Falta el DNI";
     if (empty($telefono)) {
-        $errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
+        $avisos['telefonoEstudiante'] = "El teléfono es obligatorio.";
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoEstudiante'] = "Teléfono incorrecto";
+        $avisos['telefonoEstudiante'] = "Teléfono incorrecto";
     }
-    if (empty($fechaNacimiento)) {
-        $errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
-    }
-    if (empty($direccion)) {
-        $errores['direccionEstudiante'] = "Dirección requerida";
-    }
-    if (empty($ciudad)) {
-        $errores['ciudadEstudiante'] = "La ciudad es obligatoria.";
-    }
+    if (empty($fechaNacimiento)) $avisos['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
+    if (empty($direccion)) $avisos['direccionEstudiante'] = "Dirección requerida";
+    if (empty($ciudad)) $avisos['ciudadEstudiante'] = "La ciudad es obligatoria.";
     if (empty($codigoPostal)) {
-        $errores['codigoPostalEstudiante'] = "El código postal es obligatorio.";
+        $avisos['codigoPostalEstudiante'] = "El código postal es obligatorio.";
     } elseif (!is_numeric($codigoPostal)) {
-        $errores['codigoPostalEstudiante'] = "Código postal no válido";
+        $avisos['codigoPostalEstudiante'] = "Código postal no válido";
     }
-    if (empty($curso)) {
-        $errores['curso'] = "Selecciona un grado";
-    }
-    if (empty($idCiclo)) {
-        $errores['idCiclo'] = "Selecciona un ciclo";
+    if (empty($curso)) $avisos['curso'] = "Selecciona un grado";
+    if (empty($idCiclo)) $avisos['idCiclo'] = "Selecciona un ciclo";
+
+    if (empty($avisos) && checkEstudianteExistente($dni, $email)) {
+        $avisos['dniEstudiante'] = "El DNI o Email ya están registrados.";
     }
 
-    if (empty($errores)) {
-        if (checkEstudianteExistente($dni, $email)) {
-            $errores['dniEstudiante'] = "El DNI o Email ya están registrados.";
-        }
-    }
-
-    if (empty($errores)) {
-        $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
-        if ($resultado) {
-            $_SESSION['exito'] = "Estudiante registrado correctamente.";
-            header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
-            exit;
-        }
-        $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante en la base de datos.";
-    } else {
-        $_SESSION['errores'] = $errores;
+    if (!empty($avisos)) {
+        $_SESSION['errores'] = $avisos;
         $_SESSION['datos_estudiante'] = $_POST;
+        header("Location: ../../../vistas/admin/estudiantes/agregarEstudiantes.php");
+        exit;
     }
 
+    if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
+        $_SESSION['exito'] = "Estudiante registrado correctamente.";
+        header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
+        exit;
+    }
+    $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante en la base de datos.";
     header("Location: ../../../vistas/admin/estudiantes/agregarEstudiantes.php");
     exit;
 }

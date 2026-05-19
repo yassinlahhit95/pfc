@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
                         <td>
                             <b><?= $ev['tituloEvento'] ?></b><br>
-                            <small class="atenuado"><?= $ev['descripcionEvento'] ?></small>
+                            <span class="atenuado"><?= $ev['descripcionEvento'] ?></span>
                         </td>
                         <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>

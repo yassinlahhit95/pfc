@@ -129,7 +129,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="montoInput">Cantidad a Cobrar (€) *</label>
                 <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= $datos_pago['monto'] ?? '' ?>">
-                <small>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</small>
+                <span>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</span>
                 <?php if (isset($errores['monto'])) { ?>
                     <strong class="error-campo"><?= $errores['monto'] ?></b>
                 <?php } ?>

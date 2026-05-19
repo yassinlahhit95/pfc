@@ -96,7 +96,7 @@ include __DIR__ . '/../comunes/nav.php';
                 <div class="anuncio-contenido">
                     <div class="d-flex espacio-entre-elementos alinear-centro">
                         <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></b>
-                        <small class="atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
+                        <span class="atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                     </div>
                     <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= nl2br($anuncio['mensaje']) ?></p>
                     <div style="margin-top: 5px;">

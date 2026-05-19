@@ -1,5 +1,4 @@
-﻿/* configuración base y reset */
-* {
+﻿* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -16,7 +15,6 @@ body {
   position: relative;
 }
 
-/* barra lateral (sidebar) */
 .barra-lateral {
   width: 260px;
   background-color: #1a1c2e;
@@ -27,7 +25,6 @@ body {
   top: 0;
   overflow-y: auto;
   z-index: 1000;
-  transition: all 0.3s ease;
 }
 
 .menu-toggle {
@@ -70,7 +67,6 @@ body {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  transition: all 0.2s;
   margin: 0 10px;
 }
 
@@ -120,11 +116,10 @@ body {
   opacity: 0.5;
 }
 
-/* navegación superior */
 .navbar-superior {
   height: 70px;
   background-color: white;
-  display: none; /* oculto por defecto en escritorio */
+  display: none;
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
@@ -133,7 +128,6 @@ body {
   left: 0;
   right: 0;
   z-index: 999;
-  transition: all 0.3s ease;
 }
 
 .menu-superior {
@@ -160,7 +154,6 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
 }
 
 .navbar-nav li a:hover {
@@ -172,7 +165,6 @@ body {
   font-size: 16px;
 }
 
-/* estilos de listas */
 ul {
   list-style-position: inside;
 }
@@ -189,7 +181,6 @@ ul {
   color: #4a5568;
 }
 
-/* logos */
 .logo-navbar {
   height: 55px;
   width: auto;
@@ -240,13 +231,11 @@ ul {
   background: #f0f3ff;
 }
 
-/* contenido principal */
 .contenido-derecha,
 .contenido-principal {
   margin-left: 260px;
   padding: 30px;
   min-height: 100vh;
-  transition: all 0.3s;
 }
 
 .cabecera {
@@ -262,7 +251,6 @@ ul {
   margin-top: 5px;
 }
 
-/* tarjetas (cards) */
 .panel {
   background: white;
   border-radius: 4px;
@@ -290,7 +278,6 @@ ul {
   letter-spacing: 0.5px;
 }
 
-/* utilidades de scroll */
 .scroll-v {
   max-height: 250px;
   overflow-y: auto;
@@ -322,7 +309,6 @@ ul {
   margin-bottom: 5px;
 }
 
-/* tablas */
 .tcont {
   background: transparent;
   border-radius: 0;
@@ -330,7 +316,7 @@ ul {
   border: none;
   margin-top: 10px;
   width: 100%;
-  overflow-x: auto; /* Para tablas anchas en móvil */
+  overflow-x: auto;
 }
 
 .tabla-datos {
@@ -365,7 +351,6 @@ ul {
   color: #a0aec0;
 }
 
-/* botones de acción */
 .btn-accion {
   padding: 6px 10px;
   border-radius: 4px;
@@ -375,7 +360,6 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  transition: all 0.2s;
   border: none;
   cursor: pointer;
 }
@@ -409,7 +393,6 @@ ul {
   color: white;
 }
 
-/* botones generales */
 .boton-primario {
   background: #667eea;
   color: white;
@@ -422,7 +405,6 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: background 0.2s;
 }
 
 .boton-primario:hover {
@@ -441,7 +423,6 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: background 0.2s;
 }
 
 .boton-secundario:hover {
@@ -462,7 +443,6 @@ ul {
   display: inline;
 }
 
-/* estados y mensajes */
 .bolita {
   padding: 4px 12px;
   border-radius: 4px;
@@ -515,7 +495,6 @@ ul {
   font-weight: bold;
 }
 
-/* colores de estado */
 .texto-verde {
   color: #16a34a;
 }
@@ -539,12 +518,10 @@ ul {
   border-color: #dc2626;
 }
 
-/* ocultar elementos (usado por JS) */
 .oculto {
   display: none !important;
 }
 
-/* anuncios y mensajes */
 
 .cuerpo-mensaje-tabla {
   font-size: 13px;
@@ -554,7 +531,6 @@ ul {
   white-space: normal;
 }
 
-/* dashboard - estadísticas */
 .cuadricula-estadisticas {
   display: flex;
   flex-wrap: wrap;
@@ -616,7 +592,6 @@ ul {
   margin: 0;
 }
 
-/* dashboard - cuadrículas */
 .cuadricula-secundaria {
   display: flex;
   flex-wrap: wrap;
@@ -653,7 +628,6 @@ ul {
   color: #4a5568;
   font-weight: 600;
   font-size: 14px;
-  transition: all 0.2s;
 }
 
 .accion-rapida:hover {
@@ -662,7 +636,6 @@ ul {
   border-color: #667eea;
 }
 
-/* actividad y eventos */
 .lista-eventos {
   display: flex;
   flex-direction: column;
@@ -699,18 +672,14 @@ ul {
   padding: 5px;
   margin-bottom: 15px;
   border: none;
-  transition: all 0.3s;
 }
 
-.anuncio-item:hover {
-}
 
 .anuncio-contenido {
   background-color: #1a1c2e;
   border-radius: 17px;
   width: 100%;
   padding: 15px;
-  transition: all 0.2s;
 }
 
 .anuncio-item:hover .anuncio-contenido {
@@ -758,7 +727,6 @@ ul {
   text-transform: uppercase;
 }
 
-/* detalles y fichas */
 .texto-oscuro {
   color: #2d3748;
 }
@@ -774,10 +742,10 @@ ul {
 
 .fila-dat {
   display: flex;
-  flex-wrap: wrap; /* Permitir que baje si no cabe */
+  flex-wrap: wrap;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #f8fafc; /* Añadimos un separador sutil */
+  border-bottom: 1px solid #f8fafc;
 }
 
 .fila-dat:last-child {
@@ -795,10 +763,10 @@ ul {
 
 .fila-dat .valor-detalle {
   flex: 1;
-  min-width: 250px; /* Asegura que el valor tenga espacio o baje */
+  min-width: 250px;
   color: #2d3748;
   font-size: 15px;
-  word-break: break-word; /* Evita que correos largos rompan el diseño */
+  word-break: break-word;
 }
 
 .valor-mensaje {
@@ -807,10 +775,9 @@ ul {
 }
 
 .fila-propia {
-  background-color: #f0f7ff !important; /* Azul muy suave para mis mensajes */
+  background-color: #f0f7ff !important;
 }
 
-/* utilidades de flex y grid */
 .d-flex {
   display: flex;
 }
@@ -842,12 +809,10 @@ ul {
   width: 100%;
 }
 
-/* utilidades varias */
 .ancho-ajustable-nota {
   width: 60px !important;
 }
 
-/* calificaciones estudiante */
 .resumen-global {
   display: flex;
   gap: 30px;
@@ -932,10 +897,9 @@ ul {
   margin-top: 30px;
 }
 
-/* formularios estándar */
 .formulario {
   width: 100%;
-  max-width: 100%; /* Ocupar todo el ancho disponible */
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -964,12 +928,11 @@ ul {
 .campo select,
 .campo textarea {
   padding: 12px;
-  border: 1px solid #667eea; /* Color solicitado */
+  border: 1px solid #667eea;
   border-radius: 4px;
   font-size: 14px;
   background-color: #fff;
-  transition: all 0.2s;
-  width: 100%; /* El input ocupa todo el ancho disponible de la columna */
+  width: 100%;
 }
 
 .campo input:focus,
@@ -1001,7 +964,6 @@ ul {
   min-width: 150px;
 }
 
-/* checkboxes globales */
 .campo-checkbox {
   display: flex;
   align-items: center;
@@ -1040,7 +1002,6 @@ ul {
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #e2e8f0;
-  transition: background 0.2s;
 }
 
 .item-seleccionable:last-child {
@@ -1064,7 +1025,6 @@ ul {
 }
 
 
-/* Paginación */
 .fila-filtro-oculta {
   display: none !important;
 }
@@ -1086,7 +1046,6 @@ ul {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 .btn-pagina:hover:not([disabled]) {

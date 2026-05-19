@@ -5,13 +5,17 @@ require_once __DIR__ . "/../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../modelos/retos.php";
 require_once __DIR__ . "/../../modelos/tfg.php";
 
+// Función para montar el HTML de la tabla de notas que se envía por correo.
+// Importante: El CSS va en línea porque Gmail y Outlook se cargan las clases externas.
 function generarTablaNotasHTML($idEstudianteRecibido) {
+    // Pillamos los datos del alumno primero
     $datosEstudiante = obtenerEstudiantePorId($idEstudianteRecibido);
 
     if (empty($datosEstudiante)) {
         return false;
     }
 
+    // Buscamos todas sus notas en la base de datos
     $listaCalificaciones = listarCalificacionesPorEstudiante($idEstudianteRecibido);
 
     $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
@@ -39,6 +43,7 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
     $contadorTotalModulos = 0;
     $existeAlgundoSuspenso = false;
 
+    // Empezamos a recorrer los módulos para rellenar la tabla
     foreach ($listaCalificaciones as $datosDelModulo) {
         $nota1ev = null;
         if (isset($datosDelModulo['nota_1ev']) && is_numeric($datosDelModulo['nota_1ev'])) {

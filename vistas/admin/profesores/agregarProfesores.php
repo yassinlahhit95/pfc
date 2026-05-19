@@ -110,14 +110,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo campo-ancho-total">
-                <label for="observacionesProfesor">Observaciones / Curriculum Vitae (Resumen)</label>
+                <label for="observacionesProfesor">Observaciones</label>
                 <textarea id="observacionesProfesor" name="observacionesProfesor" rows="3"><?= $datos['observacionesProfesor'] ?? '' ?></textarea>
             </div>
         </div>
 
         <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
-                <h4 class="margen-abajo"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
+                <h4 class="margen-abajo">1. Seleccionar Ciclos</h4>
                 <div class="checks scroll-v200">
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="check-item">
@@ -130,7 +130,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div>
-                <h4 class="margen-abajo"><i class="fas fa-book"></i> 2. Seleccionar Módulos</h4>
+                <h4 class="margen-abajo">2. Seleccionar Módulos</h4>
                 <div id="contenedor-modulos-dinamico" class="checks scroll-v400 bg-gris-suave">
                     <p id="msg-seleccionar-ciclo" class="atenuado" style="text-align: center; padding: 20px;">
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.

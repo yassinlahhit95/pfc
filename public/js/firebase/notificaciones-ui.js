@@ -31,7 +31,7 @@ export function mostrarNotificacionUI(titulo, mensaje, tipo = 'info') {
     contenedor.appendChild(toast);
 
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
-    audio.play().catch(() => {}); // Ignorar si el navegador bloquea el auto-play
+    audio.play().catch(() => {});
 
     toast.querySelector('.toast-cerrar').onclick = () => {
         cerrarToast(toast);

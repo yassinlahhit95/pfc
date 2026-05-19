@@ -174,4 +174,3 @@ function listarNombresProfesoresDeModulo($idModulo) {
     mysqli_close($con);
     return $lista;
 }
-?>

@@ -39,31 +39,7 @@ if (isset($_POST['guardarNotas'])) {
     }
 
     if (!$hayError) {
-        require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
-        
-        $correosEnviados = 0;
-        $intentosCorreos = 0;
-
-        if (!empty($_POST['notificarEstudiantes'])) {
-            for ($i = 0; $i < $cantidadEstudiantes; $i++) {
-                $intentosCorreos++;
-                if (enviarEmailNotasEstudiante($listaIdsEstudiantes[$i])) {
-                    $correosEnviados++;
-                }
-            }
-        }
-
-        if ($intentosCorreos > 0) {
-            if ($correosEnviados === $intentosCorreos) {
-                $_SESSION['exito'] = "Calificaciones guardadas y todos los correos enviados ($correosEnviados).";
-            } elseif ($correosEnviados > 0) {
-                $_SESSION['exito'] = "Calificaciones guardadas. Se enviaron $correosEnviados correos, pero algunos fallaron.";
-            } else {
-                $_SESSION['error'] = "Notas guardadas, pero NO se pudo enviar ningún correo. Revisa la configuración de Brevo.";
-            }
-        } else {
-            $_SESSION['exito'] = "Calificaciones guardadas correctamente.";
-        }
+        $_SESSION['exito'] = "Calificaciones guardadas correctamente.";
     } else {
         $_SESSION['error'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
     }

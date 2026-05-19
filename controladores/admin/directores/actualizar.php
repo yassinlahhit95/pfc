@@ -18,46 +18,40 @@ if (isset($_POST['actualizarDirector'])) {
     $codigoPostal = trim($_POST['codigoPostalDirector']);
     $observaciones = trim($_POST['observacionesDirector']);
 
-    $errores = [];
-    if (empty($nombre)) {
-        $errores['nombreDirector'] = "Nombre obligatorio.";
-    }
+    $avisos = [];
+    if (empty($nombre)) $avisos['nombreDirector'] = "Nombre obligatorio.";
     if (empty($email)) {
-        $errores['emailDirector'] = "Email obligatorio.";
+        $avisos['emailDirector'] = "Email obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailDirector'] = "Email no válido.";
+        $avisos['emailDirector'] = "Email no válido.";
     }
-    if (empty($dni)) {
-        $errores['dniDirector'] = "DNI obligatorio.";
-    }
+    if (empty($dni)) $avisos['dniDirector'] = "DNI obligatorio.";
     if (empty($telefono)) {
-        $errores['telefonoDirector'] = "El teléfono es obligatorio.";
+        $avisos['telefonoDirector'] = "El teléfono es obligatorio.";
     } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoDirector'] = "El teléfono debe tener exactamente 9 dígitos.";
+        $avisos['telefonoDirector'] = "El teléfono debe tener exactamente 9 dígitos.";
     }
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
-        $errores['codigoPostalDirector'] = "El código postal debe ser numérico.";
+        $avisos['codigoPostalDirector'] = "El código postal debe ser numérico.";
     }
 
-    if (empty($errores)) {
-        if (checkDirectorExistente($dni, $email, $idDirector)) {
-            $errores['dniDirector'] = "El DNI o Email ya están registrados por otro director.";
-        }
+    if (empty($avisos) && checkDirectorExistente($dni, $email, $idDirector)) {
+        $avisos['dniDirector'] = "El DNI o Email ya están registrados por otro director.";
     }
 
-    if (empty($errores)) {
-        $resultado = actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
-        if ($resultado) {
-            $_SESSION['exito'] = "Director actualizado.";
-            header("Location: ../../../vistas/admin/directores/verDirectores.php");
-            exit;
-        }
-        $_SESSION['error'] = "No se pudo actualizar el director.";
-    } else {
-        $_SESSION['errores'] = $errores;
+    if (!empty($avisos)) {
+        $_SESSION['errores'] = $avisos;
         $_SESSION['datos_director'] = $_POST;
+        header("Location: ../../../vistas/admin/directores/modificarDirectores.php?idDirector=$idDirector");
+        exit;
     }
 
+    if (actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)) {
+        $_SESSION['exito'] = "Director actualizado.";
+        header("Location: ../../../vistas/admin/directores/verDirectores.php");
+        exit;
+    }
+    $_SESSION['error'] = "No se pudo actualizar el director.";
     header("Location: ../../../vistas/admin/directores/modificarDirectores.php?idDirector=$idDirector");
     exit;
 }

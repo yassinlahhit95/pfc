@@ -8,43 +8,32 @@ if (isset($_POST['guardarModulo'])) {
     $idCicloAsociado = trim($_POST['idCiclo']);
     $horasMaximasModulo = trim($_POST['horasMaximas']);
 
-    $errores = [];
-
-    if (empty($nombreModuloActualizar)) {
-        $errores['nombreModulo'] = "Nombre del módulo obligatorio.";
-    }
-
-    if (empty($idCicloAsociado)) {
-        $errores['idCiclo'] = "Seleccione un ciclo formativo.";
-    }
-
+    $fallos = [];
+    if (empty($nombreModuloActualizar)) $fallos['nombreModulo'] = "Nombre del módulo obligatorio.";
+    if (empty($idCicloAsociado)) $fallos['idCiclo'] = "Seleccione un ciclo formativo.";
     if (empty($horasMaximasModulo)) {
-        $errores['horasMaximas'] = "Las horas totales son obligatorias.";
-    } else {
-        if (!is_numeric($horasMaximasModulo)) {
-            $errores['horasMaximas'] = "Las horas deben ser un valor numérico.";
-        }
+        $fallos['horasMaximas'] = "Las horas totales son obligatorias.";
+    } elseif (!is_numeric($horasMaximasModulo)) {
+        $fallos['horasMaximas'] = "Las horas deben ser un valor numérico.";
     }
 
-    if (empty($errores)) {
-        if (checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
-            $errores['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo elegido.";
-        }
+    if (empty($fallos) && checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
+        $fallos['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo elegido.";
     }
 
-    if (empty($errores)) {
-        if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
-            $_SESSION['exito'] = "Módulo actualizado correctamente.";
-            header("Location: ../../../vistas/admin/modulos/verModulos.php");
-            exit;
-        }
-
-        $_SESSION['error'] = "No se pudo actualizar el módulo.";
-    } else {
-        $_SESSION['errores'] = $errores;
+    if (!empty($fallos)) {
+        $_SESSION['errores'] = $fallos;
         $_SESSION['datos_modulo'] = $_POST;
+        header("Location: ../../../vistas/admin/modulos/modificarModulos.php?idModulo=$idModuloActualizar");
+        exit;
     }
 
+    if (actualizarModulo($idModuloActualizar, $nombreModuloActualizar, $idCicloAsociado, $horasMaximasModulo)) {
+        $_SESSION['exito'] = "Módulo actualizado correctamente.";
+        header("Location: ../../../vistas/admin/modulos/verModulos.php");
+        exit;
+    }
+    $_SESSION['error'] = "No se pudo actualizar el módulo.";
     header("Location: ../../../vistas/admin/modulos/modificarModulos.php?idModulo=$idModuloActualizar");
     exit;
 }

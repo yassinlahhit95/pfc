@@ -75,7 +75,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td><?= $receptor ?></td>
                         <td>
                             <p class="texto-negrita"><?= $mensaje['asunto'] ?></p>
-                            <small class="atenuado"><?= substr($mensaje['descripcion'], 0, 40) ?>...</small>
+                            <span class="atenuado"><?= substr($mensaje['descripcion'], 0, 40) ?>...</span>
                         </td>
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>

@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Está seguro de enviar las notas por email a todos los estudiantes de este ciclo?')">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <button type="submit" class="boton-primario">
                     <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
@@ -88,7 +88,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td class="<?= $claseDelColor ?> texto-negrita">
                                 <?= $fila['estado_global'] ?>
                                 <?php if($fila['tiene_suspensos'] == true && strpos($fila['estado_global'], "PENDIENTE") === false) { 
-                                    echo " <small title='Tiene módulos suspensos'>(!)</small>"; 
+                                    echo " <span title='Tiene módulos suspensos'>(!)</span>"; 
                                 } ?>
                             </td>
                         </tr>

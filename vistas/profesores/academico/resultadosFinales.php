@@ -192,7 +192,7 @@ if ($id_ciclo_elegido) {
                             <td class="<?= $clase_estado ?> texto-negrita">
                                 <?= $filaIndividual['estado'] ?>
                                 <?php if ($filaIndividual['alert'] == true) { ?>
-                                    <small title='Tiene módulos suspensos'>(!)</small>
+                                    <span title='Tiene módulos suspensos'>(!)</span>
                                 <?php } ?>
                             </td>
                         </tr>

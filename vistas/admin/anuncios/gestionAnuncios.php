@@ -21,11 +21,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -49,7 +49,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <?php foreach ($todos_los_anuncios as $anuncio) { ?>
                     <tr>
                         <td><b><?= $anuncio['tituloAnuncio'] ?></b></td>
-                        <td><small><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</small></td>
+                        <td><span><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</span></td>
                         <td><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></td>
                         <td>
                             <div class="botones-accion">

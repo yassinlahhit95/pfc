@@ -1,6 +1,7 @@
 ﻿<?php
 require_once __DIR__ . "/conectar.php";
 
+// Listado rápido de todos los directores para las tablas del admin
 function listarDirectores() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM directores ORDER BY idDirector ASC";
@@ -13,6 +14,8 @@ function listarDirectores() {
     return $todos;
 }
 
+// Función para no duplicar DNIs o Emails. 
+// El $idExcluir es para cuando editamos, que no salte error con el propio usuario.
 function checkDirectorExistente($dni, $email, $idExcluir = 0) {
     $con = obtenerConexion();
     $sql = "SELECT idDirector FROM directores WHERE (dniDirector = ? OR emailDirector = ?) AND idDirector != ?";
@@ -25,6 +28,8 @@ function checkDirectorExistente($dni, $email, $idExcluir = 0) {
     return $existe;
 }
 
+// Registro de nuevos directores. 
+// OJO: La fecha de nacimiento por defecto es 2000-01-01 si no viene nada.
 function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $con = obtenerConexion();
     $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -142,4 +147,3 @@ function obtenerTokenFCMDirector($idDirector) {
     mysqli_close($con);
     return $token;
 }
-?>

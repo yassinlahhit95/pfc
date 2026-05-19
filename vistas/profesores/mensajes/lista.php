@@ -77,7 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?= date('d/m/Y', strtotime($mensaje['fecha'])) ?><br>
-                            <small class="atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></small>
+                            <span class="atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></span>
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>

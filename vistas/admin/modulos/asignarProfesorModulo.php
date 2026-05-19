@@ -34,10 +34,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="titulo-tarjeta">
-        <h3>Seleccione el profesor que impartirá este módulo</h3>
-    </div>
-
     <form action="../../../controladores/admin/modulos/actualizarProfesores.php" method="POST" class="formulario">
         <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
 
@@ -51,7 +47,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </option>
                 <?php } ?>
             </select>
-            <small class="atenuado">Un módulo solo puede tener un profesor responsable.</small>
         </div>
 
         <div class="acciones">

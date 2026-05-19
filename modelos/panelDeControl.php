@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function contarEstudiantes() {
@@ -210,4 +210,3 @@ function contarTFGsCalificados() {
     return intval($fila['total']);
 }
 
-?>

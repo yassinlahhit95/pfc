@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><small class="atenuado">Deja en blanco para enviar a todo el ciclo.</small><?php } ?></label>
+                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><span class="atenuado">Deja en blanco para enviar a todo el ciclo.</span><?php } ?></label>
                 <select name="idEstudiante" class="ancho-total">
                     <option value="">-- Todos los del ciclo seleccionado --</option>
                     <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>

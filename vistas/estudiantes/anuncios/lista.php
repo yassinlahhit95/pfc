@@ -36,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="anuncio-contenido">
                 <div class="d-flex espacio-entre-elementos alinear-centro">
                     <h3 class="anuncio-titulo" style="margin: 0;"><?= strtoupper($anuncio['titulo']) ?></h3>
-                    <small class="atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></small>
+                    <span class="atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                 </div>
                 <div class="margen-arriba">
                     <p style="line-height: 1.6;"><?= nl2br($anuncio['mensaje']) ?></p>

@@ -23,18 +23,13 @@ if (isset($_POST['actualizarEstudiante'])) {
     }
 
     $errores = [];
-
-    if (empty($nombre)) {
-        $errores['nombreEstudiante'] = "El nombre es obligatorio.";
-    }
+    if (empty($nombre)) $errores['nombreEstudiante'] = "El nombre es obligatorio.";
     if (empty($email)) {
         $errores['emailEstudiante'] = "Email obligatorio";
     } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
         $errores['emailEstudiante'] = "Formato de email no válido";
     }
-    if (empty($dni)) {
-        $errores['dniEstudiante'] = "DNI obligatorio";
-    }
+    if (empty($dni)) $errores['dniEstudiante'] = "DNI obligatorio";
     if (empty($telefono)) {
         $errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
@@ -43,25 +38,18 @@ if (isset($_POST['actualizarEstudiante'])) {
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
         $errores['codigoPostalEstudiante'] = "Código postal incorrecto";
     }
-    if (empty($idCiclo)) {
-        $errores['idCiclo'] = "Selecciona el ciclo";
+    if (empty($idCiclo)) $errores['idCiclo'] = "Selecciona el ciclo";
+
+    if (empty($errores) && checkEstudianteExistente($dni, $email, $idEstudiante)) {
+        $errores['dniEstudiante'] = "El DNI o Email ya están registrados por otro estudiante.";
     }
 
     if (empty($errores)) {
-        if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
-            $errores['dniEstudiante'] = "El DNI o Email ya están registrados por otro estudiante.";
-        }
-    }
-
-    if (empty($errores)) {
-        $resultado = actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
-
-        if ($resultado) {
+        if (actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
             $_SESSION['exito'] = "Datos del estudiante actualizados correctamente.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         }
-
         $_SESSION['error'] = "Hay un problema al intentar actualizar los datos del estudiante.";
     } else {
         $_SESSION['errores'] = $errores;

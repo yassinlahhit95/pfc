@@ -14,47 +14,40 @@ if (isset($_POST['guardarDirector'])) {
     $codigoPostal = trim($_POST['codigoPostalDirector']);
     $observaciones = trim($_POST['observacionesDirector']);
 
-    $errores = [];
-
-    if (empty($nombre)) {
-        $errores['nombreDirector'] = "Falta el nombre";
-    }
+    $avisos = [];
+    if (empty($nombre)) $avisos['nombreDirector'] = "Falta el nombre";
     if (empty($email)) {
-        $errores['emailDirector'] = "El email es obligatorio.";
+        $avisos['emailDirector'] = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailDirector'] = "Email no válido";
+        $avisos['emailDirector'] = "Email no válido";
     }
-    if (empty($dni)) {
-        $errores['dniDirector'] = "El DNI es obligatorio.";
-    }
+    if (empty($dni)) $avisos['dniDirector'] = "El DNI es obligatorio.";
     if (empty($telefono)) {
-        $errores['telefonoDirector'] = "Teléfono obligatorio";
+        $avisos['telefonoDirector'] = "Teléfono obligatorio";
     } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoDirector'] = "9 dígitos exactos";
+        $avisos['telefonoDirector'] = "9 dígitos exactos";
     }
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
-        $errores['codigoPostalDirector'] = "Código postal no válido";
+        $avisos['codigoPostalDirector'] = "Código postal no válido";
     }
 
-    if (empty($errores)) {
-        if (checkDirectorExistente($dni, $email)) {
-            $errores['dniDirector'] = "El DNI o Email ya están registrados.";
-        }
+    if (empty($avisos) && checkDirectorExistente($dni, $email)) {
+        $avisos['dniDirector'] = "El DNI o Email ya están registrados.";
     }
 
-    if (empty($errores)) {
-        $resultado = insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
-        if ($resultado) {
-            $_SESSION['exito'] = "Director registrado correctamente.";
-            header("Location: ../../../vistas/admin/directores/verDirectores.php");
-            exit;
-        }
-        $_SESSION['error'] = "No se pudo registrar el director.";
-    } else {
-        $_SESSION['errores'] = $errores;
+    if (!empty($avisos)) {
+        $_SESSION['errores'] = $avisos;
         $_SESSION['datos_director'] = $_POST;
+        header("Location: ../../../vistas/admin/directores/agregarDirectores.php");
+        exit;
     }
 
+    if (insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)) {
+        $_SESSION['exito'] = "Director registrado correctamente.";
+        header("Location: ../../../vistas/admin/directores/verDirectores.php");
+        exit;
+    }
+    $_SESSION['error'] = "No se pudo registrar el director.";
     header("Location: ../../../vistas/admin/directores/agregarDirectores.php");
     exit;
 }

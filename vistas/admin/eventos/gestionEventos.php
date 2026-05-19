@@ -55,11 +55,11 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <tr>
                         <td>
                             <b><?= date('d/m/Y', strtotime($evento['fechaEvento'])) ?></b><br>
-                            <small class="atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</small>
+                            <span class="atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</span>
                         </td>
                         <td>
                             <span class="texto-negrita"><?= $evento['tituloEvento'] ?></span><br>
-                            <small><?= substr($evento['descripcionEvento'], 0, 80) ?>...</small>
+                            <span><?= substr($evento['descripcionEvento'], 0, 80) ?>...</span>
                         </td>
                         <td><?= $evento['ubicacionEvento'] ?></td>
                         <td>

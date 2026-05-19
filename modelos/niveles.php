@@ -13,5 +13,3 @@ function listarNiveles() {
     mysqli_close($con);
     return $listaNiveles;
 }
-
-?>

@@ -35,7 +35,7 @@ if (isset($_POST['insertarReto'])) {
 
         $maxHorasPermitidas = $diasLaborables * 6;
         if ($horasReto > $maxHorasPermitidas) {
-            $errores['horasReto'] = "Las horas estimadas ($horasReto h) superan el máximo de $maxHorasPermitidas h para el periodo seleccionado ($diasLaborables días laborables x 6h).";
+            $errores['horasReto'] = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
         }
     }
 

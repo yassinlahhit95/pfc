@@ -21,48 +21,35 @@ if (isset($_POST['guardarEstudiante'])) {
     $idCiclo = $_POST['idCiclo'];
     $curso = $_POST['curso'] ?? 'Grado Medio';
 
-    $errores = [];
-
-    if (empty($nombre)) {
-        $errores['nombreEstudiante'] = "El nombre es obligatorio.";
-    }
+    $avisos = [];
+    if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es obligatorio.";
     if (empty($email)) {
-        $errores['emailEstudiante'] = "Falta el email";
+        $avisos['emailEstudiante'] = "Falta el email";
     } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailEstudiante'] = "Email no válido";
+        $avisos['emailEstudiante'] = "Email no válido";
     }
-    if (empty($dni)) {
-        $errores['dniEstudiante'] = "El DNI es obligatorio.";
-    }
-    if (empty($telefono)) {
-        $errores['telefonoEstudiante'] = "Teléfono requerido";
-    }
-    if (empty($fechaNacimiento)) {
-        $errores['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
-    }
-    if (empty($idCiclo)) {
-        $errores['idCiclo'] = "Selecciona un ciclo";
+    if (empty($dni)) $avisos['dniEstudiante'] = "El DNI es obligatorio.";
+    if (empty($telefono)) $avisos['telefonoEstudiante'] = "Teléfono requerido";
+    if (empty($fechaNacimiento)) $avisos['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
+    if (empty($idCiclo)) $avisos['idCiclo'] = "Selecciona un ciclo";
+
+    if (empty($avisos) && checkEstudianteExistente($dni, $email)) {
+        $avisos['dniEstudiante'] = "El DNI o Email ya están registrados.";
     }
 
-    if (empty($errores)) {
-        if (checkEstudianteExistente($dni, $email)) {
-            $errores['dniEstudiante'] = "El DNI o Email ya están registrados.";
-        }
-    }
-
-    if (empty($errores)) {
-        $resultado = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
-        if ($resultado) {
-            $_SESSION['exito'] = "Estudiante registrado correctamente.";
-            header("Location: ../../../vistas/profesores/estudiantes/lista.php");
-            exit;
-        }
-        $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante.";
-    } else {
-        $_SESSION['errores'] = $errores;
+    if (!empty($avisos)) {
+        $_SESSION['errores'] = $avisos;
         $_SESSION['datos_estudiante'] = $_POST;
+        header("Location: ../../../vistas/profesores/estudiantes/agregar.php");
+        exit;
     }
 
+    if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
+        $_SESSION['exito'] = "Estudiante registrado correctamente.";
+        header("Location: ../../../vistas/profesores/estudiantes/lista.php");
+        exit;
+    }
+    $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante.";
     header("Location: ../../../vistas/profesores/estudiantes/agregar.php");
     exit;
 }

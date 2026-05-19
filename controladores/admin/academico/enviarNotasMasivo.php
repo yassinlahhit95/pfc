@@ -27,10 +27,6 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
     $_SESSION['error'] = "No se proporcionó el ID del ciclo.";
 }
 
-if (isset($_SESSION['idProfesor'])) {
-    header("Location: ../../../vistas/profesores/inicio/dashboard.php");
-} else {
-    header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
-}
+header("Location: ../../../vistas/admin/academico/resultadosFinales.php?idCiclo=" . ($idCiclo ?? ''));
 exit;
 ?>

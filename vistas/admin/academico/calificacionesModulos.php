@@ -108,10 +108,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesModulos.php';">
                         <i class="fas fa-eraser"></i> LIMPIAR
                     </button>
-                    <label class="etiqueta-notificacion">
-                        <input type="checkbox" name="notificarEstudiantes" value="1">
-                        <i class="fas fa-envelope"></i> NOTIFICAR POR EMAIL
-                    </label>
                 </div>
             <?php } ?>
         </form>

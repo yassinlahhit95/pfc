@@ -23,10 +23,10 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+    <div class="mensaje-error"><?php echo $error; ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?php echo $exito; ?></div>
 <?php } ?>
 
 <div class="panel">

@@ -1,6 +1,5 @@
 $(document).ready(function() {
-    // Referencia al formulario si existe (id="formReto") o buscamos el primer form con las clases estándar
-    var form = $('#formReto').length ? $('#formReto') : $('form.form-estandar');
+    var form = $('#formReto').length ? $('#formReto') : $('form.formulario');
     if (!form.length) return;
 
     form.on('submit', function(e) {
@@ -22,7 +21,7 @@ $(document).ready(function() {
 
             while (current <= end) {
                 var day = current.getDay();
-                if (day !== 0 && day !== 6) { // 0=Domingo, 6=Sábado
+                if (day !== 0 && day !== 6) {
                     workingDays++;
                 }
                 current.setDate(current.getDate() + 1);

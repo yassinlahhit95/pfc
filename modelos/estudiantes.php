@@ -33,9 +33,10 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
 
 function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
     $con = obtenerConexion();
-    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $pass = password_hash('123456', PASSWORD_DEFAULT);
+    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssis", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
+    mysqli_stmt_bind_param($stmt, "sssssssssssis", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
     $res = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $res;
@@ -185,4 +186,3 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     mysqli_close($con);
     return $token;
 }
-?>

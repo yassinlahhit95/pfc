@@ -88,7 +88,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="anuncio-contenido">
                     <div class="d-flex espacio-entre-elementos alinear-centro">
                         <strong class="anuncio-titulo color-primario"><?= strtoupper($anu['tituloAnuncio']) ?></b>
-                        <small class="atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></small>
+                        <span class="atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></span>
                     </div>
                     <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
                     <div style="margin-top: 10px; text-align: right;">

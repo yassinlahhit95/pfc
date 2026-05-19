@@ -7,42 +7,32 @@ if (isset($_POST['guardarModulo'])) {
     $idCicloNuevoModulo = $_POST['idCiclo'];
     $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
 
-    $errores = [];
-
-    if (empty($nombreNuevoModulo)) {
-        $errores['nombreModulo'] = "Nombre de módulo obligatorio.";
-    }
-    
-    if (empty($idCicloNuevoModulo)) {
-        $errores['idCiclo'] = "Seleccione un ciclo.";
-    }
-    
+    $avisos = [];
+    if (empty($nombreNuevoModulo)) $avisos['nombreModulo'] = "Nombre de módulo obligatorio.";
+    if (empty($idCicloNuevoModulo)) $avisos['idCiclo'] = "Seleccione un ciclo.";
     if (empty($horasMaximasNuevoModulo)) {
-        $errores['horasMaximas'] = "Horas máximas obligatorias.";
-    } else {
-        if (!is_numeric($horasMaximasNuevoModulo)) {
-            $errores['horasMaximas'] = "Las horas deben ser numéricas.";
-        }
+        $avisos['horasMaximas'] = "Horas máximas obligatorias.";
+    } elseif (!is_numeric($horasMaximasNuevoModulo)) {
+        $avisos['horasMaximas'] = "Las horas deben ser numéricas.";
     }
 
-    if (empty($errores)) {
-        if (checkModuloExistente($nombreNuevoModulo, $idCicloNuevoModulo)) {
-            $errores['nombreModulo'] = "Este módulo ya existe en el ciclo seleccionado.";
-        }
+    if (empty($avisos) && checkModuloExistente($nombreNuevoModulo, $idCicloNuevoModulo)) {
+        $avisos['nombreModulo'] = "Este módulo ya existe en el ciclo seleccionado.";
     }
 
-    if (empty($errores)) {
-        if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
-            $_SESSION['exito'] = "Módulo registrado.";
-            header("Location: ../../../vistas/admin/modulos/verModulos.php");
-            exit;
-        }
-        $_SESSION['error'] = "No se pudo registrar el módulo.";
-    } else {
-        $_SESSION['errores'] = $errores;
+    if (!empty($avisos)) {
+        $_SESSION['errores'] = $avisos;
         $_SESSION['datos_modulo'] = $_POST;
+        header("Location: ../../../vistas/admin/modulos/agregarModulos.php");
+        exit;
     }
 
+    if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
+        $_SESSION['exito'] = "Módulo registrado.";
+        header("Location: ../../../vistas/admin/modulos/verModulos.php");
+        exit;
+    }
+    $_SESSION['error'] = "No se pudo registrar el módulo.";
     header("Location: ../../../vistas/admin/modulos/agregarModulos.php");
     exit;
 }

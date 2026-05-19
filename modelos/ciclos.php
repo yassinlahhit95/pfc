@@ -151,4 +151,3 @@ function listarNombresTutoresCiclo($idCiclo) {
     return $nombres;
 }
 
-?>

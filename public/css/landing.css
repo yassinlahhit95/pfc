@@ -1,3 +1,6 @@
+﻿/* ==========================================
+   ESTILOS BASE Y RESET
+   ========================================== */
 html.landing-page {
   scroll-behavior: smooth;
 }
@@ -11,16 +14,18 @@ body.landing-body {
   line-height: 1.6;
 }
 
+/* Contenedor estándar para centrar el contenido */
 .contenedor {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 24px; /* Un poco de aire en los lados para móvil */
 }
 
 .seccion {
   padding: 80px 0;
 }
 
+/* Rejilla flexible para las tarjetas de características */
 .rejilla {
     display: flex;
     flex-wrap: wrap;
@@ -32,9 +37,12 @@ body.landing-body {
   border-radius: 14px;
   padding: 28px;
   border: 1px solid #e5e7eb;
-  transition: box-shadow 0.25s ease;
+  /* TODO: Añadir una sombra suave aquí más adelante */
 }
 
+/* ==========================================
+   TIPOGRAFÍA Y BOTONES
+   ========================================== */
 .titulo-seccion {
   text-align: center;
   font-size: 2.2rem;
@@ -61,7 +69,6 @@ body.landing-body {
   border-radius: 10px;
   cursor: pointer;
   box-sizing: border-box;
-  transition: all 0.2s ease;
   border: none;
 }
 
@@ -110,7 +117,6 @@ body.landing-body {
   padding: 14px 0;
   background: transparent;
   border-bottom: 1px solid transparent;
-  transition: background 0.35s ease, border-color 0.35s ease;
 }
 
 .cabecera-landing.nav-scrolled {
@@ -136,7 +142,6 @@ body.landing-body {
   width: auto;
   border-radius: 10px;
   display: block;
-  transition: height 0.3s ease;
 }
 
 .nav-scrolled .logo-imagen-landing {
@@ -160,7 +165,6 @@ body.landing-body {
   text-decoration: none;
   font-weight: 500;
   font-size: 1.05rem;
-  transition: color 0.2s;
 }
 
 .menu-enlace-landing:hover {
@@ -401,7 +405,6 @@ body.landing-body {
   font-weight: 600;
   color: #6b7280;
   cursor: pointer;
-  transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -610,7 +613,6 @@ body.landing-body {
   font-size: 0.95rem;
   color: #111827;
   background: #fafafa;
-  transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
   font-family: inherit;
   width: 100%;
@@ -688,7 +690,6 @@ body.landing-body {
 .pie-sociales a {
   color: #999999;
   font-size: 1.2rem;
-  transition: color 0.3s;
 }
 
 .pie-sociales a:hover {
@@ -714,7 +715,6 @@ body.landing-body {
 .pie-columna-links ul li a {
   color: #737373;
   text-decoration: none;
-  transition: color 0.3s;
 }
 
 .pie-columna-links ul li a:hover {

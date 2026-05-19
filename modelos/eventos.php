@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/conectar.php";
 
 function listarEventosProximos() {
@@ -62,4 +62,3 @@ function actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubic
     return $resultado;
 }
 
-?>

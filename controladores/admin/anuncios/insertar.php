@@ -23,7 +23,6 @@ if (isset($_POST['guardarAnuncio'])) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
 
         if ($resultado) {
-            // NOTIFICACIONES PUSH FIREBASE
             $tokens = [];
             if ($dirigidoA == 'estudiantes' || $dirigidoA == 'todos') {
                 $tokens = array_merge($tokens, obtenerTokensEstudiantes());
@@ -33,7 +32,7 @@ if (isset($_POST['guardarAnuncio'])) {
                 $tokens = array_merge($tokens, obtenerTokensProfesores());
             }
 
-            $tokens = array_unique($tokens); // Evitar duplicados
+            $tokens = array_unique($tokens);
             foreach ($tokens as $token) {
                 enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($contenido), 0, 100) . "...");
             }

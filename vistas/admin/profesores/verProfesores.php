@@ -62,11 +62,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                    class="btn-accion btn-ver" title="Ver ficha completa">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a href="../../../vistas/admin/profesores/asignarModulos.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
-                                   class="btn-accion btn-ver" title="Asignar Módulos específicos">
-                                    <i class="fas fa-book"></i>
-                                </a>
-                                <a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
+<a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
                                    class="btn-accion btn-editar" title="Editar datos del profesor">
                                     <i class="fas fa-edit"></i>
                                 </a>

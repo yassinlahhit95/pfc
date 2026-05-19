@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 function obtenerConexion() {
     $conexion = mysqli_connect("localhost", "yassjjzw_adminpfc", "Yassin1995**", "yassjjzw_pfc");
    /* $conexion = mysqli_connect("localhost", "cuhq4y87y_pfc", "123456", "cuhq4y87y_pfc");*/
@@ -11,5 +11,3 @@ function obtenerConexion() {
     mysqli_query($conexion, "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_spanish_ci'");
     return $conexion;
 }
-?>
-

@@ -44,7 +44,7 @@ $profs = listarProfesoresConModulosParaEstudiante($idEst);
             <?php if (isset($errs['idProfesor'])) { ?>
                 <strong class="error-campo"><?= $errs['idProfesor'] ?></b>
             <?php } ?>
-            <small class="atenuado">Selecciona a quién quieres dirigir tu consulta.</small>
+            <span class="atenuado">Selecciona a quién quieres dirigir tu consulta.</span>
         </div>
 
         <div class="campo">
