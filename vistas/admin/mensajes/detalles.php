@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idAdmin'])) {
@@ -36,11 +36,11 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3><i class="fas fa-envelope"></i> Información del Mensaje</h3>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">De</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
-                Tú (Administración)
+                T (Administración)
             <?php } elseif ($mensaje['emisor_rol'] == 'profesor') { ?>
                 <?= $mensaje['nombreProfesor'] ?> (Profesor)
             <?php } else { ?>
@@ -49,8 +49,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Para</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
             <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
                 <?php if ($mensaje['idEstudiante'] > 0) { ?>
@@ -61,23 +61,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                     General
                 <?php } ?>
             <?php } else { ?>
-                Tú (Administración)
+                T (Administración)
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Fecha</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Fecha</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Estado</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="bolita activo-verde">Leído</span>
+                <span class="indicador-estado activo-verde">Leído</span>
             <?php } else { ?>
-                <span class="bolita inactivo-rojo">Pendiente</span>
+                <span class="indicador-estado inactivo-rojo">Pendiente</span>
             <?php } ?>
         </div>
     </div>

@@ -25,7 +25,6 @@ $totalTfgs_menu = contarTFGsDeProfesor($idProf);
 $totalModulos_menu = count(listarModulosDeProfesor($idProf));
 $totalRetos_menu = count(listarRetosDeProfesor($idProf));
 
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -79,22 +78,22 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProf));
                 
                 <a href="../estudiantes/lista.php" class="enlace-menu <?= ($seccionActual == 'estudiantes') ? 'activo' : '' ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
-                    <span class="etiqueta-contador"><?= $totalAlumnos_menu ?></span>
+                    <span class="texto-contador"><?= $totalAlumnos_menu ?></span>
                 </a>
 
                 <a href="../ciclos/lista.php" class="enlace-menu <?= ($seccionActual == 'ciclos') ? 'activo' : '' ?>">
                     <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
-                    <span class="etiqueta-contador"><?= $totalCiclos_menu ?></span>
+                    <span class="texto-contador"><?= $totalCiclos_menu ?></span>
                 </a>
 
                 <a href="../modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
                     <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
-                    <span class="etiqueta-contador"><?= $totalModulos_menu ?></span>
+                    <span class="texto-contador"><?= $totalModulos_menu ?></span>
                 </a>
 
                 <a href="../retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS</span>
-                    <span class="etiqueta-contador"><?= $totalRetos_menu ?></span>
+                    <span class="texto-contador"><?= $totalRetos_menu ?></span>
                 </a>
 
                 <a href="../calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
@@ -123,7 +122,7 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProf));
 
                 <a href="../mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
+                    <span class="texto-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
                 </a>
 
                 <a href="../eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $titulo_pagina = "AULAPRO | GESTIÓN DE ANUNCIOS";
 $seccion = 'anuncios';
@@ -32,7 +32,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="titulo-tarjeta">
         <h3>Anuncios Recientes</h3>
     </div>
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -44,30 +44,30 @@ unset($_SESSION['error'], $_SESSION['exito']);
             </thead>
             <tbody>
                 <?php if (empty($todos_los_anuncios)) { ?>
-                    <tr><td colspan="4" class="vacio">No hay anuncios publicados</td></tr>
+                    <tr>
+                        <td colspan="4" class="vacio">No hay anuncios publicados</td>
+                    </tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_anuncios as $anuncio) { ?>
-                    <tr>
-                        <td><b><?= $anuncio['tituloAnuncio'] ?></b></td>
-                        <td><span><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</span></td>
-                        <td><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></td>
-                        <td>
-                            <div class="botones-accion">
-                                <a href="detallesAnuncio.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-ver" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este anuncio?')">
-                                    <input type="hidden" name="idAnuncio" value="<?= $anuncio['idAnuncio'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td><b><?= $anuncio['tituloAnuncio'] ?></b></td>
+                            <td><span><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</span></td>
+                            <td><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></td>
+                            <td>
+                                <div class="botones-accion">
+                                    <a href="detallesAnuncio.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-ver">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" onsubmit="return confirm('Eliminar este anuncio?')">
+                                        <input type="hidden" name="idAnuncio" value="<?= $anuncio['idAnuncio'] ?>">
+                                        <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                     <?php } ?>
                 <?php } ?>
             </tbody>
@@ -76,7 +76,3 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

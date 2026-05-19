@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -32,7 +32,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>

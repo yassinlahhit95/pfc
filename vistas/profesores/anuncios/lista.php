@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>TABLÓN DE ANUNCIOS</h1>
+    <h1>TABLA DE ANUNCIOS</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="anuncio-contenido">
                 <div class="titulo-tarjeta">
                     <h3 class="anuncio-titulo"><?= strtoupper($anuncio['titulo'] ?? '') ?></h3>
-                    <span class="atenuado"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
+                    <span class="texto-suave"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                 </div>
                 <div class="margen-arriba">
                     <p style="line-height: 1.6;"><?= nl2br($anuncio['mensaje'] ?? '') ?></p>
@@ -47,7 +47,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } ?>
 <?php } else { ?>
     <div class="panel">
-        <p class="atenuado" style="text-align: center; padding: 20px;">No hay anuncios publicados en este momento.</p>
+        <p class="texto-suave" style="text-align: center; padding: 20px;">No hay anuncios publicados en este momento.</p>
     </div>
 <?php } ?>
 

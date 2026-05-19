@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $titulo_pagina = "AULAPRO | INVENTARIO DEL CENTRO";
 $seccion = 'inventario';
@@ -29,12 +29,12 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaInventario">
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Nº Serie</th>
+                    <th>Número Serie</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -52,20 +52,18 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             $clase_estado = "activo-verde";
                             if ($art['estado'] != 'disponible') { $clase_estado = "inactivo-rojo"; }
                             ?>
-                            <span class="bolita <?= $clase_estado ?>">
+                            <span class="indicador-estado <?= $clase_estado ?>">
                                 <?= $art['estado'] ?>
                             </span>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>" class="btn-accion btn-editar" title="Editar datos">
+                                <a href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/inventario/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este artículo del inventario?')">
+                                <form action="../../../controladores/admin/inventario/borrar.php" method="POST" onsubmit="return confirm('Eliminar este artículo del inventario?')">
                                     <input type="hidden" name="idArticulo" value="<?= $art['idArticulo'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

@@ -25,15 +25,15 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">
             <div class="campo">
-                <label for="tituloAnuncio">TÍTULO DEL ANUNCIO *</label>
+                <label for="tituloAnuncio">TÍTULO DEL ANUNCIO</label>
                 <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">
                 <?php if (isset($errores['tituloAnuncio'])) { ?>
-                    <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></b>
+                    <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="dirigidoA">DIRIGIDO A *</label>
+                <label for="dirigidoA">DIRIGIDO A </label>
                 <select id="dirigidoA" name="dirigidoA">
                     <option value="todos" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'todos') ? 'selected' : '' ?>>Todos los usuarios</option>
                     <option value="estudiantes" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'estudiantes') ? 'selected' : '' ?>>Solo Estudiantes</option>
@@ -42,20 +42,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label for="contenidoAnuncio">CONTENIDO DEL ANUNCIO *</label>
+                <label for="contenidoAnuncio">CONTENIDO DEL ANUNCIO</label>
                 <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" placeholder="Escriba aquí el mensaje..."><?= $datos['contenidoAnuncio'] ?? '' ?></textarea>
                 <?php if (isset($errores['contenidoAnuncio'])) { ?>
-                    <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></b>
+                    <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="acciones">
-                <button type="submit" name="guardarAnuncio" class="boton-primario">
-                    <i class="fas fa-paper-plane"></i> PUBLICAR ANUNCIO
-                </button>
-                <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                    <i class="fas fa-eraser"></i> LIMPIAR
-                </button>
+                <input type="submit" name="guardarAnuncio" class="boton-primario" value="PUBLICAR ANUNCIO">
+                <input type="reset" class="boton-secundario" value="LIMPIAR">
             </div>
         </form>
     </div>

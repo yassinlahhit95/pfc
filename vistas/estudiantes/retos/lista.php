@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3>Lista de Retos Disponibles</h3>
     </div>
     
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>

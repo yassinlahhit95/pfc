@@ -32,23 +32,23 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/ciclos/insertar.php" method="POST">
         <div class="formulario">
             <div class="campo">
-                <label for="nombreCiclo">Nombre del Ciclo *</label>
+                <label for="nombreCiclo">Nombre del Ciclo </label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= $datos['nombreCiclo'] ?? '' ?>">
                 <?php if (isset($errores['nombreCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="abreviaturaCiclo">Abreviatura *</label>
+                <label for="abreviaturaCiclo">Abreviatura </label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= $datos['abreviaturaCiclo'] ?? '' ?>">
                 <?php if (isset($errores['abreviaturaCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></b>
+                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="idNivel">Nivel Formativo *</label>
+                <label for="idNivel">Nivel Formativo </label>
                 <select id="idNivel" name="idNivel">
                     <option value="">-- Seleccionar Nivel --</option>
                     <?php foreach ($listaNiveles as $nivel) { ?>
@@ -58,12 +58,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idNivel'])) { ?>
-                    <strong class="error-campo"><?= $errores['idNivel'] ?></b>
+                    <strong class="error-campo"><?= $errores['idNivel'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
+                <label for="precioCiclo">Precio Total del Ciclo (€) </label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $datos['precioCiclo'] ?? '1000.00' ?>">
             </div>
         </div>
@@ -84,12 +84,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="acciones">
-            <button type="submit" name="guardarCiclo" class="boton-primario">
-                <i class="fas fa-save"></i> CREAR CICLO FORMATIVO
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="submit" name="guardarCiclo" class="boton-primario" value="CREAR CICLO FORMATIVO">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

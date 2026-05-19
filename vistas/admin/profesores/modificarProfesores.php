@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -12,36 +12,31 @@ if (!$profesor) {
     exit;
 }
 
+// Obtenemos las listas basicas
 $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();
 
-$modulos_por_ciclo = [];
-foreach ($todosLosModulos as $m) {
-    $idC = $m['idCiclo'];
-    if (!isset($modulos_por_ciclo[$idC])) {
-        $modulos_por_ciclo[$idC] = ['nombre' => $m['nombreCiclo'], 'modulos' => []];
-    }
-    $modulos_por_ciclo[$idC]['modulos'][] = $m;
-}
-
-if (isset($_SESSION['datos_profesor'])) {
-    $profesor = array_merge($profesor, $_SESSION['datos_profesor']);
-    $ciclosElegidos = (isset($_SESSION['datos_profesor']['ciclos']) && is_array($_SESSION['datos_profesor']['ciclos'])) ? $_SESSION['datos_profesor']['ciclos'] : [];
-    $modulosElegidos = (isset($_SESSION['datos_profesor']['modulos']) && is_array($_SESSION['datos_profesor']['modulos'])) ? $_SESSION['datos_profesor']['modulos'] : [];
-} else {
-    $ciclosElegidos = [];
-    $ciclosBD = listarCiclosTutorizadosProfesor($id_profesor);
-    foreach ($ciclosBD as $cbd) { $ciclosElegidos[] = $cbd['idCiclo']; }
-    $modulosElegidos = listarIdsModulosDeProfesor($id_profesor);
-}
-
-$mapaCiclosElegidos = [];
-foreach ($ciclosElegidos as $idC) { $mapaCiclosElegidos[$idC] = true; }
-$mapaModulosElegidos = [];
-foreach ($modulosElegidos as $idM) { $mapaModulosElegidos[$idM] = true; }
-
+// Datos de error o datos actuales del profesor
 $errores = $_SESSION['errores'] ?? [];
 $error = $_SESSION['error'] ?? '';
+$datos_sesion = $_SESSION['datos_profesor'] ?? null;
+
+// Si hay datos en la sesion (por un error), los usamos. Si no, usamos los de la BD.
+if ($datos_sesion) {
+    $profesor = array_merge($profesor, $datos_sesion);
+    $ciclos_marcados = $datos_sesion['ciclos'] ?? [];
+    $modulos_marcados = $datos_sesion['modulos'] ?? [];
+} else {
+    // Obtenemos los ciclos que el profesor ya tiene en la base de datos
+    $ciclos_marcados = [];
+    $ciclosBD = listarCiclosTutorizadosProfesor($id_profesor);
+    foreach ($ciclosBD as $cbd) { 
+        $ciclos_marcados[] = $cbd['idCiclo']; 
+    }
+    
+    // Obtenemos los modulos que el profesor ya tiene en la base de datos
+    $modulos_marcados = listarIdsModulosDeProfesor($id_profesor);
+}
 
 unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
 
@@ -51,8 +46,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR PROFESOR: <?= $profesor['nombreProfesor'] ?></h1>
-    <a href="verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <div>
+        <h1>MODIFICAR PROFESOR: <?= $profesor['nombreProfesor'] ?></h1>
+    </div>
+    <a href="verProfesores.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> VOLVER
+    </a>
 </div>
 
 <?php if ($error) { ?>
@@ -65,88 +64,76 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="formulario">
             <div class="campo">
-                <label for="nombreProfesor">Nombre Completo *</label>
-                <input type="text" name="nombreProfesor" id="nombreProfesor" value="<?= $profesor['nombreProfesor'] ?>">
+                <label>Nombre Completo</label>
+                <input type="text" name="nombreProfesor" value="<?= $profesor['nombreProfesor'] ?>">
                 <?php if (isset($errores['nombreProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreProfesor'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="emailProfesor">Email *</label>
-                <input type="email" name="emailProfesor" id="emailProfesor" value="<?= $profesor['emailProfesor'] ?>">
+                <label>Email</label>
+                <input type="email" name="emailProfesor" value="<?= $profesor['emailProfesor'] ?>">
                 <?php if (isset($errores['emailProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['emailProfesor'] ?></b>
+                    <strong class="error-campo"><?= $errores['emailProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="dniProfesor">DNI *</label>
-                <input type="text" name="dniProfesor" id="dniProfesor" value="<?= $profesor['dniProfesor'] ?>">
+                <label>DNI</label>
+                <input type="text" name="dniProfesor" value="<?= $profesor['dniProfesor'] ?>">
                 <?php if (isset($errores['dniProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['dniProfesor'] ?></b>
+                    <strong class="error-campo"><?= $errores['dniProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="telefonoProfesor">Teléfono *</label>
-                <input type="text" name="telefonoProfesor" id="telefonoProfesor" value="<?= $profesor['telefonoProfesor'] ?>">
+                <label>Teléfono</label>
+                <input type="text" name="telefonoProfesor" value="<?= $profesor['telefonoProfesor'] ?>">
                 <?php if (isset($errores['telefonoProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['telefonoProfesor'] ?></b>
+                    <strong class="error-campo"><?= $errores['telefonoProfesor'] ?></strong>
                 <?php } ?>
             </div>
 
-            <div class="campo campo-ancho-total">
-                <label for="direccionProfesor">Dirección *</label>
-                <input type="text" name="direccionProfesor" id="direccionProfesor" value="<?= $profesor['direccionProfesor'] ?>">
-                <?php if (isset($errores['direccionProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['direccionProfesor'] ?></b>
-                <?php } ?>
+            <div class="campo ancho-total">
+                <label>Dirección</label>
+                <input type="text" name="direccionProfesor" value="<?= $profesor['direccionProfesor'] ?>">
             </div>
 
             <div class="campo">
-                <label for="ciudadProfesor">Ciudad *</label>
-                <input type="text" name="ciudadProfesor" id="ciudadProfesor" value="<?= $profesor['ciudadProfesor'] ?>">
-                <?php if (isset($errores['ciudadProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['ciudadProfesor'] ?></b>
-                <?php } ?>
+                <label>Ciudad</label>
+                <input type="text" name="ciudadProfesor" value="<?= $profesor['ciudadProfesor'] ?>">
             </div>
 
             <div class="campo">
-                <label for="codigoPostalProfesor">Código Postal *</label>
-                <input type="text" name="codigoPostalProfesor" id="codigoPostalProfesor" value="<?= $profesor['codigoPostalProfesor'] ?>">
-                <?php if (isset($errores['codigoPostalProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['codigoPostalProfesor'] ?></b>
-                <?php } ?>
+                <label>Código Postal</label>
+                <input type="text" name="codigoPostalProfesor" value="<?= $profesor['codigoPostalProfesor'] ?>">
             </div>
 
             <div class="campo">
-                <label for="fechaNacimientoProfesor">Fecha de Nacimiento *</label>
-                <input type="date" name="fechaNacimientoProfesor" id="fechaNacimientoProfesor" value="<?= $profesor['fechaNacimientoProfesor'] ?>">
-                <?php if (isset($errores['fechaNacimientoProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaNacimientoProfesor'] ?></b>
-                <?php } ?>
+                <label>Fecha de Nacimiento</label>
+                <input type="date" name="fechaNacimientoProfesor" value="<?= $profesor['fechaNacimientoProfesor'] ?>">
             </div>
 
             <div class="campo">
-                <label for="fechaAltaProfesor">Fecha de Alta (en centro)</label>
-                <input type="date" name="fechaAltaProfesor" id="fechaAltaProfesor" value="<?= $profesor['fechaAltaProfesor'] ?>">
+                <label>Fecha de Alta (en centro)</label>
+                <input type="date" name="fechaAltaProfesor" value="<?= $profesor['fechaAltaProfesor'] ?>">
             </div>
 
-            <div class="campo campo-ancho-total">
-                <label for="observacionesProfesor">Observaciones / Curriculum Vitae (Resumen)</label>
-                <textarea name="observacionesProfesor" id="observacionesProfesor" rows="3"><?= $profesor['observacionesProfesor'] ?></textarea>
+            <div class="campo ancho-total">
+                <label>Observaciones / Curriculum Vitae (Resumen)</label>
+                <textarea name="observacionesProfesor" rows="3"><?= $profesor['observacionesProfesor'] ?></textarea>
             </div>
         </div>
 
         <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
-                <h4 class="margen-abajo"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
+                <h4 style="margin-bottom: 15px;"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
                 <div class="checks scroll-v200">
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="check-item">
                             <input type="checkbox" name="ciclos[]" value="<?= $ciclo['idCiclo'] ?>" class="check-ciclo"
-                                <?php if (isset($mapaCiclosElegidos[$ciclo['idCiclo']])) { echo 'checked'; } ?>>
+                                <?php if (in_array($ciclo['idCiclo'], $ciclos_marcados)) { echo 'checked'; } ?>>
                             <span><?= $ciclo['nombreCiclo'] ?></span>
                         </label>
                     <?php } ?>
@@ -154,22 +141,26 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div>
-                <h4 class="margen-abajo"><i class="fas fa-book"></i> 2. Seleccionar Módulos</h4>
+                <h4 style="margin-bottom: 15px;"><i class="fas fa-book"></i> 2. Seleccionar Módulos</h4>
                 <div id="contenedor-modulos-dinamico" class="checks scroll-v400 bg-gris-suave">
-                    <p id="msg-seleccionar-ciclo" class="atenuado" style="text-align: center; padding: 20px;">
+                    <p id="msg-seleccionar-ciclo" class="texto-suave" style="text-align: center; padding: 20px;">
                         Seleccione primero uno o varios ciclos para ver sus módulos disponibles.
                     </p>
-                    <?php foreach ($modulos_por_ciclo as $idCiclo => $grupo) { ?>
-                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" id="grupo-ciclo-<?= $idCiclo ?>">
-                            <p class="texto-negrita color-primario" style="margin-bottom: 10px;">
-                                <?= $grupo['nombre'] ?>
+
+                    <?php foreach ($listaCiclos as $ciclo) { ?>
+                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" id="grupo-ciclo-<?= $ciclo['idCiclo'] ?>">
+                            <p class="texto-negrita color-primario" style="margin-bottom: 5px;">
+                                <?= $ciclo['nombreCiclo'] ?>
                             </p>
-                            <?php foreach ($grupo['modulos'] as $mod) { ?>
-                                <label class="check-item" style="padding-left: 10px;">
-                                    <input type="checkbox" name="modulos[]" value="<?= $mod['idModulo'] ?>"
-                                        <?php if (isset($mapaModulosElegidos[$mod['idModulo']])) { echo 'checked'; } ?>>
-                                    <span><?= $mod['nombreModulo'] ?></span>
-                                </label>
+                            
+                            <?php foreach ($todosLosModulos as $modulo) { ?>
+                                <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { ?>
+                                    <label class="check-item" style="padding-left: 10px;">
+                                        <input type="checkbox" name="modulos[]" value="<?= $modulo['idModulo'] ?>"
+                                            <?php if (in_array($modulo['idModulo'], $modulos_marcados)) { echo 'checked'; } ?>>
+                                        <span><?= $modulo['nombreModulo'] ?></span>
+                                    </label>
+                                <?php } ?>
                             <?php } ?>
                         </div>
                     <?php } ?>
@@ -178,10 +169,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="acciones" style="margin-top: 25px;">
-            <button type="submit" name="actualizarProfesor" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
+            <input type="submit" name="actualizarProfesor" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
@@ -189,4 +178,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script src="../../../public/js/profesores-form.js"></script>
 
 <?php include '../comunes/footer.php'; ?>
-

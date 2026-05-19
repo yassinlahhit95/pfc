@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -20,13 +20,13 @@ foreach ($tfgs as $tfg) {
     $calificacionesTFG[$tfg['idEstudiante']] = obtenerCalificacionTFG($tfg['idEstudiante']);
 }
 
-$tituloDelPagina = "AULAPRO | GESTIÃ“N DE TFGS";
+$tituloDelPagina = "AULAPRO | GESTIÓN DE TFGS";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÃ“N DE TFGS ENTREGADOS</h1>
+    <h1>GESTIÓN DE TFGS ENTREGADOS</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -67,20 +67,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <span class="texto-rojo texto-negrita"><?= $notaTFG['nota'] ?></span>
                                     <?php } ?>
                                 <?php } else { ?>
-                                    <span class="atenuado">Sin calificar</span>
+                                    <span class="texto-suave">Sin calificar</span>
                                 <?php } ?>
                             </td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" title="Descargar"><i class="fas fa-download"></i></a>
-                                    <button type="button" class="btn-accion btn-editar" title="Calificar TFG" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
+                                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
+                                    <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de que desea eliminar este archivo?');" style="display: inline;">
+                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" style="display: inline;">
                                         <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
-                                        <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>
                                 </div>
 
@@ -101,9 +99,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                                 Notificar al estudiante por email y push
                                             </label>
                                         </div>
-                                        <button type="submit" name="calificarTFG" class="boton-primario">
-                                            <i class="fas fa-save"></i> Guardar Nota
-                                        </button>
+                                        <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Nota">
                                     </form>
                                 </div>
                             </td>
@@ -111,7 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="vacio">No hay TFGs subidos todavÃ­a.</td>
+                        <td colspan="5" class="vacio">No hay TFGs subidos todavía.</td>
                     </tr>
                 <?php } ?>
             </tbody>

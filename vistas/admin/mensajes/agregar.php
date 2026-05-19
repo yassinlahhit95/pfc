@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="campo margen-abajo">
         <label class="texto-negrita">1. Seleccionar Grupo de Destino:</label>
-        <div class="d-flex separacion-pequena" style="margin-top: 10px;">
+        <div class="caja espacio-pequeno" style="margin-top: 10px;">
             <a href="?tipoDestinatario=profesor" class="boton-<?= ($tipoDeDestinatario == 'profesor' ? 'primario' : 'secundario') ?>">
                 <i class="fas fa-chalkboard-teacher"></i> Profesores
             </a>
@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><span class="atenuado">Deja en blanco para enviar a todo el ciclo.</span><?php } ?></label>
+                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><span class="texto-suave">Deja en blanco para enviar a todo el ciclo.</span><?php } ?></label>
                 <select name="idEstudiante" class="ancho-total">
                     <option value="">-- Todos los del ciclo seleccionado --</option>
                     <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
@@ -92,13 +92,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['destinatario'])) { ?>
-                    <strong class="error-campo"><?= $errores['destinatario'] ?></b>
+                    <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
                 <?php } ?>
             </div>
         </div>
         <?php } else { ?>
         <div class="campo margen-abajo">
-            <label class="texto-negrita">2. Destinatario Específico *</label>
+            <label class="texto-negrita">2. Destinatario Específico</label>
             <select name="idProfesor" class="ancho-total">
                 <option value="">-- Seleccionar Nombre --</option>
                 <?php foreach ($listaDeProfesores as $profesorItem) { ?>
@@ -109,34 +109,30 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
             <?php if (isset($errores['destinatario'])) { ?>
-                <strong class="error-campo"><?= $errores['destinatario'] ?></b>
+                <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
             <?php } ?>
         </div>
         <?php } ?>
 
         <div class="campo">
-            <label class="texto-negrita">Asunto del Mensaje *</label>
+            <label class="texto-negrita">Asunto del Mensaje</label>
             <input type="text" name="asunto" class="ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
             <?php if (isset($errores['asunto'])) { ?>
-                <strong class="error-campo"><?= $errores['asunto'] ?></b>
+                <strong class="error-campo"><?= $errores['asunto'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo margen-arriba">
-            <label class="texto-negrita">Cuerpo del Mensaje *</label>
+            <label class="texto-negrita">Cuerpo del Mensaje</label>
             <textarea name="descripcion" rows="6" class="ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errores['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errores['descripcion'] ?></b>
+                <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
-            </button>
-            <button type="submit" name="enviarMensaje" class="boton-primario">
-                <i class="fas fa-paper-plane"></i> Enviar Mensaje Oficial
-            </button>
+            <input type="reset" class="boton-secundario" value="Limpiar">
+            <input type="submit" name="enviarMensaje" class="boton-primario" value="Enviar Mensaje Oficial">
         </div>
     </form>
 </div>

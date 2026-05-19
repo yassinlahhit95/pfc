@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -49,7 +49,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
 }
 ?>
 <div class="panel margen-abajo">
-    <div class="d-flex envoltura-flexible sep-g">
+    <div class="caja caja-libre espacio-grande">
         <div class="campo relleno">
             <label>FILTRAR POR NIVEL:</label>
             <select id="selectFiltroNivel" onchange="aplicarFiltrosEstudiantes()">
@@ -76,7 +76,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaEstudiantes">
             <thead>
                 <tr>
@@ -98,8 +98,8 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                     <tr class="fila-nivel-<?= $mapaCicloNivel[$estudianteIndividual['idCiclo']] ?? '' ?>">
                         <td><?= $estudianteIndividual['idEstudiante'] ?></td>
                         <td>
-                            <span class="etiqueta-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                            <span class="etiqueta-estado gris"><?= $estudianteIndividual['curso'] ?></span>
+                            <span class="texto-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                            <span class="texto-estado gris"><?= $estudianteIndividual['curso'] ?></span>
                         </td>
                         <td><b><?= mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8') ?></b></td>
                         <td><?= $estudianteIndividual['emailEstudiante'] ?></td>
@@ -107,18 +107,16 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                         <td>
                             <div class="botones-accion">
                                 <a href="verDetallesEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 
-                                   class="btn-accion btn-ver" title="Ver ficha completa">
+                                   class="btn-accion btn-ver">
                                     <i class="fas fa-id-card"></i>
                                 </a>
                                 <a href="modificarEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 
-                                   class="btn-accion btn-editar" title="Editar información">
+                                   class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form method="POST" action="../../../controladores/admin/estudiantes/borrar.php" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
                                     <input type="hidden" name="idEstudiante" value="<?= $estudianteIndividual['idEstudiante'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar" title="Borrar registro">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idProfesor'])) {
@@ -32,65 +32,65 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user-graduate"></i> INFORMACIÃ“N PERSONAL</h3>
+        <h3><i class="fas fa-user-graduate"></i> INFORMACIÓN PERSONAL</h3>
     </div>
     
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Nombre Completo</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Nombre Completo</div>
         <div class="valor-detalle texto-negrita"><?= strtoupper($estudiante['nombreEstudiante']) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Email</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Email</div>
         <div class="valor-detalle"><?= $estudiante['emailEstudiante'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">DNI</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">DNI</div>
         <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">TelÃ©fono</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Teléfono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Ciclo Formativo</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Ciclo Formativo</div>
         <div class="valor-detalle">
-            <span class="bolita activo-verde"><?= $estudiante['nombreCiclo'] ?></span>
+            <span class="indicador-estado activo-verde"><?= $estudiante['nombreCiclo'] ?></span>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Fecha de Nacimiento</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Fecha de Nacimiento</div>
         <div class="valor-detalle"><?= date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Ciudad / DirecciÃ³n</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Ciudad / Dirección</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Observaciones</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Observaciones</div>
         <div class="valor-detalle">
-            <?= !empty($estudiante['observacionesEstudiante']) ? nl2br($estudiante['observacionesEstudiante']) : '<span class="atenuado">Sin observaciones registradas.</span>' ?>
+            <?= !empty($estudiante['observacionesEstudiante']) ? nl2br($estudiante['observacionesEstudiante']) : '<span class="texto-suave">Sin observaciones registradas.</span>' ?>
         </div>
     </div>
 </div>
 
 <div class="panel margen-arriba">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-file-pdf"></i> SITUACIÃ“N DEL TFG</h3>
+        <h3><i class="fas fa-file-pdf"></i> SITUACIÓN DEL TFG</h3>
     </div>
-    <div class="d-flex alinear-centro espacio-entre-elementos">
+    <div class="caja alinear-centro espacio-entre-elementos">
         <div>
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
-                <span class="bolita activo-verde">ENTREGADO</span>
-                <p class="texto-pequeno atenuado" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
+                <span class="indicador-estado activo-verde">ENTREGADO</span>
+                <p class="texto-pequeno texto-suave" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
             <?php } else { ?>
-                <span class="bolita inactivo-rojo">PENDIENTE / NO SUBIDO</span>
+                <span class="indicador-estado inactivo-rojo">PENDIENTE / NO SUBIDO</span>
             <?php } ?>
         </div>
         
@@ -100,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         if ($notaTFG) {
         ?>
             <div style="text-align: right;">
-                <p class="etiqueta-detalle" style="margin-bottom: 5px;">CALIFICACIÃ“N TFG</p>
+                <p class="nombre-detalle" style="margin-bottom: 5px;">CALIFICACIÓN TFG</p>
                 <span class="texto-negrita <?= $notaTFG['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>" style="font-size: 1.5em;">
                     <?= $notaTFG['nota'] ?> / 10
                 </span>

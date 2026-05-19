@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÃ“N DE ESTUDIANTES</h1>
+    <h1>GESTIÓN DE ESTUDIANTES</h1>
     <div class="acciones-pagina">
         <a href="agregar.php" class="boton-primario">
             <i class="fas fa-plus"></i> NUEVO ESTUDIANTE
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3>Estudiantes Registrados</h3>
     </div>
 
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaEstudiantesProf">
             <thead>
                 <tr>
@@ -74,8 +74,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($estudiantes as $est) { ?>
                         <tr>
                             <td>
-                                <span class="etiqueta-estado <?= $est['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                                <span class="etiqueta-estado gris"><?= $est['curso'] ?></span>
+                                <span class="texto-estado <?= $est['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                                <span class="texto-estado gris"><?= $est['curso'] ?></span>
                             </td>
                             <td class="texto-negrita"><?= $est['nombreEstudiante'] ?></td>
                             <td><?= $est['emailEstudiante'] ?></td>
@@ -83,17 +83,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $est['nombreCiclo'] ?></td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="detalles.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-ver" title="Ver detalles">
+                                    <a href="detalles.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-ver">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="editar.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-editar" title="Editar">
+                                    <a href="editar.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="../../../controladores/profesores/estudiantes/borrar.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de que desea eliminar este estudiante?');" class="display-inline">
+                                    <form action="../../../controladores/profesores/estudiantes/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este estudiante?');" class="display-inline">
                                         <input type="hidden" name="idEstudiante" value="<?= $est['idEstudiante'] ?>">
-                                        <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>
                                 </div>
                             </td>

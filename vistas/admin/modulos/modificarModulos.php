@@ -51,15 +51,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="formulario">
             <div class="campo">
-                <label for="nombreModulo">Nombre del Módulo *</label>
+                <label for="nombreModulo">Nombre del Módulo</label>
                 <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
                 <?php if (isset($errores['nombreModulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreModulo'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreModulo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="nivel">Nivel *</label>
+                <label for="nivel">Nivel</label>
                 <select id="nivel" onchange="filtrarCiclos()">
                     <option value="">-- Selecciona un nivel --</option>
                     <option value="1" <?php if ($nivelActual == 1) { echo 'selected'; } ?>>Grado Medio</option>
@@ -68,29 +68,27 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label for="idCiclo">Ciclo Formativo *</label>
+                <label for="idCiclo">Ciclo Formativo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
                 <?php if (isset($errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idCiclo'] ?></b>
+                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="horasMaximas">Horas Totales *</label>
+                <label for="horasMaximas">Horas Totales</label>
                 <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
                 <?php if (isset($errores['horasMaximas'])) { ?>
-                    <strong class="error-campo"><?= $errores['horasMaximas'] ?></b>
+                    <strong class="error-campo"><?= $errores['horasMaximas'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="guardarModulo" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
+            <input type="submit" name="guardarModulo" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

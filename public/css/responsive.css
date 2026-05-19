@@ -29,7 +29,7 @@
     .barra-lateral .titulo-panel-sidebar,
     .barra-lateral .enlace-menu span,
     .barra-lateral .titulo-de-seccion,
-    .barra-lateral .etiqueta-contador {
+    .barra-lateral .texto-contador {
         display: none;
     }
 
@@ -42,7 +42,7 @@
     .barra-lateral.activo .texto-negrita,
     .barra-lateral.activo .enlace-menu span,
     .barra-lateral.activo .titulo-de-seccion,
-    .barra-lateral.activo .etiqueta-contador {
+    .barra-lateral.activo .texto-contador {
         display: block;
     }
 
@@ -192,7 +192,7 @@
 
     .barra-lateral .enlace-menu span,
     .barra-lateral .titulo-de-seccion,
-    .barra-lateral .etiqueta-contador,
+    .barra-lateral .texto-contador,
     .barra-lateral .titulo-panel-sidebar {
         display: block;
     }
@@ -229,8 +229,7 @@
         flex: 1 1 100%;
     }
 
-    /* Estadísticas del dashboard de estudiantes — 2 por fila */
-    .d-flex.envoltura-flexible .tarjeta-estadistica {
+    .caja.caja-libre .tarjeta-estadistica {
         flex: 1 1 48%;
     }
 
@@ -251,7 +250,7 @@
     }
 
     /* Tablas */
-    .tcont {
+    .contenedor-tabla {
         overflow-x: auto;
     }
 
@@ -273,24 +272,24 @@
     }
 
     /* Filas de detalle */
-    .fila-dat {
+    .fila-datos {
         flex-wrap: wrap;
         padding: 12px 0;
         gap: 4px;
         border-bottom: 1px solid #edf2f7;
     }
 
-    .fila-dat:last-child {
+    .fila-datos:last-child {
         border-bottom: none;
     }
 
-    .fila-dat .etiqueta-detalle {
+    .fila-datos .nombre-detalle {
         flex: 0 0 100%;
         font-size: 11px;
         margin-bottom: 4px;
     }
 
-    .fila-dat .valor-detalle {
+    .fila-datos .valor-detalle {
         flex: 0 0 100%;
         font-size: 14px;
         word-break: break-word;

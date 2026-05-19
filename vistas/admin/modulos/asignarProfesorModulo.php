@@ -50,9 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarProfesores" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Cambios
-            </button>
+            <input type="submit" name="actualizarProfesores" class="boton-primario" value="Guardar Cambios">
         </div>
     </form>
 </div>

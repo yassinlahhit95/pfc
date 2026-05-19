@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
@@ -19,7 +19,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>PRÃ“XIMOS EVENTOS DEL CENTRO</h1>
+    <h1>PRÓXIMOS EVENTOS DEL CENTRO</h1>
 </div>
 
 <?php if ($exito) { ?>
@@ -30,14 +30,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Evento</th>
-                    <th>UbicaciÃ³n</th>
+                    <th>Ubicación</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
                         <td>
                             <b><?= $ev['tituloEvento'] ?></b><br>
-                            <span class="atenuado"><?= $ev['descripcionEvento'] ?></span>
+                            <span class="texto-suave"><?= $ev['descripcionEvento'] ?></span>
                         </td>
                         <td><?= $ev['ubicacionEvento'] ?></td>
                     </tr>

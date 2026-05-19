@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -35,13 +35,13 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaProfesores">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE COMPLETO</th>
-                    <th>CORREO ELECTRÓNICO</th>
+                    <th>CORREO ELECTRONICO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -59,18 +59,16 @@ unset($_SESSION['error'], $_SESSION['exito']);
                         <td>
                             <div class="botones-accion">
                                 <a href="../../../vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
-                                   class="btn-accion btn-ver" title="Ver ficha completa">
+                                   class="btn-accion btn-ver">
                                     <i class="fas fa-search"></i>
                                 </a>
 <a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
-                                   class="btn-accion btn-editar" title="Editar datos del profesor">
+                                   class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar a este profesor?')">
+                                <form action="../../../controladores/admin/profesores/borrar.php" method="POST" onsubmit="return confirm('Estas seguro de eliminar a este profesor?')">
                                     <input type="hidden" name="idProfesor" value="<?= $profesorIndividual['idProfesor'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar" title="Eliminar del sistema">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

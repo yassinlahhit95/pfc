@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -32,9 +32,9 @@ $profs = listarProfesoresConModulosParaEstudiante($idEst);
         <input type="hidden" name="idEstudiante" value="<?= $idEst ?>">
         
         <div class="campo">
-            <label>Destinatario (Profesor o Dirección)</label>
+            <label>Destinatario (Profesor o Direccion)</label>
             <select name="idProfesor" class="<?= isset($errs['idProfesor']) ? 'input-error' : '' ?>">
-                <option value="">-- Dirección (Administración) --</option>
+                <option value="">-- Direccion (Administracion) --</option>
                 <?php foreach ($profs as $p) { ?>
                     <option value="<?= $p['idProfesor'] ?>" <?= ($datos['idProfesor'] ?? '') == $p['idProfesor'] ? 'selected' : '' ?>>
                         <?= $p['nombreProfesor'] . " (" . $p['nombreModulo'] . ")" ?>
@@ -42,16 +42,16 @@ $profs = listarProfesoresConModulosParaEstudiante($idEst);
                 <?php } ?>
             </select>
             <?php if (isset($errs['idProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['idProfesor'] ?></b>
+                <strong class="error-campo"><?= $errs['idProfesor'] ?></strong>
             <?php } ?>
-            <span class="atenuado">Selecciona a quién quieres dirigir tu consulta.</span>
+            <span class="texto-suave">Selecciona a quién quieres dirigir tu consulta.</span>
         </div>
 
         <div class="campo">
             <label>Asunto del Mensaje</label>
-            <input type="text" name="asunto" value="<?= $datos['asunto'] ?? '' ?>" class="<?= isset($errs['asunto']) ? 'input-error' : '' ?>" placeholder="Duda sobre contenido, problema técnico...">
+            <input type="text" name="asunto" value="<?= $datos['asunto'] ?? '' ?>" class="<?= isset($errs['asunto']) ? 'input-error' : '' ?>" placeholder="Asunto corto...">
             <?php if (isset($errs['asunto'])) { ?>
-                <strong class="error-campo"><?= $errs['asunto'] ?></b>
+                <strong class="error-campo"><?= $errs['asunto'] ?></strong>
             <?php } ?>
         </div>
 
@@ -59,17 +59,13 @@ $profs = listarProfesoresConModulosParaEstudiante($idEst);
             <label>Contenido del Mensaje</label>
             <textarea name="descripcion" rows="6" class="<?= isset($errs['descripcion']) ? 'input-error' : '' ?>" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250"><?= $datos['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errs['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errs['descripcion'] ?></b>
+                <strong class="error-campo"><?= $errs['descripcion'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="enviarMensaje" class="boton-primario">
-                <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
-            </button>
+            <input type="submit" name="enviarMensaje" class="boton-primario" value="ENVIAR MENSAJE">
+            <input type="reset" class="boton-secundario" value="Limpiar">
         </div>
     </form>
 </div>

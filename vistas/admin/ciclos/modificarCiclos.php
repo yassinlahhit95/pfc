@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
@@ -15,20 +15,14 @@ if (!$ciclo) {
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
-$profesoresAsignados = listarProfesoresDeUnCiclo($id_ciclo);
-if (!is_array($profesoresAsignados)) {
-    $profesoresAsignados = [];
-}
-$mapaProfesoresAsignados = [];
-foreach ($profesoresAsignados as $idP) { $mapaProfesoresAsignados[$idP] = true; }
+// Obtenemos los profesores que ya estan en este ciclo
+$profesores_marcados = listarProfesoresDeUnCiclo($id_ciclo);
 
-if (isset($_SESSION['datos_ciclos'])) {
-    foreach ($_SESSION['datos_ciclos'] as $key => $value) {
-        $ciclo[$key] = $value;
-    }
-    if (isset($_SESSION['datos_ciclos']['profesores'])) {
-        $profesoresAsignados = $_SESSION['datos_ciclos']['profesores'];
-    }
+// Si hay datos en la sesion (por un error), los usamos. Si no, usamos los de la BD.
+$datos_sesion = $_SESSION['datos_ciclos'] ?? null;
+if ($datos_sesion) {
+    $ciclo = array_merge($ciclo, $datos_sesion);
+    $profesores_marcados = $datos_sesion['profesores'] ?? [];
 }
 
 $error = $_SESSION['error'] ?? '';
@@ -42,8 +36,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR CICLO: <?= $ciclo['nombreCiclo'] ?></h1>
-    <a href="verCiclos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <div>
+        <h1>MODIFICAR CICLO: <?= $ciclo['nombreCiclo'] ?></h1>
+    </div>
+    <a href="verCiclos.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> VOLVER
+    </a>
 </div>
 
 <?php if ($error) { ?>
@@ -56,23 +54,23 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="formulario">
             <div class="campo">
-                <label for="nombreCiclo">Nombre del Ciclo *</label>
+                <label for="nombreCiclo">Nombre del Ciclo</label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
                 <?php if (isset($errores['nombreCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="abreviaturaCiclo">Abreviatura *</label>
+                <label for="abreviaturaCiclo">Abreviatura</label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
                 <?php if (isset($errores['abreviaturaCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></b>
+                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="idNivel">Nivel Formativo *</label>
+                <label for="idNivel">Nivel Formativo</label>
                 <select id="idNivel" name="idNivel">
                     <?php foreach ($listaNiveles as $nivel) { ?>
                         <option value="<?= $nivel['idNivel'] ?>" <?php if (($ciclo['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
@@ -81,24 +79,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idNivel'])) { ?>
-                    <strong class="error-campo"><?= $errores['idNivel'] ?></b>
+                    <strong class="error-campo"><?= $errores['idNivel'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="precioCiclo">Precio Total del Ciclo (€) *</label>
+                <label for="precioCiclo">Precio Total del Ciclo (€)</label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
             </div>
         </div>
 
         <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
-                <h4 class="margen-abajo">Asignar Tutores/Profesores</h4>
-                <div class="checks">
+                <h4 style="margin-bottom: 15px;">Asignar Tutores/Profesores</h4>
+                <div class="checks scroll-v200">
                     <?php foreach ($listaProfesores as $prof) { ?>
                         <label class="check-item">
                             <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
-                                <?php if (isset($mapaProfesoresAsignados[$prof['idProfesor']])) { ?>checked<?php } ?>>
+                                <?php if (in_array($prof['idProfesor'], $profesores_marcados)) { ?>checked<?php } ?>>
                             <span><?= $prof['nombreProfesor'] ?></span>
                         </label>
                     <?php } ?>
@@ -107,12 +105,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarCiclo" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="submit" name="actualizarCiclo" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

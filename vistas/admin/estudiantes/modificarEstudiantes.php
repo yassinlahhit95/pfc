@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$id_del_estudiante = $_GET['idEstudiante'];
+$id_del_estudiante = $_GET['idEstudiante'] ?? '';
 $estudiante = obtenerEstudiantePorId($id_del_estudiante);
 
 if (!$estudiante) {
@@ -11,23 +11,16 @@ if (!$estudiante) {
     exit;
 }
 
-$datosGuardados = $_SESSION['datos_estudiante'] ?? [];
-if (!is_array($datosGuardados)) {
-    $datosGuardados = [];
-}
-
-if (!empty($datosGuardados)) {
-    foreach ($datosGuardados as $key => $value) {
-        $estudiante[$key] = $value;
-    }
-}
-
-$todos_los_ciclos = listarTodosLosCiclos();
-
+// Datos de error o datos actuales
 $errores = $_SESSION['errores'] ?? [];
-if (!is_array($errores)) {
-    $errores = [];
+$datos_sesion = $_SESSION['datos_estudiante'] ?? null;
+
+// Si hay datos en la sesion (por un error), los mezclamos con los de la base de datos
+if ($datos_sesion) {
+    $estudiante = array_merge($estudiante, $datos_sesion);
 }
+
+$lista_ciclos = listarTodosLosCiclos();
 
 unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
@@ -37,8 +30,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR ESTUDIANTE: <?= $estudiante['nombreEstudiante'] ?></h1>
-    <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <div>
+        <h1>MODIFICAR ESTUDIANTE: <?= $estudiante['nombreEstudiante'] ?></h1>
+    </div>
+    <a href="verEstudiantes.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> VOLVER
+    </a>
 </div>
 
 <div class="panel">
@@ -47,23 +44,23 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="formulario">
             <div class="campo">
-                <label for="nombreEstudiante">Nombre Completo *</label>
-                <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
+                <label>Nombre Completo</label>
+                <input type="text" name="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
                 <?php if (isset($errores['nombreEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreEstudiante'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="emailEstudiante">Email *</label>
-                <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
+                <label>Email</label>
+                <input type="text" name="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
                 <?php if (isset($errores['emailEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['emailEstudiante'] ?></b>
+                    <strong class="error-campo"><?= $errores['emailEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="curso">Nivel *</label>
+                <label>Nivel</label>
                 <select name="curso" id="curso" onchange="filtrarCiclos()">
                     <option value="Grado Medio" <?php if ($estudiante['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
                     <option value="Grado Superior" <?php if ($estudiante['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
@@ -71,94 +68,97 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label for="idCiclo">Ciclo Formativo *</label>
+                <label>Ciclo Formativo</label>
                 <select name="idCiclo" id="idCiclo">
-                    <option value="">-- Selecciona primero un nivel --</option>
+                    <option value="">-- Selecciona un ciclo --</option>
                 </select>
                 <?php if (isset($errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idCiclo'] ?></b>
+                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="dniEstudiante">DNI *</label>
-                <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
+                <label>DNI</label>
+                <input type="text" name="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
                 <?php if (isset($errores['dniEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['dniEstudiante'] ?></b>
+                    <strong class="error-campo"><?= $errores['dniEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="telefonoEstudiante">Teléfono *</label>
-                <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
+                <label>Teléfono</label>
+                <input type="text" name="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
                 <?php if (isset($errores['telefonoEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['telefonoEstudiante'] ?></b>
+                    <strong class="error-campo"><?= $errores['telefonoEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
-                <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= $estudiante['fechaNacimientoEstudiante'] ?>">
+                <label>Fecha Nacimiento</label>
+                <input type="date" name="fechaNacimientoEstudiante" value="<?= $estudiante['fechaNacimientoEstudiante'] ?>">
             </div>
 
-            <div class="campo campo-ancho-total">
-                <label for="direccionEstudiante">Dirección</label>
-                <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= $estudiante['direccionEstudiante'] ?>">
-            </div>
-
-            <div class="campo">
-                <label for="ciudadEstudiante">Ciudad</label>
-                <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= $estudiante['ciudadEstudiante'] ?>">
+            <div class="campo ancho-total">
+                <label>Dirección</label>
+                <input type="text" name="direccionEstudiante" value="<?= $estudiante['direccionEstudiante'] ?>">
             </div>
 
             <div class="campo">
-                <label for="codigoPostalEstudiante">Código Postal</label>
-                <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= $estudiante['codigoPostalEstudiante'] ?>">
+                <label>Ciudad</label>
+                <input type="text" name="ciudadEstudiante" value="<?= $estudiante['ciudadEstudiante'] ?>">
             </div>
 
-            <div class="campo campo-ancho-total">
-                <label for="observacionesEstudiante">Observaciones</label>
-                <textarea name="observacionesEstudiante" id="observacionesEstudiante"><?= $estudiante['observacionesEstudiante'] ?></textarea>
+            <div class="campo">
+                <label>Código Postal</label>
+                <input type="text" name="codigoPostalEstudiante" value="<?= $estudiante['codigoPostalEstudiante'] ?>">
             </div>
 
-            <input type="hidden" name="fechaAltaEstudiante" value="<?= $estudiante['fechaAltaEstudiante'] ?>">
+            <div class="campo ancho-total">
+                <label>Observaciones</label>
+                <textarea name="observacionesEstudiante"><?= $estudiante['observacionesEstudiante'] ?></textarea>
+            </div>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarEstudiante" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="submit" name="actualizarEstudiante" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
 
 <script>
-var todosCiclos = [<?php foreach ($todos_los_ciclos as $c) { echo '{idCiclo:' . $c['idCiclo'] . ',idNivel:' . $c['idNivel'] . ',nombreCiclo:"' . addslashes($c['nombreCiclo']) . '"},'; } ?>];
+// Lista de ciclos para el JavaScript
+var listaDeCiclos = [
+    <?php foreach ($lista_ciclos as $c) { 
+        echo '{id:' . $c['idCiclo'] . ', nivel:' . $c['idNivel'] . ', nombre:"' . addslashes($c['nombreCiclo']) . '"},'; 
+    } ?>
+];
 
 function filtrarCiclos() {
-    var nivel = document.getElementById('curso').value;
-    var cicloSelect = document.getElementById('idCiclo');
-    var nivelId = nivel === 'Grado Medio' ? 1 : (nivel === 'Grado Superior' ? 2 : 0);
+    var nivelTexto = document.getElementById('curso').value;
+    var selectCiclo = document.getElementById('idCiclo');
+    
+    // Convertimos texto a ID de nivel (1 o 2)
+    var nivelId = (nivelTexto === 'Grado Medio') ? 1 : 2;
 
-    cicloSelect.innerHTML = '<option value="">' + (nivel ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --') + '</option>';
+    // Limpiamos el select
+    selectCiclo.innerHTML = '<option value="">-- Selecciona un ciclo --</option>';
 
-    if (nivelId > 0) {
-        todosCiclos.forEach(function(ciclo) {
-            if (parseInt(ciclo.idNivel) === nivelId) {
-                var opt = document.createElement('option');
-                opt.value = ciclo.idCiclo;
-                opt.textContent = ciclo.nombreCiclo;
-                cicloSelect.appendChild(opt);
-            }
-        });
-    }
+    // Añadimos solo los ciclos que coinciden
+    listaDeCiclos.forEach(function(ciclo) {
+        if (ciclo.nivel === nivelId) {
+            var opcion = document.createElement('option');
+            opcion.value = ciclo.id;
+            opcion.textContent = ciclo.nombre;
+            selectCiclo.appendChild(opcion);
+        }
+    });
 }
 
+// Al cargar la pagina
 document.addEventListener('DOMContentLoaded', function() {
     filtrarCiclos();
+    // Seleccionamos el ciclo que ya tiene el estudiante
     document.getElementById('idCiclo').value = '<?= $estudiante['idCiclo'] ?>';
 });
 </script>

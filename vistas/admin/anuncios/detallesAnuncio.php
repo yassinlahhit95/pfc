@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
@@ -31,24 +31,24 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h2 class="texto-azul"><?= $anuncio['tituloAnuncio'] ?></h2>
     </div>
     
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Publicado</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Publicado</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Dirigido a</div>
-        <div class="valor-detalle"><span class="bolita activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Dirigido a</div>
+        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
     </div>
 
     <div class="margen-arriba">
-        <div class="fila-dat">
-            <div class="etiqueta-detalle">Contenido</div>
+        <div class="fila-datos">
+            <div class="nombre-detalle">Contenido</div>
             <div class="valor-detalle">
                 <?php if (!empty($anuncio['contenidoAnuncio'])) { ?>
                     <?= $anuncio['contenidoAnuncio'] ?>
                 <?php } else { ?>
-                    <span class="atenuado">Sin contenido.</span>
+                    <span class="texto-suave">Sin contenido.</span>
                 <?php } ?>
             </div>
         </div>
@@ -59,11 +59,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar definitivamente este anuncio?')">
+        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" onsubmit="return confirm('Eliminar definitivamente este anuncio?')">
             <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
-            <button type="submit" class="boton-secundario color-error border-error">
-                <i class="fas fa-trash"></i> Eliminar
-            </button>
+            <input type="submit" class="boton-secundario color-error border-error" value="Eliminar">
         </form>
     </div>
 </div>

@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -14,17 +14,17 @@ $error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['error'], $_SESSION['exito']);
 
-$tituloDelPagina = "AULAPRO | EVALUACIÃ“N TFG";
+$tituloDelPagina = "AULAPRO | EVALUACIÓN TFG";
 $seccionActual = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EVALUACIÃ“N DE TFGS (ALUMNOS ASIGNADOS)</h1>
+    <h1>EVALUACIÓN DE TFGS (ALUMNOS ASIGNADOS)</h1>
 </div>
 
 <div class="panel margen-abajo">
-    <form method="GET" action="tfg.php" class="d-flex al-fin sep-g">
+    <form method="GET" action="tfg.php" class="caja al-final espacio-grande">
         <div class="campo relleno">
             <label for="idCiclo">Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
@@ -48,7 +48,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Entrega</th>
                     <th>Nota TFG</th>
                     <th>Observaciones</th>
-                    <th>AcciÃ³n</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,10 +72,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $item['nombreCiclo'] ?></td>
                             <td>
                                 <?php if (!empty($item['archivoTFG'])) { ?>
-                                    <span class="bolita activo-verde">ENTREGADO</span>
+                                    <span class="indicador-estado activo-verde">ENTREGADO</span>
                                     <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" target="_blank" class="color-primario" style="margin-left: 10px;"><i class="fas fa-file-pdf"></i></a>
                                 <?php } else { ?>
-                                    <span class="bolita inactivo-rojo">PENDIENTE</span>
+                                    <span class="indicador-estado inactivo-rojo">PENDIENTE</span>
                                 <?php } ?>
                             </td>
                             <td>
@@ -84,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <?= $item['nota'] ?>
                                     </span>
                                 <?php } else { ?>
-                                    <span class="atenuado">---</span>
+                                    <span class="texto-suave">---</span>
                                 <?php } ?>
                             </td>
                             <td class="cuerpo-mensaje-tabla"><?= $item['observaciones'] ?? '<em>Sin observaciones</em>' ?></td>
@@ -128,9 +128,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
             
             <div class="acciones">
-                <button type="submit" name="calificarTFG" class="boton-primario">
-                    <i class="fas fa-save"></i> Guardar CalificaciÃ³n
-                </button>
+                <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Calificación">
                 <button type="button" class="boton-secundario" onclick="cerrarModal()">
                     Cancelar
                 </button>

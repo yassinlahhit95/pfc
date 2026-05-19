@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -32,7 +32,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -45,7 +45,7 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
             <tbody>
                 <?php if (empty($mis_notas_retos)) { ?>
                     <tr>
-                        <td colspan="4" class="vacio">Aún no tienes calificaciones registradas en retos.</td>
+                        <td colspan="4" class="vacio">Aun no tienes calificaciones registradas en retos.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($mis_notas_retos as $nota) { ?>

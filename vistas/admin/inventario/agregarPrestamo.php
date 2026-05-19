@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="form-cols">
 
             <div class="campo">
-                <label>Recurso (Solo disponibles) *</label>
+                <label>Recurso (Solo disponibles)</label>
                 <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
                     <?php foreach ($articulos_disponibles as $art) { ?>
@@ -66,12 +66,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idArticulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idArticulo'] ?></b>
+                    <strong class="error-campo"><?= $errores['idArticulo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label>Estudiante *</label>
+                <label>Estudiante</label>
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
                     <?php foreach ($todos_los_estudiantes as $est) { ?>
@@ -81,27 +81,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
                 <?php if (isset($errores['idEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></b>
+                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label>Fecha de Préstamo *</label>
+                <label>Fecha de Préstamo</label>
                 <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
                 <?php if (isset($errores['fechaPrestamo'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaPrestamo'] ?></b>
+                    <strong class="error-campo"><?= $errores['fechaPrestamo'] ?></strong>
                 <?php } ?>
             </div>
 
         </div>
 
         <div class="acciones">
-            <button type="submit" name="registrarPrestamo" class="boton-primario">
-                <i class="fas fa-save"></i> Registrar Préstamo
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> Limpiar
-            </button>
+            <input type="submit" name="registrarPrestamo" class="boton-primario" value="Registrar Préstamo">
+            <input type="reset" class="boton-secundario" value="Limpiar">
         </div>
     </form>
 </div>

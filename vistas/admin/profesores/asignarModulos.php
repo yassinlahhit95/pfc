@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -17,16 +17,10 @@ if (!$profesor) {
     exit;
 }
 
-$modulos_asignados = listarIdsModulosDeProfesor($idProfesor);
-$mapaModulosAsignados = [];
-foreach ($modulos_asignados as $idM) { $mapaModulosAsignados[$idM] = true; }
+// Obtenemos las listas basicas
+$modulos_del_profesor = listarIdsModulosDeProfesor($idProfesor);
 $todos_los_modulos = listarModulos();
-$ciclos = listarTodosLosCiclos();
-
-$modulos_por_ciclo = [];
-foreach ($todos_los_modulos as $m) {
-    $modulos_por_ciclo[$m['nombreCiclo']][] = $m;
-}
+$lista_ciclos = listarTodosLosCiclos();
 
 $titulo_pagina = "AULAPRO | ASIGNAR MÓDULOS A PROFESOR";
 $seccion = 'profesores';
@@ -34,8 +28,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>ASIGNAR MÓDULOS: <?= $profesor['nombreProfesor'] ?></h1>
-    <a href="verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <div>
+        <h1>ASIGNAR MÓDULOS: <?= $profesor['nombreProfesor'] ?></h1>
+    </div>
+    <a href="verProfesores.php" class="boton-secundario">
+        <i class="fas fa-arrow-left"></i> VOLVER
+    </a>
 </div>
 
 <div class="panel">
@@ -46,31 +44,33 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/profesores/actualizarModulos.php" method="POST">
         <input type="hidden" name="idProfesor" value="<?= $idProfesor ?>">
         
-        <?php foreach ($modulos_por_ciclo as $nombreCiclo => $modulos) { ?>
-            <div class="seccion-asignacion margen-abajo">
-                <h4 class="borde-abajo-primario color-primario">
-                    <i class="fas fa-layer-group"></i> <?= $nombreCiclo ?>
+        <?php foreach ($lista_ciclos as $ciclo) { ?>
+            <div class="seccion-asignacion" style="margin-bottom: 30px;">
+                <h4 class="borde-abajo-primario color-primario" style="margin-bottom: 15px;">
+                    <i class="fas fa-layer-group"></i> <?= $ciclo['nombreCiclo'] ?>
                 </h4>
+                
                 <div class="cuadricula-asignacion">
-                    <?php foreach ($modulos as $mod) { 
-                        $checked = isset($mapaModulosAsignados[$mod['idModulo']]) ? "checked" : "";
-                    ?>
-                        <label class="elemento-asignacion">
-                            <input type="checkbox" name="modulos[]" value="<?= $mod['idModulo'] ?>" <?= $checked ?> class="checkbox-grande">
-                            <span><?= $mod['nombreModulo'] ?></span>
-                        </label>
+                    <?php foreach ($todos_los_modulos as $modulo) { ?>
+                        <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { ?>
+                            
+                            <label class="elemento-asignacion">
+                                <input type="checkbox" name="modulos[]" value="<?= $modulo['idModulo'] ?>" 
+                                    class="checkbox-grande"
+                                    <?php if (in_array($modulo['idModulo'], $modulos_del_profesor)) { echo "checked"; } ?>>
+                                <span><?= $modulo['nombreModulo'] ?></span>
+                            </label>
+
+                        <?php } ?>
                     <?php } ?>
                 </div>
             </div>
         <?php } ?>
 
-        <div class="margen-arriba">
-            <button type="submit" name="actualizarModulos" class="boton-primario">
-                <i class="fas fa-save"></i> Guardar Asignaciones
-            </button>
+        <div style="margin-top: 25px;">
+            <input type="submit" name="actualizarModulos" class="boton-primario" value="GUARDAR ASIGNACIONES">
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

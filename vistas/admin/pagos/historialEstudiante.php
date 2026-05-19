@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaPagos as $p) { ?>
                     <tr>
                         <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
-                        <td><span class="etiqueta-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
+                        <td><span class="texto-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
                         <td><?= number_format($p['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
                     </tr>

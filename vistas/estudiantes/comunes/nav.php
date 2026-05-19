@@ -77,7 +77,7 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
 
                 <a href="../retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>MIS RETOS</span>
-                    <span class="etiqueta-contador"><?= $totalRetos_menu ?></span>
+                    <span class="texto-contador"><?= $totalRetos_menu ?></span>
                 </a>
 
                 <a href="../calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
@@ -102,17 +102,17 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
 
                 <a href="../anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
-                    <span class="etiqueta-contador"><?= $totalAnuncios_menu ?></span>
+                    <span class="texto-contador"><?= $totalAnuncios_menu ?></span>
                 </a>
 
                 <a href="../mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
                     <i class="fas fa-envelope"></i> <span>MENSAJERÍA</span>
-                    <span class="etiqueta-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
+                    <span class="texto-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
                 </a>
 
                 <a href="../pagos/lista.php" class="enlace-menu <?= ($seccionActual == 'pagos') ? 'activo' : '' ?>">
                     <i class="fas fa-credit-card"></i> <span>MIS PAGOS</span>
-                    <span class="etiqueta-contador"><?= $totalPagos_menu ?></span>
+                    <span class="texto-contador"><?= $totalPagos_menu ?></span>
                 </a>
 
                 <a href="../eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">

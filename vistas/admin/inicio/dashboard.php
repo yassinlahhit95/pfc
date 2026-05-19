@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -36,7 +36,7 @@ $seccion = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
-<div class="espacio-entre-elementos alinear-centro margen-abajo d-flex">
+<div class="espacio-entre-elementos alinear-centro margen-abajo caja">
   <div>
     <h1>BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
   </div>
@@ -71,7 +71,7 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div class="cuadricula-secundaria">
-  <div class="d-flex direccion-columna sep-g relleno">
+  <div class="caja direccion-columna espacio-grande relleno">
 
     <div class="panel">
       <div class="titulo-tarjeta"><h3>ACCIONES RÁPIDAS</h3></div>
@@ -79,7 +79,7 @@ include __DIR__ . '/../comunes/nav.php';
         <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="../profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="../pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>🔔 Avisos</span></a>
+        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>?? Avisos</span></a>
         <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
@@ -94,13 +94,13 @@ include __DIR__ . '/../comunes/nav.php';
             <?php foreach ($listaAnuncios as $anuncio) { ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
-                    <div class="d-flex espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></b>
-                        <span class="atenuado"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
+                    <div class="caja espacio-entre-elementos alinear-centro">
+                        <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></strong>
+                        <span class="texto-suave"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                     </div>
                     <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= nl2br($anuncio['mensaje']) ?></p>
                     <div style="margin-top: 5px;">
-                        <span class="etiqueta-dirigido-a"><?= strtoupper($anuncio['dirigidoA']) ?></span>
+                        <span class="texto-dirigido"><?= strtoupper($anuncio['dirigidoA']) ?></span>
                     </div>
                 </div>
             </div>
@@ -109,19 +109,19 @@ include __DIR__ . '/../comunes/nav.php';
 
 
       <?php } else { ?>
-        <p class="atenuado">No hay anuncios activos por ahora.</p>
+        <p class="texto-suave">No hay anuncios activos por ahora.</p>
       <?php } ?>
     </div>
   </div>
 
-  <div class="d-flex direccion-columna sep-g relleno">
+  <div class="caja direccion-columna espacio-grande relleno">
     <div class="panel">
       <div class="titulo-tarjeta">
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($eventos)) { ?>
-            <p class="atenuado">No hay eventos próximos programados.</p>
+            <p class="texto-suave">No hay eventos próximos programados.</p>
         <?php } else { ?>
             <?php
             $i = 0;
@@ -134,7 +134,7 @@ include __DIR__ . '/../comunes/nav.php';
               <div class="fecha-evento azul"><div class="dia"><?= $dia ?></div><div class="mes"><?= $mes ?></div></div>
               <div>
                 <p class="texto-negrita"><?= strtoupper($evento['tituloEvento']) ?></p>
-                <p class="atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
+                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
               </div>
             </div>
             <?php

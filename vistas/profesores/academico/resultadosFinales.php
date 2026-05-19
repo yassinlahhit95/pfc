@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -50,7 +50,7 @@ if ($id_ciclo_elegido) {
         
         require_once __DIR__ . "/../../../modelos/tfg.php";
         $notaTFG_raw = obtenerCalificacionTFG($id_est);
-        $notaTFG = $notaTFG_raw ? $notaTFG_raw['nota'] : '—';
+        $notaTFG = $notaTFG_raw ? $notaTFG_raw['nota'] : ' ';
 
         $suma_total_modulos = 0;
         $contador_total_notas_modulos = 0;
@@ -120,7 +120,7 @@ if ($id_ciclo_elegido) {
 
 <div class="cabecera">
     <h1>RESULTADOS FINALES DE MIS ALUMNOS</h1>
-    <p class="subtitulo">Resumen global (75% Módulos / 25% Retos)</p>
+    <p class="subtitulo">Resumen global (75% Modulos / 25% Retos)</p>
 </div>
 
 <?php if ($exito) { ?>
@@ -131,8 +131,8 @@ if ($id_ciclo_elegido) {
 <?php } ?>
 
 <div class="panel">
-    <div class="d-flex alinear-centro sep-g">
-        <form method="GET" action="" class="relleno d-flex alinear-centro">
+    <div class="caja alinear-centro espacio-grande">
+        <form method="GET" action="" class="relleno caja alinear-centro">
             <div class="campo relleno">
                 <label for="idCiclo">Seleccione Ciclo:</label>
                 <select id="idCiclo" name="idCiclo" onchange="this.form.submit()">
@@ -150,11 +150,9 @@ if ($id_ciclo_elegido) {
         </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('¿Enviar resultados por email a todos los alumnos de este ciclo?')">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Enviar resultados por email a todos los alumnos de este ciclo?')">
                 <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
-                <button type="submit" class="boton-primario">
-                    <i class="fas fa-paper-plane"></i> NOTIFICAR A TODOS
-                </button>
+                <input type="submit" class="boton-primario" value="NOTIFICAR A TODOS">
             </form>
         <?php } ?>
     </div>
@@ -162,12 +160,12 @@ if ($id_ciclo_elegido) {
 
 <?php if ($id_ciclo_elegido) { ?>
     <div class="panel margen-arriba">
-        <div class="tcont">
+        <div class="contenedor-tabla">
             <table class="tabla-datos">
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Media Módulos (75%)</th>
+                        <th>Media Modulos (75%)</th>
                         <th>Media Retos (25%)</th>
                         <th>Nota TFG</th>
                         <th>Nota Final</th>
@@ -192,7 +190,7 @@ if ($id_ciclo_elegido) {
                             <td class="<?= $clase_estado ?> texto-negrita">
                                 <?= $filaIndividual['estado'] ?>
                                 <?php if ($filaIndividual['alert'] == true) { ?>
-                                    <span title='Tiene módulos suspensos'>(!)</span>
+                                    <span title='Tiene m�dulos suspensos'>(!)</span>
                                 <?php } ?>
                             </td>
                         </tr>

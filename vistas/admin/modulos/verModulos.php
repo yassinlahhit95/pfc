@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -43,7 +43,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 <?php } ?>
 
 <div class="panel margen-abajo">
-    <div class="d-flex envoltura-flexible sep-g">
+    <div class="caja caja-libre espacio-grande">
         <div class="campo relleno">
             <label>FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaModulos')">
@@ -59,7 +59,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaModulos">
             <thead>
                 <tr>
@@ -84,7 +84,7 @@ unset($_SESSION['exito'], $_SESSION['error']);
                     <tr>
                         <td><?= $moduloIndividual['idModulo'] ?></td>
                         <td>
-                            <span class="etiqueta-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                            <span class="texto-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
                         </td>
                         <td><b><?= strtoupper($moduloIndividual['nombreModulo']) ?></b></td>
                         <td>
@@ -115,18 +115,16 @@ unset($_SESSION['exito'], $_SESSION['error']);
                         <td>
                             <div class="botones-accion">
                                 <a href="asignarProfesorModulo.php?idModulo=<?= $moduloIndividual['idModulo'] ?>"
-                                   class="btn-accion btn-ver" title="Asignar o cambiar profesor">
+                                   class="btn-accion btn-ver">
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
                                 <a href="modificarModulos.php?idModulo=<?= $moduloIndividual['idModulo'] ?>" 
-                                   class="btn-accion btn-editar" title="Editar módulo">
+                                   class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="../../../controladores/admin/modulos/borrar.php" onsubmit="return confirm('¿Eliminar este módulo?')">
+                                <form method="POST" action="../../../controladores/admin/modulos/borrar.php" onsubmit="return confirm('Eliminar este módulo?')">
                                     <input type="hidden" name="idModulo" value="<?= $moduloIndividual['idModulo'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar" title="Borrar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <form method="GET" action="../../../vistas/profesores/calificaciones/retos.php" class="d-flex alinear-centro sep-g">
+    <form method="GET" action="../../../vistas/profesores/calificaciones/retos.php" class="caja alinear-centro espacio-grande">
         <div class="campo relleno">
             <label for="idCiclo">1. Seleccione Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo relleno">
-            <label for="idModulo">2. Seleccione Módulo:</label>
+            <label for="idModulo">2. Seleccione M�dulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($listaDeModulos as $modulo) { ?>
@@ -102,7 +102,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
             
-            <div class="tcont">
+            <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -135,9 +135,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             
             <?php if (!empty($listaDeEstudiantes)) { ?>
                 <div class="acciones">
-                    <button type="submit" name="guardarNotasReto" class="boton-primario">
-                        <i class="fas fa-save"></i> GUARDAR NOTAS DEL RETO
-                    </button>
+                    <input type="submit" name="guardarNotasReto" class="boton-primario" value="GUARDAR NOTAS DEL RETO">
                 </div>
             <?php } ?>
         </form>

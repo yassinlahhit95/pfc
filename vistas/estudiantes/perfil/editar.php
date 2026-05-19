@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -39,34 +39,34 @@ include_once "../comunes/nav.php";
             <label for="nombreEstudiante">Nombre Completo</label>
             <input type="text" id="nombreEstudiante" name="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? $est['nombreEstudiante'] ?>" class="<?= isset($errs['nombreEstudiante']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['nombreEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errs['nombreEstudiante'] ?></b>
+                <strong class="error-campo"><?= $errs['nombreEstudiante'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo">
-            <label for="emailEstudiante">Correo Electrónico</label>
+            <label for="emailEstudiante">Correo Electronico</label>
             <input type="text" id="emailEstudiante" name="emailEstudiante" value="<?= $datos['emailEstudiante'] ?? $est['emailEstudiante'] ?>" class="<?= isset($errs['emailEstudiante']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['emailEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errs['emailEstudiante'] ?></b>
+                <strong class="error-campo"><?= $errs['emailEstudiante'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo">
-            <label for="telefonoEstudiante">Número de Teléfono</label>
+            <label for="telefonoEstudiante">Numero de Telefono</label>
             <input type="tel" id="telefonoEstudiante" name="telefonoEstudiante" value="<?= $datos['telefonoEstudiante'] ?? $est['telefonoEstudiante'] ?>" class="<?= isset($errs['telefonoEstudiante']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['telefonoEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errs['telefonoEstudiante'] ?></b>
+                <strong class="error-campo"><?= $errs['telefonoEstudiante'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
-        <p class="atenuado" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
+        <p class="texto-suave" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo">
             <label for="current_password">Contraseña Actual</label>
             <input type="password" id="current_password" name="current_password" placeholder="Escriba su contraseña actual para validar" class="<?= isset($errs['current_password']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['current_password'])) { ?>
-                <strong class="error-campo"><?= $errs['current_password'] ?></b>
+                <strong class="error-campo"><?= $errs['current_password'] ?></strong>
             <?php } ?>
         </div>
 
@@ -74,17 +74,13 @@ include_once "../comunes/nav.php";
             <label for="new_password">Nueva Contraseña</label>
             <input type="password" id="new_password" name="new_password" placeholder="Mínimo 6 caracteres" class="<?= isset($errs['new_password']) ? 'input-error' : '' ?>">
             <?php if (isset($errs['new_password'])) { ?>
-                <strong class="error-campo"><?= $errs['new_password'] ?></b>
+                <strong class="error-campo"><?= $errs['new_password'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarPerfil" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="submit" name="actualizarPerfil" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

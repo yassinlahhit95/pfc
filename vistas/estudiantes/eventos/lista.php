@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -19,7 +19,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>PRÓXIMOS EVENTOS Y FECHAS CLAVE</h1>
+    <h1>PROXIMOS EVENTOS Y FECHAS CLAVE</h1>
 </div>
 
 <?php if ($error) { ?>
@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($eventos)) { ?>
-                    <tr><td colspan="5" class="vacio">No hay eventos programados próximamente.</td></tr>
+                    <tr><td colspan="5" class="vacio">No hay eventos programados proximamente.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($eventos as $ev) { ?>
                     <tr>

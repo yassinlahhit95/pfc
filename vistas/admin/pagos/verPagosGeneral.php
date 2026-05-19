@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (empty($_SESSION['idAdmin'])) {
@@ -45,7 +45,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-abajo">
     <form method="GET" action="verPagosGeneral.php">
-        <div class="d-flex al-fin sep-g">
+        <div class="caja al-final espacio-grande">
             <div class="campo relleno">
                 <label>FILTRAR POR CICLO FORMATIVO:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaPagos">
             <thead>
                 <tr>
@@ -89,7 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><b><?= strtoupper($pagoIndividual['nombreEstudiante']) ?></b></td>
                         <td><?= strtoupper($pagoIndividual['nombreCiclo']) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
+                            <span class="texto-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
@@ -103,18 +103,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <div class="botones-accion">
                                 <a href="historialEstudiante.php?idEstudiante=<?= $pagoIndividual['idEstudiante'] ?>" 
-                                   class="btn-accion btn-ver" title="Ver historial completo">
+                                   class="btn-accion btn-ver">
                                     <i class="fas fa-history"></i>
                                 </a>
                                 <a href="modificarPagos.php?idPago=<?= $pagoIndividual['idPago'] ?>" 
-                                   class="btn-accion btn-editar" title="Editar este pago">
+                                   class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/pagos/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de eliminar este registro de pago?')">
+                                <form action="../../../controladores/admin/pagos/borrar.php" method="POST" onsubmit="return confirm('Estás seguro de eliminar este registro de pago?')">
                                     <input type="hidden" name="idPago" value="<?= $pagoIndividual['idPago'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

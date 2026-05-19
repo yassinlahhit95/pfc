@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -39,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form method="GET" class="margen-abajo">
-        <div class="d-flex al-fin sep-g">
+        <div class="caja al-final espacio-grande">
             <div class="campo relleno">
                 <label for="idCiclo">Filtrar Estudiantes por Ciclo:</label>
                 <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idEstudiante">Destinatario</label>
             <select name="idEstudiante" id="idEstudiante" class="<?= isset($errores['idEstudiante']) ? 'input-error' : '' ?>">
                 <option value="">-- Seleccionar Destinatario --</option>
-                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>DirecciÃ³n (AdministraciÃ³n)</option>
+                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Dirección (Administración)</option>
                 <optgroup label="Estudiantes">
                     <?php foreach ($listaDeEstudiantes as $estudiante) {
                         $selected = ($datos['idEstudiante'] ?? '') == $estudiante['idEstudiante'] ? 'selected' : '';
@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </optgroup>
             </select>
             <?php if (isset($errores['idEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errores['idEstudiante'] ?></b>
+                <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
             <?php } ?>
         </div>
 
@@ -88,23 +88,21 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="asunto">Asunto del Mensaje</label>
             <input type="text" name="asunto" id="asunto" value="<?= $datos['asunto'] ?? '' ?>" placeholder="Escriba el motivo del mensaje..." class="<?= isset($errores['asunto']) ? 'input-error' : '' ?>">
             <?php if (isset($errores['asunto'])) { ?>
-                <strong class="error-campo"><?= $errores['asunto'] ?></b>
+                <strong class="error-campo"><?= $errores['asunto'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo">
             <label for="descripcion">Mensaje</label>
-            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aquÃ­ tu mensaje (mÃ¡ximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
+            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errores['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errores['descripcion'] ?></b>
+                <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="enviarMensaje" class="boton-primario">
-                <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
+            <input type="submit" name="enviarMensaje" class="boton-primario" value="ENVIAR MENSAJE">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

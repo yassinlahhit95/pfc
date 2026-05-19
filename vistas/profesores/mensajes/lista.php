@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -15,13 +15,13 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idProfesor = $_SESSION['idProfesor'];
 $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | MENSAJERÃA";
+$tituloDelPagina = "AULAPRO | MENSAJERÍA";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>BUZÃ“N DE MENSAJES</h1>
+    <h1>BUZÓN DE MENSAJES</h1>
     <a href="../../../vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> REDACTAR MENSAJE
     </a>
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="7" class="vacio">No hay mensajes registrados aÃºn.</td></tr>
+                    <tr><td colspan="7" class="vacio">No hay mensajes registrados aún.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
@@ -60,9 +60,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
-                                    echo 'TÃº (Profesor)';
+                                    echo 'Tú (Profesor)';
                                 } elseif ($mensaje['emisor_rol'] == 'admin') {
-                                    echo 'DIRECCIÃ“N (ADMIN)';
+                                    echo 'DIRECCIÓN (ADMIN)';
                                 } else {
                                     echo $mensaje['nombreEstudiante'] ?? 'Estudiante';
                                 }
@@ -77,25 +77,23 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?= date('d/m/Y', strtotime($mensaje['fecha'])) ?><br>
-                            <span class="atenuado"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></span>
+                            <span class="texto-suave"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></span>
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="bolita activo-verde">LeÃ­do</span>
+                                <span class="indicador-estado activo-verde">Leído</span>
                             <?php } else { ?>
-                                <span class="bolita inactivo-rojo">Nuevo</span>
+                                <span class="indicador-estado inactivo-rojo">Nuevo</span>
                             <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="../../../vistas/profesores/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Ver mensaje">
+                                <a href="../../../vistas/profesores/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('Â¿Eliminar este mensaje?')">
+                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?= $mensaje['idReclamacion'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

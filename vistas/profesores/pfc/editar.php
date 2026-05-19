@@ -43,21 +43,17 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label for="tituloTFG">Título del TFG *</label>
+                <label for="tituloTFG">Título del TFG</label>
                 <input type="text" id="tituloTFG" name="tituloTFG" value="<?= $datosTFG['tituloTFG'] ?? '' ?>" class="<?= isset($errores['tituloTFG']) ? 'input-error' : '' ?>">
                 <?php if (isset($errores['tituloTFG'])) { ?>
-                    <strong class="error-campo"><?= $errores['tituloTFG'] ?></b>
+                    <strong class="error-campo"><?= $errores['tituloTFG'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarTFG" class="boton-primario">
-                <i class="fas fa-save"></i> ACTUALIZAR TFG
-            </button>
-            <button type="reset" class="boton-secundario">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="submit" name="actualizarTFG" class="boton-primario" value="ACTUALIZAR TFG">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $titulo_pagina = "AULAPRO | DETALLES DIRECTOR";
 $seccion = 'directores';
@@ -26,45 +26,45 @@ if (!$director) { ?>
         <h3>Información General</h3>
     </div>
     
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Nombre Completo</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Nombre Completo</div>
         <div class="valor-detalle texto-negrita"><?= $director['nombreDirector'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Email</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Email</div>
         <div class="valor-detalle"><?= $director['emailDirector'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">DNI</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">DNI</div>
         <div class="valor-detalle">
             <?php if (!empty($director['dniDirector'])) { ?>
                 <?= $director['dniDirector'] ?>
             <?php } else { ?>
-                <span class="atenuado">No especificado</span>
+                <span class="texto-suave">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Teléfono</div>
-        <div class="valor-detalle"><?= $director['telefonoDirector'] ?: '<span class="atenuado">No especificado</span>' ?></div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Teléfono</div>
+        <div class="valor-detalle"><?= $director['telefonoDirector'] ?: '<span class="texto-suave">No especificado</span>' ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Fecha de Nacimiento</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Fecha de Nacimiento</div>
         <div class="valor-detalle">
             <?php if (isset($director['fechaNacimientoDirector']) && $director['fechaNacimientoDirector'] != '0000-00-00') { ?>
                 <?= date('d/m/Y', strtotime($director['fechaNacimientoDirector'])) ?>
             <?php } else { ?>
-                <span class="atenuado">No especificado</span>
+                <span class="texto-suave">No especificado</span>
             <?php } ?>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Fecha Alta</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Fecha Alta</div>
         <div class="valor-detalle"><?= date('d/m/Y', strtotime($director['fechaAltaDirector'])) ?></div>
     </div>
 </div>
@@ -74,19 +74,19 @@ if (!$director) { ?>
         <h3>Dirección y Contacto</h3>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Dirección</div>
-        <div class="valor-detalle"><?= $director['direccionDirector'] ?: '<span class="atenuado">No especificado</span>' ?></div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Dirección</div>
+        <div class="valor-detalle"><?= $director['direccionDirector'] ?: '<span class="texto-suave">No especificado</span>' ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Ciudad</div>
-        <div class="valor-detalle"><?= $director['ciudadDirector'] ?: '<span class="atenuado">No especificado</span>' ?></div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Ciudad</div>
+        <div class="valor-detalle"><?= $director['ciudadDirector'] ?: '<span class="texto-suave">No especificado</span>' ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Código Postal</div>
-        <div class="valor-detalle"><?= $director['codigoPostalDirector'] ?: '<span class="atenuado">No especificado</span>' ?></div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Código Postal</div>
+        <div class="valor-detalle"><?= $director['codigoPostalDirector'] ?: '<span class="texto-suave">No especificado</span>' ?></div>
     </div>
 </div>
 
@@ -94,13 +94,13 @@ if (!$director) { ?>
     <div class="titulo-tarjeta">
         <h3>Observaciones</h3>
     </div>
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Observaciones</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Observaciones</div>
         <div class="valor-detalle">
             <?php if (!empty($director['observacionesDirector'])) { ?>
                 <?= $director['observacionesDirector'] ?>
             <?php } else { ?>
-                <span class="atenuado">Sin observaciones.</span>
+                <span class="texto-suave">Sin observaciones.</span>
             <?php } ?>
         </div>
     </div>

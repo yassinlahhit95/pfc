@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <form method="GET" action="calificacionesModulos.php" class="d-flex alinear-centro sep-g envoltura-flexible">
+    <form method="GET" action="calificacionesModulos.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
             <label for="selectCicloMod">1. Seleccione un Ciclo:</label>
             <select name="idCiclo" id="selectCicloMod" onchange="this.form.submit()">
@@ -61,15 +61,15 @@ include_once __DIR__ . "/../comunes/nav.php";
         <form action="../../../controladores/admin/academico/calificarModulos.php" method="POST">
             <input type="hidden" name="idModulo" value="<?= $idModuloElegido ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
-            <div class="tcont">
+            <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
                             <th>Estudiante</th>
-                            <th>1ª EV</th>
-                            <th>1ª FINAL</th>
-                            <th>2ª EV</th>
-                            <th>2ª FINAL</th>
+                            <th>1º EV</th>
+                            <th>1º FINAL</th>
+                            <th>2º EV</th>
+                            <th>2º FINAL</th>
                             <th>OBSERVACIONES</th>
                         </tr>
                     </thead>
@@ -102,9 +102,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <?php if (!empty($listaEstudiantes)) { ?>
                 <div class="acciones">
-                    <button type="submit" name="guardarNotas" class="boton-primario">
-                        <i class="fas fa-save"></i> GUARDAR TODAS LAS NOTAS
-                    </button>
+                    <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR TODAS LAS NOTAS">
                     <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesModulos.php';">
                         <i class="fas fa-eraser"></i> LIMPIAR
                     </button>

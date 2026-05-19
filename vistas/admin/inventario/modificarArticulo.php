@@ -30,27 +30,25 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="formulario">
             <div class="campo">
-                <label for="nombreArticulo">Nombre del Artículo *</label>
+                <label for="nombreArticulo">Nombre del Artículo</label>
                 <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? $articulo['nombreArticulo'] ?>">
                 <?php if (isset($errores['nombreArticulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreArticulo'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreArticulo'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="numeroSerie">Número de Serie *</label>
+                <label for="numeroSerie">Número de Serie</label>
                 <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? $articulo['numeroSerie'] ?>">
                 <?php if (isset($errores['numeroSerie'])) { ?>
-                    <strong class="error-campo"><?= $errores['numeroSerie'] ?></b>
+                    <strong class="error-campo"><?= $errores['numeroSerie'] ?></strong>
                 <?php } ?>
             </div>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarArticulo" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
+            <input type="submit" name="actualizarArticulo" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

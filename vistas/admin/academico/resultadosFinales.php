@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -30,8 +30,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?= $mensajeError ?></div> <?php } ?>
 
 <div class="panel">
-    <div class="d-flex alinear-centro sep-g">
-        <form method="GET" action="resultadosFinales.php" class="relleno d-flex alinear-centro">
+    <div class="caja alinear-centro espacio-grande">
+        <form method="GET" action="resultadosFinales.php" class="relleno caja alinear-centro">
             <div class="campo relleno">
                 <label>Seleccione un Ciclo formativo para ver el resumen:</label>
                 <select name="idCiclo" id="selectCicloFinal" onchange="this.form.submit()">
@@ -48,9 +48,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
             <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
-                <button type="submit" class="boton-primario">
-                    <i class="fas fa-paper-plane"></i> ENVIAR RESULTADOS POR EMAIL A TODOS
-                </button>
+                <input type="submit" class="boton-primario" value="ENVIAR RESULTADOS POR EMAIL A TODOS">
             </form>
         <?php } ?>
     </div>
@@ -58,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php if (!empty($idCicloElegidoParaVer)) { ?>
     <div class="panel margen-arriba">
-        <div class="tcont">
+        <div class="contenedor-tabla">
             <table class="tabla-datos">
                 <thead>
                     <tr>
@@ -83,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $fila['nombreEstudiante'] ?></td>
                             <td><?= $fila['media_modulos'] ?></td>
                             <td><?= $fila['media_retos'] ?></td>
-                            <td class="color-primario texto-negrita"><?= $fila['nota_tfg'] ?? '—' ?></td>
+                            <td class="color-primario texto-negrita"><?= $fila['nota_tfg'] ?? ' ' ?></td>
                             <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
                             <td class="<?= $claseDelColor ?> texto-negrita">
                                 <?= $fila['estado_global'] ?>

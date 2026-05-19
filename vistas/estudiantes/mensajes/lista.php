@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -15,7 +15,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idEstudiante = $_SESSION['idEstudiante'];
 $listaDeMensajes = listarMensajesDeEstudiante($idEstudiante);
 
-$tituloDelPagina = "AULAPRO | MENSAJERÍA";
+$tituloDelPagina = "AULAPRO | MENSAJERIA";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="6" class="vacio">No has enviado mensajes aún.</td></tr>
+                    <tr><td colspan="6" class="vacio">No has enviado mensajes aun.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 if ($mensaje['emisor_rol'] == 'profesor') {
                                     echo '(PROFESOR) ' . $mensaje['nombreProfesor']; 
                                 } else {
-                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCIÓN (ADMIN)';
+                                    echo ($mensaje['nombreProfesor']) ? '(PROFESOR) ' . $mensaje['nombreProfesor'] : 'DIRECCION (ADMIN)';
                                 }
                             ?></b>
                         </td>
@@ -73,14 +73,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="bolita activo-verde">VISTO</span>
+                                <span class="indicador-estado activo-verde">VISTO</span>
                             <?php } else { ?>
-                                <span class="bolita inactivo-rojo">ENVIADO</span>
+                                <span class="indicador-estado inactivo-rojo">ENVIADO</span>
                             <?php } ?>
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="../../../vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver" title="Leer mensaje completo">
+                                <a href="../../../vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>

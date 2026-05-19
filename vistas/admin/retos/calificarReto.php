@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="tcont">
+<div class="contenedor-tabla">
     <form action="../../../controladores/admin/retos/calificar.php" method="POST">
         <input type="hidden" name="idReto" value="<?= $retoActual['idReto'] ?>">
         
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= $estudiante['nombreEstudiante'] ?></td>
                         <td><?= $estudiante['dniEstudiante'] ?></td>
                         <td>
-                            <span class="etiqueta-estado <?= $notaActual !== null ? 'activo' : '' ?>">
+                            <span class="texto-estado <?= $notaActual !== null ? 'activo' : '' ?>">
                                 <?= $notaActual !== null ? number_format($notaActual, 2) : 'Sin calificar' ?>
                             </span>
                         </td>
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </table>
         
         <div class="acciones">
-            <button type="submit" class="boton-primario">Guardar Calificaciones</button>
+            <input type="submit" class="boton-primario" value="Guardar Calificaciones">
         </div>
     </form>
 </div>

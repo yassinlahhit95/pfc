@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $titulo_pagina = "AULAPRO | GESTIÓN DE PRÉSTAMOS";
 $seccion = 'prestamos';
@@ -30,7 +30,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -63,7 +63,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                             $clase_estado = "inactivo-rojo";
                             if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
                             ?>
-                            <span class="bolita <?= $clase_estado ?>">
+                            <span class="indicador-estado <?= $clase_estado ?>">
                                 <?= $p['estadoPrestamo'] ?>
                             </span>
                         </td>
@@ -73,9 +73,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                     <form action="../../../controladores/admin/inventario/devolver.php" method="POST">
                                         <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
                                         <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
-                                        <button type="submit" class="boton-primario boton-pequeno">
-                                            <i class="fas fa-undo"></i> Devolver
-                                        </button>
+                                        <input type="submit" class="boton-primario boton-pequeno" value="Devolver">
                                     </form>
                                 <?php } ?>
                             </div>

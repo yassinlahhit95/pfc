@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -28,9 +28,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <form method="GET" action="calificacionesRetos.php" class="d-flex alinear-centro sep-g envoltura-flexible">
+    <form method="GET" action="calificacionesRetos.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
-            <label for="selectCicloReto">1. Seleccione Ciclo:</label>
+            <label for="selectCicloReto">Seleccione Ciclo:</label>
             <select name="idCiclo" id="selectCicloReto" onchange="this.form.submit()">
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($todos_los_ciclos as $cicItem) { ?>
@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo relleno">
-            <label>2. Seleccione Módulo:</label>
+            <label>Seleccione Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($id_ciclo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($modulos_filtrados as $modItem) { ?>
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo relleno">
-            <label>3. Seleccione Reto:</label>
+            <label>Seleccione Reto:</label>
             <select name="idReto" onchange="this.form.submit()" <?= empty($id_modulo_elegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($retos_filtrados as $retoItem) { ?>
@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
             <input type="hidden" name="idModulo" value="<?= $id_modulo_elegido ?>">
 
-            <div class="tcont">
+            <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -116,9 +116,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <?php if (!empty($estudiantes_lista)) { ?>
                 <div class="margen-arriba">
-                    <button type="submit" name="guardarNotasReto" class="boton-primario">
-                        <i class="fas fa-save"></i> GUARDAR NOTAS DEL RETO
-                    </button>
+                    <input type="submit" name="guardarNotasReto" class="boton-primario" value="GUARDAR NOTAS DEL RETO">
                 </div>
             <?php } ?>
         </form>

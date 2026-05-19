@@ -1,4 +1,4 @@
-Ôªø<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -38,46 +38,46 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> INFORMACI√ìN DEL MENSAJE</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> INFORMACI”N DEL MENSAJE</h3>
     </div>
     
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">De</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?= ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Para</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Direcci√≥n') : $nombreProfeParaVista . ' (Profesor)' ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'DirecciÛn') : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Fecha</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Fecha</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Asunto</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Asunto</div>
         <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Estado Actual</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Estado Actual</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="bolita activo-verde">LE√çDO / VISTO</span>
+                <span class="indicador-estado activo-verde">LEÕDO / VISTO</span>
             <?php } else { ?>
-                <span class="bolita inactivo-rojo">PENDIENTE / NUEVO</span>
+                <span class="indicador-estado inactivo-rojo">PENDIENTE / NUEVO</span>
             <?php } ?>
         </div>
     </div>
 
     <div class="margen-arriba bg-gris-suave ancho-total" style="padding: 20px; border-radius: 8px; word-break: break-word;">
-        <label for="contenidoMensaje" class="atenuado texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
+        <label for="contenidoMensaje" class="texto-suave texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
         <div id="contenidoMensaje" style="max-width: 100%; line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?? '' ?></div>
     </div>
 </div>

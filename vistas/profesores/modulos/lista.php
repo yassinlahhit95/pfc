@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['idProfesor'])) {
@@ -11,17 +11,17 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $idProfesor = $_SESSION['idProfesor'];
 $modulos = listarModulosDeProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | MÃ“DULOS";
+$tituloDelPagina = "AULAPRO | MÓDULOS";
 $seccionActual = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>LISTA DE MÃ“DULOS</h1>
+    <h1>LISTA DE MÓDULOS</h1>
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaModulosProf">
             <thead>
                 <tr>
@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="3" class="vacio">No hay mÃ³dulos registrados.</td>
+                        <td colspan="3" class="vacio">No hay módulos registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>

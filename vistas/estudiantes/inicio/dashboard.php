@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>¡HOLA, <?= strtoupper($estudianteActual['nombreEstudiante']) ?>!</h1>
-    <p class="atenuado"><?= strtoupper($estudianteActual['nombreCiclo']) ?></p>
+    <h1>HOLA, <?= strtoupper($estudianteActual['nombreEstudiante']) ?>!</h1>
+    <p class="texto-suave"><?= strtoupper($estudianteActual['nombreCiclo']) ?></p>
 </div>
 
 <?php if ($exito) { ?>
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $error ?></div>
 <?php } ?>
 
-<div class="d-flex envoltura-flexible sep-g margen-abajo">
+<div class="caja caja-libre espacio-grande margen-abajo">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul relleno">
         <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
     </div>
@@ -71,7 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="cuadricula-secundaria" style="margin-top: 30px;">
-  <div class="d-flex direccion-columna sep-g relleno">
+  <div class="caja direccion-columna espacio-grande relleno">
 
     <div class="panel">
       <div class="titulo-tarjeta">
@@ -86,9 +86,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
-                    <div class="d-flex espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo color-primario"><?= strtoupper($anu['tituloAnuncio']) ?></b>
-                        <span class="atenuado"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></span>
+                    <div class="caja espacio-entre-elementos alinear-centro">
+                        <strong class="anuncio-titulo color-primario"><?= strtoupper($anu['tituloAnuncio']) ?></strong>
+                        <span class="texto-suave"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></span>
                     </div>
                     <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
                     <div style="margin-top: 10px; text-align: right;">
@@ -102,19 +102,19 @@ include_once __DIR__ . "/../comunes/nav.php";
             } ?>
         </div>
       <?php } else { ?>
-        <p class="atenuado">No hay anuncios activos actualmente.</p>
+        <p class="texto-suave">No hay anuncios activos actualmente.</p>
       <?php } ?>
     </div>
   </div>
 
-  <div class="d-flex direccion-columna sep-g relleno">
+  <div class="caja direccion-columna espacio-grande relleno">
     <div class="panel">
       <div class="titulo-tarjeta">
         <h3>PRÓXIMOS EVENTOS</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventosProximos)) { ?>
-            <p class="atenuado">No hay eventos próximos.</p>
+            <p class="texto-suave">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php
             $cest = 0;
@@ -127,7 +127,7 @@ include_once __DIR__ . "/../comunes/nav.php";
               <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>
               <div>
                 <p class="texto-negrita"><?= strtoupper($ev['tituloEvento']) ?></p>
-                <p class="atenuado"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
+                <p class="texto-suave"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
               </div>
             </div>
             <?php

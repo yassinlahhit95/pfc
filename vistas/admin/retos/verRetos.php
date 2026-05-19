@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -36,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel margen-abajo">
-    <div class="d-flex envoltura-flexible sep-g">
+    <div class="caja caja-libre espacio-grande">
         <div class="campo relleno">
             <label>FILTRAR POR NIVEL:</label>
             <select id="selectFiltroNivel" onchange="aplicarFiltrosRetos()">
@@ -63,7 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaRetos">
             <thead>
                 <tr>
@@ -96,11 +96,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="modificarRetos.php?idReto=<?= $reto['idReto'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/retos/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este reto?')">
+                                <form action="../../../controladores/admin/retos/borrar.php" method="POST" onsubmit="return confirm('Eliminar este reto?')">
                                     <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

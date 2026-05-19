@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -49,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <form method="GET" action="../../../vistas/profesores/calificaciones/agregar.php" class="d-flex alinear-centro sep-g">
+    <form method="GET" action="../../../vistas/profesores/calificaciones/agregar.php" class="caja alinear-centro espacio-grande">
         <div class="campo relleno">
             <label for="idCiclo">1. Selecciona el Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
@@ -89,21 +89,21 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
             <input type="hidden" name="idCiclo" value="<?= $idCiclo ?>">
             
-            <div class="tcont">
+            <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
                         <tr>
                             <th>Alumno</th>
-                            <th>1ª Ev</th>
-                            <th>1ª Final</th>
-                            <th>2ª Ev</th>
-                            <th>2ª Final</th>
+                            <th>1º Ev</th>
+                            <th>1º Final</th>
+                            <th>2º Ev</th>
+                            <th>2º Final</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($listaDeEstudiantes)) { ?>
-                            <tr><td colspan="6" class="vacio">No hay alumnos en este ciclo todavía.</td></tr>
+                            <tr><td colspan="6" class="vacio">No hay alumnos en este ciclo todavia.</td></tr>
                         <?php } else { ?>
                             <?php foreach ($listaDeEstudiantes as $estudiante) { 
                                 $idEstudiante = $estudiante['idEstudiante'];
@@ -144,11 +144,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             
             <?php if (!empty($listaDeEstudiantes)) { ?>
                 <div class="acciones">
-                    <button type="submit" name="guardarNotas" class="boton-primario">
-                        <i class="fas fa-save"></i> GUARDAR CALIFICACIONES
-                    </button>
+                    <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR CALIFICACIONES">
                     <button type="button" class="boton-secundario" onclick="window.location.reload();"><i class="fas fa-eraser"></i> LIMPIAR</button>
-                    <label class="etiqueta-notificacion ml-auto">
+                    <label class="texto-aviso ml-auto">
                         <input type="checkbox" name="notificarEstudiantes" value="1"> 
                         <i class="fas fa-envelope"></i> Enviar aviso por email
                     </label>

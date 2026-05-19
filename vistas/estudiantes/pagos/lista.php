@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -59,14 +59,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3>HISTORIAL DE PAGOS</h3>
     </div>
     
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
                     <th>FECHA</th>
                     <th>CONCEPTO / TIPO</th>
                     <th>MONTO</th>
-                    <th>PRÓXIMO PAGO</th>
+                    <th>PROXIMO PAGO</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,7 +79,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
                         <td>
-                            <span class="etiqueta-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
+                            <span class="texto-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td>
@@ -100,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p>Si detectas algún error en tus pagos, por favor contacta con administración a través de la sección de mensajería.</p>
+    <p>avisame si hay algun error a travs de la seccion de mensajeria.</p>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

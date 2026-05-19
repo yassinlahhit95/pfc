@@ -38,28 +38,24 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
         
         <div class="campo">
-            <label for="tituloAnuncio">Título del Anuncio *</label>
+            <label for="tituloAnuncio">Título del Anuncio </label>
             <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
             <?php if (isset($errores['tituloAnuncio'])) { ?>
-                <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></b>
+                <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo margen-arriba">
-            <label for="contenidoAnuncio">Contenido del Anuncio *</label>
+            <label for="contenidoAnuncio">Contenido del Anuncio </label>
             <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
             <?php if (isset($errores['contenidoAnuncio'])) { ?>
-                <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></b>
+                <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarAnuncio" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="submit" name="actualizarAnuncio" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

@@ -1,4 +1,4 @@
-Ôªø<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -34,13 +34,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="d-flex espacio-entre-elementos margen-abajo">
+    <div class="caja espacio-entre-elementos margen-abajo">
         <div>
-            <p class="atenuado">Enviado por:</p>
+            <p class="texto-suave">Enviado por:</p>
             <h3><?= $mensaje['nombreEstudiante'] ?></h3>
         </div>
         <div>
-            <p class="atenuado">Fecha:</p>
+            <p class="texto-suave">Fecha:</p>
             <p class="texto-negrita"><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></p>
         </div>
     </div>
@@ -55,21 +55,17 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
         
         <div class="campo">
-            <label for="respuesta">Tu Respuesta / Explicaci√≥n:</label>
-            <textarea name="respuesta" id="respuesta" rows="4" placeholder="Escribe aqu√≠ tu respuesta..." class="<?= isset($errores['respuesta']) ? 'input-error' : '' ?>"><?= $mensaje['respuesta'] ?></textarea>
+            <label for="respuesta">Tu Respuesta / ExplicaciÛn:</label>
+            <textarea name="respuesta" id="respuesta" rows="4" placeholder="Escribe aquÌ tu respuesta..." class="<?= isset($errores['respuesta']) ? 'input-error' : '' ?>"><?= $mensaje['respuesta'] ?></textarea>
             <?php if (isset($errores['respuesta'])) { ?>
-                <strong class="error-campo"><?= $errores['respuesta'] ?></b>
+                <strong class="error-campo"><?= $errores['respuesta'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="guardarRespuesta" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR RESPUESTA
-            </button>
-            <button type="submit" name="marcarLeido" class="boton-secundario">
-                <i class="fas fa-check"></i> MARCAR COMO LE√çDO
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
+            <input type="submit" name="guardarRespuesta" class="boton-primario" value="GUARDAR RESPUESTA">
+            <input type="submit" name="marcarLeido" class="boton-secundario" value="MARCAR COMO LEÕDO">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

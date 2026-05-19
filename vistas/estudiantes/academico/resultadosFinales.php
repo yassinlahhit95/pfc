@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -65,10 +65,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                     <!-- TFG -->
                     <tr>
-                        <td class="texto-negrita color-primario">TFG — TRABAJO FIN DE GRADO</td>
-                        <td colspan="2" class="atenuado">Calificación Directa</td>
+                        <td class="texto-negrita color-primario">TFG : TRABAJO FIN DE GRADO</td>
+                        <td colspan="2" class="texto-suave">Calificación Directa</td>
                         <td class="texto-negrita color-primario">
-                            <?= $resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : '—' ?>
+                            <?= $resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : ' ' ?>
                         </td>
                         <td class="texto-negrita">
                             <?php 
@@ -86,14 +86,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="titulo-tarjeta"><h3>RESUMEN GLOBAL DEL CICLO</h3></div>
-    <div class="d-flex espacio-entre-elementos alinear-centro">
+    <div class="caja espacio-entre-elementos alinear-centro">
         <div>
-            <p class="atenuado">Promedio General:</p>
+            <p class="texto-suave">Promedio General:</p>
             <h2 class="color-primario"><?= $resumenFinal['promedio_global'] ?></h2>
         </div>
         <div style="text-align: right;">
-            <p class="atenuado">Estado Académico:</p>
-            <span class="bolita <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
+            <p class="texto-suave">Estado Académico:</p>
+            <span class="indicador-estado <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
                 <?= $resumenFinal['estado_global'] ?>
             </span>
         </div>
@@ -101,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="margen-arriba tarjeta-gris-suave">
-    <p><b>Nota:</b> El cálculo se basa en el 75% de las notas de evaluación y el 25% de la media de los retos del módulo.</p>
+    <p><b>Nota:</b> El calculo se basa en el 75% de las notas de evaluacion y el 25% de la media de los retos del modulo.</p>
     <p><b>Estados:</b> <span class="texto-verde">Aprobado (>= 5.0)</span>, <span class="texto-rojo">Suspenso (< 5.0)</span>, <span class="texto-gris">Pendiente (Sin notas)</span>.</p>
 </div>
 

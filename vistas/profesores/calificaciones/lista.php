@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel margen-abajo">
-    <form method="GET" action="" class="d-flex al-fin sep-g">
+    <form method="GET" action="" class="caja al-final espacio-grande">
         <div class="campo relleno">
             <label for="idCiclo">Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
@@ -59,9 +59,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div class="campo relleno">
-            <label for="idModulo">Filtrar por MÃ³dulo:</label>
+            <label for="idModulo">Filtrar por Módulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis MÃ³dulos --</option>
+                <option value="0">-- Todos mis Módulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
@@ -78,16 +78,16 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaNotasProf">
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>MÃ³dulo</th>
-                    <th>1Âª Ev</th>
-                    <th>1Âª Final</th>
-                    <th>2Âª Ev</th>
-                    <th>2Âª Final</th>
+                    <th>Módulo</th>
+                    <th>1ª Ev</th>
+                    <th>1ª Final</th>
+                    <th>2ª Ev</th>
+                    <th>2ª Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -104,9 +104,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td>
                                 <div class="botones-accion">
                                     <?php if ($nota['idCalificacion']) { ?>
-                                        <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar" title="Editar Nota"><i class="fas fa-edit"></i></a>
+                                        <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
                                     <?php } else { ?>
-                                        <a href="agregar.php?idCiclo=<?= $idCiclo ?>&idModulo=<?= $nota['idModulo'] ?>" class="btn-accion btn-ver" style="background: #27ae60;" title="Calificar"><i class="fas fa-plus"></i></a>
+                                        <a href="agregar.php?idCiclo=<?= $idCiclo ?>&idModulo=<?= $nota['idModulo'] ?>" class="btn-accion btn-ver" style="background: #27ae60;"><i class="fas fa-plus"></i></a>
                                     <?php } ?>
                                 </div>
                             </td>

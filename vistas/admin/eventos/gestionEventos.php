@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
@@ -37,7 +37,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="titulo-tarjeta">
         <h3>Eventos Programados</h3>
     </div>
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaEventos">
             <thead>
                 <tr>
@@ -55,7 +55,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                     <tr>
                         <td>
                             <b><?= date('d/m/Y', strtotime($evento['fechaEvento'])) ?></b><br>
-                            <span class="atenuado"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</span>
+                            <span class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</span>
                         </td>
                         <td>
                             <span class="texto-negrita"><?= $evento['tituloEvento'] ?></span><br>
@@ -67,11 +67,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarEvento.php?idEvento=<?= $evento['idEvento'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/eventos/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este evento?')">
+                                <form action="../../../controladores/admin/eventos/borrar.php" method="POST" onsubmit="return confirm('Eliminar este evento?')">
                                     <input type="hidden" name="idEvento" value="<?= $evento['idEvento'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

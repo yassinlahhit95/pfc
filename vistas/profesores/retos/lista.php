@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÃ“N DE RETOS</h1>
+    <h1>GESTIÓN DE RETOS</h1>
     <div class="acciones-pagina">
         <a href="agregar.php" class="boton-primario">NUEVO RETO</a>
     </div>
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -56,12 +56,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><?= $reto['horasReto'] ?> h</td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar" title="Editar"><i class="fas fa-edit"></i></a>
-                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('Â¿EstÃ¡ seguro de que desea eliminar este reto?');"
+                                    <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este reto?');"
                                         <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
-                                        <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>
                                 </div>
                             </td>

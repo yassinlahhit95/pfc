@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 $titulo_pagina = "AULAPRO | CICLOS FORMATIVOS";
 $seccion = 'ciclos';
@@ -45,7 +45,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <div class="panel">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaCiclos">
             <thead>
                 <tr>
@@ -62,7 +62,7 @@ unset($_SESSION['error'], $_SESSION['exito']);
                 <?php } else { ?>
                     <?php foreach ($todos_los_ciclos as $ciclo) { 
                         $nombresTutores = listarNombresTutoresCiclo($ciclo['idCiclo']);
-                        $textoTutores = !empty($nombresTutores) ? implode(", ", $nombresTutores) : '<span class="atenuado">Sin asignar</span>';
+                        $textoTutores = !empty($nombresTutores) ? implode(", ", $nombresTutores) : '<span class="texto-suave">Sin asignar</span>';
                     ?>
                     <tr>
                         <td><?= $ciclo['idCiclo'] ?></td>
@@ -74,11 +74,9 @@ unset($_SESSION['error'], $_SESSION['exito']);
                                 <a href="modificarCiclos.php?idCiclo=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/ciclos/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este ciclo?')">
+                                <form action="../../../controladores/admin/ciclos/borrar.php" method="POST" onsubmit="return confirm('Eliminar este ciclo?')">
                                     <input type="hidden" name="idCiclo" value="<?= $ciclo['idCiclo'] ?>">
-                                    <button type="submit" class="btn-accion btn-eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
                             </div>
                         </td>

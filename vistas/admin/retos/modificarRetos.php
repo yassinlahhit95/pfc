@@ -49,39 +49,39 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
 
         <div class="campo">
-                <label for="nombreReto">Nombre del Reto *</label>
+                <label for="nombreReto">Nombre del Reto</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>">
                 <?php if (isset($errores['nombreReto'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreReto'] ?></b>
+                    <strong class="error-campo"><?= $errores['nombreReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="horasReto">Horas Totales Estimadas *</label>
+                <label for="horasReto">Horas Totales Estimadas</label>
                 <input type="number" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>">
                 <?php if (isset($errores['horasReto'])) { ?>
-                    <strong class="error-campo"><?= $errores['horasReto'] ?></b>
+                    <strong class="error-campo"><?= $errores['horasReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="fechaInicioReto">Fecha de Inicio *</label>
+                <label for="fechaInicioReto">Fecha de Inicio</label>
                 <input type="date" name="fechaInicioReto" id="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>">
                 <?php if (isset($errores['fechaInicioReto'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaInicioReto'] ?></b>
+                    <strong class="error-campo"><?= $errores['fechaInicioReto'] ?></strong>
                 <?php } ?>
             </div>
 
             <div class="campo">
-                <label for="fechaFinReto">Fecha de Fin *</label>
+                <label for="fechaFinReto">Fecha de Fin</label>
                 <input type="date" name="fechaFinReto" id="fechaFinReto" value="<?= $reto['fechaFin'] ?>">
                 <?php if (isset($errores['fechaFinReto'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaFinReto'] ?></b>
+                    <strong class="error-campo"><?= $errores['fechaFinReto'] ?></strong>
                 <?php } ?>
             </div>
 
         <div class="campo">
-            <label for="modulosReto">Módulo Asociado *</label>
+            <label for="modulosReto">Módulo Asociado</label>
             <select name="modulosReto" id="modulosReto">
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
@@ -91,15 +91,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
             <?php if (isset($errores['modulosReto'])) { ?>
-                <strong class="error-campo"><?= $errores['modulosReto'] ?></b>
+                <strong class="error-campo"><?= $errores['modulosReto'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="acciones">
-            <button type="submit" name="actualizarReto" class="boton-primario">
-                <i class="fas fa-save"></i> GUARDAR CAMBIOS
-            </button>
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname + window.location.search;"><i class="fas fa-eraser"></i> LIMPIAR</button>
+            <input type="submit" name="actualizarReto" class="boton-primario" value="GUARDAR CAMBIOS">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

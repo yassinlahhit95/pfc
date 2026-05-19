@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <form method="GET" action="calificacionesTFG.php" class="d-flex alinear-centro sep-g envoltura-flexible">
+    <form method="GET" action="calificacionesTFG.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
             <label>Filtrar por Ciclo:</label>
             <select name="idCiclo" id="selectCicloTFG" onchange="this.form.submit()">
@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
 
 <div class="panel margen-arriba">
-    <div class="tcont">
+    <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
                 <tr>
@@ -74,16 +74,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= $item['abreviaturaCiclo'] ?></td>
                         <td>
                             <?php if (!empty($item['archivoTFG'])) { ?>
-                                <span class="bolita activo-verde">ENTREGADO</span>
+                                <span class="indicador-estado activo-verde">ENTREGADO</span>
                             <?php } else { ?>
-                                <span class="bolita inactivo-rojo">PENDIENTE</span>
+                                <span class="indicador-estado inactivo-rojo">PENDIENTE</span>
                             <?php } ?>
                         </td>
                         <td>
                             <?php if (!empty($item['fechaSubidaTFG'])) { ?>
                                 <?= date('d/m/Y', strtotime($item['fechaSubidaTFG'])) ?>
                             <?php } else { ?>
-                                <span class="atenuado">---</span>
+                                <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
@@ -92,7 +92,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <i class="fas fa-file-pdf"></i> Descargar
                                 </a>
                             <?php } else { ?>
-                                <span class="atenuado">---</span>
+                                <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
@@ -101,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <?= $item['nota'] ?>
                                 </span>
                             <?php } else { ?>
-                                <span class="atenuado">---</span>
+                                <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
@@ -125,9 +125,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                             Notificar al estudiante por email y push
                                         </label>
                                     </div>
-                                    <button type="submit" name="calificarTFG" class="boton-primario">
-                                        <i class="fas fa-save"></i> Guardar Nota
-                                    </button>
+                                    <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Nota">
                                 </form>
                             </div>
                         </td>

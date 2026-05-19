@@ -1,6 +1,7 @@
 # Archivos de configuración y secretos
 .env
 config/secrets.php
+modelos/conectar.php
 config/*.json
 *.key
 *.pem

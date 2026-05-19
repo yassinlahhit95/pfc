@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $error = $_SESSION['error'] ?? null;
@@ -45,38 +45,38 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> Información del Mensaje</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> Informacion del Mensaje</h3>
     </div>
     
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">De</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administración (Sistema)' ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administracion (Sistema)' ?>
         </div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Enviado el</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Enviado el</div>
         <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Asunto</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Asunto</div>
         <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Contenido</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Contenido</div>
         <div class="valor-detalle valor-mensaje"><?= $mensaje['descripcion'] ?></div>
     </div>
 
-    <div class="fila-dat">
-        <div class="etiqueta-detalle">Estado</div>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Estado</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="bolita activo-verde">VISTO</span>
+                <span class="indicador-estado activo-verde">VISTO</span>
             <?php } else { ?>
-                <span class="bolita inactivo-rojo">NUEVO / SIN LEER</span>
+                <span class="indicador-estado inactivo-rojo">NUEVO / SIN LEER</span>
             <?php } ?>
         </div>
     </div>
