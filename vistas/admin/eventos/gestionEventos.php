@@ -1,22 +1,22 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
 }
 
-$titulo_pagina = "AULAPRO | GESTIÓN DE EVENTOS";
-$seccion = 'eventos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $todos_los_eventos = listarEventosProximos();
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
+$titulo_pagina = "AULAPRO | GESTIÓN DE EVENTOS";
+$seccion = 'eventos';
+include_once __DIR__ . "/../comunes/nav.php";
 
-unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="cabecera">
@@ -29,8 +29,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel margen-arriba">
@@ -85,5 +85,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <script>
 iniciarPaginacion('tablaEventos', 10);
 </script>
-
 

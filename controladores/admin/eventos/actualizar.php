@@ -32,7 +32,7 @@ if (isset($_POST['actualizarEvento'])) {
             header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
             exit;
         }
-        $_SESSION['error'] = "Error al actualizar.";
+        $_SESSION['errores'] = "Error al actualizar.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_evento'] = $_POST;

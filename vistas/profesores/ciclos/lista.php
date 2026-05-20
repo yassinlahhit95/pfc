@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
     header("Location: ../../login.php");
@@ -10,10 +14,6 @@ if (!$idProfesor) {
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $ciclos = listarCiclosDeProfesor($idProfesor);
-
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
 
 $tituloDelPagina = "AULAPRO | MIS CICLOS FORMATIVOS";
 $seccionActual = 'ciclos';
@@ -27,8 +27,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -61,7 +61,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-
 

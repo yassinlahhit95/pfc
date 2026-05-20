@@ -16,7 +16,7 @@ if (isset($_POST['idEstudiante'])) {
         }
         $_SESSION['exito'] = "TFG eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el TFG.";
+        $_SESSION['errores'] = "Error al eliminar el TFG.";
     }
 }
 

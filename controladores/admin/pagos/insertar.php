@@ -24,7 +24,7 @@ if (isset($_POST['guardarPago'])) {
     }
 
     if ($hoy > $fechaLimite) {
-        $_SESSION['error'] = "Periodo de pagos terminado.";
+        $_SESSION['errores'] = "Periodo de pagos terminado.";
         header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
         exit;
     }
@@ -58,7 +58,7 @@ if (isset($_POST['guardarPago'])) {
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         }
-        $_SESSION['error'] = "Error al registrar el pago en la base de datos.";
+        $_SESSION['errores'] = "Error al registrar el pago en la base de datos.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_pago'] = $_POST;

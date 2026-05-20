@@ -1,12 +1,11 @@
 ﻿<?php
 session_start();
 
-$idProfesor = $_SESSION['idProfesor'] ?? '';
-
-$error = $_SESSION['error'] ?? '';
 $exito = $_SESSION['exito'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
+$idProfesor = $_SESSION['idProfesor'] ?? '';
 
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -15,7 +14,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 $id = $_GET['id'] ?? null;
 
 if (!$id || !is_numeric($id)) {
-    $_SESSION['error'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
+    $_SESSION['errores'] = strtoupper("ID DE CALIFICACIÓN NO VÁLIDO.");
     header("Location: lista.php");
     exit;
 }
@@ -23,7 +22,7 @@ if (!$id || !is_numeric($id)) {
 $nota = obtenerCalificacionPorId($id);
 
 if (!$nota) {
-    $_SESSION['error'] = strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.");
+    $_SESSION['errores'] = strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.");
     header("Location: lista.php");
     exit;
 }
@@ -44,8 +43,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">

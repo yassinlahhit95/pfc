@@ -37,7 +37,7 @@ if (isset($_POST['enviarMensaje'])) {
         header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
         exit;
     } else {
-        $_SESSION['error'] = "Error al guardar el mensaje.";
+        $_SESSION['errores'] = "Error al guardar el mensaje.";
         $_SESSION['datos_mensaje'] = $_POST;
         header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
         exit;

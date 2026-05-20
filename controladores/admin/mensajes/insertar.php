@@ -103,7 +103,7 @@ if (isset($_POST['enviarMensaje'])) {
         exit;
     }
 
-    $_SESSION['error'] = "No se pudo enviar el mensaje.";
+    $_SESSION['errores'] = "No se pudo enviar el mensaje.";
     header("Location: ../../../vistas/admin/mensajes/agregar.php");
     exit;
 }

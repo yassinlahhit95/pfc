@@ -1,27 +1,27 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
     exit;
 }
-
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
-unset($_SESSION['error'], $_SESSION['exito']);
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idProfesor = $_SESSION['idProfesor'];
 $listaDeMensajes = listarMensajesParaProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | MENSAJERÍA";
+$tituloDelPagina = "AULAPRO | MENSAJERIA";
 $seccionActual = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>BUZÓN DE MENSAJES</h1>
+    <h1>BUZON DE MENSAJES</h1>
     <a href="../../../vistas/profesores/mensajes/agregar.php" class="boton-primario">
         <i class="fas fa-plus"></i> REDACTAR MENSAJE
     </a>
@@ -30,8 +30,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -50,7 +50,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (empty($listaDeMensajes)) { ?>
-                    <tr><td colspan="7" class="vacio">No hay mensajes registrados aún.</td></tr>
+                    <tr><td colspan="7" class="vacio">No hay mensajes registrados aun.</td></tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
@@ -60,9 +60,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
-                                    echo 'Tú (Profesor)';
+                                    echo 'T (Profesor)';
                                 } elseif ($mensaje['emisor_rol'] == 'admin') {
-                                    echo 'DIRECCIÓN (ADMIN)';
+                                    echo 'DIRECCIÃ“N (ADMIN)';
                                 } else {
                                     echo $mensaje['nombreEstudiante'] ?? 'Estudiante';
                                 }
@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
-                                <span class="indicador-estado activo-verde">Leído</span>
+                                <span class="indicador-estado activo-verde">Leido</span>
                             <?php } else { ?>
                                 <span class="indicador-estado inactivo-rojo">Nuevo</span>
                             <?php } ?>
@@ -91,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="../../../vistas/profesores/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('¿Eliminar este mensaje?')">
+                                <form action="../../../controladores/profesores/mensajes/borrar.php" method="POST" onsubmit="return confirm('Eliminar este mensaje?')">
                                     <input type="hidden" name="idReclamacion" value="<?= $mensaje['idReclamacion'] ?>">
                                     <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                 </form>
@@ -106,6 +106,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
 

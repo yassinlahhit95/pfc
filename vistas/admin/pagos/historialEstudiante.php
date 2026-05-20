@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
@@ -11,10 +15,6 @@ if (empty($idEstudiante)) {
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 $listaPagos = listarPagosPorEstudiante($idEstudiante);
-
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
 
 $titulo_pagina = "AULAPRO | HISTORIAL DE PAGOS";
 $seccion = 'pagos';
@@ -29,8 +29,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -63,7 +63,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

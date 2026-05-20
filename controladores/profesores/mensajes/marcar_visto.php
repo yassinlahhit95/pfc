@@ -11,7 +11,7 @@ if (isset($_POST['marcarVisto'])) {
         $_SESSION['exito'] = "Mensaje visto.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al actualizar.";
+        $_SESSION['errores'] = "Error al actualizar.";
     }
     
     header("Location: ../../../vistas/profesores/mensajes/detalles.php?id=" . $idReclamacion);

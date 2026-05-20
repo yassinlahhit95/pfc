@@ -1,15 +1,15 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
     header("Location: ../../login.php");
     exit;
 }
-
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
@@ -58,8 +58,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <h2 class="margen-abajo texto-oscuro">Resumen de Actividad</h2>
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="info-estadistica"><h3><?= count($listaEstudiantes) ?></h3><p>Alumnos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
+    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Modulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
     <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
@@ -85,7 +85,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="caja direccion-columna espacio-grande relleno">
 
     <div class="panel">
-      <div class="titulo-tarjeta"><h3>Acciones Rápidas</h3></div>
+      <div class="titulo-tarjeta"><h3>Acciones Rapidas</h3></div>
       <div class="cuadricula-acciones-rapidas">
         <a href="../calificaciones/lista.php" class="accion-rapida"><span>Poner Notas</span></a>
         <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
@@ -117,7 +117,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="panel">
       <div class="titulo-tarjeta">
-        <h3>Últimos Avisos</h3>
+        <h3>Ultimos Avisos</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div>
@@ -146,11 +146,11 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="caja direccion-columna espacio-grande relleno">
     <div class="panel">
       <div class="titulo-tarjeta">
-        <h3>Próximos Eventos</h3>
+        <h3>Proximos Eventos</h3>
       </div>
       <div class="lista-eventos">
         <?php if (empty($listaEventos)) { ?>
-            <p class="texto-suave">No hay eventos próximos.</p>
+            <p class="texto-suave">No hay eventos proximos.</p>
         <?php } else { ?>
             <?php
             $ce = 0;

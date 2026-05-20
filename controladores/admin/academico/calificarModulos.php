@@ -41,7 +41,7 @@ if (isset($_POST['guardarNotas'])) {
     if (!$hayError) {
         $_SESSION['exito'] = "Calificaciones guardadas correctamente.";
     } else {
-        $_SESSION['error'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
+        $_SESSION['errores'] = "Error al procesar las notas. Deben ser números entre 0 y 10.";
     }
 
     $idCiclo = trim($_POST['idCiclo'] ?? '');

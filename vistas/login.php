@@ -1,37 +1,14 @@
 <?php
-/* 
-   PROYECTO: AulaPro - Sistema de Gestión Escolar
-   AUTOR: Yassin Lahhit (CPS Ibaiondo)
-   FECHA: Mayo 2024
-   NOTA: Esta es la página principal de entrada para todos los usuarios.
-   Rediseñada en Mayo 2026.
-*/
 
 session_start();
 
-if (isset($_SESSION['idAdmin'])) {
-    header("Location: admin/inicio/dashboard.php");
-    exit;
-} else if (isset($_SESSION['idProfesor'])) {
-    header("Location: profesores/inicio/dashboard.php");
-    exit;
-} else if (isset($_SESSION['idEstudiante'])) {
-    header("Location: estudiantes/inicio/dashboard.php");
-    exit;
-}
+if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard.php");      exit; }
+if (isset($_SESSION['idProfesor']))   { header("Location: profesores/inicio/dashboard.php");  exit; }
+if (isset($_SESSION['idEstudiante'])) { header("Location: estudiantes/inicio/dashboard.php"); exit; }
 
-$errores = $_SESSION['errores'] ?? [];
+$errores = $_SESSION['errores'] ?? null;
 $datos = $_SESSION['datos_login'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_login']);
-
-$mensajeError = "";
-if (!empty($errores)) {
-    if (isset($errores['usuario']) && isset($errores['contrasena'])) {
-        $mensajeError = "Usuario y contraseña son obligatorios.";
-    } else {
-        $mensajeError = reset($errores);
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -64,10 +41,10 @@ if (!empty($errores)) {
     </div>
 
     <div class="login-card">
-        <?php if (!empty($mensajeError)) { ?>
+        <?php if (is_string($errores) && $errores) { ?>
             <div id="errorMessage" class="error-message">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <?php echo $mensajeError; ?>
+                <?= $errores ?>
             </div>
         <?php } ?>
 

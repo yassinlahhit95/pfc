@@ -8,7 +8,7 @@ if (isset($_POST['idCiclo'])) {
     if (eliminarCiclo($idCiclo)) {
         $_SESSION['exito'] = "Ciclo eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

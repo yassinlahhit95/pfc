@@ -30,7 +30,7 @@ if (isset($_POST['actualizarArticulo'])) {
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         }
-        $_SESSION['error'] = "No se puede actualizar el artículo.";
+        $_SESSION['errores'] = "No se puede actualizar el artículo.";
     } else {
         $_SESSION['errores'] = $errores_campos;
         $_SESSION['datos_inventario'] = $_POST;

@@ -1,11 +1,11 @@
 ﻿<?php
 session_start();
 
-$error = $_SESSION['error'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_inventario'] ?? [];
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_inventario']);
+$datos = $_SESSION['datos_inventario'] ?? [];
 
 $titulo_pagina = "AULAPRO | AÑADIR NUEVO ARTÍCULO";
 $seccion = 'inventario';
@@ -18,9 +18,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h1>NUEVO ARTÍCULO</h1>
     </div>
 
-    <?php if ($error) { ?>
-        <div class="mensaje-error"><?= $error ?></div>
-    <?php } ?>
+    <?php if (is_string($errores) && $errores) { ?>
+        <div class="mensaje-error"><?= $errores ?></div>
+<?php } ?>
 
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/inventario/insertar.php">

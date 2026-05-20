@@ -53,7 +53,7 @@ if (isset($_POST['actualizarPerfil'])) {
         header("Location: ../../../vistas/estudiantes/perfil/ver.php");
         exit;
     } else {
-        $_SESSION['error'] = "Error al guardar los datos.";
+        $_SESSION['errores'] = "Error al guardar los datos.";
         $_SESSION['datos_perfil'] = $_POST;
         header("Location: ../../../vistas/estudiantes/perfil/editar.php");
         exit;

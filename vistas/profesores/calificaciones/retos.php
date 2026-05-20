@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -28,11 +32,6 @@ if ($idReto) {
     $listaDeEstudiantes = listarEstudiantesPorCiclo($idCiclo);
 }
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
-
 $tituloDelPagina = "AULAPRO | NOTAS DE RETOS";
 $seccionActual = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -57,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo relleno">
-            <label for="idModulo">2. Seleccione Módulo:</label>
+            <label for="idModulo">2. Seleccione Modulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()" <?= empty($idCiclo) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar --</option>
                 <?php foreach ($listaDeModulos as $modulo) { ?>
@@ -91,8 +90,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <?php if ($idReto) { ?>

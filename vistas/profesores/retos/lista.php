@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-unset($_SESSION['error'], $_SESSION['exito']);
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
@@ -21,14 +21,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE RETOS</h1>
+    <h1>GESTION DE RETOS</h1>
     <div class="acciones-pagina">
         <a href="agregar.php" class="boton-primario">NUEVO RETO</a>
     </div>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td>
                                 <div class="botones-accion">
                                     <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
-                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este reto?');"
+                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('Estï¿½ seguro de que desea eliminar este reto?');"
                                         <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
                                         <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>
@@ -76,8 +76,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-
-
 

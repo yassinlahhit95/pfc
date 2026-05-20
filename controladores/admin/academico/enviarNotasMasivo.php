@@ -11,7 +11,7 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
     $estudiantesEnCiclo = listarEstudiantesPorCiclo($idCiclo);
     
     if (empty($estudiantesEnCiclo)) {
-        $_SESSION['error'] = "No hay estudiantes registrados en este ciclo para enviar correos.";
+        $_SESSION['errores'] = "No hay estudiantes registrados en este ciclo para enviar correos.";
     } else {
         $enviados = enviarEmailNotasClase($idCiclo);
         
@@ -19,12 +19,12 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
             $_SESSION['exito'] = "Se han enviado $enviados correos electrónicos correctamente.";
         } else {
             $ultimoError = $_SESSION['ultimo_error_email'] ?? 'Sin respuesta del servidor';
-            $_SESSION['error'] = "Error crítico: No se pudo enviar ningún correo. Detalle: $ultimoError";
+            $_SESSION['errores'] = "Error crítico: No se pudo enviar ningún correo. Detalle: $ultimoError";
             unset($_SESSION['ultimo_error_email']);
         }
     }
 } else {
-    $_SESSION['error'] = "No se proporcionó el ID del ciclo.";
+    $_SESSION['errores'] = "No se proporcionó el ID del ciclo.";
 }
 
 header("Location: ../../../vistas/admin/academico/resultadosFinales.php?idCiclo=" . ($idCiclo ?? ''));

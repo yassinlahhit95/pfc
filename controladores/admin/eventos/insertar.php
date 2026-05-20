@@ -27,7 +27,7 @@ if (isset($_POST['guardarEvento'])) {
         header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo guardar el evento.";
+    $_SESSION['errores'] = "No se pudo guardar el evento.";
     header("Location: ../../../vistas/admin/eventos/agregarEvento.php");
     exit;
 }

@@ -19,11 +19,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1>MI PERFIL</h1>
-        <p class="subtitulo">Información de tu cuenta de profesor</p>
+        <p class="subtitulo">Informacion de tu cuenta de profesor</p>
     </div>
     <div class="acciones-pagina">
         <a href="editar.php" class="boton-primario">
-            <i class="fas fa-edit"></i> EDITAR INFORMACIÓN
+            <i class="fas fa-edit"></i> EDITAR INFORMACION
         </a>
     </div>
 </div>
@@ -44,17 +44,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-datos">
-        <div class="nombre-detalle">Teléfono</div>
+        <div class="nombre-detalle">Telefono</div>
         <div class="valor-detalle"><?= $profesor['telefonoProfesor'] ?></div>
     </div>
 
     <div class="fila-datos">
-        <div class="nombre-detalle">DNI / Identificación</div>
+        <div class="nombre-detalle">DNI / Identificacion</div>
         <div class="valor-detalle"><?= $profesor['dniProfesor'] ?></div>
     </div>
 
     <div class="fila-datos">
-        <div class="nombre-detalle">Dirección</div>
+        <div class="nombre-detalle">Direccion</div>
         <div class="valor-detalle"><?= $profesor['direccionProfesor'] ?></div>
     </div>
     

@@ -1,25 +1,21 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
     header("Location: ../../login.php");
     exit;
 }
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
-
-$tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
-$seccionActual = 'resultados_finales';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $todos_los_ciclos = listarCiclosDeProfesor($idProfesor);
 
@@ -48,7 +44,6 @@ if ($id_ciclo_elegido) {
         $id_est = $estudianteIndividual['idEstudiante'];
         $nombre_est = strtoupper($estudianteIndividual['nombreEstudiante']);
         
-        require_once __DIR__ . "/../../../modelos/tfg.php";
         $notaTFG_raw = obtenerCalificacionTFG($id_est);
         $notaTFG = $notaTFG_raw ? $notaTFG_raw['nota'] : ' ';
 
@@ -116,6 +111,10 @@ if ($id_ciclo_elegido) {
         );
     }
 }
+
+$tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
+$seccionActual = 'resultados_finales';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
@@ -126,8 +125,8 @@ if ($id_ciclo_elegido) {
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -190,7 +189,7 @@ if ($id_ciclo_elegido) {
                             <td class="<?= $clase_estado ?> texto-negrita">
                                 <?= $filaIndividual['estado'] ?>
                                 <?php if ($filaIndividual['alert'] == true) { ?>
-                                    <span title='Tiene m�dulos suspensos'>(!)</span>
+                                    <span title='Tiene módulos suspensos'>(!)</span>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -203,7 +202,4 @@ if ($id_ciclo_elegido) {
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

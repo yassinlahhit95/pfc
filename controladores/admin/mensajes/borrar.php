@@ -11,7 +11,7 @@ if (isset($_POST['idReclamacion'])) {
         $_SESSION['exito'] = "Reclamación eliminada.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

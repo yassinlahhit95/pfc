@@ -30,7 +30,7 @@ if (isset($_POST['actualizarAnuncio'])) {
             exit;
         }
 
-        $_SESSION['error'] = "Error al actualizar el anuncio.";
+        $_SESSION['errores'] = "Error al actualizar el anuncio.";
     } else {
         $_SESSION['errores'] = $listaErrores;
         $_SESSION['datos_anuncio'] = $_POST;

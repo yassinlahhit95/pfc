@@ -41,7 +41,7 @@ if (isset($_POST['guardarAnuncio'])) {
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo publicar el anuncio.";
+        $_SESSION['errores'] = "No se pudo publicar el anuncio.";
     } else {
         $_SESSION['errores'] = $listaErrores;
         $_SESSION['datos_anuncio'] = $_POST;

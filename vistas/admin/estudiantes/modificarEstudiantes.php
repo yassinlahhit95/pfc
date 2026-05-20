@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
@@ -12,7 +16,7 @@ if (!$estudiante) {
 }
 
 // Datos de error o datos actuales
-$errores = $_SESSION['errores'] ?? [];
+
 $datos_sesion = $_SESSION['datos_estudiante'] ?? null;
 
 // Si hay datos en la sesion (por un error), los mezclamos con los de la base de datos
@@ -21,8 +25,6 @@ if ($datos_sesion) {
 }
 
 $lista_ciclos = listarTodosLosCiclos();
-
-unset($_SESSION['datos_estudiante'], $_SESSION['errores']);
 
 $titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
 $seccion = 'estudiantes';

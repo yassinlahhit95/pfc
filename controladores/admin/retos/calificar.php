@@ -15,7 +15,7 @@ if (isset($_POST['guardarNotas'])) {
         $_SESSION['exito'] = "Notas guardadas.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Faltan datos para calificar.";
+        $_SESSION['errores'] = "Faltan datos para calificar.";
     }
     
     header("Location: ../../../vistas/admin/retos/verRetos.php");

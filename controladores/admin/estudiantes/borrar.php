@@ -8,7 +8,7 @@ if (isset($_POST['idEstudiante'])) {
     if (eliminarEstudiante($idEstudiante)) {
         $_SESSION['exito'] = "Estudiante eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

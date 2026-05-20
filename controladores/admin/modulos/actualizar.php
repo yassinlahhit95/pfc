@@ -8,21 +8,21 @@ if (isset($_POST['guardarModulo'])) {
     $idCicloAsociado = trim($_POST['idCiclo']);
     $horasMaximasModulo = trim($_POST['horasMaximas']);
 
-    $fallos = [];
-    if (empty($nombreModuloActualizar)) $fallos['nombreModulo'] = "Nombre del módulo obligatorio.";
-    if (empty($idCicloAsociado)) $fallos['idCiclo'] = "Seleccione un ciclo formativo.";
+    $errores = [];
+    if (empty($nombreModuloActualizar)) $errores['nombreModulo'] = "Nombre del módulo obligatorio.";
+    if (empty($idCicloAsociado)) $errores['idCiclo'] = "Seleccione un ciclo formativo.";
     if (empty($horasMaximasModulo)) {
-        $fallos['horasMaximas'] = "Las horas totales son obligatorias.";
+        $errores['horasMaximas'] = "Las horas totales son obligatorias.";
     } elseif (!is_numeric($horasMaximasModulo)) {
-        $fallos['horasMaximas'] = "Las horas deben ser un valor numérico.";
+        $errores['horasMaximas'] = "Las horas deben ser un valor numérico.";
     }
 
-    if (empty($fallos) && checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
-        $fallos['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo elegido.";
+    if (empty($errores) && checkModuloExistente($nombreModuloActualizar, $idCicloAsociado, $idModuloActualizar)) {
+        $errores['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo elegido.";
     }
 
-    if (!empty($fallos)) {
-        $_SESSION['errores'] = $fallos;
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_modulo'] = $_POST;
         header("Location: ../../../vistas/admin/modulos/modificarModulos.php?idModulo=$idModuloActualizar");
         exit;
@@ -33,7 +33,7 @@ if (isset($_POST['guardarModulo'])) {
         header("Location: ../../../vistas/admin/modulos/verModulos.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo actualizar el módulo.";
+    $_SESSION['errores'] = "No se pudo actualizar el módulo.";
     header("Location: ../../../vistas/admin/modulos/modificarModulos.php?idModulo=$idModuloActualizar");
     exit;
 }

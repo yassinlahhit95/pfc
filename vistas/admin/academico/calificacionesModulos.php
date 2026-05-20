@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
@@ -11,10 +15,6 @@ $idModuloElegido = $_GET['idModulo'] ?? '';
 $listaCiclos = listarTodosLosCiclos();
 $listaModulos = !empty($idCicloElegido) ? listarModulosPorCiclo($idCicloElegido) : [];
 $listaEstudiantes = !empty($idModuloElegido) ? listarCalificacionesPorModulo($idModuloElegido) : [];
-
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
 
 $titulo_pagina = "AULAPRO | NOTAS DE MÓDULOS";
 $seccion = 'notas_modulos';
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
+<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <?php if (!empty($idModuloElegido)) { ?>
     <div class="panel margen-arriba">
@@ -103,9 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (!empty($listaEstudiantes)) { ?>
                 <div class="acciones">
                     <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR TODAS LAS NOTAS">
-                    <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesModulos.php';">
-                        <i class="fas fa-eraser"></i> LIMPIAR
-                    </button>
+                    <input type="reset" class="boton-secundario" value="LIMPIAR">
                 </div>
             <?php } ?>
         </form>

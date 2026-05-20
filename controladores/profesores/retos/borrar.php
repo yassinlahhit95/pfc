@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
     if ($resultado) {
         $_SESSION['exito'] = "Reto eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el reto.";
+        $_SESSION['errores'] = "Error al eliminar el reto.";
     }
 }
 

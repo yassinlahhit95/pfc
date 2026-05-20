@@ -27,9 +27,10 @@ function checkProfesorExistente($dni, $email, $idExcluir = 0) {
 
 function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $pass = password_hash('123456', PASSWORD_DEFAULT);
+    $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, password, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssss", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
+    mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
     mysqli_stmt_execute($stmt);
     $idNuevo = mysqli_insert_id($con);
     mysqli_close($con);

@@ -1,11 +1,11 @@
 ﻿<?php
 session_start();
 
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_director'] ?? [];
-$error = $_SESSION['error'] ?? '';
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
-unset($_SESSION['errores'], $_SESSION['datos_director'], $_SESSION['error']);
+$datos = $_SESSION['datos_director'] ?? [];
 
 $titulo_pagina = "AULAPRO | REGISTRAR DIRECTOR";
 $seccion = 'directores';
@@ -17,8 +17,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">

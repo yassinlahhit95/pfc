@@ -15,7 +15,7 @@ if (!empty($_POST['idEstudiante'])) {
         if ($resultado) {
             $_SESSION['exito'] = "Estudiante eliminado correctamente.";
         } else {
-            $_SESSION['error'] = "No se pudo eliminar al estudiante.";
+            $_SESSION['errores'] = "No se pudo eliminar al estudiante.";
         }
     }
 }

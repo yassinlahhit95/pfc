@@ -4,7 +4,8 @@ session_start();
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-if (empty($_SESSION['idAdmin'])) {
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (!$idProfesor) {
     header("Location: ../../login.php");
     exit;
 }
@@ -16,15 +17,15 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 $idCicloElegido = intval($_GET['idCiclo'] ?? 0);
 $idRetoElegido = intval($_GET['idReto'] ?? 0);
 
-$listaCiclos = listarTodosLosCiclos();
-$listaRetos = $idCicloElegido ? listarRetosPorCiclo($idCicloElegido) : [];
+$listaCiclos = listarCiclosDeProfesor($idProfesor);
+$listaRetos = $idCicloElegido ? listarRetosPorCicloDeProfesor($idCicloElegido, $idProfesor) : [];
 $listaEstudiantes = [];
 if ($idCicloElegido && $idRetoElegido) {
     $listaEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 }
 
-$titulo_pagina = "AULAPRO | NOTAS RETOS";
-$seccion = 'notas_retos';
+$tituloDelPagina = "AULAPRO | NOTAS RETOS";
+$seccionActual = 'notas_retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
@@ -37,10 +38,10 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo relleno">
             <label>Filtrar por Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
-                <option value="">-- Todos los Ciclos --</option>
+                <option value="">-- Mis Ciclos --</option>
                 <?php foreach ($listaCiclos as $ciclo) { ?>
                     <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        [<?= $ciclo['nombreNivel'] ?>] <?= $ciclo['nombreCiclo'] ?>
+                        <?= $ciclo['nombreCiclo'] ?>
                     </option>
                 <?php } ?>
             </select>
@@ -110,7 +111,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <i class="fas fa-edit"></i> Evaluar
                             </button>
                             <div id="form-<?= $est['idEstudiante'] ?>" style="display: none; margin-top: 10px;">
-                                <form action="../../../controladores/admin/academico/calificarRetoUnico.php" method="POST" class="formulario">
+                                <form action="../../../controladores/profesores/academico/calificarRetoUnico.php" method="POST" class="formulario">
                                     <input type="hidden" name="idEstudiante" value="<?= $est['idEstudiante'] ?>">
                                     <input type="hidden" name="idReto" value="<?= $idRetoElegido ?>">
                                     <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
@@ -141,4 +142,4 @@ function toggleFormCalificar(idFormulario) {
 }
 </script>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

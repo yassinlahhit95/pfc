@@ -40,10 +40,10 @@ if (isset($_POST['subirTFG'])) {
                 header("Location: ../../../vistas/estudiantes/pfc/subir.php");
                 exit;
             } else {
-                $_SESSION['error'] = "Error al actualizar la base de datos.";
+                $_SESSION['errores'] = "Error al actualizar la base de datos.";
             }
         } else {
-            $_SESSION['error'] = "Error al guardar el archivo en el servidor.";
+            $_SESSION['errores'] = "Error al guardar el archivo en el servidor.";
         }
     } else {
         $_SESSION['errores'] = $listaErrores;

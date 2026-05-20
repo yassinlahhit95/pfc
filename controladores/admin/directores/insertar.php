@@ -47,7 +47,7 @@ if (isset($_POST['guardarDirector'])) {
         header("Location: ../../../vistas/admin/directores/verDirectores.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo registrar el director.";
+    $_SESSION['errores'] = "No se pudo registrar el director.";
     header("Location: ../../../vistas/admin/directores/agregarDirectores.php");
     exit;
 }

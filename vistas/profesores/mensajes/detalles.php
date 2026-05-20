@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
     exit;
@@ -12,7 +16,7 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
-    $_SESSION['error'] = strtoupper("MENSAJE NO ENCONTRADO.");
+    $_SESSION['errores'] = strtoupper("MENSAJE NO ENCONTRADO.");
     header("Location: lista.php");
     exit;
 }
@@ -38,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> INFORMACIÓN DEL MENSAJE</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> INFORMACIIN DEL MENSAJE</h3>
     </div>
     
     <div class="fila-datos">
@@ -51,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-datos">
         <div class="nombre-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Dirección') : $nombreProfeParaVista . ' (Profesor)' ?>
+            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Direccion') : $nombreProfeParaVista . ' (Profesor)' ?>
         </div>
     </div>
 
@@ -69,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="nombre-detalle">Estado Actual</div>
         <div class="valor-detalle">
             <?php if ($mensaje['leido']) { ?>
-                <span class="indicador-estado activo-verde">LEÍDO / VISTO</span>
+                <span class="indicador-estado activo-verde">LEIDO / VISTO</span>
             <?php } else { ?>
                 <span class="indicador-estado inactivo-rojo">PENDIENTE / NUEVO</span>
             <?php } ?>
@@ -83,7 +87,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

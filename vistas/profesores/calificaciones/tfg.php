@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
@@ -10,17 +14,13 @@ $idCicloElegido = $_GET['idCiclo'] ?? '';
 $mis_ciclos = listarCiclosDeProfesor($idProfesor);
 $listaEvaluacion = listarEvaluacionTFGporProfesor($idProfesor, $idCicloElegido);
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
-
-$tituloDelPagina = "AULAPRO | EVALUACIÓN TFG";
+$tituloDelPagina = "AULAPRO | EVALUACION TFG";
 $seccionActual = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>EVALUACIÓN DE TFGS (ALUMNOS ASIGNADOS)</h1>
+    <h1>EVALUACION DE TFGS (ALUMNOS ASIGNADOS)</h1>
 </div>
 
 <div class="panel margen-abajo">
@@ -45,7 +45,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
+<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <div class="panel">
     <div class="contenedor-tabla">
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Entrega</th>
                     <th>Nota TFG</th>
                     <th>Observaciones</th>
-                    <th>Acción</th>
+                    <th>AcciÃ³n</th>
                 </tr>
             </thead>
             <tbody>
@@ -128,7 +128,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
             
             <div class="acciones">
-                <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Calificación">
+                <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Calificacion">
                 <button type="button" class="boton-secundario" onclick="cerrarModal()">
                     Cancelar
                 </button>

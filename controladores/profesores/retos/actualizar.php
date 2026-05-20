@@ -69,7 +69,7 @@ if (isset($_POST['actualizarReto'])) {
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
     } else {
-        $_SESSION['error'] = "Error al actualizar el reto.";
+        $_SESSION['errores'] = "Error al actualizar el reto.";
         header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
         exit;
     }

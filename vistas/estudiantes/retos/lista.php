@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-unset($_SESSION['error'], $_SESSION['exito']);
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../login.php");
@@ -17,7 +17,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $datosEst = obtenerEstudiantePorId($idEst);
 if (!$datosEst) {
-    $_SESSION['error'] = "ERROR AL RECUPERAR DATOS DEL ESTUDIANTE.";
+    $_SESSION['errores'] = "ERROR AL RECUPERAR DATOS DEL ESTUDIANTE.";
     header("Location: ../inicio/dashboard.php");
     exit;
 }
@@ -37,8 +37,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Retos asignados a tu ciclo: <?= $nombreCiclo ?></p>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -80,8 +80,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
 

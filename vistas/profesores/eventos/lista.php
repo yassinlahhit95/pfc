@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
     header("Location: ../../login.php");
@@ -9,24 +13,20 @@ if (!$idProfesor) {
 require_once __DIR__ . "/../../../modelos/eventos.php";
 $eventos = listarEventosProximos();
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
-
 $tituloDelPagina = "AULAPRO | CALENDARIO DE EVENTOS";
 $seccionActual = 'eventos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>PRÓXIMOS EVENTOS DEL CENTRO</h1>
+    <h1>PROXIMOS EVENTOS DEL CENTRO</h1>
 </div>
 
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Evento</th>
-                    <th>Ubicación</th>
+                    <th>UbicaciÃ³n</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,7 +62,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

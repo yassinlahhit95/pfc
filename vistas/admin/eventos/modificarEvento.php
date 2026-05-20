@@ -1,5 +1,9 @@
 ﻿<?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
 $idEvento = intval($_GET['idEvento'] ?? 0);
@@ -10,10 +14,7 @@ if (!$evento) {
     exit;
 }
 
-$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_evento'] ?? [];
-$error = $_SESSION['error'] ?? '';
-unset($_SESSION['errores'], $_SESSION['datos_evento'], $_SESSION['error']);
 
 $titulo_pagina = "AULAPRO | MODIFICAR EVENTO";
 $seccion = 'eventos';
@@ -26,9 +27,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <?php if ($error) { ?>
-        <div class="mensaje-error"><?= $error ?></div>
-    <?php } ?>
+    <?php if (is_string($errores) && $errores) { ?>
+        <div class="mensaje-error"><?= $errores ?></div>
+<?php } ?>
     <form method="POST" action="../../../controladores/admin/eventos/actualizar.php">
         <input type="hidden" name="idEvento" value="<?= $idEvento ?>">
 

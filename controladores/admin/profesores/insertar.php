@@ -64,7 +64,7 @@ if (isset($_POST['guardarProfesor'])) {
         header("Location: ../../../vistas/admin/profesores/verProfesores.php");
         exit;
     }
-    $_SESSION['error'] = "Hubo un problema al registrar el profesor en la base de datos.";
+    $_SESSION['errores'] = "Hubo un problema al registrar el profesor en la base de datos.";
     header("Location: ../../../vistas/admin/profesores/agregarProfesores.php");
     exit;
 }

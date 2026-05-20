@@ -25,7 +25,7 @@ if (isset($_POST['registrarPrestamo'])) {
             header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
             exit;
         }
-        $_SESSION['error'] = "Error al registrar.";
+        $_SESSION['errores'] = "Error al registrar.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_prestamo'] = $_POST;

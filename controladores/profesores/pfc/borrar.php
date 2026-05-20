@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
     if ($resultado) {
         $_SESSION['exito'] = "Archivo eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el archivo.";
+        $_SESSION['errores'] = "Error al eliminar el archivo.";
     }
 }
 

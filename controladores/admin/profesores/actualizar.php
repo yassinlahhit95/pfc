@@ -65,7 +65,7 @@ if (isset($_POST['actualizarProfesor'])) {
         header("Location: ../../../vistas/admin/profesores/verProfesores.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo actualizar el profesor o no hubo cambios.";
+    $_SESSION['errores'] = "No se pudo actualizar el profesor o no hubo cambios.";
     header("Location: ../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=$idProfesorActualizar");
     exit;
 }

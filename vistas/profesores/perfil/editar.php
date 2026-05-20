@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-$errs = $_SESSION['errores'] ?? [];
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $datos = $_SESSION['datos_perfil'] ?? [];
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_perfil']);
 
 require_once "../../../modelos/profesores.php";
 
@@ -26,8 +26,8 @@ include_once "../comunes/nav.php";
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -41,44 +41,44 @@ include_once "../comunes/nav.php";
 
         <div class="campo">
             <label for="nombreProfesor">Nombre Completo</label>
-            <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= $nom ?>" class="<?= isset($errs['nombreProfesor']) ? 'input-error' : '' ?>">
-            <?php if (isset($errs['nombreProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['nombreProfesor'] ?></strong>
+            <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= $nom ?>" class="<?= isset($errores['nombreProfesor']) ? 'input-error' : '' ?>">
+            <?php if (isset($errores['nombreProfesor'])) { ?>
+                <strong class="error-campo"><?= $errores['nombreProfesor'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo">
             <label for="emailProfesor">Correo Corporativo</label>
-            <input type="text" id="emailProfesor" name="emailProfesor" value="<?= $eml ?>" class="<?= isset($errs['emailProfesor']) ? 'input-error' : '' ?>">
-            <?php if (isset($errs['emailProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['emailProfesor'] ?></strong>
+            <input type="text" id="emailProfesor" name="emailProfesor" value="<?= $eml ?>" class="<?= isset($errores['emailProfesor']) ? 'input-error' : '' ?>">
+            <?php if (isset($errores['emailProfesor'])) { ?>
+                <strong class="error-campo"><?= $errores['emailProfesor'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo">
-            <label for="telefonoProfesor">Número de Teléfono</label>
-            <input type="tel" id="telefonoProfesor" name="telefonoProfesor" value="<?= $tel ?>" class="<?= isset($errs['telefonoProfesor']) ? 'input-error' : '' ?>">
-            <?php if (isset($errs['telefonoProfesor'])) { ?>
-                <strong class="error-campo"><?= $errs['telefonoProfesor'] ?></strong>
+            <label for="telefonoProfesor">Numero de Telefono</label>
+            <input type="tel" id="telefonoProfesor" name="telefonoProfesor" value="<?= $tel ?>" class="<?= isset($errores['telefonoProfesor']) ? 'input-error' : '' ?>">
+            <?php if (isset($errores['telefonoProfesor'])) { ?>
+                <strong class="error-campo"><?= $errores['telefonoProfesor'] ?></strong>
             <?php } ?>
         </div>
 
-        <div class="titulo-tarjeta" style="margin-top: 30px;"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
-        <p class="texto-suave" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
+        <div class="titulo-tarjeta" style="margin-top: 30px;"><h3>SEGURIDAD Y CONTRASEÃ‘A</h3></div>
+        <p class="texto-suave" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseÃ±a de acceso.</p>
 
         <div class="campo">
-            <label for="current_password">Contraseña Actual</label>
-            <input type="password" id="current_password" name="current_password" placeholder="Escriba su contraseña actual para validar" class="<?= isset($errs['current_password']) ? 'input-error' : '' ?>">
-            <?php if (isset($errs['current_password'])) { ?>
-                <strong class="error-campo"><?= $errs['current_password'] ?></strong>
+            <label for="current_password">ContraseÃ±a Actual</label>
+            <input type="password" id="current_password" name="current_password" placeholder="Escriba su contraseÃ±a actual para validar" class="<?= isset($errores['current_password']) ? 'input-error' : '' ?>">
+            <?php if (isset($errores['current_password'])) { ?>
+                <strong class="error-campo"><?= $errores['current_password'] ?></strong>
             <?php } ?>
         </div>
 
         <div class="campo">
-            <label for="new_password">Nueva Contraseña</label>
-            <input type="password" id="new_password" name="new_password" placeholder="Mínimo 6 caracteres" class="<?= isset($errs['new_password']) ? 'input-error' : '' ?>">
-            <?php if (isset($errs['new_password'])) { ?>
-                <strong class="error-campo"><?= $errs['new_password'] ?></strong>
+            <label for="new_password">Nueva ContraseÃ±a</label>
+            <input type="password" id="new_password" name="new_password" placeholder="MÃ­nimo 6 caracteres" class="<?= isset($errores['new_password']) ? 'input-error' : '' ?>">
+            <?php if (isset($errores['new_password'])) { ?>
+                <strong class="error-campo"><?= $errores['new_password'] ?></strong>
             <?php } ?>
         </div>
 

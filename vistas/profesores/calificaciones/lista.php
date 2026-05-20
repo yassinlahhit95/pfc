@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) {
     header("Location: ../../login.php");
@@ -24,10 +28,6 @@ if ($idCiclo > 0) {
 
 $calificaciones = listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo, $idModulo);
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
-
 $tituloDelPagina = "AULAPRO | CALIFICACIONES";
 $seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">
@@ -59,9 +59,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div class="campo relleno">
-            <label for="idModulo">Filtrar por Módulo:</label>
+            <label for="idModulo">Filtrar por Modulo:</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()">
-                <option value="0">-- Todos mis Módulos --</option>
+                <option value="0">-- Todos mis Modulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
                     <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
                         <?= $m['nombreModulo'] ?>
@@ -83,11 +83,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>Alumno</th>
-                    <th>Módulo</th>
-                    <th>1ª Ev</th>
-                    <th>1ª Final</th>
-                    <th>2ª Ev</th>
-                    <th>2ª Final</th>
+                    <th>MÃ³dulo</th>
+                    <th>1Âº Ev</th>
+                    <th>1Âº Final</th>
+                    <th>2Âº Ev</th>
+                    <th>2Âº Final</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -123,7 +123,4 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-
 

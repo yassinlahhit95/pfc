@@ -1,14 +1,13 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
 }
-
-$titulo_pagina = "AULAPRO | MÓDULOS PROFESIONALES";
-$seccion = 'modulos';
-include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -18,9 +17,10 @@ $listaDeModulosActuales = listarModulos();
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
 
-$exito = $_SESSION['exito'] ?? '';
-$error = $_SESSION['error'] ?? '';
-unset($_SESSION['exito'], $_SESSION['error']);
+$titulo_pagina = "AULAPRO | MÓDULOS PROFESIONALES";
+$seccion = 'modulos';
+include_once __DIR__ . "/../comunes/nav.php";
+
 ?>
 
 <div class="cabecera">
@@ -38,8 +38,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">
@@ -137,7 +137,4 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

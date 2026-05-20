@@ -56,7 +56,7 @@ if (isset($_POST['guardarEstudiante'])) {
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
         exit;
     }
-    $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante en la base de datos.";
+    $_SESSION['errores'] = "Hubo un problema al intentar guardar el estudiante en la base de datos.";
     header("Location: ../../../vistas/admin/estudiantes/agregarEstudiantes.php");
     exit;
 }

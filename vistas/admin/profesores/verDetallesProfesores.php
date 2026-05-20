@@ -1,8 +1,5 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | DETALLES PROFESOR";
-$seccion = 'profesores';
-include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -12,13 +9,16 @@ $id = $_GET['idProfesor'] ?? 0;
 $profesor = obtenerProfesorPorId($id);
 
 if (!$profesor) {
-    echo "<div class='mensaje-error'>Profesor no encontrado.</div>";
-    include '../comunes/footer.php';
+    header("Location: verProfesores.php");
     exit;
 }
 
 $modulosProfesor = listarModulosDeProfesor($id);
 $ciclosTutorizados = listarCiclosTutorizadosProfesor($id);
+
+$titulo_pagina = "AULAPRO | DETALLES PROFESOR";
+$seccion = 'profesores';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">

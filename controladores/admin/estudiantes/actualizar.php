@@ -50,7 +50,7 @@ if (isset($_POST['actualizarEstudiante'])) {
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;
         }
-        $_SESSION['error'] = "Hay un problema al intentar actualizar los datos del estudiante.";
+        $_SESSION['errores'] = "Hay un problema al intentar actualizar los datos del estudiante.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_estudiante'] = $_POST;

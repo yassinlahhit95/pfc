@@ -29,7 +29,7 @@ if (isset($_POST['actualizarPago'])) {
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         }
-        $_SESSION['error'] = "Error al actualizar.";
+        $_SESSION['errores'] = "Error al actualizar.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_pago'] = $_POST;

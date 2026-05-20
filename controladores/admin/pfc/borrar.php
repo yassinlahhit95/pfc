@@ -10,7 +10,7 @@ if (isset($_POST['idEstudiante'])) {
 
     if (empty($idEstudiantePfc)) {
         $hayError = true;
-        $_SESSION['error'] = "Falta ID estudiante.";
+        $_SESSION['errores'] = "Falta ID estudiante.";
         header("Location: ../../../vistas/admin/pfc/verTFGs.php");
         exit;
     }
@@ -24,7 +24,7 @@ if (isset($_POST['idEstudiante'])) {
         $_SESSION['exito'] = "TFG eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

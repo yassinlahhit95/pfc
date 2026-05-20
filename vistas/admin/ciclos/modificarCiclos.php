@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
@@ -25,11 +29,6 @@ if ($datos_sesion) {
     $profesores_marcados = $datos_sesion['profesores'] ?? [];
 }
 
-$error = $_SESSION['error'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
-
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_ciclos']);
-
 $titulo_pagina = "AULAPRO | MODIFICAR CICLO";
 $seccion = 'ciclos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -44,8 +43,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">

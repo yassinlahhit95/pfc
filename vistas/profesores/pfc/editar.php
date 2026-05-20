@@ -1,10 +1,9 @@
 ﻿<?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-$errores = $_SESSION['errores'] ?? [];
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
@@ -26,8 +25,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -59,7 +58,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-
 

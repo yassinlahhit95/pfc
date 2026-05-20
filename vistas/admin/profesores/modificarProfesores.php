@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -17,8 +21,7 @@ $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();
 
 // Datos de error o datos actuales del profesor
-$errores = $_SESSION['errores'] ?? [];
-$error = $_SESSION['error'] ?? '';
+
 $datos_sesion = $_SESSION['datos_profesor'] ?? null;
 
 // Si hay datos en la sesion (por un error), los usamos. Si no, usamos los de la BD.
@@ -38,8 +41,6 @@ if ($datos_sesion) {
     $modulos_marcados = listarIdsModulosDeProfesor($id_profesor);
 }
 
-unset($_SESSION['errores'], $_SESSION['datos_profesor'], $_SESSION['error']);
-
 $titulo_pagina = "AULAPRO | MODIFICAR PROFESOR";
 $seccion = 'profesores';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -54,8 +55,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">

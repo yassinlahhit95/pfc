@@ -1,31 +1,30 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-unset($_SESSION['error'], $_SESSION['exito']);
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../login.php");
     exit;
 }
 
-$tituloDelPagina = "AULAPRO | MIS NOTAS DE RETOS";
-$seccionActual = 'notas_retos';
-include_once __DIR__ . "/../comunes/nav.php";
-
 require_once __DIR__ . "/../../../modelos/retos.php";
 
 $id_estudiante = $_SESSION['idEstudiante'];
 $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
+
+$tituloDelPagina = "AULAPRO | MIS NOTAS DE RETOS";
+$seccionActual = 'notas_retos';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <h1>MIS CALIFICACIONES EN RETOS</h1>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -70,8 +69,4 @@ $mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
 

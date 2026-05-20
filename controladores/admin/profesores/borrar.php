@@ -10,7 +10,7 @@ if (isset($_POST['idProfesor'])) {
         $_SESSION['exito'] = "Profesor eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar el profesor.";
+        $_SESSION['errores'] = "Error al eliminar el profesor.";
     }
 }
 

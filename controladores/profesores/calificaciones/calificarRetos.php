@@ -36,7 +36,7 @@ if (isset($_POST['guardarNotasReto'])) {
     }
 
     if ($hayError) {
-        $_SESSION['error'] = "Las notas deben ser números entre 0 y 10.";
+        $_SESSION['errores'] = "Las notas deben ser números entre 0 y 10.";
     } else {
         $_SESSION['exito'] = "Calificaciones guardadas.";
     }

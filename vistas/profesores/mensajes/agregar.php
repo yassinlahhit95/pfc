@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-$errores = $_SESSION['errores'] ?? [];
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $datos = $_SESSION['datos_mensaje'] ?? [];
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_mensaje']);
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -30,8 +30,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idEstudiante">Destinatario</label>
             <select name="idEstudiante" id="idEstudiante" class="<?= isset($errores['idEstudiante']) ? 'input-error' : '' ?>">
                 <option value="">-- Seleccionar Destinatario --</option>
-                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Dirección (Administración)</option>
+                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Direccion (Administracion)</option>
                 <optgroup label="Estudiantes">
                     <?php foreach ($listaDeEstudiantes as $estudiante) {
                         $selected = ($datos['idEstudiante'] ?? '') == $estudiante['idEstudiante'] ? 'selected' : '';
@@ -94,7 +94,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="descripcion">Mensaje</label>
-            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aquí tu mensaje (máximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
+            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aqui tu mensaje (maximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
             <?php if (isset($errores['descripcion'])) { ?>
                 <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
             <?php } ?>

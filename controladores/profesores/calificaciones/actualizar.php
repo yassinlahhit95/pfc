@@ -43,7 +43,7 @@ if (isset($_POST['actualizarNota'])) {
             header("Location: ../../../vistas/profesores/calificaciones/lista.php");
             exit;
         }
-        $_SESSION['error'] = "Error al guardar.";
+        $_SESSION['errores'] = "Error al guardar.";
     } else {
         $_SESSION['errores'] = $errores;
     }

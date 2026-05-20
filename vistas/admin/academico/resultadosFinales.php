@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
@@ -12,10 +16,6 @@ if (!empty($idCicloElegidoParaVer)) {
     $listaDeDatosFinalesAMostrar = listarResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
 
-$mensajeExito = $_SESSION['exito'] ?? '';
-$mensajeError = $_SESSION['error'] ?? '';
-unset($_SESSION['exito'], $_SESSION['error']);
-
 $titulo_pagina = "AULAPRO | RESULTADOS FINALES";
 $seccion = 'resultados_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -26,8 +26,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
 </div>
 
-<?php if (!empty($mensajeExito)) { ?> <div class="mensaje-exito"><?= $mensajeExito ?></div> <?php } ?>
-<?php if (!empty($mensajeError)) { ?> <div class="mensaje-error"><?= $mensajeError ?></div> <?php } ?>
+<?php if (!empty($exito)) { ?> <div class="mensaje-exito"><?= $exito ?></div> <?php } ?>
+<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <div class="panel">
     <div class="caja alinear-centro espacio-grande">
@@ -104,7 +104,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

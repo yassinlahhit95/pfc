@@ -9,18 +9,18 @@ if (isset($_POST['guardarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 
-    $fallos = [];
-    if (empty($nombre)) $fallos['nombreCiclo'] = "Nombre obligatorio.";
-    if (empty($abreviatura)) $fallos['abreviaturaCiclo'] = "Abreviatura obligatoria.";
-    if (empty($idNivelEducativo)) $fallos['idNivel'] = "Nivel obligatorio.";
-    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $fallos['precioCiclo'] = "El precio debe ser un número válido.";
+    $errores = [];
+    if (empty($nombre)) $errores['nombreCiclo'] = "Nombre obligatorio.";
+    if (empty($abreviatura)) $errores['abreviaturaCiclo'] = "Abreviatura obligatoria.";
+    if (empty($idNivelEducativo)) $errores['idNivel'] = "Nivel obligatorio.";
+    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores['precioCiclo'] = "El precio debe ser un número válido.";
 
-    if (empty($fallos) && checkCicloExistente($nombre, $abreviatura)) {
-        $fallos['nombreCiclo'] = "El nombre o la abreviatura ya existen.";
+    if (empty($errores) && checkCicloExistente($nombre, $abreviatura)) {
+        $errores['nombreCiclo'] = "El nombre o la abreviatura ya existen.";
     }
 
-    if (!empty($fallos)) {
-        $_SESSION['errores'] = $fallos;
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclo'] = $_POST;
         header("Location: ../../../vistas/admin/ciclos/agregarCiclos.php");
         exit;
@@ -31,7 +31,7 @@ if (isset($_POST['guardarCiclo'])) {
         header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo registrar el ciclo en la base de datos.";
+    $_SESSION['errores'] = "No se pudo registrar el ciclo en la base de datos.";
     header("Location: ../../../vistas/admin/ciclos/agregarCiclos.php");
     exit;
 }

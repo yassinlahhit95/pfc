@@ -1,6 +1,10 @@
 ﻿<?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $id_reclamacion = $_GET['idReclamacion'] ?? 0;
@@ -11,12 +15,7 @@ if (!$reclamacion) {
     exit;
 }
 
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
-$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_reclamacion'] ?? [];
-
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_reclamacion']);
 
 $reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion;
 
@@ -34,8 +33,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -76,7 +75,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

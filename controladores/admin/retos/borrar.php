@@ -11,11 +11,11 @@ if (isset($_POST['idReto'])) {
         $_SESSION['exito'] = "Reto eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar el reto.";
+        $_SESSION['errores'] = "Error al eliminar el reto.";
     }
 } else {
     $hayError = true;
-    $_SESSION['error'] = "No se especificó el reto.";
+    $_SESSION['errores'] = "No se especificó el reto.";
 }
 
 header("Location: ../../../vistas/admin/retos/verRetos.php");

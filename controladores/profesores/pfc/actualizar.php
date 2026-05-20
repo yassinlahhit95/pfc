@@ -14,7 +14,7 @@ if (isset($_POST['actualizarTFG'])) {
     }
 
     if (empty($tituloTFG)) {
-        $_SESSION['error'] = "El título del TFG es obligatorio.";
+        $_SESSION['errores'] = "El título del TFG es obligatorio.";
         $hayError = true;
     }
 
@@ -23,7 +23,7 @@ if (isset($_POST['actualizarTFG'])) {
         if ($resultado) {
             $_SESSION['exito'] = "Datos del TFG actualizados.";
         } else {
-            $_SESSION['error'] = "Error al actualizar el TFG.";
+            $_SESSION['errores'] = "Error al actualizar el TFG.";
         }
     }
 

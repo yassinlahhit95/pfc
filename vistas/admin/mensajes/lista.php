@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -14,10 +18,6 @@ $titulo_pagina = "AULAPRO | GESTIÓN DE MENSAJERÍA";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-
-unset($_SESSION['error'], $_SESSION['exito']);
 ?>
 
 <div class="cabecera">
@@ -31,8 +31,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -108,7 +108,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <script>
 iniciarPaginacion('tablaMensajes', 15);
 </script>
-
-
-
 

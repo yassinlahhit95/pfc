@@ -1,15 +1,20 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | DETALLES DIRECTOR";
-$seccion = 'directores';
-include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 $id = $_GET['id'] ?? 0;
 $director = obtenerDirectorPorId($id);
 
-if (!$director) { ?>
+if (!$director) {
+    header("Location: verDirectores.php");
+    exit;
+}
+
+$titulo_pagina = "AULAPRO | DETALLES DIRECTOR";
+$seccion = 'directores';
+include_once __DIR__ . "/../comunes/nav.php";
+?>
     <div class='mensaje-error'>Director no encontrado.</div>
     <?php include '../comunes/footer.php';
     exit;

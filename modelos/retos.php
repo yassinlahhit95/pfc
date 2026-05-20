@@ -266,6 +266,26 @@ function listarRetosPorCiclo($idCiclo) {
     return $listaRetos;
 }
 
+function listarRetosPorCicloDeProfesor($idCiclo, $idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT DISTINCT r.* FROM retos r
+            JOIN modulo_reto mr ON r.idReto = mr.idReto
+            JOIN modulos m ON mr.idModulo = m.idModulo
+            JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
+            WHERE m.idCiclo = ? AND pm.idProfesor = ?
+            ORDER BY r.idReto ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    mysqli_close($con);
+    return $lista;
+}
+
 function obtenerPromedioRetosEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT AVG(nota) as promedio FROM calificaciones_retos WHERE idEstudiante = ?";

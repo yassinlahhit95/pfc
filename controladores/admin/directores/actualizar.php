@@ -51,7 +51,7 @@ if (isset($_POST['actualizarDirector'])) {
         header("Location: ../../../vistas/admin/directores/verDirectores.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo actualizar el director.";
+    $_SESSION['errores'] = "No se pudo actualizar el director.";
     header("Location: ../../../vistas/admin/directores/modificarDirectores.php?idDirector=$idDirector");
     exit;
 }

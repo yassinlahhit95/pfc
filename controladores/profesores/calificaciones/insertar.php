@@ -27,9 +27,9 @@ if (isset($_POST['insertarNota'])) {
             header("Location: ../../../vistas/profesores/calificaciones/lista.php");
             exit;
         }
-        $_SESSION['error'] = "Error al guardar.";
+        $_SESSION['errores'] = "Error al guardar.";
     } else {
-        $_SESSION['error'] = $errores['notas'];
+        $_SESSION['errores'] = $errores['notas'];
     }
 }
 

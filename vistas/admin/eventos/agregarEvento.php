@@ -1,10 +1,11 @@
 ﻿<?php
 session_start();
 
-$error = $_SESSION['error'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $datos = $_SESSION['datos_evento'] ?? [];
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_evento']);
 
 $titulo_pagina = "AULAPRO | AGREGAR EVENTO";
 $seccion = 'eventos';
@@ -16,8 +17,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="gestionEventos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">

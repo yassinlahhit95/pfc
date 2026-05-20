@@ -10,7 +10,7 @@ if (isset($_POST['idPago'])) {
     if ($resultado) {
         $_SESSION['exito'] = "Pago eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

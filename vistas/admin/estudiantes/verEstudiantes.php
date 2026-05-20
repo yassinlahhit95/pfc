@@ -1,14 +1,14 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
 }
-
-$titulo_pagina = "AULAPRO | LISTADO DE ESTUDIANTES";
-$seccion = 'estudiantes';
-include_once __DIR__ . "/../comunes/nav.php";
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -16,9 +16,10 @@ require_once __DIR__ . "/../../../modelos/niveles.php";
 
 $listaDeEstudiantesActuales = listarEstudiantes();
 
-$exito = $_SESSION['exito'] ?? '';
-$error = $_SESSION['error'] ?? '';
-unset($_SESSION['exito'], $_SESSION['error']);
+$titulo_pagina = "AULAPRO | LISTADO DE ESTUDIANTES";
+$seccion = 'estudiantes';
+include_once __DIR__ . "/../comunes/nav.php";
+
 ?>
 
 <div class="cabecera">
@@ -36,8 +37,8 @@ unset($_SESSION['exito'], $_SESSION['error']);
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <?php
@@ -161,7 +162,4 @@ function aplicarFiltrosEstudiantes() {
 
 iniciarPaginacion('tablaEstudiantes', 15);
 </script>
-
-
-
 

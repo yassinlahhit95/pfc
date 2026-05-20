@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-unset($_SESSION['error'], $_SESSION['exito']);
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
@@ -20,17 +20,17 @@ foreach ($tfgs as $tfg) {
     $calificacionesTFG[$tfg['idEstudiante']] = obtenerCalificacionTFG($tfg['idEstudiante']);
 }
 
-$tituloDelPagina = "AULAPRO | GESTIÓN DE TFGS";
+$tituloDelPagina = "AULAPRO | GESTION DE TFGS";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTIÓN DE TFGS ENTREGADOS</h1>
+    <h1>GESTION DE TFGS ENTREGADOS</h1>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');" style="display: inline;">
+                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('Estas seguro de que desea eliminar este archivo?');" style="display: inline;">
                                         <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
                                         <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>
@@ -107,7 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="vacio">No hay TFGs subidos todavía.</td>
+                        <td colspan="5" class="vacio">No hay TFGs subidos todavia.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -127,8 +127,4 @@ function toggleFormCalificar(idFormulario) {
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-
-
 

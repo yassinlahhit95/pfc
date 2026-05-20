@@ -8,7 +8,7 @@ if (isset($_POST['idDirector'])) {
     if (eliminarDirector($idDirector)) {
         $_SESSION['exito'] = "Director eliminado correctamente.";
     } else {
-        $_SESSION['error'] = "Error al eliminar el director.";
+        $_SESSION['errores'] = "Error al eliminar el director.";
     }
 }
 

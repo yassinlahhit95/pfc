@@ -1,15 +1,14 @@
 ﻿<?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_ciclos = listarTodosLosCiclos();
 
-$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_estudiante'] ?? [];
-$error = $_SESSION['error'] ?? "";
-$exito = $_SESSION['exito'] ?? "";
-
-unset($_SESSION['errores'], $_SESSION['datos_estudiante'], $_SESSION['error'], $_SESSION['exito']);
 
 $titulo_pagina = "AULAPRO | NUEVO ESTUDIANTE";
 $seccion = 'estudiantes';
@@ -25,8 +24,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if (!empty($error)) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -125,7 +124,6 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </form>
 </div>
-
 
 <script>
 var todosCiclos = [<?php foreach ($todos_los_ciclos as $c) { echo '{idCiclo:' . $c['idCiclo'] . ',idNivel:' . $c['idNivel'] . ',nombreCiclo:"' . addslashes($c['nombreCiclo']) . '"},'; } ?>];

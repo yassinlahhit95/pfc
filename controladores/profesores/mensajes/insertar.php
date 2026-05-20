@@ -36,7 +36,7 @@ if (isset($_POST['enviarMensaje'])) {
             header("Location: ../../../vistas/profesores/mensajes/lista.php");
             exit;
         } else {
-            $_SESSION['error'] = "Error interno al guardar.";
+            $_SESSION['errores'] = "Error interno al guardar.";
         }
     } else {
         $_SESSION['errores'] = $errores;

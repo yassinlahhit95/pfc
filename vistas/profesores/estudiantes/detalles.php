@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (empty($_SESSION['idProfesor'])) {
     header("Location: ../../login.php");
     exit;
@@ -8,6 +11,7 @@ if (empty($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $idEstudiante = $_GET['idEstudiante'] ?? 0;
 $idEstudiante = intval($idEstudiante);
@@ -15,7 +19,7 @@ $idEstudiante = intval($idEstudiante);
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 
 if (!$estudiante) {
-    $_SESSION['error'] = "ESTUDIANTE NO ENCONTRADO.";
+    $_SESSION['errores'] = "ESTUDIANTE NO ENCONTRADO.";
     header("Location: lista.php");
     exit;
 }
@@ -32,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user-graduate"></i> INFORMACIÓN PERSONAL</h3>
+        <h3><i class="fas fa-user-graduate"></i> INFORMACION PERSONAL</h3>
     </div>
     
     <div class="fila-datos">
@@ -51,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-datos">
-        <div class="nombre-detalle">Teléfono</div>
+        <div class="nombre-detalle">Telefono</div>
         <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
     </div>
 
@@ -68,7 +72,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="fila-datos">
-        <div class="nombre-detalle">Ciudad / Dirección</div>
+        <div class="nombre-detalle">Ciudad / Direccion</div>
         <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
     </div>
 
@@ -82,7 +86,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-arriba">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-file-pdf"></i> SITUACIÓN DEL TFG</h3>
+        <h3><i class="fas fa-file-pdf"></i> SITUACION DEL TFG</h3>
     </div>
     <div class="caja alinear-centro espacio-entre-elementos">
         <div>
@@ -94,13 +98,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </div>
         
-        <?php 
-        require_once __DIR__ . "/../../../modelos/tfg.php";
+        <?php
         $notaTFG = obtenerCalificacionTFG($idEstudiante);
         if ($notaTFG) {
         ?>
             <div style="text-align: right;">
-                <p class="nombre-detalle" style="margin-bottom: 5px;">CALIFICACIÓN TFG</p>
+                <p class="nombre-detalle" style="margin-bottom: 5px;">CALIFICACIUN TFG</p>
                 <span class="texto-negrita <?= $notaTFG['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>" style="font-size: 1.5em;">
                     <?= $notaTFG['nota'] ?> / 10
                 </span>

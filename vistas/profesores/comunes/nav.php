@@ -24,7 +24,7 @@ $totalSinLeer_menu = contarMensajesNoLeidosProfesor($idProf);
 $totalTfgs_menu = contarTFGsDeProfesor($idProf);
 $totalModulos_menu = count(listarModulosDeProfesor($idProf));
 $totalRetos_menu = count(listarRetosDeProfesor($idProf));
-
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -100,7 +100,7 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProf));
                     <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
                 </a>
 
-                <a href="../calificaciones/retos.php" class="enlace-menu <?= ($seccionActual == 'notas_retos') ? 'activo' : '' ?>">
+                <a href="../academico/calificacionesRetos.php" class="enlace-menu <?= ($seccionActual == 'notas_retos') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 

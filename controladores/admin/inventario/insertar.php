@@ -27,7 +27,7 @@ if (isset($_POST['guardarArticulo'])) {
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         }
-        $_SESSION['error'] = "No se pudo añadir el artículo.";
+        $_SESSION['errores'] = "No se pudo añadir el artículo.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_inventario'] = $_POST;

@@ -64,7 +64,7 @@ if (isset($_POST['insertarReto'])) {
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
     } else {
-        $_SESSION['error'] = "Error al insertar el reto.";
+        $_SESSION['errores'] = "Error al insertar el reto.";
         $_SESSION['datos_reto'] = $_POST;
         header("Location: ../../../vistas/profesores/retos/agregar.php");
         exit;

@@ -1,5 +1,9 @@
 ﻿<?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
@@ -16,9 +20,6 @@ $idProfesorActual = !empty($profesores_asignados) ? $profesores_asignados[0] : 0
 
 $todos_los_profesores = listarProfesores();
 
-$error = $_SESSION['error'] ?? "";
-unset($_SESSION['error']);
-
 $titulo_pagina = "AULAPRO | ASIGNAR PROFESOR A MÓDULO";
 $seccion = 'modulos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -29,8 +30,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">

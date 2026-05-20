@@ -1,15 +1,15 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idCicloElegido = $_GET['idCiclo'] ?? '';
 $listaCiclos = listarTodosLosCiclos();
 $listaEvaluacion = listarEvaluacionTFG($idCicloElegido);
-
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-unset($_SESSION['error'], $_SESSION['exito']);
 
 $titulo_pagina = "AULAPRO | GESTIÓN TFG";
 $seccion = 'notas_tfg';
@@ -35,15 +35,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div style="margin-bottom: 15px;">
-            <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesTFG.php';">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if ($error) { ?><div class="mensaje-error"><?= $error ?></div><?php } ?>
+<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">

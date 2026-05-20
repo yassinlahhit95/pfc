@@ -49,7 +49,7 @@ if (isset($_POST['guardarEstudiante'])) {
         header("Location: ../../../vistas/profesores/estudiantes/lista.php");
         exit;
     }
-    $_SESSION['error'] = "Hubo un problema al intentar guardar el estudiante.";
+    $_SESSION['errores'] = "Hubo un problema al intentar guardar el estudiante.";
     header("Location: ../../../vistas/profesores/estudiantes/agregar.php");
     exit;
 }

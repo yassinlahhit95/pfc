@@ -21,7 +21,7 @@ if (isset($_POST['actualizarProfesores'])) {
     if (!$hayError) {
         $_SESSION['exito'] = "Profesor asignado.";
     } else {
-        $_SESSION['error'] = "Error al asignar.";
+        $_SESSION['errores'] = "Error al asignar.";
     }
 }
 

@@ -7,7 +7,7 @@ $idPrestamo = trim($_POST['idPrestamo'] ?? $_GET['id'] ?? '');
 $hayError = false;
 
 if (empty($idPrestamo)) {
-    $_SESSION['error'] = "Error del préstamo.";
+    $_SESSION['errores'] = "Error del préstamo.";
     $hayError = true;
 }
 
@@ -15,7 +15,7 @@ if (!$hayError) {
     if (devolverPrestamo($idPrestamo)) {
         $_SESSION['exito'] = "Préstamo devuelto.";
     } else {
-        $_SESSION['error'] = "Error al devolver.";
+        $_SESSION['errores'] = "Error al devolver.";
     }
 }
 

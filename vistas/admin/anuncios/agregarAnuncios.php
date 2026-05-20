@@ -1,11 +1,11 @@
 ﻿<?php
 session_start();
 
-$error = $_SESSION['error'] ?? '';
-$errores = $_SESSION['errores'] ?? [];
-$datos = $_SESSION['datos_anuncio'] ?? [];
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
-unset($_SESSION['error'], $_SESSION['errores'], $_SESSION['datos_anuncio']);
+$datos = $_SESSION['datos_anuncio'] ?? [];
 
 $titulo_pagina = "AULAPRO | PUBLICAR NUEVO ANUNCIO";
 $seccion = 'anuncios';
@@ -18,9 +18,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 
-    <?php if ($error) { ?>
-        <div class="mensaje-error"><?= $error ?></div>
-    <?php } ?>
+    <?php if (is_string($errores) && $errores) { ?>
+        <div class="mensaje-error"><?= $errores ?></div>
+<?php } ?>
 
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">

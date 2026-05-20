@@ -1,10 +1,9 @@
 <?php
 session_start();
 
-$error = $_SESSION['error'] ?? null;
-$exito = $_SESSION['exito'] ?? null;
-$errores = $_SESSION['errores'] ?? [];
-unset($_SESSION['error'], $_SESSION['exito'], $_SESSION['errores']);
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
@@ -26,8 +25,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="../../../vistas/profesores/mensajes/lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
@@ -55,8 +54,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
         
         <div class="campo">
-            <label for="respuesta">Tu Respuesta / Explicación:</label>
-            <textarea name="respuesta" id="respuesta" rows="4" placeholder="Escribe aquí tu respuesta..." class="<?= isset($errores['respuesta']) ? 'input-error' : '' ?>"><?= $mensaje['respuesta'] ?></textarea>
+            <label for="respuesta">Tu Respuesta / ExplicaciÃ³n:</label>
+            <textarea name="respuesta" id="respuesta" rows="4" placeholder="Escribe aqui tu respuesta..." class="<?= isset($errores['respuesta']) ? 'input-error' : '' ?>"><?= $mensaje['respuesta'] ?></textarea>
             <?php if (isset($errores['respuesta'])) { ?>
                 <strong class="error-campo"><?= $errores['respuesta'] ?></strong>
             <?php } ?>
@@ -64,7 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="acciones">
             <input type="submit" name="guardarRespuesta" class="boton-primario" value="GUARDAR RESPUESTA">
-            <input type="submit" name="marcarLeido" class="boton-secundario" value="MARCAR COMO LEÍDO">
+            <input type="submit" name="marcarLeido" class="boton-secundario" value="MARCAR COMO LEIDO">
             <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>

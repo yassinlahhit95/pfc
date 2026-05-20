@@ -13,14 +13,14 @@ if (isset($_POST['idReclamacion'])) {
             $_SESSION['exito'] = "Respuesta guardada.";
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error al guardar.";
+            $_SESSION['errores'] = "Error al guardar.";
         }
     } else if (isset($_POST['marcarLeido'])) {
         if (marcarMensajeComoLeido($idReclamacion)) {
             $_SESSION['exito'] = "Mensaje leído.";
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error al actualizar.";
+            $_SESSION['errores'] = "Error al actualizar.";
         }
     }
 }

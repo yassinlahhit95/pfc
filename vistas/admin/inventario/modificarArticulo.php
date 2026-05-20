@@ -1,5 +1,9 @@
 ﻿<?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $idArticulo = $_GET['idArticulo'] ?? 0;
@@ -10,9 +14,7 @@ if (!$articulo) {
     exit;
 }
 
-$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_inventario'] ?? [];
-unset($_SESSION['errores'], $_SESSION['datos_inventario']);
 
 $titulo_pagina = "AULAPRO | MODIFICAR ARTÍCULO";
 $seccion = 'inventario';

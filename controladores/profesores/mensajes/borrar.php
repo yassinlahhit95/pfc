@@ -11,7 +11,7 @@ if (isset($_GET['id'])) {
         $_SESSION['exito'] = "Mensaje eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

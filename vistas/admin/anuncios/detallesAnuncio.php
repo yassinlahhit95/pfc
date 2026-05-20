@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
@@ -11,7 +15,7 @@ $idAnuncio = $_GET['idAnuncio'] ?? 0;
 $anuncio = obtenerAnuncioPorId($idAnuncio);
 
 if (!$anuncio) {
-    $_SESSION['error'] = "El anuncio solicitado no existe.";
+    $_SESSION['errores'] = "El anuncio solicitado no existe.";
     header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
     exit;
 }
@@ -67,7 +71,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

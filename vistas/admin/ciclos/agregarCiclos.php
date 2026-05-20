@@ -1,15 +1,16 @@
 ﻿<?php
 session_start();
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
-$errores = $_SESSION['errores'] ?? [];
 $datos = $_SESSION['datos_ciclo'] ?? [];
-
-unset($_SESSION['errores'], $_SESSION['datos_ciclo']);
 
 $profesoresElegidos = $datos['profesores'] ?? [];
 $mapaProfesoresElegidos = [];

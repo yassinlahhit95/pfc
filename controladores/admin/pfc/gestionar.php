@@ -17,7 +17,7 @@ if (isset($_POST['guardarTFG'])) {
         
         if (!move_uploaded_file($archivoSubido['tmp_name'], $rutaDestino)) {
             $hayError = true;
-            $_SESSION['error'] = "Error al guardar archivo.";
+            $_SESSION['errores'] = "Error al guardar archivo.";
         }
     }
 
@@ -26,7 +26,7 @@ if (isset($_POST['guardarTFG'])) {
             $_SESSION['exito'] = "TFG actualizado.";
         } else {
             $hayError = true;
-            $_SESSION['error'] = "Error al actualizar.";
+            $_SESSION['errores'] = "Error al actualizar.";
         }
     }
 }

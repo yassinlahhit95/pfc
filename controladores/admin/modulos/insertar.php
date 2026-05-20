@@ -32,7 +32,7 @@ if (isset($_POST['guardarModulo'])) {
         header("Location: ../../../vistas/admin/modulos/verModulos.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo registrar el módulo.";
+    $_SESSION['errores'] = "No se pudo registrar el módulo.";
     header("Location: ../../../vistas/admin/modulos/agregarModulos.php");
     exit;
 }

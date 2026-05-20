@@ -10,11 +10,11 @@ if (isset($_GET['id'])) {
         $_SESSION['exito'] = "Calificación eliminada.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 } else {
     $hayError = true;
-    $_SESSION['error'] = "Falta ID.";
+    $_SESSION['errores'] = "Falta ID.";
 }
 
 header("Location: ../../../vistas/profesores/calificaciones/lista.php");

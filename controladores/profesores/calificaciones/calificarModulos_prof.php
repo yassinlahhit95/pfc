@@ -47,7 +47,7 @@ if (isset($_POST['guardarNotas'])) {
         }
         $_SESSION['exito'] = "Notas guardadas.";
     } else {
-        $_SESSION['error'] = "Las notas deben ser números entre 0 y 10.";
+        $_SESSION['errores'] = "Las notas deben ser números entre 0 y 10.";
     }
 
     header("Location: ../../../vistas/profesores/calificaciones/agregar.php?idCiclo=$idCiclo&idModulo=$idModulo");

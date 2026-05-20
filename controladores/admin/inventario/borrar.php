@@ -7,7 +7,7 @@ if (isset($_POST['idArticulo'])) {
     if (eliminarArticulo($idArticulo)) {
         $_SESSION['exito'] = "Artículo eliminado.";
     } else {
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 header("Location: ../../../vistas/admin/inventario/verInventario.php");

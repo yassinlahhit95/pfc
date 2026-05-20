@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../login.php");
     exit;
@@ -15,26 +19,16 @@ $tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
 include_once "../comunes/nav.php";
 
-$exito = '';
-if (isset($_SESSION['exito'])) {
-    $exito = $_SESSION['exito'];
-}
-
-$error = '';
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-}
-unset($_SESSION['exito'], $_SESSION['error']);
 ?>
 
 <div class="cabecera">
     <h1>MI TRABAJO FIN DE GRADO (TFG)</h1>
 </div>
 
-<?php if (!empty($error)) { ?>
+<?php if (is_string($errores) && $errores) { ?>
 <div class="mensaje-error">
     <i class="fas fa-exclamation-circle"></i>
-    <p><?php echo $error; ?></p>
+    <p><?= $errores ?></p>
 </div>
 <?php } ?>
 
@@ -86,6 +80,4 @@ unset($_SESSION['exito'], $_SESSION['error']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
 

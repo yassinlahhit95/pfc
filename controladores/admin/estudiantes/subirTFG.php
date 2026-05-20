@@ -26,9 +26,9 @@ if (isset($_POST['subirTFG'])) {
                 header("Location: ../../../vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$idEstudiante");
                 exit;
             }
-            $_SESSION['error'] = "Error al actualizar.";
+            $_SESSION['errores'] = "Error al actualizar.";
         } else {
-            $_SESSION['error'] = "Error al guardar archivo.";
+            $_SESSION['errores'] = "Error al guardar archivo.";
         }
     } else {
         $_SESSION['errores'] = $errores;

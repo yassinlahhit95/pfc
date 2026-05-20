@@ -66,7 +66,7 @@ if (isset($_POST['guardarReto'])) {
         header("Location: ../../../vistas/admin/retos/verRetos.php");
         exit;
     }
-    $_SESSION['error'] = "No se pudo crear el reto en la base de datos.";
+    $_SESSION['errores'] = "No se pudo crear el reto en la base de datos.";
     header("Location: ../../../vistas/admin/retos/agregarRetos.php");
     exit;
 }

@@ -10,7 +10,7 @@ if (isset($_POST['idModulo'])) {
         $_SESSION['exito'] = "Módulo eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['error'] = "Error al eliminar.";
+        $_SESSION['errores'] = "Error al eliminar.";
     }
 }
 

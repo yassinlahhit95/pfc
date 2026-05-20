@@ -19,7 +19,7 @@ if (isset($_POST['actualizarModulos'])) {
     if (!$hayError) {
         $_SESSION['exito'] = "Módulos asignados.";
     } else {
-        $_SESSION['error'] = "Error al asignar módulos.";
+        $_SESSION['errores'] = "Error al asignar módulos.";
     }
 }
 

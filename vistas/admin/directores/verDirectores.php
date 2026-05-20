@@ -1,17 +1,17 @@
 <?php
 session_start();
-$titulo_pagina = "AULAPRO | GESTIÓN DE DIRECTORES";
-$seccion = 'directores';
-include_once __DIR__ . "/../comunes/nav.php";
+
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 $todos_los_directores = listarDirectores();
 
-$error = $_SESSION['error'] ?? '';
-$exito = $_SESSION['exito'] ?? '';
-
-unset($_SESSION['error'], $_SESSION['exito']);
+$titulo_pagina = "AULAPRO | GESTIÓN DE DIRECTORES";
+$seccion = 'directores';
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
@@ -24,8 +24,8 @@ unset($_SESSION['error'], $_SESSION['exito']);
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if ($error) { ?>
-    <div class="mensaje-error"><?= $error ?></div>
+<?php if (is_string($errores) && $errores) { ?>
+    <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -73,7 +73,4 @@ unset($_SESSION['error'], $_SESSION['exito']);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
 

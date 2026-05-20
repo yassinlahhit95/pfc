@@ -10,17 +10,17 @@ if (isset($_POST['actualizarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 
-    $fallos = [];
-    if (empty($nombre)) $fallos['nombreCiclo'] = "Nombre obligatorio.";
-    if (empty($abreviatura)) $fallos['abreviaturaCiclo'] = "Abreviatura obligatoria.";
-    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $fallos['precioCiclo'] = "El precio debe ser un número válido.";
+    $errores = [];
+    if (empty($nombre)) $errores['nombreCiclo'] = "Nombre obligatorio.";
+    if (empty($abreviatura)) $errores['abreviaturaCiclo'] = "Abreviatura obligatoria.";
+    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores['precioCiclo'] = "El precio debe ser un número válido.";
 
-    if (empty($fallos) && checkCicloExistente($nombre, $abreviatura, $idCiclo)) {
-        $fallos['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";
+    if (empty($errores) && checkCicloExistente($nombre, $abreviatura, $idCiclo)) {
+        $errores['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";
     }
 
-    if (!empty($fallos)) {
-        $_SESSION['errores'] = $fallos;
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclos'] = $_POST;
         header("Location: ../../../vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $idCiclo);
         exit;
@@ -31,7 +31,7 @@ if (isset($_POST['actualizarCiclo'])) {
         header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
         exit;
     }
-    $_SESSION['error'] = "No se realizaron cambios o no se pudo actualizar el ciclo en la base de datos.";
+    $_SESSION['errores'] = "No se realizaron cambios o no se pudo actualizar el ciclo en la base de datos.";
     header("Location: ../../../vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $idCiclo);
     exit;
 }
