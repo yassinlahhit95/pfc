@@ -22,29 +22,29 @@ if (isset($_POST['actualizarEstudiante'])) {
         exit;
     }
 
-    $errores = [];
-    if (empty($nombre)) $errores['nombreEstudiante'] = "El nombre es obligatorio.";
+    $errores = '';
+    if (empty($nombre)) $errores = "El nombre es obligatorio.";
     if (empty($email)) {
-        $errores['emailEstudiante'] = "Email obligatorio";
+        $errores = "Email obligatorio";
     } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $errores['emailEstudiante'] = "Formato de email no válido";
+        $errores = "Formato de email no válido";
     }
-    if (empty($dni)) $errores['dniEstudiante'] = "DNI obligatorio";
+    if (empty($dni)) $errores = "DNI obligatorio";
     if (empty($telefono)) {
-        $errores['telefonoEstudiante'] = "El teléfono es obligatorio.";
+        $errores = "El teléfono es obligatorio.";
     } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
-        $errores['telefonoEstudiante'] = "9 dígitos, solo números";
+        $errores = "9 dígitos, solo números";
     }
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
-        $errores['codigoPostalEstudiante'] = "Código postal incorrecto";
+        $errores = "Código postal incorrecto";
     }
-    if (empty($idCiclo)) $errores['idCiclo'] = "Selecciona el ciclo";
+    if (empty($idCiclo)) $errores = "Selecciona el ciclo";
 
-    if (empty($errores) && checkEstudianteExistente($dni, $email, $idEstudiante)) {
-        $errores['dniEstudiante'] = "El DNI o Email ya están registrados por otro estudiante.";
+    if (!$errores && checkEstudianteExistente($dni, $email, $idEstudiante)) {
+        $errores = "El DNI o Email ya están registrados por otro estudiante.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         if (actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
             $_SESSION['exito'] = "Datos del estudiante actualizados correctamente.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");

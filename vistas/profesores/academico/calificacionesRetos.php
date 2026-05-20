@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-$exito = $_SESSION['exito'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -14,8 +15,8 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$idCicloElegido = intval($_GET['idCiclo'] ?? 0);
-$idRetoElegido = intval($_GET['idReto'] ?? 0);
+$idCicloElegido = $_GET['idCiclo'] ?? 0;
+$idRetoElegido = $_GET['idReto'] ?? 0;
 
 $listaCiclos = listarCiclosDeProfesor($idProfesor);
 $listaRetos = $idCicloElegido ? listarRetosPorCicloDeProfesor($idCicloElegido, $idProfesor) : [];
@@ -60,15 +61,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div style="margin-bottom: 15px;">
-            <button type="button" class="boton-secundario" onclick="window.location.href = 'calificacionesRetos.php';">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">

@@ -6,22 +6,22 @@ if (isset($_POST['guardarArticulo'])) {
     $nombre = trim($_POST['nombreArticulo']);
     $numeroSerie = trim($_POST['numeroSerie']);
 
-    $errores = [];
+    $errores = '';
 
     if (empty($nombre)) {
-        $errores['nombreArticulo'] = "El nombre es obligatorio.";
+        $errores = "El nombre es obligatorio.";
     }
     if (empty($numeroSerie)) {
-        $errores['numeroSerie'] = "El número de serie es obligatorio.";
+        $errores = "El número de serie es obligatorio.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         if (checkArticuloExistente($numeroSerie)) {
-            $errores['numeroSerie'] = "Este número de serie ya está registrado.";
+            $errores = "Este número de serie ya está registrado.";
         }
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         if (insertarArticulo($nombre, $numeroSerie)) {
             $_SESSION['exito'] = "Artículo añadido.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");

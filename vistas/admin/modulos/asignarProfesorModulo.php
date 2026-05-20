@@ -8,14 +8,14 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $idModulo = $_GET['idModulo'] ?? 0;
-$modulo = obtenerModuloPorId(intval($idModulo));
+$modulo = obtenerModuloPorId($idModulo);
 
 if (!$modulo) {
     header("Location: verModulos.php");
     exit;
 }
 
-$profesores_asignados = listarProfesoresDeModulo(intval($idModulo));
+$profesores_asignados = listarProfesoresDeModulo($idModulo);
 $idProfesorActual = !empty($profesores_asignados) ? $profesores_asignados[0] : 0;
 
 $todos_los_profesores = listarProfesores();
@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 

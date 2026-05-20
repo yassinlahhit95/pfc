@@ -8,15 +8,15 @@ if (isset($_POST['calificarTFG'])) {
     $nota = str_replace(',', '.', $nota);
     $observaciones = trim($_POST['observaciones']);
 
-    $errores = [];
+    $errores = '';
 
     if (!is_numeric($nota)) {
-        $errores['nota'] = "La nota debe ser un número.";
+        $errores = "La nota debe ser un número.";
     } elseif ($nota < 0 || $nota > 10) {
-        $errores['nota'] = "La nota debe estar entre 0 y 10.";
+        $errores = "La nota debe estar entre 0 y 10.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         $resultado = guardarCalificacionTFG($idEstudiante, $nota, $observaciones);
 
         if ($resultado) {

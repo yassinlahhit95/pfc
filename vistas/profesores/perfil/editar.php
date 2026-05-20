@@ -26,7 +26,7 @@ include_once "../comunes/nav.php";
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -41,26 +41,17 @@ include_once "../comunes/nav.php";
 
         <div class="campo">
             <label for="nombreProfesor">Nombre Completo</label>
-            <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= $nom ?>" class="<?= isset($errores['nombreProfesor']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['nombreProfesor'])) { ?>
-                <strong class="error-campo"><?= $errores['nombreProfesor'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="emailProfesor">Correo Corporativo</label>
-            <input type="text" id="emailProfesor" name="emailProfesor" value="<?= $eml ?>" class="<?= isset($errores['emailProfesor']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['emailProfesor'])) { ?>
-                <strong class="error-campo"><?= $errores['emailProfesor'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="telefonoProfesor">Numero de Telefono</label>
-            <input type="tel" id="telefonoProfesor" name="telefonoProfesor" value="<?= $tel ?>" class="<?= isset($errores['telefonoProfesor']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['telefonoProfesor'])) { ?>
-                <strong class="error-campo"><?= $errores['telefonoProfesor'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
@@ -68,18 +59,12 @@ include_once "../comunes/nav.php";
 
         <div class="campo">
             <label for="current_password">Contraseña Actual</label>
-            <input type="password" id="current_password" name="current_password" placeholder="Escriba su contraseña actual para validar" class="<?= isset($errores['current_password']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['current_password'])) { ?>
-                <strong class="error-campo"><?= $errores['current_password'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="new_password">Nueva Contraseña</label>
-            <input type="password" id="new_password" name="new_password" placeholder="Mínimo 6 caracteres" class="<?= isset($errores['new_password']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['new_password'])) { ?>
-                <strong class="error-campo"><?= $errores['new_password'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -40,9 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label for="nombreModulo">Nombre del Módulo</label>
             <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
-            <?php if (isset($errores['nombreModulo'])) { ?>
-                <strong class="error-campo"><?= $errores['nombreModulo'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
@@ -59,17 +57,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idCiclo" id="idCiclo">
                 <option value="">-- Selecciona primero un nivel --</option>
             </select>
-            <?php if (isset($errores['idCiclo'])) { ?>
-                <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="horasMaximas">Horas Máximas</label>
             <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
-            <?php if (isset($errores['horasMaximas'])) { ?>
-                <strong class="error-campo"><?= $errores['horasMaximas'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

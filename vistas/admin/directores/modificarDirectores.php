@@ -28,7 +28,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verDirectores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -40,65 +40,49 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="nombreDirector">Nombre Completo</label>
                 <input type="text" id="nombreDirector" name="nombreDirector" value="<?= $director['nombreDirector'] ?? '' ?>">
-                <?php if (isset($errores['nombreDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="emailDirector">Email</label>
                 <input type="text" id="emailDirector" name="emailDirector" value="<?= $director['emailDirector'] ?? '' ?>">
-                <?php if (isset($errores['emailDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['emailDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="dniDirector">DNI</label>
                 <input type="text" id="dniDirector" name="dniDirector" value="<?= $director['dniDirector'] ?? '' ?>">
-                <?php if (isset($errores['dniDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['dniDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="telefonoDirector">Teléfono</label>
                 <input type="text" id="telefonoDirector" name="telefonoDirector" value="<?= $director['telefonoDirector'] ?? '' ?>">
-                <?php if (isset($errores['telefonoDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['telefonoDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="fechaNacimientoDirector">Fecha de Nacimiento</label>
                 <input type="date" id="fechaNacimientoDirector" name="fechaNacimientoDirector" value="<?= $director['fechaNacimientoDirector'] ?? '' ?>">
-                <?php if (isset($errores['fechaNacimientoDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaNacimientoDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="ciudadDirector">Ciudad</label>
                 <input type="text" id="ciudadDirector" name="ciudadDirector" value="<?= $director['ciudadDirector'] ?? '' ?>">
-                <?php if (isset($errores['ciudadDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['ciudadDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="codigoPostalDirector">Código Postal</label>
                 <input type="text" id="codigoPostalDirector" name="codigoPostalDirector" value="<?= $director['codigoPostalDirector'] ?? '' ?>">
-                <?php if (isset($errores['codigoPostalDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['codigoPostalDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo campo-ancho-total">
                 <label for="direccionDirector">Dirección Completa</label>
                 <input type="text" id="direccionDirector" name="direccionDirector" value="<?= $director['direccionDirector'] ?? '' ?>">
-                <?php if (isset($errores['direccionDirector'])) { ?>
-                    <strong class="error-campo"><?= $errores['direccionDirector'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo campo-ancho-total">

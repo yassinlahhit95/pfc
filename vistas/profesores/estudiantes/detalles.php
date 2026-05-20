@@ -14,7 +14,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $idEstudiante = $_GET['idEstudiante'] ?? 0;
-$idEstudiante = intval($idEstudiante);
+$idEstudiante = $idEstudiante;
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 

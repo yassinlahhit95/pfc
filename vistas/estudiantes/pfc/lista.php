@@ -25,7 +25,7 @@ include_once "../comunes/nav.php";
     <h1>MI TRABAJO FIN DE GRADO (TFG)</h1>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
 <div class="mensaje-error">
     <i class="fas fa-exclamation-circle"></i>
     <p><?= $errores ?></p>

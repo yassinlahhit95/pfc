@@ -48,17 +48,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label>Nombre Completo</label>
                 <input type="text" name="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
-                <?php if (isset($errores['nombreEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>Email</label>
                 <input type="text" name="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
-                <?php if (isset($errores['emailEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['emailEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -74,25 +70,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona un ciclo --</option>
                 </select>
-                <?php if (isset($errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>DNI</label>
                 <input type="text" name="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
-                <?php if (isset($errores['dniEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['dniEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>Teléfono</label>
                 <input type="text" name="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
-                <?php if (isset($errores['telefonoEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['telefonoEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">

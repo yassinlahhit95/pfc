@@ -8,7 +8,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $id_reclamacion = $_GET['idReclamacion'] ?? 0;
-$reclamacion = obtenerMensajePorId(intval($id_reclamacion));
+$reclamacion = obtenerMensajePorId($id_reclamacion);
 
 if (!$reclamacion) {
     header("Location: lista.php");
@@ -33,7 +33,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -45,9 +45,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label>Asunto</label>
                 <input type="text" name="asuntoReclamacion" value="<?= $reclamacion['asuntoReclamacion'] ?? '' ?>">
-                <?php if (isset($errores['asuntoReclamacion'])) { ?>
-                    <strong class="error-campo"><?= $errores['asuntoReclamacion'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -62,9 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo campo-ancho-total">
                 <label>Descripción</label>
                 <textarea name="descripcionReclamacion" rows="6"><?= $reclamacion['descripcionReclamacion'] ?? '' ?></textarea>
-                <?php if (isset($errores['descripcionReclamacion'])) { ?>
-                    <strong class="error-campo"><?= $errores['descripcionReclamacion'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
 

@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -66,7 +66,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="idEstudiante">Destinatario</label>
-            <select name="idEstudiante" id="idEstudiante" class="<?= isset($errores['idEstudiante']) ? 'input-error' : '' ?>">
                 <option value="">-- Seleccionar Destinatario --</option>
                 <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Direccion (Administracion)</option>
                 <optgroup label="Estudiantes">
@@ -79,25 +78,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </optgroup>
             </select>
-            <?php if (isset($errores['idEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="asunto">Asunto del Mensaje</label>
-            <input type="text" name="asunto" id="asunto" value="<?= $datos['asunto'] ?? '' ?>" placeholder="Escriba el motivo del mensaje..." class="<?= isset($errores['asunto']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['asunto'])) { ?>
-                <strong class="error-campo"><?= $errores['asunto'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="descripcion">Mensaje</label>
-            <textarea name="descripcion" id="descripcion" rows="6" placeholder="Escribe aqui tu mensaje (maximo 250 caracteres)..." maxlength="250" class="<?= isset($errores['descripcion']) ? 'input-error' : '' ?>"><?= $datos['descripcion'] ?? '' ?></textarea>
-            <?php if (isset($errores['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

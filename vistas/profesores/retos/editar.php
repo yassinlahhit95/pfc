@@ -33,7 +33,7 @@ include_once "../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -46,34 +46,22 @@ include_once "../comunes/nav.php";
         
         <div class="campo">
             <label for="nombreReto">Nombre del Reto</label>
-            <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>" class="<?= isset($errores['nombreReto']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['nombreReto'])) { ?>
-                <strong class="error-campo"><?= $errores['nombreReto'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="horasReto">Horas Totales</label>
-            <input type="text" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>" class="<?= isset($errores['horasReto']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['horasReto'])) { ?>
-                <strong class="error-campo"><?= $errores['horasReto'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="fechaInicio">Fecha Inicio</label>
-            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= $reto['fechaInicio'] ?>" class="<?= isset($errores['fechaInicio']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['fechaInicio'])) { ?>
-                <strong class="error-campo"><?= $errores['fechaInicio'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="fechaFin">Fecha Fin</label>
-            <input type="date" name="fechaFin" id="fechaFin" value="<?= $reto['fechaFin'] ?>" class="<?= isset($errores['fechaFin']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['fechaFin'])) { ?>
-                <strong class="error-campo"><?= $errores['fechaFin'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
@@ -88,9 +76,7 @@ include_once "../comunes/nav.php";
                     </label>
                 <?php } ?>
             </div>
-            <?php if (isset($errores['modulos'])) { ?>
-                <strong class="error-campo"><?= $errores['modulos'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones" style="margin-top: 20px;">

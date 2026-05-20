@@ -22,7 +22,7 @@ include_once "../comunes/nav.php";
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -37,26 +37,17 @@ include_once "../comunes/nav.php";
 
         <div class="campo">
             <label for="nombreEstudiante">Nombre Completo</label>
-            <input type="text" id="nombreEstudiante" name="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? $est['nombreEstudiante'] ?>" class="<?= isset($errores['nombreEstudiante']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['nombreEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errores['nombreEstudiante'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="emailEstudiante">Correo Electronico</label>
-            <input type="text" id="emailEstudiante" name="emailEstudiante" value="<?= $datos['emailEstudiante'] ?? $est['emailEstudiante'] ?>" class="<?= isset($errores['emailEstudiante']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['emailEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errores['emailEstudiante'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="telefonoEstudiante">Numero de Telefono</label>
-            <input type="tel" id="telefonoEstudiante" name="telefonoEstudiante" value="<?= $datos['telefonoEstudiante'] ?? $est['telefonoEstudiante'] ?>" class="<?= isset($errores['telefonoEstudiante']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['telefonoEstudiante'])) { ?>
-                <strong class="error-campo"><?= $errores['telefonoEstudiante'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
@@ -64,18 +55,12 @@ include_once "../comunes/nav.php";
 
         <div class="campo">
             <label for="current_password">Contraseña Actual</label>
-            <input type="password" id="current_password" name="current_password" placeholder="Escriba su contraseña actual para validar" class="<?= isset($errores['current_password']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['current_password'])) { ?>
-                <strong class="error-campo"><?= $errores['current_password'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo">
             <label for="new_password">Nueva Contraseña</label>
-            <input type="password" id="new_password" name="new_password" placeholder="Mínimo 6 caracteres" class="<?= isset($errores['new_password']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['new_password'])) { ?>
-                <strong class="error-campo"><?= $errores['new_password'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

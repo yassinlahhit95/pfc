@@ -10,18 +10,18 @@ if (isset($_POST['actualizarReto'])) {
     $fechaFinDelReto = trim($_POST['fechaFinReto']);
     $idModuloAsociado = $_POST['modulosReto'] ?? '';
 
-    $errores = [];
-    if (empty($nombreRetoActualizar)) $errores['nombreReto'] = "El nombre es obligatorio.";
+    $errores = '';
+    if (empty($nombreRetoActualizar)) $errores = "El nombre es obligatorio.";
     if (empty($horasDelReto)) {
-        $errores['horasReto'] = "Las horas son obligatorias.";
+        $errores = "Las horas son obligatorias.";
     } elseif (!is_numeric($horasDelReto)) {
-        $errores['horasReto'] = "Las horas deben ser un número.";
+        $errores = "Las horas deben ser un número.";
     }
-    if (empty($fechaInicioDelReto)) $errores['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
+    if (empty($fechaInicioDelReto)) $errores = "La fecha de inicio es obligatoria.";
     if (empty($fechaFinDelReto)) {
-        $errores['fechaFinReto'] = "La fecha de fin es obligatoria.";
+        $errores = "La fecha de fin es obligatoria.";
     } else if (!empty($fechaInicioDelReto) && $fechaFinDelReto < $fechaInicioDelReto) {
-        $errores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
+        $errores = "La fecha de fin no puede ser anterior a la de inicio.";
     }
 
     if (!empty($fechaInicioDelReto) && !empty($fechaFinDelReto) && !empty($horasDelReto) && is_numeric($horasDelReto) && $fechaInicioDelReto <= $fechaFinDelReto) {
@@ -35,20 +35,20 @@ if (isset($_POST['actualizarReto'])) {
         }
         $maxHorasPermitidas = $diasLaborables * 6;
         if ($horasDelReto > $maxHorasPermitidas) {
-            $errores['horasReto'] = "Las horas ($horasDelReto h) superan el máximo permitido ($maxHorasPermitidas h).";
+            $errores = "Las horas ($horasDelReto h) superan el máximo permitido ($maxHorasPermitidas h).";
         }
     }
 
     if (empty($idModuloAsociado) || !is_numeric($idModuloAsociado)) {
-        $errores['modulosReto'] = "Selecciona un módulo";
+        $errores = "Selecciona un módulo";
     } else if (is_numeric($horasDelReto)) {
         $detalle = obtenerDetalleHorasModulo($idModuloAsociado, $idRetoActualizar);
         if ($horasDelReto > $detalle['disponibles']) {
-            $errores['modulosReto'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+            $errores = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
         }
     }
 
-    if (!empty($errores)) {
+    if ($errores) {
         $_SESSION['errores'] = $errores;
         $datosParaSesion = $_POST;
         $datosParaSesion['fechaInicio'] = $_POST['fechaInicioReto'];

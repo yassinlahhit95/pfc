@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="gestionarPrestamos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -65,9 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php } ?>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idArticulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idArticulo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -80,17 +78,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>Fecha de Préstamo</label>
                 <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
-                <?php if (isset($errores['fechaPrestamo'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaPrestamo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
         </div>

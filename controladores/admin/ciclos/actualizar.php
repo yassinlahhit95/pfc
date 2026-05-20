@@ -10,16 +10,13 @@ if (isset($_POST['actualizarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 
-    $errores = [];
-    if (empty($nombre)) $errores['nombreCiclo'] = "Nombre obligatorio.";
-    if (empty($abreviatura)) $errores['abreviaturaCiclo'] = "Abreviatura obligatoria.";
-    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores['precioCiclo'] = "El precio debe ser un número válido.";
+    $errores = '';
+    if (empty($nombre)) $errores = "Nombre obligatorio.";
+    elseif (empty($abreviatura)) $errores = "Abreviatura obligatoria.";
+    elseif (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un número válido.";
+    elseif (checkCicloExistente($nombre, $abreviatura, $idCiclo)) $errores = "El nombre o la abreviatura ya están en uso.";
 
-    if (empty($errores) && checkCicloExistente($nombre, $abreviatura, $idCiclo)) {
-        $errores['nombreCiclo'] = "El nombre o la abreviatura ya están en uso.";
-    }
-
-    if (!empty($errores)) {
+    if ($errores) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclos'] = $_POST;
         header("Location: ../../../vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $idCiclo);

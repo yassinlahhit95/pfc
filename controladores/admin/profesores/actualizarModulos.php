@@ -5,13 +5,13 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $hayError = false;
 
 if (isset($_POST['actualizarModulos'])) {
-    $idProfesorAsignacion = intval(trim($_POST['idProfesor']));
+    $idProfesorAsignacion = trim($_POST['idProfesor']);
     $listaModulosSeleccionados = $_POST['modulos'] ?? [];
 
     limpiarModulosProfesor($idProfesorAsignacion);
 
     foreach ($listaModulosSeleccionados as $idModuloParaAsociar) {
-        if (!asociarModuloProfesor(intval($idModuloParaAsociar), $idProfesorAsignacion)) {
+        if (!asociarModuloProfesor($idModuloParaAsociar, $idProfesorAsignacion)) {
             $hayError = true;
         }
     }

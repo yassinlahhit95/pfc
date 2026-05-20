@@ -22,7 +22,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>PROXIMOS EVENTOS Y FECHAS CLAVE</h1>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>

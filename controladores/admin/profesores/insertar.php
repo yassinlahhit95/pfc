@@ -14,33 +14,33 @@ if (isset($_POST['guardarProfesor'])) {
     $codigoPostalNuevoProfesor = trim($_POST['codigoPostalProfesor']);
     $observacionesNuevoProfesor = trim($_POST['observacionesProfesor']);
 
-    $errores = [];
-    if (empty($nombreNuevoProfesor)) $errores['nombreProfesor'] = "Nombre obligatorio";
+    $errores = '';
+    if (empty($nombreNuevoProfesor)) $errores = "Nombre obligatorio";
     if (empty($emailNuevoProfesor)) {
-        $errores['emailProfesor'] = "El email es obligatorio.";
+        $errores = "El email es obligatorio.";
     } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailNuevoProfesor)) {
-        $errores['emailProfesor'] = "Email inválido";
+        $errores = "Email inválido";
     }
-    if (empty($dniNuevoProfesor)) $errores['dniProfesor'] = "Falta el DNI";
+    if (empty($dniNuevoProfesor)) $errores = "Falta el DNI";
     if (empty($telefonoNuevoProfesor)) {
-        $errores['telefonoProfesor'] = "El teléfono es obligatorio.";
+        $errores = "El teléfono es obligatorio.";
     } else if (!is_numeric($telefonoNuevoProfesor)) {
-        $errores['telefonoProfesor'] = "Solo números";
+        $errores = "Solo números";
     }
-    if (empty($direccionNuevoProfesor)) $errores['direccionProfesor'] = "La dirección es obligatoria.";
-    if (empty($ciudadNuevoProfesor)) $errores['ciudadProfesor'] = "Ciudad requerida";
+    if (empty($direccionNuevoProfesor)) $errores = "La dirección es obligatoria.";
+    if (empty($ciudadNuevoProfesor)) $errores = "Ciudad requerida";
     if (empty($codigoPostalNuevoProfesor)) {
-        $errores['codigoPostalProfesor'] = "Falta el código postal";
+        $errores = "Falta el código postal";
     } else if (!is_numeric($codigoPostalNuevoProfesor)) {
-        $errores['codigoPostalProfesor'] = "Código postal incorrecto";
+        $errores = "Código postal incorrecto";
     }
-    if (empty($fechaNacimientoNuevoProfesor)) $errores['fechaNacimientoProfesor'] = "La fecha de nacimiento es obligatoria.";
+    if (empty($fechaNacimientoNuevoProfesor)) $errores = "La fecha de nacimiento es obligatoria.";
 
-    if (empty($errores) && checkProfesorExistente($dniNuevoProfesor, $emailNuevoProfesor)) {
-        $errores['dniProfesor'] = "El DNI o Email ya están registrados.";
+    if (!$errores && checkProfesorExistente($dniNuevoProfesor, $emailNuevoProfesor)) {
+        $errores = "El DNI o Email ya están registrados.";
     }
 
-    if (!empty($errores)) {
+    if ($errores) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_profesor'] = $_POST;
         header("Location: ../../../vistas/admin/profesores/agregarProfesores.php");

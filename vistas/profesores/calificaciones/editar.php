@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -73,34 +73,22 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="nota_1ev">1ª Evaluación</label>
-                <input type="text" name="nota_1ev" id="nota_1ev" value="<?= $nota['nota_1ev'] ?? '' ?>" class="<?= isset($errores['nota_1ev']) ? 'input-error' : '' ?>">
-                <?php if (isset($errores['nota_1ev'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_1ev'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="nota_1final">1ª Final</label>
-                <input type="text" name="nota_1final" id="nota_1final" value="<?= $nota['nota_1final'] ?? '' ?>" class="<?= isset($errores['nota_1final']) ? 'input-error' : '' ?>">
-                <?php if (isset($errores['nota_1final'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_1final'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="nota_2ev">2ª Evaluación</label>
-                <input type="text" name="nota_2ev" id="nota_2ev" value="<?= $nota['nota_2ev'] ?? '' ?>" class="<?= isset($errores['nota_2ev']) ? 'input-error' : '' ?>">
-                <?php if (isset($errores['nota_2ev'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_2ev'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="nota_2final">2ª Final</label>
-                <input type="text" name="nota_2final" id="nota_2final" value="<?= $nota['nota_2final'] ?? '' ?>" class="<?= isset($errores['nota_2final']) ? 'input-error' : '' ?>">
-                <?php if (isset($errores['nota_2final'])) { ?>
-                    <strong class="error-campo"><?= $errores['nota_2final'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
 

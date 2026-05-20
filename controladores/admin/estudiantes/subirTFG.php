@@ -6,15 +6,15 @@ if (isset($_POST['subirTFG'])) {
     $idEstudiante = trim($_POST['idEstudiante'] ?? '');
     $archivo = $_FILES['archivoTFG'] ?? null;
     
-    $errores = [];
+    $errores = '';
 
     if (empty($idEstudiante)) {
-        $errores['idEstudiante'] = "Falta ID estudiante.";
+        $errores = "Falta ID estudiante.";
     } elseif (!$archivo || !empty($archivo['error'])) {
-        $errores['archivoTFG'] = "Error en archivo.";
+        $errores = "Error en archivo.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         $timestamp = date('d-m-Y_H-i-s');
         $nombreArchivo = "TFG_" . $idEstudiante . "_" . $timestamp . ".pdf";
 

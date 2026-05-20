@@ -9,7 +9,7 @@ if (!isset($_SESSION['idAdmin'])) {
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $idReclamacion = $_GET['id'] ?? 0;
-$mensaje = obtenerMensajePorId(intval($idReclamacion));
+$mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
     header("Location: lista.php");

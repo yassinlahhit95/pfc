@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Retos asignados a tu ciclo: <?= $nombreCiclo ?></p>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>

@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -43,10 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="tituloTFG">Título del TFG</label>
-                <input type="text" id="tituloTFG" name="tituloTFG" value="<?= $datosTFG['tituloTFG'] ?? '' ?>" class="<?= isset($errores['tituloTFG']) ? 'input-error' : '' ?>">
-                <?php if (isset($errores['tituloTFG'])) { ?>
-                    <strong class="error-campo"><?= $errores['tituloTFG'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
 

@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -36,65 +36,49 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="nombreEstudiante">Nombre Completo</label>
                 <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['nombreEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="emailEstudiante">Email</label>
                 <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= $datos['emailEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['emailEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['emailEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="dniEstudiante">DNI</label>
                 <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= $datos['dniEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['dniEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['dniEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="telefonoEstudiante">Teléfono</label>
                 <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= $datos['telefonoEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['telefonoEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['telefonoEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
                 <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= $datos['fechaNacimientoEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['fechaNacimientoEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaNacimientoEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= $datos['direccionEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['direccionEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['direccionEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="ciudadEstudiante">Ciudad</label>
                 <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= $datos['ciudadEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['ciudadEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['ciudadEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="codigoPostalEstudiante">Código Postal</label>
                 <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= $datos['codigoPostalEstudiante'] ?? '' ?>">
-                <?php if (isset($errores['codigoPostalEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['codigoPostalEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -110,17 +94,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
-                <?php if (isset($errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
 
         <div class="acciones">
             <input type="submit" name="guardarEstudiante" class="boton-primario" value="REGISTRAR ESTUDIANTE">
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">

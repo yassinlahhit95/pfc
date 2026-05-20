@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -52,9 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idEstudiante'])) { ?>
-                    <strong class="error-campo"><?= $errores['idEstudiante'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -70,17 +68,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="cantidadPago">Cantidad (Monto)</label>
                 <input type="number" name="cantidadPago" id="cantidadPago" step="0.01" value="<?= $pago['monto'] ?>">
-                <?php if (isset($errores['cantidadPago'])) { ?>
-                    <strong class="error-campo"><?= $errores['cantidadPago'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="fechaPago">Fecha de Pago</label>
                 <input type="date" name="fechaPago" id="fechaPago" value="<?= $pago['fechaPago'] ?>">
-                <?php if (isset($errores['fechaPago'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaPago'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">

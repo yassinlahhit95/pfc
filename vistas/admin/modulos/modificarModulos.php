@@ -8,7 +8,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $id_del_modulo = $_GET['idModulo'] ?? 0;
-$modulo = obtenerModuloPorId(intval($id_del_modulo));
+$modulo = obtenerModuloPorId($id_del_modulo);
 
 if (!$modulo) {
     header("Location: verModulos.php");
@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -53,9 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="nombreModulo">Nombre del Módulo</label>
                 <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
-                <?php if (isset($errores['nombreModulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreModulo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -72,17 +70,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
-                <?php if (isset($errores['idCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['idCiclo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="horasMaximas">Horas Totales</label>
                 <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
-                <?php if (isset($errores['horasMaximas'])) { ?>
-                    <strong class="error-campo"><?= $errores['horasMaximas'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
 

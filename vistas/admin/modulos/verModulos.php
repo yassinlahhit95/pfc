@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-$exito = $_SESSION['exito'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 if (empty($_SESSION['idAdmin'])) {
@@ -38,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 

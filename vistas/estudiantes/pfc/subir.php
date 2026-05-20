@@ -24,7 +24,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -90,10 +90,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label>Seleccione el archivo de su TFG (PDF o Word)</label>
             <p class="texto-suave" style="margin-bottom: 10px;">Formatos aceptados: .pdf, .doc, .docx. Tamaño máximo recomendado: 10MB.</p>
-            <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx" class="<?= isset($errores['archivoTFG']) ? 'input-error' : '' ?>">
-            <?php if (isset($errores['archivoTFG'])) { ?>
-                <strong class="error-campo"><?= $errores['archivoTFG'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

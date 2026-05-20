@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -120,18 +120,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="semestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'semestral') ? 'selected' : '' ?>>Semestral (50% del total)</option>
                     <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>     
                 </select>
-                <?php if (isset($errores['tipoPago'])) { ?>
-                    <strong class="error-campo"><?= $errores['tipoPago'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="montoInput">Cantidad a Cobrar (€)</label>
                 <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= $datos_pago['monto'] ?? '' ?>">
                 <span>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</span>
-                <?php if (isset($errores['monto'])) { ?>
-                    <strong class="error-campo"><?= $errores['monto'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="acciones">

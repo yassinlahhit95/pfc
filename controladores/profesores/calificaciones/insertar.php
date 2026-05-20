@@ -10,12 +10,12 @@ if (isset($_POST['insertarNota'])) {
     $nota2Ev = trim($_POST['nota_2ev']);
     $nota2Final = trim($_POST['nota_2final']);
 
-    $errores = [];
+    $errores = '';
     if (!is_numeric($nota1Ev) || !is_numeric($nota1Final) || !is_numeric($nota2Ev) || !is_numeric($nota2Final)) {
-        $errores['notas'] = "Notas deben ser números.";
+        $errores = "Notas deben ser números.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1Ev, $nota1Final, $nota2Ev, $nota2Final, "");
 
         if ($resultado) {
@@ -29,7 +29,7 @@ if (isset($_POST['insertarNota'])) {
         }
         $_SESSION['errores'] = "Error al guardar.";
     } else {
-        $_SESSION['errores'] = $errores['notas'];
+        $_SESSION['errores'] = $errores;
     }
 }
 

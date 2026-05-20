@@ -6,7 +6,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
-$idEvento = intval($_GET['idEvento'] ?? 0);
+$idEvento = $_GET['idEvento'] ?? 0;
 $evento = obtenerEventoPorId($idEvento);
 
 if (!$evento) {
@@ -27,7 +27,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <?php if (is_string($errores) && $errores) { ?>
+    <?php if ($errores) { ?>
         <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
     <form method="POST" action="../../../controladores/admin/eventos/actualizar.php">
@@ -37,33 +37,25 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="tituloEvento">Título del Evento</label>
                 <input type="text" name="tituloEvento" id="tituloEvento" value="<?= $datos['tituloEvento'] ?? $evento['tituloEvento'] ?? '' ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
-                <?php if (isset($errores['tituloEvento'])) { ?>
-                    <strong class="error-campo"><?= $errores['tituloEvento'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="ubicacionEvento">Ubicación</label>
                 <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= $datos['ubicacionEvento'] ?? $evento['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
-                <?php if (isset($errores['ubicacionEvento'])) { ?>
-                    <strong class="error-campo"><?= $errores['ubicacionEvento'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="fechaEvento">Fecha</label>
                 <input type="date" name="fechaEvento" id="fechaEvento" value="<?= $datos['fechaEvento'] ?? $evento['fechaEvento'] ?? '' ?>">
-                <?php if (isset($errores['fechaEvento'])) { ?>
-                    <strong class="error-campo"><?= $errores['fechaEvento'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="horaEvento">Hora</label>
                 <input type="time" name="horaEvento" id="horaEvento" value="<?= $datos['horaEvento'] ?? date('H:i', strtotime($evento['horaEvento'] ?? 'now')) ?>">
-                <?php if (isset($errores['horaEvento'])) { ?>
-                    <strong class="error-campo"><?= $errores['horaEvento'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">

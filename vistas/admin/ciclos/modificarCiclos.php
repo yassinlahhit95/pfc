@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -55,17 +55,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="nombreCiclo">Nombre del Ciclo</label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
-                <?php if (isset($errores['nombreCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreCiclo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="abreviaturaCiclo">Abreviatura</label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
-                <?php if (isset($errores['abreviaturaCiclo'])) { ?>
-                    <strong class="error-campo"><?= $errores['abreviaturaCiclo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
@@ -77,9 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['idNivel'])) { ?>
-                    <strong class="error-campo"><?= $errores['idNivel'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">

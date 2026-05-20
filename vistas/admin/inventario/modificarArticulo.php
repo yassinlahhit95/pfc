@@ -7,7 +7,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
 $idArticulo = $_GET['idArticulo'] ?? 0;
-$articulo = obtenerArticuloPorId(intval($idArticulo));
+$articulo = obtenerArticuloPorId($idArticulo);
 
 if (!$articulo) {
     header("Location: verInventario.php");
@@ -34,17 +34,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="nombreArticulo">Nombre del Artículo</label>
                 <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? $articulo['nombreArticulo'] ?>">
-                <?php if (isset($errores['nombreArticulo'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreArticulo'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label for="numeroSerie">Número de Serie</label>
                 <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? $articulo['numeroSerie'] ?>">
-                <?php if (isset($errores['numeroSerie'])) { ?>
-                    <strong class="error-campo"><?= $errores['numeroSerie'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
 

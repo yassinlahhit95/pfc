@@ -7,21 +7,15 @@ if (isset($_POST['actualizarArticulo'])) {
     $nombreArticulo = trim($_POST['nombreArticulo']);
     $numeroSerie = trim($_POST['numeroSerie']);
 
-    $errores_campos = [];
-    if (empty($nombreArticulo)) {
-        $errores_campos['nombreArticulo'] = "El nombre es obligatorio.";
-    }
-    if (empty($numeroSerie)) {
-        $errores_campos['numeroSerie'] = "El número de serie es obligatorio.";
-    }
+    $errores = '';
+    if (empty($nombreArticulo)) $errores = "El nombre es obligatorio.";
+    elseif (empty($numeroSerie)) $errores = "El número de serie es obligatorio.";
+    elseif (checkArticuloExistente($numeroSerie, $idArticulo)) $errores = "Este número de serie ya está registrado por otro artículo.";
 
-    if (empty($errores_campos)) {
-        if (checkArticuloExistente($numeroSerie, $idArticulo)) {
-            $errores_campos['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
-        }
-    }
-
-    if (empty($errores_campos)) {
+    if ($errores) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['datos_inventario'] = $_POST;
+    } else {
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
         $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
 
@@ -31,9 +25,6 @@ if (isset($_POST['actualizarArticulo'])) {
             exit;
         }
         $_SESSION['errores'] = "No se puede actualizar el artículo.";
-    } else {
-        $_SESSION['errores'] = $errores_campos;
-        $_SESSION['datos_inventario'] = $_POST;
     }
     
     header("Location: ../../../vistas/admin/inventario/modificarArticulo.php?idArticulo=" . $idArticulo);

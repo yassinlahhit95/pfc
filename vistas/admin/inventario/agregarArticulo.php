@@ -18,7 +18,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h1>NUEVO ARTÍCULO</h1>
     </div>
 
-    <?php if (is_string($errores) && $errores) { ?>
+    <?php if ($errores) { ?>
         <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -28,17 +28,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="campo">
                     <label for="nombreArticulo">NOMBRE DEL ARTÍCULO</label>
                     <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? '' ?>" placeholder="Ej: Portátil HP ProBook">
-                    <?php if (isset($errores['nombreArticulo'])) { ?>
-                        <strong class="error-campo"><?= $errores['nombreArticulo'] ?></strong>
-                    <?php } ?>
+                    
                 </div>
 
                 <div class="campo">
                     <label for="numeroSerie">NÚMERO DE SERIE</label>
                     <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? '' ?>" placeholder="Ej: SN-12345678">
-                    <?php if (isset($errores['numeroSerie'])) { ?>
-                        <strong class="error-campo"><?= $errores['numeroSerie'] ?></strong>
-                    <?php } ?>
+                    
                 </div>
             </div>
 

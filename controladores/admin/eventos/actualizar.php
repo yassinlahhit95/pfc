@@ -10,22 +10,22 @@ if (isset($_POST['actualizarEvento'])) {
     $horaEvento = trim($_POST['horaEvento']);
     $ubicacionEvento = trim($_POST['ubicacionEvento']);
 
-    $errores = [];
+    $errores = '';
 
     if (empty($titulo)) {
-        $errores['tituloEvento'] = "El título es obligatorio.";
+        $errores = "El título es obligatorio.";
     }
     if (empty($ubicacionEvento)) {
-        $errores['ubicacionEvento'] = "La ubicación es obligatoria.";
+        $errores = "La ubicación es obligatoria.";
     }
     if (empty($fechaEvento)) {
-        $errores['fechaEvento'] = "La fecha es obligatoria.";
+        $errores = "La fecha es obligatoria.";
     }
     if (empty($horaEvento)) {
-        $errores['horaEvento'] = "La hora es obligatoria.";
+        $errores = "La hora es obligatoria.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         $resultado = actualizarEvento($idEvento, $titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento);
         if ($resultado) {
             $_SESSION['exito'] = "Evento actualizado.";

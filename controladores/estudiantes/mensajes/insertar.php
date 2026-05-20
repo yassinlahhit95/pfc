@@ -9,13 +9,13 @@ if (isset($_POST['enviarMensaje'])) {
     $idProfesor = trim($_POST['idProfesor']);
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
-    $errores = [];
+    $errores = '';
 
-    if (empty($asunto)) $errores['asunto'] = "El asunto es obligatorio.";
-    if (empty($descripcion)) $errores['descripcion'] = "El mensaje es obligatorio.";
-    else if (strlen($descripcion) > 250) $errores['descripcion'] = "Máximo 250 caracteres.";
+    if (empty($asunto)) $errores = "El asunto es obligatorio.";
+    if (empty($descripcion)) $errores = "El mensaje es obligatorio.";
+    else if (strlen($descripcion) > 250) $errores = "Máximo 250 caracteres.";
 
-    if (!empty($errores)) {
+    if ($errores) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_mensaje'] = $_POST;
         header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");

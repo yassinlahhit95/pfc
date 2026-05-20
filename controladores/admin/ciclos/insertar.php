@@ -9,17 +9,17 @@ if (isset($_POST['guardarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 
-    $errores = [];
-    if (empty($nombre)) $errores['nombreCiclo'] = "Nombre obligatorio.";
-    if (empty($abreviatura)) $errores['abreviaturaCiclo'] = "Abreviatura obligatoria.";
-    if (empty($idNivelEducativo)) $errores['idNivel'] = "Nivel obligatorio.";
-    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores['precioCiclo'] = "El precio debe ser un número válido.";
+    $errores = '';
+    if (empty($nombre)) $errores = "Nombre obligatorio.";
+    if (empty($abreviatura)) $errores = "Abreviatura obligatoria.";
+    if (empty($idNivelEducativo)) $errores = "Nivel obligatorio.";
+    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un número válido.";
 
-    if (empty($errores) && checkCicloExistente($nombre, $abreviatura)) {
-        $errores['nombreCiclo'] = "El nombre o la abreviatura ya existen.";
+    if (!$errores && checkCicloExistente($nombre, $abreviatura)) {
+        $errores = "El nombre o la abreviatura ya existen.";
     }
 
-    if (!empty($errores)) {
+    if ($errores) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclo'] = $_POST;
         header("Location: ../../../vistas/admin/ciclos/agregarCiclos.php");

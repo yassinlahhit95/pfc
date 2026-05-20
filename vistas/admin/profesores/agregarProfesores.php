@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -40,33 +40,25 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label>Nombre Completo</label>
                 <input type="text" name="nombreProfesor" value="<?= $datos['nombreProfesor'] ?? '' ?>">
-                <?php if (isset($errores['nombreProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['nombreProfesor'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>Email</label>
                 <input type="text" name="emailProfesor" value="<?= $datos['emailProfesor'] ?? '' ?>">
-                <?php if (isset($errores['emailProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['emailProfesor'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>DNI</label>
                 <input type="text" name="dniProfesor" value="<?= $datos['dniProfesor'] ?? '' ?>">
-                <?php if (isset($errores['dniProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['dniProfesor'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo">
                 <label>Teléfono</label>
                 <input type="text" name="telefonoProfesor" value="<?= $datos['telefonoProfesor'] ?? '' ?>">
-                <?php if (isset($errores['telefonoProfesor'])) { ?>
-                    <strong class="error-campo"><?= $errores['telefonoProfesor'] ?></strong>
-                <?php } ?>
+                
             </div>
 
             <div class="campo ancho-total">

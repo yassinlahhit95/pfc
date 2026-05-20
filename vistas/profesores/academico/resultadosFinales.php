@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-$exito = $_SESSION['exito'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
@@ -19,7 +20,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $todos_los_ciclos = listarCiclosDeProfesor($idProfesor);
 
-$id_ciclo_elegido = intval($_GET['idCiclo'] ?? 0);
+$id_ciclo_elegido = $_GET['idCiclo'] ?? 0;
 if ($id_ciclo_elegido) {
     $tieneAcceso = false;
     foreach ($todos_los_ciclos as $cicloIndividual) {
@@ -125,7 +126,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -143,10 +144,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
             </div>
-            <button type="button" class="boton-secundario" style="margin-left: 10px;" onclick="window.location.href = window.location.pathname;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
-        </form>
+            <div style="margin-left: 10px;">
+                <input type="reset" class="boton-secundario" value="LIMPIAR">
+            </div>        </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
             <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Enviar resultados por email a todos los alumnos de este ciclo?')">

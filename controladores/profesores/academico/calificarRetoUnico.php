@@ -2,9 +2,9 @@
 session_start();
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$idEstudiante = intval($_POST['idEstudiante'] ?? 0);
-$idReto = intval($_POST['idReto'] ?? 0);
-$idCiclo = intval($_POST['idCiclo'] ?? 0);
+$idEstudiante = $_POST['idEstudiante'] ?? 0;
+$idReto = $_POST['idReto'] ?? 0;
+$idCiclo = $_POST['idCiclo'] ?? 0;
 $nota = trim($_POST['nota'] ?? '');
 $nota = str_replace(',', '.', $nota);
 

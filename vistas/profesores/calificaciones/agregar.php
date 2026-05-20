@@ -13,8 +13,8 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$idCiclo = intval($_GET['idCiclo'] ?? 0);
-$idModulo = intval($_GET['idModulo'] ?? 0);
+$idCiclo = $_GET['idCiclo'] ?? 0;
+$idModulo = $_GET['idModulo'] ?? 0;
 
 $listaDeCiclos = listarCiclosDeProfesor($idProfesor);
 $listaDeModulos = [];
@@ -78,7 +78,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 

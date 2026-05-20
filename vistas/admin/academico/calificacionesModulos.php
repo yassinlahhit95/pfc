@@ -28,9 +28,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="GET" action="calificacionesModulos.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
-            <label for="selectCicloMod">1. Seleccione un Ciclo:</label>
+            <label for="selectCicloMod">Seleccione un Ciclo:</label>
             <select name="idCiclo" id="selectCicloMod" onchange="this.form.submit()">
-                <option value="">-- Seleccionar Ciclo --</option>
+                <option value="">-Seleccionar Ciclo-</option>
                 <?php foreach ($listaCiclos as $ciclo) { ?>
                     <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                         [<?= $ciclo['nombreNivel'] ?>] <?= $ciclo['nombreCiclo'] ?>
@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo relleno">
             <label>2. Seleccione un Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
-                <option value="">-- Seleccionar Módulo --</option>
+                <option value="">-Seleccionar Modulo-</option>
                 <?php foreach ($listaModulos as $modulo) { ?>
                     <option value="<?= $modulo['idModulo'] ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
                         <?= $modulo['nombreModulo'] ?>
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if (is_string($errores) && $errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
 
 <?php if (!empty($idModuloElegido)) { ?>
     <div class="panel margen-arriba">

@@ -1,6 +1,15 @@
 <?php
 session_start();
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 $id = $_GET['id'] ?? 0;
@@ -14,11 +23,6 @@ if (!$director) {
 $titulo_pagina = "AULAPRO | DETALLES DIRECTOR";
 $seccion = 'directores';
 include_once __DIR__ . "/../comunes/nav.php";
-?>
-    <div class='mensaje-error'>Director no encontrado.</div>
-    <?php include '../comunes/footer.php';
-    exit;
-}
 ?>
 
 <div class="cabecera">

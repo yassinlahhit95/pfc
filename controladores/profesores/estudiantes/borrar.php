@@ -8,7 +8,7 @@ if (empty($_SESSION['idProfesor'])) {
 }
 
 if (!empty($_POST['idEstudiante'])) {
-    $idEstudiante = intval($_POST['idEstudiante'] ?? 0);
+    $idEstudiante = $_POST['idEstudiante'] ?? 0;
 
     if ($idEstudiante > 0) {
         $resultado = eliminarEstudiante($idEstudiante);

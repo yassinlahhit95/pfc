@@ -10,20 +10,20 @@ if (isset($_POST['actualizarReto'])) {
     $horasReto = trim($_POST['horasReto']);
     $modulosSeleccionados = $_POST['modulos'] ?? [];
 
-    $errores = [];
+    $errores = '';
 
     if (empty($idReto)) {
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;
     }
 
-    if (empty($nombreReto)) $errores['nombreReto'] = "El nombre es obligatorio.";
-    if (empty($fechaInicio)) $errores['fechaInicio'] = "Fecha de inicio requerida";
-    if (empty($fechaFin)) $errores['fechaFin'] = "La fecha de fin es obligatoria.";
+    if (empty($nombreReto)) $errores = "El nombre es obligatorio.";
+    if (empty($fechaInicio)) $errores = "Fecha de inicio requerida";
+    if (empty($fechaFin)) $errores = "La fecha de fin es obligatoria.";
     if (empty($horasReto)) {
-        $errores['horasReto'] = "Las horas son obligatorias.";
+        $errores = "Las horas son obligatorias.";
     } elseif (!is_numeric($horasReto)) {
-        $errores['horasReto'] = "Las horas deben ser un número";
+        $errores = "Las horas deben ser un número";
     }
 
     if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicio <= $fechaFin) {
@@ -41,23 +41,23 @@ if (isset($_POST['actualizarReto'])) {
 
         $maxHorasPermitidas = $diasLaborables * 6;
         if ($horasReto > $maxHorasPermitidas) {
-            $errores['horasReto'] = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
+            $errores = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
         }
     }
 
     if (empty($modulosSeleccionados)) {
-        $errores['modulos'] = "Al menos un módulo";
+        $errores = "Al menos un módulo";
     } else if (is_numeric($horasReto)) {
         foreach ($modulosSeleccionados as $idModulo) {
             $detalle = obtenerDetalleHorasModulo($idModulo, $idReto);
             if ($horasReto > $detalle['disponibles']) {
-                $errores['modulos'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+                $errores = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
                 break;
             }
         }
     }
 
-    if (!empty($errores)) {
+    if ($errores) {
         $_SESSION['errores'] = $errores;
         header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
         exit;

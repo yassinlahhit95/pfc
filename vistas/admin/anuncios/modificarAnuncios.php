@@ -28,7 +28,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -39,17 +39,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label for="tituloAnuncio">Título del Anuncio </label>
             <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $anuncio['tituloAnuncio'] ?>">
-            <?php if (isset($errores['tituloAnuncio'])) { ?>
-                <strong class="error-campo"><?= $errores['tituloAnuncio'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo margen-arriba">
             <label for="contenidoAnuncio">Contenido del Anuncio </label>
             <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6"><?= $anuncio['contenidoAnuncio'] ?></textarea>
-            <?php if (isset($errores['contenidoAnuncio'])) { ?>
-                <strong class="error-campo"><?= $errores['contenidoAnuncio'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

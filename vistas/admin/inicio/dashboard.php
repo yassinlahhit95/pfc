@@ -17,8 +17,8 @@ require_once __DIR__ . "/../../../modelos/directores.php";
 
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores = contarProfesores();
-$totalRetos = intval(contarRetos());
-$totalModulos = intval(contarModulos());
+$totalRetos = contarRetos();
+$totalModulos = contarModulos();
 $recaudado = obtenerTotalRecaudado();
 $totalCobros = contarPagosRealizados();
 

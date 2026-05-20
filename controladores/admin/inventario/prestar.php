@@ -7,19 +7,19 @@ if (isset($_POST['registrarPrestamo'])) {
     $idEstudiante = trim($_POST['idEstudiante'] ?? '');
     $fechaPrestamo = trim($_POST['fechaPrestamo']);
 
-    $errores = [];
+    $errores = '';
 
     if (empty($idArticulo)) {
-        $errores['idArticulo'] = "Debe seleccionar un equipo.";
+        $errores = "Debe seleccionar un equipo.";
     }
     if (empty($idEstudiante)) {
-        $errores['idEstudiante'] = "Debe seleccionar un estudiante.";
+        $errores = "Debe seleccionar un estudiante.";
     }
     if (empty($fechaPrestamo)) {
-        $errores['fechaPrestamo'] = "La fecha es obligatoria.";
+        $errores = "La fecha es obligatoria.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         if (registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo)) {
             $_SESSION['exito'] = "Préstamo registrado.";
             header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");

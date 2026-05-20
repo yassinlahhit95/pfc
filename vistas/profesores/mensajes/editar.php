@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="../../../vistas/profesores/mensajes/lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
@@ -55,10 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="campo">
             <label for="respuesta">Tu Respuesta / Explicación:</label>
-            <textarea name="respuesta" id="respuesta" rows="4" placeholder="Escribe aqui tu respuesta..." class="<?= isset($errores['respuesta']) ? 'input-error' : '' ?>"><?= $mensaje['respuesta'] ?></textarea>
-            <?php if (isset($errores['respuesta'])) { ?>
-                <strong class="error-campo"><?= $errores['respuesta'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

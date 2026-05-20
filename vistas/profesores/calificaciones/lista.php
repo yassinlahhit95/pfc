@@ -15,8 +15,8 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$idCiclo = intval($_GET['idCiclo'] ?? 0);
-$idModulo = intval($_GET['idModulo'] ?? 0);
+$idCiclo = $_GET['idCiclo'] ?? 0;
+$idModulo = $_GET['idModulo'] ?? 0;
 
 $mis_ciclos = listarCiclosDeProfesor($idProfesor);
 $mis_modulos = [];
@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -70,9 +70,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
         <div style="margin-bottom: 15px;">
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>

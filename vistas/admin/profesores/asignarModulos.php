@@ -9,7 +9,7 @@ if (!isset($_GET['idProfesor'])) {
     exit;
 }
 
-$idProfesor = intval($_GET['idProfesor']);
+$idProfesor = $_GET['idProfesor'];
 $profesor = obtenerProfesorPorId($idProfesor);
 
 if (!$profesor) {

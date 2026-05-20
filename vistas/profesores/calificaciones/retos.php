@@ -12,9 +12,9 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$idCiclo = intval($_GET['idCiclo'] ?? 0);
-$idModulo = intval($_GET['idModulo'] ?? 0);
-$idReto = intval($_GET['idReto'] ?? 0);
+$idCiclo = $_GET['idCiclo'] ?? 0;
+$idModulo = $_GET['idModulo'] ?? 0;
+$idReto = $_GET['idReto'] ?? 0;
 
 $listaDeCiclos = listarCiclosDeProfesor($idProfesor);
 $listaDeModulos = [];
@@ -79,10 +79,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div style="margin-left: 10px;">
-            <button type="button" class="boton-secundario" onclick="window.location.href = window.location.pathname;">
-                <i class="fas fa-eraser"></i> LIMPIAR
-            </button>
+        <div style="margin-bottom: 15px;">
+            <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
@@ -90,7 +88,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 

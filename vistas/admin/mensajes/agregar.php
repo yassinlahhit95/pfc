@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if ($exito) { ?>
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
-<?php if (is_string($errores) && $errores) { ?>
+<?php if ($errores) { ?>
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
@@ -90,9 +90,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                <?php if (isset($errores['destinatario'])) { ?>
-                    <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
-                <?php } ?>
+                
             </div>
         </div>
         <?php } else { ?>
@@ -107,26 +105,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </option>
                 <?php } ?>
             </select>
-            <?php if (isset($errores['destinatario'])) { ?>
-                <strong class="error-campo"><?= $errores['destinatario'] ?></strong>
-            <?php } ?>
+            
         </div>
         <?php } ?>
 
         <div class="campo">
             <label class="texto-negrita">Asunto del Mensaje</label>
             <input type="text" name="asunto" class="ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
-            <?php if (isset($errores['asunto'])) { ?>
-                <strong class="error-campo"><?= $errores['asunto'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="campo margen-arriba">
             <label class="texto-negrita">Cuerpo del Mensaje</label>
             <textarea name="descripcion" rows="6" class="ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
-            <?php if (isset($errores['descripcion'])) { ?>
-                <strong class="error-campo"><?= $errores['descripcion'] ?></strong>
-            <?php } ?>
+            
         </div>
 
         <div class="acciones">

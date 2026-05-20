@@ -8,7 +8,7 @@ if (empty($_SESSION['idProfesor'])) {
 }
 
 if (isset($_POST['actualizarEstudiante'])) {
-    $idEstudiante = intval($_POST['idEstudiante']);
+    $idEstudiante = $_POST['idEstudiante'];
     $nombre = trim($_POST['nombreEstudiante']);
     $email = trim($_POST['emailEstudiante']);
     $dni = trim($_POST['dniEstudiante']);
@@ -20,20 +20,20 @@ if (isset($_POST['actualizarEstudiante'])) {
     $observaciones = isset($_POST['observacionesEstudiante']) ? trim($_POST['observacionesEstudiante']) : '';
     $idCiclo = trim($_POST['idCiclo']);
 
-    $errores = [];
+    $errores = '';
 
-    if (empty($nombre)) { $errores['nombreEstudiante'] = "El nombre es obligatorio."; }
-    if (empty($email)) { $errores['emailEstudiante'] = "El email es obligatorio."; }
-    if (empty($dni)) { $errores['dniEstudiante'] = "El DNI es obligatorio."; }
-    if (empty($idCiclo)) { $errores['idCiclo'] = "Debe seleccionar un ciclo."; }
+    if (empty($nombre)) { $errores = "El nombre es obligatorio."; }
+    if (empty($email)) { $errores = "El email es obligatorio."; }
+    if (empty($dni)) { $errores = "El DNI es obligatorio."; }
+    if (empty($idCiclo)) { $errores = "Debe seleccionar un ciclo."; }
 
-    if (empty($errores)) {
+    if (!$errores) {
         if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
-            $errores['dniEstudiante'] = "El DNI o Email ya están registrados.";
+            $errores = "El DNI o Email ya están registrados.";
         }
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         $estudianteOriginal = obtenerEstudiantePorId($idEstudiante);
         $fechaAlta = $estudianteOriginal['fechaAltaEstudiante'];
 

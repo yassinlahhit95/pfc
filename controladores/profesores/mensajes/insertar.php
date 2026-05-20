@@ -9,21 +9,21 @@ if (isset($_POST['enviarMensaje'])) {
     $idProfesor = trim($_POST['idProfesor']);
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
-    $errores = [];
+    $errores = '';
 
     if (empty($idEstudiante)) {
-        $errores['idEstudiante'] = "Debe seleccionar un destinatario.";
+        $errores = "Debe seleccionar un destinatario.";
     }
     if (empty($asunto)) {
-        $errores['asunto'] = "El asunto es obligatorio.";
+        $errores = "El asunto es obligatorio.";
     }
     if (empty($descripcion)) {
-        $errores['descripcion'] = "El mensaje no puede estar vacío.";
+        $errores = "El mensaje no puede estar vacío.";
     } else if (strlen($descripcion) > 250) {
-        $errores['descripcion'] = "Máximo 250 caracteres.";
+        $errores = "Máximo 250 caracteres.";
     }
 
-    if (empty($errores)) {
+    if (!$errores) {
         $resultado = insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, 'profesor');
 
         if ($resultado) {
