@@ -1,4 +1,4 @@
-﻿/* ==========================================
+/* ==========================================
    ESTILOS BASE Y RESET
    ========================================== */
 html.landing-page {
@@ -116,11 +116,13 @@ body.landing-body {
   padding: 14px 0;
   background: transparent;
   border-bottom: 1px solid transparent;
+  transition: all 0.3s ease-in-out;
 }
 
 .cabecera-landing.nav-scrolled {
   background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
+  padding: 8px 0;
 }
 
 .cabecera-contenedor-landing {
@@ -134,18 +136,22 @@ body.landing-body {
   text-decoration: none;
   display: flex;
   align-items: center;
+  height: 55px; /* Fixed height for the logo area */
+  width: 180px;  /* Fixed width for the logo area */
 }
 
 .logo-imagen-landing {
-  height: 70px;
-  width: auto;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
   border-radius: 10px;
   display: block;
+  transition: all 0.3s ease-in-out;
 }
 
 .nav-scrolled .logo-imagen-landing {
-  height: 38px;
-  width: auto;
+  height: 100%;
+  width: 100%;
 }
 
 .logo-landing-png  { display: block; }

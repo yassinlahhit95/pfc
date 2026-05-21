@@ -6,24 +6,25 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
     background: #f1f5f9;
+    overflow-x: hidden;
 }
 
 /* ===========================
-   LAYOUT 50/50
+   LAYOUT
    =========================== */
 .login-page {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    width: 100%;
 }
 
 /* ===========================
-   PANEL IZQUIERDO
+   PANEL IZQUIERDO (Branding)
    =========================== */
 .panel-izquierdo {
-    flex: 1;
+    flex: 1.2;
     background: linear-gradient(145deg, #0f0e1f 0%, #1e1b4b 40%, #2d2a80 72%, #4338ca 100%);
     position: relative;
     overflow: hidden;
@@ -36,7 +37,8 @@ body {
 .panel-contenido {
     position: relative;
     z-index: 2;
-    width: 70%;
+    width: 100%;
+    max-width: 500px;
 }
 
 /* Orbs decorativos de fondo */
@@ -86,100 +88,100 @@ body {
 .panel-logo {
     margin-bottom: 44px;
     animation: slideUp 0.8s ease forwards;
-    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .panel-logo img {
-    width: 70%;
-    height: auto;
-    border-radius: 14px;
+    height: 50px;
+    width: auto;
+    border-radius: 10px;
     display: block;
 }
 
 .panel-titulo {
-    font-size: 3.4rem;
+    font-size: 3rem;
     font-weight: 800;
     color: #ffffff;
-    line-height: 1.2;
-    margin-bottom: 18px;
+    line-height: 1.1;
+    margin-bottom: 24px;
     animation: slideUp 0.9s ease 0.1s both;
 }
 
 .panel-titulo span {
     color: #a5b4fc;
+    display: block;
 }
 
 .panel-desc {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #94a3b8;
-    line-height: 1.75;
+    line-height: 1.6;
     margin-bottom: 52px;
     animation: slideUp 1s ease 0.2s both;
 }
 
 .panel-stats {
     display: flex;
-    gap: 36px;
+    gap: 40px;
     animation: slideUp 1.1s ease 0.3s both;
 }
 
 .stat {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .stat strong {
-    font-size: 1.7rem;
+    font-size: 1.8rem;
     font-weight: 800;
     color: #ffffff;
     line-height: 1;
 }
 
 .stat span {
-    font-size: 0.72rem;
-    color: #7c83c8;
+    font-size: 0.75rem;
+    color: #94a3b8;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.05em;
 }
 
 /* ===========================
-   PANEL DERECHO
+   PANEL DERECHO (Login Form)
    =========================== */
 .panel-derecho {
-    width: 480px;
-    flex-shrink: 0;
+    flex: 0 0 520px;
     background: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 52px;
+    padding: 60px;
     position: relative;
 }
 
 .form-contenedor {
     width: 100%;
-    max-width: 360px;
+    max-width: 380px;
     animation: slideIn 0.7s ease forwards;
 }
 
 .form-cabecera {
-    margin-bottom: 36px;
+    margin-bottom: 40px;
 }
 
 .form-cabecera h2 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
 }
 
 .form-cabecera p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #64748b;
 }
 
@@ -189,54 +191,54 @@ body {
 .error-alerta {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
     background: #fef2f2;
     border: 1px solid #fca5a5;
     color: #b91c1c;
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 0.875rem;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 0.9rem;
+    margin-bottom: 28px;
     line-height: 1.5;
 }
 
 .error-alerta svg {
     flex-shrink: 0;
-    margin-top: 1px;
+    margin-top: 2px;
 }
 
 /* ===========================
-   CAMPOS
+   CAMPOS DE FORMULARIO
    =========================== */
 .campo-grupo {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .campo-grupo label {
     display: block;
-    font-size: 0.84rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: #334155;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .campo-grupo input {
     width: 100%;
-    padding: 13px 16px;
+    padding: 14px 18px;
     border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 0.95rem;
+    border-radius: 12px;
+    font-size: 1rem;
     color: #0f172a;
     background: #f8fafc;
     outline: none;
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
     font-family: inherit;
 }
 
 .campo-grupo input:focus {
     border-color: #4f46e5;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
 
 .campo-password {
@@ -244,18 +246,18 @@ body {
 }
 
 .campo-password input {
-    padding-right: 46px;
+    padding-right: 50px;
 }
 
 .ojo-boton {
     position: absolute;
-    right: 12px;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
+    padding: 6px;
     color: #94a3b8;
     display: flex;
     align-items: center;
@@ -272,29 +274,29 @@ body {
    =========================== */
 .boton-acceso {
     width: 100%;
-    padding: 14px;
+    padding: 16px;
     background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
     color: #ffffff;
     border: none;
-    border-radius: 10px;
-    font-size: 0.975rem;
+    border-radius: 12px;
+    font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    transition: all 0.3s;
     font-family: inherit;
-    margin-top: 10px;
-    letter-spacing: 0.02em;
+    margin-top: 12px;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
 }
 
 .boton-acceso:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+    opacity: 0.95;
 }
 
 .boton-acceso:active {
     transform: translateY(0);
-    box-shadow: none;
 }
 
 /* ===========================
@@ -303,8 +305,8 @@ body {
 .enlace-volver {
     display: block;
     text-align: center;
-    margin-top: 20px;
-    font-size: 0.875rem;
+    margin-top: 28px;
+    font-size: 0.93rem;
     color: #94a3b8;
     text-decoration: none;
     transition: color 0.2s;
@@ -320,9 +322,9 @@ body {
    =========================== */
 .form-pie {
     position: absolute;
-    bottom: 22px;
-    font-size: 0.75rem;
-    color: #cbd5e1;
+    bottom: 30px;
+    font-size: 0.8rem;
+    color: #94a3b8;
     text-align: center;
 }
 
@@ -330,59 +332,72 @@ body {
    ANIMACIONES
    =========================== */
 @keyframes slideUp {
-    from { transform: translateY(28px); opacity: 0; }
+    from { transform: translateY(30px); opacity: 0; }
     to   { transform: translateY(0);    opacity: 1; }
 }
 
 @keyframes slideIn {
-    from { transform: translateX(24px); opacity: 0; }
+    from { transform: translateX(30px); opacity: 0; }
     to   { transform: translateX(0);    opacity: 1; }
 }
 
 /* ===========================
-   RESPONSIVE
+   RESPONSIVE (Tablets & Desktops pequeños)
    =========================== */
-@media (max-width: 960px) {
-    body { overflow: auto; }
+@media (max-width: 1100px) {
+    .panel-derecho { flex: 0 0 460px; padding: 40px; }
+    .panel-izquierdo { padding: 40px; }
+    .panel-titulo { font-size: 2.5rem; }
+}
 
+@media (max-width: 960px) {
+    body { overflow-y: auto; }
+    
     .login-page {
-        flex-direction: column-reverse;
+        flex-direction: column;
         height: auto;
-        min-height: 100vh;
     }
 
     .panel-izquierdo {
-        padding: 52px 36px;
-        min-height: 260px;
-        justify-content: flex-start;
-    }
-
-    .panel-contenido {
+        flex: none;
         width: 100%;
+        padding: 60px 40px;
+        min-height: auto;
+        justify-content: center;
+        text-align: center;
     }
 
-    .panel-titulo { font-size: 2rem; }
-
-    .panel-desc { display: none; }
+    .panel-logo { justify-content: center; margin-bottom: 30px; }
+    
+    .panel-titulo { font-size: 2.2rem; }
+    .panel-titulo span { display: inline; }
+    
+    .panel-desc { display: block; margin-bottom: 40px; }
+    
+    .panel-stats { justify-content: center; }
 
     .panel-derecho {
+        flex: 1;
         width: 100%;
-        padding: 52px 36px 72px;
+        padding: 60px 40px 100px;
+        min-height: 600px;
     }
 
-    .form-contenedor {
-        max-width: 100%;
-    }
-
-    .form-pie { position: static; margin-top: 32px; }
+    .form-pie { position: relative; bottom: auto; margin-top: 60px; }
 }
 
+/* ===========================
+   RESPONSIVE (Móviles)
+   =========================== */
 @media (max-width: 480px) {
-    .panel-izquierdo { padding: 40px 24px; min-height: 220px; }
-    .panel-titulo  { font-size: 1.65rem; }
-    .panel-stats   { gap: 20px; }
-    .stat strong   { font-size: 1.3rem; }
-    .stat span     { font-size: 0.68rem; }
-    .panel-derecho { padding: 40px 24px 64px; }
-    .form-cabecera h2 { font-size: 1.65rem; }
+    .panel-izquierdo { padding: 50px 24px; }
+    .panel-titulo { font-size: 1.8rem; }
+    .panel-desc { font-size: 1rem; }
+    .panel-stats { flex-direction: row; gap: 24px; flex-wrap: wrap; }
+    
+    .panel-derecho { padding: 50px 24px 80px; }
+    .form-cabecera h2 { font-size: 1.8rem; }
+    
+    .campo-grupo input { padding: 12px 16px; }
+    .boton-acceso { padding: 14px; }
 }
