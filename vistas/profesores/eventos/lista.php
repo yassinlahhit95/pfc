@@ -44,15 +44,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($eventos)) { ?>
                     <tr><td colspan="4" class="vacio">No hay eventos programados.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($eventos as $ev) { ?>
+                    <?php foreach ($eventos as $evento) { ?>
                     <tr>
-                        <td class="texto-negrita"><?= date('d/m/Y', strtotime($ev['fechaEvento'])) ?></td>
-                        <td><?= date('H:i', strtotime($ev['horaEvento'])) ?>h</td>
+                        <td class="texto-negrita"><?= date('d/m/Y', strtotime($evento['fechaEvento'])) ?></td>
+                        <td><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</td>
                         <td>
-                            <b><?= $ev['tituloEvento'] ?></b><br>
-                            <span class="texto-suave"><?= $ev['descripcionEvento'] ?></span>
+                            <b><?= $evento['tituloEvento'] ?></b><br>
+                            <span class="texto-suave"><?= $evento['descripcionEvento'] ?></span>
                         </td>
-                        <td><?= $ev['ubicacionEvento'] ?></td>
+                        <td><?= $evento['ubicacionEvento'] ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>

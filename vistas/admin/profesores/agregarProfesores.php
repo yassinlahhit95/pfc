@@ -12,7 +12,6 @@ $todosLosModulos = listarModulos();
 
 $datos = $_SESSION['datos_profesor'] ?? [];
 
-// Ciclos y modulos marcados anteriormente
 $ciclos_marcados = $datos['ciclos'] ?? [];
 $modulos_marcados = $datos['modulos'] ?? [];
 

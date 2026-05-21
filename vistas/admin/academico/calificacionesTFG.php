@@ -34,10 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
-        </div>
-    </form>
+</form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
@@ -63,10 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td colspan="7" class="vacio">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaEvaluacion as $item) {
-                        $nombreLimpio = str_replace(' ', '_', $item['nombreEstudiante']);
-                        $nombreDescarga = "TFG_" . $nombreLimpio . ".pdf";
-                    ?>
+                    <?php foreach ($listaEvaluacion as $item) { ?>
                     <tr>
                         <td><?= $item['nombreEstudiante'] ?></td>
                         <td><?= $item['abreviaturaCiclo'] ?></td>
@@ -103,29 +97,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                         </td>
                         <td>
-                            <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $item['idEstudiante'] ?>')">
+                            <a href="evaluarTFG.php?idEstudiante=<?= $item['idEstudiante'] ?>" class="btn-accion btn-editar">
                                 <i class="fas fa-edit"></i> Evaluar
-                            </button>
-                            <div id="form-<?= $item['idEstudiante'] ?>" style="display: none; margin-top: 10px;">
-                                <form action="../../../controladores/admin/pfc/calificar.php" method="POST" class="formulario">
-                                    <input type="hidden" name="idEstudiante" value="<?= $item['idEstudiante'] ?>">
-                                    <div class="campo">
-                                        <label>Nota (0-10):</label>
-                                        <input type="text" name="nota" value="<?= $item['nota'] ?? '' ?>" placeholder="Ej: 7.5">
-                                    </div>
-                                    <div class="campo">
-                                        <label>Observaciones:</label>
-                                        <textarea name="observaciones" rows="2"><?= $item['observaciones'] ?? '' ?></textarea>
-                                    </div>
-                                    <div class="campo">
-                                        <label>
-                                            <input type="checkbox" name="notificarEstudiante" value="1">
-                                            Notificar al estudiante por email y push
-                                        </label>
-                                    </div>
-                                    <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Nota">
-                                </form>
-                            </div>
+                            </a>
                         </td>
                     </tr>
                     <?php } ?>
@@ -135,15 +109,5 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<script>
-function toggleFormCalificar(idFormulario) {
-    var formulario = document.getElementById(idFormulario);
-    if (formulario.style.display === 'none') {
-        formulario.style.display = 'block';
-    } else {
-        formulario.style.display = 'none';
-    }
-}
-</script>
 
 <?php include '../comunes/footer.php'; ?>

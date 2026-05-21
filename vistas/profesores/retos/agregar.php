@@ -37,22 +37,22 @@ include_once "../comunes/nav.php";
     <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario">
         <div class="campo">
             <label for="nombreReto">Nombre del Reto</label>
-            
+            <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
         </div>
 
         <div class="campo">
             <label for="horasReto">Horas Totales</label>
-            
+            <input type="number" name="horasReto" id="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
         </div>
 
         <div class="campo">
             <label for="fechaInicio">Fecha Inicio</label>
-            
+            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= $datos['fechaInicio'] ?? '' ?>">
         </div>
 
         <div class="campo">
             <label for="fechaFin">Fecha Fin</label>
-            
+            <input type="date" name="fechaFin" id="fechaFin" value="<?= $datos['fechaFin'] ?? '' ?>">
         </div>
 
         <div class="campo">

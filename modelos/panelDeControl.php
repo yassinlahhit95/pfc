@@ -71,12 +71,8 @@ function contarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total
             FROM estudiantes e
-            JOIN ciclos c ON e.idCiclo = c.idCiclo
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
-
+            WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
@@ -90,10 +86,8 @@ function contarCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(DISTINCT c.idCiclo) as total
             FROM ciclos c
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
+            WHERE c.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+               OR c.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)";
 
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);

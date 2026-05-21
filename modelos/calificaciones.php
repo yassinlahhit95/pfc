@@ -3,6 +3,7 @@ require_once __DIR__ . "/conectar.php";
 require_once __DIR__ . "/modulos.php";
 require_once __DIR__ . "/estudiantes.php";
 require_once __DIR__ . "/retos.php";
+require_once __DIR__ . "/tfg.php";
 
 function obtenerNotasModulo($idEstudiante, $idModulo)
 {
@@ -81,30 +82,43 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
 {
     $con = obtenerConexion();
 
-    $filtro = "";
-    $orden = "ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
-
     if ($idModulo > 0) {
-        $filtro = "AND m.idModulo = " . intval($idModulo);
-        $orden = "ORDER BY e.nombreEstudiante ASC";
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
+                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+                FROM modulos m
+                JOIN profesor_modulo pm ON m.idModulo = pm.idModulo AND pm.idProfesor = ?
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
+                WHERE m.idModulo = ?
+                ORDER BY e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idModulo);
+
     } elseif ($idCiclo > 0) {
-        $filtro = "AND m.idCiclo = " . intval($idCiclo);
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
+                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+                FROM modulos m
+                JOIN ciclo_profesor cp ON m.idCiclo = cp.idCiclo AND cp.idProfesor = ?
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
+                WHERE m.idCiclo = ?
+                ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idCiclo);
+
+    } else {
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
+                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+                FROM modulos m
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
+                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                   OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
+                ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     }
 
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
-                   cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
-            FROM modulos m
-            JOIN estudiantes e ON m.idCiclo = e.idCiclo
-            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
-            WHERE (
-                m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
-            )
-            $filtro
-            $orden";
-
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
@@ -128,11 +142,11 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1
     if (mysqli_num_rows($resultado) > 0) {
         $sql = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
         $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "sssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
+        mysqli_stmt_bind_param($stmt2, "ddddsii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
     } else {
         $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "iisssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
+        mysqli_stmt_bind_param($stmt2, "iidddds", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
     }
 
     $exito = mysqli_stmt_execute($stmt2);
@@ -200,7 +214,6 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     $resumen['estado_global'] = 'PENDIENTE';
     $resumen['tiene_suspensos'] = false;
 
-    require_once __DIR__ . "/tfg.php";
     $calificacionTFG = obtenerCalificacionTFG($idEstudiante);
     $resumen['nota_tfg'] = null;
     $resumen['obs_tfg'] = '';

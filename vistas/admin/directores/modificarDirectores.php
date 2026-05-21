@@ -15,7 +15,7 @@ if (!$director) {
 }
 
 if (isset($_SESSION['datos_director'])) {
-    $director = array_merge($director, $_SESSION['datos_director']);
+    $director = $_SESSION['datos_director'] + $director;
 }
 
 $titulo_pagina = "AULAPRO | MODIFICAR DIRECTOR";

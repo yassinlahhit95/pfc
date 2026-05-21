@@ -80,13 +80,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </tr>
                         <?php } else { ?>
                             <?php foreach ($listaEstudiantes as $alumno) {
-                                $idEst = $alumno['idEstudiante'];
-                                $notas = obtenerNotasModulo($idEst, $idModuloElegido) ?? [];
+                                $idEstudiante = $alumno['idEstudiante'];
+                                $notas = obtenerNotasModulo($idEstudiante, $idModuloElegido) ?? [];
                             ?>
                                 <tr>
                                     <td>
                                         <?= strtoupper($alumno['nombreEstudiante']) ?>
-                                        <input type="hidden" name="estudiantes[]" value="<?= $idEst ?>">
+                                        <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                     </td>
                                     <td><input type="text" name="notas_1ev[]" value="<?= $notas['nota_1ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
                                     <td><input type="text" name="notas_1final[]" value="<?= $notas['nota_1final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
@@ -103,8 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (!empty($listaEstudiantes)) { ?>
                 <div class="acciones">
                     <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR TODAS LAS NOTAS">
-                    <input type="reset" class="boton-secundario" value="LIMPIAR">
-                </div>
+</div>
             <?php } ?>
         </form>
     </div>

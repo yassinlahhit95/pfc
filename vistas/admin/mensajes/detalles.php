@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="nombre-detalle">De</div>
         <div class="valor-detalle texto-negrita">
             <?php if ($mensaje['emisor_rol'] == 'admin') { ?>
-                T (Administración)
+                Administración
             <?php } elseif ($mensaje['emisor_rol'] == 'profesor') { ?>
                 <?= $mensaje['nombreProfesor'] ?> (Profesor)
             <?php } else { ?>
@@ -61,7 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     General
                 <?php } ?>
             <?php } else { ?>
-                T (Administración)
+                Administración
             <?php } ?>
         </div>
     </div>

@@ -9,8 +9,8 @@ $datos = $_SESSION['datos_perfil'] ?? [];
 
 require_once "../../../modelos/estudiantes.php";
 
-$id = $_SESSION['idEstudiante'];
-$est = obtenerEstudiantePorId($id);
+$idEstudiante = $_SESSION['idEstudiante'];
+$estudianteActual = obtenerEstudiantePorId($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | EDITAR PERFIL";
 $seccionActual = 'perfil';
@@ -26,28 +26,28 @@ include_once "../comunes/nav.php";
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/estudiantes/perfil/actualizar.php" method="POST" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= $id ?>">
+        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
 
         <div class="titulo-tarjeta"><h3>DATOS PERSONALES Y CONTACTO</h3></div>
 
         <div class="campo">
             <label for="nombreEstudiante">Nombre Completo</label>
-            
+            <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? $estudianteActual['nombreEstudiante'] ?>">
         </div>
 
         <div class="campo">
             <label for="emailEstudiante">Correo Electronico</label>
-            
+            <input type="email" name="emailEstudiante" id="emailEstudiante" value="<?= $datos['emailEstudiante'] ?? $estudianteActual['emailEstudiante'] ?>">
         </div>
 
         <div class="campo">
             <label for="telefonoEstudiante">Numero de Telefono</label>
-            
+            <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= $datos['telefonoEstudiante'] ?? $estudianteActual['telefonoEstudiante'] ?>">
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
@@ -55,12 +55,12 @@ include_once "../comunes/nav.php";
 
         <div class="campo">
             <label for="current_password">Contraseña Actual</label>
-            
+            <input type="password" name="current_password" id="current_password">
         </div>
 
         <div class="campo">
             <label for="new_password">Nueva Contraseña</label>
-            
+            <input type="password" name="new_password" id="new_password">
         </div>
 
         <div class="acciones">

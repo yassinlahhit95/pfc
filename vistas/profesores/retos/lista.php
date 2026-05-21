@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -51,13 +51,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
                             <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
-                            <td><?= $reto['fechaInicio'] ?></td>
-                            <td><?= $reto['fechaFin'] ?></td>
+                            <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
+                            <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
                             <td><?= $reto['horasReto'] ?> h</td>
                             <td>
                                 <div class="botones-accion">
                                     <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
-                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('Est� seguro de que desea eliminar este reto?');"
+                                    <form action="../../../controladores/profesores/retos/borrar.php" method="POST" onsubmit="return confirm('Estas seguro de que desea eliminar este reto?')">
                                         <input type="hidden" name="idReto" value="<?= $reto['idReto'] ?>">
                                         <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>

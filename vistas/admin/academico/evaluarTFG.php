@@ -1,0 +1,94 @@
+<?php
+session_start();
+
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
+
+$idEstudiante = $_GET['idEstudiante'] ?? 0;
+$estudiante = obtenerEstudiantePorId($idEstudiante);
+
+if (!$estudiante) {
+    header("Location: calificacionesTFG.php");
+    exit;
+}
+
+$calificacion = obtenerCalificacionTFG($idEstudiante);
+
+$titulo_pagina = "AULAPRO | EVALUAR TFG";
+$seccion = 'notas_tfg';
+include_once __DIR__ . "/../comunes/nav.php";
+?>
+
+<div class="cabecera">
+    <h1>EVALUAR TFG</h1>
+    <a href="calificacionesTFG.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+</div>
+
+<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if ($exito)   { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
+
+<div class="panel">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-user-graduate"></i> <?= strtoupper($estudiante['nombreEstudiante']) ?></h3>
+    </div>
+
+    <div class="fila-datos">
+        <div class="nombre-detalle">Ciclo</div>
+        <div class="valor-detalle"><?= $estudiante['nombreCiclo'] ?></div>
+    </div>
+
+    <div class="fila-datos">
+        <div class="nombre-detalle">Archivo TFG</div>
+        <div class="valor-detalle">
+            <?php if (!empty($estudiante['archivoTFG'])) { ?>
+                <span class="indicador-estado activo-verde">ENTREGADO</span>
+            <?php } else { ?>
+                <span class="indicador-estado inactivo-rojo">NO ENTREGADO</span>
+            <?php } ?>
+        </div>
+    </div>
+
+    <?php if (!empty($calificacion)) { ?>
+    <div class="fila-datos">
+        <div class="nombre-detalle">Nota actual</div>
+        <div class="valor-detalle texto-negrita <?= $calificacion['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
+            <?= $calificacion['nota'] ?> / 10
+        </div>
+    </div>
+    <?php } ?>
+</div>
+
+<div class="panel margen-arriba">
+    <div class="titulo-tarjeta">
+        <h3><i class="fas fa-edit"></i> CALIFICACIÓN</h3>
+    </div>
+
+    <form action="../../../controladores/admin/pfc/calificar.php" method="POST" class="formulario">
+        <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+
+        <div class="campo">
+            <label>Nota (0-10)</label>
+            <input type="text" name="nota" value="<?= $calificacion['nota'] ?? '' ?>" placeholder="Ej: 7.5">
+        </div>
+
+        <div class="campo">
+            <label>Observaciones</label>
+            <textarea name="observaciones" rows="3"><?= $calificacion['observaciones'] ?? '' ?></textarea>
+        </div>
+
+        <div class="acciones">
+            <input type="submit" name="calificarTFG" class="boton-primario" value="Guardar Nota">
+        </div>
+    </form>
+</div>
+
+<?php include '../comunes/footer.php'; ?>

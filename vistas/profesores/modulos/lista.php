@@ -32,11 +32,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($modulos) { ?>
-                    <?php foreach ($modulos as $mod) { ?>
+                    <?php foreach ($modulos as $moduloItem) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= $mod['nombreModulo'] ?></td>
-                            <td><?= $mod['horasMaximas'] ?> h</td>
-                            <td><?= $mod['nombreCiclo'] ?></td>
+                            <td class="texto-negrita"><?= $moduloItem['nombreModulo'] ?></td>
+                            <td><?= $moduloItem['horasMaximas'] ?> h</td>
+                            <td><?= $moduloItem['nombreCiclo'] ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>

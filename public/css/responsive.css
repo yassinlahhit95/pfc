@@ -459,7 +459,7 @@
     .pie-columna-contacto p {
         justify-content: center;
     }
-    }
+
     .contacto-form-wrapper {
         padding: 20px 16px;
     }
@@ -479,3 +479,4 @@
         font-size: 0.72rem;
         padding: 3px 12px;
     }
+}

@@ -113,25 +113,17 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include '../comunes/footer.php'; ?>
 <script>
 function aplicarFiltrosRetos() {
-    var idNivel = document.getElementById('selectFiltroNivel').value;
-    var idCiclo = document.getElementById('selectFiltroCiclo').value;
-    var filas = document.querySelectorAll('#tablaRetos tbody tr');
+    var idNivel = $('#selectFiltroNivel').val();
+    var idCiclo = $('#selectFiltroCiclo').val();
 
-    filas.forEach(function(fila) {
-        var pasaNivel = true;
-        var pasaCiclo = true;
-
-        if (idNivel !== '') {
-            pasaNivel = fila.classList.contains('fila-nivel-' + idNivel);
-        }
-        if (idCiclo !== '') {
-            pasaCiclo = fila.classList.contains('fila-ciclo-' + idCiclo);
-        }
-
+    $('#tablaRetos tbody tr').each(function() {
+        var $fila = $(this);
+        var pasaNivel = idNivel === '' || $fila.hasClass('fila-nivel-' + idNivel);
+        var pasaCiclo = idCiclo === '' || $fila.hasClass('fila-ciclo-' + idCiclo);
         if (pasaNivel && pasaCiclo) {
-            fila.classList.remove('fila-filtro-oculta');
+            $fila.removeClass('fila-filtro-oculta');
         } else {
-            fila.classList.add('fila-filtro-oculta');
+            $fila.addClass('fila-filtro-oculta');
         }
     });
 }

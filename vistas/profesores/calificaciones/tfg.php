@@ -36,10 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
         </div>
-        <div style="margin-bottom: 15px;">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
-        </div>
-    </form>
+</form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
@@ -137,25 +134,20 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 function abrirModalCalificar(id, nombre, nota, obs) {
-    document.getElementById('modalIdEstudiante').value = id;
-    document.getElementById('modalTitulo').innerText = 'Evaluar TFG: ' + nombre;
-    document.getElementById('modalNota').value = nota;
-    document.getElementById('modalObservaciones').value = obs;
-    document.getElementById('modalCalificar').classList.remove('oculto');
-    document.getElementById('modalCalificar').style.display = 'flex';
+    $('#modalIdEstudiante').val(id);
+    $('#modalTitulo').text('Evaluar TFG: ' + nombre);
+    $('#modalNota').val(nota);
+    $('#modalObservaciones').val(obs);
+    $('#modalCalificar').removeClass('oculto').css('display', 'flex');
 }
 
 function cerrarModal() {
-    document.getElementById('modalCalificar').classList.add('oculto');
-    document.getElementById('modalCalificar').style.display = 'none';
+    $('#modalCalificar').addClass('oculto').hide();
 }
 
-window.onclick = function(event) {
-    var modal = document.getElementById('modalCalificar');
-    if (event.target == modal) {
-        cerrarModal();
-    }
-}
+$(document).on('click', '#modalCalificar', function(e) {
+    if ($(e.target).is('#modalCalificar')) cerrarModal();
+});
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

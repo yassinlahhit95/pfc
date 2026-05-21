@@ -1,11 +1,9 @@
-﻿var _paginaciones = {};
+var _paginaciones = {};
 
 function iniciarPaginacion(tablaId, filasPorPagina) {
-    var tabla = document.getElementById(tablaId);
-    if (!tabla) return;
+    if ($('#' + tablaId).length === 0) return;
 
     _paginaciones[tablaId] = {
-        tabla: tabla,
         filasPorPagina: filasPorPagina,
         paginaActual: 1
     };
@@ -17,14 +15,12 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var config = _paginaciones[tablaId];
     if (!config) return;
 
-    var filas = Array.from(config.tabla.querySelectorAll('tbody tr'));
-
+    var filas = $('#' + tablaId + ' tbody tr').toArray();
     var visibles = filas.filter(function(tr) {
-        return !tr.classList.contains('fila-filtro-oculta');
+        return !$(tr).hasClass('fila-filtro-oculta');
     });
 
     var total = Math.max(1, Math.ceil(visibles.length / config.filasPorPagina));
-
     if (pagina < 1) pagina = 1;
     if (pagina > total) pagina = total;
     config.paginaActual = pagina;
@@ -32,8 +28,12 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var inicio = (pagina - 1) * config.filasPorPagina;
     var fin = inicio + config.filasPorPagina;
 
-    visibles.forEach(function(tr, idx) {
-        tr.style.display = (idx >= inicio && idx < fin) ? '' : 'none';
+    $.each(visibles, function(idx, tr) {
+        if (idx >= inicio && idx < fin) {
+            $(tr).show();
+        } else {
+            $(tr).hide();
+        }
     });
 
     _renderControles(tablaId, pagina, total);
@@ -41,18 +41,15 @@ function _mostrarPaginaTabla(tablaId, pagina) {
 
 function _renderControles(tablaId, pagina, total) {
     var ctId = 'paginacion-' + tablaId;
-    var contenedor = document.getElementById(ctId);
+    var $contenedor = $('#' + ctId);
 
-    if (!contenedor) {
-        var config = _paginaciones[tablaId];
-        contenedor = document.createElement('div');
-        contenedor.id = ctId;
-        contenedor.className = 'paginacion-controles';
-        config.tabla.parentNode.insertAdjacentElement('afterend', contenedor);
+    if ($contenedor.length === 0) {
+        $contenedor = $('<div>').attr('id', ctId).addClass('paginacion-controles');
+        $('#' + tablaId).parent().after($contenedor);
     }
 
     if (total <= 1) {
-        contenedor.innerHTML = '';
+        $contenedor.html('');
         return;
     }
 
@@ -67,7 +64,7 @@ function _renderControles(tablaId, pagina, total) {
     if (pagina === total) html += ' disabled';
     html += '>Siguiente &#8594;</button>';
 
-    contenedor.innerHTML = html;
+    $contenedor.html(html);
 }
 
 function irAPagina(tablaId, pagina) {

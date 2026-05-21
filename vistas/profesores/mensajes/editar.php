@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="campo">
             <label for="respuesta">Tu Respuesta / Explicación:</label>
-            
+            <textarea name="respuesta" id="respuesta" rows="5" placeholder="Escribe tu respuesta..."><?= $mensaje['respuesta'] ?? '' ?></textarea>
         </div>
 
         <div class="acciones">

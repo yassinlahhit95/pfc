@@ -12,9 +12,9 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
-$id = $_SESSION['idEstudiante'];
+$idEstudiante = $_SESSION['idEstudiante'];
 
-$resumen = obtenerResultadosFinalesEstudiante($id);
+$resumen = obtenerResultadosFinalesEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MIS CALIFICACIONES";
 $seccionActual = 'calificaciones';
@@ -29,7 +29,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -83,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="item-resumen">
             <span class="nombre">ESTADO GLOBAL:</span>
-            <span class="valor badge <?= $resumen['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumen['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta') ?>">
+            <span class="badge <?= $resumen['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumen['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta') ?>">
                 <?= $resumen['estado_global'] ?>
             </span>
         </div>

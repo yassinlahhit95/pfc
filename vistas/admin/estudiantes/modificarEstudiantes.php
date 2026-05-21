@@ -15,13 +15,9 @@ if (!$estudiante) {
     exit;
 }
 
-// Datos de error o datos actuales
-
 $datos_sesion = $_SESSION['datos_estudiante'] ?? null;
-
-// Si hay datos en la sesion (por un error), los mezclamos con los de la base de datos
 if ($datos_sesion) {
-    $estudiante = array_merge($estudiante, $datos_sesion);
+    $estudiante = $datos_sesion + $estudiante;
 }
 
 $lista_ciclos = listarTodosLosCiclos();
@@ -119,39 +115,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-// Lista de ciclos para el JavaScript
 var listaDeCiclos = [
-    <?php foreach ($lista_ciclos as $c) { 
-        echo '{id:' . $c['idCiclo'] . ', nivel:' . $c['idNivel'] . ', nombre:"' . addslashes($c['nombreCiclo']) . '"},'; 
+    <?php foreach ($lista_ciclos as $c) {
+        echo '{id:' . $c['idCiclo'] . ', nivel:' . $c['idNivel'] . ', nombre:"' . addslashes($c['nombreCiclo']) . '"},';
     } ?>
 ];
 
 function filtrarCiclos() {
-    var nivelTexto = document.getElementById('curso').value;
-    var selectCiclo = document.getElementById('idCiclo');
-    
-    // Convertimos texto a ID de nivel (1 o 2)
-    var nivelId = (nivelTexto === 'Grado Medio') ? 1 : 2;
+    var nivelId = $('#curso').val() === 'Grado Medio' ? 1 : 2;
+    var $select = $('#idCiclo').empty().append('<option value="">-- Selecciona un ciclo --</option>');
 
-    // Limpiamos el select
-    selectCiclo.innerHTML = '<option value="">-- Selecciona un ciclo --</option>';
-
-    // Añadimos solo los ciclos que coinciden
-    listaDeCiclos.forEach(function(ciclo) {
+    $.each(listaDeCiclos, function(i, ciclo) {
         if (ciclo.nivel === nivelId) {
-            var opcion = document.createElement('option');
-            opcion.value = ciclo.id;
-            opcion.textContent = ciclo.nombre;
-            selectCiclo.appendChild(opcion);
+            $select.append($('<option>').val(ciclo.id).text(ciclo.nombre));
         }
     });
 }
 
-// Al cargar la pagina
-document.addEventListener('DOMContentLoaded', function() {
+$(function() {
     filtrarCiclos();
-    // Seleccionamos el ciclo que ya tiene el estudiante
-    document.getElementById('idCiclo').value = '<?= $estudiante['idCiclo'] ?>';
+    $('#idCiclo').val('<?= $estudiante['idCiclo'] ?>');
 });
 </script>
 

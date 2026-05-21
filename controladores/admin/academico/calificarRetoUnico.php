@@ -25,6 +25,6 @@ if ($idEstudiante && $idReto) {
     $_SESSION['errores'] = "Datos incorrectos.";
 }
 
-header("Location: ../../../vistas/admin/academico/calificacionesRetos.php?idReto={$idReto}&idCiclo={$idCiclo}");
+header("Location: ../../../vistas/admin/academico/evaluarReto.php?idEstudiante={$idEstudiante}&idReto={$idReto}&idCiclo={$idCiclo}");
 exit;
 ?>

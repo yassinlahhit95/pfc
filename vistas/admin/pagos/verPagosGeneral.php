@@ -57,10 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
             </div>
-            <div>
-                <a href="verPagosGeneral.php" class="boton-secundario">LIMPIAR</a>
-            </div>
-        </div>
+</div>
     </form>
 </div>
 

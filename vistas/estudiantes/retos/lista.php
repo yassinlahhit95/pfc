@@ -10,20 +10,20 @@ if (!isset($_SESSION['idEstudiante'])) {
     exit;
 }
 
-$idEst = $_SESSION['idEstudiante'];
+$idEstudiante = $_SESSION['idEstudiante'];
 
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$datosEst = obtenerEstudiantePorId($idEst);
-if (!$datosEst) {
+$datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+if (!$datosEstudiante) {
     $_SESSION['errores'] = "ERROR AL RECUPERAR DATOS DEL ESTUDIANTE.";
     header("Location: ../inicio/dashboard.php");
     exit;
 }
 
-$idCiclo = $datosEst['idCiclo'] ?? 0;
-$nombreCiclo = $datosEst['nombreCiclo'] ?? 'SIN ASIGNAR';
+$idCiclo = $datosEstudiante['idCiclo'] ?? 0;
+$nombreCiclo = $datosEstudiante['nombreCiclo'] ?? 'SIN ASIGNAR';
 
 $retos = ($idCiclo > 0) ? listarRetosPorCiclo($idCiclo) : [];
 

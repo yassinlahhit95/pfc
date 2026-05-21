@@ -59,10 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
-        </div>
-    </form>
+</form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
@@ -105,21 +102,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                         </td>
                         <td>
-                            <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $est['idEstudiante'] ?>')">
+                            <a href="evaluarReto.php?idEstudiante=<?= $est['idEstudiante'] ?>&idReto=<?= $idRetoElegido ?>&idCiclo=<?= $idCicloElegido ?>" class="btn-accion btn-editar">
                                 <i class="fas fa-edit"></i> Evaluar
-                            </button>
-                            <div id="form-<?= $est['idEstudiante'] ?>" style="display: none; margin-top: 10px;">
-                                <form action="../../../controladores/admin/academico/calificarRetoUnico.php" method="POST" class="formulario">
-                                    <input type="hidden" name="idEstudiante" value="<?= $est['idEstudiante'] ?>">
-                                    <input type="hidden" name="idReto" value="<?= $idRetoElegido ?>">
-                                    <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
-                                    <div class="campo">
-                                        <label>Nota (0-10):</label>
-                                        <input type="text" name="nota" value="<?= $notaActual ?>" placeholder="Ej: 7.5">
-                                    </div>
-                                    <input type="submit" name="guardarNota" class="boton-primario" value="Guardar Nota">
-                                </form>
-                            </div>
+                            </a>
                         </td>
                     </tr>
                     <?php } ?>
@@ -128,16 +113,5 @@ include_once __DIR__ . "/../comunes/nav.php";
         </table>
     </div>
 </div>
-
-<script>
-function toggleFormCalificar(idFormulario) {
-    var formulario = document.getElementById(idFormulario);
-    if (formulario.style.display === 'none') {
-        formulario.style.display = 'block';
-    } else {
-        formulario.style.display = 'none';
-    }
-}
-</script>
 
 <?php include '../comunes/footer.php'; ?>

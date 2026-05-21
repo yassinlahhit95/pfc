@@ -12,8 +12,8 @@ if (empty($_SESSION['idAdmin'])) {
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-$id = $_GET['id'] ?? 0;
-$director = obtenerDirectorPorId($id);
+$idDirector = $_GET['id'] ?? 0;
+$director = obtenerDirectorPorId($idDirector);
 
 if (!$director) {
     header("Location: verDirectores.php");

@@ -113,7 +113,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="tipoPago">Tipo de Pago</label>
-                <select name="tipoPago" id="tipoPago" onchange="actualizarMontoRapido()">
+                <select name="tipoPago" id="tipoPago">
                     <option value="">-- Elegir --</option>
                     <option value="mensual" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'mensual') ? 'selected' : '' ?>>Mensual (10% del total)</option>
                     <option value="trimestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'trimestral') ? 'selected' : '' ?>>Trimestral (25% del total)</option>
@@ -131,17 +131,18 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="acciones">
-                <input type="submit" name="guardarPago" class="boton-primario" value="Confirmar y Registrar Pago ()">
+                <input type="submit" name="guardarPago" class="boton-primario" value="Confirmar y Registrar Pago">
             </div>
         </form>
     <?php } ?>
 </div>
 
 <script>
+var precioTotal = <?= $infoFinanciera['precioCiclo'] ?>;
+var restante = <?= $infoFinanciera['restante'] ?>;
+
 function actualizarMontoRapido() {
-    var tipo = document.getElementById('tipoPago').value;
-    var precioTotal = <?= $infoFinanciera['precioCiclo'] ?>;
-    var restante = <?= $infoFinanciera['restante'] ?>;
+    var tipo = $('#tipoPago').val();
     var cuota = 0;
 
     if (tipo === 'mensual') cuota = precioTotal / 10;
@@ -150,13 +151,13 @@ function actualizarMontoRapido() {
     else if (tipo === 'unico') cuota = restante;
 
     if (cuota > restante) cuota = restante;
-
-    document.getElementById('montoInput').value = cuota.toFixed(2);
+    $('#montoInput').val(cuota.toFixed(2));
 }
 
-if (document.getElementById('tipoPago') && document.getElementById('tipoPago').value !== '') {
-    actualizarMontoRapido();
-}
+$(function() {
+    $('#tipoPago').on('change', actualizarMontoRapido);
+    if ($('#tipoPago').val() !== '') actualizarMontoRapido();
+});
 </script>
 <?php } ?>
 

@@ -106,31 +106,27 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = [<?php foreach ($mis_ciclos as $c) { echo '{idCiclo:' . $c['idCiclo'] . ',idNivel:' . $c['idNivel'] . ',nombreCiclo:"' . addslashes($c['nombreCiclo']) . '"},'; } ?>];
+var todosCiclos = [<?php foreach ($mis_ciclos as $cicloItem) { echo '{idCiclo:' . $cicloItem['idCiclo'] . ',idNivel:' . $cicloItem['idNivel'] . ',nombreCiclo:"' . addslashes($cicloItem['nombreCiclo']) . '"},'; } ?>];
 
 function filtrarCiclos() {
-    var nivel = document.getElementById('curso').value;
-    var cicloSelect = document.getElementById('idCiclo');
+    var nivel = $('#curso').val();
     var nivelId = nivel === 'Grado Medio' ? 1 : (nivel === 'Grado Superior' ? 2 : 0);
-
-    cicloSelect.innerHTML = '<option value="">' + (nivel ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --') + '</option>';
+    var placeholder = nivel ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --';
+    var $select = $('#idCiclo').empty().append($('<option>').val('').text(placeholder));
 
     if (nivelId > 0) {
-        todosCiclos.forEach(function(ciclo) {
+        $.each(todosCiclos, function(i, ciclo) {
             if (parseInt(ciclo.idNivel) === nivelId) {
-                var opt = document.createElement('option');
-                opt.value = ciclo.idCiclo;
-                opt.textContent = ciclo.nombreCiclo;
-                cicloSelect.appendChild(opt);
+                $select.append($('<option>').val(ciclo.idCiclo).text(ciclo.nombreCiclo));
             }
         });
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+$(function() {
     filtrarCiclos();
     <?php if (!empty($datos['idCiclo'])) { ?>
-    document.getElementById('idCiclo').value = '<?= $datos['idCiclo'] ?>';
+    $('#idCiclo').val('<?= $datos['idCiclo'] ?>');
     <?php } ?>
 });
 </script>

@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-$exito = $_SESSION['exito'] ?? '';
-$errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");

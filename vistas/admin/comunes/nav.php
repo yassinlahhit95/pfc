@@ -31,7 +31,7 @@ $totalPrestamos_menu = contarPrestamosActivos();
     <title><?= $titulo_pagina ?? 'AulaPro Admin' ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
@@ -159,14 +159,10 @@ $totalPrestamos_menu = contarPrestamosActivos();
                 </a>
             </div>
 
-            <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">EXTERNO</p>
-                <a href="https://yassin.agency" target="_blank" class="enlace-menu">
-                    <i class="fas fa-external-link-alt"></i> <span>YASSIN.AGENCY</span>
-                </a>
-            </div>
-
             <div class="separador-menu-inferior">
+                <a href="https://yassin.agency" target="_blank" class="enlace-menu">
+                    <i class="fas fa-home"></i> <span>PÁGINA INICIO</span>
+                </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>

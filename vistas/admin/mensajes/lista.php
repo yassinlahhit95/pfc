@@ -52,8 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($listaDeMensajes)) { ?>
                     <tr><td colspan="6" class="vacio">No hay mensajes registrados.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaDeMensajes as $mensaje) { 
-                        // Lógica de emisor/receptor corregida
+                    <?php foreach ($listaDeMensajes as $mensaje) {
                         $emisor = "";
                         $receptor = "";
 

@@ -12,8 +12,8 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$id_estudiante = $_SESSION['idEstudiante'];
-$mis_notas_retos = listarCalificacionesRetoPorEstudiante($id_estudiante);
+$idEstudiante = $_SESSION['idEstudiante'];
+$mis_notas_retos = listarCalificacionesRetoPorEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MIS NOTAS DE RETOS";
 $seccionActual = 'notas_retos';

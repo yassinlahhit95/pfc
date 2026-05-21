@@ -19,13 +19,10 @@ if (!$ciclo) {
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
-// Obtenemos los profesores que ya estan en este ciclo
 $profesores_marcados = listarProfesoresDeUnCiclo($id_ciclo);
-
-// Si hay datos en la sesion (por un error), los usamos. Si no, usamos los de la BD.
 $datos_sesion = $_SESSION['datos_ciclos'] ?? null;
 if ($datos_sesion) {
-    $ciclo = array_merge($ciclo, $datos_sesion);
+    $ciclo = $datos_sesion + $ciclo;
     $profesores_marcados = $datos_sesion['profesores'] ?? [];
 }
 

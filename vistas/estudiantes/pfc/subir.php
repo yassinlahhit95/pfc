@@ -8,10 +8,10 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$id = $_SESSION['idEstudiante'];
-$tfg = obtenerTFGporEstudiante($id);
-$estudianteActual = obtenerEstudiantePorId($id);
-$notaTFG = obtenerCalificacionTFG($id);
+$idEstudiante = $_SESSION['idEstudiante'];
+$tfg = obtenerTFGporEstudiante($idEstudiante);
+$estudianteActual = obtenerEstudiantePorId($idEstudiante);
+$notaTFG = obtenerCalificacionTFG($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="caja espacio-medio">
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario">DESCARGAR</a>
                     <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
-                        <input type="hidden" name="idEstudiante" value="<?= $id ?>">
+                        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
                         <input type="submit" name="borrarTFG" class="boton-secundario color-error" value="ELIMINAR">
                     </form>
                 </div>
@@ -85,12 +85,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="titulo-tarjeta" style="margin-top: 25px; padding-top: 20px; ">SUBIR ARCHIVO</div>
 
     <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= $id ?>">
+        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
 
         <div class="campo">
             <label>Seleccione el archivo de su TFG (PDF o Word)</label>
             <p class="texto-suave" style="margin-bottom: 10px;">Formatos aceptados: .pdf, .doc, .docx. Tamaño máximo recomendado: 10MB.</p>
-            
+            <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx">
         </div>
 
         <div class="acciones">

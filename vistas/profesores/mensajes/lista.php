@@ -60,7 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
-                                    echo 'T (Profesor)';
+                                    echo 'Yo (Profesor)';
                                 } elseif ($mensaje['emisor_rol'] == 'admin') {
                                     echo 'DIRECCIÓN (ADMIN)';
                                 } else {

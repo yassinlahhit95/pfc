@@ -4,17 +4,17 @@ session_start();
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$id = $_GET['idProfesor'] ?? 0;
+$idProfesor = $_GET['idProfesor'] ?? 0;
 
-$profesor = obtenerProfesorPorId($id);
+$profesor = obtenerProfesorPorId($idProfesor);
 
 if (!$profesor) {
     header("Location: verProfesores.php");
     exit;
 }
 
-$modulosProfesor = listarModulosDeProfesor($id);
-$ciclosTutorizados = listarCiclosTutorizadosProfesor($id);
+$modulosProfesor = listarModulosDeProfesor($idProfesor);
+$ciclosTutorizados = listarCiclosTutorizadosProfesor($idProfesor);
 
 $titulo_pagina = "AULAPRO | DETALLES PROFESOR";
 $seccion = 'profesores';
@@ -157,10 +157,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($ciclosTutorizados)) { ?>
                     <tr><td colspan="2" class="vacio">No es tutor de ningún ciclo</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($ciclosTutorizados as $c) { ?>
+                    <?php foreach ($ciclosTutorizados as $cicloItem) { ?>
                     <tr>
-                        <td><b><?= $c['nombreCiclo'] ?></b></td>
-                        <td><?= $c['nombreNivel'] ?></td>
+                        <td><b><?= $cicloItem['nombreCiclo'] ?></b></td>
+                        <td><?= $cicloItem['nombreNivel'] ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>
@@ -185,10 +185,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($modulosProfesor)) { ?>
                     <tr><td colspan="2" class="vacio">No tiene módulos asignados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($modulosProfesor as $m) { ?>
+                    <?php foreach ($modulosProfesor as $moduloItem) { ?>
                     <tr>
-                        <td><b><?= $m['nombreModulo'] ?></b></td>
-                        <td><span class="texto-estado azul"><?= $m['abreviaturaCiclo'] ?></span></td>
+                        <td><b><?= $moduloItem['nombreModulo'] ?></b></td>
+                        <td><span class="texto-estado azul"><?= $moduloItem['abreviaturaCiclo'] ?></span></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>

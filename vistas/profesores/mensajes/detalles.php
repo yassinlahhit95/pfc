@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-envelope-open-text"></i> INFORMACIIN DEL MENSAJE</h3>
+        <h3><i class="fas fa-envelope-open-text"></i> INFORMACION DEL MENSAJE</h3>
     </div>
     
     <div class="fila-datos">

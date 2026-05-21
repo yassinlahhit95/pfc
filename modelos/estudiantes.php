@@ -5,7 +5,7 @@ function listarEstudiantes() {
     $con = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
             FROM estudiantes
-            LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             ORDER BY estudiantes.idEstudiante ASC";
 
     $res = mysqli_query($con, $sql);
@@ -56,13 +56,10 @@ function listarEstudiantesDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT DISTINCT e.*, c.nombreCiclo, c.abreviaturaCiclo, c.idNivel
             FROM estudiantes e
-            JOIN ciclos c ON e.idCiclo = c.idCiclo 
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?) 
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
             ORDER BY e.nombreEstudiante ASC";
-
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
@@ -77,7 +74,7 @@ function listarEstudiantesDeProfesor($idProfesor) {
 
 function listarEstudiantesPorCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC";
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idCiclo = ? ORDER BY estudiantes.idEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -102,7 +99,7 @@ function eliminarEstudiante($idEstudiante) {
 
 function obtenerEstudiantePorId($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM estudiantes LEFT JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM estudiantes JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo WHERE estudiantes.idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);

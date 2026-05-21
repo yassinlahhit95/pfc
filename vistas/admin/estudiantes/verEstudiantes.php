@@ -132,26 +132,18 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
 <?php include '../comunes/footer.php'; ?>
 <script>
 function aplicarFiltrosEstudiantes() {
-    var idNivel = document.getElementById('selectFiltroNivel').value;
-    var textoCiclo = document.getElementById('selectFiltroCiclo').value.toLowerCase();
-    var filas = document.querySelectorAll('#tablaEstudiantes tbody tr');
+    var idNivel = $('#selectFiltroNivel').val();
+    var textoCiclo = $('#selectFiltroCiclo').val().toLowerCase();
 
-    filas.forEach(function(fila) {
-        var pasaNivel = true;
-        var pasaCiclo = true;
-
-        if (idNivel !== '') {
-            pasaNivel = fila.classList.contains('fila-nivel-' + idNivel);
-        }
-        if (textoCiclo !== '') {
-            var celdaCiclo = fila.cells[4] ? fila.cells[4].innerText.toLowerCase() : '';
-            pasaCiclo = celdaCiclo.includes(textoCiclo);
-        }
-
+    $('#tablaEstudiantes tbody tr').each(function() {
+        var $fila = $(this);
+        var pasaNivel = idNivel === '' || $fila.hasClass('fila-nivel-' + idNivel);
+        var textoCelda = $fila.find('td').eq(4).text().toLowerCase();
+        var pasaCiclo = textoCiclo === '' || textoCelda.indexOf(textoCiclo) !== -1;
         if (pasaNivel && pasaCiclo) {
-            fila.classList.remove('fila-filtro-oculta');
+            $fila.removeClass('fila-filtro-oculta');
         } else {
-            fila.classList.add('fila-filtro-oculta');
+            $fila.addClass('fila-filtro-oculta');
         }
     });
 

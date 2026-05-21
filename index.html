@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="preload" href="public/css/landing.css" as="style">
   <link rel="stylesheet" href="public/css/landing.css">
   <link rel="stylesheet" href="public/css/responsive.css">
@@ -20,7 +20,7 @@
     <div class="contenedor cabecera-contenedor-landing">
       <a href="#" class="logo-landing">
         <img src="public/imagenes/aulapro.png"  alt="AulaPro" class="logo-imagen-landing logo-landing-png">
-        <img src="public/imagenes/aulapro.jpeg" alt="AulaPro" class="logo-imagen-landing logo-landing-jpeg">
+        <img src="public/imagenes/logo2.png" alt="AulaPro" class="logo-imagen-landing logo-landing-jpeg">
       </a>
       <nav class="menu-landing" id="menu">
         <a href="#inicio" class="menu-enlace-landing">Inicio</a>
@@ -90,11 +90,6 @@
           <source src="public/videos/intro.mp4" type="video/mp4">
           Tu navegador no soporta videos HTML5.
         </video>
-        <div class="video-acciones-landing animar" style="margin-top: 25px;">
-          <a href="public/videos/intro.mp4" download class="boton boton-secundario-landing">
-            <i class="fas fa-download"></i> Descargar Video de Presentación
-          </a>
-        </div>
       </div>
     </section>
 
@@ -152,8 +147,8 @@
 
         <div class="planes-rejilla-landing">
           <div class="tarjeta tarjeta-plan-landing">
-            <h3 class="plan-nombre-landing">Plan Medio</h3>
-            <p class="plan-descripcion">Para centros pequeños que quieren dejar de improvisar.</p>
+            <h3 class="plan-nombre-landing">Plan Académico</h3>
+            <p class="plan-descripcion">Gestión académica completa para tu centro de FP.</p>
             <div class="plan-precio-bloque">
               <div class="plan-precio">
                 <span class="precio-simbolo">€</span>
@@ -164,19 +159,20 @@
               <p class="precio-nota anual-nota">facturado anualmente · <strong>ahorra €120</strong></p>
             </div>
             <ul class="plan-lista-landing">
-              <li class="plan-elemento-landing">1 sede o centro</li>
-              <li class="plan-elemento-landing">Usuarios ilimitados</li>
-              <li class="plan-elemento-landing">Alumnos, profesores y ciclos</li>
-              <li class="plan-elemento-landing">Notas y boletines en PDF</li>
+              <li class="plan-elemento-landing">Alumnos, profesores y ciclos ilimitados</li>
+              <li class="plan-elemento-landing">Calificaciones por módulos y retos</li>
+              <li class="plan-elemento-landing">Resultados finales automáticos</li>
+              <li class="plan-elemento-landing">Mensajería interna</li>
+              <li class="plan-elemento-landing">Tabla de anuncios</li>
               <li class="plan-elemento-landing">Soporte por email (48h)</li>
             </ul>
-            <a href="#form-contacto" class="boton boton-secundario-landing ancho-total" data-plan="Plan Medio">Solicitar información</a>
+            <a href="#form-contacto" class="boton boton-secundario-landing ancho-total" data-plan="Plan Académico">Solicitar información</a>
           </div>
 
           <div class="tarjeta tarjeta-plan-landing destacado">
             <div class="plan-badge">Más completo</div>
-            <h3 class="plan-nombre-landing">Plan Superior</h3>
-            <p class="plan-descripcion">Para academias que necesitan todo bajo control.</p>
+            <h3 class="plan-nombre-landing">Plan Completo</h3>
+            <p class="plan-descripcion">Todo bajo control: académico, económico y administrativo.</p>
             <div class="plan-precio-bloque">
               <div class="plan-precio">
                 <span class="precio-simbolo">€</span>
@@ -187,15 +183,14 @@
               <p class="precio-nota anual-nota">facturado anualmente · <strong>ahorra €240</strong></p>
             </div>
             <ul class="plan-lista-landing">
-              <li class="plan-elemento-landing">Hasta 3 sedes</li>
-              <li class="plan-elemento-landing">Usuarios ilimitados</li>
-              <li class="plan-elemento-landing">Todo lo del Plan Medio</li>
+              <li class="plan-elemento-landing">Todo lo del Plan Académico</li>
+              <li class="plan-elemento-landing">Gestión y evaluación de TFG</li>
               <li class="plan-elemento-landing">Módulo de pagos y facturación</li>
-              <li class="plan-elemento-landing">Reclamaciones y notificaciones</li>
-              <li class="plan-elemento-landing">Personalización de marca</li>
+              <li class="plan-elemento-landing">Inventario y préstamos de material</li>
+              <li class="plan-elemento-landing">Panel de administración completo</li>
               <li class="plan-elemento-landing">Soporte prioritario (24h)</li>
             </ul>
-            <a href="#form-contacto" class="boton boton-principal-landing ancho-total" data-plan="Plan Superior">Solicitar información</a>
+            <a href="#form-contacto" class="boton boton-principal-landing ancho-total" data-plan="Plan Completo">Solicitar información</a>
           </div>
         </div>
 
@@ -246,48 +241,8 @@
 
   <footer id="acceso" class="pie-pagina-landing animar">
     <div class="contenedor">
-      <div class="pie-grid-landing">
-        <div class="pie-columna-info">
-          <p class="pie-nombre-landing">AulaPro</p>
-          <p class="pie-descripcion">Plataforma integral de gestión académica diseñada para la excelencia educativa. Conectando centros, docentes y alumnos.</p>
-          <div class="pie-sociales">
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-github"></i></a>
-          </div>
-        </div>
-        
-        <div class="pie-columna-links">
-          <h4>Plataforma</h4>
-          <ul>
-            <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#caracteristicas">Características</a></li>
-            <li><a href="#beneficios">Beneficios</a></li>
-            <li><a href="vistas/login.php">Acceso Portal</a></li>
-          </ul>
-        </div>
-
-        <div class="pie-columna-links">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="#">Aviso Legal</a></li>
-            <li><a href="#">Privacidad</a></li>
-            <li><a href="#">Cookies</a></li>
-            <li><a href="#">Soporte</a></li>
-          </ul>
-        </div>
-
-        <div class="pie-columna-contacto">
-          <h4>Contacto</h4>
-          <p><i class="fas fa-envelope"></i> info@aulapro.es</p>
-          <p><i class="fas fa-phone"></i> +34 900 000 000</p>
-          <p><i class="fas fa-map-marker-alt"></i> Vitoria-Gasteiz, Álava</p>
-        </div>
-      </div>
-      
       <div class="pie-inferior">
-        <div class="pie-linea-landing"></div>
-        <p>&copy; 2025 / 2026 AulaPro — Proyecto Final de Grado por Yassin Lahhit</p>
+        <p>&copy; 2025/2026 AulaPro — Desarrollado por <a href="mailto:yassin.lahhit@outlook.com">Yassin Lahhit</a> como Proyecto Final de Grado</p>
       </div>
     </div>
   </footer>

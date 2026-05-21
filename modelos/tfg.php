@@ -100,14 +100,11 @@ function contarTFGsSubidos() {
 
 function contarTFGsDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total 
-            FROM estudiantes e 
-            JOIN ciclos c ON e.idCiclo = c.idCiclo 
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?) 
-            AND e.archivoTFG != ''";
+    $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total
+            FROM estudiantes e
+            WHERE e.archivoTFG != ''
+              AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
             
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
@@ -124,14 +121,12 @@ function contarTFGsDeProfesor($idProfesor) {
 
 function listarTFGsPorProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo 
-            FROM estudiantes e 
-            JOIN ciclos c ON e.idCiclo = c.idCiclo 
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?) 
-            AND e.archivoTFG != '' 
+    $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            WHERE e.archivoTFG != ''
+              AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
             ORDER BY e.nombreEstudiante ASC";
             
     $stmt = mysqli_prepare($con, $sql);
@@ -170,11 +165,11 @@ function guardarCalificacionTFG($idEstudiante, $nota, $observaciones) {
     if (mysqli_num_rows($resultado) > 0) {
         $sql = "UPDATE calificaciones_tfg SET nota = ?, observaciones = ? WHERE idEstudiante = ?";
         $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "ssi", $nota, $observaciones, $idEstudiante);
+        mysqli_stmt_bind_param($stmt2, "dsi", $nota, $observaciones, $idEstudiante);
     } else {
         $sql = "INSERT INTO calificaciones_tfg (idEstudiante, nota, observaciones) VALUES (?, ?, ?)";
         $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "iss", $idEstudiante, $nota, $observaciones);
+        mysqli_stmt_bind_param($stmt2, "ids", $idEstudiante, $nota, $observaciones);
     }
 
     $exito = mysqli_stmt_execute($stmt2);
@@ -210,23 +205,27 @@ function eliminarArchivoTFG($idEstudiante) {
 
 function listarEvaluacionTFG($idCiclo = null) {
     $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
-                   c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
-            FROM estudiantes e
-            JOIN ciclos c ON e.idCiclo = c.idCiclo
-            LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante";
-    
+
     if ($idCiclo) {
-        $sql .= " WHERE e.idCiclo = ?";
-    }
-    
-    $sql .= " ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
-    
-    $stmt = mysqli_prepare($con, $sql);
-    if ($idCiclo) {
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+                       c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+                FROM estudiantes e
+                JOIN ciclos c ON e.idCiclo = c.idCiclo
+                LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
+                WHERE e.idCiclo = ?
+                ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    } else {
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+                       c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+                FROM estudiantes e
+                JOIN ciclos c ON e.idCiclo = c.idCiclo
+                LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
+                ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
     }
-    
+
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
@@ -239,29 +238,32 @@ function listarEvaluacionTFG($idCiclo = null) {
 
 function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
     $con = obtenerConexion();
-    $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, 
-                            c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
-            FROM estudiantes e
-            JOIN ciclos c ON e.idCiclo = c.idCiclo
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
-            
+
     if ($idCiclo) {
-        $sql .= " AND e.idCiclo = ?";
-    }
-    
-    $sql .= " ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
-    
-    $stmt = mysqli_prepare($con, $sql);
-    if ($idCiclo) {
-        mysqli_stmt_bind_param($stmt, "iii", $idProfesor, $idProfesor, $idCiclo);
+        $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+                                c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+                FROM estudiantes e
+                JOIN ciclos c ON e.idCiclo = c.idCiclo
+                LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
+                WHERE e.idCiclo = ?
+                  AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                    OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
+                ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "iii", $idCiclo, $idProfesor, $idProfesor);
     } else {
+        $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+                                c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+                FROM estudiantes e
+                JOIN ciclos c ON e.idCiclo = c.idCiclo
+                LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
+                WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+                   OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
+                ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
+        $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     }
-    
+
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];

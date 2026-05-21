@@ -15,7 +15,7 @@ if (!$anuncio) {
 }
 
 if (isset($_SESSION['datos_anuncio'])) {
-    $anuncio = array_merge($anuncio, $_SESSION['datos_anuncio']);
+    $anuncio = $_SESSION['datos_anuncio'] + $anuncio;
 }
 
 $titulo_pagina = "AULAPRO | MODIFICAR ANUNCIO";

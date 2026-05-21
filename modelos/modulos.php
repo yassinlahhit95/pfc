@@ -5,7 +5,7 @@ function listarModulos() {
     $con = obtenerConexion();
     $sql = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
             FROM modulos
-            LEFT JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
+            JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo
             ORDER BY idModulo ASC";
 
     $resultado = mysqli_query($con, $sql);

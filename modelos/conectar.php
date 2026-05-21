@@ -1,8 +1,7 @@
 ﻿<?php
 function obtenerConexion() {
     $conexion = mysqli_connect("localhost", "yassjjzw_adminpfc", "Yassin1995**", "yassjjzw_pfc");
-   /* $conexion = mysqli_connect("localhost", "cuhq4y87y_pfc", "123456", "cuhq4y87y_pfc");*/
-    
+
     if (!$conexion) {
         die("Error de conexión: " . mysqli_connect_error());
     }

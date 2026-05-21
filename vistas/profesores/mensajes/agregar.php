@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </select>
             </div>
             <div style="margin-bottom: 15px;">
-                <a href="agregar.php" class="boton-secundario">LIMPIAR FILTRO</a>
+                <input type="reset" class="boton-secundario" value="LIMPIAR">
             </div>
         </div>
     </form>
@@ -66,6 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="idEstudiante">Destinatario</label>
+            <select name="idEstudiante" id="idEstudiante">
                 <option value="">-- Seleccionar Destinatario --</option>
                 <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Direccion (Administracion)</option>
                 <optgroup label="Estudiantes">
@@ -78,17 +79,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </optgroup>
             </select>
-            
         </div>
 
         <div class="campo">
             <label for="asunto">Asunto del Mensaje</label>
-            
+            <input type="text" name="asunto" id="asunto" value="<?= $datos['asunto'] ?? '' ?>" placeholder="Asunto del mensaje">
         </div>
 
         <div class="campo">
             <label for="descripcion">Mensaje</label>
-            
+            <textarea name="descripcion" id="descripcion" rows="4" placeholder="Escribe tu mensaje..."><?= $datos['descripcion'] ?? '' ?></textarea>
         </div>
 
         <div class="acciones">

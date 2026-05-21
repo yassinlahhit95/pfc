@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="tituloTFG">Título del TFG</label>
-                
+                <input type="text" id="tituloTFG" name="tituloTFG" value="<?= $datosTFG['tituloTFG'] ?? '' ?>">
             </div>
         </div>
 

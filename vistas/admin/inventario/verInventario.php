@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-$exito = $_SESSION['exito'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/inventario.php";

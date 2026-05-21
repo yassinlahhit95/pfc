@@ -4,8 +4,7 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idDelEstudiante = 0;
-$idDelEstudiante = ($_GET['idEstudiante'] ?? 0);
+$idDelEstudiante = $_GET['idEstudiante'] ?? 0;
 
 $estudiante = obtenerEstudiantePorId($idDelEstudiante);
 

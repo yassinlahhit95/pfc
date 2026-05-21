@@ -14,16 +14,16 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$idProf = $_SESSION['idProfesor'];
+$idProfesor = $_SESSION['idProfesor'];
 
-// Renombramos variables para evitar colisiones con las páginas que incluyen el nav
-$totalAlumnos_menu = contarEstudiantesDeProfesor($idProf);
-$totalCiclos_menu = contarCiclosDeProfesor($idProf);
-$totalMensajes_menu = contarMensajesDeProfesor($idProf);
-$totalSinLeer_menu = contarMensajesNoLeidosProfesor($idProf);
-$totalTfgs_menu = contarTFGsDeProfesor($idProf);
-$totalModulos_menu = count(listarModulosDeProfesor($idProf));
-$totalRetos_menu = count(listarRetosDeProfesor($idProf));
+// _menu suffix avoids collisions with variables in pages that include this nav
+$totalAlumnos_menu = contarEstudiantesDeProfesor($idProfesor);
+$totalCiclos_menu = contarCiclosDeProfesor($idProfesor);
+$totalMensajes_menu = contarMensajesDeProfesor($idProfesor);
+$totalSinLeer_menu = contarMensajesNoLeidosProfesor($idProfesor);
+$totalTfgs_menu = contarTFGsDeProfesor($idProfesor);
+$totalModulos_menu = count(listarModulosDeProfesor($idProfesor));
+$totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,7 +33,7 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProf));
     <title><?= $tituloDelPagina ?? 'AulaPro Profesor' ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
@@ -133,6 +133,9 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProf));
             <div class="separador-menu-inferior">
                 <a href="../perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
+                </a>
+                <a href="https://yassin.agency" target="_blank" class="enlace-menu">
+                    <i class="fas fa-home"></i> <span>PÁGINA INICIO</span>
                 </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>

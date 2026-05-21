@@ -16,28 +16,20 @@ if (!$profesor) {
     exit;
 }
 
-// Obtenemos las listas basicas
 $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();
 
-// Datos de error o datos actuales del profesor
-
 $datos_sesion = $_SESSION['datos_profesor'] ?? null;
-
-// Si hay datos en la sesion (por un error), los usamos. Si no, usamos los de la BD.
 if ($datos_sesion) {
-    $profesor = array_merge($profesor, $datos_sesion);
+    $profesor = $datos_sesion + $profesor;
     $ciclos_marcados = $datos_sesion['ciclos'] ?? [];
     $modulos_marcados = $datos_sesion['modulos'] ?? [];
 } else {
-    // Obtenemos los ciclos que el profesor ya tiene en la base de datos
     $ciclos_marcados = [];
     $ciclosBD = listarCiclosTutorizadosProfesor($id_profesor);
-    foreach ($ciclosBD as $cbd) { 
-        $ciclos_marcados[] = $cbd['idCiclo']; 
+    foreach ($ciclosBD as $cicloItem) {
+        $ciclos_marcados[] = $cicloItem['idCiclo'];
     }
-    
-    // Obtenemos los modulos que el profesor ya tiene en la base de datos
     $modulos_marcados = listarIdsModulosDeProfesor($id_profesor);
 }
 

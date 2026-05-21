@@ -50,20 +50,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($resumenFinal['detalles_modulos'])) { ?>
                     <tr><td colspan="5" class="vacio">No hay módulos registrados en su ciclo.</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { 
-                        $clase = "texto-rojo";
-                        if ($fila['estado'] == "Aprobado") { $clase = "texto-verde"; }
-                        if ($fila['estado'] == "Pendiente") { $clase = "texto-gris"; }
-                    ?>
+                    <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { ?>
                     <tr>
                         <td class="texto-negrita"><?= $fila['nombreModulo'] ?></td>
                         <td><?= $fila['media_notas'] ?></td>
                         <td><?= $fila['media_retos'] ?></td>
                         <td class="texto-negrita"><?= $fila['nota_final'] ?></td>
-                        <td class="<?= $clase ?> texto-negrita"><?= $fila['estado'] ?></td>
+                        <td>
+                            <span class="badge <?= $fila['estado'] == 'Aprobado' ? 'badge-exito' : ($fila['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta') ?>">
+                                <?= strtoupper($fila['estado']) ?>
+                            </span>
+                        </td>
                     </tr>
                     <?php } ?>
-                    <!-- TFG -->
                     <tr>
                         <td class="texto-negrita color-primario">TFG : TRABAJO FIN DE GRADO</td>
                         <td colspan="2" class="texto-suave">Calificación Directa</td>
@@ -71,10 +70,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?= $resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : ' ' ?>
                         </td>
                         <td class="texto-negrita">
-                            <?php 
-                            if ($resumenFinal['nota_tfg'] === null) echo '<span class="texto-gris">Pendiente</span>';
-                            elseif ($resumenFinal['nota_tfg'] >= 5) echo '<span class="texto-verde">Aprobado</span>';
-                            else echo '<span class="texto-rojo">Suspenso</span>';
+                            <?php
+                            if ($resumenFinal['nota_tfg'] === null) echo '<span class="badge badge-alerta">PENDIENTE</span>';
+                            elseif ($resumenFinal['nota_tfg'] >= 5) echo '<span class="badge badge-exito">APROBADO</span>';
+                            else echo '<span class="badge badge-error">SUSPENSO</span>';
                             ?>
                         </td>
                     </tr>
@@ -93,7 +92,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div style="text-align: right;">
             <p class="texto-suave">Estado Académico:</p>
-            <span class="indicador-estado <?= ($resumenFinal['estado_global'] == 'APROBADO' ? 'activo-verde' : 'inactivo-rojo') ?>">
+            <span class="badge <?= $resumenFinal['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumenFinal['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta') ?>">
                 <?= $resumenFinal['estado_global'] ?>
             </span>
         </div>

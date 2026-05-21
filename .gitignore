@@ -1,14 +1,14 @@
-# Archivos de configuración y secretos
-.env
-config/secrets.php
+# Credenciales y secretos
 modelos/conectar.php
+config/secrets.php
 config/*.json
-*.key
-*.pem
+.env
 
-# Carpetas de editores y sistema
+# Carpetas de editores y herramientas
 .vscode/
 .idea/
+
+# Sistema operativo
 Thumbs.db
 .DS_Store
 
@@ -16,11 +16,7 @@ Thumbs.db
 *.log
 *.bak
 *.tmp
-*.temp
-/vendor/
-/node_modules/
 error_log
-
 
 # Archivos pesados y subidas
 public/videos/

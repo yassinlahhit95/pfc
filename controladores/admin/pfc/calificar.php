@@ -35,10 +35,10 @@ if (isset($_POST['calificarTFG'])) {
             $_SESSION['errores'] = "Error al guardar la calificación.";
         }
     } else {
-        $_SESSION['errores'] = $errores['nota'];
+        $_SESSION['errores'] = $errores;
     }
 }
 
-header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
+header("Location: ../../../vistas/admin/academico/evaluarTFG.php?idEstudiante=" . (int)($idEstudiante ?? 0));
 exit;
 ?>

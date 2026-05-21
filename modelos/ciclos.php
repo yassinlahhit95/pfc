@@ -5,7 +5,7 @@ function listarTodosLosCiclos() {
     $con = obtenerConexion();
     $sql = "SELECT ciclos.*, niveles.nombreNivel
             FROM ciclos
-            LEFT JOIN niveles ON ciclos.idNivel = niveles.idNivel
+            JOIN niveles ON ciclos.idNivel = niveles.idNivel
             ORDER BY ciclos.idCiclo ASC";
 
     $resultado = mysqli_query($con, $sql);
@@ -19,20 +19,17 @@ function listarTodosLosCiclos() {
 
 function listarCiclosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT DISTINCT c.*, n.nombreNivel 
-            FROM ciclos c 
-            LEFT JOIN ciclo_profesor cp ON c.idCiclo = cp.idCiclo 
-            LEFT JOIN niveles n ON c.idNivel = n.idNivel 
-            LEFT JOIN modulos m ON c.idCiclo = m.idCiclo
-            LEFT JOIN profesor_modulo pm ON m.idModulo = pm.idModulo
-            WHERE (cp.idProfesor = ? OR pm.idProfesor = ?)";
-            
+    $sql = "SELECT DISTINCT c.*, n.nombreNivel
+            FROM ciclos c
+            JOIN niveles n ON c.idNivel = n.idNivel
+            WHERE c.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+               OR c.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $listaCiclos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
+    while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaCiclos[] = $fila;
     }
     mysqli_close($con);

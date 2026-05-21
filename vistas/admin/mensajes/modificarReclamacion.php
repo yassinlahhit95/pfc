@@ -17,7 +17,7 @@ if (!$reclamacion) {
 
 $datos = $_SESSION['datos_reclamacion'] ?? [];
 
-$reclamacion = !empty($datos) ? array_merge($reclamacion, $datos) : $reclamacion;
+$reclamacion = !empty($datos) ? $datos + $reclamacion : $reclamacion;
 
 $titulo_pagina = "AULAPRO | MODIFICAR RECLAMACIÓN";
 $seccion = 'reclamaciones';

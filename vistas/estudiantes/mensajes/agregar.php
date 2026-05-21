@@ -18,8 +18,8 @@ $tituloDelPagina = "AULAPRO | NUEVO MENSAJE";
 $seccionActual = 'reclamaciones';
 include_once "../comunes/nav.php";
 
-$idEst = $_SESSION['idEstudiante'];
-$profs = listarProfesoresConModulosParaEstudiante($idEst);
+$idEstudiante = $_SESSION['idEstudiante'];
+$listaProfesores = listarProfesoresConModulosParaEstudiante($idEstudiante);
 ?>
 
 <div class="cabecera">
@@ -36,15 +36,15 @@ $profs = listarProfesoresConModulosParaEstudiante($idEst);
 
 <div class="panel">
     <form action="../../../controladores/estudiantes/mensajes/insertar.php" method="POST" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= $idEst ?>">
+        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
 
         <div class="campo">
             <label>Destinatario (Profesor o Dirección)</label>
             <select name="idProfesor">
                 <option value="">-- Dirección (Administración) --</option>
-                <?php foreach ($profs as $p) { ?>
-                    <option value="<?= $p['idProfesor'] ?>" <?= ($datos['idProfesor'] ?? '') == $p['idProfesor'] ? 'selected' : '' ?>>
-                        <?= $p['nombreProfesor'] . " (" . $p['nombreModulo'] . ")" ?>
+                <?php foreach ($listaProfesores as $profesorItem) { ?>
+                    <option value="<?= $profesorItem['idProfesor'] ?>" <?= ($datos['idProfesor'] ?? '') == $profesorItem['idProfesor'] ? 'selected' : '' ?>>
+                        <?= $profesorItem['nombreProfesor'] . " (" . $profesorItem['nombreModulo'] . ")" ?>
                     </option>
                 <?php } ?>
             </select>

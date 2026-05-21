@@ -14,14 +14,14 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
-$idEst = $_SESSION['idEstudiante'];
-$datosEst_menu = obtenerEstudiantePorId($idEst);
-$idCicloEst_menu = $datosEst_menu['idCiclo'] ?? 0;
+$idEstudiante = $_SESSION['idEstudiante'];
+$datosEstudiante_menu = obtenerEstudiantePorId($idEstudiante);
+$idCicloEst_menu = $datosEstudiante_menu['idCiclo'] ?? 0;
 
-$totalMensajes_menu = count(listarMensajesDeEstudiante($idEst));
-$totalSinLeer_menu = contarMensajesNoLeidosEstudiante($idEst);
+$totalMensajes_menu = count(listarMensajesDeEstudiante($idEstudiante));
+$totalSinLeer_menu = contarMensajesNoLeidosEstudiante($idEstudiante);
 $totalAnuncios_menu = count(listarAnunciosPorRol('estudiantes'));
-$totalPagos_menu = contarPagosEstudiante($idEst);
+$totalPagos_menu = contarPagosEstudiante($idEstudiante);
 $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
 ?>
 <!DOCTYPE html>
@@ -32,7 +32,7 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
     <title><?= $tituloDelPagina ?? 'AulaPro Estudiante' ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
@@ -123,6 +123,9 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
             <div class="separador-menu-inferior">
                 <a href="../perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
+                </a>
+                <a href="https://yassin.agency" target="_blank" class="enlace-menu">
+                    <i class="fas fa-home"></i> <span>PÁGINA INICIO</span>
                 </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>

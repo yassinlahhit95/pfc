@@ -48,12 +48,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (empty($listaPagos)) { ?>
                     <tr><td colspan="4" class="vacio">No hay registros de pagos para este estudiante</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($listaPagos as $p) { ?>
+                    <?php foreach ($listaPagos as $pago) { ?>
                     <tr>
-                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
-                        <td><span class="texto-pago"><?= ucfirst($p['tipoPago']) ?></span></td>
-                        <td><?= number_format($p['monto'], 2) ?> €</td>
-                        <td><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
+                        <td><?= date('d/m/Y', strtotime($pago['fechaPago'])) ?></td>
+                        <td><span class="texto-pago"><?= ucfirst($pago['tipoPago']) ?></span></td>
+                        <td><?= number_format($pago['monto'], 2) ?> €</td>
+                        <td><?= date('d/m/Y', strtotime($pago['fechaProximoPago'])) ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>

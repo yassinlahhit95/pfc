@@ -8,8 +8,8 @@ if (!isset($_SESSION['idProfesor'])) {
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$id = $_SESSION['idProfesor'];
-$profesor = obtenerProfesorPorId($id);
+$idProfesor = $_SESSION['idProfesor'];
+$profesor = obtenerProfesorPorId($idProfesor);
 
 $tituloDelPagina = "AULAPRO | MI PERFIL";
 $seccionActual = 'perfil';

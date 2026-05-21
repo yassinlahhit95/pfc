@@ -69,10 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
         </div>
-        <div style="margin-bottom: 15px;">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
-        </div>
-    </form>
+</form>
 </div>
 
 <div class="panel">

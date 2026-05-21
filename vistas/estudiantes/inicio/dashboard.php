@@ -75,31 +75,28 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="panel">
       <div class="titulo-tarjeta">
-        <h3>TABLÓN DE ANUNCIOS</h3>
+        <h3>TABLA DE ANUNCIOS</h3>
       </div>
       <?php if (!empty($listaAnuncios)) { ?>
         <div class="lista-anuncios-dashboard">
             <?php
-            $canu = 0;
-            foreach ($listaAnuncios as $anu) {
-                if ($canu < 4) {
+            $contadorAnuncios = 0;
+            foreach ($listaAnuncios as $anuncio) {
+                if ($contadorAnuncios >= 4) break;
             ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
                     <div class="caja espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo color-primario"><?= strtoupper($anu['tituloAnuncio']) ?></strong>
-                        <span class="texto-suave"><?= date('d/m/Y', strtotime($anu['fechaAnuncio'])) ?></span>
+                        <strong class="anuncio-titulo color-primario"><?= strtoupper($anuncio['tituloAnuncio']) ?></strong>
+                        <span class="texto-suave"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                     </div>
-                    <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= substr(strip_tags($anu['contenidoAnuncio']), 0, 150) ?>...</p>
+                    <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= substr(strip_tags($anuncio['contenidoAnuncio']), 0, 150) ?>...</p>
                     <div style="margin-top: 10px; text-align: right;">
                         <a href="../anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
                     </div>
                 </div>
             </div>
-            <?php
-                $canu++;
-                }
-            } ?>
+            <?php $contadorAnuncios++; } ?>
         </div>
       <?php } else { ?>
         <p class="texto-suave">No hay anuncios activos actualmente.</p>
@@ -117,23 +114,20 @@ include_once __DIR__ . "/../comunes/nav.php";
             <p class="texto-suave">No hay eventos próximos.</p>
         <?php } else { ?>
             <?php
-            $cest = 0;
-            foreach ($listaEventosProximos as $ev) {
-                if ($cest < 4) {
-                    $d = date('d', strtotime($ev['fechaEvento']));
-                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
+            $contadorEventos = 0;
+            foreach ($listaEventosProximos as $evento) {
+                if ($contadorEventos >= 4) break;
+                $diaMes  = date('d', strtotime($evento['fechaEvento']));
+                $mesMes  = strtoupper(date('M', strtotime($evento['fechaEvento'])));
             ?>
             <div class="elemento-evento">
-              <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>
+              <div class="fecha-evento azul"><div class="dia"><?= $diaMes ?></div><div class="mes"><?= $mesMes ?></div></div>
               <div>
-                <p class="texto-negrita"><?= strtoupper($ev['tituloEvento']) ?></p>
-                <p class="texto-suave"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
+                <p class="texto-negrita"><?= strtoupper($evento['tituloEvento']) ?></p>
+                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
               </div>
             </div>
-            <?php
-                    $cest++;
-                }
-            } ?>
+            <?php $contadorEventos++; } ?>
         <?php } ?>
       </div>
 

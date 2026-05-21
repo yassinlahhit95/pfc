@@ -99,9 +99,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<div class="margen-arriba tarjeta-gris-suave">
-    <p>avisame si hay algun error a travs de la seccion de mensajeria.</p>
-</div>
 
 <?php include '../comunes/footer.php'; ?>
 

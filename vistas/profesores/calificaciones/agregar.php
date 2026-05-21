@@ -108,11 +108,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 $idEstudiante = $estudiante['idEstudiante'];
                                 $notas = obtenerNotasModulo($idEstudiante, $idModulo);
                                 
-                                $v1 = $notas['nota_1ev'] ?? '';
-                                $v1f = $notas['nota_1final'] ?? '';
-                                $v2 = $notas['nota_2ev'] ?? '';
-                                $v2f = $notas['nota_2final'] ?? '';
-                                $vobs = $notas['observaciones'] ?? '';
+                                $nota1ev       = $notas['nota_1ev']      ?? '';
+                                $nota1final    = $notas['nota_1final']   ?? '';
+                                $nota2ev       = $notas['nota_2ev']      ?? '';
+                                $nota2final    = $notas['nota_2final']   ?? '';
+                                $observaciones = $notas['observaciones'] ?? '';
                             ?>
                             <tr>
                                 <td>
@@ -120,19 +120,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1ev[]" value="<?= $v1 ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_1ev[]" value="<?= $nota1ev ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_1final[]" value="<?= $v1f ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_1final[]" value="<?= $nota1final ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2ev[]" value="<?= $v2 ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_2ev[]" value="<?= $nota2ev ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="notas_2final[]" value="<?= $v2f ?>" class="ancho-ajustable-nota">
+                                    <input type="text" name="notas_2final[]" value="<?= $nota2final ?>" class="ancho-ajustable-nota">
                                 </td>
                                 <td>
-                                    <input type="text" name="observaciones[]" value="<?= $vobs ?>" class="ancho-total">
+                                    <input type="text" name="observaciones[]" value="<?= $observaciones ?>" class="ancho-total">
                                 </td>
                             </tr>
                             <?php } ?>
@@ -144,7 +144,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (!empty($listaDeEstudiantes)) { ?>
                 <div class="acciones">
                     <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR CALIFICACIONES">
-                    <button type="button" class="boton-secundario" onclick="window.location.reload();"><i class="fas fa-eraser"></i> LIMPIAR</button>
+                    <input type="reset" class="boton-secundario" value="LIMPIAR">
                     <label class="texto-aviso ml-auto">
                         <input type="checkbox" name="notificarEstudiantes" value="1"> 
                         <i class="fas fa-envelope"></i> Enviar aviso por email

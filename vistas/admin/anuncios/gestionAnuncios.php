@@ -22,7 +22,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?php echo $exito; ?></div>
+    <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>

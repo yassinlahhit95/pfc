@@ -60,10 +60,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
-        </div>
-    </form>
+</form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
@@ -132,12 +129,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 function toggleFormCalificar(idFormulario) {
-    var formulario = document.getElementById(idFormulario);
-    if (formulario.style.display === 'none') {
-        formulario.style.display = 'block';
-    } else {
-        formulario.style.display = 'none';
-    }
+    $('#' + idFormulario).toggle();
 }
 </script>
 

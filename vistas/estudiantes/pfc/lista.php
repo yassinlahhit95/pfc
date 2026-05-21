@@ -12,8 +12,8 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
-$id = $_SESSION['idEstudiante'];
-$tfg = obtenerTFGporEstudiante($id);
+$idEstudiante = $_SESSION['idEstudiante'];
+$tfg = obtenerTFGporEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
@@ -35,7 +35,7 @@ include_once "../comunes/nav.php";
 <?php if (!empty($exito)) { ?>
 <div class="mensaje-exito">
     <i class="fas fa-check-circle"></i>
-    <p><?php echo $exito; ?></p>
+    <p><?= $exito ?></p>
 </div>
 <?php } ?>
 
@@ -50,17 +50,17 @@ include_once "../comunes/nav.php";
             <div style="margin-top: 5px;">
                 <?php if (!empty($tfg['archivoTFG'])) { ?>
                     <div class="caja alinear-centro espacio-grande">
-                        <a href="../../../public/uploads/pfc/<?php echo $tfg['archivoTFG']; ?>" target="_blank" class="boton-secundario">
+                        <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario">
                             <i class="fas fa-download"></i> Descargar TFG (PDF)
                         </a>
                         <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
-                            <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
+                            <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
                             <input type="submit" name="borrarTFG" class="boton-icono rojo" value="Borrar entrega">
                         </form>
                     </div>
                     <p class="texto-pequeno texto-suave" style="margin-top: 10px;">
-                        <b>Archivo:</b> <?php echo $tfg['archivoTFG']; ?><br>
-                        <b>Subido el:</b> <?php echo date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])); ?>
+                        <b>Archivo:</b> <?= $tfg['archivoTFG'] ?><br>
+                        <b>Subido el:</b> <?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?>
                     </p>
                 <?php } else { ?>
                     <p class="texto-suave">No se ha subido ningun archivo todavia.</p>
@@ -69,9 +69,9 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="campo">
-            <label class="texto-suave texto-pequeno"><?php echo empty($tfg['archivoTFG']) ? 'Subir TFG (Solo PDF)' : 'Actualizar TFG (Reemplaza el anterior)'; ?></label>
+            <label class="texto-suave texto-pequeno"><?= empty($tfg['archivoTFG']) ? 'Subir TFG (Solo PDF)' : 'Actualizar TFG (Reemplaza el anterior)' ?></label>
             <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="caja alinear-centro espacio-pequeno" style="margin-top: 5px;">
-                <input type="hidden" name="idEstudiante" value="<?php echo $id; ?>">
+                <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
                 <input type="file" name="archivoTFG" accept=".pdf">
                 <input type="submit" name="subirTFG" class="boton-primario" value="<?= empty($tfg['archivoTFG']) ? 'ENVIAR' : 'ACTUALIZAR' ?>">
             </form>

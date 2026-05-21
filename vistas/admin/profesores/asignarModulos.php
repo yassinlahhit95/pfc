@@ -17,7 +17,6 @@ if (!$profesor) {
     exit;
 }
 
-// Obtenemos las listas basicas
 $modulos_del_profesor = listarIdsModulosDeProfesor($idProfesor);
 $todos_los_modulos = listarModulos();
 $lista_ciclos = listarTodosLosCiclos();

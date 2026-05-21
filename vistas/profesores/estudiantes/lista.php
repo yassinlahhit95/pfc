@@ -71,26 +71,26 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($estudiantes) { ?>
-                    <?php foreach ($estudiantes as $est) { ?>
+                    <?php foreach ($estudiantes as $estudianteItem) { ?>
                         <tr>
                             <td>
-                                <span class="texto-estado <?= $est['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                                <span class="texto-estado gris"><?= $est['curso'] ?></span>
+                                <span class="texto-estado <?= $estudianteItem['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteItem['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                                <span class="texto-estado gris"><?= $estudianteItem['curso'] ?></span>
                             </td>
-                            <td class="texto-negrita"><?= $est['nombreEstudiante'] ?></td>
-                            <td><?= $est['emailEstudiante'] ?></td>
-                            <td><?= $est['dniEstudiante'] ?></td>
-                            <td><?= $est['nombreCiclo'] ?></td>
+                            <td class="texto-negrita"><?= $estudianteItem['nombreEstudiante'] ?></td>
+                            <td><?= $estudianteItem['emailEstudiante'] ?></td>
+                            <td><?= $estudianteItem['dniEstudiante'] ?></td>
+                            <td><?= $estudianteItem['nombreCiclo'] ?></td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="detalles.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-ver">
+                                    <a href="detalles.php?idEstudiante=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-ver">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="editar.php?idEstudiante=<?= $est['idEstudiante'] ?>" class="btn-accion btn-editar">
+                                    <a href="editar.php?idEstudiante=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="../../../controladores/profesores/estudiantes/borrar.php" method="POST" onsubmit="return confirm('Estas seguro de que desea eliminar este estudiante?');" class="display-inline">
-                                        <input type="hidden" name="idEstudiante" value="<?= $est['idEstudiante'] ?>">
+                                        <input type="hidden" name="idEstudiante" value="<?= $estudianteItem['idEstudiante'] ?>">
                                         <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
                                     </form>
                                 </div>

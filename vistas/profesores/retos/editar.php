@@ -8,8 +8,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$id = $_GET['id'] ?? '';
-$reto = obtenerRetoPorId($id);
+$idReto = $_GET['id'] ?? '';
+$reto = obtenerRetoPorId($idReto);
 
 if (!$reto) {
     header("Location: lista.php");
@@ -19,7 +19,7 @@ if (!$reto) {
 $idProfesor = $_SESSION['idProfesor'];
 $misModulos = listarModulosDeProfesor($idProfesor);
 
-$modulosAsociados = listarModulosDeReto($id);
+$modulosAsociados = listarModulosDeReto($idReto);
 $mapaModulosAsociados = [];
 foreach ($modulosAsociados as $modAsociado) { $mapaModulosAsociados[$modAsociado['idModulo']] = true; }
 
@@ -42,26 +42,26 @@ include_once "../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/profesores/retos/actualizar.php" method="POST" class="formulario">
-        <input type="hidden" name="idReto" value="<?= $id ?>">
-        
+        <input type="hidden" name="idReto" value="<?= $idReto ?>">
+
         <div class="campo">
             <label for="nombreReto">Nombre del Reto</label>
-            
+            <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>">
         </div>
 
         <div class="campo">
             <label for="horasReto">Horas Totales</label>
-            
+            <input type="number" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>">
         </div>
 
         <div class="campo">
             <label for="fechaInicio">Fecha Inicio</label>
-            
+            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= $reto['fechaInicio'] ?>">
         </div>
 
         <div class="campo">
             <label for="fechaFin">Fecha Fin</label>
-            
+            <input type="date" name="fechaFin" id="fechaFin" value="<?= $reto['fechaFin'] ?>">
         </div>
 
         <div class="campo">

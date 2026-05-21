@@ -12,8 +12,8 @@ if (!isset($_SESSION['idEstudiante'])) {
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$id = $_SESSION['idEstudiante'];
-$estudiante = obtenerEstudiantePorId($id);
+$idEstudiante = $_SESSION['idEstudiante'];
+$estudiante = obtenerEstudiantePorId($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MI PERFIL";
 $seccionActual = 'perfil';

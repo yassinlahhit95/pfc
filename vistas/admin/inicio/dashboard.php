@@ -79,7 +79,7 @@ include __DIR__ . '/../comunes/nav.php';
         <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
         <a href="../profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
         <a href="../pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>?? Avisos</span></a>
+        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>Avisos</span></a>
         <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
       </div>
     </div>
@@ -87,7 +87,7 @@ include __DIR__ . '/../comunes/nav.php';
 
     <div class="panel">
       <div class="titulo-tarjeta">
-        <h3>TABLÓN DE ANUNCIOS</h3>
+        <h3>TABLA DE ANUNCIOS</h3>
       </div>
       <?php if ($listaAnuncios) { ?>
         <div class="lista-anuncios-dashboard">

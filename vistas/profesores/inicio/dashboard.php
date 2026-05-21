@@ -91,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="../retos/lista.php" class="accion-rapida"><span>Nuevo Reto</span></a>
         <a href="../mensajes/lista.php" class="accion-rapida"><span>Ver Mensajes</span></a>
         <a href="../perfil/ver.php" class="accion-rapida"><span>Mi Perfil</span></a>
-        <a href="#" class="accion-rapida" style="background: #3498db; color: white;" onclick="var f = document.getElementById('formMasivo'); if (f.classList.contains('oculto')) { f.classList.remove('oculto'); } else { f.classList.add('oculto'); } return false;">
+        <a href="#" class="accion-rapida" id="btnToggleFormMasivo" style="background: #3498db; color: white;">
           <span><i class="fas fa-paper-plane"></i> Notificar Notas</span>
         </a>
       </div>
@@ -122,9 +122,9 @@ include_once __DIR__ . "/../comunes/nav.php";
       <?php if (!empty($listaAnuncios)) { ?>
         <div>
             <?php
-            $c = 0;
+            $contadorAnuncios = 0;
             foreach ($listaAnuncios as $anuncio) {
-                if ($c < 4) {
+                if ($contadorAnuncios >= 4) break;
             ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
@@ -133,8 +133,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </div>
             </div>
             <?php
-                }
-                $c++;
+                $contadorAnuncios++;
             } ?>
         </div>
       <?php } else { ?>
@@ -153,27 +152,35 @@ include_once __DIR__ . "/../comunes/nav.php";
             <p class="texto-suave">No hay eventos proximos.</p>
         <?php } else { ?>
             <?php
-            $ce = 0;
-            foreach ($listaEventos as $ev) {
-                if ($ce < 4) {
-                    $d = date('d', strtotime($ev['fechaEvento']));
-                    $m = strtoupper(date('M', strtotime($ev['fechaEvento'])));
+            $contadorEventos = 0;
+            foreach ($listaEventos as $evento) {
+                if ($contadorEventos >= 4) break;
+                $diaMes = date('d', strtotime($evento['fechaEvento']));
+                $mesMes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
             ?>
             <div class="elemento-evento">
-              <div class="fecha-evento azul"><div class="dia"><?= $d ?></div><div class="mes"><?= $m ?></div></div>
+              <div class="fecha-evento azul"><div class="dia"><?= $diaMes ?></div><div class="mes"><?= $mesMes ?></div></div>
               <div>
-                <p class="texto-negrita"><?= $ev['tituloEvento'] ?></p>
-                <p class="texto-suave"><?= date('H:i', strtotime($ev['horaEvento'])) ?>h - <?= $ev['ubicacionEvento'] ?></p>
+                <p class="texto-negrita"><?= $evento['tituloEvento'] ?></p>
+                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
               </div>
             </div>
             <?php
-                }
-                $ce++;
+                $contadorEventos++;
             } ?>
         <?php } ?>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+$(function() {
+    $('#btnToggleFormMasivo').on('click', function(e) {
+        e.preventDefault();
+        $('#formMasivo').toggleClass('oculto');
+    });
+});
+</script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

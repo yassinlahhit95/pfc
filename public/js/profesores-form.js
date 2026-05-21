@@ -1,15 +1,23 @@
 $(document).ready(function() {
 
     function actualizarModulos() {
-        var haySeleccionado = false;
+        var hayAlguno = false;
 
         $('.check-ciclo').each(function() {
-            var grupo = $('#grupo-ciclo-' + $(this).val());
-            grupo.toggleClass('oculto', !this.checked);
-            if (this.checked) haySeleccionado = true;
+            var $grupo = $('#grupo-ciclo-' + $(this).val());
+            if (this.checked) {
+                $grupo.removeClass('oculto');
+                hayAlguno = true;
+            } else {
+                $grupo.addClass('oculto');
+            }
         });
 
-        $('#msg-seleccionar-ciclo').toggleClass('oculto', haySeleccionado);
+        if (hayAlguno) {
+            $('#msg-seleccionar-ciclo').addClass('oculto');
+        } else {
+            $('#msg-seleccionar-ciclo').removeClass('oculto');
+        }
     }
 
     $('.check-ciclo').on('change', actualizarModulos);

@@ -42,10 +42,10 @@ if ($id_ciclo_elegido) {
     $lista_modulos = listarModulosPorCiclo($id_ciclo_elegido);
     
     foreach ($estudiantes_lista as $estudianteIndividual) {
-        $id_est = $estudianteIndividual['idEstudiante'];
-        $nombre_est = strtoupper($estudianteIndividual['nombreEstudiante']);
-        
-        $notaTFG_raw = obtenerCalificacionTFG($id_est);
+        $idEstudiante    = $estudianteIndividual['idEstudiante'];
+        $nombreEstudiante = strtoupper($estudianteIndividual['nombreEstudiante']);
+
+        $notaTFG_raw = obtenerCalificacionTFG($idEstudiante);
         $notaTFG = $notaTFG_raw ? $notaTFG_raw['nota'] : ' ';
 
         $suma_total_modulos = 0;
@@ -55,15 +55,15 @@ if ($id_ciclo_elegido) {
         $hayModuloSuspenso = false;
 
         foreach ($lista_modulos as $moduloItem) {
-            $id_mod = $moduloItem['idModulo'];
-            $notas_mod = obtenerNotasModulo($id_est, $id_mod);
-            
+            $idModulo  = $moduloItem['idModulo'];
+            $notas_mod = obtenerNotasModulo($idEstudiante, $idModulo);
+
             $notasDeEsteModulo = [];
             if (isset($notas_mod['nota_1ev']) && is_numeric($notas_mod['nota_1ev']) && $notas_mod['nota_1ev'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_1ev']; }
             if (isset($notas_mod['nota_1final']) && is_numeric($notas_mod['nota_1final']) && $notas_mod['nota_1final'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_1final']; }
             if (isset($notas_mod['nota_2ev']) && is_numeric($notas_mod['nota_2ev']) && $notas_mod['nota_2ev'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_2ev']; }
             if (isset($notas_mod['nota_2final']) && is_numeric($notas_mod['nota_2final']) && $notas_mod['nota_2final'] > 0) { $notasDeEsteModulo[] = $notas_mod['nota_2final']; }
-            
+
             if (!empty($notasDeEsteModulo)) {
                 $mediaMod = array_sum($notasDeEsteModulo) / count($notasDeEsteModulo);
                 $suma_total_modulos += $mediaMod;
@@ -72,10 +72,10 @@ if ($id_ciclo_elegido) {
                     $hayModuloSuspenso = true;
                 }
             }
-            
-            $medias_retos_del_modulo = listarCalificacionesRetoPorModulo($id_mod);
-            if (isset($medias_retos_del_modulo[$id_est])) {
-                $suma_total_retos += $medias_retos_del_modulo[$id_est];
+
+            $medias_retos_del_modulo = listarCalificacionesRetoPorModulo($idModulo);
+            if (isset($medias_retos_del_modulo[$idEstudiante])) {
+                $suma_total_retos += $medias_retos_del_modulo[$idEstudiante];
                 $contador_modulos_con_reto++;
             }
         }
@@ -102,7 +102,7 @@ if ($id_ciclo_elegido) {
         }
         
         $datos_finales[] = array(
-            'nombre' => $nombre_est,
+            'nombre' => $nombreEstudiante,
             'media_modulo' => round($media_global_modulo, 2),
             'media_reto' => round($media_global_reto, 2),
             'nota_tfg' => $notaTFG,
@@ -144,9 +144,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 </select>
             </div>
-            <div style="margin-left: 10px;">
-                <input type="reset" class="boton-secundario" value="LIMPIAR">
-            </div>        </form>
+</form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
             <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Enviar resultados por email a todos los alumnos de este ciclo?')">
