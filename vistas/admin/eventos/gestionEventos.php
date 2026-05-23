@@ -67,10 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="modificarEvento.php?idEvento=<?= $evento['idEvento'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/eventos/borrar.php" method="POST" onsubmit="return confirm('Eliminar este evento?')">
-                                    <input type="hidden" name="idEvento" value="<?= $evento['idEvento'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarEvento.php?id=<?= $evento['idEvento'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

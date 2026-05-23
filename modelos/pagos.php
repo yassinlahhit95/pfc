@@ -1,14 +1,15 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 
+// saca todos los pagos con nombre del estudiante y ciclo
 function listarTodosLosPagos() {
     $con = obtenerConexion();
-    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
+    $sql1 = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
             FROM pagos
             JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             ORDER BY idPago DESC";
-    $resultado = mysqli_query($con, $sql);
+    $resultado = mysqli_query($con, $sql1);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
@@ -19,18 +20,18 @@ function listarTodosLosPagos() {
 
 function listarPagosFiltrados($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
+    $sql1 = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
             FROM pagos
             JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             WHERE estudiantes.idCiclo = ?
             ORDER BY idPago DESC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "i", $idCiclo);
+    mysqli_stmt_execute($resultado);
+    $res = mysqli_stmt_get_result($resultado);
     $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
     mysqli_close($con);
@@ -39,13 +40,13 @@ function listarPagosFiltrados($idCiclo) {
 
 function listarPagosPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM pagos WHERE idEstudiante = ? ORDER BY fechaPago DESC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
+    $sql1 = "SELECT * FROM pagos WHERE idEstudiante = ? ORDER BY fechaPago DESC";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
+    mysqli_stmt_execute($resultado);
+    $res = mysqli_stmt_get_result($resultado);
     $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
     mysqli_close($con);
@@ -54,51 +55,52 @@ function listarPagosPorEstudiante($idEstudiante) {
 
 function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "idsss", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo);
-    $ok = mysqli_stmt_execute($stmt);
+    $sql1 = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago) VALUES (?, ?, ?, ?, ?)";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "idsss", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo);
+    $ok = mysqli_stmt_execute($resultado);
     mysqli_close($con);
     return $ok;
 }
 
 function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo) {
     $con = obtenerConexion();
-    $sql = "UPDATE pagos SET idEstudiante=?, monto=?, tipoPago=?, fechaPago=?, fechaProximoPago=? WHERE idPago=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "idsssi", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $idPago);
-    $ok = mysqli_stmt_execute($stmt);
+    $sql1 = "UPDATE pagos SET idEstudiante=?, monto=?, tipoPago=?, fechaPago=?, fechaProximoPago=? WHERE idPago=?";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "idsssi", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $idPago);
+    $ok = mysqli_stmt_execute($resultado);
     mysqli_close($con);
     return $ok;
 }
 
 function actualizarComprobantePago($idPago, $comprobante) {
     $con = obtenerConexion();
-    $sql = "UPDATE pagos SET comprobante=? WHERE idPago=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $comprobante, $idPago);
-    $ok = mysqli_stmt_execute($stmt);
+    $sql1 = "UPDATE pagos SET comprobante=? WHERE idPago=?";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "si", $comprobante, $idPago);
+    $ok = mysqli_stmt_execute($resultado);
     mysqli_close($con);
     return $ok;
 }
 
+// calcula cuanto ha pagado y cuanto le queda por pagar
 function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     $con = obtenerConexion();
 
-    $sql = "SELECT SUM(monto) AS totalPagado FROM pagos WHERE idEstudiante = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
+    $sql1 = "SELECT SUM(monto) AS totalPagado FROM pagos WHERE idEstudiante = ?";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
+    mysqli_stmt_execute($resultado);
+    $res = mysqli_stmt_get_result($resultado);
+    $fila = mysqli_fetch_assoc($res);
     $pagado = floatval($fila['totalPagado']);
 
-    $sql = "SELECT c.precioCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idEstudiante = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
+    $sql2 = "SELECT c.precioCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idEstudiante = ?";
+    $resultado = mysqli_prepare($con, $sql2);
+    mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
+    mysqli_stmt_execute($resultado);
+    $res = mysqli_stmt_get_result($resultado);
+    $fila = mysqli_fetch_assoc($res);
     $precio = floatval($fila['precioCiclo']);
 
     mysqli_close($con);
@@ -111,35 +113,34 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
 
 function eliminarPago($idPago) {
     $con = obtenerConexion();
-    $sql = "DELETE FROM pagos WHERE idPago = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idPago);
-    $ok = mysqli_stmt_execute($stmt);
+    $sql1 = "DELETE FROM pagos WHERE idPago = ?";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "i", $idPago);
+    $ok = mysqli_stmt_execute($resultado);
     mysqli_close($con);
     return $ok;
 }
 
 function obtenerPagoPorId($idPago) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM pagos WHERE idPago = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idPago);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $pago = mysqli_fetch_assoc($resultado);
-
+    $sql1 = "SELECT * FROM pagos WHERE idPago = ?";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "i", $idPago);
+    mysqli_stmt_execute($resultado);
+    $res = mysqli_stmt_get_result($resultado);
+    $pago = mysqli_fetch_assoc($res);
     mysqli_close($con);
     return $pago;
 }
 
 function contarPagosEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM pagos WHERE idEstudiante = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
+    $sql1 = "SELECT COUNT(*) as total FROM pagos WHERE idEstudiante = ?";
+    $resultado = mysqli_prepare($con, $sql1);
+    mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
+    mysqli_stmt_execute($resultado);
+    $res = mysqli_stmt_get_result($resultado);
+    $fila = mysqli_fetch_assoc($res);
     mysqli_close($con);
     return intval($fila['total']);
 }

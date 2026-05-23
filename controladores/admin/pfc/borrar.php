@@ -11,7 +11,7 @@ if (isset($_POST['idEstudiante'])) {
     if (empty($idEstudiantePfc)) {
         $hayError = true;
         $_SESSION['errores'] = "Falta ID estudiante.";
-        header("Location: ../../../vistas/admin/pfc/verTFGs.php");
+        header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
         exit;
     }
 
@@ -28,6 +28,6 @@ if (isset($_POST['idEstudiante'])) {
     }
 }
 
-header("Location: ../../../vistas/admin/pfc/verTFGs.php");
+header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
 exit;
 ?>

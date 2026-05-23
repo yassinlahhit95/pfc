@@ -32,9 +32,10 @@ function checkDirectorExistente($dni, $email, $idExcluir = 0) {
 // OJO: La fecha de nacimiento por defecto es 2000-01-01 si no viene nada.
 function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento = '2000-01-01', $direccion = '', $ciudad = '', $codigoPostal = '', $observaciones = '') {
     $con = obtenerConexion();
-    $sql = "INSERT INTO directores (nombreDirector, emailDirector, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $pass = password_hash('123456', PASSWORD_DEFAULT);
+    $sql = "INSERT INTO directores (nombreDirector, emailDirector, password, dniDirector, telefonoDirector, fechaAltaDirector, fechaNacimientoDirector, direccionDirector, ciudadDirector, codigoPostalDirector, observacionesDirector) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssss", $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
+    mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;

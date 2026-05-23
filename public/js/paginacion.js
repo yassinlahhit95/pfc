@@ -2,6 +2,7 @@ var _paginaciones = {};
 
 function iniciarPaginacion(tablaId, filasPorPagina) {
     if ($('#' + tablaId).length === 0) return;
+    console.log('iniciando paginacion en:', tablaId, 'filas por pagina:', filasPorPagina);
 
     _paginaciones[tablaId] = {
         filasPorPagina: filasPorPagina,
@@ -15,8 +16,8 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var config = _paginaciones[tablaId];
     if (!config) return;
 
-    var filas = $('#' + tablaId + ' tbody tr').toArray();
-    var visibles = filas.filter(function(tr) {
+    let filas = $('#' + tablaId + ' tbody tr').toArray();
+    let visibles = filas.filter(function(tr) {
         return !$(tr).hasClass('fila-filtro-oculta');
     });
 
@@ -53,12 +54,13 @@ function _renderControles(tablaId, pagina, total) {
         return;
     }
 
-    var html = '';
+    let html = '';
     html += '<button class="btn-pagina" onclick="irAPagina(\'' + tablaId + '\',' + (pagina - 1) + ')"';
     if (pagina === 1) html += ' disabled';
     html += '>&#8592; Anterior</button>';
 
-    html += '<span class="info-pagina">Página ' + pagina + ' de ' + total + '</span>';
+    var txt = 'Página ' + pagina + ' de ' + total;
+    html += '<span class="info-pagina">' + txt + '</span>';
 
     html += '<button class="btn-pagina" onclick="irAPagina(\'' + tablaId + '\',' + (pagina + 1) + ')"';
     if (pagina === total) html += ' disabled';
@@ -68,6 +70,7 @@ function _renderControles(tablaId, pagina, total) {
 }
 
 function irAPagina(tablaId, pagina) {
+    console.log('ir a pagina:', pagina, 'en tabla:', tablaId);
     _mostrarPaginaTabla(tablaId, pagina);
 }
 

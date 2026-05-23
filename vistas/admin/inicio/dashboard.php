@@ -30,24 +30,20 @@ $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 $listaAnuncios = listarTodosLosAnuncios();
 
 $eventos = listarEventosProximos();
-$titulo_pagina = "AULAPRO | PANEL DE CONTROL";
+$titulo_pagina = 'AULAPRO | PANEL DE CONTROL';
 $seccion = 'inicio';
 
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
-<div class="espacio-entre-elementos alinear-centro margen-abajo caja">
-  <div>
-    <h1>BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
-  </div>
-</div>
+<h1 style="margin-bottom: 20px;">BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
 
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica"><h3><?= $totalEstudiantes ?></h3><p>Estudiantes</p></div>
   </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-cian">
+  <div id="stat-prof" class="tarjeta-estadistica tarjeta-estadistica-cian">
     <div class="info-estadistica"><h3><?= $totalProfesores ?></h3><p>Profesores</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
@@ -57,6 +53,8 @@ include __DIR__ . '/../comunes/nav.php';
     <div class="info-estadistica"><h3><?= $totalRetos ?></h3><p>Retos</p></div>
   </div>
 </div>
+
+<br>
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-morada">
@@ -98,7 +96,8 @@ include __DIR__ . '/../comunes/nav.php';
                         <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></strong>
                         <span class="texto-suave"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                     </div>
-                    <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= nl2br($anuncio['mensaje']) ?></p>
+                    <br>
+                    <p class="texto-pequeno" style="margin: 0;"><?= nl2br($anuncio['mensaje']) ?></p>
                     <div style="margin-top: 5px;">
                         <span class="texto-dirigido"><?= strtoupper($anuncio['dirigidoA']) ?></span>
                     </div>

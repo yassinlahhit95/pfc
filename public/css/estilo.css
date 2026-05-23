@@ -65,7 +65,7 @@ body {
   color: #cccccc;
   text-decoration: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   margin: 0 10px;
 }
@@ -195,8 +195,9 @@ ul {
 }
 
 .cabecera-menu {
-  padding: 20px 10px;
+  padding: 21px 10px;
   border-bottom: 1px solid #2d3042;
+  /* background: #1b1d30; */
   text-align: center;
   min-height: 100px;
 }
@@ -253,6 +254,7 @@ ul {
 
 .panel {
   background: white;
+  /* overflow: hidden; */
   border-radius: 4px;
   padding: 25px;
   margin-bottom: 20px;
@@ -270,10 +272,10 @@ ul {
 
 .titulo-tarjeta {
   padding-bottom: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 17px;
+  color: #1a202c;
   font-size: 16px;
   font-weight: 700;
-  color: #1a202c;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -307,16 +309,16 @@ ul {
 .contenedor-tabla {
   background: transparent;
   border-radius: 0;
-  overflow: hidden;
+  overflow-x: auto;
   border: none;
   margin-top: 10px;
   width: 100%;
-  overflow-x: auto;
 }
 
 .tabla-datos {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
 }
 
 .tabla-datos th {
@@ -326,7 +328,7 @@ ul {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  color: #ffffff;
+  color: white;
   border-bottom: 1px solid #e2e8f0;
 }
 
@@ -535,7 +537,8 @@ ul {
 .tarjeta-estadistica {
   background: white;
   border-radius: 8px;
-  padding: 25px;
+  /* box-shadow: none; */
+  padding: 23px;
   border: none;
 }
 
@@ -610,7 +613,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  padding: 13px 15px;
   background: #f8fafc;
   border: none;
   border-radius: 8px;
@@ -722,8 +725,8 @@ ul {
 }
 
 .texto-suave {
-  color: #a0aec0;
   font-size: 14px;
+  color: #a0aec0;
 }
 
 .texto-pequeno {

@@ -23,12 +23,12 @@ if (isset($_POST['guardarNotasReto'])) {
         }
 
         if (!$hayError) {
-            $notaFinal = 0;
-            if (!empty($nota)) {
-                $notaFinal = $nota;
-            }
-            if (!calificarReto($idEstudiante, $idReto, $notaFinal)) {
-                $hayError = true;
+            if (empty($nota)) {
+                eliminarCalificacionReto($idEstudiante, $idReto);
+            } else {
+                if (!calificarReto($idEstudiante, $idReto, $nota)) {
+                    $hayError = true;
+                }
             }
         }
 
@@ -41,10 +41,10 @@ if (isset($_POST['guardarNotasReto'])) {
         $_SESSION['exito'] = "Calificaciones guardadas.";
     }
 
-    header("Location: ../../../vistas/profesores/calificaciones/retos.php?idCiclo=$idCiclo&idModulo=$idModulo&idReto=$idReto");
+    header("Location: ../../../vistas/profesores/academico/calificacionesRetos.php?idCiclo=$idCiclo&idReto=$idReto");
     exit;
 }
 
-header("Location: ../../../vistas/profesores/calificaciones/retos.php");
+header("Location: ../../../vistas/profesores/academico/calificacionesRetos.php");
 exit;
 ?>

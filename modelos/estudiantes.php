@@ -1,6 +1,7 @@
 ﻿<?php
 require_once __DIR__ . "/conectar.php";
 
+// saca todos los estudiantes con el nombre del ciclo
 function listarEstudiantes() {
     $con = obtenerConexion();
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
@@ -58,7 +59,7 @@ function listarEstudiantesDeProfesor($idProfesor) {
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
+               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
             ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
@@ -87,6 +88,7 @@ function listarEstudiantesPorCiclo($idCiclo) {
     return $listaEstudiantes;
 }
 
+// borra el estudiante de la base de datos
 function eliminarEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "DELETE FROM estudiantes WHERE idEstudiante = ?";

@@ -89,10 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <a href="editar.php?idEstudiante=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="../../../controladores/profesores/estudiantes/borrar.php" method="POST" onsubmit="return confirm('Estas seguro de que desea eliminar este estudiante?');" class="display-inline">
-                                        <input type="hidden" name="idEstudiante" value="<?= $estudianteItem['idEstudiante'] ?>">
-                                        <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                    </form>
+                                    <a href="borrarEstudiante.php?id=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>

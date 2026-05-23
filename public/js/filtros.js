@@ -1,9 +1,10 @@
 function filtrarTabla(inputId, tablaId) {
-    var texto = $('#' + inputId).val().toLowerCase();
+    var q = $('#' + inputId).val().toLowerCase();
+    console.log('filtrando tabla:', tablaId, 'con:', q);
 
     $('#' + tablaId + ' tbody tr').each(function() {
-        var textoFila = $(this).text().toLowerCase();
-        if (textoFila.indexOf(texto) !== -1) {
+        let s = $(this).text().toLowerCase();
+        if (s.indexOf(q) !== -1) {
             $(this).removeClass('fila-filtro-oculta');
         } else {
             $(this).addClass('fila-filtro-oculta');

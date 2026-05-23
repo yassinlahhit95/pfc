@@ -34,7 +34,7 @@ if (isset($_POST['calificarTFG'])) {
             $_SESSION['errores'] = "Error al guardar la calificación.";
         }
     } else {
-        $_SESSION['errores'] = $errores['nota'];
+        $_SESSION['errores'] = $errores;
     }
 }
 

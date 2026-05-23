@@ -115,10 +115,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                                    class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="../../../controladores/admin/estudiantes/borrar.php" onsubmit="return confirm('¿Está seguro de eliminar a este estudiante?')">
-                                    <input type="hidden" name="idEstudiante" value="<?= $estudianteIndividual['idEstudiante'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarEstudiante.php?id=<?= $estudianteIndividual['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

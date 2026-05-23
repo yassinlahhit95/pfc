@@ -147,7 +147,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" onsubmit="return confirm('Enviar resultados por email a todos los alumnos de este ciclo?')">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
                 <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
                 <input type="submit" class="boton-primario" value="NOTIFICAR A TODOS">
             </form>

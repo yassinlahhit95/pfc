@@ -4,8 +4,8 @@ require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
 
 $hayError = false;
 
-if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
-    $idCiclo = trim($_POST['idCiclo']);
+if (isset($_REQUEST['idCiclo']) && !empty($_REQUEST['idCiclo'])) {
+    $idCiclo = trim($_REQUEST['idCiclo']);
     
     require_once __DIR__ . "/../../../modelos/estudiantes.php";
     $estudiantesEnCiclo = listarEstudiantesPorCiclo($idCiclo);

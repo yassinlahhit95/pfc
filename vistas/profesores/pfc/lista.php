@@ -74,10 +74,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <form action="../../../controladores/profesores/pfc/borrar.php" method="POST" onsubmit="return confirm('Estas seguro de que desea eliminar este archivo?');" style="display: inline;">
-                                        <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
-                                        <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                    </form>
+                                    <a href="borrarPfc.php?id=<?= $tfg['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                                 </div>
 
                                 <div id="form-<?= $tfg['idEstudiante'] ?>" style="display: none; margin-top: 10px;">

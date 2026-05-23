@@ -107,10 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                    class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/pagos/borrar.php" method="POST" onsubmit="return confirm('Estás seguro de eliminar este registro de pago?')">
-                                    <input type="hidden" name="idPago" value="<?= $pagoIndividual['idPago'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarPago.php?id=<?= $pagoIndividual['idPago'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

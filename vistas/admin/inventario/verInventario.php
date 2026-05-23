@@ -63,10 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/inventario/borrar.php" method="POST" onsubmit="return confirm('Eliminar este artículo del inventario?')">
-                                    <input type="hidden" name="idArticulo" value="<?= $art['idArticulo'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarArticulo.php?id=<?= $art['idArticulo'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

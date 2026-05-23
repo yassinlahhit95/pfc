@@ -86,7 +86,7 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
         $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
                        cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
                 FROM modulos m
-                JOIN profesor_modulo pm ON m.idModulo = pm.idModulo AND pm.idProfesor = ?
+                JOIN modulo_profesor pm ON m.idModulo = pm.idModulo AND pm.idProfesor = ?
                 JOIN estudiantes e ON m.idCiclo = e.idCiclo
                 LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idModulo = ?
@@ -113,7 +113,7 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
                 JOIN estudiantes e ON m.idCiclo = e.idCiclo
                 LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                   OR m.idModulo IN (SELECT idModulo FROM profesor_modulo WHERE idProfesor = ?)
+                   OR m.idModulo IN (SELECT idModulo FROM modulo_profesor WHERE idProfesor = ?)
                 ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);

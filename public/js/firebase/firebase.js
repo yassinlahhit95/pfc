@@ -1,8 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
-import { mostrarNotificacionUI } from "./notificaciones-ui.js";
+import { avisoPush } from "./notificaciones-ui.js";
 
-const firebaseConfig = {
+// Datos de mi proyecto en Firebase
+var configFB = {
   apiKey: "AIzaSyA8qBWHhMEQ2DDbpdwRzEaH_6pi6CC7Q4s",
   authDomain: "pfc1-5c23c.firebaseapp.com",
   projectId: "pfc1-5c23c",
@@ -11,52 +12,55 @@ const firebaseConfig = {
   appId: "1:204025751806:web:45c4d0f9a705a0083c9daf"
 };
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+var appFB = initializeApp(configFB);
+var fcm = getMessaging(appFB);
 
-export async function requestPermissionAndGetToken(userId, userRole) {
+// Para pedir permiso y guardar el token
+export async function setupFirebase(id, rol) {
     try {
-        const swPath = '/firebase-messaging-sw.js';
-        const tokenPath = '/controladores/firebase/guardar_token.php';
-
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            for (let reg of regs) {
-                await reg.unregister();
+        var p = await Notification.requestPermission();
+        if (p === 'granted') {
+            
+            // Limpiamos registros viejos
+            var regs = await navigator.serviceWorker.getRegistrations();
+            for (let r of regs) {
+                await r.unregister();
             }
 
-            const registration = await navigator.serviceWorker.register(swPath);
+            // Registramos el worker
+            var sw = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
             await navigator.serviceWorker.ready;
 
-            const token = await getToken(messaging, { 
+            var t = await getToken(fcm, { 
                 vapidKey: 'BNoCI0P78ggUa8HVX8t4q3uSLeq7PoWZV3dAMuCoNCrkLKQfCKJ6PyhoLy0ZE_kaagS9S9bJzlx-gpElLlVm8y0',
-                serviceWorkerRegistration: registration
+                serviceWorkerRegistration: sw
             });
 
-            if (token) {
-                const response = await fetch(tokenPath, {
+            if (t) {
+                var fd = new FormData();
+                fd.append('token', t);
+                fd.append('userId', id);
+                fd.append('userRole', rol);
+
+                var r = await fetch('/controladores/firebase/guardar_token.php', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token, userId, userRole })
+                    body: fd
                 });
-                const result = await response.json();
-                if (result.success) console.log("Token FCM guardado con éxito.");
+                var res = await r.json();
+                if (res.success) {}
             }
         }
-    } catch (error) {
-        console.error("Error en Firebase:", error);
+    } catch (e) {
     }
 }
 
-onMessage(messaging, (payload) => {
-    console.log("¡MENSAJE RECIBIDO DE FIREBASE!", payload);
-    
-    const titulo = (payload.data && payload.data.title) ? payload.data.title : (payload.notification ? payload.notification.title : "Notificación");
-    const mensaje = (payload.data && payload.data.body) ? payload.data.body : (payload.notification ? payload.notification.body : "Nuevo mensaje recibido");
+// Cuando llega un mensaje
+onMessage(fcm, (p) => {
+    var t = (p.data && p.data.title) ? p.data.title : (p.notification ? p.notification.title : "Aviso");
+    var m = (p.data && p.data.body) ? p.data.body : (p.notification ? p.notification.body : "Tienes un mensaje nuevo");
 
-    mostrarNotificacionUI(titulo, mensaje);
+    avisoPush(t, m);
 });
 
-export { app, messaging };
+export { appFB, fcm };
 

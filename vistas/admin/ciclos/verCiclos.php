@@ -75,10 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="modificarCiclos.php?idCiclo=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/ciclos/borrar.php" method="POST" onsubmit="return confirm('Eliminar este ciclo?')">
-                                    <input type="hidden" name="idCiclo" value="<?= $ciclo['idCiclo'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarCiclo.php?id=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

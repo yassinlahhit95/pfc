@@ -89,10 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="../../../controladores/admin/mensajes/borrar.php" method="POST" onsubmit="return confirm('Eliminar este mensaje?')">
-                                    <input type="hidden" name="idReclamacion" value="<?= $mensaje['idReclamacion'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarMensaje.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

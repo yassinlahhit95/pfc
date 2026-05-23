@@ -104,7 +104,7 @@ function contarTFGsDeProfesor($idProfesor) {
             FROM estudiantes e
             WHERE e.archivoTFG != ''
               AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
+                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
             
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
@@ -126,7 +126,7 @@ function listarTFGsPorProfesor($idProfesor) {
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             WHERE e.archivoTFG != ''
               AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
+                OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
             ORDER BY e.nombreEstudiante ASC";
             
     $stmt = mysqli_prepare($con, $sql);
@@ -247,7 +247,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
                 WHERE e.idCiclo = ?
                   AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                    OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
+                    OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
                 ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "iii", $idCiclo, $idProfesor, $idProfesor);
@@ -258,7 +258,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
                 WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                   OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
+                   OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
                 ORDER BY c.nombreCiclo ASC, e.nombreEstudiante ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);

@@ -123,10 +123,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                    class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form method="POST" action="../../../controladores/admin/modulos/borrar.php" onsubmit="return confirm('Eliminar este módulo?')">
-                                    <input type="hidden" name="idModulo" value="<?= $moduloIndividual['idModulo'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarModulo.php?id=<?= $moduloIndividual['idModulo'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

@@ -58,10 +58,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a href="modificarDirectores.php?idDirector=<?= $director['idDirector'] ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="../../../controladores/admin/directores/borrar.php" method="POST" onsubmit="return confirm('Eliminar este director?')">
-                                    <input type="hidden" name="idDirector" value="<?= $director['idDirector'] ?>">
-                                    <input type="submit" class="btn-accion btn-eliminar" value="Borrar">
-                                </form>
+                                <a href="borrarDirector.php?id=<?= $director['idDirector'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

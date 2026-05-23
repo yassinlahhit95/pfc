@@ -61,10 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <form action="../../../controladores/admin/anuncios/borrar.php" method="POST" onsubmit="return confirm('Eliminar definitivamente este anuncio?')">
-            <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
-            <input type="submit" class="boton-secundario color-error border-error" value="Eliminar">
-        </form>
+        <a href="borrarAnuncio.php?id=<?= $idAnuncio ?>" class="boton-secundario color-error border-error">Eliminar</a>
     </div>
 </div>
 

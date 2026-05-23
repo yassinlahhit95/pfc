@@ -74,34 +74,31 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos" id="tablaNotasProf">
-            <thead>
-                <tr>
-                    <th>Alumno</th>
-                    <th>Módulo</th>
-                    <th>1º Ev</th>
-                    <th>1º Final</th>
-                    <th>2º Ev</th>
-                    <th>2º Final</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
+        <table id="tablaNotasProf" class="tabla-datos">
+            <tr>
+                <th>Alumno</th>
+                <th>Módulo</th>
+                <th>1º Ev</th>
+                <th>1º Final</th>
+                <th>2º Ev</th>
+                <th>2º Final</th>
+                <th>Acciones</th>
+            </tr>
                 <?php if ($calificaciones) { ?>
                     <?php foreach ($calificaciones as $nota) { ?>
                         <tr>
                             <td><?= $nota['nombreEstudiante'] ?></td>
-                            <td class="texto-negrita"><?= $nota['nombreModulo'] ?></td>
+                            <td class='texto-negrita'><?= $nota['nombreModulo'] ?></td>
                             <td><?= $nota['nota_1ev'] ?? '---' ?></td>
-                            <td class="texto-negrita"><?= $nota['nota_1final'] ?? '---' ?></td>
+                            <td class='texto-negrita'><?= $nota['nota_1final'] ?? '---' ?></td>
                             <td><?= $nota['nota_2ev'] ?? '---' ?></td>
-                            <td class="texto-negrita"><?= $nota['nota_2final'] ?? '---' ?></td>
+                            <td class='texto-negrita'><?= $nota['nota_2final'] ?? '---' ?></td>
                             <td>
                                 <div class="botones-accion">
                                     <?php if ($nota['idCalificacion']) { ?>
                                         <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
                                     <?php } else { ?>
-                                        <a href="agregar.php?idCiclo=<?= $idCiclo ?>&idModulo=<?= $nota['idModulo'] ?>" class="btn-accion btn-ver" style="background: #27ae60;"><i class="fas fa-plus"></i></a>
+                                        <a href='agregar.php?idCiclo=<?= $idCiclo ?>&idModulo=<?= $nota['idModulo'] ?>' class="btn-accion btn-ver" style="background: #27ae60;"><i class="fas fa-plus"></i></a>
                                     <?php } ?>
                                 </div>
                             </td>
@@ -112,7 +109,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td colspan="7" class="vacio">No hay calificaciones que coincidan con los filtros.</td>
                     </tr>
                 <?php } ?>
-            </tbody>
             </table>
             </div>
             </div>

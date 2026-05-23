@@ -31,6 +31,6 @@ if (isset($_POST['guardarTFG'])) {
     }
 }
 
-header("Location: ../../../vistas/admin/pfc/verTFGs.php");
+header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
 exit;
 ?>

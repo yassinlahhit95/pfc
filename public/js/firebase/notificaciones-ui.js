@@ -1,26 +1,27 @@
-export function mostrarNotificacionUI(titulo, mensaje, tipo = 'info') {
-    let contenedor = document.getElementById('contenedor-notificaciones');
+// Función para sacar un aviso en pantalla (toast)
+export function avisoPush(t, m, tipo = 'info') {
+    var c = document.getElementById('contenedor-notificaciones');
 
-    if (!contenedor) {
-        contenedor = document.createElement('div');
-        contenedor.id = 'contenedor-notificaciones';
-        document.body.appendChild(contenedor);
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'contenedor-notificaciones';
+        document.body.appendChild(c);
     }
 
-    const toast = document.createElement('div');
-    toast.className = `notificacion-toast ${tipo}`;
+    var div = document.createElement('div');
+    div.className = "notificacion-toast " + tipo;
 
-    let icono = 'fa-bell';
-    if (tipo === 'exito') icono = 'fa-check-circle';
-    if (tipo === 'error') icono = 'fa-exclamation-circle';
+    var icon = 'fa-bell';
+    if (tipo === 'exito') icon = 'fa-check-circle';
+    if (tipo === 'error') icon = 'fa-exclamation-circle';
 
-    toast.innerHTML = `
+    div.innerHTML = `
         <div class="toast-icono">
-            <i class="fas ${icono}"></i>
+            <i class="fas ${icon}"></i>
         </div>
         <div class="toast-contenido">
-            <div class="toast-titulo">${titulo}</div>
-            <div class="toast-mensaje">${mensaje}</div>
+            <div class="toast-titulo">${t}</div>
+            <div class="toast-mensaje">${m}</div>
         </div>
         <button class="toast-cerrar">&times;</button>
         <div class="toast-progreso">
@@ -28,25 +29,26 @@ export function mostrarNotificacionUI(titulo, mensaje, tipo = 'info') {
         </div>
     `;
 
-    contenedor.appendChild(toast);
+    c.appendChild(div);
 
-    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
-    audio.play().catch(() => {});
+    // Sonido opcional
+    var sn = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+    sn.play().catch(function() {});
 
-    toast.querySelector('.toast-cerrar').onclick = () => {
-        cerrarToast(toast);
+    div.querySelector('.toast-cerrar').onclick = function() {
+        quitarToast(div);
     };
 
-    setTimeout(() => {
-        cerrarToast(toast);
+    setTimeout(function() {
+        quitarToast(div);
     }, 5000);
 }
 
-function cerrarToast(toast) {
-    toast.classList.add('desvanecer');
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.parentNode.removeChild(toast);
+function quitarToast(el) {
+    el.classList.add('desvanecer');
+    setTimeout(function() {
+        if (el.parentNode) {
+            el.parentNode.removeChild(el);
         }
     }, 300);
 }

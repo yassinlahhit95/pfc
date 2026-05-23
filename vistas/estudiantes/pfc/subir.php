@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="valor-detalle">
                 <div class="caja espacio-medio">
                     <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario">DESCARGAR</a>
-                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar el archivo entregado?')">
+                    <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
                         <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
                         <input type="submit" name="borrarTFG" class="boton-secundario color-error" value="ELIMINAR">
                     </form>

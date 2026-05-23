@@ -1,5 +1,5 @@
 <?php
-function sendEmail($to, $subject, $htmlContent) {
+function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | Notas finales') {
     $pathSecrets = __DIR__ . '/../../config/secrets.php';
     $apiKey = '';
 
@@ -16,7 +16,7 @@ function sendEmail($to, $subject, $htmlContent) {
     $url = 'https://api.brevo.com/v3/smtp/email';
 
     $data = [
-        'sender' => ['name' => 'CFP - AulaPro | Notas finales ', 'email' => 'notas@yassin.agency'],
+        'sender' => ['name' => $senderName, 'email' => 'notas@yassin.agency'],
         'to' => [['email' => $to]],
         'subject' => $subject,
         'htmlContent' => $htmlContent

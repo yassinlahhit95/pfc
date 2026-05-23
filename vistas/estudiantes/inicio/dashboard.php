@@ -35,7 +35,7 @@ $listaRetos = listarRetosPorCiclo($idCiclo);
 $cantidadPagos = contarPagosEstudiante($idEstudiante);
 $listaMensajes = listarMensajesDeEstudiante($idEstudiante);
 
-$tituloDelPagina = "AULAPRO | PANEL DE CONTROL";
+$tituloDelPagina = 'AULAPRO | PANEL DE CONTROL';
 $seccionActual = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -52,23 +52,24 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
 
-<div class="caja caja-libre espacio-grande margen-abajo">
-    <div class="tarjeta-estadistica tarjeta-estadistica-azul relleno">
+<div class="cuadricula-estadisticas">
+    <div class="tarjeta-estadistica tarjeta-estadistica-azul">
         <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Módulos</p></div>
     </div>
-    <div class="tarjeta-estadistica tarjeta-estadistica-verde relleno">
+    <div class="tarjeta-estadistica tarjeta-estadistica-verde">
         <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
     </div>
-    <div class="tarjeta-estadistica tarjeta-estadistica-morada relleno">
+    <div id="stat-tfg" class="tarjeta-estadistica tarjeta-estadistica-morada">
         <div class="info-estadistica"><h3><?= $califTFG ? $califTFG['nota'] : (empty($tfgActual['archivoTFG']) ? 'PEND' : 'SUBIDO') ?></h3><p>TFG</p></div>
     </div>
-    <div class="tarjeta-estadistica tarjeta-estadistica-violeta relleno">
+    <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
         <div class="info-estadistica"><h3><?= $cantidadPagos ?></h3><p>Pagos</p></div>
     </div>
-    <div class="tarjeta-estadistica tarjeta-estadistica-naranja relleno">
+    <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
         <div class="info-estadistica"><h3><?= count($listaMensajes) ?></h3><p>Mensajes</p></div>
     </div>
 </div>
+<br>
 
 <div class="cuadricula-secundaria" style="margin-top: 30px;">
   <div class="caja direccion-columna espacio-grande relleno">
@@ -90,7 +91,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <strong class="anuncio-titulo color-primario"><?= strtoupper($anuncio['tituloAnuncio']) ?></strong>
                         <span class="texto-suave"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                     </div>
-                    <p class="texto-pequeno" style="margin: 0; margin-top: 5px;"><?= substr(strip_tags($anuncio['contenidoAnuncio']), 0, 150) ?>...</p>
+                    <br>
+                    <p class="texto-pequeno" style="margin:0"><?= substr(strip_tags($anuncio['contenidoAnuncio']), 0, 150) ?>...</p>
                     <div style="margin-top: 10px; text-align: right;">
                         <a href="../anuncios/lista.php" class="boton-secundario btn-pequeno">VER DETALLES</a>
                     </div>

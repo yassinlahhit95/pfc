@@ -1,6 +1,7 @@
 ﻿<?php
 require_once __DIR__ . "/conectar.php";
 
+// devuelve todos los ciclos con su nivel (medio o superior)
 function listarTodosLosCiclos() {
     $con = obtenerConexion();
     $sql = "SELECT ciclos.*, niveles.nombreNivel
@@ -23,7 +24,7 @@ function listarCiclosDeProfesor($idProfesor) {
             FROM ciclos c
             JOIN niveles n ON c.idNivel = n.idNivel
             WHERE c.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-               OR c.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN profesor_modulo pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)";
+               OR c.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);

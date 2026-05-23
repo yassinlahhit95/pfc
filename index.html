@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AulaPro — Gestión académica para centros formativos</title>
+  <title>AulaPro - Control de Centros Educativos</title>
   <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="preload" href="public/css/landing.css" as="style">
   <link rel="stylesheet" href="public/css/landing.css">
   <link rel="stylesheet" href="public/css/responsive.css">
 </head>
@@ -19,15 +17,15 @@
   <header class="cabecera-landing" id="cabecera">
     <div class="contenedor cabecera-contenedor-landing">
       <a href="#" class="logo-landing">
-        <img src="public/imagenes/aulapro.png"  alt="AulaPro" class="logo-imagen-landing logo-landing-png">
-        <img src="public/imagenes/logo2.png" alt="AulaPro" class="logo-imagen-landing logo-landing-jpeg">
+        <img src="public/imagenes/aulapro.png" alt="Logo" class="logo-imagen-landing logo-landing-png">
+        <img src="public/imagenes/logo2.png" alt="Logo" class="logo-imagen-landing logo-landing-jpeg">
       </a>
       <nav class="menu-landing" id="menu">
         <a href="#inicio" class="menu-enlace-landing">Inicio</a>
-        <a href="#caracteristicas" class="menu-enlace-landing">Plataforma</a>
-        <a href="#beneficios" class="menu-enlace-landing">Por qué</a>
-        <a href="#planes" class="menu-enlace-landing">Contacto</a>
-        <a href="vistas/login.php" class="boton boton-principal-landing btn-acceso-nav">Acceso</a>
+        <a href="#caracteristicas" class="menu-enlace-landing">Funciones</a>
+        <a href="#beneficios" class="menu-enlace-landing">Ventajas</a>
+        <a href="#planes" class="menu-enlace-landing">Precios</a>
+        <a href="vistas/login.php" class="boton boton-principal-landing btn-acceso-nav">Entrar</a>
       </nav>
       <button class="menu-boton-landing" id="menu-boton" aria-label="Abrir menú">
         <span class="menu-icono-landing"></span>
@@ -35,48 +33,48 @@
     </div>
   </header>
 
-  <section>
+  <main>
     <section id="inicio" class="hero-landing animar">
       <div class="contenedor">
-        <div class="hero-badge">✦ Pensado para centros formativos reales</div>
-        <h1 class="titulo-hero-landing">Para de perder tiempo<br><span>en lo que no es enseñar.</span></h1>
-        <p class="subtitulo-hero-landing">AulaPro pone orden en el día a día de tu centro — notas, pagos, alumnos y comunicación — sin curvas de aprendizaje ni hojas de cálculo interminables.</p>
+        <div class="hero-badge">Proyecto de Gestión para Centros de FP</div>
+        <h1 class="titulo-hero-landing">Control total de tu centro<br><span>de forma sencilla y rápida.</span></h1>
+        <p class="subtitulo-hero-landing">AulaPro ayuda a organizar las notas, los pagos de alumnos y la comunicación entre profesores y directores sin complicaciones.</p>
         <div class="hero-botones-landing">
-          <a href="#planes" class="boton boton-principal-landing">Pedir una demo</a>
-          <a href="#visual" class="boton boton-secundario-landing">Ver cómo funciona</a>
+          <a href="#planes" class="boton boton-principal-landing">Ver Planes</a>
+          <a href="#visual" class="boton boton-secundario-landing">Demostración</a>
         </div>
-        <p class="hero-motivacion">Únete a los centros que ya dejaron atrás el papeleo y recuperaron tiempo para lo que importa: <strong>enseñar.</strong></p>
+        <p class="hero-motivacion">Optimiza el tiempo en las tareas administrativas para centrarte en la formación.</p>
       </div>
     </section>
 
     <section id="caracteristicas" class="seccion caracteristicas-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Todo lo que tu centro necesita</h2>
-        <p class="descripcion-seccion">Sin módulos de relleno. Solo lo que se usa cada día, bien hecho.</p>
+        <h2 class="titulo-seccion">Funcionalidades principales</h2>
+        <p class="descripcion-seccion">Herramientas diseñadas para cubrir las necesidades básicas de cualquier centro formativo.</p>
         <div class="rejilla caracteristicas-rejilla-landing">
           <div class="tarjeta">
-            <h3 class="tarjeta-titulo-landing">Fichas y notas de alumnos</h3>
-            <p class="tarjeta-texto-landing">La ficha del alumno, su historial y el estado de matrícula en un solo sitio, sin andar buscando en carpetas.</p>
+            <h3 class="tarjeta-titulo-landing">Gestión de Alumnos</h3>
+            <p class="tarjeta-texto-landing">Fichas individuales con historial de notas y estado de sus matrículas.</p>
           </div>
           <div class="tarjeta">
-            <h3 class="tarjeta-titulo-landing">Profesores y módulos</h3>
-            <p class="tarjeta-texto-landing">Organiza profesores, módulos y cargas lectivas sin perder el tiempo con hojas de cálculo.</p>
+            <h3 class="tarjeta-titulo-landing">Módulos y Docentes</h3>
+            <p class="tarjeta-texto-landing">Organización de las cargas lectivas y asignación de profesores por módulo.</p>
           </div>
           <div class="tarjeta">
-            <h3 class="tarjeta-titulo-landing">Ciclos formativos</h3>
-            <p class="tarjeta-texto-landing">Crea y gestiona los ciclos y módulos de tu centro de FP de forma sencilla.</p>
+            <h3 class="tarjeta-titulo-landing">Ciclos de FP</h3>
+            <p class="tarjeta-texto-landing">Configuración personalizada de ciclos de Grado Medio y Superior.</p>
           </div>
           <div class="tarjeta">
-            <h3 class="tarjeta-titulo-landing">Avisos y notas</h3>
-            <p class="tarjeta-texto-landing">Las notas llegan al alumno por email y notificación push en cuanto el profesor las registra.</p>
+            <h3 class="tarjeta-titulo-landing">Notificaciones</h3>
+            <p class="tarjeta-texto-landing">Envío de avisos automáticos a los estudiantes cuando se publican notas.</p>
           </div>
           <div class="tarjeta">
-            <h3 class="tarjeta-titulo-landing">Pagos y cobros</h3>
-            <p class="tarjeta-texto-landing">Registra mensualidades y cuotas sin perder el rastro de quién ha pagado y quién no.</p>
+            <h3 class="tarjeta-titulo-landing">Control Económico</h3>
+            <p class="tarjeta-texto-landing">Registro de mensualidades y seguimiento de pagos pendientes.</p>
           </div>
           <div class="tarjeta">
-            <h3 class="tarjeta-titulo-landing">Funciona desde el móvil</h3>
-            <p class="tarjeta-texto-landing">Se ve bien en el móvil, en la tablet y en el ordenador. Sin instalar nada.</p>
+            <h3 class="tarjeta-titulo-landing">Acceso Multiplataforma</h3>
+            <p class="tarjeta-texto-landing">Interfaz adaptada para su uso en tablets y dispositivos móviles.</p>
           </div>
         </div>
       </div>
@@ -84,49 +82,33 @@
 
     <section id="visual" class="seccion visual-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Tan claro que no necesita tutorial</h2>
-        <p class="descripcion-seccion">Cada usuario ve solo lo que le corresponde: el alumno su expediente, el profesor sus grupos, el director todo.</p>
+        <h2 class="titulo-seccion">Interfaz intuitiva</h2>
+        <p class="descripcion-seccion">Vistas personalizadas según el rol de usuario: Director, Profesor o Alumno.</p>
         <video autoplay loop muted controls playsinline preload="auto" class="video-demo-landing">
           <source src="public/videos/intro.mp4" type="video/mp4">
-          Tu navegador no soporta videos HTML5.
         </video>
       </div>
     </section>
 
     <section id="beneficios" class="seccion beneficios-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Por qué funciona donde otros fallan</h2>
-        <p class="descripcion-seccion">No son promesas de catálogo. Son los problemas reales que resuelve.</p>
+        <h2 class="titulo-seccion">¿Por qué elegir esta plataforma?</h2>
+        <p class="descripcion-seccion">Soluciones directas para los problemas de gestión más comunes.</p>
         <div class="rejilla beneficios-rejilla-landing">
           <div class="tarjeta">
-            <div class="beneficio-numero-landing">1</div>
-            <h3 class="tarjeta-titulo-landing">Un solo lugar para todo</h3>
-            <p class="tarjeta-texto-landing">Se acabaron las hojas de cálculo desactualizadas y los datos contradictorios entre sistemas.</p>
+            <div class="beneficio-numero-landing">01</div>
+            <h3 class="tarjeta-titulo-landing">Centralización</h3>
+            <p class="tarjeta-texto-landing">Todos los datos en una única base de datos segura y accesible.</p>
           </div>
           <div class="tarjeta">
-            <div class="beneficio-numero-landing">2</div>
-            <h3 class="tarjeta-titulo-landing">Tiempo recuperado</h3>
-            <p class="tarjeta-texto-landing">Las tareas que antes tomaban horas se hacen en minutos. Matrículas, notas, recibos: en automático.</p>
+            <div class="beneficio-numero-landing">02</div>
+            <h3 class="tarjeta-titulo-landing">Eficiencia</h3>
+            <p class="tarjeta-texto-landing">Reducción de tareas manuales repetitivas mediante automatización.</p>
           </div>
           <div class="tarjeta">
-            <div class="beneficio-numero-landing">3</div>
-            <h3 class="tarjeta-titulo-landing">Acceso por roles</h3>
-            <p class="tarjeta-texto-landing">Cada usuario ve y hace solo lo que le corresponde. Nada más, nada menos.</p>
-          </div>
-          <div class="tarjeta">
-            <div class="beneficio-numero-landing">4</div>
-            <h3 class="tarjeta-titulo-landing">Sin curva de aprendizaje</h3>
-            <p class="tarjeta-texto-landing">Si alguien sabe usar el correo, sabe usar AulaPro. No hace falta formación previa.</p>
-          </div>
-          <div class="tarjeta">
-            <div class="beneficio-numero-landing">5</div>
-            <h3 class="tarjeta-titulo-landing">Funciona en cualquier sitio</h3>
-            <p class="tarjeta-texto-landing">Desde el navegador del móvil, la tablet del aula o el ordenador de secretaría. Sin instalar nada.</p>
-          </div>
-          <div class="tarjeta">
-            <div class="beneficio-numero-landing">6</div>
-            <h3 class="tarjeta-titulo-landing">Soporte directo</h3>
-            <p class="tarjeta-texto-landing">Hablas con el desarrollador, no con un bot. Las incidencias se resuelven, no se archivan.</p>
+            <div class="beneficio-numero-landing">03</div>
+            <h3 class="tarjeta-titulo-landing">Roles Claros</h3>
+            <p class="tarjeta-texto-landing">Permisos segmentados para mantener la privacidad de la información.</p>
           </div>
         </div>
       </div>
@@ -134,267 +116,218 @@
 
     <section id="planes" class="seccion planes-landing animar">
       <div class="contenedor">
-        <h2 class="titulo-seccion">Elige tu plan</h2>
-        <p class="descripcion-seccion">Usuarios ilimitados en ambos planes. La diferencia está en los módulos, las sedes y el nivel de soporte.</p>
+        <h2 class="titulo-seccion">Selecciona un Plan</h2>
+        <p class="descripcion-seccion">Diferentes niveles de gestión según el tamaño de tu centro formativo.</p>
 
         <div class="billing-toggle-wrapper">
           <button class="billing-btn activo" id="btn-mensual">Mensual</button>
-          <button class="billing-btn" id="btn-anual">
-            Anual
-            <span class="billing-badge-ahorro">2 meses gratis</span>
-          </button>
+          <button class="billing-btn" id="btn-anual">Anual <span class="ahorro-badge">−20%</span></button>
         </div>
 
         <div class="planes-rejilla-landing">
           <div class="tarjeta tarjeta-plan-landing">
             <h3 class="plan-nombre-landing">Plan Académico</h3>
-            <p class="plan-descripcion">Gestión académica completa para tu centro de FP.</p>
+            <p class="plan-descripcion">Para centros que quieren digitalizar la gestión de notas y comunicación.</p>
             <div class="plan-precio-bloque">
               <div class="plan-precio">
                 <span class="precio-simbolo">€</span>
                 <span class="precio-cantidad" data-mensual="49" data-anual="39">49</span>
                 <span class="precio-periodo">/mes</span>
               </div>
-              <p class="precio-nota mensual-nota">facturado mensualmente</p>
-              <p class="precio-nota anual-nota">facturado anualmente · <strong>ahorra €120</strong></p>
+              <p class="plan-alumnos">Hasta 150 alumnos matriculados</p>
             </div>
             <ul class="plan-lista-landing">
-              <li class="plan-elemento-landing">Alumnos, profesores y ciclos ilimitados</li>
-              <li class="plan-elemento-landing">Calificaciones por módulos y retos</li>
-              <li class="plan-elemento-landing">Resultados finales automáticos</li>
-              <li class="plan-elemento-landing">Mensajería interna</li>
-              <li class="plan-elemento-landing">Tabla de anuncios</li>
-              <li class="plan-elemento-landing">Soporte por email (48h)</li>
+              <li class="plan-elemento-landing">Ciclos, Módulos y Docentes</li>
+              <li class="plan-elemento-landing">Calificaciones y evaluaciones</li>
+              <li class="plan-elemento-landing">Retos y seguimiento académico</li>
+              <li class="plan-elemento-landing">Mensajería interna y anuncios</li>
+              <li class="plan-elemento-landing">Soporte por email</li>
             </ul>
-            <a href="#form-contacto" class="boton boton-secundario-landing ancho-total" data-plan="Plan Académico">Solicitar información</a>
+            <a href="#planes" class="boton boton-secundario-landing ancho-total" data-plan="Plan Académico">Solicitar info</a>
           </div>
 
           <div class="tarjeta tarjeta-plan-landing destacado">
-            <div class="plan-badge">Más completo</div>
+            <span class="plan-badge-popular">Más Popular</span>
             <h3 class="plan-nombre-landing">Plan Completo</h3>
-            <p class="plan-descripcion">Todo bajo control: académico, económico y administrativo.</p>
+            <p class="plan-descripcion">Gestión integral del centro: académico, económico y administrativo.</p>
             <div class="plan-precio-bloque">
               <div class="plan-precio">
                 <span class="precio-simbolo">€</span>
                 <span class="precio-cantidad" data-mensual="89" data-anual="69">89</span>
                 <span class="precio-periodo">/mes</span>
               </div>
-              <p class="precio-nota mensual-nota">facturado mensualmente</p>
-              <p class="precio-nota anual-nota">facturado anualmente · <strong>ahorra €240</strong></p>
+              <p class="plan-alumnos">Alumnos sin límite</p>
             </div>
             <ul class="plan-lista-landing">
-              <li class="plan-elemento-landing">Todo lo del Plan Académico</li>
-              <li class="plan-elemento-landing">Gestión y evaluación de TFG</li>
-              <li class="plan-elemento-landing">Módulo de pagos y facturación</li>
-              <li class="plan-elemento-landing">Inventario y préstamos de material</li>
-              <li class="plan-elemento-landing">Panel de administración completo</li>
-              <li class="plan-elemento-landing">Soporte prioritario (24h)</li>
+              <li class="plan-elemento-landing">Todo el Plan Académico incluido</li>
+              <li class="plan-elemento-landing">Módulo de pagos y matrícula</li>
+              <li class="plan-elemento-landing">Gestión de TFG</li>
+              <li class="plan-elemento-landing">Panel de director con estadísticas</li>
+              <li class="plan-elemento-landing">Soporte prioritario</li>
             </ul>
-            <a href="#form-contacto" class="boton boton-principal-landing ancho-total" data-plan="Plan Completo">Solicitar información</a>
+            <a href="#planes" class="boton boton-principal-landing ancho-total" data-plan="Plan Completo">Solicitar info</a>
           </div>
         </div>
 
-        <p class="texto-nota-precios">¿Necesitas algo a medida? Escríbenos y lo hablamos.</p>
+        <p class="planes-contacto-texto">¿Tienes dudas sobre qué plan se adapta mejor? Escríbenos y te ayudamos.</p>
 
         <div class="contacto-form-wrapper">
-          <form id="form-contacto" class="contacto-form-landing" novalidate>
-            <!-- honeypot anti-spam: bots lo rellenan, humanos no -->
-            <input type="text" name="website" class="campo-honeypot" tabindex="-1" autocomplete="off">
+          <form id="form-contacto" class="contacto-form-landing">
+            <input type="text" name="website" class="campo-honeypot" tabindex="-1">
             <div class="form-fila-landing">
               <div class="form-campo-landing">
-                <label for="cf-nombre">Nombre completo</label>
-                <input type="text" id="cf-nombre" name="nombre" placeholder="Tu nombre" required>
+                <label>Nombre y Apellidos</label>
+                <input type="text" id="cf-nombre" name="nombre" placeholder="Tu nombre">
               </div>
               <div class="form-campo-landing">
-                <label for="cf-email">Correo electrónico</label>
-                <input type="email" id="cf-email" name="email" placeholder="tu@centro.com" required>
+                <label>Correo de contacto</label>
+                <input type="email" id="cf-email" name="email" placeholder="email@ejemplo.com">
               </div>
             </div>
             <div class="form-fila-landing">
               <div class="form-campo-landing">
-                <label for="cf-centro">Centro educativo</label>
-                <input type="text" id="cf-centro" name="centro" placeholder="Nombre del instituto o academia" required>
+                <label>Nombre del Centro</label>
+                <input type="text" id="cf-centro" name="centro" placeholder="IES / Instituto">
               </div>
               <div class="form-campo-landing">
-                <label for="cf-plan">Plan de interés</label>
+                <label>Plan de interés</label>
                 <select id="cf-plan" name="plan">
-                  <option value="">Selecciona un plan...</option>
+                  <option value="">-- Seleccionar --</option>
                   <option value="Plan Académico">Plan Académico</option>
                   <option value="Plan Completo">Plan Completo</option>
-                  <option value="Aún no lo sé">Aún no lo sé</option>
                 </select>
               </div>
             </div>
             <div class="form-campo-landing">
-              <label for="cf-mensaje">Mensaje (opcional)</label>
-              <textarea id="cf-mensaje" name="mensaje" placeholder="Cuéntanos sobre tu centro: número de alumnos, funcionalidades que necesitas..."></textarea>
+              <label>Dudas o comentarios</label>
+              <textarea id="cf-mensaje" name="mensaje" rows="4"></textarea>
             </div>
             <div class="form-acciones-landing">
-              <button type="submit" class="boton boton-principal-landing" id="btn-enviar">Enviar consulta</button>
+              <button type="submit" class="boton boton-principal-landing" id="btn-enviar">Enviar datos</button>
             </div>
             <div id="form-feedback"></div>
           </form>
         </div>
       </div>
     </section>
-  </section>
+  </main>
 
-  <footer id="acceso" class="pie-pagina-landing animar">
+  <footer class="pie-pagina-landing">
     <div class="contenedor">
-      <div class="pie-inferior">
-        <p>&copy; 2025/2026 AulaPro — Desarrollado por <a href="mailto:yassin.lahhit@outlook.com">Yassin Lahhit</a> como Proyecto Final de Grado</p>
-      </div>
+      <p>&copy; 2025/2026 AulaPro — Proyecto de Fin de Grado</p>
     </div>
   </footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var botonMenu = document.getElementById('menu-boton');
-      var listaMenu = document.getElementById('menu');
+      var bMenu = document.getElementById('menu-boton');
+      var mLista = document.getElementById('menu');
+      var nav = document.getElementById('cabecera');
 
-      if (botonMenu && listaMenu) {
-        botonMenu.addEventListener('click', function() {
-          listaMenu.classList.toggle('activo');
-        });
+      if (bMenu && mLista) {
+        bMenu.onclick = function() {
+          var altura = nav.offsetHeight;
+          mLista.style.top = altura + 'px';
+          mLista.classList.toggle('activo');
+        };
       }
 
-      var cabecera = document.getElementById('cabecera');
-      function actualizarNavbar() {
-        cabecera.classList.toggle('nav-scrolled', window.scrollY > 40);
-      }
-      window.addEventListener('scroll', actualizarNavbar);
-      actualizarNavbar();
-
-      var elCabecera = document.querySelector('.cabecera-landing');
-      var alturaHeader = elCabecera ? elCabecera.offsetHeight : 72;
-
-      document.querySelectorAll('a[href^="#"]').forEach(function(enlace) {
-        enlace.addEventListener('click', function(e) {
-          var href = enlace.getAttribute('href');
-          var destino = document.querySelector(href);
-          if (!destino) return;
-          e.preventDefault();
-
-          var y = destino.getBoundingClientRect().top + window.scrollY - alturaHeader - 16;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-
-          if (listaMenu && listaMenu.classList.contains('activo')) {
-            listaMenu.classList.remove('activo');
-          }
-
-          var planElegido = enlace.getAttribute('data-plan');
-          if (planElegido) {
-            var selectPlan = document.getElementById('cf-plan');
-            if (selectPlan) selectPlan.value = planElegido;
-          }
-        });
-      });
-
-      var observador = new IntersectionObserver(function(entradas) {
-        entradas.forEach(function(entrada) {
-          if (entrada.isIntersecting) {
-            entrada.target.classList.add('visible');
-            observador.unobserve(entrada.target);
-          }
-        });
-      }, {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
-      });
-
-      document.querySelectorAll('.animar').forEach(function(el) { observador.observe(el); });
-
-      var btnMensual = document.getElementById('btn-mensual');
-      var btnAnual = document.getElementById('btn-anual');
-      if (btnMensual && btnAnual) {
-        var cantidades = document.querySelectorAll('.precio-cantidad');
-        var notasMensual = document.querySelectorAll('.mensual-nota');
-        var notasAnual = document.querySelectorAll('.anual-nota');
-
-        btnMensual.addEventListener('click', function() {
-          btnMensual.classList.add('activo');
-          btnAnual.classList.remove('activo');
-          cantidades.forEach(function(el) { el.textContent = el.getAttribute('data-mensual'); });
-          notasMensual.forEach(function(el) { el.style.display = ''; });
-          notasAnual.forEach(function(el) { el.style.display = 'none'; });
-        });
-
-        btnAnual.addEventListener('click', function() {
-          btnAnual.classList.add('activo');
-          btnMensual.classList.remove('activo');
-          cantidades.forEach(function(el) { el.textContent = el.getAttribute('data-anual'); });
-          notasMensual.forEach(function(el) { el.style.display = 'none'; });
-          notasAnual.forEach(function(el) { el.style.display = 'block'; });
-        });
-      }
-
-      var formContacto = document.getElementById('form-contacto');
-      if (formContacto) {
-        formContacto.addEventListener('submit', function(e) {
-          e.preventDefault();
-          var btn = document.getElementById('btn-enviar');
-          var feedback = document.getElementById('form-feedback');
-          var nombre = document.getElementById('cf-nombre').value.trim();
-          var email = document.getElementById('cf-email').value.trim();
-          var centro = document.getElementById('cf-centro').value.trim();
-
-          if (!nombre || !email || !centro) {
-            feedback.className = 'feedback-error';
-            feedback.textContent = 'Por favor, completa los campos obligatorios (nombre, email y centro).';
-            return;
-          }
-
-          btn.disabled = true;
-          btn.textContent = 'Enviando...';
-          feedback.innerHTML = '';
-          feedback.className = '';
-
-          fetch('controladores/contacto_landing.php', {
-            method: 'POST',
-            body: new FormData(formContacto)
-          })
-          .then(function(res) {
-            return res.json();
-          })
-          .then(function(data) {
-            if (data.ok) {
-              feedback.className = 'feedback-exito';
-              feedback.textContent = data.msg;
-              formContacto.reset();
-              btn.textContent = 'Enviado ✓';
-            } else {
-              feedback.className = 'feedback-error';
-              feedback.textContent = data.msg;
-              btn.disabled = false;
-              btn.textContent = 'Enviar consulta';
-            }
-          })
-          .catch(function(err) {
-            feedback.className = 'feedback-error';
-            feedback.textContent = 'Error de conexión. Inténtalo de nuevo más tarde.';
-            btn.disabled = false;
-            btn.textContent = 'Enviar consulta';
-          });
-        });
-      }
-
-      var video = document.querySelector('#visual video');
-      if (video) {
-        function reproducirVideo() {
-          var promesa = video.play();
-          if (promesa !== undefined) {
-            promesa.catch(function() {});
+      // cerrar menu al hacer clic fuera
+      document.addEventListener('click', function(e) {
+        if (mLista && mLista.classList.contains('activo')) {
+          var enMenu = mLista.contains(e.target);
+          var enBoton = bMenu && bMenu.contains(e.target);
+          if (!enMenu && !enBoton) {
+            mLista.classList.remove('activo');
           }
         }
-        reproducirVideo();
-        var observerVideo = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              reproducirVideo();
-            }
+      });
+
+      window.onscroll = function() {
+        if (window.scrollY > 50) nav.classList.add('nav-scrolled');
+        else nav.classList.remove('nav-scrolled');
+        if (mLista && mLista.classList.contains('activo')) {
+          mLista.style.top = nav.offsetHeight + 'px';
+        }
+      };
+
+      document.querySelectorAll('a[href^="#"]').forEach(function(l) {
+        l.onclick = function(e) {
+          var h = l.getAttribute('href');
+          var d = document.querySelector(h);
+          if (!d) return;
+          e.preventDefault();
+          var pos = d.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          if (mLista) mLista.classList.remove('activo');
+          var p = l.getAttribute('data-plan');
+          if (p) {
+            var sel = document.getElementById('cf-plan');
+            if (sel) sel.value = p;
+          }
+        };
+      });
+
+      var obs = new IntersectionObserver(function(ev) {
+        ev.forEach(function(i) {
+          if (i.isIntersecting) {
+            i.target.classList.add('visible');
+            obs.unobserve(i.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.animar').forEach(function(x) { obs.observe(x); });
+
+      var mBtn = document.getElementById('btn-mensual');
+      var aBtn = document.getElementById('btn-anual');
+      if (mBtn && aBtn) {
+        mBtn.onclick = function() {
+          mBtn.classList.add('activo');
+          aBtn.classList.remove('activo');
+          document.querySelectorAll('.precio-cantidad').forEach(function(c) {
+            c.innerText = c.getAttribute('data-mensual');
           });
-        }, { threshold: 0.1 });
-        observerVideo.observe(video);
+        };
+        aBtn.onclick = function() {
+          aBtn.classList.add('activo');
+          mBtn.classList.remove('activo');
+          document.querySelectorAll('.precio-cantidad').forEach(function(c) {
+            c.innerText = c.getAttribute('data-anual');
+          });
+        };
+      }
+
+      var f = document.getElementById('form-contacto');
+      if (f) {
+        f.onsubmit = function(e) {
+          e.preventDefault();
+          var b = document.getElementById('btn-enviar');
+          var msg = document.getElementById('form-feedback');
+          b.disabled = true;
+          b.innerText = 'Enviando...';
+          fetch('controladores/contacto_landing.php', {
+            method: 'POST',
+            body: new FormData(f)
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            if (res.ok) {
+              msg.className = 'feedback-exito';
+              msg.innerText = res.msg;
+              f.reset();
+            } else {
+              msg.className = 'feedback-error';
+              msg.innerText = res.msg;
+              b.disabled = false;
+            }
+            b.innerText = 'Enviar datos';
+          })
+          .catch(function() {
+            msg.innerText = 'Error al enviar. Intenta de nuevo.';
+            b.disabled = false;
+            b.innerText = 'Enviar datos';
+          });
+        };
       }
     });
   </script>

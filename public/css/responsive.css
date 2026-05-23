@@ -96,6 +96,15 @@
         flex-direction: column;
     }
 
+    /* Landing — grids de 2 columnas en tableta */
+    .caracteristicas-rejilla-landing {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .beneficios-rejilla-landing {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     /* Landing — mostrar hamburguesa en tableta */
     .menu-boton-landing {
         display: block;
@@ -103,7 +112,7 @@
 
     .menu-landing {
         position: fixed;
-        top: 60px;
+        top: 83px;
         left: 0;
         right: 0;
         width: 100%;
@@ -113,12 +122,12 @@
         padding: 16px 24px 20px;
         gap: 12px;
         border-bottom: 1px solid #333060;
-        box-shadow: 0 8px 24px #cccccc;
+        box-shadow: 0 8px 24px #b0aec8;
         transform: translateY(-8px);
         opacity: 0;
         visibility: hidden;
         transition: all 0.25s ease;
-        z-index: 99;
+        z-index: 101;
     }
 
     .menu-landing.activo {
@@ -131,6 +140,7 @@
         width: 100%;
         display: block;
         color: #d9d9d9;
+        padding: 10px 0;
     }
 
     .menu-landing .btn-acceso-nav {
@@ -316,7 +326,7 @@
     /* Landing — menú móvil */
     .menu-landing {
         position: fixed;
-        top: 60px;
+        top: 83px;
         left: 0;
         right: 0;
         width: 100%;
@@ -326,17 +336,19 @@
         padding: 16px 24px 20px;
         gap: 12px;
         border-bottom: 1px solid #333060;
-        box-shadow: 0 8px 24px #cccccc;
+        box-shadow: 0 8px 24px #b0aec8;
         transform: translateY(-8px);
         opacity: 0;
         visibility: hidden;
         transition: all 0.25s ease;
-        z-index: 99;
+        z-index: 101;
     }
 
     .menu-enlace-landing {
         width: 100%;
         display: block;
+        padding: 10px 0;
+        border-bottom: 1px solid #2a2840;
     }
 
     .menu-landing.activo {
@@ -351,8 +363,9 @@
 
     .menu-landing .btn-acceso-nav {
         width: fit-content;
-        margin: 8px auto 0;
+        margin: 12px auto 0;
         padding: 10px 30px !important;
+        border-bottom: none;
     }
 
     .menu-landing .menu-enlace-landing {
@@ -366,11 +379,22 @@
 
     .nav-scrolled .menu-landing .menu-enlace-landing {
         color: #4b5563;
+        border-bottom-color: #f3f4f6;
+    }
+
+    /* Landing — grids a 1 columna en móvil */
+    .caracteristicas-rejilla-landing,
+    .beneficios-rejilla-landing {
+        grid-template-columns: 1fr;
     }
 
     /* Landing — hero */
     .hero-landing {
         padding: 110px 0 64px;
+    }
+
+    .titulo-hero-landing {
+        font-size: 2rem;
     }
 
     .hero-botones-landing {
