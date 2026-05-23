@@ -18,23 +18,6 @@ function obtenerNotasModulo($idEstudiante, $idModulo)
     return $notas;
 }
 
-function listarCalificacionesGeneral()
-{
-    $con = obtenerConexion();
-    $sql = "SELECT cm.*, e.nombreEstudiante, m.nombreModulo
-            FROM calificaciones_modulos cm
-            JOIN estudiantes e ON cm.idEstudiante = e.idEstudiante
-            JOIN modulos m ON cm.idModulo = m.idModulo
-            ORDER BY e.idEstudiante ASC";
-    $resultado = mysqli_query($con, $sql);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    mysqli_close($con);
-    return $lista;
-}
-
 function obtenerCalificacionPorId($idCalificacion)
 {
     $con = obtenerConexion();

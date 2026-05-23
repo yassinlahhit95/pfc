@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../../login.php");
+    header("Location: ../../../vistas/login.php");
     exit;
 }
 

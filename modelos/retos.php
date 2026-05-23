@@ -15,21 +15,6 @@ function listarRetos() {
     return $listaRetos;
 }
 
-function listarRetosFiltrados($idModulo) {
-    $con = obtenerConexion();
-    $sql1 = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto WHERE mr.idModulo = ? ORDER BY r.idReto ASC";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
-    $listaFiltrada = [];
-    while ($fila = mysqli_fetch_assoc($res)) {
-        $listaFiltrada[] = $fila;
-    }
-    mysqli_close($con);
-    return $listaFiltrada;
-}
-
 function listarRetosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql1 = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulo_profesor pm ON mr.idModulo = pm.idModulo WHERE pm.idProfesor = ?";
@@ -97,11 +82,6 @@ function obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir = 0) {
     }
 
     return $detalle;
-}
-
-function comprobarHorasDisponiblesModulo($idModulo, $horasNuevas, $idRetoAExcluir = 0) {
-    $detalle = obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir);
-    return ($horasNuevas <= $detalle['disponibles']);
 }
 
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos = null) {

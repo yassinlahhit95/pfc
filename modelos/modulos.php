@@ -142,22 +142,6 @@ function limpiarProfesoresModulo($idModulo) {
     return $ok;
 }
 
-function obtenerHorasTotalesRetosModulo($idModulo) {
-    $con = obtenerConexion();
-    $sql1 = "SELECT SUM(r.horasReto) as total FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto WHERE mr.idModulo = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
-    $datosSuma = mysqli_fetch_assoc($res);
-    mysqli_close($con);
-    $total = 0;
-    if ($datosSuma) {
-        $total = intval($datosSuma['total']);
-    }
-    return $total;
-}
-
 function listarNombresProfesoresDeModulo($idModulo) {
     $con = obtenerConexion();
     $sql1 = "SELECT p.nombreProfesor

@@ -1,38 +1,6 @@
 ﻿<?php
 require_once __DIR__ . "/conectar.php";
 
-function listarTodosLosTFGs() {
-    $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo
-            FROM estudiantes e
-            JOIN ciclos c ON e.idCiclo = c.idCiclo
-            WHERE e.archivoTFG != ''
-            ORDER BY e.nombreEstudiante ASC";
-
-    $resultado = mysqli_query($con, $sql);
-    $listaTFGs = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $listaTFGs[] = $fila;
-    }
-    mysqli_close($con);
-    return $listaTFGs;
-}
-
-function listarTFGsFiltrados($idCiclo) {
-    $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.archivoTFG != '' AND e.idCiclo = ? ORDER BY e.nombreEstudiante ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $listaFiltrada = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $listaFiltrada[] = $fila;
-    }
-    mysqli_close($con);
-    return $listaFiltrada;
-}
-
 function obtenerTFGporEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT idEstudiante, nombreEstudiante, archivoTFG, fechaSubidaTFG FROM estudiantes WHERE idEstudiante = ?";
@@ -83,19 +51,6 @@ function eliminarTFG($idEstudiante) {
     $resultado = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $resultado;
-}
-
-function contarTFGsSubidos() {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != ''";
-    $resultado = mysqli_query($con, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
-    $total = 0;
-    if ($fila) {
-        $total = intval($fila['total']);
-    }
-    return $total;
 }
 
 function contarTFGsDeProfesor($idProfesor) {

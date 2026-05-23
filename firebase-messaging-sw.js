@@ -13,9 +13,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // Manejador en segundo plano
-messaging.onBackgroundMessage((payload) => {
-  console.log('[SW] Mensaje recibido (fondo):', payload);
-  // No llamamos a self.registration.showNotification() porque el servidor 
-  // ya envía un bloque 'notification' que el navegador muestra automáticamente
-  // con la foto y el formato perfecto.
+messaging.onBackgroundMessage((p) => {
+  console.log('Mensaje en fondo:', p);
+  // El navegador ya enseña el aviso si viene el campo notification
 });

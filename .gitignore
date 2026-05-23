@@ -1,24 +1,16 @@
-# Credenciales y secretos
-modelos/conectar.php
-config/secrets.php
-config/*.json
-.env
+# Archivos a ignorar en git
+/config/secrets.php
+/config/service-account.json
+/public/uploads/pfc/*
+!/public/uploads/pfc/.gitkeep
 
-# Carpetas de editores y herramientas
+# Temporales de editores
 .vscode/
 .idea/
-
-# Sistema operativo
-Thumbs.db
-.DS_Store
-
-# Temporales y logs
 *.log
-*.bak
-*.tmp
-error_log
+.DS_Store
+Thumbs.db
 
-# Archivos pesados y subidas
-public/videos/
-public/uploads/pfc/*
-!public/uploads/pfc/.gitkeep
+# Config local
+.env
+node_modules/
