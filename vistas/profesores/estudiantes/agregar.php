@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -106,7 +106,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = [<?php foreach ($mis_ciclos as $cicloItem) { echo '{idCiclo:' . $cicloItem['idCiclo'] . ',idNivel:' . $cicloItem['idNivel'] . ',nombreCiclo:"' . addslashes($cicloItem['nombreCiclo']) . '"},'; } ?>];
+var todosCiclos = <?= json_encode($mis_ciclos) ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();

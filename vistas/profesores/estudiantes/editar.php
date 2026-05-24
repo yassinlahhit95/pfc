@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $exito = $_SESSION['exito'] ?? '';
@@ -114,7 +114,7 @@ $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
         <div class="acciones">
             <input type="submit" name="actualizarEstudiante" class="boton-primario" value="ACTUALIZAR ESTUDIANTE">
             <button type="button" class="boton-secundario" onclick="window.location.reload();">
-                <i class="fas fa-eraser"></i> REVERTIR CAMBIOS
+                <i class="fas fa-eraser"></i> limpiar
             </button>
         </div>
     </form>

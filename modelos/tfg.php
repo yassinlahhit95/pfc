@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 
 function obtenerTFGporEstudiante($idEstudiante) {
@@ -111,23 +111,23 @@ function obtenerCalificacionTFG($idEstudiante) {
 function guardarCalificacionTFG($idEstudiante, $nota, $observaciones) {
     $con = obtenerConexion();
 
-    $sqlBuscar = "SELECT idCalificacion FROM calificaciones_tfg WHERE idEstudiante = ?";
-    $stmt = mysqli_prepare($con, $sqlBuscar);
+    $sql = "SELECT idCalificacion FROM calificaciones_tfg WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($resultado) > 0) {
         $sql = "UPDATE calificaciones_tfg SET nota = ?, observaciones = ? WHERE idEstudiante = ?";
-        $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "dsi", $nota, $observaciones, $idEstudiante);
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "dsi", $nota, $observaciones, $idEstudiante);
     } else {
         $sql = "INSERT INTO calificaciones_tfg (idEstudiante, nota, observaciones) VALUES (?, ?, ?)";
-        $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "ids", $idEstudiante, $nota, $observaciones);
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ids", $idEstudiante, $nota, $observaciones);
     }
 
-    $exito = mysqli_stmt_execute($stmt2);
+    $exito = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $exito;
 }
@@ -196,7 +196,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
 
     if ($idCiclo) {
         $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
-                                c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+                                c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante
@@ -208,7 +208,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
         mysqli_stmt_bind_param($stmt, "iii", $idCiclo, $idProfesor, $idProfesor);
     } else {
         $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
-                                c.nombreCiclo, ct.nota, ct.observaciones, ct.idCalificacion
+                                c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
                 LEFT JOIN calificaciones_tfg ct ON e.idEstudiante = ct.idEstudiante

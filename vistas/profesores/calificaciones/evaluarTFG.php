@@ -5,7 +5,8 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-if (empty($_SESSION['idAdmin'])) {
+$idProfesor = $_SESSION['idProfesor'] ?? '';
+if (empty($idProfesor)) {
     header("Location: ../../login.php");
     exit;
 }
@@ -17,9 +18,12 @@ $idEstudiante = $_GET['idEstudiante'] ?? 0;
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 
 if (!$estudiante) {
-    header("Location: calificacionesTFG.php");
+    header("Location: tfg.php");
     exit;
 }
+
+// Opcional: Validar que el estudiante pertenece a un ciclo del profesor
+// Por ahora seguimos la lógica del admin pero adaptada
 
 $calificacion = obtenerCalificacionTFG($idEstudiante);
 
@@ -30,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>EVALUAR TFG</h1>
-    <a href="calificacionesTFG.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <a href="tfg.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
@@ -51,6 +55,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="valor-detalle">
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
                 <span class="indicador-estado activo-verde">ENTREGADO</span>
+                <a href="../../../public/uploads/pfc/<?= $estudiante['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" style="margin-left: 10px;">
+                    <i class="fas fa-file-pdf"></i> Descargar
+                </a>
             <?php } else { ?>
                 <span class="indicador-estado inactivo-rojo">NO ENTREGADO</span>
             <?php } ?>
@@ -72,8 +79,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3><i class="fas fa-edit"></i> CALIFICACIÓN</h3>
     </div>
 
-    <form action="../../../controladores/admin/pfc/calificar.php" method="POST" class="formulario">
+    <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="formulario">
         <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+        <input type="hidden" name="origen" value="calificacionesTFG">
 
         <div class="campo">
             <label>Nota (0-10)</label>

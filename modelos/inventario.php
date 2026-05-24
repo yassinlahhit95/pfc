@@ -40,27 +40,6 @@ function listarArticulos() {
     return $listaArticulos;
 }
 
-function listarPrestamosActivos() {
-    $con = obtenerConexion();
-    $sql = "SELECT prestamos.*, estudiantes.nombreEstudiante,
-                   dispositivos.nombreDispositivo as nombreArticulo
-            FROM prestamos
-            JOIN estudiantes ON prestamos.idEstudiante = estudiantes.idEstudiante
-            JOIN dispositivos ON prestamos.numeroSerie = dispositivos.numeroSerie
-            WHERE prestamos.estadoPrestamo = 'en curso'
-            ORDER BY idPrestamo DESC";
-
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $listaPrestamosActivos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaPrestamosActivos[] = $fila;
-    }
-    mysqli_close($con);
-    return $listaPrestamosActivos;
-}
-
 function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
     $con = obtenerConexion();
     $sql = "SELECT idDispositivo FROM dispositivos WHERE numeroSerie = ? AND idDispositivo != ?";

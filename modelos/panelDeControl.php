@@ -45,17 +45,6 @@ function contarAnuncios() {
     return intval($fila['total']);
 }
 
-function contarReclamaciones() {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
-    return intval($fila['total']);
-}
-
 function contarCiclos() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM ciclos";
@@ -153,24 +142,6 @@ function obtenerTotalRecaudado() {
     return floatval($fila['acumulado']);
 }
 
-function obtenerPorcentajeAprobadosGlobal() {
-    $con = obtenerConexion();
-    $sql = "SELECT
-                (SELECT COUNT(*) FROM calificaciones_modulos) AS total,
-                (SELECT COUNT(*) FROM calificaciones_modulos WHERE nota_1final >= 5 OR nota_2final >= 5) AS aprobados";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
-    $total = intval($fila['total']);
-    $aprobados = intval($fila['aprobados']);
-    if ($total == 0) {
-        return 0;
-    }
-    return round(($aprobados / $total) * 100, 1);
-}
-
 function contarPagosRealizados() {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(*) as total FROM pagos";
@@ -193,14 +164,4 @@ function contarTFGsEntregados() {
     return intval($fila['total']);
 }
 
-function contarTFGsCalificados() {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM calificaciones_tfg";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
-    return intval($fila['total']);
-}
 

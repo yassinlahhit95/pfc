@@ -18,11 +18,10 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
-require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
-$listaAnuncios = listarTodosLosAnuncios();
+$listaAnuncios = listarAnunciosPorRol('estudiantes');
 $listaEventosProximos = listarEventosProximos();
 
 $tfgActual = obtenerTFGporEstudiante($idEstudiante);

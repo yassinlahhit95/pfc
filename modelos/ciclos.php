@@ -94,15 +94,6 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
     return $resultado;
 }
 
-function eliminarCiclo($idCiclo) {
-    $con = obtenerConexion();
-    $sql = "DELETE FROM ciclos WHERE idCiclo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
-    return $resultado;
-}
 
 function obtenerCicloPorId($idCiclo) {
     $con = obtenerConexion();

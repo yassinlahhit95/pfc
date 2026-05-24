@@ -95,15 +95,6 @@ function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
     return $ok;
 }
 
-function eliminarModulo($idModulo) {
-    $con = obtenerConexion();
-    $sql1 = "DELETE FROM modulos WHERE idModulo = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
-    return $ok;
-}
 
 function obtenerModuloPorId($idModulo) {
     $con = obtenerConexion();

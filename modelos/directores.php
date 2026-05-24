@@ -61,16 +61,6 @@ function eliminarDirector($idDirector) {
     return $resultado;
 }
 
-function actualizarPerfilDirector($idDirector, $nombre, $email, $telefono) {
-    $con = obtenerConexion();
-    $sql = "UPDATE directores SET nombreDirector=?, emailDirector=?, telefonoDirector=? WHERE idDirector=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $telefono, $idDirector);
-    $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
-    return $resultado;
-}
-
 function obtenerDirectorPorId($idDirector) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM directores WHERE idDirector = ?";
@@ -81,17 +71,6 @@ function obtenerDirectorPorId($idDirector) {
     $datosDirector = mysqli_fetch_assoc($resultado);
     mysqli_close($con);
     return $datosDirector;
-}
-
-function actualizarPasswordDirector($idDirector, $nuevaPassword) {
-    $con = obtenerConexion();
-    $passwordHasheada = password_hash($nuevaPassword, PASSWORD_DEFAULT);
-    $sql = "UPDATE directores SET password = ? WHERE idDirector = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $passwordHasheada, $idDirector);
-    $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
-    return $resultado;
 }
 
 function obtenerTokensDirectores() {

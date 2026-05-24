@@ -47,7 +47,9 @@ export async function setupFirebase(id, rol) {
                     body: fd
                 });
                 var res = await r.json();
-                if (res.success) {}
+                if (res.success) {
+                    console.log("Firebase Push: Token guardado correctamente.");
+                }
             }
         }
     } catch (e) {

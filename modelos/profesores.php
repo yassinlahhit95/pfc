@@ -89,20 +89,6 @@ function obtenerProfesorPorId($id) {
     return $fila;
 }
 
-function listarProfesoresPorCiclo($idCic) {
-    $con = obtenerConexion();
-    $sql1 = "SELECT p.* FROM profesores p JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor WHERE cp.idCiclo = ? ORDER BY p.nombreProfesor ASC";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idCic);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($res)) {
-        $lista[] = $fila;
-    }
-    mysqli_close($con);
-    return $lista;
-}
 
 function listarIdsModulosDeProfesor($idProf) {
     $con = obtenerConexion();

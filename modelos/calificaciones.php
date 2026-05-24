@@ -64,41 +64,40 @@ function listarCalificacionesPorEstudiante($idEstudiante)
 function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0)
 {
     $con = obtenerConexion();
+    $select = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
+                      cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final";
 
     if ($idModulo > 0) {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
-                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+        $sql1 = "$select
                 FROM modulos m
                 JOIN modulo_profesor pm ON m.idModulo = pm.idModulo AND pm.idProfesor = ?
                 JOIN estudiantes e ON m.idCiclo = e.idCiclo
                 LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idModulo = ?
                 ORDER BY e.nombreEstudiante ASC";
-        $stmt = mysqli_prepare($con, $sql);
+        $stmt = mysqli_prepare($con, $sql1);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idModulo);
 
     } elseif ($idCiclo > 0) {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
-                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+        $sql1 = "$select
                 FROM modulos m
                 JOIN ciclo_profesor cp ON m.idCiclo = cp.idCiclo AND cp.idProfesor = ?
                 JOIN estudiantes e ON m.idCiclo = e.idCiclo
                 LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idCiclo = ?
                 ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
-        $stmt = mysqli_prepare($con, $sql);
+        $stmt = mysqli_prepare($con, $sql1);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idCiclo);
 
     } else {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
-                       cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final
+        $sql1 = "$select
                 FROM modulos m
                 JOIN estudiantes e ON m.idCiclo = e.idCiclo
                 LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
                 WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
                    OR m.idModulo IN (SELECT idModulo FROM modulo_profesor WHERE idProfesor = ?)
                 ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
-        $stmt = mysqli_prepare($con, $sql);
+        $stmt = mysqli_prepare($con, $sql1);
         mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     }
 
@@ -114,25 +113,30 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
 
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones)
 {
+    if ($nota1ev === '')   $nota1ev   = null;
+    if ($nota1final === '') $nota1final = null;
+    if ($nota2ev === '')   $nota2ev   = null;
+    if ($nota2final === '') $nota2final = null;
+
     $con = obtenerConexion();
 
-    $sqlBuscar = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
-    $stmt = mysqli_prepare($con, $sqlBuscar);
+    $sql1 = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
+    $stmt = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($resultado) > 0) {
-        $sql = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
-        $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "ddddsii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
+        $sql1 = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
+        $stmt = mysqli_prepare($con, $sql1);
+        mysqli_stmt_bind_param($stmt, "ddddsii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
     } else {
-        $sql = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt2 = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt2, "iidddds", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
+        $sql1 = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($con, $sql1);
+        mysqli_stmt_bind_param($stmt, "iidddds", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
     }
 
-    $exito = mysqli_stmt_execute($stmt2);
+    $exito = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $exito;
 }
@@ -191,9 +195,6 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     $resumen['nombreEstudiante'] = $datosEstudiante['nombreEstudiante'];
     $resumen['nombreCiclo'] = $datosEstudiante['nombreCiclo'];
     $resumen['detalles_modulos'] = [];
-    $resumen['media_modulos'] = 0;
-    $resumen['media_retos'] = 0;
-    $resumen['promedio_global'] = 0;
     $resumen['estado_global'] = 'PENDIENTE';
     $resumen['tiene_suspensos'] = false;
 
@@ -220,16 +221,16 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $nota2final = null;
 
         if ($notas) {
-            if ($notas['nota_1ev'] != null) {
+            if ($notas['nota_1ev'] !== null) {
                 $nota1ev    = floatval($notas['nota_1ev']);
             }
-            if ($notas['nota_1final'] != null) {
+            if ($notas['nota_1final'] !== null) {
                 $nota1final = floatval($notas['nota_1final']);
             }
-            if ($notas['nota_2ev'] != null) {
+            if ($notas['nota_2ev'] !== null) {
                 $nota2ev    = floatval($notas['nota_2ev']);
             }
-            if ($notas['nota_2final'] != null) {
+            if ($notas['nota_2final'] !== null) {
                 $nota2final = floatval($notas['nota_2final']);
             }
         }
@@ -240,11 +241,11 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $sumaEvaluaciones = 0;
         $evaluacionesConNota = 0;
 
-        if ($notaDefinitiva1 != null) {
+        if ($notaDefinitiva1 !== null) {
             $sumaEvaluaciones += $notaDefinitiva1;
             $evaluacionesConNota++;
         }
-        if ($notaDefinitiva2 != null) {
+        if ($notaDefinitiva2 !== null) {
             $sumaEvaluaciones += $notaDefinitiva2;
             $evaluacionesConNota++;
         }
@@ -304,7 +305,6 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $resumen['promedio_global'] = round($promedioGlobal, 2);
         $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
 
-        $resumen['estado_global'] = 'PENDIENTE';
         if ($resumen['tiene_suspensos']) {
             $resumen['estado_global'] = 'SUSPENSO';
         } elseif ($resumen['calculo_completo'] && $promedioGlobal >= 5) {
@@ -314,7 +314,6 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $resumen['media_modulos'] = "-";
         $resumen['media_retos'] = "-";
         $resumen['promedio_global'] = "-";
-        $resumen['estado_global'] = 'PENDIENTE';
         $resumen['calculo_completo'] = false;
     }
 

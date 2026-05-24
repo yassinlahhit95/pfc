@@ -115,19 +115,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var listaDeCiclos = [
-    <?php foreach ($lista_ciclos as $c) {
-        echo '{id:' . $c['idCiclo'] . ', nivel:' . $c['idNivel'] . ', nombre:"' . addslashes($c['nombreCiclo']) . '"},';
-    } ?>
-];
+var listaDeCiclos = <?= json_encode($lista_ciclos) ?>;
 
 function filtrarCiclos() {
     var nivelId = $('#curso').val() === 'Grado Medio' ? 1 : 2;
     var $select = $('#idCiclo').empty().append('<option value="">-- Selecciona un ciclo --</option>');
 
     $.each(listaDeCiclos, function(i, ciclo) {
-        if (ciclo.nivel === nivelId) {
-            $select.append($('<option>').val(ciclo.id).text(ciclo.nombre));
+        if (parseInt(ciclo.idNivel) === nivelId) {
+            $select.append($('<option>').val(ciclo.idCiclo).text(ciclo.nombreCiclo));
         }
     });
 }

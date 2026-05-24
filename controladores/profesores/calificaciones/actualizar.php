@@ -32,7 +32,9 @@ if (isset($_POST['actualizarNota'])) {
     }
 
     if (!$errores) {
-        $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1Ev, $nota1Final, $nota2Ev, $nota2Final, "");
+        $notaActual = obtenerCalificacionPorId($idCalificacion);
+        $observaciones = $notaActual['observaciones'] ?? '';
+        $resultado = actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1Ev, $nota1Final, $nota2Ev, $nota2Final, $observaciones);
 
         if ($resultado) {
             if (!empty($_POST['notificarEstudiante'])) {

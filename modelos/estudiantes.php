@@ -20,17 +20,7 @@ function listarEstudiantes() {
     return $rows;
 }
 
-function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
-    $con = obtenerConexion();
-    $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $existe = mysqli_num_rows($resultado) > 0;
-    mysqli_close($con);
-    return $existe;
-}
+
 
 function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
     $con = obtenerConexion();
@@ -88,7 +78,7 @@ function listarEstudiantesPorCiclo($idCiclo) {
     return $listaEstudiantes;
 }
 
-// borra el estudiante de la base de datos
+// borrar el estudiante de base de datos
 function eliminarEstudiante($idEstudiante) {
     $con = obtenerConexion();
     $sql = "DELETE FROM estudiantes WHERE idEstudiante = ?";
@@ -142,6 +132,18 @@ function obtenerTokensEstudiantes() {
     }
     mysqli_close($con);
     return $listaTokens;
+}
+
+function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
+    $con = obtenerConexion();
+    $sql = "SELECT idEstudiante FROM estudiantes WHERE (dniEstudiante = ? OR emailEstudiante = ?) AND idEstudiante != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $dni, $email, $idExcluir);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $existe = mysqli_num_rows($resultado) > 0;
+    mysqli_close($con);
+    return $existe;
 }
 
 function validarLoginEstudiante($email, $password) {

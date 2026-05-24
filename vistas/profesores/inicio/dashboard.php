@@ -39,7 +39,7 @@ foreach ($listaTFGsProfesor as $tfg) {
 
 $mensajesPendientes = 0;
 foreach ($listaMensajes as $mensaje) {
-    if ($mensaje['estadoReclamacion'] === 'pendiente') {
+    if ($mensaje['estadoReclamacion'] == 'pendiente') {
         $mensajesPendientes++;
     }
 }
@@ -128,8 +128,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             ?>
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
-                    <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
-                    <p class="texto-pequeno" style="margin: 0;"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
+                    <div class="caja espacio-entre-elementos alinear-centro">
+                        <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
+                        <span class="texto-suave" style="font-size: 0.8rem;"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
+                    </div>
+                    <div class="margen-arriba-pequeno">
+                        <span class="indicador-estado <?= $anuncio['dirigidoA'] == 'todos' ? 'activo-verde' : ($anuncio['dirigidoA'] == 'profesores' ? 'azul' : 'morado') ?>" style="font-size: 0.7rem; padding: 2px 8px;">
+                            PARA: <?= strtoupper($anuncio['dirigidoA']) ?>
+                        </span>
+                    </div>
+                    <p class="texto-pequeno" style="margin-top: 8px;"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
                 </div>
             </div>
             <?php

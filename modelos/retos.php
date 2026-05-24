@@ -91,7 +91,7 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
     mysqli_stmt_bind_param($resultado, "sssii", $nombreReto, $fechaInicio, $fechaFin, $horasReto, $idReto);
     $ok = mysqli_stmt_execute($resultado);
 
-    if ($ok && $listaIdsModulos !== null) {
+    if ($ok && $listaIdsModulos != null) {
         $sql2 = "DELETE FROM modulo_reto WHERE idReto = ?";
         $resultado = mysqli_prepare($con, $sql2);
         mysqli_stmt_bind_param($resultado, "i", $idReto);

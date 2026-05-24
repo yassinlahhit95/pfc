@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// saca todos los pagos con nombre del estudiante y ciclo
+// todos los pagos con nombre del estudiante y ciclo
 function listarTodosLosPagos() {
     $con = obtenerConexion();
     $sql1 = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
@@ -68,16 +68,6 @@ function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $
     $sql1 = "UPDATE pagos SET idEstudiante=?, monto=?, tipoPago=?, fechaPago=?, fechaProximoPago=? WHERE idPago=?";
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "idsssi", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $idPago);
-    $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
-    return $ok;
-}
-
-function actualizarComprobantePago($idPago, $comprobante) {
-    $con = obtenerConexion();
-    $sql1 = "UPDATE pagos SET comprobante=? WHERE idPago=?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "si", $comprobante, $idPago);
     $ok = mysqli_stmt_execute($resultado);
     mysqli_close($con);
     return $ok;
