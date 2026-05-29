@@ -13,8 +13,17 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
     exit;
 }
 
-$asistencias = listarAsistenciasPorSesion($idSesion);
-$totalAsistentes = contarAsistenciaPorSesion($idSesion);
+// Paginación
+$itemsPorPagina = 20;
+$paginaActual = max(1, intval($_GET['pag'] ?? 1));
+
+$asistenciasCompleta = listarAsistenciasPorSesion($idSesion);
+$totalAsistentes = count($asistenciasCompleta);
+$totalPaginas = ceil($totalAsistentes / $itemsPorPagina);
+$paginaActual = min($paginaActual, max(1, $totalPaginas));
+
+$offsetAsistencias = ($paginaActual - 1) * $itemsPorPagina;
+$asistencias = array_slice($asistenciasCompleta, $offsetAsistencias, $itemsPorPagina);
 
 $tituloDelPagina = "AULAPRO | Asistencia - " . htmlspecialchars($sesion['titulo']);
 $seccionActual = 'aula';
@@ -104,6 +113,28 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php endforeach; ?>
       </tbody>
     </table>
+    <!-- PAGINACIÓN -->
+    <?php if ($totalPaginas > 1): ?>
+    <div style="border-top:1px solid var(--color-neutral-200);padding:var(--space-4) var(--space-5);margin-top:var(--space-3);">
+      <div class="pagination">
+        <?php if ($paginaActual > 1): ?>
+        <a href="?id=<?= $idSesion ?>&pag=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= $idSesion ?>&pag=<?= $paginaActual - 1 ?>" class="pagination-item" title="Anterior"><i class="fas fa-chevron-left"></i></a>
+        <?php endif; ?>
+
+        <?php for ($i = max(1, $paginaActual - 1); $i <= min($totalPaginas, $paginaActual + 1); $i++): ?>
+        <a href="?id=<?= $idSesion ?>&pag=<?= $i ?>" class="pagination-item <?= $i === $paginaActual ? 'active' : '' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+
+        <?php if ($paginaActual < $totalPaginas): ?>
+        <a href="?id=<?= $idSesion ?>&pag=<?= $paginaActual + 1 ?>" class="pagination-item" title="Siguiente"><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= $idSesion ?>&pag=<?= $totalPaginas ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
+        <?php endif; ?>
+
+        <span class="pagination-info"><?= $paginaActual ?>/<?= $totalPaginas ?></span>
+      </div>
+    </div>
+    <?php endif; ?>
   </div>
 </div>
 
@@ -112,17 +143,17 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
     <div style="background:white;padding:16px;border-radius:6px;border-left:4px solid var(--color-primary);">
       <div style="font-size:0.85rem;color:var(--color-neutral-500);">Total de Asistentes</div>
-      <div style="font-size:1.8rem;font-weight:bold;color:var(--color-primary);"><?= count($asistencias) ?></div>
+      <div style="font-size:1.8rem;font-weight:bold;color:var(--color-primary);"><?= $totalAsistentes ?></div>
     </div>
     <div style="background:white;padding:16px;border-radius:6px;border-left:4px solid var(--color-success);">
       <div style="font-size:0.85rem;color:var(--color-neutral-500);">Promedio de Permanencia</div>
       <div style="font-size:1.8rem;font-weight:bold;color:var(--color-success);">
         <?php
         $totalDuracion = 0;
-        foreach ($asistencias as $a) {
+        foreach ($asistenciasCompleta as $a) {
             $totalDuracion += $a['duracion'] ?? 0;
         }
-        $promedio = !empty($asistencias) ? floor($totalDuracion / count($asistencias)) : 0;
+        $promedio = !empty($asistenciasCompleta) ? floor($totalDuracion / count($asistenciasCompleta)) : 0;
         echo floor($promedio / 60) . 'h ' . ($promedio % 60) . 'm';
         ?>
       </div>

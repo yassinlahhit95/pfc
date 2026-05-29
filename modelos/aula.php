@@ -697,6 +697,32 @@ function actualizarEstadoSesion($idSesion, $estado) {
 
 function registrarAsistenciaSesion($idSesion, $idEstudiante, $horaUnion = null, $horaSalida = null, $duracion = null) {
     $con = obtenerConexion();
+
+    // Validar duración si se proporciona
+    if ($duracion !== null && $duracion < 0) {
+        mysqli_close($con);
+        return false;
+    }
+
+    // Si tanto horaUnion como horaSalida se proporcionan, calcular duración
+    if ($horaUnion && $horaSalida && $duracion === null) {
+        try {
+            $inicio = new DateTime($horaUnion);
+            $fin = new DateTime($horaSalida);
+            $diff = $fin->diff($inicio);
+            $duracion = ($diff->h * 60) + $diff->i;
+
+            // Rechazar si la duración calculada es negativa (fin antes de inicio)
+            if ($duracion < 0) {
+                mysqli_close($con);
+                return false;
+            }
+        } catch (Exception $e) {
+            mysqli_close($con);
+            return false;
+        }
+    }
+
     $hora = $horaUnion ?: date('H:i:s');
     $sql = "INSERT INTO aula_asistencia_sesion (idSesion, idEstudiante, horaUnion, horaSalida, duracion)
             VALUES (?,?,?,?,?)
