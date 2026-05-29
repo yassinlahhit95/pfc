@@ -127,6 +127,18 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
                 <a href="../aula/asistencia.php" class="enlace-menu <?= ($seccionActual == 'aula_asistencia') ? 'activo' : '' ?>">
                     <i class="fas fa-user-check"></i> <span>ASISTENCIAS</span>
                 </a>
+
+                <a href="../aula/tareas.php" class="enlace-menu <?= ($seccionActual == 'aula_tareas') ? 'activo' : '' ?>">
+                    <i class="fas fa-tasks"></i> <span>MIS TAREAS</span>
+                </a>
+
+                <a href="../aula/crear_tarea.php" class="enlace-menu <?= ($seccionActual == 'aula_crear_tarea') ? 'activo' : '' ?>">
+                    <i class="fas fa-plus-circle"></i> <span>CREAR TAREA</span>
+                </a>
+
+                <a href="../aula/entregas.php" class="enlace-menu <?= ($seccionActual == 'aula_entregas') ? 'activo' : '' ?>">
+                    <i class="fas fa-inbox"></i> <span>ENTREGAS</span>
+                </a>
             </div>
 
             <div class="seccion-del-menu">

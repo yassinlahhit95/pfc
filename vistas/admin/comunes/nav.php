@@ -169,6 +169,14 @@ $totalPrestamos_menu = contarPrestamosActivos();
                 <a href="../aula/asistencia.php" class="enlace-menu <?= ($seccion == 'aula_asistencia') ? 'activo' : '' ?>">
                     <i class="fas fa-user-check"></i> <span>ASISTENCIAS</span>
                 </a>
+
+                <a href="../aula/tareas.php" class="enlace-menu <?= ($seccion == 'aula_tareas') ? 'activo' : '' ?>">
+                    <i class="fas fa-tasks"></i> <span>TAREAS</span>
+                </a>
+
+                <a href="../aula/entregas.php" class="enlace-menu <?= ($seccion == 'aula_entregas') ? 'activo' : '' ?>">
+                    <i class="fas fa-inbox"></i> <span>ENTREGAS</span>
+                </a>
             </div>
 
             <div class="separador-menu-inferior">
