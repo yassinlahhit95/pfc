@@ -1,15 +1,13 @@
 <?php
-function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | Notas finales') {
-    $p = __DIR__ . '/../../config/secrets.php';
-    $key = '';
+function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | Sistema Académico') {
+    require_once __DIR__ . '/../../config/Config.php';
 
-    if (file_exists($p)) {
-        include $p;
-        $key = $brevo_api_key ?? '';
-    }
+    $config = Config::getInstance();
+    $key = $config->get('BREVO_API_KEY');
 
     if (empty($key)) {
-        error_log("Falta la API Key de Brevo en $p");
+        error_log("ERROR: Falta la API Key de Brevo. Verifica tu archivo .env");
+        $_SESSION['ultimo_error_email'] = "API Key de Brevo no configurada";
         return false;
     }
 

@@ -36,6 +36,7 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
 $modulo = obtenerModuloPorId($sesion['idModulo']);
 if (!$modulo) {
     $_SESSION['errores'] = 'No se encontró el módulo asociado';
+    Logger::error('Módulo no encontrado', ['modulo' => $sesion['idModulo']]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
 }
@@ -47,9 +48,12 @@ $estudiantes = listarEstudiantesPorCiclo($idCiclo);
 
 if (empty($estudiantes)) {
     $_SESSION['errores'] = 'No hay estudiantes en este ciclo';
+    Logger::warning('Sin estudiantes en ciclo', ['ciclo' => $idCiclo, 'modulo' => $sesion['idModulo']]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
 }
+
+error_log("DEBUG: Encontrados " . count($estudiantes) . " estudiantes en ciclo $idCiclo");
 
 // Generar HTML del email
 $fechaFormato = date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']));
@@ -131,14 +135,25 @@ HTML;
 // Enviar emails
 $enviados = 0;
 $errores = [];
+$emailsInvalidos = [];
 
 foreach ($estudiantes as $estudiante) {
-    $email = $estudiante['email'];
-    $nombre = $estudiante['nombre'];
+    $email = trim($estudiante['email'] ?? '');
+    $nombre = htmlspecialchars($estudiante['nombre'] ?? 'Estudiante');
+
+    if (empty($email)) {
+        error_log("DEBUG: Email vacío para estudiante: $nombre");
+        $emailsInvalidos[] = $nombre;
+        continue;
+    }
+
+    error_log("DEBUG: Enviando email a $email para $nombre");
 
     if (sendEmail($email, "Sesión en Vivo: $titulo", $htmlContent)) {
         $enviados++;
+        error_log("DEBUG: Email enviado exitosamente a $email");
     } else {
+        error_log("DEBUG: Error enviando email a $email. Último error: " . ($_SESSION['ultimo_error_email'] ?? 'Desconocido'));
         $errores[] = $nombre;
     }
 }
@@ -148,17 +163,26 @@ Logger::activity('SESION_ENVIADA', $idProfesor, [
     'idSesion' => $idSesion,
     'titulo' => $sesion['titulo'],
     'enviados' => $enviados,
+    'total' => count($estudiantes),
     'ciclo' => $idCiclo
 ]);
 
 // Preparar mensaje de resultado
 if ($enviados > 0) {
-    $_SESSION['exito'] = "Sesión enviada a $enviados estudiante" . ($enviados != 1 ? 's' : '');
+    $_SESSION['exito'] = "✅ Sesión enviada a $enviados estudiante" . ($enviados != 1 ? 's' : '');
     if (!empty($errores)) {
-        $_SESSION['exito'] .= ". Errores: " . implode(', ', $errores);
+        $_SESSION['exito'] .= " ⚠️ Error con: " . implode(', ', $errores);
+    }
+    if (!empty($emailsInvalidos)) {
+        $_SESSION['exito'] .= " ℹ️ Sin email: " . implode(', ', $emailsInvalidos);
     }
 } else {
-    $_SESSION['errores'] = 'No se pudo enviar la sesión a ningún estudiante';
+    error_log("DEBUG: Fallo total enviando sesión. Estudiantes encontrados: " . count($estudiantes));
+    if (!empty($emailsInvalidos)) {
+        $_SESSION['errores'] = 'Los estudiantes del ciclo no tienen emails registrados';
+    } else {
+        $_SESSION['errores'] = 'Error al enviar emails. Por favor intenta nuevamente o contacta con soporte.';
+    }
 }
 
 header("Location: ../../vistas/profesores/aula/sesiones.php");
