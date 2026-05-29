@@ -277,8 +277,12 @@ CREATE TABLE `aula_entregas` (
   `fechaEntrega` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `nota` decimal(4,2) DEFAULT NULL,
   `estado` enum('enviada','corregida') NOT NULL DEFAULT 'enviada',
+  `comentarioCalificacion` text DEFAULT NULL,
+  `archivoCorreccion` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idEntrega`),
   UNIQUE KEY `uk_aula_entrega` (`idTarea`,`idEstudiante`),
+  KEY `idx_tarea_estudiante` (`idTarea`, `idEstudiante`),
+  KEY `idx_estudiante_nota` (`idEstudiante`, `nota`),
   CONSTRAINT `fk_aulaentr_tar` FOREIGN KEY (`idTarea`)      REFERENCES `aula_tareas`    (`idTarea`)      ON DELETE CASCADE,
   CONSTRAINT `fk_aulaentr_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`    (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
