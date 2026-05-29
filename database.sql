@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS aulapro CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE aulapro;
-
 SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE TABLE `niveles` (
