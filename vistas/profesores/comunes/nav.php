@@ -114,6 +114,22 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
             </div>
 
             <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">AULA DIGITAL</p>
+
+                <a href="../aula/sesiones.php" class="enlace-menu <?= ($seccionActual == 'aula_sesiones') ? 'activo' : '' ?>">
+                    <i class="fas fa-video"></i> <span>MIS SESIONES VIVAS</span>
+                </a>
+
+                <a href="../aula/crear.php" class="enlace-menu <?= ($seccionActual == 'aula_crear') ? 'activo' : '' ?>">
+                    <i class="fas fa-plus-circle"></i> <span>CREAR SESIÓN</span>
+                </a>
+
+                <a href="../aula/asistencia.php" class="enlace-menu <?= ($seccionActual == 'aula_asistencia') ? 'activo' : '' ?>">
+                    <i class="fas fa-user-check"></i> <span>ASISTENCIAS</span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">COMUNICACIÓN</p>
 
                 <a href="../anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">

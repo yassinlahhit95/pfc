@@ -98,6 +98,18 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
             </div>
 
             <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">AULA DIGITAL</p>
+
+                <a href="../aula/sesiones.php" class="enlace-menu <?= ($seccionActual == 'aula_sesiones') ? 'activo' : '' ?>">
+                    <i class="fas fa-video"></i> <span>SESIONES VIVAS</span>
+                </a>
+
+                <a href="../aula/asistencia.php" class="enlace-menu <?= ($seccionActual == 'aula_asistencia') ? 'activo' : '' ?>">
+                    <i class="fas fa-clock"></i> <span>MI ASISTENCIA</span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">PORTAL</p>
 
                 <a href="../anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
