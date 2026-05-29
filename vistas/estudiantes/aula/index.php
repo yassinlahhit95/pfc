@@ -1,84 +1,96 @@
 <?php
 session_start();
-$idEstudiante = $_SESSION['idEstudiante'] ?? '';
-if (!$idEstudiante) { header("Location: ../../login.php"); exit; }
 
-require_once __DIR__ . "/../../../modelos/aula.php";
-require_once __DIR__ . "/../../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../../modelos/modulos.php";
+if (!isset($_SESSION['idEstudiante'])) {
+    header("Location: ../../login.php");
+    exit;
+}
 
-$estudiante = obtenerEstudiantePorId($idEstudiante);
-$idCiclo    = $estudiante['idCiclo'] ?? 0;
-$modulos    = listarModulosPorCiclo($idCiclo);
-
-$notifNoLeidas = contarNotificacionesNoLeidasAula($idEstudiante, 'estudiante');
-
-$tituloDelPagina = "AULAPRO | AULA DIGITAL";
-$seccionActual   = 'aula';
+$tituloDelPagina = 'AULAPRO | AULA DIGITAL';
+$seccionActual = 'aula_index';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-  <div>
     <h1>AULA DIGITAL</h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;"><?= htmlspecialchars($estudiante['nombreCiclo'] ?? '') ?> · <?= count($modulos) ?> módulos</p>
-  </div>
-  <?php if ($notifNoLeidas > 0): ?>
-  <div style="position:relative;">
-    <button id="aulaBell" class="boton-secundario" style="position:relative;">
-      <i class="fas fa-bell"></i>
-      <span style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><?= $notifNoLeidas ?></span>
-    </button>
-    <div id="aulaNotifDropdown" class="aula-notif-dropdown">
-      <div class="aula-notif-dropdown-header">
-        <h4>Notificaciones</h4>
-        <span style="font-size:0.75rem;color:#94a3b8;"><?= $notifNoLeidas ?> nuevas</span>
-      </div>
-      <?php foreach (listarNotificacionesAula($idEstudiante, 'estudiante', 10) as $n): ?>
-      <div class="aula-notif-item <?= !$n['leida'] ? 'no-leida' : '' ?>">
-        <div class="aula-notif-item-titulo"><?= htmlspecialchars($n['titulo']) ?></div>
-        <div class="aula-notif-item-fecha"><?= date('d/m/Y H:i', strtotime($n['fechaCreacion'])) ?></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-  <?php endif; ?>
+    <p class="texto-suave">Accede a sesiones vivas, tareas y entregas</p>
 </div>
 
-<?php if (empty($modulos)): ?>
-<div class="panel" style="text-align:center;padding:60px 20px;margin-top:20px;">
-  <i class="fas fa-chalkboard" style="font-size:3rem;color:#e2e8f0;display:block;margin-bottom:16px;"></i>
-  <p class="texto-suave">No hay módulos disponibles aún.</p>
-</div>
-<?php else: ?>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px;">
-  <?php foreach ($modulos as $modulo):
-    $nArchivos = contarArchivosPorModuloAula($modulo['idModulo']);
-    $nTareas   = count(listarTareasPorModuloAula($modulo['idModulo']));
-    // Contar tareas pendientes del estudiante
-    $tareasList = listarTareasPorModuloAula($modulo['idModulo']);
-    $pendientes = 0;
-    foreach ($tareasList as $t) {
-      if (!obtenerEntregaAula($t['idTarea'], $idEstudiante)) $pendientes++;
-    }
-  ?>
-  <a href="modulo.php?id=<?= $modulo['idModulo'] ?>" class="ejercicio-card">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-      <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;">
-        <i class="fas fa-book"></i>
-      </div>
-      <p class="ejercicio-card-titulo" style="margin:0;flex:1;"><?= htmlspecialchars($modulo['nombreModulo']) ?></p>
+<div class="contenedor-cards-aula">
+    <div class="card-aula">
+        <div class="card-icono">
+            <i class="fas fa-video"></i>
+        </div>
+        <div class="card-contenido">
+            <h3>SESIONES VIVAS</h3>
+            <p>Accede a las clases en vivo de tus módulos. Participa en tiempo real y registra tu asistencia.</p>
+            <div class="card-stats">
+                <span><i class="fas fa-play-circle"></i> Próximas y en directo</span>
+            </div>
+        </div>
+        <a href="sesiones.php" class="card-boton">
+            <span>Ir a Sesiones</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
-    <div class="ejercicio-card-footer">
-      <span class="ejercicio-fecha"><i class="fas fa-file"></i> <?= $nArchivos ?> archivos</span>
-      <span class="ejercicio-fecha"><i class="fas fa-tasks"></i> <?= $nTareas ?> tareas</span>
-      <?php if ($pendientes > 0): ?>
-      <span class="badge-estado badge-pendiente"><i class="fas fa-exclamation"></i> <?= $pendientes ?> pendiente<?= $pendientes>1?'s':'' ?></span>
-      <?php endif; ?>
+
+    <div class="card-aula">
+        <div class="card-icono">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <div class="card-contenido">
+            <h3>TAREAS</h3>
+            <p>Visualiza todas las tareas publicadas por tus profesores y entrega tus trabajos en el plazo establecido.</p>
+            <div class="card-stats">
+                <span><i class="fas fa-clipboard-check"></i> Pendientes y completadas</span>
+            </div>
+        </div>
+        <a href="tareas.php" class="card-boton">
+            <span>Ver Tareas</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
-  </a>
-  <?php endforeach; ?>
+
+    <div class="card-aula">
+        <div class="card-icono">
+            <i class="fas fa-file-upload"></i>
+        </div>
+        <div class="card-contenido">
+            <h3>MIS ENTREGAS</h3>
+            <p>Consulta el historial de todas tus entregas, calificaciones y la retroalimentación de tus profesores.</p>
+            <div class="card-stats">
+                <span><i class="fas fa-star"></i> Calificaciones y comentarios</span>
+            </div>
+        </div>
+        <a href="mis_entregas.php" class="card-boton">
+            <span>Ver Entregas</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
 </div>
-<?php endif; ?>
+
+<div class="info-aula-digital">
+    <div class="info-item">
+        <i class="fas fa-lightbulb"></i>
+        <div>
+            <h4>¿Cómo funciona?</h4>
+            <p>En AULA DIGITAL encontrarás todas las herramientas que necesitas para tu formación: asiste a las sesiones vivas, realiza las tareas asignadas y revisa el progreso de tus entregas.</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <i class="fas fa-bell"></i>
+        <div>
+            <h4>Notificaciones</h4>
+            <p>Recibirás notificaciones automáticas cuando se publiquen nuevas tareas, cuando tus profesores califiquen tus entregas y cuando se aproximen las sesiones vivas.</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <i class="fas fa-chart-line"></i>
+        <div>
+            <h4>Seguimiento</h4>
+            <p>Monitorea tu progreso en tiempo real: visualiza tus calificaciones, estadísticas de asistencia y el estado de todas tus entregas.</p>
+        </div>
+    </div>
+</div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

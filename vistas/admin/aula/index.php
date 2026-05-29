@@ -1,19 +1,19 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['idProfesor'])) {
+if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
     exit;
 }
 
 $tituloDelPagina = 'AULAPRO | AULA DIGITAL';
-$seccionActual = 'aula_index';
+$seccion = 'aula_index';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <h1>AULA DIGITAL</h1>
-    <p class="texto-suave">Gestiona sesiones vivas, tareas y entregas</p>
+    <p class="texto-suave">Monitorea sesiones vivas, tareas y entregas de todo el sistema</p>
 </div>
 
 <div class="contenedor-cards-aula">
@@ -23,13 +23,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="card-contenido">
             <h3>SESIONES VIVAS</h3>
-            <p>Crea y gestiona tus clases en vivo. Administra asistencias y sigue el progreso de tus estudiantes en tiempo real.</p>
+            <p>Monitorea todas las sesiones vivas del sistema. Visualiza estadísticas de asistencia y desempeño por profesor.</p>
             <div class="card-stats">
-                <span><i class="fas fa-users"></i> Crea nuevas sesiones</span>
+                <span><i class="fas fa-chart-line"></i> Estadísticas globales</span>
             </div>
         </div>
         <a href="sesiones.php" class="card-boton">
-            <span>Mis Sesiones</span>
+            <span>Ver Sesiones</span>
             <i class="fas fa-arrow-right"></i>
         </a>
     </div>
@@ -40,9 +40,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="card-contenido">
             <h3>TAREAS</h3>
-            <p>Asigna tareas a tus estudiantes, gestiona entregas y califica el trabajo realizado con retroalimentación personalizada.</p>
+            <p>Monitorea todas las tareas asignadas en el sistema. Analiza el desempeño agregado y distribución de trabajo.</p>
             <div class="card-stats">
-                <span><i class="fas fa-pen"></i> Crear y gestionar tareas</span>
+                <span><i class="fas fa-bar-chart"></i> Reportes por módulo</span>
             </div>
         </div>
         <a href="tareas.php" class="card-boton">
@@ -53,16 +53,16 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="card-aula">
         <div class="card-icono">
-            <i class="fas fa-inbox"></i>
+            <i class="fas fa-file-pdf"></i>
         </div>
         <div class="card-contenido">
             <h3>ENTREGAS</h3>
-            <p>Revisa todas las entregas de tus estudiantes, proporciona calificaciones y feedback detallado sobre su desempeño.</p>
+            <p>Visualiza el registro completo de entregas de todos los estudiantes. Accede a calificaciones y retroalimentación.</p>
             <div class="card-stats">
-                <span><i class="fas fa-clipboard-list"></i> Calificar entregas</span>
+                <span><i class="fas fa-list-check"></i> Datos históricos</span>
             </div>
         </div>
-        <a href="sesiones.php" class="card-boton">
+        <a href="entregas.php" class="card-boton">
             <span>Ver Entregas</span>
             <i class="fas fa-arrow-right"></i>
         </a>
@@ -71,24 +71,24 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="info-aula-digital">
     <div class="info-item">
-        <i class="fas fa-chalkboard-teacher"></i>
+        <i class="fas fa-binoculars"></i>
         <div>
-            <h4>Gestiona tu Aula</h4>
-            <p>Administra todas las actividades de tus estudiantes en un único lugar: sesiones vivas, tareas, entregas y calificaciones.</p>
+            <h4>Supervisión Total</h4>
+            <p>Acceso centralizado a todas las actividades de AULA DIGITAL en el sistema. Monitorea el desempeño global de profesores y estudiantes.</p>
         </div>
     </div>
     <div class="info-item">
-        <i class="fas fa-chart-bar"></i>
+        <i class="fas fa-chart-area"></i>
         <div>
-            <h4>Seguimiento</h4>
-            <p>Monitorea el progreso de cada estudiante con estadísticas detalladas de asistencia, entregas y calificaciones.</p>
+            <h4>Análisis y Reportes</h4>
+            <p>Visualiza estadísticas detalladas de sesiones vivas, entregas completadas y distribución de calificaciones por ciclo y módulo.</p>
         </div>
     </div>
     <div class="info-item">
-        <i class="fas fa-bell"></i>
+        <i class="fas fa-cogs"></i>
         <div>
-            <h4>Notificaciones</h4>
-            <p>Recibe notificaciones automáticas de nuevas entregas, permitiéndote estar siempre actualizado sobre el trabajo de tus estudiantes.</p>
+            <h4>Gestión Integral</h4>
+            <p>Mantén la visibilidad completa del ecosistema educativo digital. Identifica tendencias y áreas de mejora en el proceso educativo.</p>
         </div>
     </div>
 </div>
