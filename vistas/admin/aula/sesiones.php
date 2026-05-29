@@ -22,14 +22,14 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 mysqli_close($con);
 
-$titulo_pagina = 'AULAPRO | SESIONES VIVAS';
+$titulo_pagina = 'AULAPRO | AULA DIGITAL';
 $seccion = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>SESIONES VIVAS - MONITOREO GENERAL</h1>
-    <p class="texto-suave">Visualización y gestión de todas las sesiones vivas del sistema</p>
+    <h1>AULA DIGITAL</h1>
+    <p class="texto-suave">Monitorea todas las sesiones en vivo y gestiona el sistema académico</p>
 </div>
 
 <?php if (empty($sesiones)) { ?>
@@ -83,9 +83,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <strong><?= $totalAsist['total'] ?? 0 ?></strong> estudiantes
                     </td>
                     <td>
-                        <a href="detalles.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Ver detalles">
-                            <i class="fas fa-eye"></i>
-                        </a>
+                        <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= htmlspecialchars($sesion['enlaceReunion']) ?>')">
+                            <i class="fas fa-copy"></i>
+                        </button>
                     </td>
                 </tr>
                 <?php } ?>

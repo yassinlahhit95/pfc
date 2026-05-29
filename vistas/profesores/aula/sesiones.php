@@ -16,19 +16,19 @@ usort($sesiones, function($a, $b) {
     return strtotime($b['fechaSesion'] . ' ' . $b['horaSesion']) - strtotime($a['fechaSesion'] . ' ' . $a['horaSesion']);
 });
 
-$tituloDelPagina = 'AULAPRO | MIS SESIONES VIVAS';
+$tituloDelPagina = 'AULAPRO | AULA DIGITAL';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MIS SESIONES VIVAS</h1>
-    <p class="texto-suave">Gestiona tus clases en vivo</p>
+    <h1>AULA DIGITAL</h1>
+    <p class="texto-suave">Gestiona tus sesiones en vivo y conecta con tus estudiantes</p>
 </div>
 
 <div style="margin-bottom: 20px; text-align: right;">
     <a href="crear.php" class="boton-primario">
-        <i class="fas fa-plus-circle"></i> NUEVA SESIÓN
+        <i class="fas fa-plus-circle"></i> CREAR SESIÓN
     </a>
 </div>
 
@@ -80,8 +80,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <strong><?= $totalAsistencias ?></strong> estudiantes
                     </td>
                     <td>
-                        <a href="detalles.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Ver detalles">
-                            <i class="fas fa-eye"></i>
+                        <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= htmlspecialchars($sesion['enlaceReunion']) ?>')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <a href="../../../controladores/aula/enviar_sesion_brevo.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Enviar a estudiantes del ciclo" onclick="return confirm('¿Enviar el enlace de esta sesión a todos los estudiantes del ciclo?')">
+                            <i class="fas fa-envelope"></i>
                         </a>
                         <a href="editar.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Editar">
                             <i class="fas fa-edit"></i>

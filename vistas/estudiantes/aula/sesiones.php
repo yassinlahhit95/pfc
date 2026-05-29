@@ -29,14 +29,14 @@ usort($todasLasSesiones, function($a, $b) {
     return strtotime($b['fechaSesion'] . ' ' . $b['horaSesion']) - strtotime($a['fechaSesion'] . ' ' . $a['horaSesion']);
 });
 
-$tituloDelPagina = 'AULAPRO | SESIONES VIVAS';
+$tituloDelPagina = 'AULAPRO | AULA DIGITAL';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>SESIONES VIVAS</h1>
-    <p class="texto-suave">Accede a las clases en vivo de tus módulos</p>
+    <h1>AULA DIGITAL</h1>
+    <p class="texto-suave">Accede a las clases en vivo y gestiona tu aprendizaje</p>
 </div>
 
 <?php if (empty($todasLasSesiones)) { ?>
