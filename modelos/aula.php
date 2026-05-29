@@ -738,3 +738,56 @@ function contarAsistenciaPorSesion($idSesion) {
     mysqli_close($con);
     return intval($f['total']);
 }
+
+// ═══════════════════════════════════════
+// FUNCIONES AUXILIARES
+// ═══════════════════════════════════════
+
+function obtenerEstudiantesPorModulo($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT DISTINCT e.*
+            FROM estudiantes e
+            JOIN ciclo_profesor cp ON e.idCiclo = cp.idCiclo
+            WHERE cp.idCiclo = (SELECT idCiclo FROM modulos WHERE idModulo = ?)
+            AND e.idCiclo IS NOT NULL";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function notificarEstudiantesPorModulo($idModulo, $tipo, $titulo, $mensaje, $idReferencia = null, $tipoReferencia = null) {
+    $estudiantes = obtenerEstudiantesPorModulo($idModulo);
+    foreach ($estudiantes as $est) {
+        insertarNotificacionAula($est['idEstudiante'], 'estudiante', $tipo, $titulo, $mensaje, $idReferencia, $tipoReferencia);
+    }
+}
+
+function validarFechaHoraSesion($fechaSesion, $horaSesion) {
+    try {
+        $ahora = new DateTime();
+        $fechaHoraSesion = new DateTime($fechaSesion . ' ' . $horaSesion);
+
+        if ($fechaHoraSesion <= $ahora) {
+            return "La fecha y hora de la sesión debe ser en el futuro";
+        }
+        return null;
+    } catch (Exception $e) {
+        return "Formato de fecha u hora inválido";
+    }
+}
+
+function validarEnlaceReunion($enlace) {
+    if (empty($enlace)) {
+        return null;
+    }
+
+    if (!filter_var($enlace, FILTER_VALIDATE_URL)) {
+        return "El enlace debe ser una URL válida (ej: https://meet.google.com/...)";
+    }
+    return null;
+}

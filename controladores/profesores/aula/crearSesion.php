@@ -20,6 +20,18 @@ if (!$titulo) $errores[] = "Título requerido";
 if (!$fechaSesion) $errores[] = "Fecha requerida";
 if (!$horaSesion) $errores[] = "Hora requerida";
 
+// Validar fecha y hora
+if ($fechaSesion && $horaSesion) {
+    $errFecha = validarFechaHoraSesion($fechaSesion, $horaSesion);
+    if ($errFecha) $errores[] = $errFecha;
+}
+
+// Validar enlace de reunión
+if ($enlaceReunion) {
+    $errEnlace = validarEnlaceReunion($enlaceReunion);
+    if ($errEnlace) $errores[] = $errEnlace;
+}
+
 if ($errores) {
     $_SESSION['errores'] = implode(', ', $errores);
     header("Location: ../../../vistas/profesores/aula/modulos.php?idCiclo=" . ($_POST['idCiclo'] ?? 0));
@@ -36,7 +48,17 @@ if (!$modulo || $modulo['idProfesor'] != $idProfesor) {
 $idSesion = crearSesionViva($idModulo, $idProfesor, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma);
 
 if ($idSesion) {
-    $_SESSION['exito'] = "Sesión creada exitosamente";
+    // Notificar a todos los estudiantes del módulo
+    notificarEstudiantesPorModulo(
+        $idModulo,
+        'sesion_nueva',
+        'Nueva sesión viva: ' . $titulo,
+        'Se ha creado una nueva sesión viva en ' . $modulo['nombreModulo'] . ' para el ' . date('d/m/Y H:i', strtotime($fechaSesion . ' ' . $horaSesion)),
+        $idSesion,
+        'sesion'
+    );
+
+    $_SESSION['exito'] = "Sesión creada exitosamente y se notificó a los estudiantes";
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . $idModulo);
 } else {
     $_SESSION['errores'] = "Error al crear la sesión";

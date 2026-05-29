@@ -19,6 +19,18 @@ if (!$titulo) $errores[] = "Título requerido";
 if (!$fechaSesion) $errores[] = "Fecha requerida";
 if (!$horaSesion) $errores[] = "Hora requerida";
 
+// Validar fecha y hora
+if ($fechaSesion && $horaSesion) {
+    $errFecha = validarFechaHoraSesion($fechaSesion, $horaSesion);
+    if ($errFecha) $errores[] = $errFecha;
+}
+
+// Validar enlace de reunión
+if ($enlaceReunion) {
+    $errEnlace = validarEnlaceReunion($enlaceReunion);
+    if ($errEnlace) $errores[] = $errEnlace;
+}
+
 if ($errores) {
     $_SESSION['errores'] = implode(', ', $errores);
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . ($_POST['idModulo'] ?? 0));
@@ -35,7 +47,17 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
 $ok = actualizarSesionViva($idSesion, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma);
 
 if ($ok) {
-    $_SESSION['exito'] = "Sesión actualizada";
+    // Notificar a estudiantes sobre cambios en la sesión
+    notificarEstudiantesPorModulo(
+        $sesion['idModulo'],
+        'sesion_modificada',
+        'Sesión actualizada: ' . $titulo,
+        'La sesión ha sido actualizada. Nueva fecha: ' . date('d/m/Y H:i', strtotime($fechaSesion . ' ' . $horaSesion)),
+        $idSesion,
+        'sesion'
+    );
+
+    $_SESSION['exito'] = "Sesión actualizada y se notificó a los estudiantes";
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . $sesion['idModulo']);
 } else {
     $_SESSION['errores'] = "Error al actualizar la sesión";
