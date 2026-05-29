@@ -16,6 +16,10 @@ usort($sesiones, function($a, $b) {
     return strtotime($b['fechaSesion'] . ' ' . $b['horaSesion']) - strtotime($a['fechaSesion'] . ' ' . $a['horaSesion']);
 });
 
+$exito = $_SESSION['exito'] ?? '';
+$errores = $_SESSION['errores'] ?? '';
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $tituloDelPagina = 'AULAPRO | AULA DIGITAL';
 $seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -25,6 +29,20 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>AULA DIGITAL</h1>
     <p class="texto-suave">Gestiona tus sesiones en vivo y conecta con tus estudiantes</p>
 </div>
+
+<?php if (!empty($exito)) { ?>
+    <div class="alerta-exito" style="margin-bottom: 20px;">
+        <i class="fas fa-check-circle"></i>
+        <p><?= htmlspecialchars($exito) ?></p>
+    </div>
+<?php } ?>
+
+<?php if (!empty($errores)) { ?>
+    <div class="alerta-error" style="margin-bottom: 20px;">
+        <i class="fas fa-exclamation-circle"></i>
+        <p><?= htmlspecialchars($errores) ?></p>
+    </div>
+<?php } ?>
 
 <div style="margin-bottom: 20px; text-align: right;">
     <a href="crear.php" class="boton-primario">
