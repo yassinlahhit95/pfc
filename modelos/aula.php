@@ -1,0 +1,740 @@
+<?php
+require_once __DIR__ . "/conectar.php";
+
+// ═══════════════════════════════════════
+// CARPETAS
+// ═══════════════════════════════════════
+
+function listarCarpetasPorModuloAula($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT c.*,
+                   (SELECT COUNT(*) FROM aula_archivos a WHERE a.idCarpeta = c.idCarpeta) AS totalArchivos
+            FROM aula_carpetas c
+            WHERE c.idModulo = ?
+            ORDER BY c.fechaCreacion ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function obtenerCarpetaAulaPorId($idCarpeta) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM aula_carpetas WHERE idCarpeta = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return $fila;
+}
+
+function insertarCarpetaAula($nombre, $idModulo, $idProfesor, $color) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_carpetas (nombre, idModulo, idProfesor, color) VALUES (?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "siis", $nombre, $idModulo, $idProfesor, $color);
+    $ok = mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($con);
+    mysqli_close($con);
+    return $ok ? $id : false;
+}
+
+function actualizarCarpetaAula($idCarpeta, $nombre, $color) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_carpetas SET nombre=?, color=? WHERE idCarpeta=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $nombre, $color, $idCarpeta);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function borrarCarpetaAula($idCarpeta) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM aula_carpetas WHERE idCarpeta=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+// ═══════════════════════════════════════
+// ARCHIVOS
+// ═══════════════════════════════════════
+
+function listarArchivosPorModuloAula($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT a.*, p.nombreProfesor,
+                   c.nombre AS nombreCarpeta, c.color AS colorCarpeta
+            FROM aula_archivos a
+            JOIN profesores p ON a.idProfesor = p.idProfesor
+            LEFT JOIN aula_carpetas c ON a.idCarpeta = c.idCarpeta
+            WHERE a.idModulo = ?
+            ORDER BY c.idCarpeta ASC, a.fechaSubida DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function listarArchivosPorCarpetaAula($idCarpeta) {
+    $con = obtenerConexion();
+    $sql = "SELECT a.*, p.nombreProfesor
+            FROM aula_archivos a
+            JOIN profesores p ON a.idProfesor = p.idProfesor
+            WHERE a.idCarpeta = ?
+            ORDER BY a.fechaSubida DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function obtenerArchivoPorId($idArchivo) {
+    $con = obtenerConexion();
+    $sql = "SELECT a.*, p.nombreProfesor, m.nombreModulo
+            FROM aula_archivos a
+            JOIN profesores p ON a.idProfesor = p.idProfesor
+            JOIN modulos m ON a.idModulo = m.idModulo
+            WHERE a.idArchivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idArchivo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return $fila;
+}
+
+function insertarArchivoAula($nombreArchivo, $nombreOriginal, $extension, $tamanio, $descripcion, $idCarpeta, $idModulo, $idProfesor) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_archivos (nombreArchivo, nombreOriginal, extension, tamanio, descripcion, idCarpeta, idModulo, idProfesor)
+            VALUES (?,?,?,?,?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    $idCarp = $idCarpeta ?: null;
+    mysqli_stmt_bind_param($stmt, "sssissii", $nombreArchivo, $nombreOriginal, $extension, $tamanio, $descripcion, $idCarp, $idModulo, $idProfesor);
+    $ok = mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($con);
+    mysqli_close($con);
+    return $ok ? $id : false;
+}
+
+function borrarArchivoAula($idArchivo) {
+    $archivo = obtenerArchivoPorId($idArchivo);
+    if (!$archivo) return false;
+    $ruta = __DIR__ . "/../public/uploads/aula/archivos/" . $archivo['nombreArchivo'];
+    if (file_exists($ruta)) unlink($ruta);
+    $con = obtenerConexion();
+    $sql = "DELETE FROM aula_archivos WHERE idArchivo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idArchivo);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function contarArchivosPorModuloAula($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) AS total FROM aula_archivos WHERE idModulo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $f = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return intval($f['total']);
+}
+
+// ═══════════════════════════════════════
+// TAREAS
+// ═══════════════════════════════════════
+
+function listarTareasPorModuloAula($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT t.*, p.nombreProfesor,
+                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea) AS totalEntregas,
+                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea AND e.estado = 'corregida') AS totalCorregidas
+            FROM aula_tareas t
+            JOIN profesores p ON t.idProfesor = p.idProfesor
+            WHERE t.idModulo = ? AND t.publicado = 1
+            ORDER BY t.fechaCreacion DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function listarTodasTareasPorModuloAula($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT t.*, p.nombreProfesor,
+                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea) AS totalEntregas
+            FROM aula_tareas t
+            JOIN profesores p ON t.idProfesor = p.idProfesor
+            WHERE t.idModulo = ?
+            ORDER BY t.fechaCreacion DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function obtenerTareaPorIdAula($idTarea) {
+    $con = obtenerConexion();
+    $sql = "SELECT t.*, p.nombreProfesor, m.nombreModulo, m.idCiclo
+            FROM aula_tareas t
+            JOIN profesores p ON t.idProfesor = p.idProfesor
+            JOIN modulos m ON t.idModulo = m.idModulo
+            WHERE t.idTarea = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return $fila;
+}
+
+function insertarTareaAula($titulo, $descripcion, $idModulo, $idProfesor, $archivoAdjunto) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_tareas (titulo, descripcion, idModulo, idProfesor, archivoAdjunto) VALUES (?,?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    $arch = $archivoAdjunto ?: null;
+    mysqli_stmt_bind_param($stmt, "ssiis", $titulo, $descripcion, $idModulo, $idProfesor, $arch);
+    $ok = mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($con);
+    mysqli_close($con);
+    return $ok ? $id : false;
+}
+
+function editarTareaAula($idTarea, $titulo, $descripcion) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_tareas SET titulo=?, descripcion=? WHERE idTarea=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $titulo, $descripcion, $idTarea);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function togglePublicadoTareaAula($idTarea) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_tareas SET publicado = 1 - publicado WHERE idTarea=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function moverArchivoAula($idArchivo, $idCarpeta) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_archivos SET idCarpeta=? WHERE idArchivo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    $idCarp = $idCarpeta ?: null;
+    mysqli_stmt_bind_param($stmt, "ii", $idCarp, $idArchivo);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function contarEstudiantesCicloAula($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $f = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return intval($f['total']);
+}
+
+function borrarTareaAula($idTarea) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM aula_tareas WHERE idTarea=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+// ═══════════════════════════════════════
+// ENTREGAS
+// ═══════════════════════════════════════
+
+function obtenerEntregaAula($idTarea, $idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM aula_entregas WHERE idTarea=? AND idEstudiante=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idTarea, $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return $fila;
+}
+
+function listarEntregasPorTareaAula($idTarea) {
+    $con = obtenerConexion();
+    $sql = "SELECT e.*, est.nombreEstudiante, est.emailEstudiante
+            FROM aula_entregas e
+            JOIN estudiantes est ON e.idEstudiante = est.idEstudiante
+            WHERE e.idTarea = ?
+            ORDER BY e.fechaEntrega DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function enviarEntregaAula($idTarea, $idEstudiante, $archivoEntrega, $respuesta) {
+    $con = obtenerConexion();
+    $existing = "SELECT idEntrega, version FROM aula_entregas WHERE idTarea=? AND idEstudiante=?";
+    $s = mysqli_prepare($con, $existing);
+    mysqli_stmt_bind_param($s, "ii", $idTarea, $idEstudiante);
+    mysqli_stmt_execute($s);
+    mysqli_stmt_store_result($s);
+    mysqli_stmt_bind_result($s, $idEntrega, $version);
+    mysqli_stmt_fetch($s);
+    $existe = mysqli_stmt_num_rows($s) > 0;
+
+    if ($existe) {
+        // Guardar versión anterior
+        $vSql = "INSERT INTO aula_versiones_entrega (idTarea, idEstudiante, archivoEntrega, respuesta, version)
+                 SELECT idTarea, idEstudiante, archivoEntrega, respuesta, version
+                 FROM aula_entregas WHERE idTarea=? AND idEstudiante=?";
+        $vs = mysqli_prepare($con, $vSql);
+        mysqli_stmt_bind_param($vs, "ii", $idTarea, $idEstudiante);
+        mysqli_stmt_execute($vs);
+
+        $nuevaVersion = $version + 1;
+        if ($archivoEntrega) {
+            $uSql = "UPDATE aula_entregas SET archivoEntrega=?, respuesta=?, version=?, fechaEntrega=NOW(), estado='enviada' WHERE idTarea=? AND idEstudiante=?";
+            $us = mysqli_prepare($con, $uSql);
+            mysqli_stmt_bind_param($us, "ssiii", $archivoEntrega, $respuesta, $nuevaVersion, $idTarea, $idEstudiante);
+        } else {
+            $uSql = "UPDATE aula_entregas SET respuesta=?, version=?, fechaEntrega=NOW(), estado='enviada' WHERE idTarea=? AND idEstudiante=?";
+            $us = mysqli_prepare($con, $uSql);
+            mysqli_stmt_bind_param($us, "siii", $respuesta, $nuevaVersion, $idTarea, $idEstudiante);
+        }
+        $ok = mysqli_stmt_execute($us);
+    } else {
+        $iSql = "INSERT INTO aula_entregas (idTarea, idEstudiante, archivoEntrega, respuesta) VALUES (?,?,?,?)";
+        $is = mysqli_prepare($con, $iSql);
+        mysqli_stmt_bind_param($is, "iiss", $idTarea, $idEstudiante, $archivoEntrega, $respuesta);
+        $ok = mysqli_stmt_execute($is);
+    }
+    mysqli_close($con);
+    return $ok;
+}
+
+function calificarEntregaAula($idEntrega, $nota) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_entregas SET nota=?, estado='corregida' WHERE idEntrega=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "di", $nota, $idEntrega);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function listarVersionesPorEntregaAula($idTarea, $idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM aula_versiones_entrega WHERE idTarea=? AND idEstudiante=? ORDER BY version DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idTarea, $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+// ═══════════════════════════════════════
+// COMENTARIOS / FEEDBACK
+// ═══════════════════════════════════════
+
+function listarComentariosPorEntregaAula($idEntrega) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM aula_comentarios WHERE idEntrega=? ORDER BY fechaComentario ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEntrega);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function insertarComentarioAula($idEntrega, $idUsuario, $tipoUsuario, $mensaje, $archivoCorreccion) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_comentarios (idEntrega, idUsuario, tipoUsuario, mensaje, archivoCorreccion) VALUES (?,?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    $arch = $archivoCorreccion ?: null;
+    mysqli_stmt_bind_param($stmt, "iisss", $idEntrega, $idUsuario, $tipoUsuario, $mensaje, $arch);
+    $ok = mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($con);
+    mysqli_close($con);
+    return $ok ? $id : false;
+}
+
+// ═══════════════════════════════════════
+// NOTIFICACIONES
+// ═══════════════════════════════════════
+
+function insertarNotificacionAula($idUsuario, $tipoUsuario, $tipo, $titulo, $mensaje, $idReferencia = null, $tipoReferencia = null) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_notificaciones (idUsuario, tipoUsuario, tipo, titulo, mensaje, idReferencia, tipoReferencia)
+            VALUES (?,?,?,?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "issssIs", $idUsuario, $tipoUsuario, $tipo, $titulo, $mensaje, $idReferencia, $tipoReferencia);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function contarNotificacionesNoLeidasAula($idUsuario, $tipoUsuario) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) AS total FROM aula_notificaciones WHERE idUsuario=? AND tipoUsuario=? AND leida=0";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "is", $idUsuario, $tipoUsuario);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $f = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return intval($f['total']);
+}
+
+function listarNotificacionesAula($idUsuario, $tipoUsuario, $limite = 15) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM aula_notificaciones WHERE idUsuario=? AND tipoUsuario=?
+            ORDER BY fechaCreacion DESC LIMIT ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "isi", $idUsuario, $tipoUsuario, $limite);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function marcarTodasLeidasAula($idUsuario, $tipoUsuario) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_notificaciones SET leida=1 WHERE idUsuario=? AND tipoUsuario=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "is", $idUsuario, $tipoUsuario);
+    mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+}
+
+function notificarEstudiantesCicloAula($idCiclo, $tipo, $titulo, $mensaje, $idRef = null, $tipoRef = null) {
+    $con = obtenerConexion();
+    $sql = "SELECT idEstudiante FROM estudiantes WHERE idCiclo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($f = mysqli_fetch_assoc($res)) {
+        insertarNotificacionAula($f['idEstudiante'], 'estudiante', $tipo, $titulo, $mensaje, $idRef, $tipoRef);
+    }
+    mysqli_close($con);
+}
+
+// ═══════════════════════════════════════
+// ANALYTICS - TRACKING DE USO
+// ═══════════════════════════════════════
+
+function registrarAnalytics($idUsuario, $tipoUsuario, $accion, $idModulo = null, $metadatos = null) {
+    $con = obtenerConexion();
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $userAgent = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
+    $metadatos_json = $metadatos ? json_encode($metadatos) : null;
+
+    $sql = "INSERT INTO aula_analytics (idUsuario, tipoUsuario, accion, idModulo, ip, userAgent, metadatos)
+            VALUES (?,?,?,?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "issiiss", $idUsuario, $tipoUsuario, $accion, $idModulo, $ip, $userAgent, $metadatos_json);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function obtenerAnalyticsPorModulo($idModulo, $fechaInicio = null, $fechaFin = null) {
+    $con = obtenerConexion();
+    $fechaInicio = $fechaInicio ?? date('Y-m-d', strtotime('-30 days'));
+    $fechaFin = $fechaFin ?? date('Y-m-d');
+
+    $sql = "SELECT
+                accion,
+                COUNT(*) as total,
+                COUNT(DISTINCT idUsuario) as usuarios,
+                DATE(fechaCreacion) as fecha
+            FROM aula_analytics
+            WHERE idModulo=? AND DATE(fechaCreacion) BETWEEN ? AND ?
+            GROUP BY accion, DATE(fechaCreacion)
+            ORDER BY fecha DESC, total DESC";
+
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "iss", $idModulo, $fechaInicio, $fechaFin);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $analytics = [];
+    while ($f = mysqli_fetch_assoc($res)) {
+        $analytics[] = $f;
+    }
+    mysqli_close($con);
+    return $analytics;
+}
+
+function obtenerResumenAnalytics($idModulo, $dias = 30) {
+    $con = obtenerConexion();
+    $fechaInicio = date('Y-m-d', strtotime("-$dias days"));
+
+    $sql = "SELECT
+                COUNT(*) as totalAcciones,
+                COUNT(DISTINCT idUsuario) as usuariosUnicos,
+                SUM(CASE WHEN accion='descargar' THEN 1 ELSE 0 END) as totalDescargas,
+                SUM(CASE WHEN accion='subir' THEN 1 ELSE 0 END) as totalSubidas,
+                SUM(CASE WHEN accion='ver' THEN 1 ELSE 0 END) as totalVistas,
+                SUM(CASE WHEN accion='entrega' THEN 1 ELSE 0 END) as totalEntregas
+            FROM aula_analytics
+            WHERE idModulo=? AND DATE(fechaCreacion) >= ?";
+
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "is", $idModulo, $fechaInicio);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $resumen = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return $resumen;
+}
+
+function obtenerTopArchivosPorDescargas($idModulo, $limite = 10) {
+    $con = obtenerConexion();
+    $sql = "SELECT
+                a.idArchivo,
+                a.nombreOriginal,
+                COUNT(*) as descargas
+            FROM aula_analytics aa
+            JOIN aula_archivos a ON JSON_EXTRACT(aa.metadatos, '$.idArchivo') = a.idArchivo
+            WHERE aa.idModulo=? AND aa.accion='descargar'
+            GROUP BY a.idArchivo
+            ORDER BY descargas DESC
+            LIMIT ?";
+
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idModulo, $limite);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $top = [];
+    while ($f = mysqli_fetch_assoc($res)) {
+        $top[] = $f;
+    }
+    mysqli_close($con);
+    return $top;
+}
+
+function obtenerTopTareasPorEntregas($idModulo, $limite = 10) {
+    $con = obtenerConexion();
+    $sql = "SELECT
+                t.idTarea,
+                t.titulo,
+                COUNT(*) as entregas
+            FROM aula_analytics aa
+            JOIN aula_tareas t ON JSON_EXTRACT(aa.metadatos, '$.idTarea') = t.idTarea
+            WHERE aa.idModulo=? AND aa.accion='entrega'
+            GROUP BY t.idTarea
+            ORDER BY entregas DESC
+            LIMIT ?";
+
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idModulo, $limite);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $top = [];
+    while ($f = mysqli_fetch_assoc($res)) {
+        $top[] = $f;
+    }
+    mysqli_close($con);
+    return $top;
+}
+
+// ═══════════════════════════════════════
+// SESIONES VIVAS
+// ═══════════════════════════════════════
+
+function crearSesionViva($idModulo, $idProfesor, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_sesiones_vivas (idModulo, idProfesor, titulo, descripcion, fechaSesion, horaSesion, enlaceReunion, plataforma)
+            VALUES (?,?,?,?,?,?,?,?)";
+    $stmt = mysqli_prepare($con, $sql);
+    $desc = $descripcion ?: null;
+    $enlace = $enlaceReunion ?: null;
+    $plat = $plataforma ?: null;
+    mysqli_stmt_bind_param($stmt, "iissssss", $idModulo, $idProfesor, $titulo, $desc, $fechaSesion, $horaSesion, $enlace, $plat);
+    $ok = mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($con);
+    mysqli_close($con);
+    return $ok ? $id : false;
+}
+
+function listarSesionesPorModulo($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT s.*, p.nombreProfesor,
+                   (SELECT COUNT(*) FROM aula_asistencia_sesion a WHERE a.idSesion = s.idSesion) AS totalAsistentes
+            FROM aula_sesiones_vivas s
+            JOIN profesores p ON s.idProfesor = p.idProfesor
+            WHERE s.idModulo = ?
+            ORDER BY s.fechaSesion DESC, s.horaSesion DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function listarSesionesPorProfesor($idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT s.*, m.nombreModulo,
+                   (SELECT COUNT(*) FROM aula_asistencia_sesion a WHERE a.idSesion = s.idSesion) AS totalAsistentes
+            FROM aula_sesiones_vivas s
+            JOIN modulos m ON s.idModulo = m.idModulo
+            WHERE s.idProfesor = ?
+            ORDER BY s.fechaSesion DESC, s.horaSesion DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function obtenerSesionPorId($idSesion) {
+    $con = obtenerConexion();
+    $sql = "SELECT s.*, p.nombreProfesor, m.nombreModulo,
+                   (SELECT COUNT(*) FROM aula_asistencia_sesion a WHERE a.idSesion = s.idSesion) AS totalAsistentes
+            FROM aula_sesiones_vivas s
+            JOIN profesores p ON s.idProfesor = p.idProfesor
+            JOIN modulos m ON s.idModulo = m.idModulo
+            WHERE s.idSesion = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idSesion);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $fila = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return $fila;
+}
+
+function actualizarSesionViva($idSesion, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_sesiones_vivas SET titulo=?, descripcion=?, fechaSesion=?, horaSesion=?, enlaceReunion=?, plataforma=? WHERE idSesion=?";
+    $stmt = mysqli_prepare($con, $sql);
+    $desc = $descripcion ?: null;
+    $enlace = $enlaceReunion ?: null;
+    $plat = $plataforma ?: null;
+    mysqli_stmt_bind_param($stmt, "ssssssi", $titulo, $desc, $fechaSesion, $horaSesion, $enlace, $plat, $idSesion);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function borrarSesionViva($idSesion) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM aula_sesiones_vivas WHERE idSesion=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idSesion);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function actualizarEstadoSesion($idSesion, $estado) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_sesiones_vivas SET estado=? WHERE idSesion=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $estado, $idSesion);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function registrarAsistenciaSesion($idSesion, $idEstudiante, $horaUnion = null, $horaSalida = null, $duracion = null) {
+    $con = obtenerConexion();
+    $hora = $horaUnion ?: date('H:i:s');
+    $sql = "INSERT INTO aula_asistencia_sesion (idSesion, idEstudiante, horaUnion, horaSalida, duracion)
+            VALUES (?,?,?,?,?)
+            ON DUPLICATE KEY UPDATE horaUnion=?, horaSalida=?, duracion=?, presente=1";
+    $stmt = mysqli_prepare($con, $sql);
+    $horaSal = $horaSalida ?: null;
+    $dur = $duracion ?: null;
+    mysqli_stmt_bind_param($stmt, "iississi", $idSesion, $idEstudiante, $hora, $horaSal, $dur, $hora, $horaSal, $dur);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+function listarAsistenciasPorSesion($idSesion) {
+    $con = obtenerConexion();
+    $sql = "SELECT a.*, e.nombreEstudiante, e.emailEstudiante
+            FROM aula_asistencia_sesion a
+            JOIN estudiantes e ON a.idEstudiante = e.idEstudiante
+            WHERE a.idSesion = ?
+            ORDER BY a.horaUnion ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idSesion);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    mysqli_close($con);
+    return $lista;
+}
+
+function contarAsistenciaPorSesion($idSesion) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) AS total FROM aula_asistencia_sesion WHERE idSesion=? AND presente=1";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idSesion);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $f = mysqli_fetch_assoc($res);
+    mysqli_close($con);
+    return intval($f['total']);
+}
