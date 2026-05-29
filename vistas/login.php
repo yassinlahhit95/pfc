@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../include/Security.php';
 
 if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard.php");      exit; }
 if (isset($_SESSION['idProfesor']))   { header("Location: profesores/inicio/dashboard.php");  exit; }
@@ -8,6 +9,9 @@ if (isset($_SESSION['idEstudiante'])) { header("Location: estudiantes/inicio/das
 $err = $_SESSION['errores'] ?? null;
 $vals = $_SESSION['datos_login'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_login']);
+
+// Generar token CSRF
+$csrfToken = Security::generateCSRFToken();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -58,6 +62,8 @@ unset($_SESSION['errores'], $_SESSION['datos_login']);
             <?php } ?>
 
             <form action="../controladores/validacion.php" method="POST" id="formLogin">
+                <!-- CSRF Token Protection -->
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
 
                 <div class="campo-grupo">
                     <label>Usuario / Email</label>

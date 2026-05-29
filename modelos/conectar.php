@@ -1,14 +1,26 @@
 ﻿<?php
-function obtenerConexion() {
-    $host = getenv('DB_HOST') ?: 'localhost';
-    $user = getenv('DB_USER') ?: 'yassjjzw_adminpfc';
-    $pass = getenv('DB_PASS') ?: 'Yassin1995**';
-    $db   = getenv('DB_NAME') ?: 'yassjjzw_pfc';
+// Cargar configuración
+require_once __DIR__ . '/../config/Config.php';
 
-    $conexion = mysqli_connect($host, $user, $pass, $db);
+function obtenerConexion() {
+    $config = Config::getInstance();
+
+    $host = $config->get('DB_HOST', 'localhost');
+    $user = $config->get('DB_USER');
+    $pass = $config->get('DB_PASS');
+    $db = $config->get('DB_NAME', 'aulapro');
+
+    // Validar que existan las credenciales
+    if (empty($user) || empty($pass)) {
+        die("Error: Credenciales de base de datos no configuradas. Revisar .env o config/Config.php");
+    }
+
+    $conexion = @mysqli_connect($host, $user, $pass, $db);
 
     if (!$conexion) {
-        die("Error de conexión: " . mysqli_connect_error());
+        // Log del error sin exponer detalles
+        error_log("Database connection failed: " . mysqli_connect_error());
+        die("Error de conexión a la base de datos. Por favor, intenta más tarde.");
     }
 
     mysqli_set_charset($conexion, "utf8mb4");

@@ -1,16 +1,67 @@
-# Archivos a ignorar en git
-/config/secrets.php
-/config/service-account.json
-/public/uploads/pfc/*
-!/public/uploads/pfc/.gitkeep
+# Environment & Configuration
+.env
+.env.local
+.env.*.local
+config/secrets.php
+config/local.php
 
-# Temporales de editores
-.vscode/
-.idea/
+# Logs
+logs/
 *.log
+*.sql.bak
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
 .DS_Store
 Thumbs.db
 
-# Config local
-.env
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.phpstorm.meta.php
+_ide_helper.php
+
+# Node & npm (if used)
 node_modules/
+package-lock.json
+yarn.lock
+
+# Composer
+vendor/
+composer.lock
+
+# Database backups
+*.sql.bak
+*.sql.zip
+
+# Uploads directory (keep structure but ignore files)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Session files
+sessions/
+session_*
+
+# Cache files
+cache/
+*.cache
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.phpunit.result.cache
+
+# Build files
+dist/
+build/
