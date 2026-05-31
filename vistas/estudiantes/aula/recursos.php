@@ -138,11 +138,11 @@ include_once __DIR__ . "/../comunes/nav.php";
       <td><?= formatearTamanioAula($a['tamanio']) ?></td>
       <td>
         <div class="recurso-acciones-fila" style="justify-content:flex-end;">
-          <a class="recurso-btn-ico <?= $fav ? 'fav-activo' : '' ?>" title="<?= $fav ? 'Quitar de favoritos' : 'Añadir a favoritos' ?>" href="../../../controladores/estudiantes/aula/toggleFavorito.php?idArchivo=<?= $a['idArchivo'] ?>&origen=recursos&idModulo=<?= $idModulo ?>&carpeta=<?= $carpetaActual ?>"><i class="fas fa-star"></i></a>
+          <a class="recurso-accion favorito <?= $fav ? 'activo' : '' ?>" title="<?= $fav ? 'Quitar de favoritos' : 'Añadir a favoritos' ?>" href="../../../controladores/estudiantes/aula/toggleFavorito.php?idArchivo=<?= $a['idArchivo'] ?>&origen=recursos&idModulo=<?= $idModulo ?>&carpeta=<?= $carpetaActual ?>"><i class="fas fa-star"></i></a>
           <?php if ($previa): ?>
-          <button class="recurso-btn-ico" title="Ver" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver','<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>','<?= $a['extension'] ?>')"><i class="fas fa-eye"></i></button>
+          <button class="recurso-accion ver" title="Ver" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver','<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>','<?= $a['extension'] ?>')"><i class="fas fa-eye"></i></button>
           <?php endif; ?>
-          <a class="recurso-btn-ico" title="Descargar" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i></a>
+          <a class="recurso-accion descargar" title="Descargar" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i></a>
         </div>
       </td>
     </tr>

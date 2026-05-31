@@ -2,6 +2,9 @@
 // Cargar configuración
 require_once __DIR__ . '/../config/Config.php';
 
+// Zona horaria de España (gestiona el horario de verano/invierno automáticamente)
+date_default_timezone_set('Europe/Madrid');
+
 function obtenerConexion() {
     $config = Config::getInstance();
 

@@ -155,14 +155,14 @@ include_once __DIR__ . "/../comunes/nav.php";
       <td>
         <div class="recurso-acciones-fila" style="justify-content:flex-end;">
           <?php if ($previa): ?>
-          <button class="recurso-btn-ico" title="Ver" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver','<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>','<?= $a['extension'] ?>')"><i class="fas fa-eye"></i></button>
+          <button class="recurso-accion ver" title="Ver" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver','<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>','<?= $a['extension'] ?>')"><i class="fas fa-eye"></i></button>
           <?php endif; ?>
-          <a class="recurso-btn-ico" title="Descargar" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i></a>
+          <a class="recurso-accion descargar" title="Descargar" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i></a>
           <?php if ($esMio): ?>
-          <button class="recurso-btn-ico" title="Renombrar" onclick="AulaRecursos.renombrar(<?= $a['idArchivo'] ?>,'<?= htmlspecialchars(addslashes(pathinfo($a['nombreOriginal'],PATHINFO_FILENAME)),ENT_QUOTES) ?>')"><i class="fas fa-i-cursor"></i></button>
-          <button class="recurso-btn-ico" title="Nueva versión" onclick="AulaRecursos.nuevaVersion(<?= $a['idArchivo'] ?>,'<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>')"><i class="fas fa-clock-rotate-left"></i></button>
-          <button class="recurso-btn-ico" title="Mover" onclick="AulaRecursos.mover(<?= $a['idArchivo'] ?>)"><i class="fas fa-folder-tree"></i></button>
-          <a class="recurso-btn-ico peligro" title="Eliminar" href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= $a['idArchivo'] ?>&modulo=<?= $idModulo ?>" onclick="return confirm('¿Mover este archivo a la papelera?')"><i class="fas fa-trash"></i></a>
+          <button class="recurso-accion renombrar" title="Renombrar" onclick="AulaRecursos.renombrar(<?= $a['idArchivo'] ?>,'<?= htmlspecialchars(addslashes(pathinfo($a['nombreOriginal'],PATHINFO_FILENAME)),ENT_QUOTES) ?>')"><i class="fas fa-i-cursor"></i></button>
+          <button class="recurso-accion version" title="Nueva versión" onclick="AulaRecursos.nuevaVersion(<?= $a['idArchivo'] ?>,'<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>')"><i class="fas fa-clock-rotate-left"></i></button>
+          <button class="recurso-accion mover" title="Mover" onclick="AulaRecursos.mover(<?= $a['idArchivo'] ?>)"><i class="fas fa-folder-tree"></i></button>
+          <a class="recurso-accion eliminar" title="Eliminar" href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= $a['idArchivo'] ?>&modulo=<?= $idModulo ?>" onclick="return confirm('¿Mover este archivo a la papelera?')"><i class="fas fa-trash"></i></a>
           <?php endif; ?>
         </div>
       </td>

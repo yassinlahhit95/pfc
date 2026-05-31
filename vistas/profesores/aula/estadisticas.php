@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <td><?= intval($r['vistas']) ?></td>
       <td><?= intval($r['descargas']) ?></td>
       <td><?= $r['ultimoAcceso'] ? date('d/m/Y H:i', strtotime($r['ultimoAcceso'])) : '—' ?></td>
-      <td style="text-align:right;"><a href="estadisticas.php?id=<?= $idModulo ?>&archivo=<?= $r['idArchivo'] ?>" class="recurso-btn-ico" title="Ver quién lo ha leído"><i class="fas fa-users"></i></a></td>
+      <td style="text-align:right;"><a href="estadisticas.php?id=<?= $idModulo ?>&archivo=<?= $r['idArchivo'] ?>" class="recurso-btn"><i class="fas fa-users"></i> Ver detalle</a></td>
     </tr>
     <?php endforeach; ?>
   </tbody>
@@ -62,15 +62,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php if ($archivoSel): ?>
-<h3 style="margin-top:26px;font-size:.95rem;color:#475569;"><i class="fas fa-book-open-reader"></i> Control de lectura: <?= htmlspecialchars($archivoSel['nombreOriginal']) ?></h3>
+<h3 style="margin-top:26px;font-size:.95rem;color:#475569;"><i class="fas fa-book-open-reader"></i> Detalle por estudiante: <?= htmlspecialchars($archivoSel['nombreOriginal']) ?></h3>
 <table class="recurso-lista">
-  <thead><tr><th>Estudiante</th><th>Estado</th><th>Visto el</th></tr></thead>
+  <thead><tr><th>Estudiante</th><th>¿Lo ha visto?</th><th>¿Lo ha descargado?</th></tr></thead>
   <tbody>
     <?php foreach ($lectura as $e): ?>
     <tr>
       <td><?= htmlspecialchars($e['nombreEstudiante']) ?></td>
-      <td><?php if ($e['leido']): ?><span class="badge badge-verde">Leído</span><?php else: ?><span class="badge badge-gris">Sin abrir</span><?php endif; ?></td>
-      <td><?= $e['fechaVista'] ? date('d/m/Y H:i', strtotime($e['fechaVista'])) : '—' ?></td>
+      <td><?php if (!empty($e['fechaVista'])): ?><span class="badge badge-verde"><i class="fas fa-eye"></i> Visto</span> <small class="texto-suave"><?= date('d/m/Y H:i', strtotime($e['fechaVista'])) ?></small><?php else: ?><span class="badge badge-gris">Sin abrir</span><?php endif; ?></td>
+      <td><?php if (!empty($e['fechaDescarga'])): ?><span class="badge badge-azul"><i class="fas fa-download"></i> Descargado</span> <small class="texto-suave"><?= date('d/m/Y H:i', strtotime($e['fechaDescarga'])) ?></small><?php else: ?><span class="badge badge-gris">No</span><?php endif; ?></td>
     </tr>
     <?php endforeach; ?>
     <?php if (empty($lectura)): ?><tr><td colspan="3" class="texto-suave">No hay estudiantes en este ciclo.</td></tr><?php endif; ?>

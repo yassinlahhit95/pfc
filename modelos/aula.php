@@ -1057,9 +1057,11 @@ function listarFavoritosEstudianteAula($idEstudiante) {
 
 function registrarAccesoArchivoAula($idArchivo, $idEstudiante, $tipo = 'vista') {
     $con = obtenerConexion();
-    $sql = "INSERT INTO aula_archivo_accesos (idArchivo, idEstudiante, tipo) VALUES (?,?,?)";
+    // Guardar la fecha/hora exacta en horario de España (no depende del huso del servidor)
+    $fecha = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO aula_archivo_accesos (idArchivo, idEstudiante, tipo, fechaAcceso) VALUES (?,?,?,?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "iis", $idArchivo, $idEstudiante, $tipo);
+    mysqli_stmt_bind_param($stmt, "iiss", $idArchivo, $idEstudiante, $tipo, $fecha);
     $ok = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $ok;
@@ -1091,22 +1093,21 @@ function obtenerRecursosMasConsultadosAula($idModulo, $limite = 10) {
     return $lista;
 }
 
-// Control de lectura: quién ha visto un archivo y quién no (#11)
-// Devuelve todos los estudiantes del ciclo del módulo con su estado.
+// Control de lectura/descarga: qué estudiantes han visto y/o descargado un archivo (#11).
+// Devuelve todos los estudiantes del ciclo con la última fecha de vista y de descarga.
 function obtenerControlLecturaArchivoAula($idArchivo, $idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.emailEstudiante,
-                   MAX(ac.fechaAcceso) AS fechaVista,
-                   (SELECT COUNT(*) FROM aula_archivo_accesos a2
-                      WHERE a2.idArchivo=? AND a2.idEstudiante=e.idEstudiante AND a2.tipo='vista') AS leido
+                   MAX(CASE WHEN ac.tipo='vista'    THEN ac.fechaAcceso END) AS fechaVista,
+                   MAX(CASE WHEN ac.tipo='descarga' THEN ac.fechaAcceso END) AS fechaDescarga
             FROM estudiantes e
             LEFT JOIN aula_archivo_accesos ac
-                   ON ac.idEstudiante = e.idEstudiante AND ac.idArchivo = ? AND ac.tipo='vista'
+                   ON ac.idEstudiante = e.idEstudiante AND ac.idArchivo = ?
             WHERE e.idCiclo = ?
             GROUP BY e.idEstudiante
-            ORDER BY leido DESC, e.nombreEstudiante ASC";
+            ORDER BY (MAX(CASE WHEN ac.tipo='vista' THEN ac.fechaAcceso END) IS NOT NULL) DESC, e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "iii", $idArchivo, $idArchivo, $idCiclo);
+    mysqli_stmt_bind_param($stmt, "ii", $idArchivo, $idCiclo);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
