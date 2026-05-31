@@ -18,12 +18,12 @@ if (!$ciclo) { header("Location: index.php"); exit; }
 $modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
 
 $tituloDelPagina = "AULAPRO | " . strtoupper($ciclo['nombreCiclo']);
-$seccionActual   = 'aula';
+$seccionActual   = 'aula_recursos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="aula-breadcrumb">
-  <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
+<div class="recurso-breadcrumb">
+  <a href="index.php"><i class="fas fa-home"></i> Recursos</a>
   <span class="sep">/</span>
   <span class="actual"><?= htmlspecialchars($ciclo['nombreCiclo']) ?></span>
 </div>
@@ -37,29 +37,39 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if (empty($modulos)): ?>
-<div class="panel" style="text-align:center;padding:60px 20px;margin-top:20px;">
-  <i class="fas fa-cubes" style="font-size:3rem;color:#e2e8f0;display:block;margin-bottom:16px;"></i>
-  <p class="texto-suave">No tienes módulos asignados en este ciclo.</p>
+<div class="recurso-vacio">
+  <i class="fas fa-cubes"></i>
+  <p>No tienes módulos asignados en este ciclo.</p>
 </div>
-<?php else: ?>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:20px;">
-  <?php foreach ($modulos as $modulo):
+<?php else:
+  // Colores e iconos variados para las tarjetas de módulo (clases de color)
+  $paleta = [
+    ['clase' => 'recurso-card-azul',    'icono' => 'fa-book'],
+    ['clase' => 'recurso-card-indigo',  'icono' => 'fa-code'],
+    ['clase' => 'recurso-card-rosa',    'icono' => 'fa-database'],
+    ['clase' => 'recurso-card-ambar',   'icono' => 'fa-laptop-code'],
+    ['clase' => 'recurso-card-verde',   'icono' => 'fa-diagram-project'],
+    ['clase' => 'recurso-card-teal',    'icono' => 'fa-server'],
+    ['clase' => 'recurso-card-violeta', 'icono' => 'fa-palette'],
+  ];
+?>
+<div class="aula-recursos-grid">
+  <?php foreach ($modulos as $i => $modulo):
     $nArchivos = contarArchivosPorModuloAula($modulo['idModulo']);
     $nTareas   = count(listarTodasTareasPorModuloAula($modulo['idModulo']));
+    $p = $paleta[$i % count($paleta)];
   ?>
-  <a href="modulo.php?id=<?= $modulo['idModulo'] ?>" class="ejercicio-card">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-      <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;">
-        <i class="fas fa-book"></i>
-      </div>
-      <div style="flex:1;min-width:0;">
-        <p class="ejercicio-card-titulo" style="margin:0;"><?= htmlspecialchars($modulo['nombreModulo']) ?></p>
+  <a href="recursos.php?id=<?= $modulo['idModulo'] ?>" class="recurso-ciclo-card <?= $p['clase'] ?>">
+    <div class="recurso-ciclo-icon"><i class="fas <?= $p['icono'] ?>"></i></div>
+    <div class="recurso-ciclo-body">
+      <h3><?= htmlspecialchars($modulo['nombreModulo']) ?></h3>
+      <div class="recurso-ciclo-meta">
+        <span><i class="fas fa-file"></i> <?= $nArchivos ?> archivos</span>
+        &nbsp;·&nbsp;
+        <span><i class="fas fa-tasks"></i> <?= $nTareas ?> tareas</span>
       </div>
     </div>
-    <div class="ejercicio-card-footer">
-      <span class="ejercicio-fecha"><i class="fas fa-file"></i> <?= $nArchivos ?> archivos</span>
-      <span class="ejercicio-fecha"><i class="fas fa-tasks"></i> <?= $nTareas ?> tareas</span>
-    </div>
+    <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
   </a>
   <?php endforeach; ?>
 </div>

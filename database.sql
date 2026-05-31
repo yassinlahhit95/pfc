@@ -1,5 +1,22 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- ============================================================
+-- LIMPIEZA: eliminar tablas existentes para que la reimportación
+-- reconstruya SIEMPRE el esquema completo (evita migraciones a
+-- medias cuando se reimporta sobre una base de datos ya existente).
+-- ============================================================
+DROP TABLE IF EXISTS
+  `aula_almacenamiento_ciclo`, `aula_enlaces_compartidos`, `aula_archivo_accesos`,
+  `aula_favoritos`, `aula_archivo_versiones`, `aula_asistencia_sesion`,
+  `aula_sesiones_vivas`, `aula_analytics`, `aula_notificaciones`, `aula_comentarios`,
+  `aula_versiones_entrega`, `aula_entregas`, `aula_tareas`, `aula_archivos`,
+  `aula_carpetas`, `entregas_ejercicios`, `ejercicios`, `carpetas_ejercicios`,
+  `auditoria`, `login_intentos`, `profesor_modulo`, `modulo_profesor`,
+  `ciclo_profesor`, `eventos`, `pagos`, `reclamaciones`, `anuncios`, `prestamos`,
+  `dispositivos`, `calificaciones_tfg`, `calificaciones_modulos`,
+  `calificaciones_retos`, `modulo_reto`, `retos`, `directores`, `estudiantes`,
+  `profesores`, `modulos`, `ciclos`, `niveles`;
+
 CREATE TABLE `niveles` (
   `idNivel` int(11) NOT NULL AUTO_INCREMENT,
   `nombreNivel` varchar(50) NOT NULL,
@@ -229,25 +246,35 @@ CREATE TABLE `aula_carpetas` (
   `nombre` varchar(100) NOT NULL,
   `idModulo` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
+  `idPadre` int(11) DEFAULT NULL,
   `color` varchar(7) NOT NULL DEFAULT '#0ea5e9',
+  `icono` varchar(30) NOT NULL DEFAULT 'fa-folder',
+  `eliminado` tinyint(1) NOT NULL DEFAULT 0,
+  `fechaEliminacion` datetime DEFAULT NULL,
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idCarpeta`),
+  KEY `indice_aulacarp_padre` (`idPadre`),
   CONSTRAINT `fk_aulacarp_mod`  FOREIGN KEY (`idModulo`)   REFERENCES `modulos`    (`idModulo`)   ON DELETE CASCADE,
-  CONSTRAINT `fk_aulacarp_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
+  CONSTRAINT `fk_aulacarp_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE,
+  CONSTRAINT `fk_aulacarp_padre` FOREIGN KEY (`idPadre`)   REFERENCES `aula_carpetas` (`idCarpeta`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `aula_archivos` (
   `idArchivo` int(11) NOT NULL AUTO_INCREMENT,
   `nombreArchivo` varchar(255) NOT NULL,
   `nombreOriginal` varchar(255) NOT NULL,
-  `extension` enum('pdf','docx','txt') NOT NULL,
+  `extension` varchar(10) NOT NULL,
   `tamanio` int(11) DEFAULT 0,
   `descripcion` varchar(500) DEFAULT NULL,
   `idCarpeta` int(11) DEFAULT NULL,
   `idModulo` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
+  `version` int(11) NOT NULL DEFAULT 1,
+  `eliminado` tinyint(1) NOT NULL DEFAULT 0,
+  `fechaEliminacion` datetime DEFAULT NULL,
   `fechaSubida` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idArchivo`),
+  KEY `indice_aulaarch_eliminado` (`eliminado`),
   CONSTRAINT `fk_aulaarch_carp` FOREIGN KEY (`idCarpeta`)  REFERENCES `aula_carpetas` (`idCarpeta`) ON DELETE SET NULL,
   CONSTRAINT `fk_aulaarch_mod`  FOREIGN KEY (`idModulo`)   REFERENCES `modulos`    (`idModulo`)   ON DELETE CASCADE,
   CONSTRAINT `fk_aulaarch_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
@@ -281,8 +308,8 @@ CREATE TABLE `aula_entregas` (
   `archivoCorreccion` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idEntrega`),
   UNIQUE KEY `uk_aula_entrega` (`idTarea`,`idEstudiante`),
-  KEY `idx_tarea_estudiante` (`idTarea`, `idEstudiante`),
-  KEY `idx_estudiante_nota` (`idEstudiante`, `nota`),
+  KEY `indice_tarea_estudiante` (`idTarea`, `idEstudiante`),
+  KEY `indice_estudiante_nota` (`idEstudiante`, `nota`),
   CONSTRAINT `fk_aulaentr_tar` FOREIGN KEY (`idTarea`)      REFERENCES `aula_tareas`    (`idTarea`)      ON DELETE CASCADE,
   CONSTRAINT `fk_aulaentr_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`    (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -324,7 +351,7 @@ CREATE TABLE `aula_notificaciones` (
   `tipoReferencia` varchar(50) DEFAULT NULL,
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idNotificacion`),
-  KEY `idx_aulanotif` (`idUsuario`,`tipoUsuario`,`leida`)
+  KEY `indice_aulanotif` (`idUsuario`,`tipoUsuario`,`leida`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `carpetas_ejercicios` (
@@ -384,8 +411,8 @@ CREATE TABLE `auditoria` (
   `ip` varchar(45) DEFAULT NULL,
   `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idAuditoria`),
-  KEY `idx_auditoria_usuario` (`idUsuario`, `tipoUsuario`),
-  KEY `idx_auditoria_fecha` (`fecha`)
+  KEY `indice_auditoria_usuario` (`idUsuario`, `tipoUsuario`),
+  KEY `indice_auditoria_fecha` (`fecha`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `login_intentos` (
@@ -409,13 +436,13 @@ CREATE TABLE `aula_analytics` (
   `metadatos` json DEFAULT NULL,
   `fechaCreacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idAnalytics`),
-  KEY `idx_usuario` (`idUsuario`),
-  KEY `idx_modulo` (`idModulo`),
-  KEY `idx_accion` (`accion`),
-  KEY `idx_fecha` (`fechaCreacion`),
-  KEY `idx_usuario_modulo` (`idUsuario`,`idModulo`),
-  KEY `idx_modulo_accion_fecha` (`idModulo`, `accion`, `fechaCreacion`),
-  KEY `idx_usuario_tipo_fecha` (`idUsuario`, `tipoUsuario`, `fechaCreacion`)
+  KEY `indice_usuario` (`idUsuario`),
+  KEY `indice_modulo` (`idModulo`),
+  KEY `indice_accion` (`accion`),
+  KEY `indice_fecha` (`fechaCreacion`),
+  KEY `indice_usuario_modulo` (`idUsuario`,`idModulo`),
+  KEY `indice_modulo_accion_fecha` (`idModulo`, `accion`, `fechaCreacion`),
+  KEY `indice_usuario_tipo_fecha` (`idUsuario`, `tipoUsuario`, `fechaCreacion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `aula_sesiones_vivas` (
@@ -431,9 +458,9 @@ CREATE TABLE `aula_sesiones_vivas` (
   `estado` enum('programada','en_vivo','finalizada') NOT NULL DEFAULT 'programada',
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idSesion`),
-  KEY `idx_modulo` (`idModulo`),
-  KEY `idx_profesor` (`idProfesor`),
-  KEY `idx_fecha` (`fechaSesion`),
+  KEY `indice_modulo` (`idModulo`),
+  KEY `indice_profesor` (`idProfesor`),
+  KEY `indice_fecha` (`fechaSesion`),
   CONSTRAINT `fk_aulasesion_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulasesion_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -449,10 +476,84 @@ CREATE TABLE `aula_asistencia_sesion` (
   `fechaRegistro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idAsistencia`),
   UNIQUE KEY `uk_sesion_estudiante` (`idSesion`,`idEstudiante`),
-  KEY `idx_sesion` (`idSesion`),
-  KEY `idx_estudiante` (`idEstudiante`),
+  KEY `indice_sesion` (`idSesion`),
+  KEY `indice_estudiante` (`idEstudiante`),
   CONSTRAINT `fk_aulasis_sesion` FOREIGN KEY (`idSesion`) REFERENCES `aula_sesiones_vivas` (`idSesion`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulasis_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- AULA DIGITAL · GESTIÓN DE RECURSOS (versiones, favoritos,
+-- accesos, compartición y almacenamiento)
+-- ============================================================
+
+-- Historial de versiones de un recurso (cada vez que el profesor
+-- actualiza un archivo se guarda aquí la versión anterior)
+CREATE TABLE `aula_archivo_versiones` (
+  `idVersion` int(11) NOT NULL AUTO_INCREMENT,
+  `idArchivo` int(11) NOT NULL,
+  `nombreArchivo` varchar(255) NOT NULL,
+  `nombreOriginal` varchar(255) NOT NULL,
+  `extension` varchar(10) NOT NULL,
+  `tamanio` int(11) DEFAULT 0,
+  `version` int(11) NOT NULL,
+  `idProfesor` int(11) NOT NULL,
+  `fechaVersion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idVersion`),
+  KEY `indice_aulaver_archivo` (`idArchivo`),
+  CONSTRAINT `fk_aulaver_arch` FOREIGN KEY (`idArchivo`)  REFERENCES `aula_archivos` (`idArchivo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_aulaver_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores`    (`idProfesor`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Favoritos de estudiantes
+CREATE TABLE `aula_favoritos` (
+  `idFavorito` int(11) NOT NULL AUTO_INCREMENT,
+  `idEstudiante` int(11) NOT NULL,
+  `idArchivo` int(11) NOT NULL,
+  `fechaMarcado` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idFavorito`),
+  UNIQUE KEY `uk_aulafav` (`idEstudiante`,`idArchivo`),
+  CONSTRAINT `fk_aulafav_est`  FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`   (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_aulafav_arch` FOREIGN KEY (`idArchivo`)    REFERENCES `aula_archivos` (`idArchivo`)    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Registro de accesos a recursos: alimenta estadísticas de uso
+-- (#10) y control de lectura por estudiante (#11)
+CREATE TABLE `aula_archivo_accesos` (
+  `idAcceso` int(11) NOT NULL AUTO_INCREMENT,
+  `idArchivo` int(11) NOT NULL,
+  `idEstudiante` int(11) NOT NULL,
+  `tipo` enum('vista','descarga') NOT NULL DEFAULT 'vista',
+  `fechaAcceso` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idAcceso`),
+  KEY `indice_aulaacc_archivo` (`idArchivo`,`tipo`),
+  KEY `indice_aulaacc_est` (`idEstudiante`),
+  CONSTRAINT `fk_aulaacc_arch` FOREIGN KEY (`idArchivo`)    REFERENCES `aula_archivos` (`idArchivo`)    ON DELETE CASCADE,
+  CONSTRAINT `fk_aulaacc_est`  FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`   (`idEstudiante`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Enlaces temporales de compartición de recursos
+CREATE TABLE `aula_enlaces_compartidos` (
+  `idEnlace` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(64) NOT NULL,
+  `idArchivo` int(11) NOT NULL,
+  `idProfesor` int(11) NOT NULL,
+  `permitirDescarga` tinyint(1) NOT NULL DEFAULT 1,
+  `fechaExpiracion` datetime DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idEnlace`),
+  UNIQUE KEY `uk_aulaenl_token` (`token`),
+  CONSTRAINT `fk_aulaenl_arch` FOREIGN KEY (`idArchivo`)  REFERENCES `aula_archivos` (`idArchivo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_aulaenl_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores`    (`idProfesor`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Límite de almacenamiento por ciclo formativo (#13)
+CREATE TABLE `aula_almacenamiento_ciclo` (
+  `idCiclo` int(11) NOT NULL,
+  `limiteBytes` bigint(20) NOT NULL DEFAULT 5368709120 COMMENT 'Por defecto 5 GB',
+  PRIMARY KEY (`idCiclo`),
+  CONSTRAINT `fk_aulaalm_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -554,6 +655,24 @@ CREATE TABLE IF NOT EXISTS `profesor_modulo` (
 INSERT INTO `profesor_modulo` (`idProfesor`, `idModulo`) VALUES
 (1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
 (2, 6), (2, 7), (2, 8), (2, 9), (2, 10);
+
+-- IMPORTANTE: el código (listarModulosDeProfesor, listarCiclosDeProfesor, etc.)
+-- consulta la tabla `modulo_profesor`, no `profesor_modulo`. Se rellena aquí
+-- con las mismas asignaciones para que profesores vean sus módulos y ciclos.
+INSERT INTO `modulo_profesor` (`idModulo`, `idProfesor`) VALUES
+(1, 1), (2, 1), (3, 1), (4, 1), (5, 1),
+(6, 2), (7, 2), (8, 2), (9, 2), (10, 2);
+
+-- Asignación profesor-ciclo (tutoría/pertenencia al ciclo)
+INSERT INTO `ciclo_profesor` (`idCiclo`, `idProfesor`) VALUES
+(1, 1),
+(2, 2);
+
+-- LÍMITE DE ALMACENAMIENTO POR CICLO (5 GB por defecto)
+INSERT INTO `aula_almacenamiento_ciclo` (`idCiclo`, `limiteBytes`) VALUES
+(1, 5368709120),
+(2, 5368709120),
+(3, 5368709120);
 
 -- ============================================================
 -- NOTAS SOBRE LOS DATOS DE PRUEBA

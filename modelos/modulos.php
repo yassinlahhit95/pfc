@@ -35,7 +35,7 @@ function listarModulosDeProfesor($idProfesor) {
 
 function listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
     $con = obtenerConexion();
-    $sql1 = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos JOIN modulo_profesor ON modulos.idModulo = modulo_profesor.idModulo JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo WHERE modulo_profesor.idProfesor = ? AND modulos.idCiclo = ?";
+    $sql1 = "SELECT modulos.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo FROM modulos JOIN modulo_profesor ON modulos.idModulo = modulo_profesor.idModulo JOIN ciclos ON modulos.idCiclo = ciclos.idCiclo WHERE modulo_profesor.idProfesor = ? AND modulos.idCiclo = ? ORDER BY modulos.nombreModulo ASC";
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "ii", $idProfesor, $idCiclo);
     mysqli_stmt_execute($resultado);

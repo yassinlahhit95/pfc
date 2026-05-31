@@ -11,9 +11,9 @@ if ($idCarpeta > 0) {
     $carpeta = obtenerCarpetaAulaPorId($idCarpeta);
     if ($carpeta && $carpeta['idProfesor'] == $_SESSION['idProfesor']) {
         borrarCarpetaAula($idCarpeta);
-        $_SESSION['exito'] = "Carpeta eliminada. Los archivos pasan a sin carpeta.";
+        $_SESSION['exito'] = "Carpeta movida a la papelera junto con su contenido.";
         $idModulo = $idModulo ?: $carpeta['idModulo'];
     }
 }
-header("Location: ../../../vistas/profesores/aula/modulo.php?id=$idModulo");
+header("Location: ../../../vistas/profesores/aula/recursos.php?id=$idModulo");
 exit;

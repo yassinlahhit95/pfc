@@ -17,5 +17,5 @@ if ($idArchivo > 0) {
     }
 }
 
-header("Location: ../../../vistas/profesores/aula/modulo.php?id=$idModulo");
+header("Location: ../../../vistas/profesores/aula/recursos.php?id=$idModulo");
 exit;

@@ -122,6 +122,10 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
                     <i class="fas fa-graduation-cap"></i> <span>AULA DIGITAL</span>
                 </a>
 
+                <a href="../aula/index.php" class="enlace-menu <?= ($seccionActual == 'aula_recursos') ? 'activo' : '' ?>">
+                    <i class="fas fa-folder-open"></i> <span>RECURSOS</span>
+                </a>
+
                 <a href="../aula/tareas.php" class="enlace-menu <?= ($seccionActual == 'aula_tareas') ? 'activo' : '' ?>">
                     <i class="fas fa-tasks"></i> <span>MIS TAREAS</span>
                 </a>

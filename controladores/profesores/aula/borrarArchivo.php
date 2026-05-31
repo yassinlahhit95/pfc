@@ -11,9 +11,11 @@ if ($idArchivo > 0) {
     $archivo = obtenerArchivoPorId($idArchivo);
     if ($archivo && $archivo['idProfesor'] == $_SESSION['idProfesor']) {
         borrarArchivoAula($idArchivo);
-        $_SESSION['exito'] = "Archivo eliminado.";
+        $_SESSION['exito'] = "Archivo movido a la papelera.";
         $regresar = $regresar ?: $archivo['idModulo'];
     }
 }
-header("Location: ../../../vistas/profesores/aula/modulo.php?id=$regresar");
+$destino = "../../../vistas/profesores/aula/recursos.php?id=$regresar";
+if (!empty($archivo['idCarpeta'])) $destino .= "&carpeta=" . $archivo['idCarpeta'];
+header("Location: $destino");
 exit;

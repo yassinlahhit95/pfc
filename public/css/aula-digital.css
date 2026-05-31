@@ -721,3 +721,257 @@
     font-size: 0.75rem;
   }
 }
+
+/* ============================================================
+   AULA DIGITAL · GESTIÓN DE RECURSOS EDUCATIVOS
+   (tarjetas de ciclo, explorador de carpetas/archivos,
+    favoritos, versiones, compartir, papelera)
+   ============================================================ */
+
+/* --- Tarjetas de ciclo (index.php) --- */
+.aula-recursos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+@keyframes recursoFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.recurso-ciclo-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+  transition: transform .25s cubic-bezier(.21,.6,.35,1), box-shadow .25s ease, border-color .25s ease;
+  animation: recursoFadeUp .45s ease both;
+}
+.recurso-ciclo-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(2, 8, 23, .16);
+  border-color: transparent;
+}
+/* Entrada escalonada de las tarjetas */
+.recurso-ciclo-card:nth-child(2) { animation-delay: .06s; }
+.recurso-ciclo-card:nth-child(3) { animation-delay: .12s; }
+.recurso-ciclo-card:nth-child(4) { animation-delay: .18s; }
+.recurso-ciclo-card:nth-child(5) { animation-delay: .24s; }
+.recurso-ciclo-card:nth-child(6) { animation-delay: .30s; }
+.recurso-ciclo-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.45rem; flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(14, 165, 233, .35);
+  transition: transform .25s cubic-bezier(.21,.6,.35,1);
+}
+
+/* Variantes de color de tarjeta (misma lógica que .tarjeta-estadistica-azul, etc.) */
+.recurso-card-azul    .recurso-ciclo-icon { background: linear-gradient(135deg, #0ea5e9, #0284c7); box-shadow: 0 6px 16px rgba(14,165,233,.40); }
+.recurso-card-azul:hover    { box-shadow: 0 20px 40px rgba(14,165,233,.24); }
+.recurso-card-indigo  .recurso-ciclo-icon { background: linear-gradient(135deg, #6366f1, #4338ca); box-shadow: 0 6px 16px rgba(99,102,241,.40); }
+.recurso-card-indigo:hover  { box-shadow: 0 20px 40px rgba(99,102,241,.24); }
+.recurso-card-rosa    .recurso-ciclo-icon { background: linear-gradient(135deg, #ec4899, #be185d); box-shadow: 0 6px 16px rgba(236,72,153,.40); }
+.recurso-card-rosa:hover    { box-shadow: 0 20px 40px rgba(236,72,153,.24); }
+.recurso-card-ambar   .recurso-ciclo-icon { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 6px 16px rgba(245,158,11,.40); }
+.recurso-card-ambar:hover   { box-shadow: 0 20px 40px rgba(245,158,11,.24); }
+.recurso-card-verde   .recurso-ciclo-icon { background: linear-gradient(135deg, #22c55e, #15803d); box-shadow: 0 6px 16px rgba(34,197,94,.40); }
+.recurso-card-verde:hover   { box-shadow: 0 20px 40px rgba(34,197,94,.24); }
+.recurso-card-teal    .recurso-ciclo-icon { background: linear-gradient(135deg, #14b8a6, #0f766e); box-shadow: 0 6px 16px rgba(20,184,166,.40); }
+.recurso-card-teal:hover    { box-shadow: 0 20px 40px rgba(20,184,166,.24); }
+.recurso-card-violeta .recurso-ciclo-icon { background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 6px 16px rgba(139,92,246,.40); }
+.recurso-card-violeta:hover { box-shadow: 0 20px 40px rgba(139,92,246,.24); }
+.recurso-ciclo-card:hover .recurso-ciclo-icon { transform: scale(1.08) rotate(-4deg); }
+.recurso-ciclo-card:hover .recurso-ciclo-arrow { transform: translateX(4px); color: #0ea5e9; }
+.recurso-ciclo-body { flex: 1; min-width: 0; }
+.recurso-ciclo-body h3 { margin: 0; font-size: 1rem; color: #0f172a; }
+.recurso-ciclo-abrev {
+  display: inline-block; margin-top: 2px;
+  font-size: .7rem; font-weight: 700; letter-spacing: .5px;
+  color: #0ea5e9; background: #e0f2fe;
+  padding: 2px 8px; border-radius: 999px;
+}
+.recurso-ciclo-meta { margin-top: 8px; font-size: .8rem; color: #64748b; }
+.recurso-ciclo-arrow { color: #cbd5e1; font-size: .9rem; transition: transform .25s ease, color .25s ease; }
+.recurso-almacenamiento { margin-top: 10px; }
+.recurso-almacenamiento-barra {
+  height: 6px; border-radius: 999px; background: #e2e8f0; overflow: hidden;
+}
+.recurso-almacenamiento-barra span {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, #0ea5e9, #22c55e);
+}
+.recurso-almacenamiento small { font-size: .68rem; color: #94a3b8; }
+
+/* --- Explorador: migas de pan --- */
+.recurso-breadcrumb {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  font-size: .85rem; margin: 16px 0; color: #64748b;
+}
+.recurso-breadcrumb a { color: #0ea5e9; text-decoration: none; }
+.recurso-breadcrumb a:hover { text-decoration: underline; }
+.recurso-breadcrumb .sep { color: #cbd5e1; }
+
+/* --- Cuadrícula de carpetas --- */
+.recurso-carpetas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px; margin: 16px 0;
+}
+.recurso-carpeta {
+  position: relative;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+  padding: 16px; text-decoration: none; color: inherit;
+  display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+  transition: transform .25s cubic-bezier(.21,.6,.35,1), box-shadow .25s ease, border-color .25s ease;
+  animation: recursoFadeUp .4s ease both;
+}
+.recurso-carpeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+  border-color: #e0f2fe;
+}
+.recurso-carpeta-link {
+  display: flex; flex-direction: column; gap: 8px;
+  text-decoration: none; color: inherit;
+}
+.recurso-carpeta-icono {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.15rem;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, .18);
+  transition: transform .25s cubic-bezier(.21,.6,.35,1);
+}
+.recurso-carpeta:hover .recurso-carpeta-icono { transform: scale(1.1) rotate(-5deg); }
+.recurso-carpeta-nombre { font-weight: 600; font-size: .9rem; color: #0f172a; word-break: break-word; }
+.recurso-carpeta-meta { font-size: .72rem; color: #94a3b8; }
+.recurso-carpeta-acciones {
+  position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;
+  opacity: 0; transition: opacity .15s ease;
+}
+.recurso-carpeta:hover .recurso-carpeta-acciones { opacity: 1; }
+.recurso-carpeta-acciones button {
+  border: none; background: #f1f5f9; color: #475569;
+  width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: .7rem;
+}
+.recurso-carpeta-acciones button:hover { background: #e2e8f0; }
+
+/* --- Lista de archivos --- */
+.recurso-lista { width: 100%; border-collapse: collapse; background: #fff;
+  border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+  animation: recursoFadeUp .4s ease both; }
+.recurso-lista th {
+  text-align: left; padding: 12px 14px; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .5px; color: #64748b; background: #f8fafc;
+}
+.recurso-lista td { padding: 12px 14px; border-top: 1px solid #f1f5f9; font-size: .85rem; vertical-align: middle; transition: background .15s ease; }
+.recurso-lista tbody tr { transition: background .15s ease; }
+.recurso-lista tbody tr:hover td { background: #f0f9ff; }
+.recurso-lista tbody tr:hover .recurso-archivo-icono { transform: scale(1.06); }
+.recurso-archivo-icono { transition: transform .2s ease; }
+.recurso-archivo-nombre { display: flex; align-items: center; gap: 10px; }
+.recurso-archivo-icono {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-size: .9rem;
+}
+.ico-pdf { background: #ef4444; } .ico-doc { background: #2563eb; }
+.ico-xls { background: #16a34a; } .ico-ppt { background: #ea580c; }
+.ico-img { background: #8b5cf6; } .ico-zip { background: #64748b; }
+.ico-txt { background: #0ea5e9; } .ico-otro { background: #94a3b8; }
+.recurso-version-badge {
+  font-size: .65rem; font-weight: 700; color: #0ea5e9; background: #e0f2fe;
+  border-radius: 999px; padding: 1px 7px; margin-left: 6px;
+}
+.recurso-acciones-fila { display: flex; gap: 6px; flex-wrap: wrap; }
+.recurso-btn-ico {
+  border: 1px solid #e2e8f0; background: #fff; color: #475569;
+  width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: .8rem;
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+  transition: background .12s ease, color .12s ease;
+}
+.recurso-btn-ico:hover { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+.recurso-btn-ico.fav-activo { color: #f59e0b; border-color: #f59e0b; }
+.recurso-btn-ico.peligro:hover { background: #ef4444; border-color: #ef4444; }
+
+/* --- Selector de color e icono de carpeta --- */
+.selector-colores, .selector-iconos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.selector-colores .swatch {
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
+}
+.selector-colores .swatch.activo { border-color: #0f172a; transform: scale(1.1); }
+.selector-iconos .icono-op {
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid #e2e8f0;
+  background: #fff; cursor: pointer; color: #475569; font-size: .95rem;
+}
+.selector-iconos .icono-op.activo { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+
+/* --- Visor de documentos (modal) --- */
+.recurso-visor-overlay {
+  position: fixed; inset: 0; background: rgba(15,23,42,.75);
+  display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+}
+.recurso-visor-overlay.abierto { display: flex; }
+.recurso-visor {
+  background: #fff; border-radius: 14px; width: min(960px, 100%);
+  height: min(85vh, 100%); display: flex; flex-direction: column; overflow: hidden;
+}
+.recurso-visor-cabecera {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid #e5e7eb;
+}
+.recurso-visor-cabecera h3 { margin: 0; font-size: .95rem; }
+.recurso-visor-cuerpo { flex: 1; overflow: auto; background: #f1f5f9; }
+.recurso-visor-cuerpo iframe, .recurso-visor-cuerpo img { width: 100%; height: 100%; border: 0; object-fit: contain; }
+.recurso-visor-cerrar { border: none; background: #f1f5f9; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; }
+
+/* --- Estado vacío --- */
+.recurso-vacio { text-align: center; padding: 50px 20px; color: #94a3b8; }
+.recurso-vacio i { font-size: 2.6rem; color: #e2e8f0; display: block; margin-bottom: 12px; }
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  .recurso-lista thead { display: none; }
+  .recurso-lista, .recurso-lista tbody, .recurso-lista tr, .recurso-lista td { display: block; width: 100%; }
+  .recurso-lista tr { border-top: 1px solid #e5e7eb; padding: 8px 0; }
+  .recurso-lista td { border: 0; padding: 6px 14px; }
+  .recurso-carpetas-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+
+/* --- Inputs y etiquetas dentro de los modales de recursos --- */
+.recurso-visor .modal-label {
+  display: block; font-size: .8rem; font-weight: 600; color: #334155;
+  margin-bottom: 4px;
+}
+.recurso-visor .modal-input,
+.recurso-visor .modal-select {
+  width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px;
+  font-size: .9rem; background: #fff; color: #0f172a; box-sizing: border-box;
+}
+.recurso-visor .modal-input:focus,
+.recurso-visor .modal-select:focus {
+  outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,.15);
+}
+.recurso-visor .btn-pequeno { padding: 6px 10px; font-size: .8rem; }
+
+/* --- Accesibilidad: desactivar animaciones si el usuario lo prefiere --- */
+@media (prefers-reduced-motion: reduce) {
+  .recurso-ciclo-card, .recurso-carpeta, .recurso-lista,
+  .recurso-ciclo-icon, .recurso-carpeta-icono, .recurso-ciclo-arrow,
+  .recurso-archivo-icono {
+    animation: none !important;
+    transition: none !important;
+  }
+}
