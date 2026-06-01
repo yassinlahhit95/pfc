@@ -29,7 +29,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <div>
-        <h1>MODIFICAR ESTUDIANTE: <?= $estudiante['nombreEstudiante'] ?></h1>
+        <h1>MODIFICAR ESTUDIANTE: <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></h1>
     </div>
     <a href="verEstudiantes.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER
@@ -38,18 +38,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/admin/estudiantes/actualizar.php" method="POST">
-        <input type="hidden" name="idEstudiante" value="<?= $id_del_estudiante ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($id_del_estudiante) ?>">
 
         <div class="formulario">
             <div class="campo">
                 <label>Nombre Completo</label>
-                <input type="text" name="nombreEstudiante" value="<?= $estudiante['nombreEstudiante'] ?>">
+                <input type="text" name="nombreEstudiante" value="<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
                 <label>Email</label>
-                <input type="text" name="emailEstudiante" value="<?= $estudiante['emailEstudiante'] ?>">
+                <input type="text" name="emailEstudiante" value="<?= Security::escapeHtml($estudiante['emailEstudiante']) ?>">
                 
             </div>
 
@@ -71,39 +71,39 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label>DNI</label>
-                <input type="text" name="dniEstudiante" value="<?= $estudiante['dniEstudiante'] ?>">
+                <input type="text" name="dniEstudiante" value="<?= Security::escapeHtml($estudiante['dniEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
                 <label>Teléfono</label>
-                <input type="text" name="telefonoEstudiante" value="<?= $estudiante['telefonoEstudiante'] ?>">
+                <input type="text" name="telefonoEstudiante" value="<?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
                 <label>Fecha Nacimiento</label>
-                <input type="date" name="fechaNacimientoEstudiante" value="<?= $estudiante['fechaNacimientoEstudiante'] ?>">
+                <input type="date" name="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($estudiante['fechaNacimientoEstudiante']) ?>">
             </div>
 
             <div class="campo ancho-total">
                 <label>Dirección</label>
-                <input type="text" name="direccionEstudiante" value="<?= $estudiante['direccionEstudiante'] ?>">
+                <input type="text" name="direccionEstudiante" value="<?= Security::escapeHtml($estudiante['direccionEstudiante']) ?>">
             </div>
 
             <div class="campo">
                 <label>Ciudad</label>
-                <input type="text" name="ciudadEstudiante" value="<?= $estudiante['ciudadEstudiante'] ?>">
+                <input type="text" name="ciudadEstudiante" value="<?= Security::escapeHtml($estudiante['ciudadEstudiante']) ?>">
             </div>
 
             <div class="campo">
                 <label>Código Postal</label>
-                <input type="text" name="codigoPostalEstudiante" value="<?= $estudiante['codigoPostalEstudiante'] ?>">
+                <input type="text" name="codigoPostalEstudiante" value="<?= Security::escapeHtml($estudiante['codigoPostalEstudiante']) ?>">
             </div>
 
             <div class="campo ancho-total">
                 <label>Observaciones</label>
-                <textarea name="observacionesEstudiante"><?= $estudiante['observacionesEstudiante'] ?></textarea>
+                <textarea name="observacionesEstudiante"><?= Security::escapeHtml($estudiante['observacionesEstudiante']) ?></textarea>
             </div>
         </div>
 
@@ -130,7 +130,7 @@ function filtrarCiclos() {
 
 $(function() {
     filtrarCiclos();
-    $('#idCiclo').val('<?= $estudiante['idCiclo'] ?>');
+    $('#idCiclo').val('<?= Security::escapeHtml($estudiante['idCiclo']) ?>');
 });
 </script>
 

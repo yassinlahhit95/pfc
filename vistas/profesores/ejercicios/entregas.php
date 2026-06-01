@@ -32,34 +32,34 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
   <div>
-    <h1><?= htmlspecialchars(mb_strtoupper($ejercicio['titulo'], 'UTF-8')) ?></h1>
+    <h1><?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($ejercicio['titulo'], 'UTF-8'))) ?></h1>
     <?php if ($ejercicio['nombreCarpeta']): ?>
-    <span class="ejercicio-card-carpeta" style="background:<?= $ejercicio['colorCarpeta'] ?>22;color:<?= $ejercicio['colorCarpeta'] ?>;margin-top:6px;display:inline-flex;">
-      <i class="fas fa-folder" style="font-size:0.65rem;"></i> <?= htmlspecialchars($ejercicio['nombreCarpeta']) ?>
+    <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml($ejercicio['colorCarpeta'] ) ?>22;color:<?= Security::escapeHtml($ejercicio['colorCarpeta'] ) ?>;margin-top:6px;display:inline-flex;">
+      <i class="fas fa-folder" style="font-size:0.65rem;"></i> <?= Security::escapeHtml(htmlspecialchars($ejercicio['nombreCarpeta'])) ?>
     </span>
     <?php endif; ?>
   </div>
   <a href="panel.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><?= htmlspecialchars($exito) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><?= htmlspecialchars($errores) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
 
 <div class="entregas-stats">
   <div class="entrega-stat-card">
-    <div class="numero"><?= count($estudiantes) ?></div>
+    <div class="numero"><?= Security::escapeHtml(count($estudiantes)) ?></div>
     <div class="label">Alumnos</div>
   </div>
   <div class="entrega-stat-card" style="background:#dbeafe22;border:1px solid #bfdbfe;">
-    <div class="numero" style="color:#1d4ed8;"><?= $totalEntregado ?></div>
+    <div class="numero" style="color:#1d4ed8;"><?= Security::escapeHtml($totalEntregado ) ?></div>
     <div class="label">Entregado</div>
   </div>
   <div class="entrega-stat-card" style="background:#dcfce722;border:1px solid #bbf7d0;">
-    <div class="numero" style="color:#15803d;"><?= $totalCalificado ?></div>
+    <div class="numero" style="color:#15803d;"><?= Security::escapeHtml($totalCalificado ) ?></div>
     <div class="label">Calificado</div>
   </div>
   <div class="entrega-stat-card" style="background:#fef3c722;border:1px solid #fde68a;">
-    <div class="numero" style="color:#b45309;"><?= max(0,$totalPendiente) ?></div>
+    <div class="numero" style="color:#b45309;"><?= Security::escapeHtml(max(0,$totalPendiente)) ?></div>
     <div class="label">Pendiente</div>
   </div>
 </div>
@@ -83,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           $entrega = $entregasMap[$est['idEstudiante']] ?? null;
         ?>
         <tr>
-          <td class="texto-negrita"><?= htmlspecialchars($est['nombreEstudiante']) ?></td>
+          <td class="texto-negrita"><?= Security::escapeHtml(htmlspecialchars($est['nombreEstudiante'])) ?></td>
           <td>
             <?php if (!$entrega): ?>
               <span class="badge-estado badge-pendiente">Pendiente</span>
@@ -94,26 +94,26 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php endif; ?>
           </td>
           <td class="texto-suave">
-            <?= $entrega ? date('d/m/Y H:i', strtotime($entrega['fechaEntrega'])) : '—' ?>
+            <?= Security::escapeHtml($entrega ? date('d/m/Y H:i', strtotime($entrega['fechaEntrega'])) : '—') ?>
           </td>
           <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-            <?= $entrega && $entrega['respuesta'] ? htmlspecialchars(substr($entrega['respuesta'], 0, 80)) . (strlen($entrega['respuesta']) > 80 ? '…' : '') : '<span class="texto-suave">—</span>' ?>
+            <?= Security::escapeHtml($entrega && $entrega['respuesta'] ? htmlspecialchars(substr($entrega['respuesta'], 0, 80)) . (strlen($entrega['respuesta']) > 80 ? '…' : '') : '<span class="texto-suave">—</span>') ?>
           </td>
           <td>
             <?php if ($entrega && $entrega['archivoEntrega']): ?>
-            <a href="../../../public/uploads/ejercicios/entregas/<?= htmlspecialchars($entrega['archivoEntrega'], ENT_QUOTES) ?>"
+            <a href="../../../public/uploads/ejercicios/entregas/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoEntrega'], ENT_QUOTES)) ?>"
                target="_blank" class="btn-accion btn-ver" title="Ver archivo">
               <i class="fas fa-paperclip"></i>
             </a>
             <?php else: ?><span class="texto-suave">—</span><?php endif; ?>
           </td>
-          <td class="texto-negrita <?= $entrega && $entrega['nota'] !== null ? ($entrega['nota'] >= 5 ? 'texto-verde' : 'texto-rojo') : '' ?>">
-            <?= $entrega && $entrega['nota'] !== null ? $entrega['nota'] : '<span class="texto-suave">—</span>' ?>
+          <td class="texto-negrita <?= Security::escapeHtml($entrega && $entrega['nota'] !== null ? ($entrega['nota'] >= 5 ? 'texto-verde' : 'texto-rojo') : '') ?>">
+            <?= Security::escapeHtml($entrega && $entrega['nota'] !== null ? $entrega['nota'] : '<span class="texto-suave">—</span>') ?>
           </td>
           <td>
             <?php if ($entrega): ?>
             <button type="button" class="btn-accion btn-editar"
-                    onclick="abrirCalificar(<?= $est['idEstudiante'] ?>, '<?= htmlspecialchars($est['nombreEstudiante'], ENT_QUOTES) ?>', <?= $entrega['nota'] ?? 'null' ?>, '<?= htmlspecialchars(addslashes($entrega['comentarioProfesor'] ?? ''), ENT_QUOTES) ?>')"
+                    onclick="abrirCalificar(<?= Security::escapeHtml($est['idEstudiante'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars($est['nombreEstudiante'], ENT_QUOTES)) ?>', <?= Security::escapeHtml($entrega['nota'] ?? 'null') ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($entrega['comentarioProfesor'] ?? ''), ENT_QUOTES)) ?>')"
                     title="Calificar">
               <i class="fas fa-star"></i>
             </button>
@@ -136,7 +136,8 @@ include_once __DIR__ . "/../comunes/nav.php";
       <button onclick="document.getElementById('modalCalificar').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#94a3b8;">✕</button>
     </div>
     <form action="../../../controladores/profesores/ejercicios/calificar.php" method="POST" class="formulario">
-      <input type="hidden" name="idEjercicio" value="<?= $idEjercicio ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+      <input type="hidden" name="idEjercicio" value="<?= Security::escapeHtml($idEjercicio ) ?>">
       <input type="hidden" name="idEstudiante" id="calificarIdEst">
       <div class="campo">
         <label>Nota (0 – 10)</label>
@@ -161,3 +162,5 @@ function abrirCalificar(idEst, nombre, nota, comentario) {
   document.getElementById('modalCalificar').style.display = 'flex';
 }
 </script>
+
+

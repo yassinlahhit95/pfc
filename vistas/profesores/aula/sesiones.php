@@ -33,14 +33,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (!empty($exito)) { ?>
     <div class="alerta-exito" style="margin-bottom: 20px;">
         <i class="fas fa-check-circle"></i>
-        <p><?= htmlspecialchars($exito) ?></p>
+        <p><?= Security::escapeHtml(htmlspecialchars($exito)) ?></p>
     </div>
 <?php } ?>
 
 <?php if (!empty($errores)) { ?>
     <div class="alerta-error" style="margin-bottom: 20px;">
         <i class="fas fa-exclamation-circle"></i>
-        <p><?= htmlspecialchars($errores) ?></p>
+        <p><?= Security::escapeHtml(htmlspecialchars($errores)) ?></p>
     </div>
 <?php } ?>
 
@@ -85,29 +85,29 @@ include_once __DIR__ . "/../comunes/nav.php";
                     $totalAsistencias = contarAsistenciaPorSesion($sesion['idSesion']);
                 ?>
                 <tr>
-                    <td><strong><?= htmlspecialchars($sesion['titulo']) ?></strong></td>
-                    <td><?= htmlspecialchars($sesion['nombreModulo']) ?></td>
-                    <td><?= date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion'])) ?></td>
+                    <td><strong><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></strong></td>
+                    <td><?= Security::escapeHtml(htmlspecialchars($sesion['nombreModulo'])) ?></td>
+                    <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?></td>
                     <td>
                         <span class="badge badge-gris">
-                            <i class="fas fa-link"></i> <?= ucfirst($sesion['plataforma']) ?>
+                            <i class="fas fa-link"></i> <?= Security::escapeHtml(ucfirst($sesion['plataforma'])) ?>
                         </span>
                     </td>
-                    <td><?= $estado ?></td>
+                    <td><?= Security::escapeHtml($estado ) ?></td>
                     <td>
-                        <strong><?= $totalAsistencias ?></strong> estudiantes
+                        <strong><?= Security::escapeHtml($totalAsistencias ) ?></strong> estudiantes
                     </td>
                     <td>
-                        <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= htmlspecialchars($sesion['enlaceReunion']) ?>')">
+                        <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>')">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <a href="../../../controladores/aula/enviar_sesion_brevo.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Enviar a estudiantes del ciclo" onclick="return confirm('¿Enviar el enlace de esta sesión a todos los estudiantes del ciclo?')">
+                        <a href="../../../controladores/aula/enviar_sesion_brevo.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Enviar a estudiantes del ciclo" onclick="return confirm('¿Enviar el enlace de esta sesión a todos los estudiantes del ciclo?')">
                             <i class="fas fa-envelope"></i>
                         </a>
-                        <a href="editar.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Editar">
+                        <a href="editar.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="../../../controladores/aula/borrar_sesion.php?id=<?= $sesion['idSesion'] ?>" class="boton-peligro btn-pequeno" onclick="return confirm('¿Estás seguro de que deseas eliminar esta sesión?')" title="Eliminar">
+                        <a href="../../../controladores/aula/borrar_sesion.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-peligro btn-pequeno" onclick="return confirm('¿Estás seguro de que deseas eliminar esta sesión?')" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>
@@ -119,3 +119,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

@@ -14,10 +14,10 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div class="panel" style="max-width:500px;">
-    <p>Quieres eliminar el ciclo "<?= $registro['nombreCiclo'] ?>"!</p>
+    <p>Quieres eliminar el ciclo "<?= Security::escapeHtml($registro['nombreCiclo']) ?>"!</p>
     <div class="acciones" style="margin-top:20px;">
         <form method="POST" action="../../../controladores/admin/ciclos/borrar.php">
-            <input type="hidden" name="idCiclo" value="<?= $id ?>">
+            <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id) ?>">
             <button type="submit" class="boton-primario" style="background:#f87171;border-color:#f87171;min-width:160px;">Sí, eliminar</button>
         </form>
         <a href="verCiclos.php" class="boton-secundario" style="min-width:160px;">Cancelar</a>

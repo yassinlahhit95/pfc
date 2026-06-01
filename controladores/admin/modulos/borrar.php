@@ -52,7 +52,7 @@ if (isset($_POST['idModulo'])) {
         $_SESSION['errores'] = "Error al eliminar.";
     }
 
-    mysqli_close($con);
+    
 }
 
 header("Location: ../../../vistas/admin/modulos/verModulos.php");

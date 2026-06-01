@@ -29,14 +29,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <button onclick="document.getElementById('modalCarpeta').style.display='flex'" class="boton-secundario">
       <i class="fas fa-folder-plus"></i> Nueva Carpeta
     </button>
-    <a href="agregar.php<?= $idCarpetaActiva ? '?idCarpeta='.$idCarpetaActiva : '' ?>" class="boton-primario">
+    <a href="agregar.php<?= Security::escapeHtml($idCarpetaActiva ? '?idCarpeta='.$idCarpetaActiva : '') ?>" class="boton-primario">
       <i class="fas fa-plus"></i> Nuevo Ejercicio
     </a>
   </div>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= htmlspecialchars($exito) ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= htmlspecialchars($errores) ?></div><?php } ?>
+<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php } ?>
 
 <div class="ejercicios-layout" style="margin-top:20px;">
 
@@ -46,17 +46,17 @@ include_once __DIR__ . "/../comunes/nav.php";
       <h3>Carpetas</h3>
     </div>
 
-    <a href="panel.php" class="carpeta-item <?= $idCarpetaActiva === 0 ? 'activa' : '' ?>">
+    <a href="panel.php" class="carpeta-item <?= Security::escapeHtml($idCarpetaActiva === 0 ? 'activa' : '') ?>">
       <span class="carpeta-punto" style="background:#94a3b8;"></span>
       <span>Todos</span>
-      <span class="carpeta-count"><?= count($ejercicios) ?></span>
+      <span class="carpeta-count"><?= Security::escapeHtml(count($ejercicios)) ?></span>
     </a>
 
     <?php foreach ($carpetas as $c): ?>
-    <a href="panel.php?idCarpeta=<?= $c['idCarpeta'] ?>" class="carpeta-item <?= $idCarpetaActiva == $c['idCarpeta'] ? 'activa' : '' ?>">
-      <span class="carpeta-punto" style="background:<?= htmlspecialchars($c['color']) ?>;"></span>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= htmlspecialchars($c['nombre']) ?></span>
-      <span class="carpeta-count"><?= $c['totalEjercicios'] ?></span>
+    <a href="panel.php?idCarpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>" class="carpeta-item <?= Security::escapeHtml($idCarpetaActiva == $c['idCarpeta'] ? 'activa' : '') ?>">
+      <span class="carpeta-punto" style="background:<?= Security::escapeHtml(htmlspecialchars($c['color'])) ?>;"></span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></span>
+      <span class="carpeta-count"><?= Security::escapeHtml($c['totalEjercicios'] ) ?></span>
     </a>
     <?php endforeach; ?>
 
@@ -67,9 +67,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- Borrar carpeta activa -->
     <?php if ($idCarpetaActiva > 0): ?>
     <?php $carpetaActual = obtenerCarpetaPorId($idCarpetaActiva); ?>
-    <?php if ($carpetaActual && $carpetaActual['idProfesor'] == $idProfesor): ?>
+    <?php if ($carpetaActual && $carpetaActual['idProfesor'] =<?= Security::escapeHtml($idProfesor): ) ?>
     <div style="padding:10px 14px;border-top:1px solid #f1f5f9;">
-      <a href="../../../controladores/profesores/carpetas/borrar.php?id=<?= $idCarpetaActiva ?>"
+      <a href="../../../controladores/profesores/carpetas/borrar.php?id=<?= Security::escapeHtml($idCarpetaActiva ) ?>"
          class="texto-suave" style="font-size:0.75rem;display:flex;align-items:center;gap:6px;color:#ef4444;"
          onclick="return confirm('¿Eliminar carpeta y sus ejercicios asociados?')">
         <i class="fas fa-trash"></i> Eliminar carpeta
@@ -85,7 +85,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel" style="text-align:center;padding:60px 20px;">
       <i class="fas fa-book-open" style="font-size:3rem;color:#e2e8f0;margin-bottom:16px;display:block;"></i>
       <p class="texto-suave">No hay ejercicios aún.</p>
-      <a href="agregar.php<?= $idCarpetaActiva ? '?idCarpeta='.$idCarpetaActiva : '' ?>" class="boton-primario" style="margin-top:16px;display:inline-flex;">
+      <a href="agregar.php<?= Security::escapeHtml($idCarpetaActiva ? '?idCarpeta='.$idCarpetaActiva : '') ?>" class="boton-primario" style="margin-top:16px;display:inline-flex;">
         <i class="fas fa-plus"></i> Crear primer ejercicio
       </a>
     </div>
@@ -105,35 +105,35 @@ include_once __DIR__ . "/../comunes/nav.php";
       ?>
       <div class="ejercicio-card">
         <?php if ($ej['nombreCarpeta']): ?>
-        <span class="ejercicio-card-carpeta" style="background:<?= htmlspecialchars($ej['colorCarpeta']) ?>22;color:<?= htmlspecialchars($ej['colorCarpeta']) ?>;">
+        <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>22;color:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>;">
           <i class="fas fa-folder" style="font-size:0.65rem;"></i>
-          <?= htmlspecialchars($ej['nombreCarpeta']) ?>
+          <?= Security::escapeHtml(htmlspecialchars($ej['nombreCarpeta'])) ?>
         </span>
         <?php endif; ?>
 
-        <p class="ejercicio-card-titulo"><?= htmlspecialchars($ej['titulo']) ?></p>
+        <p class="ejercicio-card-titulo"><?= Security::escapeHtml(htmlspecialchars($ej['titulo'])) ?></p>
 
         <?php if ($ej['descripcion']): ?>
-        <p class="ejercicio-card-desc"><?= htmlspecialchars($ej['descripcion']) ?></p>
+        <p class="ejercicio-card-desc"><?= Security::escapeHtml(htmlspecialchars($ej['descripcion'])) ?></p>
         <?php endif; ?>
 
         <div class="ejercicio-card-footer">
-          <span class="ejercicio-fecha <?= $claseUrgencia ?>">
-            <i class="fas fa-clock"></i> <?= $textoFecha ?>
+          <span class="ejercicio-fecha <?= Security::escapeHtml($claseUrgencia ) ?>">
+            <i class="fas fa-clock"></i> <?= Security::escapeHtml($textoFecha ) ?>
           </span>
           <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">
-            <i class="fas fa-users"></i> <?= $ej['totalEntregas'] ?> entregas
+            <i class="fas fa-users"></i> <?= Security::escapeHtml($ej['totalEntregas'] ) ?> entregas
           </span>
         </div>
 
         <div class="caja alinear-centro espacio-pequeno" style="margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;">
-          <a href="editar.php?id=<?= $ej['idEjercicio'] ?>" class="boton-secundario btn-pequeno" style="flex:1;justify-content:center;">
+          <a href="editar.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>" class="boton-secundario btn-pequeno" style="flex:1;justify-content:center;">
             <i class="fas fa-edit"></i> Editar
           </a>
-          <a href="entregas.php?id=<?= $ej['idEjercicio'] ?>" class="boton-primario btn-pequeno" style="flex:1;justify-content:center;">
+          <a href="entregas.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>" class="boton-primario btn-pequeno" style="flex:1;justify-content:center;">
             <i class="fas fa-inbox"></i> Entregas
           </a>
-          <a href="../../../controladores/profesores/ejercicios/borrar.php?id=<?= $ej['idEjercicio'] ?>"
+          <a href="../../../controladores/profesores/ejercicios/borrar.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>"
              class="btn-accion btn-eliminar" title="Eliminar"
              onclick="return confirm('¿Eliminar este ejercicio y todas sus entregas?')">
             <i class="fas fa-trash"></i>
@@ -154,6 +154,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <button onclick="document.getElementById('modalCarpeta').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#94a3b8;">✕</button>
     </div>
     <form action="../../../controladores/profesores/carpetas/insertar.php" method="POST" class="formulario">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
       <div class="campo">
         <label>Nombre *</label>
         <input type="text" name="nombre" placeholder="Ej: Ejercicios PHP" required maxlength="100">
@@ -163,7 +164,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select name="idCiclo" required>
           <option value="">-- Seleccionar --</option>
           <?php foreach ($ciclos as $c): ?>
-          <option value="<?= $c['idCiclo'] ?>"><?= htmlspecialchars($c['nombreCiclo']) ?></option>
+          <option value="<?= Security::escapeHtml($c['idCiclo'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($c['nombreCiclo'])) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
@@ -172,8 +173,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="caja alinear-centro espacio-pequeno" style="flex-wrap:wrap;gap:8px;margin-top:6px;">
           <?php foreach (['#0ea5e9','#8b5cf6','#10b981','#f59e0b','#ef4444','#ec4899','#0ea5e9','#14b8a6'] as $col): ?>
           <label style="cursor:pointer;">
-            <input type="radio" name="color" value="<?= $col ?>" <?= $col === '#0ea5e9' ? 'checked' : '' ?> style="display:none;">
-            <span style="display:block;width:26px;height:26px;border-radius:50%;background:<?= $col ?>;border:2px solid transparent;transition:border-color 0.15s;"
+            <input type="radio" name="color" value="<?= Security::escapeHtml($col ) ?>" <?= Security::escapeHtml($col === '#0ea5e9' ? 'checked' : '') ?> style="display:none;">
+            <span style="display:block;width:26px;height:26px;border-radius:50%;background:<?= Security::escapeHtml($col ) ?>;border:2px solid transparent;transition:border-color 0.15s;"
                   onclick="this.previousElementSibling.checked=true;document.querySelectorAll('[name=color]+span').forEach(s=>s.style.borderColor='transparent');this.style.borderColor='#1e293b';"></span>
           </label>
           <?php endforeach; ?>
@@ -190,3 +191,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

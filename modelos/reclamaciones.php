@@ -17,7 +17,7 @@ function listarTodosLosMensajes() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaMensajes[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaMensajes;
 }
 
@@ -29,7 +29,7 @@ function obtenerMensajePorId($idReclamacion) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $mensaje = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $mensaje;
 }
 
@@ -39,7 +39,7 @@ function marcarMensajeComoLeido($idReclamacion) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idReclamacion);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -49,7 +49,7 @@ function responderMensaje($idReclamacion, $contenidoRespuesta) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $contenidoRespuesta, $idReclamacion);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -65,7 +65,7 @@ function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion,
     mysqli_stmt_bind_param($stmt, "iissss", $valorEstudiante, $valorProfesor, $rolEmisor, $asunto, $descripcion, $fechaHoraActual);
 
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -80,7 +80,7 @@ function listarMensajesDeEstudiante($idEstudiante) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaMensajes[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaMensajes;
 }
 
@@ -95,7 +95,7 @@ function listarMensajesParaProfesor($idProfesor) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaMensajes[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaMensajes;
 }
 
@@ -105,7 +105,7 @@ function eliminarMensaje($idReclamacion) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idReclamacion);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -119,7 +119,7 @@ function contarMensajesNoLeidosAdmin() {
             )";
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }
 
@@ -131,7 +131,7 @@ function contarMensajesParaAdmin() {
                OR (emisor_rol = 'admin')";
     $resultado = mysqli_query($con, $sql);
     $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }
 
@@ -143,7 +143,7 @@ function contarMensajesNoLeidosProfesor($idProfesor) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }
 
@@ -155,7 +155,7 @@ function contarMensajesDeProfesor($idProfesor) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }
 
@@ -167,7 +167,7 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }
 

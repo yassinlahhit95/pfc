@@ -25,10 +25,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -49,8 +49,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="fila-datos">
             <div class="nombre-detalle">Archivo subido</div>
             <div class="valor-detalle">
-                <p class="texto-negrita"><?= $tfg['archivoTFG'] ?></p>
-                <span class="texto-suave">Fecha de entrega: <?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></span>
+                <p class="texto-negrita"><?= Security::escapeHtml($tfg['archivoTFG'] ) ?></p>
+                <span class="texto-suave">Fecha de entrega: <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG']))) ?></span>
             </div>
         </div>
 
@@ -58,9 +58,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="nombre-detalle">Acciones</div>
             <div class="valor-detalle">
                 <div class="caja espacio-medio">
-                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="boton-secundario">DESCARGAR</a>
+                    <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($tfg['archivoTFG'] ) ?>" target="_blank" class="boton-secundario">DESCARGAR</a>
                     <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
-                        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
                         <input type="submit" name="borrarTFG" class="boton-secundario color-error" value="ELIMINAR">
                     </form>
                 </div>
@@ -73,11 +74,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="nombre-detalle">Nota Final</div>
             <div class="valor-detalle">
                 <?php if ($notaTFG['nota'] >= 5) { ?>
-                    <span class="texto-verde texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — APROBADO</span>
+                    <span class="texto-verde texto-negrita" style="font-size: 1.3em;"><?= Security::escapeHtml($notaTFG['nota'] ) ?> / 10 — APROBADO</span>
                 <?php } else { ?>
-                    <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= $notaTFG['nota'] ?> / 10 — SUSPENSO</span>
+                    <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= Security::escapeHtml($notaTFG['nota'] ) ?> / 10 — SUSPENSO</span>
                 <?php } ?>
-                <p class="texto-suave" style="margin-top: 5px;"><em>Observaciones: <?= $notaTFG['observaciones'] ?></em></p>
+                <p class="texto-suave" style="margin-top: 5px;"><em>Observaciones: <?= Security::escapeHtml($notaTFG['observaciones'] ) ?></em></p>
             </div>
         </div>
     <?php } ?>
@@ -85,7 +86,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="titulo-tarjeta" style="margin-top: 25px; padding-top: 20px; ">SUBIR ARCHIVO</div>
 
     <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
 
         <div class="campo">
             <label>Seleccione el archivo de su TFG (PDF o Word)</label>
@@ -94,10 +96,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="acciones">
-            <input type="submit" name="subirTFG" class="boton-primario" value="<?= empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG' ?>">
+            <input type="submit" name="subirTFG" class="boton-primario" value="<?= Security::escapeHtml(empty($tfg['archivoTFG']) ? 'ENVIAR TFG' : 'ACTUALIZAR TFG') ?>">
             <input type="reset" class="boton-secundario" value="REINICIAR">
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

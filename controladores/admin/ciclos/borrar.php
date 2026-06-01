@@ -1,6 +1,13 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../include/Security.php";
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = "Solicitud no válida o expirada (CSRF).";
+    header("Location: " . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+    exit;
+}
 
 if (isset($_POST['idCiclo'])) {
     $idCiclo = (int) $_POST['idCiclo'];
@@ -76,8 +83,6 @@ if (isset($_POST['idCiclo'])) {
     } else {
         $_SESSION['errores'] = "Error al eliminar.";
     }
-
-    mysqli_close($con);
 }
 
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");

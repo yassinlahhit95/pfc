@@ -23,10 +23,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -46,13 +46,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($eventos as $evento) { ?>
                     <tr>
-                        <td class="texto-negrita"><?= date('d/m/Y', strtotime($evento['fechaEvento'])) ?></td>
-                        <td><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</td>
+                        <td class="texto-negrita"><?= Security::escapeHtml(date('d/m/Y', strtotime($evento['fechaEvento']))) ?></td>
+                        <td><?= Security::escapeHtml(date('H:i', strtotime($evento['horaEvento']))) ?>h</td>
                         <td>
-                            <b><?= $evento['tituloEvento'] ?></b><br>
-                            <span class="texto-suave"><?= $evento['descripcionEvento'] ?></span>
+                            <b><?= Security::escapeHtml($evento['tituloEvento'] ) ?></b><br>
+                            <span class="texto-suave"><?= Security::escapeHtml($evento['descripcionEvento'] ) ?></span>
                         </td>
-                        <td><?= $evento['ubicacionEvento'] ?></td>
+                        <td><?= Security::escapeHtml($evento['ubicacionEvento'] ) ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>
@@ -62,4 +62,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

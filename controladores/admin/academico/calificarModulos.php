@@ -1,10 +1,16 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../include/Security.php";
 
 $hayError = false;
 
 if (isset($_POST['guardarNotas'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = "Solicitud no válida (CSRF).";
+        header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
+        exit;
+    }
     $idModulo = trim($_POST['idModulo'] ?? '');
     $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
     $listaNotas1Ev = $_POST['notas_1ev'] ?? [];

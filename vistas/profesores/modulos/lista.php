@@ -34,9 +34,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if ($modulos) { ?>
                     <?php foreach ($modulos as $moduloItem) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= $moduloItem['nombreModulo'] ?></td>
-                            <td><?= $moduloItem['horasMaximas'] ?> h</td>
-                            <td><?= $moduloItem['nombreCiclo'] ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($moduloItem['nombreModulo'] ) ?></td>
+                            <td><?= Security::escapeHtml($moduloItem['horasMaximas'] ) ?> h</td>
+                            <td><?= Security::escapeHtml($moduloItem['nombreCiclo'] ) ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
@@ -50,6 +50,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 
 
 

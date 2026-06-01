@@ -6,6 +6,7 @@ if (empty($_SESSION['idProfesor'])) {
     exit;
 }
 
+require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -30,7 +31,7 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $tituloDelPagina ?? 'AulaPro Profesor' ?></title>
+    <title><?= Security::escapeHtml($tituloDelPagina ?? 'AulaPro Profesor') ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -40,9 +41,9 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
     <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__."/../../../public/css/aula-digital.css") ?>">
+    <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/css/aula-digital.css")) ?>">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../../public/js/aula-digital.js?v=<?= @filemtime(__DIR__."/../../../public/js/aula-digital.js") ?>"></script>
+    <script src="../../../public/js/aula-digital.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/aula-digital.js")) ?>"></script>
 </head>
 <body>
 
@@ -71,46 +72,46 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
         </div>
 
         <nav class="menu-navegacion">
-            <a href="../inicio/dashboard.php" class="enlace-menu <?= ($seccionActual == 'inicio') ? 'activo' : '' ?>">
+            <a href="../inicio/dashboard.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'inicio') ? 'activo' : '') ?>">
                 <i class="fas fa-home"></i> <span>INICIO</span>
             </a>
 
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
                 
-                <a href="../estudiantes/lista.php" class="enlace-menu <?= ($seccionActual == 'estudiantes') ? 'activo' : '' ?>">
+                <a href="../estudiantes/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'estudiantes') ? 'activo' : '') ?>">
                     <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
-                    <span class="texto-contador"><?= $totalAlumnos_menu ?></span>
+                    <span class="texto-contador"><?= Security::escapeHtml($totalAlumnos_menu ) ?></span>
                 </a>
 
-                <a href="../ciclos/lista.php" class="enlace-menu <?= ($seccionActual == 'ciclos') ? 'activo' : '' ?>">
+                <a href="../ciclos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'ciclos') ? 'activo' : '') ?>">
                     <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
-                    <span class="texto-contador"><?= $totalCiclos_menu ?></span>
+                    <span class="texto-contador"><?= Security::escapeHtml($totalCiclos_menu ) ?></span>
                 </a>
 
-                <a href="../modulos/lista.php" class="enlace-menu <?= ($seccionActual == 'modulos') ? 'activo' : '' ?>">
+                <a href="../modulos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'modulos') ? 'activo' : '') ?>">
                     <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
-                    <span class="texto-contador"><?= $totalModulos_menu ?></span>
+                    <span class="texto-contador"><?= Security::escapeHtml($totalModulos_menu ) ?></span>
                 </a>
 
-                <a href="../retos/lista.php" class="enlace-menu <?= ($seccionActual == 'retos') ? 'activo' : '' ?>">
+                <a href="../retos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'retos') ? 'activo' : '') ?>">
                     <i class="fas fa-tasks"></i> <span>RETOS</span>
-                    <span class="texto-contador"><?= $totalRetos_menu ?></span>
+                    <span class="texto-contador"><?= Security::escapeHtml($totalRetos_menu ) ?></span>
                 </a>
 
-                <a href="../calificaciones/lista.php" class="enlace-menu <?= ($seccionActual == 'calificaciones') ? 'activo' : '' ?>">
+                <a href="../calificaciones/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'calificaciones') ? 'activo' : '') ?>">
                     <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
                 </a>
 
-                <a href="../academico/calificacionesRetos.php" class="enlace-menu <?= ($seccionActual == 'notas_retos') ? 'activo' : '' ?>">
+                <a href="../academico/calificacionesRetos.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'notas_retos') ? 'activo' : '') ?>">
                     <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
                 </a>
 
-                <a href="../calificaciones/tfg.php" class="enlace-menu <?= ($seccionActual == 'notas_tfg') ? 'activo' : '' ?>">
+                <a href="../calificaciones/tfg.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'notas_tfg') ? 'activo' : '') ?>">
                     <i class="fas fa-star"></i> <span>NOTAS TFG</span>
                 </a>
 
-                <a href="../academico/resultadosFinales.php" class="enlace-menu <?= ($seccionActual == 'resultados_finales') ? 'activo' : '' ?>">
+                <a href="../academico/resultadosFinales.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'resultados_finales') ? 'activo' : '') ?>">
                     <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
                 </a>
             </div>
@@ -118,11 +119,11 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">AULA DIGITAL</p>
 
-                <a href="../aula/sesiones.php" class="enlace-menu <?= ($seccionActual == 'aula_sesiones') ? 'activo' : '' ?>">
+                <a href="../aula/sesiones.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'aula_sesiones') ? 'activo' : '') ?>">
                     <i class="fas fa-graduation-cap"></i> <span>AULA DIGITAL</span>
                 </a>
 
-                <a href="../aula/index.php" class="enlace-menu <?= ($seccionActual == 'aula_recursos') ? 'activo' : '' ?>">
+                <a href="../aula/index.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'aula_recursos') ? 'activo' : '') ?>">
                     <i class="fas fa-folder-open"></i> <span>RECURSOS</span>
                 </a>
             </div>
@@ -130,22 +131,22 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">COMUNICACIÓN</p>
 
-                <a href="../anuncios/lista.php" class="enlace-menu <?= ($seccionActual == 'anuncios') ? 'activo' : '' ?>">
+                <a href="../anuncios/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'anuncios') ? 'activo' : '') ?>">
                     <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
                 </a>
 
-                <a href="../mensajes/lista.php" class="enlace-menu <?= ($seccionActual == 'reclamaciones') ? 'activo' : '' ?>">
+                <a href="../mensajes/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'reclamaciones') ? 'activo' : '') ?>">
                     <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
-                    <span class="texto-contador <?= ($totalSinLeer_menu > 0) ? 'alerta-roja' : '' ?>"><?= $totalMensajes_menu ?></span>
+                    <span class="texto-contador <?= Security::escapeHtml(($totalSinLeer_menu > 0) ? 'alerta-roja' : '') ?>"><?= Security::escapeHtml($totalMensajes_menu ) ?></span>
                 </a>
 
-                <a href="../eventos/lista.php" class="enlace-menu <?= ($seccionActual == 'eventos') ? 'activo' : '' ?>">
+                <a href="../eventos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'eventos') ? 'activo' : '') ?>">
                     <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
-                <a href="../perfil/ver.php" class="enlace-menu <?= ($seccionActual == 'perfil') ? 'activo' : '' ?>">
+                <a href="../perfil/ver.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'perfil') ? 'activo' : '') ?>">
                     <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
                 </a>
                 <a href="https://yassin.agency" target="_blank" class="enlace-menu">
@@ -155,13 +156,15 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
                     <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
                 </a>
                 <div class="info-sistema-footer">
-                    &copy; <?= date('Y') ?> Yassin Lahhit
+                    &copy; <?= Security::escapeHtml(date('Y')) ?> Yassin Lahhit
                 </div>
             </div>
         </nav>
     </aside>
 
     <section class="contenido-principal"><?php if (isset($_SESSION['idProfesor'])) { ?>
-        <div id="firebase-user-data" data-user-id="<?= $_SESSION['idProfesor'] ?>" data-user-role="profesor" class="oculto"></div>
+        <div id="firebase-user-data" data-user-id="<?= Security::escapeHtml($_SESSION['idProfesor'] ) ?>" data-user-role="profesor" class="oculto"></div>
         <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
     <?php } ?>
+
+

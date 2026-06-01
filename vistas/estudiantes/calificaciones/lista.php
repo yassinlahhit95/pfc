@@ -26,10 +26,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -54,13 +54,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $isAprobado = ($detalle['estado'] == 'Aprobado');
                     ?>
                         <tr>
-                            <td><b><?= $detalle['nombreModulo'] ?></b></td>
-                            <td><?= $detalle['media_notas'] ?></td>
-                            <td><?= $detalle['media_retos'] ?></td>
-                            <td class="texto-negrita"><?= $detalle['nota_final'] ?></td>
+                            <td><b><?= Security::escapeHtml($detalle['nombreModulo'] ) ?></b></td>
+                            <td><?= Security::escapeHtml($detalle['media_notas'] ) ?></td>
+                            <td><?= Security::escapeHtml($detalle['media_retos'] ) ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($detalle['nota_final'] ) ?></td>
                             <td>
-                                <span class="badge <?= $isAprobado ? 'badge-exito' : ($detalle['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta') ?>">
-                                    <?= strtoupper($detalle['estado']) ?>
+                                <span class="badge <?= Security::escapeHtml($isAprobado ? 'badge-exito' : ($detalle['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta')) ?>">
+                                    <?= Security::escapeHtml(strtoupper($detalle['estado'])) ?>
                                 </span>
                             </td>
                         </tr>
@@ -77,17 +77,19 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="resumen-global" style="border-left: none; margin-top: 20px;">
         <div class="item-resumen">
             <span class="nombre">PROMEDIO GLOBAL:</span>
-            <span class="valor <?= is_numeric($resumen['promedio_global']) && $resumen['promedio_global'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-                <?= $resumen['promedio_global'] ?>
+            <span class="valor <?= Security::escapeHtml(is_numeric($resumen['promedio_global']) && $resumen['promedio_global'] >= 5 ? 'texto-verde' : 'texto-rojo') ?>">
+                <?= Security::escapeHtml($resumen['promedio_global'] ) ?>
             </span>
         </div>
         <div class="item-resumen">
             <span class="nombre">ESTADO GLOBAL:</span>
-            <span class="badge <?= $resumen['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumen['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta') ?>">
-                <?= $resumen['estado_global'] ?>
+            <span class="badge <?= Security::escapeHtml($resumen['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumen['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta')) ?>">
+                <?= Security::escapeHtml($resumen['estado_global'] ) ?>
             </span>
         </div>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

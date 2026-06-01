@@ -77,21 +77,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                     }
                 ?>
                 <tr>
-                    <td><strong><?= htmlspecialchars($sesion['nombreModulo']) ?></strong></td>
-                    <td><?= htmlspecialchars($sesion['titulo']) ?></td>
-                    <td><?= htmlspecialchars($sesion['nombreProfesor']) ?></td>
+                    <td><strong><?= Security::escapeHtml(htmlspecialchars($sesion['nombreModulo'])) ?></strong></td>
+                    <td><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></td>
+                    <td><?= Security::escapeHtml(htmlspecialchars($sesion['nombreProfesor'])) ?></td>
                     <td>
-                        <div><?= date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion'])) ?></div>
-                        <span class="texto-pequeno texto-suave"><?= $detalleEstado ?></span>
+                        <div><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?></div>
+                        <span class="texto-pequeno texto-suave"><?= Security::escapeHtml($detalleEstado ) ?></span>
                     </td>
-                    <td><?= $estado ?></td>
+                    <td><?= Security::escapeHtml($estado ) ?></td>
                     <td>
-                        <?php if ($ahora >= $fechaSesion && $ahora <= $fechaSesion + 3600) { ?>
-                            <a href="<?= htmlspecialchars($sesion['enlaceReunion']) ?>" target="_blank" class="boton-primario btn-pequeno" title="Acceder a la sesión">
+                        <?php if ($ahora ><?= Security::escapeHtml($fechaSesion && $ahora <= $fechaSesion + 3600) { ) ?>
+                            <a href="<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>" target="_blank" class="boton-primario btn-pequeno" title="Acceder a la sesión">
                                 <i class="fas fa-sign-in-alt"></i> ENTRAR
                             </a>
                         <?php } else { ?>
-                            <a href="detalles.php?id=<?= $sesion['idSesion'] ?>" class="boton-secundario btn-pequeno" title="Ver detalles">
+                            <a href="detalles.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Ver detalles">
                                 <i class="fas fa-eye"></i> VER
                             </a>
                         <?php } ?>
@@ -113,3 +113,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

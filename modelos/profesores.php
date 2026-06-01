@@ -9,7 +9,6 @@ function listarProfesores() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -21,7 +20,6 @@ function checkProfesorExistente($dni, $email, $idExcluir = 0) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $existe = mysqli_num_rows($res) > 0;
-    mysqli_close($con);
     return $existe;
 }
 
@@ -33,7 +31,6 @@ function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $c
     mysqli_stmt_bind_param($resultado, "sssssssssss", $nombre, $email, $pass, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
     mysqli_stmt_execute($resultado);
     $idNuevo = mysqli_insert_id($con);
-    mysqli_close($con);
     return $idNuevo;
 }
 
@@ -43,7 +40,6 @@ function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $f_nac, $f_a
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "ssssssssssi", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs, $id);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -53,7 +49,6 @@ function asociarCicloProfesor($idCic, $idProf) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "ii", $idCic, $idProf);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -63,7 +58,6 @@ function asociarModuloProfesor($idMod, $idProf) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "ii", $idMod, $idProf);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -73,7 +67,6 @@ function eliminarProfesor($id) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $id);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -85,7 +78,6 @@ function obtenerProfesorPorId($id) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
     return $fila;
 }
 
@@ -101,7 +93,6 @@ function listarIdsModulosDeProfesor($idProf) {
     while($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila['idModulo'];
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -111,7 +102,6 @@ function limpiarModulosProfesor($idProf) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $idProf);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -121,7 +111,6 @@ function limpiarCiclosProfesor($idProf) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $idProf);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -132,7 +121,6 @@ function actualizarPasswordProfesor($id, $pass) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "si", $passwordHasheada, $id);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -142,7 +130,6 @@ function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "sssi", $nombre, $email, $tel, $id);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -162,7 +149,6 @@ function listarProfesoresConModulosParaEstudiante($idEst) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -181,7 +167,6 @@ function listarCiclosTutorizadosProfesor($idProfesor) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -193,7 +178,6 @@ function obtenerTokensProfesores() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila['fcm_token'];
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -205,7 +189,6 @@ function validarLoginProfesor($email, $pass) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $datos = mysqli_fetch_assoc($res);
-    mysqli_close($con);
 
     if ($datos && password_verify($pass, $datos['password'])) {
         return $datos;
@@ -219,7 +202,6 @@ function actualizarTokenFCMProfesor($id, $token) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "si", $token, $id);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
     return $ok;
 }
 
@@ -235,6 +217,5 @@ function obtenerTokenFCMProfesor($id) {
     if ($fila) {
         $token = $fila['fcm_token'];
     }
-    mysqli_close($con);
     return $token;
 }

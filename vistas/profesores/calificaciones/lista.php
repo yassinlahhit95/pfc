@@ -39,10 +39,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">
@@ -52,8 +52,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Ciclos --</option>
                 <?php foreach ($mis_ciclos as $c) { ?>
-                    <option value="<?= $c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
-                        <?= $c['nombreCiclo'] ?>
+                    <option value="<?= Security::escapeHtml($c['idCiclo'] ) ?>" <?= Security::escapeHtml($idCiclo == $c['idCiclo'] ? 'selected' : '') ?>>
+                        <?= Security::escapeHtml($c['nombreCiclo'] ) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -63,8 +63,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idModulo" id="idModulo" onchange="this.form.submit()">
                 <option value="0">-- Todos mis Modulos --</option>
                 <?php foreach ($mis_modulos as $m) { ?>
-                    <option value="<?= $m['idModulo'] ?>" <?= $idModulo == $m['idModulo'] ? 'selected' : '' ?>>
-                        <?= $m['nombreModulo'] ?>
+                    <option value="<?= Security::escapeHtml($m['idModulo'] ) ?>" <?= Security::escapeHtml($idModulo == $m['idModulo'] ? 'selected' : '') ?>>
+                        <?= Security::escapeHtml($m['nombreModulo'] ) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -87,18 +87,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if ($calificaciones) { ?>
                     <?php foreach ($calificaciones as $nota) { ?>
                         <tr>
-                            <td><?= $nota['nombreEstudiante'] ?></td>
-                            <td class='texto-negrita'><?= $nota['nombreModulo'] ?></td>
-                            <td><?= $nota['nota_1ev'] ?? '---' ?></td>
-                            <td class='texto-negrita'><?= $nota['nota_1final'] ?? '---' ?></td>
-                            <td><?= $nota['nota_2ev'] ?? '---' ?></td>
-                            <td class='texto-negrita'><?= $nota['nota_2final'] ?? '---' ?></td>
+                            <td><?= Security::escapeHtml($nota['nombreEstudiante'] ) ?></td>
+                            <td class='texto-negrita'><?= Security::escapeHtml($nota['nombreModulo'] ) ?></td>
+                            <td><?= Security::escapeHtml($nota['nota_1ev'] ?? '---') ?></td>
+                            <td class='texto-negrita'><?= Security::escapeHtml($nota['nota_1final'] ?? '---') ?></td>
+                            <td><?= Security::escapeHtml($nota['nota_2ev'] ?? '---') ?></td>
+                            <td class='texto-negrita'><?= Security::escapeHtml($nota['nota_2final'] ?? '---') ?></td>
                             <td>
                                 <div class="botones-accion">
                                     <?php if ($nota['idCalificacion']) { ?>
-                                        <a href="editar.php?id=<?= $nota['idCalificacion'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                        <a href="editar.php?id=<?= Security::escapeHtml($nota['idCalificacion'] ) ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
                                     <?php } else { ?>
-                                        <a href='agregar.php?idCiclo=<?= $idCiclo ?>&idModulo=<?= $nota['idModulo'] ?>' class="btn-accion btn-ver" style="background: #27ae60;"><i class="fas fa-plus"></i></a>
+                                        <a href='agregar.php?idCiclo=<?= Security::escapeHtml($idCiclo ) ?>&idModulo=<?= Security::escapeHtml($nota['idModulo'] ) ?>' class="btn-accion btn-ver" style="background: #27ae60;"><i class="fas fa-plus"></i></a>
                                     <?php } ?>
                                 </div>
                             </td>
@@ -114,4 +114,6 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

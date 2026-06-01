@@ -25,10 +25,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -45,9 +45,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if (!empty($ciclos)) { ?>
                     <?php foreach ($ciclos as $ciclo) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= $ciclo['nombreCiclo'] ?></td>
-                            <td><?= $ciclo['abreviaturaCiclo'] ?></td>
-                            <td><?= $ciclo['nombreNivel'] ?? 'N/A' ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($ciclo['nombreCiclo'] ) ?></td>
+                            <td><?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ) ?></td>
+                            <td><?= Security::escapeHtml($ciclo['nombreNivel'] ?? 'N/A') ?></td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
@@ -61,4 +61,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

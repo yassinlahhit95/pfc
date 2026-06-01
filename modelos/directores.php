@@ -10,7 +10,7 @@ function listarDirectores() {
     while ($fila = mysqli_fetch_assoc($res)) {
         $todos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $todos;
 }
 
@@ -24,7 +24,7 @@ function checkDirectorExistente($dni, $email, $idExcluir = 0) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
-    mysqli_close($con);
+    
     return $existe;
 }
 
@@ -37,7 +37,7 @@ function insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNa
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -47,7 +47,7 @@ function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fech
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -57,7 +57,7 @@ function eliminarDirector($idDirector) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -69,7 +69,7 @@ function obtenerDirectorPorId($idDirector) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosDirector = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $datosDirector;
 }
 
@@ -82,7 +82,7 @@ function obtenerTokensDirectores() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaTokens[] = $fila['fcm_token'];
     }
-    mysqli_close($con);
+    
     return $listaTokens;
 }
 
@@ -94,7 +94,7 @@ function validarLoginDirector($email, $password) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosUsuario = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
 
     if ($datosUsuario && password_verify($password, $datosUsuario['password'])) {
         return $datosUsuario;
@@ -108,7 +108,7 @@ function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevoToken, $idDirector);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -124,6 +124,6 @@ function obtenerTokenFCMDirector($idDirector) {
     if ($fila && $fila['fcm_token']) {
         $token = $fila['fcm_token'];
     }
-    mysqli_close($con);
+    
     return $token;
 }

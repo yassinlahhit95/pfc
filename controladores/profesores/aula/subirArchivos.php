@@ -61,21 +61,54 @@ try {
             $ext        = strtolower(pathinfo($nombreOrig, PATHINFO_EXTENSION));
             $tamanio    = $_FILES['archivos']['size'][$i];
 
+            // 1. Validar extensión básica
             if (!in_array($ext, $permitidos)) {
                 $errores[] = "$nombreOrig: tipo no permitido ($ext).";
                 continue;
             }
+
+            // 2. Validar tamaño
             if ($tamanio > $LIMITE_ARCHIVO) {
                 $errores[] = "$nombreOrig: supera el límite de 20 MB.";
                 continue;
             }
+
+            // 3. Validar contenido real (MIME type)
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeReal = finfo_file($finfo, $_FILES['archivos']['tmp_name'][$i]);
+            finfo_close($finfo);
+
+            // Mapeo simple para validación de contenido
+            $mimesValidos = [
+                'pdf' => 'application/pdf',
+                'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+                'png' => 'image/png', 'gif' => 'image/gif',
+                'zip' => 'application/zip', 'rar' => 'application/x-rar',
+                'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'txt' => 'text/plain'
+            ];
+
+            // Validación de MIME (si está en nuestro mapa estricto)
+            if (isset($mimesValidos[$ext]) && $mimesValidos[$ext] !== $mimeReal) {
+                 // Nota: Algunos servidores pueden devolver mimes ligeramente diferentes para Office/Zips
+                 // Solo bloqueamos si es una discrepancia crítica (ej: .txt que es un .exe)
+                 if (strpos($mimeReal, 'executable') !== false || strpos($mimeReal, 'php') !== false) {
+                     $errores[] = "$nombreOrig: contenido malicioso detectado.";
+                     continue;
+                 }
+            }
+
             if (($usadoCiclo + $tamanio) > $limiteCiclo) {
                 $errores[] = "$nombreOrig: se superaría el límite de almacenamiento del ciclo.";
                 continue;
             }
-            $usadoCiclo += $tamanio; // reservar el espacio para los siguientes del lote
+            $usadoCiclo += $tamanio;
 
-            $nombreArchivo = 'AULA_' . $idProfesor . '_' . date('dmY_His') . '_' . mt_rand(100,999) . '.' . $ext;
+            // 4. Nombre aleatorio seguro
+            $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $ext;
+            
             if (move_uploaded_file($_FILES['archivos']['tmp_name'][$i], $dir . $nombreArchivo)) {
                 $idArchivo = insertarArchivoAula($nombreArchivo, $nombreOrig, $ext, $tamanio, $descripcion, $idCarpeta, $idModulo, $idProfesor);
                 if ($idArchivo) {

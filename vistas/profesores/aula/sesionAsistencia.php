@@ -33,20 +33,20 @@ include_once __DIR__ . "/../comunes/nav.php";
 <nav class="breadcrumb-modern">
   <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
-  <a href="modulo.php?id=<?= $sesion['idModulo'] ?>"><i class="fas fa-book"></i> <?= htmlspecialchars($sesion['nombreModulo']) ?></a>
+  <a href="modulo.php?id=<?= Security::escapeHtml($sesion['idModulo']) ?>"><i class="fas fa-book"></i> <?= Security::escapeHtml(htmlspecialchars($sesion['nombreModulo'])) ?></a>
   <span class="breadcrumb-sep">/</span>
   <span class="breadcrumb-actual">Asistencia</span>
 </nav>
 
 <div class="header-modern">
   <div>
-    <h1 class="header-titulo"><?= htmlspecialchars($sesion['titulo']) ?></h1>
+    <h1 class="header-titulo"><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></h1>
     <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">
-      <i class="fas fa-calendar"></i> <?= date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion'])) ?>
-      · <i class="fas fa-users"></i> <?= count($asistencias) ?> asistentes
+      <i class="fas fa-calendar"></i> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?>
+      · <i class="fas fa-users"></i> <?= Security::escapeHtml(count($asistencias)) ?> asistentes
     </p>
   </div>
-  <a href="modulo.php?id=<?= $sesion['idModulo'] ?>" class="btn-modern btn-secondary-modern btn-small">
+  <a href="modulo.php?id=<?= Security::escapeHtml($sesion['idModulo']) ?>" class="btn-modern btn-secondary-modern btn-small">
     <i class="fas fa-arrow-left"></i> Volver
   </a>
 </div>
@@ -61,7 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="panel-header-modern">
     <h3 class="panel-titulo-modern"><i class="fas fa-list"></i> Lista de Asistencia</h3>
     <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
-      <?= count($asistencias) ?> estudiante<?= count($asistencias) != 1 ? 's' : '' ?>
+      <?= Security::escapeHtml(count($asistencias)) ?> estudiante<?= Security::escapeHtml(count($asistencias) != 1 ? 's' : '') ?>
     </span>
   </div>
   <div class="panel-content-modern">
@@ -81,23 +81,23 @@ include_once __DIR__ . "/../comunes/nav.php";
           <td style="padding:var(--space-3);">
             <div style="display:flex;align-items:center;gap:var(--space-2);">
               <div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:var(--font-weight-semibold);">
-                <?= strtoupper(substr($asist['nombreEstudiante'], 0, 1)) ?>
+                <?= Security::escapeHtml(strtoupper(substr($asist['nombreEstudiante'], 0, 1))) ?>
               </div>
               <div>
-                <div style="font-weight:var(--font-weight-semibold);color:var(--color-neutral-800);"><?= htmlspecialchars($asist['nombreEstudiante']) ?></div>
-                <div style="font-size:0.85rem;color:var(--color-neutral-500);"><?= htmlspecialchars($asist['emailEstudiante']) ?></div>
+                <div style="font-weight:var(--font-weight-semibold);color:var(--color-neutral-800);"><?= Security::escapeHtml(htmlspecialchars($asist['nombreEstudiante'])) ?></div>
+                <div style="font-size:0.85rem;color:var(--color-neutral-500);"><?= Security::escapeHtml(htmlspecialchars($asist['emailEstudiante'])) ?></div>
               </div>
             </div>
           </td>
           <td style="padding:var(--space-3);text-align:center;color:var(--color-neutral-600);">
-            <?= $asist['horaUnion'] ? date('H:i', strtotime($asist['horaUnion'])) : '-' ?>
+            <?= Security::escapeHtml($asist['horaUnion'] ? date('H:i', strtotime($asist['horaUnion'])) : '-') ?>
           </td>
           <td style="padding:var(--space-3);text-align:center;color:var(--color-neutral-600);">
-            <?= $asist['horaSalida'] ? date('H:i', strtotime($asist['horaSalida'])) : '-' ?>
+            <?= Security::escapeHtml($asist['horaSalida'] ? date('H:i', strtotime($asist['horaSalida'])) : '-') ?>
           </td>
           <td style="padding:var(--space-3);text-align:center;color:var(--color-neutral-600);">
             <?php if ($asist['duracion']): ?>
-              <?= floor($asist['duracion'] / 60) ?>h <?= $asist['duracion'] % 60 ?>m
+              <?= Security::escapeHtml(floor($asist['duracion'] / 60)) ?>h <?= Security::escapeHtml($asist['duracion'] % 60 ) ?>m
             <?php else: ?>
               -
             <?php endif; ?>
@@ -118,20 +118,20 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div style="border-top:1px solid var(--color-neutral-200);padding:var(--space-4) var(--space-5);margin-top:var(--space-3);">
       <div class="pagination">
         <?php if ($paginaActual > 1): ?>
-        <a href="?id=<?= $idSesion ?>&pag=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
-        <a href="?id=<?= $idSesion ?>&pag=<?= $paginaActual - 1 ?>" class="pagination-item" title="Anterior"><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idSesion ) ?>&pag=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idSesion ) ?>&pag=<?= Security::escapeHtml($paginaActual - 1 ) ?>" class="pagination-item" title="Anterior"><i class="fas fa-chevron-left"></i></a>
         <?php endif; ?>
 
         <?php for ($i = max(1, $paginaActual - 1); $i <= min($totalPaginas, $paginaActual + 1); $i++): ?>
-        <a href="?id=<?= $idSesion ?>&pag=<?= $i ?>" class="pagination-item <?= $i === $paginaActual ? 'active' : '' ?>"><?= $i ?></a>
+        <a href="?id=<?= Security::escapeHtml($idSesion ) ?>&pag=<?= Security::escapeHtml($i ) ?>" class="pagination-item <?= Security::escapeHtml($i === $paginaActual ? 'active' : '') ?>"><?= Security::escapeHtml($i ) ?></a>
         <?php endfor; ?>
 
         <?php if ($paginaActual < $totalPaginas): ?>
-        <a href="?id=<?= $idSesion ?>&pag=<?= $paginaActual + 1 ?>" class="pagination-item" title="Siguiente"><i class="fas fa-chevron-right"></i></a>
-        <a href="?id=<?= $idSesion ?>&pag=<?= $totalPaginas ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idSesion ) ?>&pag=<?= Security::escapeHtml($paginaActual + 1 ) ?>" class="pagination-item" title="Siguiente"><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idSesion ) ?>&pag=<?= Security::escapeHtml($totalPaginas ) ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
         <?php endif; ?>
 
-        <span class="pagination-info"><?= $paginaActual ?>/<?= $totalPaginas ?></span>
+        <span class="pagination-info"><?= Security::escapeHtml($paginaActual ) ?>/<?= Security::escapeHtml($totalPaginas ) ?></span>
       </div>
     </div>
     <?php endif; ?>
@@ -143,7 +143,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
     <div style="background:white;padding:16px;border-radius:6px;border-left:4px solid var(--color-primary);">
       <div style="font-size:0.85rem;color:var(--color-neutral-500);">Total de Asistentes</div>
-      <div style="font-size:1.8rem;font-weight:bold;color:var(--color-primary);"><?= $totalAsistentes ?></div>
+      <div style="font-size:1.8rem;font-weight:bold;color:var(--color-primary);"><?= Security::escapeHtml($totalAsistentes ) ?></div>
     </div>
     <div style="background:white;padding:16px;border-radius:6px;border-left:4px solid var(--color-success);">
       <div style="font-size:0.85rem;color:var(--color-neutral-500);">Promedio de Permanencia</div>
@@ -163,3 +163,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

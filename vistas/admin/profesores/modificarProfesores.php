@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <div>
-        <h1>MODIFICAR PROFESOR: <?= $profesor['nombreProfesor'] ?></h1>
+        <h1>MODIFICAR PROFESOR: <?= Security::escapeHtml($profesor['nombreProfesor']) ?></h1>
     </div>
     <a href="verProfesores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER
@@ -48,66 +48,66 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">
-        <input type="hidden" name="idProfesor" value="<?= $id_profesor ?>">
+        <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($id_profesor) ?>">
         
         <div class="formulario">
             <div class="campo">
                 <label>Nombre Completo</label>
-                <input type="text" name="nombreProfesor" value="<?= $profesor['nombreProfesor'] ?>">
+                <input type="text" name="nombreProfesor" value="<?= Security::escapeHtml($profesor['nombreProfesor']) ?>">
                 
             </div>
 
             <div class="campo">
                 <label>Email</label>
-                <input type="email" name="emailProfesor" value="<?= $profesor['emailProfesor'] ?>">
+                <input type="email" name="emailProfesor" value="<?= Security::escapeHtml($profesor['emailProfesor']) ?>">
                 
             </div>
 
             <div class="campo">
                 <label>DNI</label>
-                <input type="text" name="dniProfesor" value="<?= $profesor['dniProfesor'] ?>">
+                <input type="text" name="dniProfesor" value="<?= Security::escapeHtml($profesor['dniProfesor']) ?>">
                 
             </div>
 
             <div class="campo">
                 <label>Teléfono</label>
-                <input type="text" name="telefonoProfesor" value="<?= $profesor['telefonoProfesor'] ?>">
+                <input type="text" name="telefonoProfesor" value="<?= Security::escapeHtml($profesor['telefonoProfesor']) ?>">
                 
             </div>
 
             <div class="campo ancho-total">
                 <label>Dirección</label>
-                <input type="text" name="direccionProfesor" value="<?= $profesor['direccionProfesor'] ?>">
+                <input type="text" name="direccionProfesor" value="<?= Security::escapeHtml($profesor['direccionProfesor']) ?>">
             </div>
 
             <div class="campo">
                 <label>Ciudad</label>
-                <input type="text" name="ciudadProfesor" value="<?= $profesor['ciudadProfesor'] ?>">
+                <input type="text" name="ciudadProfesor" value="<?= Security::escapeHtml($profesor['ciudadProfesor']) ?>">
             </div>
 
             <div class="campo">
                 <label>Código Postal</label>
-                <input type="text" name="codigoPostalProfesor" value="<?= $profesor['codigoPostalProfesor'] ?>">
+                <input type="text" name="codigoPostalProfesor" value="<?= Security::escapeHtml($profesor['codigoPostalProfesor']) ?>">
             </div>
 
             <div class="campo">
                 <label>Fecha de Nacimiento</label>
-                <input type="date" name="fechaNacimientoProfesor" value="<?= $profesor['fechaNacimientoProfesor'] ?>">
+                <input type="date" name="fechaNacimientoProfesor" value="<?= Security::escapeHtml($profesor['fechaNacimientoProfesor']) ?>">
             </div>
 
             <div class="campo">
                 <label>Fecha de Alta (en centro)</label>
-                <input type="date" name="fechaAltaProfesor" value="<?= $profesor['fechaAltaProfesor'] ?>">
+                <input type="date" name="fechaAltaProfesor" value="<?= Security::escapeHtml($profesor['fechaAltaProfesor']) ?>">
             </div>
 
             <div class="campo ancho-total">
                 <label>Observaciones / Curriculum Vitae (Resumen)</label>
-                <textarea name="observacionesProfesor" rows="3"><?= $profesor['observacionesProfesor'] ?></textarea>
+                <textarea name="observacionesProfesor" rows="3"><?= Security::escapeHtml($profesor['observacionesProfesor']) ?></textarea>
             </div>
         </div>
 
@@ -117,9 +117,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="checks scroll-v200">
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="check-item">
-                            <input type="checkbox" name="ciclos[]" value="<?= $ciclo['idCiclo'] ?>" class="check-ciclo"
+                            <input type="checkbox" name="ciclos[]" value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="check-ciclo"
                                 <?php if (in_array($ciclo['idCiclo'], $ciclos_marcados)) { echo 'checked'; } ?>>
-                            <span><?= $ciclo['nombreCiclo'] ?></span>
+                            <span><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></span>
                         </label>
                     <?php } ?>
                 </div>
@@ -133,17 +133,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </p>
 
                     <?php foreach ($listaCiclos as $ciclo) { ?>
-                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" id="grupo-ciclo-<?= $ciclo['idCiclo'] ?>">
+                        <div class="grupo-modulos oculto" style="margin-bottom: 15px;" id="grupo-ciclo-<?= Security::escapeHtml($ciclo['idCiclo']) ?>">
                             <p class="texto-negrita color-primario" style="margin-bottom: 5px;">
-                                <?= $ciclo['nombreCiclo'] ?>
+                                <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                             </p>
                             
                             <?php foreach ($todosLosModulos as $modulo) { ?>
                                 <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { ?>
                                     <label class="check-item" style="padding-left: 10px;">
-                                        <input type="checkbox" name="modulos[]" value="<?= $modulo['idModulo'] ?>"
+                                        <input type="checkbox" name="modulos[]" value="<?= Security::escapeHtml($modulo['idModulo']) ?>"
                                             <?php if (in_array($modulo['idModulo'], $modulos_marcados)) { echo 'checked'; } ?>>
-                                        <span><?= $modulo['nombreModulo'] ?></span>
+                                        <span><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
                                     </label>
                                 <?php } ?>
                             <?php } ?>

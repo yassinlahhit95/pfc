@@ -25,13 +25,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="recurso-breadcrumb">
   <a href="index.php"><i class="fas fa-home"></i> Recursos</a>
   <span class="sep">/</span>
-  <span class="actual"><?= htmlspecialchars($ciclo['nombreCiclo']) ?></span>
+  <span class="actual"><?= Security::escapeHtml(htmlspecialchars($ciclo['nombreCiclo'])) ?></span>
 </div>
 
 <div class="cabecera">
   <div>
-    <h1><?= htmlspecialchars(mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8')) ?></h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;"><?= htmlspecialchars($ciclo['nombreNivel'] ?? '') ?> · <?= count($modulos) ?> módulos</p>
+    <h1><?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8'))) ?></h1>
+    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;"><?= Security::escapeHtml(htmlspecialchars($ciclo['nombreNivel'] ?? '')) ?> · <?= Security::escapeHtml(count($modulos)) ?> módulos</p>
   </div>
   <a href="index.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Ciclos</a>
 </div>
@@ -58,12 +58,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     $nArchivos = contarArchivosPorModuloAula($modulo['idModulo']);
     $p = $paleta[$i % count($paleta)];
   ?>
-  <a href="recursos.php?id=<?= $modulo['idModulo'] ?>" class="recurso-ciclo-card <?= $p['clase'] ?>">
-    <div class="recurso-ciclo-icon"><i class="fas <?= $p['icono'] ?>"></i></div>
+  <a href="recursos.php?id=<?= Security::escapeHtml($modulo['idModulo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($p['clase'] ) ?>">
+    <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($p['icono'] ) ?>"></i></div>
     <div class="recurso-ciclo-body">
-      <h3><?= htmlspecialchars($modulo['nombreModulo']) ?></h3>
+      <h3><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></h3>
       <div class="recurso-ciclo-meta">
-        <span><i class="fas fa-file"></i> <?= $nArchivos ?> archivos</span>
+        <span><i class="fas fa-file"></i> <?= Security::escapeHtml($nArchivos ) ?> archivos</span>
       </div>
     </div>
     <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
@@ -73,3 +73,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

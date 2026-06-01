@@ -34,11 +34,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <?php
@@ -56,8 +56,8 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
             <select id="selectFiltroNivel" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Niveles --</option>
                 <?php foreach ($listaNiveles as $nivelFiltro) { ?>
-                    <option value="<?= $nivelFiltro['idNivel'] ?>">
-                        <?= $nivelFiltro['nombreNivel'] ?>
+                    <option value="<?= Security::escapeHtml($nivelFiltro['idNivel']) ?>">
+                        <?= Security::escapeHtml($nivelFiltro['nombreNivel']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -67,8 +67,8 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
-                        <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
+                    <option value="<?= strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo'])) ?>">
+                        <?= strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo'])) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -97,25 +97,25 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
                     <tr class="fila-nivel-<?= $mapaCicloNivel[$estudianteIndividual['idCiclo']] ?? '' ?>">
-                        <td><?= $estudianteIndividual['idEstudiante'] ?></td>
+                        <td><?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?></td>
                         <td>
                             <span class="texto-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                            <span class="texto-estado gris"><?= $estudianteIndividual['curso'] ?></span>
+                            <span class="texto-estado gris"><?= Security::escapeHtml($estudianteIndividual['curso']) ?></span>
                         </td>
-                        <td><b><?= mb_strtoupper($estudianteIndividual['nombreEstudiante'], 'UTF-8') ?></b></td>
-                        <td><?= $estudianteIndividual['emailEstudiante'] ?></td>
-                        <td><?= strtoupper($estudianteIndividual['nombreCiclo']) ?></td>
+                        <td><b><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreEstudiante']), 'UTF-8') ?></b></td>
+                        <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>
+                        <td><?= strtoupper(Security::escapeHtml($estudianteIndividual['nombreCiclo'])) ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="verDetallesEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 
+                                <a href="verDetallesEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" 
                                    class="btn-accion btn-ver">
                                     <i class="fas fa-id-card"></i>
                                 </a>
-                                <a href="modificarEstudiantes.php?idEstudiante=<?= $estudianteIndividual['idEstudiante'] ?>" 
+                                <a href="modificarEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" 
                                    class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="borrarEstudiante.php?id=<?= $estudianteIndividual['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="borrarEstudiante.php?id=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

@@ -32,8 +32,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idCiclo" id="selectCicloMod" onchange="this.form.submit()">
                 <option value="">-Seleccionar Ciclo-</option>
                 <?php foreach ($listaCiclos as $ciclo) { ?>
-                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        [<?= $ciclo['nombreNivel'] ?>] <?= $ciclo['nombreCiclo'] ?>
+                    <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        [<?= Security::escapeHtml($ciclo['nombreNivel']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -44,8 +44,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
                 <option value="">-Seleccionar Modulo-</option>
                 <?php foreach ($listaModulos as $modulo) { ?>
-                    <option value="<?= $modulo['idModulo'] ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
-                        <?= $modulo['nombreModulo'] ?>
+                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -53,14 +53,15 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
 
 <?php if (!empty($idModuloElegido)) { ?>
     <div class="panel margen-arriba">
         <form action="../../../controladores/admin/academico/calificarModulos.php" method="POST">
-            <input type="hidden" name="idModulo" value="<?= $idModuloElegido ?>">
-            <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <input type="hidden" name="idModulo" value="<?= Security::escapeHtml($idModuloElegido) ?>">
+            <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($idCicloElegido) ?>">
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
@@ -85,14 +86,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                             ?>
                                 <tr>
                                     <td>
-                                        <?= strtoupper($alumno['nombreEstudiante']) ?>
-                                        <input type="hidden" name="estudiantes[]" value="<?= $idEstudiante ?>">
+                                        <?= mb_strtoupper(Security::escapeHtml($alumno['nombreEstudiante']), 'UTF-8') ?>
+                                        <input type="hidden" name="estudiantes[]" value="<?= Security::escapeHtml($idEstudiante) ?>">
                                     </td>
-                                    <td><input type="text" name="notas_1ev[]" value="<?= $notas['nota_1ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                    <td><input type="text" name="notas_1final[]" value="<?= $notas['nota_1final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                    <td><input type="text" name="notas_2ev[]" value="<?= $notas['nota_2ev'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                    <td><input type="text" name="notas_2final[]" value="<?= $notas['nota_2final'] ?? '' ?>" class="ancho-ajustable-nota"></td>
-                                    <td><input type="text" name="observaciones[]" value="<?= $notas['observaciones'] ?? '' ?>" class="ancho-total"></td>
+                                    <td><input type="text" name="notas_1ev[]" value="<?= Security::escapeHtml($notas['nota_1ev'] ?? '') ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="notas_1final[]" value="<?= Security::escapeHtml($notas['nota_1final'] ?? '') ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="notas_2ev[]" value="<?= Security::escapeHtml($notas['nota_2ev'] ?? '') ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="notas_2final[]" value="<?= Security::escapeHtml($notas['nota_2final'] ?? '') ?>" class="ancho-ajustable-nota"></td>
+                                    <td><input type="text" name="observaciones[]" value="<?= Security::escapeHtml($notas['observaciones'] ?? '') ?>" class="ancho-total"></td>
                                 </tr>
                             <?php } ?>
                         <?php } ?>

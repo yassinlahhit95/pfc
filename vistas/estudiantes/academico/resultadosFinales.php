@@ -24,14 +24,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>MIS RESULTADOS FINALES</h1>
-    <p class="subtitulo">Ciclo: <?= $resumenFinal['nombreCiclo'] ?></p>
+    <p class="subtitulo">Ciclo: <?= Security::escapeHtml($resumenFinal['nombreCiclo'] ) ?></p>
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -52,13 +52,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($resumenFinal['detalles_modulos'] as $fila) { ?>
                     <tr>
-                        <td class="texto-negrita"><?= $fila['nombreModulo'] ?></td>
-                        <td><?= $fila['media_notas'] ?></td>
-                        <td><?= $fila['media_retos'] ?></td>
-                        <td class="texto-negrita"><?= $fila['nota_final'] ?></td>
+                        <td class="texto-negrita"><?= Security::escapeHtml($fila['nombreModulo'] ) ?></td>
+                        <td><?= Security::escapeHtml($fila['media_notas'] ) ?></td>
+                        <td><?= Security::escapeHtml($fila['media_retos'] ) ?></td>
+                        <td class="texto-negrita"><?= Security::escapeHtml($fila['nota_final'] ) ?></td>
                         <td>
-                            <span class="badge <?= $fila['estado'] == 'Aprobado' ? 'badge-exito' : ($fila['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta') ?>">
-                                <?= strtoupper($fila['estado']) ?>
+                            <span class="badge <?= Security::escapeHtml($fila['estado'] == 'Aprobado' ? 'badge-exito' : ($fila['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta')) ?>">
+                                <?= Security::escapeHtml(strtoupper($fila['estado'])) ?>
                             </span>
                         </td>
                     </tr>
@@ -67,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td class="texto-negrita color-primario">TFG : TRABAJO FIN DE GRADO</td>
                         <td colspan="2" class="texto-suave">Calificación Directa</td>
                         <td class="texto-negrita color-primario">
-                            <?= $resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : ' ' ?>
+                            <?= Security::escapeHtml($resumenFinal['nota_tfg'] !== null ? $resumenFinal['nota_tfg'] : ' ') ?>
                         </td>
                         <td class="texto-negrita">
                             <?php
@@ -88,12 +88,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="caja espacio-entre-elementos alinear-centro">
         <div>
             <p class="texto-suave">Promedio General:</p>
-            <h2 class="color-primario"><?= $resumenFinal['promedio_global'] ?></h2>
+            <h2 class="color-primario"><?= Security::escapeHtml($resumenFinal['promedio_global'] ) ?></h2>
         </div>
         <div style="text-align: right;">
             <p class="texto-suave">Estado Académico:</p>
-            <span class="badge <?= $resumenFinal['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumenFinal['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta') ?>">
-                <?= $resumenFinal['estado_global'] ?>
+            <span class="badge <?= Security::escapeHtml($resumenFinal['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumenFinal['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta')) ?>">
+                <?= Security::escapeHtml($resumenFinal['estado_global'] ) ?>
             </span>
         </div>
     </div>
@@ -105,4 +105,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

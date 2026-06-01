@@ -12,7 +12,7 @@ function listarTodosLosAnuncios() {
         $fila['contenidoAnuncio'] = $fila['mensaje'];
         $listaAnuncios[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaAnuncios;
 }
 
@@ -25,7 +25,7 @@ function insertarAnuncio($titulo, $mensaje, $dirigidoA = 'todos') {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssss", $titulo, $mensaje, $fechaActual, $fechaExpiracion, $dirigidoA);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -35,7 +35,7 @@ function eliminarAnuncio($idAnuncio) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idAnuncio);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -53,7 +53,7 @@ function obtenerAnuncioPorId($idAnuncio) {
         $anuncio['contenidoAnuncio'] = $anuncio['mensaje'];
     }
 
-    mysqli_close($con);
+    
     return $anuncio;
 }
 
@@ -63,7 +63,7 @@ function actualizarAnuncio($idAnuncio, $titulo, $mensaje, $fechaExpiracion, $dir
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssi", $titulo, $mensaje, $fechaExpiracion, $dirigidoA, $idAnuncio);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -81,7 +81,7 @@ function listarAnunciosPorRol($rolUsuario) {
         $fila['contenidoAnuncio'] = $fila['mensaje'];
         $listaAnuncios[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaAnuncios;
 }
 

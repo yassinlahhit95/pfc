@@ -34,14 +34,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>MIS RETOS</h1>
-    <p class="subtitulo">Retos asignados a tu ciclo: <?= $nombreCiclo ?></p>
+    <p class="subtitulo">Retos asignados a tu ciclo: <?= Security::escapeHtml($nombreCiclo ) ?></p>
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -67,10 +67,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= strtoupper($reto['nombreReto']) ?></td>
-                            <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
-                            <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
-                            <td><?= $reto['horasReto'] ?> h</td>
+                            <td class="texto-negrita"><?= Security::escapeHtml(strtoupper($reto['nombreReto'])) ?></td>
+                            <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaInicio']))) ?></td>
+                            <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaFin']))) ?></td>
+                            <td><?= Security::escapeHtml($reto['horasReto'] ) ?> h</td>
                         </tr>
                     <?php } ?>
                 <?php } ?>
@@ -80,4 +80,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

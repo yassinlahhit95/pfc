@@ -38,17 +38,17 @@ include_once __DIR__ . "/../comunes/nav.php";
       $pct     = $limite > 0 ? min(100, round($usado / $limite * 100)) : 0;
       $clase   = $paleta[$i % count($paleta)];
   ?>
-  <a href="modulos.php?idCiclo=<?= $c['idCiclo'] ?>" class="recurso-ciclo-card <?= $clase ?>">
+  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($c['idCiclo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($clase ) ?>">
     <div class="recurso-ciclo-icon"><i class="fas fa-layer-group"></i></div>
     <div class="recurso-ciclo-body">
-      <h3><?= htmlspecialchars($c['nombreCiclo']) ?></h3>
-      <span class="recurso-ciclo-abrev"><?= htmlspecialchars($c['abreviaturaCiclo']) ?></span>
+      <h3><?= Security::escapeHtml(htmlspecialchars($c['nombreCiclo'])) ?></h3>
+      <span class="recurso-ciclo-abrev"><?= Security::escapeHtml(htmlspecialchars($c['abreviaturaCiclo'])) ?></span>
       <div class="recurso-ciclo-meta">
-        <span><i class="fas fa-cubes"></i> <?= count($modulos) ?> módulos</span>
+        <span><i class="fas fa-cubes"></i> <?= Security::escapeHtml(count($modulos)) ?> módulos</span>
       </div>
-      <div class="recurso-almacenamiento" title="<?= round($usado/1048576, 1) ?> MB de <?= round($limite/1073741824, 1) ?> GB">
-        <div class="recurso-almacenamiento-barra"><span style="width:<?= $pct ?>%"></span></div>
-        <small><?= $pct ?>% usado</small>
+      <div class="recurso-almacenamiento" title="<?= Security::escapeHtml(round($usado/1048576, 1)) ?> MB de <?= Security::escapeHtml(round($limite/1073741824, 1)) ?> GB">
+        <div class="recurso-almacenamiento-barra"><span style="width:<?= Security::escapeHtml($pct ) ?>%"></span></div>
+        <small><?= Security::escapeHtml($pct ) ?>% usado</small>
       </div>
     </div>
     <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
@@ -58,3 +58,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

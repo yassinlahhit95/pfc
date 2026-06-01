@@ -28,10 +28,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaDeMensajes as $mensaje) { 
                         $claseFila = ($mensaje['emisor_rol'] == 'estudiante') ? 'fila-propia' : '';
                     ?>
-                    <tr class="<?= $claseFila ?>">
+                    <tr class="<?= Security::escapeHtml($claseFila ) ?>">
                         <td>
                             <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
@@ -64,13 +64,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 }
                             ?></b>
                         </td>
-                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
+                        <td><p class="texto-negrita"><?= Security::escapeHtml(strtoupper($mensaje['asunto'])) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?= substr($mensaje['descripcion'], 0, 80) ?>...
+                                <?= Security::escapeHtml(substr($mensaje['descripcion'], 0, 80)) ?>...
                             </div>
                         </td>
-                        <td><?= date('d/m/Y', strtotime($mensaje['fecha'])) ?></td>
+                        <td><?= Security::escapeHtml(date('d/m/Y', strtotime($mensaje['fecha']))) ?></td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
                                 <span class="indicador-estado activo-verde">VISTO</span>
@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="../../../vistas/estudiantes/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
+                                <a href="../../../vistas/estudiantes/mensajes/detalles.php?id=<?= Security::escapeHtml($mensaje['idReclamacion'] ) ?>" class="btn-accion btn-ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -94,4 +94,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

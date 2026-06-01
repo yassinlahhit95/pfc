@@ -34,13 +34,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario">
             <div class="campo">
                 <label for="nombreCiclo">Nombre del Ciclo </label>
-                <input type="text" id="nombreCiclo" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= $datos['nombreCiclo'] ?? '' ?>">
+                <input type="text" id="nombreCiclo" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= Security::escapeHtml($datos['nombreCiclo'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="abreviaturaCiclo">Abreviatura </label>
-                <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= $datos['abreviaturaCiclo'] ?? '' ?>">
+                <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= Security::escapeHtml($datos['abreviaturaCiclo'] ?? '') ?>">
                 
             </div>
 
@@ -49,8 +49,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select id="idNivel" name="idNivel">
                     <option value="">-- Seleccionar Nivel --</option>
                     <?php foreach ($listaNiveles as $nivel) { ?>
-                        <option value="<?= $nivel['idNivel'] ?>" <?php if (($datos['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
-                            <?= $nivel['nombreNivel'] ?>
+                        <option value="<?= Security::escapeHtml($nivel['idNivel']) ?>" <?php if (($datos['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
+                            <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="precioCiclo">Precio Total del Ciclo (€) </label>
-                <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $datos['precioCiclo'] ?? '1000.00' ?>">
+                <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= Security::escapeHtml($datos['precioCiclo'] ?? '1000.00') ?>">
             </div>
         </div>
 
@@ -69,9 +69,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="checks">
                     <?php foreach ($listaProfesores as $prof) { ?>
                         <label class="check-item">
-                            <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
+                            <input type="checkbox" name="profesores[]" value="<?= Security::escapeHtml($prof['idProfesor']) ?>"
                                 <?php if (isset($mapaProfesoresElegidos[$prof['idProfesor']])) { ?>checked<?php } ?>>
-                            <span><?= $prof['nombreProfesor'] ?></span>
+                            <span><?= Security::escapeHtml($prof['nombreProfesor']) ?></span>
                         </label>
                     <?php } ?>
                 </div>

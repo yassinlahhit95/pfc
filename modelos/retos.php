@@ -11,7 +11,7 @@ function listarRetos() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaRetos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaRetos;
 }
 
@@ -26,7 +26,7 @@ function listarRetosDeProfesor($idProfesor) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $listaProfesor[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaProfesor;
 }
 
@@ -47,7 +47,7 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
             $ok = mysqli_stmt_execute($resultado);
         }
     }
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -65,7 +65,7 @@ function obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir = 0) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
 
     $detalle = [
         'nombreModulo' => '',
@@ -105,7 +105,7 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
         }
     }
 
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -115,7 +115,7 @@ function eliminarReto($idReto) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $idReto);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -127,7 +127,7 @@ function obtenerRetoPorId($idReto) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $reto = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return $reto;
 }
 
@@ -142,7 +142,7 @@ function listarModulosDeReto($idReto) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $listaModulos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaModulos;
 }
 
@@ -167,7 +167,7 @@ function calificarReto($idEstudiante, $idReto, $notaObtenida) {
     }
 
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -177,7 +177,7 @@ function eliminarCalificacionReto($idEstudiante, $idReto) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "ii", $idEstudiante, $idReto);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -195,7 +195,7 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
         $nota = $fila['nota'];
     }
 
-    mysqli_close($con);
+    
     return $nota;
 }
 
@@ -214,7 +214,7 @@ function listarCalificacionesRetoPorModulo($idModulo) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $medias[$fila['idEstudiante']] = $fila['promedio'];
     }
-    mysqli_close($con);
+    
     return $medias;
 }
 
@@ -229,7 +229,7 @@ function listarCalificacionesRetoPorEstudiante($idEstudiante) {
     while($fila = mysqli_fetch_assoc($res)) {
         $listaHistorial[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaHistorial;
 }
 
@@ -244,7 +244,7 @@ function listarRetosPorCiclo($idCiclo) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $listaRetos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaRetos;
 }
 
@@ -264,7 +264,7 @@ function listarRetosPorCicloDeProfesor($idCiclo, $idProfesor) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -275,6 +275,6 @@ function obtenerPromedioRetosEstudiante($idEstudiante) {
     mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
     mysqli_stmt_execute($resultado);
     $row = mysqli_fetch_assoc(mysqli_stmt_get_result($resultado));
-    mysqli_close($con);
+    
     return $row['promedio'] ? floatval($row['promedio']) : 0;
 }

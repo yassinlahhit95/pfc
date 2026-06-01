@@ -51,33 +51,33 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="espacio-entre-elementos alinear-centro margen-abajo caja">
   <div>
-    <h1>BIENVENIDO/A, <?= $profesorActual['nombreProfesor'] ?? '' ?></h1>
+    <h1>BIENVENIDO/A, <?= Security::escapeHtml($profesorActual['nombreProfesor'] ?? '') ?></h1>
   </div>
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <h2 class="margen-abajo texto-oscuro">Resumen de Actividad</h2>
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
-    <div class="info-estadistica"><h3><?= count($listaEstudiantes) ?></h3><p>Alumnos</p></div>
+    <div class="info-estadistica"><h3><?= Security::escapeHtml(count($listaEstudiantes)) ?></h3><p>Alumnos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= count($listaModulos) ?></h3><p>Modulos</p></div>
+    <div class="info-estadistica"><h3><?= Security::escapeHtml(count($listaModulos)) ?></h3><p>Modulos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?= count($listaRetos) ?></h3><p>Retos</p></div>
+    <div class="info-estadistica"><h3><?= Security::escapeHtml(count($listaRetos)) ?></h3><p>Retos</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-naranja">
-    <div class="info-estadistica"><h3><?= $mensajesPendientes ?></h3><p>Mensajes</p></div>
+    <div class="info-estadistica"><h3><?= Security::escapeHtml($mensajesPendientes ) ?></h3><p>Mensajes</p></div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-morada">
-    <div class="info-estadistica"><h3><?= $totalTFGsProfesor ?> / <?= $calificadosTFGsProfesor ?></h3><p>TFG (ENTREGADOS/OK)</p></div>
+    <div class="info-estadistica"><h3><?= Security::escapeHtml($totalTFGsProfesor ) ?> / <?= Security::escapeHtml($calificadosTFGsProfesor ) ?></h3><p>TFG (ENTREGADOS/OK)</p></div>
   </div>
 </div>
 
@@ -99,6 +99,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div id="formMasivo" class="oculto" style="margin-top: 20px; padding: 15px; border: none; border-radius: 8px;">
         <h4 style="margin-top: 0;">Enviar Resultados por Email a un Ciclo</h4>
         <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
           <select name="idCiclo" class="ancho-total" style="padding: 8px; margin-bottom: 10px;">
             <option value="">Seleccione un ciclo...</option>
             <?php
@@ -107,7 +108,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 if (!isset($ciclosVistos[$m['idCiclo']])) {
                     $ciclosVistos[$m['idCiclo']] = true;
             ?>
-                <option value="<?= $m['idCiclo'] ?>"><?= $m['nombreCiclo'] ?></option>
+                <option value="<?= Security::escapeHtml($m['idCiclo'] ) ?>"><?= Security::escapeHtml($m['nombreCiclo'] ) ?></option>
             <?php } } ?>
           </select>
           <input type="submit" class="boton-primario ancho-total" value="ENVIAR A TODOS LOS ALUMNOS">
@@ -129,15 +130,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
                     <div class="caja espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo"><?= $anuncio['titulo'] ?></strong>
-                        <span class="texto-suave" style="font-size: 0.8rem;"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
+                        <strong class="anuncio-titulo"><?= Security::escapeHtml($anuncio['titulo'] ) ?></strong>
+                        <span class="texto-suave" style="font-size: 0.8rem;"><?= Security::escapeHtml(date('d/m/Y', strtotime($anuncio['fechaAnuncio']))) ?></span>
                     </div>
                     <div class="margen-arriba-pequeno">
-                        <span class="indicador-estado <?= $anuncio['dirigidoA'] == 'todos' ? 'activo-verde' : ($anuncio['dirigidoA'] == 'profesores' ? 'azul' : 'morado') ?>" style="font-size: 0.7rem; padding: 2px 8px;">
-                            PARA: <?= strtoupper($anuncio['dirigidoA']) ?>
+                        <span class="indicador-estado <?= Security::escapeHtml($anuncio['dirigidoA'] == 'todos' ? 'activo-verde' : ($anuncio['dirigidoA'] == 'profesores' ? 'azul' : 'morado')) ?>" style="font-size: 0.7rem; padding: 2px 8px;">
+                            PARA: <?= Security::escapeHtml(strtoupper($anuncio['dirigidoA'])) ?>
                         </span>
                     </div>
-                    <p class="texto-pequeno" style="margin-top: 8px;"><?= substr($anuncio['mensaje'], 0, 100) ?>...</p>
+                    <p class="texto-pequeno" style="margin-top: 8px;"><?= Security::escapeHtml(substr($anuncio['mensaje'], 0, 100)) ?>...</p>
                 </div>
             </div>
             <?php
@@ -167,10 +168,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 $mesMes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
             ?>
             <div class="elemento-evento">
-              <div class="fecha-evento azul"><div class="dia"><?= $diaMes ?></div><div class="mes"><?= $mesMes ?></div></div>
+              <div class="fecha-evento azul"><div class="dia"><?= Security::escapeHtml($diaMes ) ?></div><div class="mes"><?= Security::escapeHtml($mesMes ) ?></div></div>
               <div>
-                <p class="texto-negrita"><?= $evento['tituloEvento'] ?></p>
-                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
+                <p class="texto-negrita"><?= Security::escapeHtml($evento['tituloEvento'] ) ?></p>
+                <p class="texto-suave"><?= Security::escapeHtml(date('H:i', strtotime($evento['horaEvento']))) ?>h - <?= Security::escapeHtml($evento['ubicacionEvento'] ) ?></p>
               </div>
             </div>
             <?php
@@ -192,3 +193,5 @@ $(function() {
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

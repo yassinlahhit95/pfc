@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Mis Ciclos --</option>
                 <?php foreach ($listaCiclos as $ciclo) { ?>
-                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        <?= $ciclo['nombreCiclo'] ?>
+                    <option value="<?= Security::escapeHtml($ciclo['idCiclo'] ) ?>" <?= Security::escapeHtml(($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '') ?>>
+                        <?= Security::escapeHtml($ciclo['nombreCiclo'] ) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -50,11 +50,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo relleno">
             <label>Seleccione Reto:</label>
-            <select name="idReto" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
+            <select name="idReto" onchange="this.form.submit()" <?= Security::escapeHtml(empty($idCicloElegido) ? 'disabled' : '') ?>>
                 <option value="">-- Seleccionar Reto --</option>
                 <?php foreach ($listaRetos as $reto) { ?>
-                    <option value="<?= $reto['idReto'] ?>" <?= ($idRetoElegido == $reto['idReto']) ? 'selected' : '' ?>>
-                        <?= $reto['nombreReto'] ?>
+                    <option value="<?= Security::escapeHtml($reto['idReto'] ) ?>" <?= Security::escapeHtml(($idRetoElegido == $reto['idReto']) ? 'selected' : '') ?>>
+                        <?= Security::escapeHtml($reto['nombreReto'] ) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -63,8 +63,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </form>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div><?php } ?>
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
@@ -91,29 +91,30 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $notaActual = obtenerCalificacionReto($est['idEstudiante'], $idRetoElegido);
                     ?>
                     <tr>
-                        <td><?= $est['nombreEstudiante'] ?></td>
-                        <td><?= $est['nombreCiclo'] ?></td>
+                        <td><?= Security::escapeHtml($est['nombreEstudiante'] ) ?></td>
+                        <td><?= Security::escapeHtml($est['nombreCiclo'] ) ?></td>
                         <td>
                             <?php if ($notaActual !== '') { ?>
-                                <span class="texto-negrita <?= $notaActual >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-                                    <?= $notaActual ?>
+                                <span class="texto-negrita <?= Security::escapeHtml($notaActual >= 5 ? 'texto-verde' : 'texto-rojo') ?>">
+                                    <?= Security::escapeHtml($notaActual ) ?>
                                 </span>
                             <?php } else { ?>
                                 <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
-                            <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $est['idEstudiante'] ?>')">
+                            <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= Security::escapeHtml($est['idEstudiante'] ) ?>')">
                                 <i class="fas fa-edit"></i> Evaluar
                             </button>
-                            <div id="form-<?= $est['idEstudiante'] ?>" style="display: none; margin-top: 10px;">
+                            <div id="form-<?= Security::escapeHtml($est['idEstudiante'] ) ?>" style="display: none; margin-top: 10px;">
                                 <form action="../../../controladores/profesores/academico/calificarRetoUnico.php" method="POST" class="formulario">
-                                    <input type="hidden" name="idEstudiante" value="<?= $est['idEstudiante'] ?>">
-                                    <input type="hidden" name="idReto" value="<?= $idRetoElegido ?>">
-                                    <input type="hidden" name="idCiclo" value="<?= $idCicloElegido ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                                    <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($est['idEstudiante'] ) ?>">
+                                    <input type="hidden" name="idReto" value="<?= Security::escapeHtml($idRetoElegido ) ?>">
+                                    <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($idCicloElegido ) ?>">
                                     <div class="campo">
                                         <label>Nota (0-10):</label>
-                                        <input type="text" name="nota" value="<?= $notaActual ?>" placeholder="Ej: 7.5">
+                                        <input type="text" name="nota" value="<?= Security::escapeHtml($notaActual ) ?>" placeholder="Ej: 7.5">
                                     </div>
                                     <input type="submit" name="guardarNota" class="boton-primario" value="Guardar Nota">
                                 </form>
@@ -134,3 +135,5 @@ function toggleFormCalificar(idFormulario) {
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

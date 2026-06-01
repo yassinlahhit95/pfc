@@ -6,6 +6,7 @@ if (empty($_SESSION['idAdmin'])) {
     exit;
 }
 
+require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";

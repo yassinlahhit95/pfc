@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="public/css/landing.css">
-  <link rel="stylesheet" href="public/css/responsive.css">
+  <link rel="stylesheet" href="public/css/landing.css?v=1.1">
+  <link rel="stylesheet" href="public/css/responsive.css?v=1.1">
 </head>
 <body class="landing-body">
 
@@ -218,119 +218,6 @@
     </div>
   </footer>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var bMenu = document.getElementById('menu-boton');
-      var mLista = document.getElementById('menu');
-      var nav = document.getElementById('cabecera');
-
-      if (bMenu && mLista) {
-        bMenu.onclick = function() {
-          var altura = nav.offsetHeight;
-          mLista.style.top = altura + 'px';
-          mLista.classList.toggle('activo');
-        };
-      }
-
-      // cerrar menu al hacer clic fuera
-      document.addEventListener('click', function(e) {
-        if (mLista && mLista.classList.contains('activo')) {
-          var enMenu = mLista.contains(e.target);
-          var enBoton = bMenu && bMenu.contains(e.target);
-          if (!enMenu && !enBoton) {
-            mLista.classList.remove('activo');
-          }
-        }
-      });
-
-      window.onscroll = function() {
-        if (window.scrollY > 50) nav.classList.add('nav-scrolled');
-        else nav.classList.remove('nav-scrolled');
-        if (mLista && mLista.classList.contains('activo')) {
-          mLista.style.top = nav.offsetHeight + 'px';
-        }
-      };
-
-      document.querySelectorAll('a[href^="#"]').forEach(function(l) {
-        l.onclick = function(e) {
-          var h = l.getAttribute('href');
-          var d = document.querySelector(h);
-          if (!d) return;
-          e.preventDefault();
-          var pos = d.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top: pos, behavior: 'smooth' });
-          if (mLista) mLista.classList.remove('activo');
-          var p = l.getAttribute('data-plan');
-          if (p) {
-            var sel = document.getElementById('cf-plan');
-            if (sel) sel.value = p;
-          }
-        };
-      });
-
-      var obs = new IntersectionObserver(function(ev) {
-        ev.forEach(function(i) {
-          if (i.isIntersecting) {
-            i.target.classList.add('visible');
-            obs.unobserve(i.target);
-          }
-        });
-      }, { threshold: 0.1 });
-      document.querySelectorAll('.animar').forEach(function(x) { obs.observe(x); });
-
-      var mBtn = document.getElementById('btn-mensual');
-      var aBtn = document.getElementById('btn-anual');
-      if (mBtn && aBtn) {
-        mBtn.onclick = function() {
-          mBtn.classList.add('activo');
-          aBtn.classList.remove('activo');
-          document.querySelectorAll('.precio-cantidad').forEach(function(c) {
-            c.innerText = c.getAttribute('data-mensual');
-          });
-        };
-        aBtn.onclick = function() {
-          aBtn.classList.add('activo');
-          mBtn.classList.remove('activo');
-          document.querySelectorAll('.precio-cantidad').forEach(function(c) {
-            c.innerText = c.getAttribute('data-anual');
-          });
-        };
-      }
-
-      var f = document.getElementById('form-contacto');
-      if (f) {
-        f.onsubmit = function(e) {
-          e.preventDefault();
-          var b = document.getElementById('btn-enviar');
-          var msg = document.getElementById('form-feedback');
-          b.disabled = true;
-          b.innerText = 'Enviando...';
-          fetch('controladores/contacto_landing.php', {
-            method: 'POST',
-            body: new FormData(f)
-          })
-          .then(function(r) { return r.json(); })
-          .then(function(res) {
-            if (res.ok) {
-              msg.className = 'feedback-exito';
-              msg.innerText = res.msg;
-              f.reset();
-            } else {
-              msg.className = 'feedback-error';
-              msg.innerText = res.msg;
-              b.disabled = false;
-            }
-            b.innerText = 'Enviar datos';
-          })
-          .catch(function() {
-            msg.innerText = 'Error al enviar. Intenta de nuevo.';
-            b.disabled = false;
-            b.innerText = 'Enviar datos';
-          });
-        };
-      }
-    });
-  </script>
-
+  <script src="public/js/landing.js?v=1.1"></script>
 </body>
 </html>

@@ -16,7 +16,6 @@ function listarEstudiantes() {
         $rows[] = $fila;
     }
 
-    mysqli_close($con);
     return $rows;
 }
 
@@ -29,7 +28,6 @@ function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssssssssssis", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
     $res = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $res;
 }
 
@@ -39,7 +37,6 @@ function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fec
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssssssssssisi", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $id);
     $res = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $res;
 }
 
@@ -59,7 +56,6 @@ function listarEstudiantesDeProfesor($idProfesor) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -74,7 +70,6 @@ function listarEstudiantesPorCiclo($idCiclo) {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaEstudiantes[] = $fila;
     }
-    mysqli_close($con);
     return $listaEstudiantes;
 }
 
@@ -85,7 +80,6 @@ function eliminarEstudiante($idEstudiante) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $resultado;
 }
 
@@ -97,7 +91,6 @@ function obtenerEstudiantePorId($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosEstudiante = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
     return $datosEstudiante;
 }
 
@@ -108,7 +101,6 @@ function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $hash, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $resultado;
 }
 
@@ -118,7 +110,6 @@ function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $telefono, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $resultado;
 }
 
@@ -130,7 +121,6 @@ function obtenerTokensEstudiantes() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaTokens[] = $fila['fcm_token'];
     }
-    mysqli_close($con);
     return $listaTokens;
 }
 
@@ -142,7 +132,6 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
-    mysqli_close($con);
     return $existe;
 }
 
@@ -154,7 +143,6 @@ function validarLoginEstudiante($email, $password) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosUsuario = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
 
     if ($datosUsuario && password_verify($password, $datosUsuario['password'])) {
         return $datosUsuario;
@@ -168,7 +156,6 @@ function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $nuevoToken, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $resultado;
 }
 
@@ -184,6 +171,5 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
     if ($fila) {
         $token = $fila['fcm_token'];
     }
-    mysqli_close($con);
     return $token;
 }

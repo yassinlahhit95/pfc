@@ -30,10 +30,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -54,15 +54,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $notaTFG = $calificacionesTFG[$tfg['idEstudiante']];
                     ?>
                         <tr>
-                            <td><?= $tfg['nombreEstudiante'] ?></td>
-                            <td><?= $tfg['nombreCiclo'] ?></td>
-                            <td><?= date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG'])) ?></td>
+                            <td><?= Security::escapeHtml($tfg['nombreEstudiante'] ) ?></td>
+                            <td><?= Security::escapeHtml($tfg['nombreCiclo'] ) ?></td>
+                            <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG']))) ?></td>
                             <td>
                                 <?php if (!empty($notaTFG)) { ?>
                                     <?php if ($notaTFG['nota'] >= 5) { ?>
-                                        <span class="texto-verde texto-negrita"><?= $notaTFG['nota'] ?></span>
+                                        <span class="texto-verde texto-negrita"><?= Security::escapeHtml($notaTFG['nota'] ) ?></span>
                                     <?php } else { ?>
-                                        <span class="texto-rojo texto-negrita"><?= $notaTFG['nota'] ?></span>
+                                        <span class="texto-rojo texto-negrita"><?= Security::escapeHtml($notaTFG['nota'] ) ?></span>
                                     <?php } ?>
                                 <?php } else { ?>
                                     <span class="texto-suave">Sin calificar</span>
@@ -70,23 +70,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="../../../public/uploads/pfc/<?= $tfg['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
-                                    <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= $tfg['idEstudiante'] ?>')">
+                                    <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($tfg['archivoTFG'] ) ?>" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
+                                    <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>')">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <a href="borrarPfc.php?id=<?= $tfg['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                    <a href="borrarPfc.php?id=<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                                 </div>
 
-                                <div id="form-<?= $tfg['idEstudiante'] ?>" style="display: none; margin-top: 10px;">
+                                <div id="form-<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>" style="display: none; margin-top: 10px;">
                                     <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="formulario">
-                                        <input type="hidden" name="idEstudiante" value="<?= $tfg['idEstudiante'] ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                                        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>">
                                         <div class="campo">
                                             <label>Nota (0-10):</label>
-                                            <input type="text" name="nota" value="<?= !empty($notaTFG) ? $notaTFG['nota'] : '' ?>" placeholder="Ej: 7.5" class="input-pequeno">
+                                            <input type="text" name="nota" value="<?= Security::escapeHtml(!empty($notaTFG) ? $notaTFG['nota'] : '') ?>" placeholder="Ej: 7.5" class="input-pequeno">
                                         </div>
                                         <div class="campo">
                                             <label>Observaciones:</label>
-                                            <textarea name="observaciones" rows="2" placeholder="Comentarios opcionales..."><?= !empty($notaTFG) ? $notaTFG['observaciones'] : '' ?></textarea>
+                                            <textarea name="observaciones" rows="2" placeholder="Comentarios opcionales..."><?= Security::escapeHtml(!empty($notaTFG) ? $notaTFG['observaciones'] : '') ?></textarea>
                                         </div>
                                         <div class="campo">
                                             <label>
@@ -117,4 +118,6 @@ function toggleFormCalificar(idFormulario) {
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

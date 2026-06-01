@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <nav class="breadcrumb-modern">
   <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
-  <a href="modulo.php?id=<?= $idModulo ?>"><?= htmlspecialchars($modulo['nombreModulo']) ?></a>
+  <a href="modulo.php?id=<?= Security::escapeHtml($idModulo ) ?>"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></a>
   <span class="breadcrumb-sep">/</span>
   <span class="breadcrumb-actual">Estadísticas</span>
 </nav>
@@ -34,13 +34,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="header-modern">
   <h1 class="header-titulo"><i class="fas fa-chart-bar"></i> Análisis de uso</h1>
   <div class="header-acciones">
-    <select class="modal-select" style="width: auto; padding: var(--space-2) var(--space-3);" onchange="window.location.href='?id=<?= $idModulo ?>&dias=' + this.value">
-      <option value="7" <?= $dias === 7 ? 'selected' : '' ?>>Última semana</option>
-      <option value="30" <?= $dias === 30 ? 'selected' : '' ?>>Último mes</option>
-      <option value="90" <?= $dias === 90 ? 'selected' : '' ?>>Últimos 3 meses</option>
-      <option value="365" <?= $dias === 365 ? 'selected' : '' ?>>Último año</option>
+    <select class="modal-select" style="width: auto; padding: var(--space-2) var(--space-3);" onchange="window.location.href='?id=<?= Security::escapeHtml($idModulo ) ?>&dias=' + this.value">
+      <option value="7" <?= Security::escapeHtml($dias === 7 ? 'selected' : '') ?>>Última semana</option>
+      <option value="30" <?= Security::escapeHtml($dias === 30 ? 'selected' : '') ?>>Último mes</option>
+      <option value="90" <?= Security::escapeHtml($dias === 90 ? 'selected' : '') ?>>Últimos 3 meses</option>
+      <option value="365" <?= Security::escapeHtml($dias === 365 ? 'selected' : '') ?>>Último año</option>
     </select>
-    <a href="modulo.php?id=<?= $idModulo ?>" class="btn-modern btn-secondary-modern btn-small">
+    <a href="modulo.php?id=<?= Security::escapeHtml($idModulo ) ?>" class="btn-modern btn-secondary-modern btn-small">
       <i class="fas fa-arrow-left"></i> Volver
     </a>
   </div>
@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div>
         <p style="color: var(--color-neutral-500); font-size: var(--font-size-sm); margin: 0;">Acciones totales</p>
         <h2 style="font-size: 2.5rem; margin: var(--space-2) 0; color: var(--color-primary);">
-          <?= $resumen['totalAcciones'] ?? 0 ?>
+          <?= Security::escapeHtml($resumen['totalAcciones'] ?? 0) ?>
         </h2>
       </div>
       <i class="fas fa-fire" style="font-size: 3rem; color: var(--color-warning); opacity: 0.2;"></i>
@@ -68,7 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div>
         <p style="color: var(--color-neutral-500); font-size: var(--font-size-sm); margin: 0;">Usuarios únicos</p>
         <h2 style="font-size: 2.5rem; margin: var(--space-2) 0; color: var(--color-success);">
-          <?= $resumen['usuariosUnicos'] ?? 0 ?>
+          <?= Security::escapeHtml($resumen['usuariosUnicos'] ?? 0) ?>
         </h2>
       </div>
       <i class="fas fa-users" style="font-size: 3rem; color: var(--color-success); opacity: 0.2;"></i>
@@ -81,7 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div>
         <p style="color: var(--color-neutral-500); font-size: var(--font-size-sm); margin: 0;">Descargas</p>
         <h2 style="font-size: 2.5rem; margin: var(--space-2) 0; color: var(--color-info);">
-          <?= $resumen['totalDescargas'] ?? 0 ?>
+          <?= Security::escapeHtml($resumen['totalDescargas'] ?? 0) ?>
         </h2>
       </div>
       <i class="fas fa-download" style="font-size: 3rem; color: var(--color-info); opacity: 0.2;"></i>
@@ -94,7 +94,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div>
         <p style="color: var(--color-neutral-500); font-size: var(--font-size-sm); margin: 0;">Entregas</p>
         <h2 style="font-size: 2.5rem; margin: var(--space-2) 0; color: var(--color-primary);">
-          <?= $resumen['totalEntregas'] ?? 0 ?>
+          <?= Security::escapeHtml($resumen['totalEntregas'] ?? 0) ?>
         </h2>
       </div>
       <i class="fas fa-inbox" style="font-size: 3rem; color: var(--color-primary); opacity: 0.2;"></i>
@@ -131,12 +131,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         <tr style="border-bottom: 1px solid var(--color-neutral-100);">
           <td style="padding: var(--space-3);">
             <span style="display: inline-block; width: 24px; height: 24px; background: var(--color-primary); color: white; border-radius: 50%; text-align: center; font-weight: 600; margin-right: var(--space-2);">
-              <?= $i + 1 ?>
+              <?= Security::escapeHtml($i + 1 ) ?>
             </span>
-            <?= htmlspecialchars($archivo['nombreOriginal']) ?>
+            <?= Security::escapeHtml(htmlspecialchars($archivo['nombreOriginal'])) ?>
           </td>
           <td style="padding: var(--space-3); text-align: right; font-weight: 600; color: var(--color-primary);">
-            <?= $archivo['descargas'] ?>
+            <?= Security::escapeHtml($archivo['descargas'] ) ?>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -174,12 +174,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         <tr style="border-bottom: 1px solid var(--color-neutral-100);">
           <td style="padding: var(--space-3);">
             <span style="display: inline-block; width: 24px; height: 24px; background: var(--color-success); color: white; border-radius: 50%; text-align: center; font-weight: 600; margin-right: var(--space-2);">
-              <?= $i + 1 ?>
+              <?= Security::escapeHtml($i + 1 ) ?>
             </span>
-            <?= htmlspecialchars($tarea['titulo']) ?>
+            <?= Security::escapeHtml(htmlspecialchars($tarea['titulo'])) ?>
           </td>
           <td style="padding: var(--space-3); text-align: right; font-weight: 600; color: var(--color-success);">
-            <?= $tarea['entregas'] ?>
+            <?= Security::escapeHtml($tarea['entregas'] ) ?>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -196,3 +196,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </style>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

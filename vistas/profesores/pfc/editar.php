@@ -26,24 +26,25 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/profesores/pfc/actualizar.php" method="POST">
-        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
         <div class="form-cols">
             <div class="campo">
                 <label for="nombreEstudiante">Estudiante</label>
-                <input type="text" id="nombreEstudiante" value="<?= $datosTFG['nombreEstudiante'] ?? '' ?>" disabled>
+                <input type="text" id="nombreEstudiante" value="<?= Security::escapeHtml($datosTFG['nombreEstudiante'] ?? '') ?>" disabled>
             </div>
 
             <div class="campo">
                 <label for="tituloTFG">Título del TFG</label>
-                <input type="text" id="tituloTFG" name="tituloTFG" value="<?= $datosTFG['tituloTFG'] ?? '' ?>">
+                <input type="text" id="tituloTFG" name="tituloTFG" value="<?= Security::escapeHtml($datosTFG['tituloTFG'] ?? '') ?>">
             </div>
         </div>
 
@@ -55,4 +56,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

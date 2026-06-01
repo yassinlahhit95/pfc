@@ -27,21 +27,22 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="panel.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><?= htmlspecialchars($exito) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><?= htmlspecialchars($errores) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
 
 <div class="panel margen-arriba" style="max-width:720px;">
   <form action="../../../controladores/profesores/ejercicios/actualizar.php" method="POST" class="formulario">
-    <input type="hidden" name="idEjercicio" value="<?= $ejercicio['idEjercicio'] ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+    <input type="hidden" name="idEjercicio" value="<?= Security::escapeHtml($ejercicio['idEjercicio'] ) ?>">
 
     <div class="campo">
       <label>Título *</label>
-      <input type="text" name="titulo" value="<?= htmlspecialchars($ejercicio['titulo']) ?>" required maxlength="150">
+      <input type="text" name="titulo" value="<?= Security::escapeHtml(htmlspecialchars($ejercicio['titulo'])) ?>" required maxlength="150">
     </div>
 
     <div class="campo">
       <label>Descripción / Enunciado</label>
-      <textarea name="descripcion" rows="6"><?= htmlspecialchars($ejercicio['descripcion'] ?? '') ?></textarea>
+      <textarea name="descripcion" rows="6"><?= Security::escapeHtml(htmlspecialchars($ejercicio['descripcion'] ?? '')) ?></textarea>
     </div>
 
     <div class="form-cols">
@@ -50,8 +51,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select name="idCarpeta">
           <option value="">Sin carpeta</option>
           <?php foreach ($carpetas as $c): ?>
-          <option value="<?= $c['idCarpeta'] ?>" <?= $ejercicio['idCarpeta'] == $c['idCarpeta'] ? 'selected' : '' ?>>
-            <?= htmlspecialchars($c['nombre']) ?>
+          <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>" <?= Security::escapeHtml($ejercicio['idCarpeta'] == $c['idCarpeta'] ? 'selected' : '') ?>>
+            <?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?>
           </option>
           <?php endforeach; ?>
         </select>
@@ -60,13 +61,13 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div class="campo">
         <label>Fecha límite</label>
         <input type="datetime-local" name="fechaLimite"
-               value="<?= $ejercicio['fechaLimite'] ? date('Y-m-d\TH:i', strtotime($ejercicio['fechaLimite'])) : '' ?>">
+               value="<?= Security::escapeHtml($ejercicio['fechaLimite'] ? date('Y-m-d\TH:i', strtotime($ejercicio['fechaLimite'])) : '') ?>">
       </div>
     </div>
 
     <div class="campo">
       <label class="caja alinear-centro espacio-pequeno" style="cursor:pointer;">
-        <input type="checkbox" name="publicado" value="1" <?= $ejercicio['publicado'] ? 'checked' : '' ?>>
+        <input type="checkbox" name="publicado" value="1" <?= Security::escapeHtml($ejercicio['publicado'] ? 'checked' : '') ?>>
         <span>Publicado (visible para estudiantes)</span>
       </label>
     </div>
@@ -79,3 +80,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

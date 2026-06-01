@@ -61,19 +61,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cuadricula-estadisticas">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul">
         <div class="info-estadistica">
-            <h3><?= $totalSesionesAsistidas ?></h3>
+            <h3><?= Security::escapeHtml($totalSesionesAsistidas ) ?></h3>
             <p>Sesiones Asistidas</p>
         </div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-verde">
         <div class="info-estadistica">
-            <h3><?= round($duracionTotal / 60) ?></h3>
+            <h3><?= Security::escapeHtml(round($duracionTotal / 60)) ?></h3>
             <p>Minutos Totales</p>
         </div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-morada">
         <div class="info-estadistica">
-            <h3><?= $totalSesionesAsistidas > 0 ? round($duracionTotal / $totalSesionesAsistidas / 60) : 0 ?></h3>
+            <h3><?= Security::escapeHtml($totalSesionesAsistidas > 0 ? round($duracionTotal / $totalSesionesAsistidas / 60) : 0) ?></h3>
             <p>Promedio (min)</p>
         </div>
     </div>
@@ -103,14 +103,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php foreach ($registrosAsistencia as $asist) { ?>
                 <tr>
-                    <td><strong><?= htmlspecialchars($asist['nombreModulo']) ?></strong></td>
-                    <td><?= htmlspecialchars($asist['tituloSesion']) ?></td>
-                    <td><?= htmlspecialchars($asist['nombreProfesor']) ?></td>
-                    <td><?= date('d/m/Y', strtotime($asist['fechaSesion'])) ?></td>
-                    <td><?= $asist['horaUnion'] ? date('H:i', strtotime($asist['horaUnion'])) : '-' ?></td>
-                    <td><?= $asist['horaSalida'] ? date('H:i', strtotime($asist['horaSalida'])) : '-' ?></td>
+                    <td><strong><?= Security::escapeHtml(htmlspecialchars($asist['nombreModulo'])) ?></strong></td>
+                    <td><?= Security::escapeHtml(htmlspecialchars($asist['tituloSesion'])) ?></td>
+                    <td><?= Security::escapeHtml(htmlspecialchars($asist['nombreProfesor'])) ?></td>
+                    <td><?= Security::escapeHtml(date('d/m/Y', strtotime($asist['fechaSesion']))) ?></td>
+                    <td><?= Security::escapeHtml($asist['horaUnion'] ? date('H:i', strtotime($asist['horaUnion'])) : '-') ?></td>
+                    <td><?= Security::escapeHtml($asist['horaSalida'] ? date('H:i', strtotime($asist['horaSalida'])) : '-') ?></td>
                     <td>
-                        <strong><?= round($asist['duracion'] / 60) ?></strong> min
+                        <strong><?= Security::escapeHtml(round($asist['duracion'] / 60)) ?></strong> min
                     </td>
                 </tr>
                 <?php } ?>
@@ -130,3 +130,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

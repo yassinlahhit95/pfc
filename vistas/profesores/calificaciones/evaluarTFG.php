@@ -37,17 +37,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="tfg.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
-<?php if ($exito)   { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div><?php } ?>
+<?php if ($exito)   { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div><?php } ?>
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user-graduate"></i> <?= strtoupper($estudiante['nombreEstudiante']) ?></h3>
+        <h3><i class="fas fa-user-graduate"></i> <?= Security::escapeHtml(strtoupper($estudiante['nombreEstudiante'])) ?></h3>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciclo</div>
-        <div class="valor-detalle"><?= $estudiante['nombreCiclo'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['nombreCiclo'] ) ?></div>
     </div>
 
     <div class="fila-datos">
@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="valor-detalle">
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
                 <span class="indicador-estado activo-verde">ENTREGADO</span>
-                <a href="../../../public/uploads/pfc/<?= $estudiante['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver" style="margin-left: 10px;">
+                <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($estudiante['archivoTFG'] ) ?>" target="_blank" class="btn-accion btn-ver" style="margin-left: 10px;">
                     <i class="fas fa-file-pdf"></i> Descargar
                 </a>
             <?php } else { ?>
@@ -67,8 +67,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php if (!empty($calificacion)) { ?>
     <div class="fila-datos">
         <div class="nombre-detalle">Nota actual</div>
-        <div class="valor-detalle texto-negrita <?= $calificacion['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-            <?= $calificacion['nota'] ?> / 10
+        <div class="valor-detalle texto-negrita <?= Security::escapeHtml($calificacion['nota'] >= 5 ? 'texto-verde' : 'texto-rojo') ?>">
+            <?= Security::escapeHtml($calificacion['nota'] ) ?> / 10
         </div>
     </div>
     <?php } ?>
@@ -80,17 +80,18 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml((int)$idEstudiante) ?>">
         <input type="hidden" name="origen" value="calificacionesTFG">
 
         <div class="campo">
             <label>Nota (0-10)</label>
-            <input type="text" name="nota" value="<?= $calificacion['nota'] ?? '' ?>" placeholder="Ej: 7.5">
+            <input type="text" name="nota" value="<?= Security::escapeHtml($calificacion['nota'] ?? '') ?>" placeholder="Ej: 7.5">
         </div>
 
         <div class="campo">
             <label>Observaciones</label>
-            <textarea name="observaciones" rows="3"><?= $calificacion['observaciones'] ?? '' ?></textarea>
+            <textarea name="observaciones" rows="3"><?= Security::escapeHtml($calificacion['observaciones'] ?? '') ?></textarea>
         </div>
 
         <div class="campo">
@@ -107,3 +108,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

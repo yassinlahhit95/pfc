@@ -27,32 +27,33 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="campo">
             <label for="nombreReto">Nombre del Reto</label>
-            <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">
+            <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>">
         </div>
 
         <div class="campo">
             <label for="horasReto">Horas Totales</label>
-            <input type="number" name="horasReto" id="horasReto" value="<?= $datos['horasReto'] ?? '' ?>">
+            <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
         </div>
 
         <div class="campo">
             <label for="fechaInicio">Fecha Inicio</label>
-            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= $datos['fechaInicio'] ?? '' ?>">
+            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
         </div>
 
         <div class="campo">
             <label for="fechaFin">Fecha Fin</label>
-            <input type="date" name="fechaFin" id="fechaFin" value="<?= $datos['fechaFin'] ?? '' ?>">
+            <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($datos['fechaFin'] ?? '') ?>">
         </div>
 
         <div class="campo">
@@ -63,10 +64,10 @@ include_once "../comunes/nav.php";
                     <p class="texto-rojo">No tiene modulos asignados. No puede crear retos.</p>
                 <?php } else { ?>
                     <?php foreach ($misModulos as $mod) { ?>
-                        <label class="check-item" for="mod_<?= $mod['idModulo'] ?>">
-                            <input type="checkbox" name="modulos[]" id="mod_<?= $mod['idModulo'] ?>" value="<?= $mod['idModulo'] ?>" 
-                                <?= isset($mapaModulosElegidos[$mod['idModulo']]) ? 'checked' : '' ?>>
-                            <span><?= $mod['nombreModulo'] ?> (<?= $mod['abreviaturaCiclo'] ?>)</span>
+                        <label class="check-item" for="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>">
+                            <input type="checkbox" name="modulos[]" id="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>" value="<?= Security::escapeHtml($mod['idModulo'] ) ?>" 
+                                <?= Security::escapeHtml(isset($mapaModulosElegidos[$mod['idModulo']]) ? 'checked' : '') ?>>
+                            <span><?= Security::escapeHtml($mod['nombreModulo'] ) ?> (<?= Security::escapeHtml($mod['abreviaturaCiclo'] ) ?>)</span>
                         </label>
                     <?php } ?>
                 <?php } ?>
@@ -82,3 +83,5 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

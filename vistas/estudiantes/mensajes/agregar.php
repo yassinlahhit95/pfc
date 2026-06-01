@@ -28,23 +28,24 @@ $listaProfesores = listarProfesoresConModulosParaEstudiante($idEstudiante);
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/estudiantes/mensajes/insertar.php" method="POST" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
 
         <div class="campo">
             <label>Destinatario (Profesor o Dirección)</label>
             <select name="idProfesor">
                 <option value="">-- Dirección (Administración) --</option>
                 <?php foreach ($listaProfesores as $profesorItem) { ?>
-                    <option value="<?= $profesorItem['idProfesor'] ?>" <?= ($datos['idProfesor'] ?? '') == $profesorItem['idProfesor'] ? 'selected' : '' ?>>
-                        <?= $profesorItem['nombreProfesor'] . " (" . $profesorItem['nombreModulo'] . ")" ?>
+                    <option value="<?= Security::escapeHtml($profesorItem['idProfesor'] ) ?>" <?= Security::escapeHtml(($datos['idProfesor'] ?? '') == $profesorItem['idProfesor'] ? 'selected' : '') ?>>
+                        <?= Security::escapeHtml($profesorItem['nombreProfesor'] . " (" . $profesorItem['nombreModulo'] . ")" ) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -53,12 +54,12 @@ $listaProfesores = listarProfesoresConModulosParaEstudiante($idEstudiante);
 
         <div class="campo">
             <label>Asunto del Mensaje</label>
-            <input type="text" name="asunto" value="<?= $datos['asunto'] ?? '' ?>" placeholder="Ej: Consulta sobre nota">
+            <input type="text" name="asunto" value="<?= Security::escapeHtml($datos['asunto'] ?? '') ?>" placeholder="Ej: Consulta sobre nota">
         </div>
 
         <div class="campo">
             <label>Contenido del Mensaje</label>
-            <textarea name="descripcion" rows="5" placeholder="Escribe tu mensaje aquí..." maxlength="250"><?= $datos['descripcion'] ?? '' ?></textarea>
+            <textarea name="descripcion" rows="5" placeholder="Escribe tu mensaje aquí..." maxlength="250"><?= Security::escapeHtml($datos['descripcion'] ?? '') ?></textarea>
         </div>
 
         <div class="acciones">
@@ -69,3 +70,5 @@ $listaProfesores = listarProfesoresConModulosParaEstudiante($idEstudiante);
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

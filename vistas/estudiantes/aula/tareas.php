@@ -84,13 +84,13 @@ $tareasNoPublicadas = array_filter($todasLasTareas, function($t) { return $t['pu
                         $estado = $tieneEntrega ? '<span class="badge badge-verde">ENTREGADA</span>' : '<span class="badge badge-azul">PENDIENTE</span>';
                     ?>
                     <tr>
-                        <td><strong><?= htmlspecialchars(substr($tarea['titulo'], 0, 40)) ?></strong></td>
-                        <td><?= htmlspecialchars($tarea['nombreModulo']) ?></td>
-                        <td><?= htmlspecialchars($tarea['nombreProfesor']) ?></td>
-                        <td><span class="texto-pequeño"><?= htmlspecialchars(substr(strip_tags($tarea['descripcion']), 0, 60)) ?>...</span></td>
-                        <td><?= $estado ?></td>
+                        <td><strong><?= Security::escapeHtml(htmlspecialchars(substr($tarea['titulo'], 0, 40))) ?></strong></td>
+                        <td><?= Security::escapeHtml(htmlspecialchars($tarea['nombreModulo'])) ?></td>
+                        <td><?= Security::escapeHtml(htmlspecialchars($tarea['nombreProfesor'])) ?></td>
+                        <td><span class="texto-pequeño"><?= Security::escapeHtml(htmlspecialchars(substr(strip_tags($tarea['descripcion']), 0, 60))) ?>...</span></td>
+                        <td><?= Security::escapeHtml($estado ) ?></td>
                         <td>
-                            <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="boton-primario btn-pequeno">
+                            <a href="tarea_detalle.php?id=<?= Security::escapeHtml($tarea['idTarea'] ) ?>" class="boton-primario btn-pequeno">
                                 <i class="fas fa-arrow-right"></i> VER
                             </a>
                         </td>
@@ -108,7 +108,7 @@ $tareasNoPublicadas = array_filter($todasLasTareas, function($t) { return $t['pu
             <i class="fas fa-lock"></i> TAREAS NO PUBLICADAS
         </h2>
         <div class="alerta-info">
-            <p>Hay <?= count($tareasNoPublicadas) ?> tarea(s) que aún no están disponibles para estudiantes.</p>
+            <p>Hay <?= Security::escapeHtml(count($tareasNoPublicadas)) ?> tarea(s) que aún no están disponibles para estudiantes.</p>
         </div>
     </div>
     <?php } ?>
@@ -126,3 +126,5 @@ $tareasNoPublicadas = array_filter($todasLasTareas, function($t) { return $t['pu
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

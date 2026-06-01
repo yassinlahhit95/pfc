@@ -18,7 +18,7 @@ function listarTodosLosPrestamos() {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaPrestamos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaPrestamos;
 }
 
@@ -36,7 +36,7 @@ function listarArticulos() {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaArticulos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaArticulos;
 }
 
@@ -48,7 +48,7 @@ function checkArticuloExistente($numeroSerie, $idExcluir = 0) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
-    mysqli_close($con);
+    
     return $existe;
 }
 
@@ -58,7 +58,7 @@ function insertarArticulo($nombreArticulo, $numeroSerie) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $nombreArticulo, $numeroSerie);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -68,7 +68,7 @@ function eliminarArticulo($idArticulo) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -93,7 +93,7 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
     mysqli_stmt_bind_param($stmt, "i", $idArticulo);
     $resultado = mysqli_stmt_execute($stmt);
 
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -119,7 +119,7 @@ function devolverPrestamo($idPrestamo) {
     mysqli_stmt_bind_param($stmt, "s", $numeroSerie);
     mysqli_stmt_execute($stmt);
 
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -131,7 +131,7 @@ function obtenerArticuloPorId($idArticulo) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $articulo = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $articulo;
 }
 
@@ -141,7 +141,7 @@ function actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoD
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssi", $nombreArticulo, $numeroSerie, $estadoDispositivo, $idArticulo);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 

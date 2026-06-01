@@ -50,8 +50,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaModulos')">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
-                        [<?= $cicloFiltro['nombreNivel'] ?>] <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
+                    <option value="<?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>">
+                        [<?= Security::escapeHtml($cicloFiltro['nombreNivel']) ?>] <?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -129,6 +129,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                     <?php } ?>
                 <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<?php include '../comunes/footer.php'; ?>
+
+             <?php } ?>
             </tbody>
         </table>
     </div>

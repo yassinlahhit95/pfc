@@ -32,10 +32,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">
@@ -44,8 +44,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select id="selectFiltroCicloProf" name="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                <option value="<?= strtoupper($cicloFiltro['nombreCiclo']) ?>">
-                    <?= strtoupper($cicloFiltro['nombreCiclo']) ?>
+                <option value="<?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>">
+                    <?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>
                 </option>
             <?php } ?>
         </select>
@@ -74,22 +74,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($estudiantes as $estudianteItem) { ?>
                         <tr>
                             <td>
-                                <span class="texto-estado <?= $estudianteItem['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteItem['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                                <span class="texto-estado gris"><?= $estudianteItem['curso'] ?></span>
+                                <span class="texto-estado <?= Security::escapeHtml($estudianteItem['idNivel'] == 1 ? 'azul' : 'verde') ?>"><?= Security::escapeHtml($estudianteItem['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?></span>
+                                <span class="texto-estado gris"><?= Security::escapeHtml($estudianteItem['curso'] ) ?></span>
                             </td>
-                            <td class="texto-negrita"><?= $estudianteItem['nombreEstudiante'] ?></td>
-                            <td><?= $estudianteItem['emailEstudiante'] ?></td>
-                            <td><?= $estudianteItem['dniEstudiante'] ?></td>
-                            <td><?= $estudianteItem['nombreCiclo'] ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($estudianteItem['nombreEstudiante'] ) ?></td>
+                            <td><?= Security::escapeHtml($estudianteItem['emailEstudiante'] ) ?></td>
+                            <td><?= Security::escapeHtml($estudianteItem['dniEstudiante'] ) ?></td>
+                            <td><?= Security::escapeHtml($estudianteItem['nombreCiclo'] ) ?></td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="detalles.php?idEstudiante=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-ver">
+                                    <a href="detalles.php?idEstudiante=<?= Security::escapeHtml($estudianteItem['idEstudiante'] ) ?>" class="btn-accion btn-ver">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="editar.php?idEstudiante=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-editar">
+                                    <a href="editar.php?idEstudiante=<?= Security::escapeHtml($estudianteItem['idEstudiante'] ) ?>" class="btn-accion btn-editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="borrarEstudiante.php?id=<?= $estudianteItem['idEstudiante'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                    <a href="borrarEstudiante.php?id=<?= Security::escapeHtml($estudianteItem['idEstudiante'] ) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -105,4 +105,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

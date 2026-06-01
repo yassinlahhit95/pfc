@@ -35,32 +35,32 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>EVALUAR RETO</h1>
-    <a href="calificacionesRetos.php?idReto=<?= $idReto ?>&idCiclo=<?= $idCiclo ?>" class="boton-secundario">VOLVER</a>
+    <a href="calificacionesRetos.php?idReto=<?= Security::escapeHtml($idReto ) ?>&idCiclo=<?= Security::escapeHtml($idCiclo ) ?>" class="boton-secundario">VOLVER</a>
 </div>
 
-<?php if ($errores && !is_array($errores)) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
-<?php if ($exito)   { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
+<?php if ($errores && !is_array($errores)) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div><?php } ?>
+<?php if ($exito)   { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div><?php } ?>
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><?= strtoupper($estudiante['nombreEstudiante']) ?></h3>
+        <h3><?= Security::escapeHtml(strtoupper($estudiante['nombreEstudiante'])) ?></h3>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciclo</div>
-        <div class="valor-detalle"><?= $estudiante['nombreCiclo'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['nombreCiclo'] ) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Reto</div>
-        <div class="valor-detalle texto-negrita"><?= $reto['nombreReto'] ?></div>
+        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml($reto['nombreReto'] ) ?></div>
     </div>
 
     <?php if ($notaActual !== '') { ?>
     <div class="fila-datos">
         <div class="nombre-detalle">Nota actual</div>
-        <div class="valor-detalle texto-negrita <?= $notaActual >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-            <?= $notaActual ?> / 10
+        <div class="valor-detalle texto-negrita <?= Security::escapeHtml($notaActual >= 5 ? 'texto-verde' : 'texto-rojo') ?>">
+            <?= Security::escapeHtml($notaActual ) ?> / 10
         </div>
     </div>
     <?php } ?>
@@ -72,14 +72,15 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <form action="../../../controladores/profesores/academico/calificarRetoUnico.php" method="POST" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
-        <input type="hidden" name="idReto"       value="<?= (int)$idReto ?>">
-        <input type="hidden" name="idCiclo"      value="<?= (int)$idCiclo ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml((int)$idEstudiante) ?>">
+        <input type="hidden" name="idReto"       value="<?= Security::escapeHtml((int)$idReto) ?>">
+        <input type="hidden" name="idCiclo"      value="<?= Security::escapeHtml((int)$idCiclo) ?>">
 
         <div class="campo">
             <label>Nota (0-10) — dejar vacío para eliminar</label>
-            <input type="text" name="nota" value="<?= $notaActual ?>" placeholder="Introduce la nota (0-10)" class="<?= !empty($errores['nota']) ? 'input-error' : '' ?>">
-            <?php if (!empty($errores['nota'])) { ?><span class="error-campo"><?= $errores['nota'] ?></span><?php } ?>
+            <input type="text" name="nota" value="<?= Security::escapeHtml($notaActual ) ?>" placeholder="Introduce la nota (0-10)" class="<?= Security::escapeHtml(!empty($errores['nota']) ? 'input-error' : '') ?>">
+            <?php if (!empty($errores['nota'])) { ?><span class="error-campo"><?= Security::escapeHtml($errores['nota'] ) ?></span><?php } ?>
         </div>
 
         <div class="acciones">
@@ -89,3 +90,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

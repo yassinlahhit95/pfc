@@ -67,30 +67,30 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <!-- VARIABLES GLOBALES PARA ANALYTICS Y TEMAS -->
 <script>
-  const idUsuario = <?= (int)$idEstudiante ?>;
+  const idUsuario = <?= Security::escapeHtml((int)$idEstudiante) ?>;
   const tipoUsuario = 'estudiante';
-  const idModulo = <?= $idModulo ?>;
+  const idModulo = <?= Security::escapeHtml($idModulo ) ?>;
 </script>
 
 <!-- BREADCRUMB -->
 <nav class="breadcrumb-modern">
   <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
-  <span class="breadcrumb-actual"><?= htmlspecialchars($modulo['nombreModulo']) ?></span>
+  <span class="breadcrumb-actual"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></span>
 </nav>
 
 <!-- HEADER -->
 <div class="header-modern">
   <div>
-    <h1 class="header-titulo"><?= htmlspecialchars(mb_strtoupper($modulo['nombreModulo'], 'UTF-8')) ?></h1>
+    <h1 class="header-titulo"><?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($modulo['nombreModulo'], 'UTF-8'))) ?></h1>
   </div>
   <a href="index.php" class="btn-modern btn-secondary-modern btn-small">
     <i class="fas fa-arrow-left"></i> Módulos
   </a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($exito) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($errores) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
 
 <!-- TABS -->
 <div class="tabs-modern">
@@ -111,7 +111,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel-header-modern">
       <h3 class="panel-titulo-modern"><i class="fas fa-folder-open" style="color:var(--color-primary);"></i> Materiales</h3>
       <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
-        <?= count($archivos) ?> archivo<?= count($archivos) != 1 ? 's' : '' ?>
+        <?= Security::escapeHtml(count($archivos)) ?> archivo<?= Security::escapeHtml(count($archivos) != 1 ? 's' : '') ?>
       </span>
     </div>
     <div class="panel-content-modern">
@@ -125,9 +125,9 @@ include_once __DIR__ . "/../comunes/nav.php";
       <?php foreach ($carpetas as $carpeta): ?>
       <div class="carpeta" style="margin-bottom:var(--space-4);">
         <div class="carpeta-header-modern">
-          <span class="carpeta-dot" style="background:<?= htmlspecialchars($carpeta['color']) ?>;"></span>
-          <span class="carpeta-nombre"><?= htmlspecialchars($carpeta['nombre']) ?></span>
-          <span class="carpeta-count"><?= $carpeta['totalArchivos'] ?></span>
+          <span class="carpeta-dot" style="background:<?= Security::escapeHtml(htmlspecialchars($carpeta['color'])) ?>;"></span>
+          <span class="carpeta-nombre"><?= Security::escapeHtml(htmlspecialchars($carpeta['nombre'])) ?></span>
+          <span class="carpeta-count"><?= Security::escapeHtml($carpeta['totalArchivos'] ) ?></span>
           <i class="fas fa-chevron-right carpeta-chevron"></i>
         </div>
         <div class="carpeta-contenido">
@@ -140,16 +140,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div style="padding:var(--space-2) 0;">
               <?php foreach ($archsEnCarpeta as $arch): ?>
               <div class="archivo-card-modern">
-                <div class="archivo-icono-modern <?= $arch['extension'] ?>">
-                  <i class="fas fa-file-<?= $arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt') ?>"></i>
+                <div class="archivo-icono-modern <?= Security::escapeHtml($arch['extension'] ) ?>">
+                  <i class="fas fa-file-<?= Security::escapeHtml($arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt')) ?>"></i>
                 </div>
                 <div class="archivo-info-modern">
-                  <div class="archivo-nombre-modern"><?= htmlspecialchars($arch['nombreOriginal']) ?></div>
-                  <div class="archivo-meta-modern"><?= htmlspecialchars($arch['nombreProfesor']) ?> · <?= date('d/m/Y H:i', strtotime($arch['fechaSubida'])) ?></div>
+                  <div class="archivo-nombre-modern"><?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'])) ?></div>
+                  <div class="archivo-meta-modern"><?= Security::escapeHtml(htmlspecialchars($arch['nombreProfesor'])) ?> · <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?></div>
                 </div>
                 <div class="archivo-acciones-modern">
-                  <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES) ?>" data-ext="<?= $arch['extension'] ?>" data-nombre="<?= htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES) ?>" title="Ver"><i class="fas fa-eye"></i></button>
-                  <a href="../../../public/uploads/aula/archivos/<?= htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES) ?>" download class="btn-modern btn-primary-modern btn-small"><i class="fas fa-download"></i> <span class="hidden-mobile">Descargar</span></a>
+                  <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES)) ?>" title="Ver"><i class="fas fa-eye"></i></button>
+                  <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" download class="btn-modern btn-primary-modern btn-small"><i class="fas fa-download"></i> <span class="hidden-mobile">Descargar</span></a>
                 </div>
               </div>
               <?php endforeach; ?>
@@ -164,23 +164,23 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="carpeta-header-modern">
           <span class="carpeta-dot" style="background:var(--color-neutral-300);"></span>
           <span class="carpeta-nombre">Otros archivos</span>
-          <span class="carpeta-count"><?= count($archivosSueltos) ?></span>
+          <span class="carpeta-count"><?= Security::escapeHtml(count($archivosSueltos)) ?></span>
           <i class="fas fa-chevron-right carpeta-chevron"></i>
         </div>
         <div class="carpeta-contenido">
           <div style="padding:var(--space-2) 0;">
             <?php foreach ($archivosSueltos as $arch): ?>
             <div class="archivo-card-modern">
-              <div class="archivo-icono-modern <?= $arch['extension'] ?>">
-                <i class="fas fa-file-<?= $arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt') ?>"></i>
+              <div class="archivo-icono-modern <?= Security::escapeHtml($arch['extension'] ) ?>">
+                <i class="fas fa-file-<?= Security::escapeHtml($arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt')) ?>"></i>
               </div>
               <div class="archivo-info-modern">
-                <div class="archivo-nombre-modern"><?= htmlspecialchars($arch['nombreOriginal']) ?></div>
-                <div class="archivo-meta-modern"><?= htmlspecialchars($arch['nombreProfesor']) ?> · <?= date('d/m/Y H:i', strtotime($arch['fechaSubida'])) ?></div>
+                <div class="archivo-nombre-modern"><?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'])) ?></div>
+                <div class="archivo-meta-modern"><?= Security::escapeHtml(htmlspecialchars($arch['nombreProfesor'])) ?> · <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?></div>
               </div>
               <div class="archivo-acciones-modern">
-                <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES) ?>" data-ext="<?= $arch['extension'] ?>" data-nombre="<?= htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES) ?>" title="Ver"><i class="fas fa-eye"></i></button>
-                <a href="../../../public/uploads/aula/archivos/<?= htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES) ?>" download class="btn-modern btn-primary-modern btn-small"><i class="fas fa-download"></i> <span class="hidden-mobile">Descargar</span></a>
+                <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES)) ?>" title="Ver"><i class="fas fa-eye"></i></button>
+                <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" download class="btn-modern btn-primary-modern btn-small"><i class="fas fa-download"></i> <span class="hidden-mobile">Descargar</span></a>
               </div>
             </div>
             <?php endforeach; ?>
@@ -195,17 +195,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div style="border-top:1px solid var(--color-neutral-200);padding:var(--space-4) var(--space-5);">
       <div class="pagination">
         <?php if ($paginaArchivos > 1): ?>
-        <a href="?id=<?= $idModulo ?>&pag_arch=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
-        <a href="?id=<?= $idModulo ?>&pag_arch=<?= $paginaArchivos - 1 ?>" class="pagination-item"><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_arch=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_arch=<?= Security::escapeHtml($paginaArchivos - 1 ) ?>" class="pagination-item"><i class="fas fa-chevron-left"></i></a>
         <?php endif; ?>
         <?php for ($i = max(1, $paginaArchivos - 1); $i <= min($totalPaginasArchivos, $paginaArchivos + 1); $i++): ?>
-        <a href="?id=<?= $idModulo ?>&pag_arch=<?= $i ?>" class="pagination-item <?= $i === $paginaArchivos ? 'active' : '' ?>"><?= $i ?></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_arch=<?= Security::escapeHtml($i ) ?>" class="pagination-item <?= Security::escapeHtml($i === $paginaArchivos ? 'active' : '') ?>"><?= Security::escapeHtml($i ) ?></a>
         <?php endfor; ?>
         <?php if ($paginaArchivos < $totalPaginasArchivos): ?>
-        <a href="?id=<?= $idModulo ?>&pag_arch=<?= $paginaArchivos + 1 ?>" class="pagination-item"><i class="fas fa-chevron-right"></i></a>
-        <a href="?id=<?= $idModulo ?>&pag_arch=<?= $totalPaginasArchivos ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_arch=<?= Security::escapeHtml($paginaArchivos + 1 ) ?>" class="pagination-item"><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_arch=<?= Security::escapeHtml($totalPaginasArchivos ) ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
         <?php endif; ?>
-        <span class="pagination-info"><?= $paginaArchivos ?>/<?= $totalPaginasArchivos ?></span>
+        <span class="pagination-info"><?= Security::escapeHtml($paginaArchivos ) ?>/<?= Security::escapeHtml($totalPaginasArchivos ) ?></span>
       </div>
     </div>
     <?php endif; ?>
@@ -218,7 +218,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel-header-modern">
       <h3 class="panel-titulo-modern"><i class="fas fa-tasks" style="color:#8b5cf6;"></i> Tareas</h3>
       <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
-        <?= count($tareas) ?>
+        <?= Security::escapeHtml(count($tareas)) ?>
       </span>
     </div>
     <div class="panel-content-modern">
@@ -232,12 +232,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php foreach ($tareasPaginadas as $tarea):
           $entrega = obtenerEntregaAula($tarea['idTarea'], $idEstudiante);
         ?>
-        <a href="tarea.php?id=<?= $tarea['idTarea'] ?>" class="tarea-card-modern" style="text-decoration:none;color:inherit;display:block;">
+        <a href="tarea.php?id=<?= Security::escapeHtml($tarea['idTarea'] ) ?>" class="tarea-card-modern" style="text-decoration:none;color:inherit;display:block;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-3);">
             <div style="flex:1;">
-              <h3 class="tarea-titulo-modern"><?= htmlspecialchars($tarea['titulo']) ?></h3>
+              <h3 class="tarea-titulo-modern"><?= Security::escapeHtml(htmlspecialchars($tarea['titulo'])) ?></h3>
               <?php if ($tarea['descripcion']): ?>
-              <p class="tarea-desc-modern"><?= htmlspecialchars($tarea['descripcion']) ?></p>
+              <p class="tarea-desc-modern"><?= Security::escapeHtml(htmlspecialchars($tarea['descripcion'])) ?></p>
               <?php endif; ?>
             </div>
             <?php if ($entrega):
@@ -251,7 +251,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             endif; ?>
           </div>
           <div style="color:var(--color-neutral-500);font-size:var(--font-size-xs);">
-            <i class="fas fa-user-tie"></i> <?= htmlspecialchars($tarea['nombreProfesor']) ?>
+            <i class="fas fa-user-tie"></i> <?= Security::escapeHtml(htmlspecialchars($tarea['nombreProfesor'])) ?>
           </div>
         </a>
         <?php endforeach; ?>
@@ -262,17 +262,17 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div style="border-top:1px solid var(--color-neutral-200);padding:var(--space-4) var(--space-5);">
       <div class="pagination">
         <?php if ($paginaTareas > 1): ?>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $paginaTareas - 1 ?>" class="pagination-item"><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_tareas=1" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_tareas=<?= Security::escapeHtml($paginaTareas - 1 ) ?>" class="pagination-item"><i class="fas fa-chevron-left"></i></a>
         <?php endif; ?>
         <?php for ($i = max(1, $paginaTareas - 1); $i <= min($totalPaginasTareas, $paginaTareas + 1); $i++): ?>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $i ?>" class="pagination-item <?= $i === $paginaTareas ? 'active' : '' ?>"><?= $i ?></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_tareas=<?= Security::escapeHtml($i ) ?>" class="pagination-item <?= Security::escapeHtml($i === $paginaTareas ? 'active' : '') ?>"><?= Security::escapeHtml($i ) ?></a>
         <?php endfor; ?>
         <?php if ($paginaTareas < $totalPaginasTareas): ?>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $paginaTareas + 1 ?>" class="pagination-item"><i class="fas fa-chevron-right"></i></a>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $totalPaginasTareas ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_tareas=<?= Security::escapeHtml($paginaTareas + 1 ) ?>" class="pagination-item"><i class="fas fa-chevron-right"></i></a>
+        <a href="?id=<?= Security::escapeHtml($idModulo ) ?>&pag_tareas=<?= Security::escapeHtml($totalPaginasTareas ) ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
         <?php endif; ?>
-        <span class="pagination-info"><?= $paginaTareas ?>/<?= $totalPaginasTareas ?></span>
+        <span class="pagination-info"><?= Security::escapeHtml($paginaTareas ) ?>/<?= Security::escapeHtml($totalPaginasTareas ) ?></span>
       </div>
     </div>
     <?php endif; ?>
@@ -285,7 +285,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel-header-modern">
       <h3 class="panel-titulo-modern"><i class="fas fa-video" style="color:#ef4444;"></i> Sesiones Vivas</h3>
       <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
-        <?= count($sesiones) ?>
+        <?= Security::escapeHtml(count($sesiones)) ?>
       </span>
     </div>
     <div class="panel-content-modern">
@@ -311,22 +311,22 @@ include_once __DIR__ . "/../comunes/nav.php";
           <div style="display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-3);">
             <div style="flex:1;">
               <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);">
-                <h3 class="tarea-titulo-modern"><?= htmlspecialchars($sesion['titulo']) ?></h3>
-                <span class="badge-estado-modern" style="background:<?= $estilo['bg'] ?>;color:<?= $estilo['text'] ?>;"><i class="fas fa-<?= $estilo['icon'] ?>"></i> <?= strtoupper($estado) ?></span>
+                <h3 class="tarea-titulo-modern"><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></h3>
+                <span class="badge-estado-modern" style="background:<?= Security::escapeHtml($estilo['bg'] ) ?>;color:<?= Security::escapeHtml($estilo['text'] ) ?>;"><i class="fas fa-<?= Security::escapeHtml($estilo['icon'] ) ?>"></i> <?= Security::escapeHtml(strtoupper($estado)) ?></span>
               </div>
               <?php if ($sesion['descripcion']): ?>
-              <p class="tarea-desc-modern"><?= htmlspecialchars($sesion['descripcion']) ?></p>
+              <p class="tarea-desc-modern"><?= Security::escapeHtml(htmlspecialchars($sesion['descripcion'])) ?></p>
               <?php endif; ?>
               <div style="margin-top:var(--space-2);display:flex;gap:var(--space-4);font-size:var(--font-size-sm);color:var(--color-neutral-600);">
-                <span><i class="fas fa-calendar"></i> <?= date('d/m/Y', strtotime($sesion['fechaSesion'])) ?></span>
-                <span><i class="fas fa-clock"></i> <?= date('H:i', strtotime($sesion['horaSesion'])) ?></span>
-                <span><i class="fas fa-chalkboard-user"></i> <?= htmlspecialchars($sesion['nombreProfesor']) ?></span>
+                <span><i class="fas fa-calendar"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($sesion['fechaSesion']))) ?></span>
+                <span><i class="fas fa-clock"></i> <?= Security::escapeHtml(date('H:i', strtotime($sesion['horaSesion']))) ?></span>
+                <span><i class="fas fa-chalkboard-user"></i> <?= Security::escapeHtml(htmlspecialchars($sesion['nombreProfesor'])) ?></span>
               </div>
               <?php if ($sesion['plataforma']): ?>
               <div style="margin-top:var(--space-2);padding:var(--space-2);background:var(--color-neutral-50);border-radius:4px;font-size:var(--font-size-sm);">
-                <strong><?= htmlspecialchars($sesion['plataforma']) ?></strong>
+                <strong><?= Security::escapeHtml(htmlspecialchars($sesion['plataforma'])) ?></strong>
                 <?php if ($sesion['enlaceReunion']): ?>
-                <a href="<?= htmlspecialchars($sesion['enlaceReunion']) ?>" target="_blank" class="btn-modern btn-primary-modern btn-small" style="margin-left:var(--space-2);">
+                <a href="<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>" target="_blank" class="btn-modern btn-primary-modern btn-small" style="margin-left:var(--space-2);">
                   <i class="fas fa-external-link-alt"></i> Unirse a la sesión
                 </a>
                 <?php endif; ?>
@@ -454,3 +454,5 @@ function abrirViewerAula(url, ext, nombre) {
 <script src="../../../public/js/analytics.js"></script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

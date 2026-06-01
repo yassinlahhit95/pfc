@@ -21,11 +21,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if (!empty($exito)) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -33,49 +33,49 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario">
             <div class="campo">
                 <label for="nombreEstudiante">Nombre Completo</label>
-                <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? '' ?>">
+                <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="emailEstudiante">Email</label>
-                <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= $datos['emailEstudiante'] ?? '' ?>">
+                <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="dniEstudiante">DNI</label>
-                <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= $datos['dniEstudiante'] ?? '' ?>">
+                <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= Security::escapeHtml($datos['dniEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="telefonoEstudiante">Teléfono</label>
-                <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= $datos['telefonoEstudiante'] ?? '' ?>">
+                <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
-                <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= $datos['fechaNacimientoEstudiante'] ?? '' ?>">
+                <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($datos['fechaNacimientoEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="direccionEstudiante">Dirección</label>
-                <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= $datos['direccionEstudiante'] ?? '' ?>">
+                <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= Security::escapeHtml($datos['direccionEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="ciudadEstudiante">Ciudad</label>
-                <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= $datos['ciudadEstudiante'] ?? '' ?>">
+                <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= Security::escapeHtml($datos['ciudadEstudiante'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="codigoPostalEstudiante">Código Postal</label>
-                <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= $datos['codigoPostalEstudiante'] ?? '' ?>">
+                <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
                 
             </div>
 
@@ -126,7 +126,7 @@ function filtrarCiclos() {
 $(function() {
     filtrarCiclos();
     <?php if (!empty($datos['idCiclo'])) { ?>
-    $('#idCiclo').val('<?= $datos['idCiclo'] ?>');
+    $('#idCiclo').val('<?= Security::escapeHtml($datos['idCiclo']) ?>');
     <?php } ?>
 });
 </script>

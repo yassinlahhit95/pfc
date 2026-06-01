@@ -33,17 +33,17 @@ include_once __DIR__ . "/../comunes/nav.php";
       <h3>Carpetas</h3>
     </div>
 
-    <a href="lista.php" class="carpeta-item <?= $idCarpeta === 0 ? 'activa' : '' ?>">
+    <a href="lista.php" class="carpeta-item <?= Security::escapeHtml($idCarpeta === 0 ? 'activa' : '') ?>">
       <span class="carpeta-punto" style="background:#94a3b8;"></span>
       <span>Todos</span>
-      <span class="carpeta-count"><?= count($ejercicios) ?></span>
+      <span class="carpeta-count"><?= Security::escapeHtml(count($ejercicios)) ?></span>
     </a>
 
     <?php foreach ($carpetas as $c): ?>
-    <a href="lista.php?idCarpeta=<?= $c['idCarpeta'] ?>" class="carpeta-item <?= $idCarpeta == $c['idCarpeta'] ? 'activa' : '' ?>">
-      <span class="carpeta-punto" style="background:<?= htmlspecialchars($c['color']) ?>;"></span>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= htmlspecialchars($c['nombre']) ?></span>
-      <span class="carpeta-count"><?= $c['totalEjercicios'] ?></span>
+    <a href="lista.php?idCarpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>" class="carpeta-item <?= Security::escapeHtml($idCarpeta == $c['idCarpeta'] ? 'activa' : '') ?>">
+      <span class="carpeta-punto" style="background:<?= Security::escapeHtml(htmlspecialchars($c['color'])) ?>;"></span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></span>
+      <span class="carpeta-count"><?= Security::escapeHtml($c['totalEjercicios'] ) ?></span>
     </a>
     <?php endforeach; ?>
 
@@ -93,25 +93,25 @@ include_once __DIR__ . "/../comunes/nav.php";
           }
         }
       ?>
-      <a href="ver.php?id=<?= $ej['idEjercicio'] ?>" class="ejercicio-card">
+      <a href="ver.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>" class="ejercicio-card">
         <?php if ($ej['nombreCarpeta']): ?>
-        <span class="ejercicio-card-carpeta" style="background:<?= htmlspecialchars($ej['colorCarpeta']) ?>22;color:<?= htmlspecialchars($ej['colorCarpeta']) ?>;">
+        <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>22;color:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>;">
           <i class="fas fa-folder" style="font-size:0.65rem;"></i>
-          <?= htmlspecialchars($ej['nombreCarpeta']) ?>
+          <?= Security::escapeHtml(htmlspecialchars($ej['nombreCarpeta'])) ?>
         </span>
         <?php endif; ?>
 
-        <p class="ejercicio-card-titulo"><?= htmlspecialchars($ej['titulo']) ?></p>
+        <p class="ejercicio-card-titulo"><?= Security::escapeHtml(htmlspecialchars($ej['titulo'])) ?></p>
 
         <?php if ($ej['descripcion']): ?>
-        <p class="ejercicio-card-desc"><?= htmlspecialchars($ej['descripcion']) ?></p>
+        <p class="ejercicio-card-desc"><?= Security::escapeHtml(htmlspecialchars($ej['descripcion'])) ?></p>
         <?php endif; ?>
 
         <div class="ejercicio-card-footer">
-          <span class="ejercicio-fecha <?= $claseUrgencia ?>">
-            <i class="fas fa-clock"></i> <?= $textoFecha ?>
+          <span class="ejercicio-fecha <?= Security::escapeHtml($claseUrgencia ) ?>">
+            <i class="fas fa-clock"></i> <?= Security::escapeHtml($textoFecha ) ?>
           </span>
-          <span class="badge-estado <?= $badgeClass ?>"><?= $badgeText ?></span>
+          <span class="badge-estado <?= Security::escapeHtml($badgeClass ) ?>"><?= Security::escapeHtml($badgeText ) ?></span>
         </div>
       </a>
       <?php endforeach; ?>
@@ -121,3 +121,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

@@ -35,36 +35,38 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-datos">
         <div class="nombre-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= strtoupper($profesor['nombreProfesor']) ?></div>
+        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(strtoupper($profesor['nombreProfesor'])) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Email Corporativo</div>
-        <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($profesor['emailProfesor'] ) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Telefono</div>
-        <div class="valor-detalle"><?= $profesor['telefonoProfesor'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($profesor['telefonoProfesor'] ) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">DNI / Identificacion</div>
-        <div class="valor-detalle"><?= $profesor['dniProfesor'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($profesor['dniProfesor'] ) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Direccion</div>
-        <div class="valor-detalle"><?= $profesor['direccionProfesor'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($profesor['direccionProfesor'] ) ?></div>
     </div>
     
     <?php if(!empty($profesor['observacionesProfesor'])) { ?>
         <div class="fila-datos">
             <div class="nombre-detalle">Observaciones</div>
-            <div class="valor-detalle"><?= $profesor['observacionesProfesor'] ?></div>
+            <div class="valor-detalle"><?= Security::escapeHtml($profesor['observacionesProfesor'] ) ?></div>
         </div>
     <?php } ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

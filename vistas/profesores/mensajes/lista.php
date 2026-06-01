@@ -28,10 +28,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -56,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $esMio = ($mensaje['emisor_rol'] == 'profesor');
                         $claseFila = $esMio ? 'fila-propia' : '';
                     ?>
-                    <tr class="<?= $claseFila ?>">
+                    <tr class="<?= Security::escapeHtml($claseFila ) ?>">
                         <td>
                             <b><?php 
                                 if ($mensaje['emisor_rol'] == 'profesor') {
@@ -68,16 +68,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 }
                             ?></b>
                         </td>
-                        <td><?= $mensaje['abreviaturaCiclo'] ?? '-' ?></td>
-                        <td><p class="texto-negrita"><?= strtoupper($mensaje['asunto']) ?></p></td>
+                        <td><?= Security::escapeHtml($mensaje['abreviaturaCiclo'] ?? '-') ?></td>
+                        <td><p class="texto-negrita"><?= Security::escapeHtml(strtoupper($mensaje['asunto'])) ?></p></td>
                         <td>
                             <div class="cuerpo-mensaje-tabla">
-                                <?= substr($mensaje['descripcion'], 0, 40) ?>...
+                                <?= Security::escapeHtml(substr($mensaje['descripcion'], 0, 40)) ?>...
                             </div>
                         </td>
                         <td>
-                            <?= date('d/m/Y', strtotime($mensaje['fecha'])) ?><br>
-                            <span class="texto-suave"><?= date('H:i:s', strtotime($mensaje['fecha'])) ?></span>
+                            <?= Security::escapeHtml(date('d/m/Y', strtotime($mensaje['fecha']))) ?><br>
+                            <span class="texto-suave"><?= Security::escapeHtml(date('H:i:s', strtotime($mensaje['fecha']))) ?></span>
                         </td>
                         <td>
                             <?php if ($mensaje['leido']) { ?>
@@ -88,10 +88,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <div class="botones-accion">
-                                <a href="../../../vistas/profesores/mensajes/detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
+                                <a href="../../../vistas/profesores/mensajes/detalles.php?id=<?= Security::escapeHtml($mensaje['idReclamacion'] ) ?>" class="btn-accion btn-ver">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="borrarMensaje.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="borrarMensaje.php?id=<?= Security::escapeHtml($mensaje['idReclamacion'] ) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>
@@ -103,4 +103,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

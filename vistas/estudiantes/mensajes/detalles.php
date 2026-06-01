@@ -37,10 +37,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -51,23 +51,23 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-datos">
         <div class="nombre-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administracion (Sistema)' ?>
+            <?= Security::escapeHtml(($mensaje['emisor_rol'] == 'profesor') ? $mensaje['nombreProfesor'] : 'Administracion (Sistema)') ?>
         </div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Enviado el</div>
-        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($mensaje['fecha']))) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= Security::escapeHtml(strtoupper($mensaje['asunto'])) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Contenido</div>
-        <div class="valor-detalle valor-mensaje"><?= $mensaje['descripcion'] ?></div>
+        <div class="valor-detalle valor-mensaje"><?= Security::escapeHtml($mensaje['descripcion'] ) ?></div>
     </div>
 
     <div class="fila-datos">
@@ -83,4 +83,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

@@ -34,8 +34,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1><?= htmlspecialchars($tarea['titulo']) ?></h1>
-    <p class="texto-suave"><?= htmlspecialchars($tarea['nombreModulo']) ?> - Prof. <?= htmlspecialchars($tarea['nombreProfesor']) ?></p>
+    <h1><?= Security::escapeHtml(htmlspecialchars($tarea['titulo'])) ?></h1>
+    <p class="texto-suave"><?= Security::escapeHtml(htmlspecialchars($tarea['nombreModulo'])) ?> - Prof. <?= Security::escapeHtml(htmlspecialchars($tarea['nombreProfesor'])) ?></p>
 </div>
 
 <?php
@@ -44,10 +44,10 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php }
 if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="cuadricula-secundaria">
@@ -55,17 +55,17 @@ if ($errores) { ?>
         <div class="panel">
             <div class="titulo-tarjeta">
                 <h3>DESCRIPCIÓN DE LA TAREA</h3>
-                <span class="texto-suave"><?= date('d/m/Y H:i', strtotime($tarea['fechaCreacion'])) ?></span>
+                <span class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($tarea['fechaCreacion']))) ?></span>
             </div>
 
             <div style="margin: 20px 0; line-height: 1.6;">
-                <?= $tarea['descripcion'] ?>
+                <?= Security::escapeHtml($tarea['descripcion'] ) ?>
             </div>
 
             <?php if ($tarea['archivoAdjunto']) { ?>
             <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
                 <strong><i class="fas fa-paperclip"></i> Archivo Adjunto:</strong><br>
-                <a href="../../../public/uploads/aula/tareas/<?= htmlspecialchars($tarea['archivoAdjunto']) ?>"
+                <a href="../../../public/uploads/aula/tareas/<?= Security::escapeHtml(htmlspecialchars($tarea['archivoAdjunto'])) ?>"
                    class="boton-secundario" download>
                     <i class="fas fa-download"></i> Descargar
                 </a>
@@ -88,16 +88,16 @@ if ($errores) { ?>
 
             <?php if ($entrega) { ?>
                 <div style="margin: 15px 0; padding: 15px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 3px;">
-                    <strong>✓ Fecha de Entrega:</strong> <?= date('d/m/Y H:i', strtotime($entrega['fechaEntrega'])) ?><br>
+                    <strong>✓ Fecha de Entrega:</strong> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?><br>
                     <?php if ($entrega['nota'] !== null) { ?>
-                        <strong>✓ Calificación:</strong> <span style="font-size: 18px; color: #4caf50;"><?= $entrega['nota'] ?>/10</span>
+                        <strong>✓ Calificación:</strong> <span style="font-size: 18px; color: #4caf50;"><?= Security::escapeHtml($entrega['nota'] ) ?>/10</span>
                     <?php } else { ?>
                         <strong>⏳ Calificación:</strong> <span style="color: #ff9800;">Pendiente</span>
                     <?php } ?>
                 </div>
 
                 <strong><i class="fas fa-file"></i> Tu Entrega:</strong><br>
-                <a href="../../../public/uploads/aula/entregas/<?= htmlspecialchars($entrega['archivoEntrega']) ?>"
+                <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoEntrega'])) ?>"
                    class="boton-secundario" download style="margin: 10px 0;">
                     <i class="fas fa-download"></i> Descargar Mi Entrega
                 </a>
@@ -105,8 +105,8 @@ if ($errores) { ?>
                 <?php if ($entrega['archivoCorreccion']) { ?>
                 <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 3px;">
                     <strong><i class="fas fa-comment"></i> Retroalimentación del Profesor:</strong><br>
-                    <?= htmlspecialchars($entrega['comentarioCalificacion']) ?><br><br>
-                    <a href="../../../public/uploads/aula/correcciones/<?= htmlspecialchars($entrega['archivoCorreccion']) ?>"
+                    <?= Security::escapeHtml(htmlspecialchars($entrega['comentarioCalificacion'])) ?><br><br>
+                    <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoCorreccion'])) ?>"
                        class="boton-secundario btn-pequeno" download>
                         <i class="fas fa-file-pdf"></i> Ver Corrección
                     </a>
@@ -115,8 +115,9 @@ if ($errores) { ?>
 
             <?php } else { ?>
                 <form method="POST" action="../../../controladores/estudiantes/aula/enviar_entrega.php" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
-                    <input type="hidden" name="idTarea" value="<?= htmlspecialchars($idTarea) ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                    <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml(htmlspecialchars($csrfToken)) ?>">
+                    <input type="hidden" name="idTarea" value="<?= Security::escapeHtml(htmlspecialchars($idTarea)) ?>">
 
                     <div class="grupo-formulario">
                         <label for="archivo">SUBIR ARCHIVO DE ENTREGA *</label>
@@ -142,3 +143,5 @@ if ($errores) { ?>
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

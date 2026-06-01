@@ -28,11 +28,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -54,20 +54,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
                     <tr>
-                        <td><?= $profesorIndividual['idProfesor'] ?></td>
-                        <td><b><?= strtoupper($profesorIndividual['nombreProfesor']) ?></b></td>
-                        <td><?= $profesorIndividual['emailProfesor'] ?></td>
+                        <td><?= Security::escapeHtml($profesorIndividual['idProfesor']) ?></td>
+                        <td><b><?= strtoupper(Security::escapeHtml($profesorIndividual['nombreProfesor'])) ?></b></td>
+                        <td><?= Security::escapeHtml($profesorIndividual['emailProfesor']) ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="../../../vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
+                                <a href="../../../vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" 
                                    class="btn-accion btn-ver">
                                     <i class="fas fa-search"></i>
                                 </a>
-<a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= $profesorIndividual['idProfesor'] ?>" 
+<a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" 
                                    class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="borrarProfesor.php?id=<?= $profesorIndividual['idProfesor'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="borrarProfesor.php?id=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

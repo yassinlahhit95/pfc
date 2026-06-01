@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <h1>FICHA DE ESTUDIANTE</h1>
     <div class="acciones-pagina">
-        <a href="../../../vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-primario">
+        <a href="../../../vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?= Security::escapeHtml($idDelEstudiante) ?>" class="boton-primario">
             <i class="fas fa-edit"></i> Editar Datos
         </a>
         <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
@@ -35,27 +35,27 @@ include_once __DIR__ . "/../comunes/nav.php";
     
     <div class="fila-datos">
         <div class="nombre-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= $estudiante['nombreEstudiante'] ?></div>
+        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Email</div>
-        <div class="valor-detalle"><?= $estudiante['emailEstudiante'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['emailEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">DNI</div>
-        <div class="valor-detalle"><?= $estudiante['dniEstudiante'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['dniEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Teléfono</div>
-        <div class="valor-detalle"><?= $estudiante['telefonoEstudiante'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciclo Formativo</div>
-        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= $estudiante['nombreCiclo'] ?></span></div>
+        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></span></div>
     </div>
 
     <div class="fila-datos">
@@ -65,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciudad / Dirección</div>
-        <div class="valor-detalle"><?= $estudiante['direccionEstudiante'] . ", " . $estudiante['ciudadEstudiante'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['direccionEstudiante']) . ", " . Security::escapeHtml($estudiante['ciudadEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-datos">
         <div class="nombre-detalle">Observaciones</div>
-        <div class="valor-detalle"><?= !empty($estudiante['observacionesEstudiante']) ? $estudiante['observacionesEstudiante'] : '<span class="texto-suave">Sin observaciones</span>' ?></div>
+        <div class="valor-detalle"><?= !empty($estudiante['observacionesEstudiante']) ? Security::escapeHtml($estudiante['observacionesEstudiante']) : '<span class="texto-suave">Sin observaciones</span>' ?></div>
     </div>
 </div>
 

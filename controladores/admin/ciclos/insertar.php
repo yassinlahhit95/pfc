@@ -1,6 +1,13 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../include/Security.php";
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = "Solicitud no válida o expirada (CSRF).";
+    header("Location: " . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+    exit;
+}
 
 if (isset($_POST['guardarCiclo'])) {
     $nombre = trim($_POST['nombreCiclo']);

@@ -31,14 +31,15 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 <?php } else { ?>
     <form method="POST" action="../../../controladores/aula/crear_sesion.php" class="formulario-principal">
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml(htmlspecialchars($csrfToken)) ?>">
 
         <div class="grupo-formulario">
             <label for="idModulo">MÓDULO *</label>
             <select id="idModulo" name="idModulo" required>
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($modulos as $modulo) { ?>
-                    <option value="<?= $modulo['idModulo'] ?>"><?= htmlspecialchars($modulo['nombreModulo']) ?></option>
+                    <option value="<?= Security::escapeHtml($modulo['idModulo'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -55,7 +56,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="grupo-formulario">
             <label for="fechaSesion">FECHA *</label>
-            <input type="date" id="fechaSesion" name="fechaSesion" required min="<?= date('Y-m-d') ?>">
+            <input type="date" id="fechaSesion" name="fechaSesion" required min="<?= Security::escapeHtml(date('Y-m-d')) ?>">
         </div>
 
         <div class="grupo-formulario">
@@ -101,3 +102,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

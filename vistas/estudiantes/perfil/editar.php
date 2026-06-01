@@ -23,31 +23,32 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/estudiantes/perfil/actualizar.php" method="POST" class="formulario">
-        <input type="hidden" name="idEstudiante" value="<?= $idEstudiante ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
 
         <div class="titulo-tarjeta"><h3>DATOS PERSONALES Y CONTACTO</h3></div>
 
         <div class="campo">
             <label for="nombreEstudiante">Nombre Completo</label>
-            <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= $datos['nombreEstudiante'] ?? $estudianteActual['nombreEstudiante'] ?>">
+            <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? $estudianteActual['nombreEstudiante']) ?>">
         </div>
 
         <div class="campo">
             <label for="emailEstudiante">Correo Electronico</label>
-            <input type="email" name="emailEstudiante" id="emailEstudiante" value="<?= $datos['emailEstudiante'] ?? $estudianteActual['emailEstudiante'] ?>">
+            <input type="email" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? $estudianteActual['emailEstudiante']) ?>">
         </div>
 
         <div class="campo">
             <label for="telefonoEstudiante">Numero de Telefono</label>
-            <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= $datos['telefonoEstudiante'] ?? $estudianteActual['telefonoEstudiante'] ?>">
+            <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? $estudianteActual['telefonoEstudiante']) ?>">
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
@@ -71,3 +72,5 @@ include_once "../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

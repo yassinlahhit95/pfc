@@ -25,10 +25,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <?php if (!empty($anuncios)) { ?>
@@ -36,11 +36,11 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="anuncio-item">
             <div class="anuncio-contenido">
                 <div class="titulo-tarjeta">
-                    <h3 class="anuncio-titulo"><?= strtoupper($anuncio['titulo'] ?? '') ?></h3>
-                    <span class="texto-suave"><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
+                    <h3 class="anuncio-titulo"><?= Security::escapeHtml(strtoupper($anuncio['titulo'] ?? '')) ?></h3>
+                    <span class="texto-suave"><i class="fas fa-calendar-alt"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($anuncio['fechaAnuncio']))) ?></span>
                 </div>
                 <div class="margen-arriba">
-                    <p style="line-height: 1.6;"><?= nl2br($anuncio['mensaje'] ?? '') ?></p>
+                    <p style="line-height: 1.6;"><?= Security::escapeHtml(nl2br($anuncio['mensaje'] ?? '')) ?></p>
                 </div>
             </div>
         </div>
@@ -52,3 +52,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
+

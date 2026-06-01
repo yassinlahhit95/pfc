@@ -1,3 +1,7 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# AULAPRO - GITIGNORE
+# ══════════════════════════════════════════════════════════════════════════════
+
 # Environment & Configuration
 .env
 .env.local
@@ -8,14 +12,35 @@ config/local.php
 # Logs
 logs/
 *.log
-*.sql.bak
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Temporary files
-*.tmp
-*.temp
-*.bak
-.DS_Store
-Thumbs.db
+# Database & Backups
+database.sql
+*.sql
+*.sql.bak
+*.sql.zip
+*.gz
+
+# Uploads directory (Ignore contents, keep folder)
+public/uploads/**/*
+!public/uploads/**/.gitkeep
+public/uploads/pfc/*
+public/uploads/aula/archivos/*
+
+# Development Utilities
+apply_xss_protection.php
+apply_xss_protection.py
+apply_xss.php
+apply_xss.py
+presentation.txt
+.claude/
+
+# Docker & Testing (Uncomment if you want them strictly local)
+# docker/
+# tests/
+# .phpunit.result.cache
 
 # IDE & Editor files
 .vscode/
@@ -24,8 +49,22 @@ Thumbs.db
 *.sublime-workspace
 .phpstorm.meta.php
 _ide_helper.php
+*.swp
+*.swo
 
-# Node & npm (if used)
+# Temporary & OS Files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+*~
+
+# Node & npm
 node_modules/
 package-lock.json
 yarn.lock
@@ -34,34 +73,7 @@ yarn.lock
 vendor/
 composer.lock
 
-# Database backups
-*.sql.bak
-*.sql.zip
-
-# Uploads directory (keep structure but ignore files)
-public/uploads/*
-!public/uploads/.gitkeep
-
-# Session files
-sessions/
-session_*
-
-# Cache files
+# Cache
 cache/
 *.cache
-
-# OS files
-.DS_Store
-.AppleDouble
-.LSOverride
-*.swp
-*.swo
-*~
-
-# Testing
-coverage/
-.phpunit.result.cache
-
-# Build files
-dist/
-build/
+.eslintcache

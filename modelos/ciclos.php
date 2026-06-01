@@ -14,7 +14,7 @@ function listarTodosLosCiclos() {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaCiclos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaCiclos;
 }
 
@@ -33,7 +33,7 @@ function listarCiclosDeProfesor($idProfesor) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaCiclos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaCiclos;
 }
 
@@ -45,7 +45,7 @@ function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = 0) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $existe = mysqli_num_rows($resultado) > 0;
-    mysqli_close($con);
+    
     return $existe;
 }
 
@@ -66,7 +66,7 @@ function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIds
         $resultado = mysqli_stmt_execute($stmt);
     }
 
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -90,7 +90,7 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
         $resultado = mysqli_stmt_execute($stmt);
     }
 
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -103,7 +103,7 @@ function obtenerCicloPorId($idCiclo) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosCiclo = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $datosCiclo;
 }
 
@@ -118,7 +118,7 @@ function listarProfesoresDeUnCiclo($idCiclo) {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaIdsProfesores[] = $fila['idProfesor'];
     }
-    mysqli_close($con);
+    
     return $listaIdsProfesores;
 }
 
@@ -136,7 +136,7 @@ function listarNombresTutoresCiclo($idCiclo) {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $nombres[] = $fila['nombreProfesor'];
     }
-    mysqli_close($con);
+    
     return $nombres;
 }
 

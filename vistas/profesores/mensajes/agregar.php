@@ -31,10 +31,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -45,8 +45,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos mis alumnos --</option>
                     <?php foreach ($listaDeCiclos as $ciclo) { ?>
-                        <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : '') ?>>
-                            <?= $ciclo['abreviaturaCiclo'] ?>
+                        <option value="<?= Security::escapeHtml($ciclo['idCiclo'] ) ?>" <?= Security::escapeHtml(($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : '')) ?>>
+                            <?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -62,19 +62,20 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <form action="../../../controladores/profesores/mensajes/insertar.php" method="POST" class="formulario">
-        <input type="hidden" name="idProfesor" value="<?= $idProfesor ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($idProfesor ) ?>">
 
         <div class="campo">
             <label for="idEstudiante">Destinatario</label>
             <select name="idEstudiante" id="idEstudiante">
                 <option value="">-- Seleccionar Destinatario --</option>
-                <option value="1" <?= ($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '' ?>>Direccion (Administracion)</option>
+                <option value="1" <?= Security::escapeHtml(($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '') ?>>Direccion (Administracion)</option>
                 <optgroup label="Estudiantes">
                     <?php foreach ($listaDeEstudiantes as $estudiante) {
                         $selected = ($datos['idEstudiante'] ?? '') == $estudiante['idEstudiante'] ? 'selected' : '';
                     ?>
-                        <option value="<?= $estudiante['idEstudiante'] ?>" <?= $selected ?>>
-                            <?= $estudiante['nombreEstudiante'] ?> (<?= $estudiante['abreviaturaCiclo'] ?>)
+                        <option value="<?= Security::escapeHtml($estudiante['idEstudiante'] ) ?>" <?= Security::escapeHtml($selected) ?>>
+                            <?= Security::escapeHtml($estudiante['nombreEstudiante'] ) ?> (<?= Security::escapeHtml($estudiante['abreviaturaCiclo'] ) ?>)
                         </option>
                     <?php } ?>
                 </optgroup>
@@ -83,12 +84,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="asunto">Asunto del Mensaje</label>
-            <input type="text" name="asunto" id="asunto" value="<?= $datos['asunto'] ?? '' ?>" placeholder="Asunto del mensaje">
+            <input type="text" name="asunto" id="asunto" value="<?= Security::escapeHtml($datos['asunto'] ?? '') ?>" placeholder="Asunto del mensaje">
         </div>
 
         <div class="campo">
             <label for="descripcion">Mensaje</label>
-            <textarea name="descripcion" id="descripcion" rows="4" placeholder="Escribe tu mensaje..."><?= $datos['descripcion'] ?? '' ?></textarea>
+            <textarea name="descripcion" id="descripcion" rows="4" placeholder="Escribe tu mensaje..."><?= Security::escapeHtml($datos['descripcion'] ?? '') ?></textarea>
         </div>
 
         <div class="acciones">
@@ -99,3 +100,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+

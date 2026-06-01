@@ -33,7 +33,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <div>
-        <h1>MODIFICAR CICLO: <?= $ciclo['nombreCiclo'] ?></h1>
+        <h1>MODIFICAR CICLO: <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></h1>
     </div>
     <a href="verCiclos.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER
@@ -41,23 +41,23 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/ciclos/actualizar.php">
-        <input type="hidden" name="idCiclo" value="<?= $id_ciclo ?>">
+        <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo) ?>">
         
         <div class="formulario">
             <div class="campo">
                 <label for="nombreCiclo">Nombre del Ciclo</label>
-                <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= $ciclo['nombreCiclo'] ?? '' ?>">
+                <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="abreviaturaCiclo">Abreviatura</label>
-                <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= $ciclo['abreviaturaCiclo'] ?? '' ?>">
+                <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?? '') ?>">
                 
             </div>
 
@@ -65,8 +65,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="idNivel">Nivel Formativo</label>
                 <select id="idNivel" name="idNivel">
                     <?php foreach ($listaNiveles as $nivel) { ?>
-                        <option value="<?= $nivel['idNivel'] ?>" <?php if (($ciclo['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
-                            <?= $nivel['nombreNivel'] ?>
+                        <option value="<?= Security::escapeHtml($nivel['idNivel']) ?>" <?php if (($ciclo['idNivel'] ?? '') == $nivel['idNivel']) { ?>selected<?php } ?>>
+                            <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="precioCiclo">Precio Total del Ciclo (€)</label>
-                <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= $ciclo['precioCiclo'] ?? '' ?>">
+                <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= Security::escapeHtml($ciclo['precioCiclo'] ?? '') ?>">
             </div>
         </div>
 
@@ -85,9 +85,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="checks scroll-v200">
                     <?php foreach ($listaProfesores as $prof) { ?>
                         <label class="check-item">
-                            <input type="checkbox" name="profesores[]" value="<?= $prof['idProfesor'] ?>"
+                            <input type="checkbox" name="profesores[]" value="<?= Security::escapeHtml($prof['idProfesor']) ?>"
                                 <?php if (in_array($prof['idProfesor'], $profesores_marcados)) { ?>checked<?php } ?>>
-                            <span><?= $prof['nombreProfesor'] ?></span>
+                            <span><?= Security::escapeHtml($prof['nombreProfesor']) ?></span>
                         </label>
                     <?php } ?>
                 </div>

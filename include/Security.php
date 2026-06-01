@@ -242,6 +242,22 @@ class Security {
     public static function validateURL($url) {
         return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
+
+    /**
+     * Valida Telefono (España: 9 dígitos, empieza por 6, 7, 8 o 9)
+     */
+    public static function validatePhone($phone) {
+        $phone = str_replace([' ', '-', '.'], '', $phone);
+        return preg_match('/^[6789][0-9]{8}$/', $phone) === 1;
+    }
+
+    /**
+     * Valida CIF español básico
+     */
+    public static function validateCIF($cif) {
+        $cif = strtoupper(trim($cif));
+        return preg_match('/^[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]$/', $cif) === 1;
+    }
 }
 
 // Inicializar sesión segura

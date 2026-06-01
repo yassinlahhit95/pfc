@@ -14,7 +14,7 @@ function listarTodosLosPagos() {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -34,7 +34,7 @@ function listarPagosFiltrados($idCiclo) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -49,7 +49,7 @@ function listarPagosPorEstudiante($idEstudiante) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -59,7 +59,7 @@ function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fec
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "idsss", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -69,7 +69,7 @@ function actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "idsssi", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $idPago);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -93,7 +93,7 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     $fila = mysqli_fetch_assoc($res);
     $precio = floatval($fila['precioCiclo']);
 
-    mysqli_close($con);
+    
     return [
         'totalPagado' => $pagado,
         'precioCiclo' => $precio,
@@ -107,7 +107,7 @@ function eliminarPago($idPago) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $idPago);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -119,7 +119,7 @@ function obtenerPagoPorId($idPago) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $pago = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return $pago;
 }
 
@@ -131,6 +131,6 @@ function contarPagosEstudiante($idEstudiante) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }

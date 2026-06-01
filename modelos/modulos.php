@@ -14,7 +14,7 @@ function listarModulos() {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaModulos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaModulos;
 }
 
@@ -29,7 +29,7 @@ function listarModulosDeProfesor($idProfesor) {
     while($fila = mysqli_fetch_assoc($res)) {
         $listaModulos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaModulos;
 }
 
@@ -44,7 +44,7 @@ function listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo) {
     while($fila = mysqli_fetch_assoc($res)) {
         $listaModulos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaModulos;
 }
 
@@ -59,7 +59,7 @@ function listarModulosPorCiclo($idCiclo) {
     while($fila = mysqli_fetch_assoc($res)) {
         $listaModulos[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaModulos;
 }
 
@@ -71,7 +71,7 @@ function checkModuloExistente($nombreModulo, $idCiclo, $idExcluir = 0) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $existe = mysqli_num_rows($res) > 0;
-    mysqli_close($con);
+    
     return $existe;
 }
 
@@ -81,7 +81,7 @@ function insertarModulo($nombreModulo, $idCiclo, $horasMaximas) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "sii", $nombreModulo, $idCiclo, $horasMaximas);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -91,7 +91,7 @@ function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "siii", $nombreModulo, $idCiclo, $horasMaximas, $idModulo);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -104,7 +104,7 @@ function obtenerModuloPorId($idModulo) {
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $datosModulo = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return $datosModulo;
 }
 
@@ -119,7 +119,7 @@ function listarProfesoresDeModulo($idModulo) {
     while($fila = mysqli_fetch_assoc($res)) {
         $listaIdsProfesores[] = $fila['idProfesor'];
     }
-    mysqli_close($con);
+    
     return $listaIdsProfesores;
 }
 
@@ -129,7 +129,7 @@ function limpiarProfesoresModulo($idModulo) {
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $idModulo);
     $ok = mysqli_stmt_execute($resultado);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -147,6 +147,6 @@ function listarNombresProfesoresDeModulo($idModulo) {
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila['nombreProfesor'];
     }
-    mysqli_close($con);
+    
     return $lista;
 }

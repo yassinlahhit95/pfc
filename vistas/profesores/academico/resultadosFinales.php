@@ -124,10 +124,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -138,8 +138,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select id="idCiclo" name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
-                        <option value="<?= $cicloItem['idCiclo'] ?>" <?= $id_ciclo_elegido == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
-                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                        <option value="<?= Security::escapeHtml($cicloItem['idCiclo'] ) ?>" <?= Security::escapeHtml($id_ciclo_elegido == $cicloItem['idCiclo'] ? 'selected' : '') ?>>
+                            <?= Security::escapeHtml(strtoupper($cicloItem['nombreCiclo'])) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -148,7 +148,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
             <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
-                <input type="hidden" name="idCiclo" value="<?= $id_ciclo_elegido ?>">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo_elegido ) ?>">
                 <input type="submit" class="boton-primario" value="NOTIFICAR A TODOS">
             </form>
         <?php } ?>
@@ -179,13 +180,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             if ($filaIndividual['estado'] == "PENDIENTE") { $clase_estado = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><b><?= $filaIndividual['nombre'] ?></b></td>
-                            <td><?= $filaIndividual['media_modulo'] ?></td>
-                            <td><?= $filaIndividual['media_reto'] ?></td>
-                            <td class="color-primario texto-negrita"><?= $filaIndividual['nota_tfg'] ?></td>
-                            <td class="texto-negrita"><?= $filaIndividual['nota_final'] ?></td>
-                            <td class="<?= $clase_estado ?> texto-negrita">
-                                <?= $filaIndividual['estado'] ?>
+                            <td><b><?= Security::escapeHtml($filaIndividual['nombre'] ) ?></b></td>
+                            <td><?= Security::escapeHtml($filaIndividual['media_modulo'] ) ?></td>
+                            <td><?= Security::escapeHtml($filaIndividual['media_reto'] ) ?></td>
+                            <td class="color-primario texto-negrita"><?= Security::escapeHtml($filaIndividual['nota_tfg'] ) ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($filaIndividual['nota_final'] ) ?></td>
+                            <td class="<?= Security::escapeHtml($clase_estado ) ?> texto-negrita">
+                                <?= Security::escapeHtml($filaIndividual['estado'] ) ?>
                                 <?php if ($filaIndividual['alert'] == true) { ?>
                                     <span title='Tiene módulos suspensos'>(!)</span>
                                 <?php } ?>
@@ -200,4 +201,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

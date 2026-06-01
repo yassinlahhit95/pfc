@@ -10,6 +10,6 @@ function listarNiveles() {
     while($fila = mysqli_fetch_assoc($resultado)) {
         $listaNiveles[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaNiveles;
 }

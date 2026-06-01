@@ -17,7 +17,7 @@ function listarCarpetasPorProfesor($idProfesor) {
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -35,7 +35,7 @@ function listarCarpetasPorCiclo($idCiclo) {
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -47,7 +47,7 @@ function obtenerCarpetaPorId($idCarpeta) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return $fila;
 }
 
@@ -58,7 +58,7 @@ function insertarCarpeta($nombre, $descripcion, $color, $icono, $idProfesor, $id
     mysqli_stmt_bind_param($stmt, "ssssii", $nombre, $descripcion, $color, $icono, $idProfesor, $idCiclo);
     $ok = mysqli_stmt_execute($stmt);
     $id = mysqli_insert_id($con);
-    mysqli_close($con);
+    
     return $ok ? $id : false;
 }
 
@@ -68,7 +68,7 @@ function borrarCarpeta($idCarpeta) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
     $ok = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -99,7 +99,7 @@ function listarEjerciciosPorProfesor($idProfesor, $idCarpeta = 0) {
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -128,7 +128,7 @@ function listarEjerciciosPorCiclo($idCiclo, $idCarpeta = 0) {
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -144,7 +144,7 @@ function obtenerEjercicioPorId($idEjercicio) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return $fila;
 }
 
@@ -159,7 +159,7 @@ function insertarEjercicio($titulo, $descripcion, $idCarpeta, $idProfesor, $idCi
     mysqli_stmt_bind_param($stmt, "ssiisis", $titulo, $descripcion, $idCarp, $idProfesor, $idCiclo, $fecha, $arch);
     $ok = mysqli_stmt_execute($stmt);
     $id = mysqli_insert_id($con);
-    mysqli_close($con);
+    
     return $ok ? $id : false;
 }
 
@@ -171,7 +171,7 @@ function actualizarEjercicio($idEjercicio, $titulo, $descripcion, $idCarpeta, $f
     $fecha  = $fechaLimite ?: null;
     mysqli_stmt_bind_param($stmt, "ssissi", $titulo, $descripcion, $idCarp, $fecha, $publicado, $idEjercicio);
     $ok = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -181,7 +181,7 @@ function borrarEjercicio($idEjercicio) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEjercicio);
     $ok = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -200,7 +200,7 @@ function listarEntregasPorEjercicio($idEjercicio) {
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -212,7 +212,7 @@ function obtenerEntregaPorEstudiante($idEjercicio, $idEstudiante) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return $fila;
 }
 
@@ -240,7 +240,7 @@ function insertarOActualizarEntrega($idEjercicio, $idEstudiante, $respuesta, $ar
         mysqli_stmt_bind_param($stmt, "iiss", $idEjercicio, $idEstudiante, $respuesta, $archivoEntrega);
     }
     $ok = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -250,7 +250,7 @@ function calificarEntrega($idEjercicio, $idEstudiante, $nota, $comentario) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "dsii", $nota, $comentario, $idEjercicio, $idEstudiante);
     $ok = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $ok;
 }
 
@@ -262,7 +262,7 @@ function contarEntregasPorEjercicio($idEjercicio) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }
 
@@ -279,6 +279,6 @@ function contarEjerciciosPendientesEstudiante($idEstudiante, $idCiclo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
-    mysqli_close($con);
+    
     return intval($fila['total']);
 }

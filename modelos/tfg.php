@@ -9,7 +9,7 @@ function obtenerTFGporEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosTFG = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $datosTFG;
 }
 
@@ -20,7 +20,7 @@ function actualizarTFG($idEstudiante, $nombreArchivo) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssi", $nombreArchivo, $fechaHoraActual, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -39,7 +39,7 @@ function actualizarDatosTFG($idEstudiante, $tituloTFG, $nombreArchivo = null) {
     }
 
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -49,7 +49,7 @@ function eliminarTFG($idEstudiante) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -66,7 +66,7 @@ function contarTFGsDeProfesor($idProfesor) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     $total = 0;
     if ($fila) {
         $total = intval($fila['total']);
@@ -92,7 +92,7 @@ function listarTFGsPorProfesor($idProfesor) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaTFGs[] = $fila;
     }
-    mysqli_close($con);
+    
     return $listaTFGs;
 }
 
@@ -104,7 +104,7 @@ function obtenerCalificacionTFG($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datos = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $datos;
 }
 
@@ -128,7 +128,7 @@ function guardarCalificacionTFG($idEstudiante, $nota, $observaciones) {
     }
 
     $exito = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $exito;
 }
 
@@ -154,7 +154,7 @@ function eliminarArchivoTFG($idEstudiante) {
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
 
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -187,7 +187,7 @@ function listarEvaluacionTFG($idCiclo = null) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
+    
     return $lista;
 }
 
@@ -225,7 +225,7 @@ function listarEvaluacionTFGporProfesor($idProfesor, $idCiclo = null) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
+    
     return $lista;
 }
 

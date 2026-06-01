@@ -16,7 +16,7 @@ function listarEventosProximos() {
         $listaEventos[] = $fila;
     }
 
-    mysqli_close($con);
+    
     return $listaEventos;
 }
 
@@ -26,7 +26,7 @@ function insertarEvento($titulo, $descripcion, $fecha, $hora, $ubicacion) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssss", $titulo, $descripcion, $fecha, $hora, $ubicacion);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -36,7 +36,7 @@ function eliminarEvento($idEvento) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEvento);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 
@@ -48,7 +48,7 @@ function obtenerEventoPorId($idEvento) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $evento = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
+    
     return $evento;
 }
 
@@ -58,7 +58,7 @@ function actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubic
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssssi", $titulo, $descripcion, $fecha, $hora, $ubicacion, $idEvento);
     $resultado = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
+    
     return $resultado;
 }
 

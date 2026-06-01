@@ -27,28 +27,28 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="cuadricula-estadisticas">
   <div class="tarjeta-estadistica tarjeta-estadistica-verde">
     <div class="info-estadistica">
-        <h3><?= number_format($datosEstadoFinanciero['totalPagado'], 2) ?> €</h3>
+        <h3><?= Security::escapeHtml(number_format($datosEstadoFinanciero['totalPagado'], 2)) ?> €</h3>
         <p>TOTAL PAGADO</p>
     </div>
   </div>
   <div class="tarjeta-estadistica tarjeta-estadistica-azul">
     <div class="info-estadistica">
-        <h3><?= number_format($datosEstadoFinanciero['precioCiclo'], 2) ?> €</h3>
+        <h3><?= Security::escapeHtml(number_format($datosEstadoFinanciero['precioCiclo'], 2)) ?> €</h3>
         <p>PRECIO DEL CICLO</p>
     </div>
   </div>
-  <div class="tarjeta-estadistica <?= ($datosEstadoFinanciero['restante'] > 0) ? 'tarjeta-estadistica-naranja' : 'tarjeta-estadistica-cian' ?>">
+  <div class="tarjeta-estadistica <?= Security::escapeHtml(($datosEstadoFinanciero['restante'] > 0) ? 'tarjeta-estadistica-naranja' : 'tarjeta-estadistica-cian') ?>">
     <div class="info-estadistica">
-        <h3><?= number_format($datosEstadoFinanciero['restante'], 2) ?> €</h3>
+        <h3><?= Security::escapeHtml(number_format($datosEstadoFinanciero['restante'], 2)) ?> €</h3>
         <p>PENDIENTE DE PAGO</p>
     </div>
   </div>
@@ -77,11 +77,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($listaMisPagos as $pagoIndividual) { ?>
                     <tr>
-                        <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
+                        <td><?= Security::escapeHtml(date('d/m/Y', strtotime($pagoIndividual['fechaPago']))) ?></td>
                         <td>
-                            <span class="texto-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
+                            <span class="texto-pago"><?= Security::escapeHtml(strtoupper($pagoIndividual['tipoPago'])) ?></span>
                         </td>
-                        <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
+                        <td class="texto-negrita"><?= Security::escapeHtml(number_format($pagoIndividual['monto'], 2)) ?> €</td>
                         <td>
                             <?php 
                                 if ($pagoIndividual['tipoPago'] == 'unico') {
@@ -101,4 +101,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

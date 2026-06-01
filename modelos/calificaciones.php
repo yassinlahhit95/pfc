@@ -14,7 +14,6 @@ function obtenerNotasModulo($idEstudiante, $idModulo)
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $notas = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
     return $notas;
 }
 
@@ -27,7 +26,6 @@ function obtenerCalificacionPorId($idCalificacion)
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datos = mysqli_fetch_assoc($resultado);
-    mysqli_close($con);
     return $datos;
 }
 
@@ -38,7 +36,6 @@ function eliminarCalificacion($idCalificacion)
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCalificacion);
     $exito = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $exito;
 }
 
@@ -57,7 +54,6 @@ function listarCalificacionesPorEstudiante($idEstudiante)
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -107,7 +103,6 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
@@ -137,7 +132,6 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1
     }
 
     $exito = mysqli_stmt_execute($stmt);
-    mysqli_close($con);
     return $exito;
 }
 
@@ -158,19 +152,163 @@ function listarCalificacionesPorModulo($idModulo)
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
-    mysqli_close($con);
     return $lista;
 }
 
 function listarResultadosFinalesCiclo($idCiclo)
 {
-    $listaEstudiantes = listarEstudiantesPorCiclo($idCiclo);
-    $listaModulos = listarModulosPorCiclo($idCiclo);
-    $listaResultados = [];
-    foreach ($listaEstudiantes as $estudiante) {
-        $listaResultados[] = obtenerResultadosFinalesEstudiante($estudiante['idEstudiante'], $listaModulos);
+    $con = obtenerConexion();
+
+    // 1. Obtener estudiantes
+    $sqlEstudiantes = "SELECT e.*, c.nombreCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idCiclo = ?";
+    $stmtE = mysqli_prepare($con, $sqlEstudiantes);
+    mysqli_stmt_bind_param($stmtE, "i", $idCiclo);
+    mysqli_stmt_execute($stmtE);
+    $resE = mysqli_stmt_get_result($stmtE);
+    $estudiantes = [];
+    $estudianteIds = [];
+    while ($fila = mysqli_fetch_assoc($resE)) {
+        $estudiantes[$fila['idEstudiante']] = $fila;
+        $estudianteIds[] = $fila['idEstudiante'];
     }
-    return $listaResultados;
+
+    if (empty($estudianteIds)) return [];
+
+    // 2. Obtener módulos
+    $sqlModulos = "SELECT * FROM modulos WHERE idCiclo = ?";
+    $stmtM = mysqli_prepare($con, $sqlModulos);
+    mysqli_stmt_bind_param($stmtM, "i", $idCiclo);
+    mysqli_stmt_execute($stmtM);
+    $resM = mysqli_stmt_get_result($stmtM);
+    $modulos = [];
+    $moduloIds = [];
+    while ($fila = mysqli_fetch_assoc($resM)) {
+        $modulos[$fila['idModulo']] = $fila;
+        $moduloIds[] = $fila['idModulo'];
+    }
+
+    if (empty($moduloIds)) return [];
+
+    // 3. Obtener todas las calificaciones de módulos para estos estudiantes/módulos
+    $idsStr = implode(',', $estudianteIds);
+    $modIdsStr = implode(',', $moduloIds);
+    $sqlGrades = "SELECT * FROM calificaciones_modulos WHERE idEstudiante IN ($idsStr) AND idModulo IN ($modIdsStr)";
+    $resG = mysqli_query($con, $sqlGrades);
+    $allGrades = [];
+    while ($fila = mysqli_fetch_assoc($resG)) {
+        $allGrades[$fila['idEstudiante']][$fila['idModulo']] = $fila;
+    }
+
+    // 4. Obtener promedios de retos
+    $sqlRetos = "SELECT cr.idEstudiante, mr.idModulo, AVG(cr.nota) AS promedio
+                 FROM calificaciones_retos cr
+                 JOIN modulo_reto mr ON cr.idReto = mr.idReto
+                 WHERE mr.idModulo IN ($modIdsStr) AND cr.idEstudiante IN ($idsStr)
+                 GROUP BY cr.idEstudiante, mr.idModulo";
+    $resR = mysqli_query($con, $sqlRetos);
+    $allRetos = [];
+    while ($fila = mysqli_fetch_assoc($resR)) {
+        $allRetos[$fila['idEstudiante']][$fila['idModulo']] = $fila['promedio'];
+    }
+
+    // 5. Obtener calificaciones de TFG
+    $sqlTFG = "SELECT * FROM calificaciones_tfg WHERE idEstudiante IN ($idsStr)";
+    $resT = mysqli_query($con, $sqlTFG);
+    $allTFG = [];
+    while ($fila = mysqli_fetch_assoc($resT)) {
+        $allTFG[$fila['idEstudiante']] = $fila;
+    }
+
+    $resultados = [];
+    foreach ($estudiantes as $idEstudiante => $datosEstudiante) {
+        $resumen = [
+            'idEstudiante' => $idEstudiante,
+            'nombreEstudiante' => $datosEstudiante['nombreEstudiante'],
+            'nombreCiclo' => $datosEstudiante['nombreCiclo'],
+            'detalles_modulos' => [],
+            'estado_global' => 'PENDIENTE',
+            'tiene_suspensos' => false,
+            'nota_tfg' => $allTFG[$idEstudiante]['nota'] ?? null,
+            'obs_tfg' => $allTFG[$idEstudiante]['observaciones'] ?? '',
+        ];
+
+        $sumaModulos = 0;
+        $sumaRetos = 0;
+        $modulosConNotas = 0;
+        $totalModulos = count($modulos);
+
+        foreach ($modulos as $idModulo => $modulo) {
+            $notas = $allGrades[$idEstudiante][$idModulo] ?? null;
+            
+            $nota1ev = isset($notas['nota_1ev']) ? floatval($notas['nota_1ev']) : null;
+            $nota1final = isset($notas['nota_1final']) ? floatval($notas['nota_1final']) : null;
+            $nota2ev = isset($notas['nota_2ev']) ? floatval($notas['nota_2ev']) : null;
+            $nota2final = isset($notas['nota_2final']) ? floatval($notas['nota_2final']) : null;
+
+            $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
+            $notaDefinitiva2 = calcularNotaDefinitiva($nota2ev, $nota2final);
+
+            $sumaEvaluaciones = 0;
+            $evaluacionesConNota = 0;
+
+            if ($notaDefinitiva1 !== null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
+            if ($notaDefinitiva2 !== null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
+
+            $mediaExamenes = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
+            $mediaRetos = floatval($allRetos[$idEstudiante][$idModulo] ?? 0);
+            $notaFinal = ($mediaExamenes * 0.75) + ($mediaRetos * 0.25);
+
+            if ($evaluacionesConNota == 0) {
+                $estado = "Pendiente";
+            } elseif ($notaFinal >= 5) {
+                $estado = "Aprobado";
+            } else {
+                $estado = "Suspenso";
+                $resumen['tiene_suspensos'] = true;
+            }
+
+            $detalle = [
+                'idModulo' => $idModulo,
+                'nombreModulo' => $modulo['nombreModulo'],
+                'media_retos' => round($mediaRetos, 2),
+                'estado' => $estado,
+                'media_notas' => $evaluacionesConNota > 0 ? round($mediaExamenes, 2) : "-",
+                'nota_final' => $evaluacionesConNota > 0 ? round($notaFinal, 2) : "-",
+            ];
+            $resumen['detalles_modulos'][] = $detalle;
+
+            if ($evaluacionesConNota > 0) {
+                $sumaModulos += $mediaExamenes;
+                $sumaRetos += $mediaRetos;
+                $modulosConNotas++;
+            }
+        }
+
+        if ($modulosConNotas > 0) {
+            $mediaModulos = $sumaModulos / $modulosConNotas;
+            $mediaRetosGlobal = $sumaRetos / $modulosConNotas;
+            $promedioGlobal = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+
+            $resumen['media_modulos'] = round($mediaModulos, 2);
+            $resumen['media_retos'] = round($mediaRetosGlobal, 2);
+            $resumen['promedio_global'] = round($promedioGlobal, 2);
+            $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
+
+            if ($resumen['tiene_suspensos']) {
+                $resumen['estado_global'] = 'SUSPENSO';
+            } elseif ($resumen['calculo_completo'] && $promedioGlobal >= 5) {
+                $resumen['estado_global'] = 'APROBADO';
+            }
+        } else {
+            $resumen['media_modulos'] = "-";
+            $resumen['media_retos'] = "-";
+            $resumen['promedio_global'] = "-";
+            $resumen['calculo_completo'] = false;
+        }
+        $resultados[] = $resumen;
+    }
+
+    return $resultados;
 }
 
 function calcularNotaDefinitiva($notaBase, $notaRecuperacion)

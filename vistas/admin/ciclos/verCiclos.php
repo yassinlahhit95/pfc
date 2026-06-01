@@ -24,11 +24,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">
@@ -37,8 +37,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select id="selectFiltroNivel" onchange="filtrarTabla('selectFiltroNivel', 'tablaCiclos')">
             <option value="">-- Todos los Niveles --</option>
             <?php foreach ($listaNiveles as $nivelFiltro) { ?>
-                <option value="<?= $nivelFiltro['nombreNivel'] ?>">
-                    <?= $nivelFiltro['nombreNivel'] ?>
+                <option value="<?= Security::escapeHtml($nivelFiltro['nombreNivel']) ?>">
+                    <?= Security::escapeHtml($nivelFiltro['nombreNivel']) ?>
                 </option>
             <?php } ?>
         </select>
@@ -62,20 +62,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr><td colspan="5" class="vacio">No hay ciclos configurados</td></tr>
                 <?php } else { ?>
                     <?php foreach ($todos_los_ciclos as $ciclo) { 
-                        $nombresTutores = listarNombresTutoresCiclo($ciclo['idCiclo']);
+                        $nombresTutores = array_map(['Security', 'escapeHtml'], listarNombresTutoresCiclo($ciclo['idCiclo']));
                         $textoTutores = !empty($nombresTutores) ? implode(", ", $nombresTutores) : '<span class="texto-suave">Sin asignar</span>';
                     ?>
                     <tr>
-                        <td><?= $ciclo['idCiclo'] ?></td>
-                        <td><b><?= $ciclo['nombreCiclo'] ?></b></td>
-                        <td><?= $ciclo['nombreNivel'] ?></td>
+                        <td><?= Security::escapeHtml($ciclo['idCiclo']) ?></td>
+                        <td><b><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></b></td>
+                        <td><?= Security::escapeHtml($ciclo['nombreNivel']) ?></td>
                         <td><?= $textoTutores ?></td>
                         <td>
                             <div class="botones-accion">
-                                <a href="modificarCiclos.php?idCiclo=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-editar">
+                                <a href="modificarCiclos.php?idCiclo=<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="btn-accion btn-editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="borrarCiclo.php?id=<?= $ciclo['idCiclo'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="borrarCiclo.php?id=<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>

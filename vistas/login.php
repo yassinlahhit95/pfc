@@ -67,7 +67,7 @@ $csrfToken = Security::generateCSRFToken();
 
                 <div class="campo-grupo">
                     <label>Usuario / Email</label>
-                    <input type="text" name="usuario" placeholder="ejemplo@correo.com" value="<?= $vals['usuario'] ?? $_GET['u'] ?? '' ?>" autofocus>
+                    <input type="text" name="usuario" placeholder="ejemplo@correo.com" value="<?= Security::escapeHtml($vals['usuario'] ?? $_GET['u'] ?? '') ?>" autofocus>
                 </div>
 
                 <div class="campo-grupo">

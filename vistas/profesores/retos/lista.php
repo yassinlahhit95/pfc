@@ -28,10 +28,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -50,14 +50,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php if ($retos) { ?>
                     <?php foreach ($retos as $reto) { ?>
                         <tr>
-                            <td class="texto-negrita"><?= $reto['nombreReto'] ?></td>
-                            <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
-                            <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
-                            <td><?= $reto['horasReto'] ?> h</td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($reto['nombreReto'] ) ?></td>
+                            <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaInicio']))) ?></td>
+                            <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaFin']))) ?></td>
+                            <td><?= Security::escapeHtml($reto['horasReto'] ) ?> h</td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="editar.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
-                                    <a href="borrarReto.php?id=<?= $reto['idReto'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                    <a href="editar.php?id=<?= Security::escapeHtml($reto['idReto'] ) ?>" class="btn-accion btn-editar"><i class="fas fa-edit"></i></a>
+                                    <a href="borrarReto.php?id=<?= Security::escapeHtml($reto['idReto'] ) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -73,4 +73,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+
 

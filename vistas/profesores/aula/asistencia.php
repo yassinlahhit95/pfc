@@ -52,12 +52,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     ?>
     <div class="panel" style="margin-bottom: 30px;">
         <div class="titulo-tarjeta">
-            <h3><?= htmlspecialchars($sesion['titulo']) ?></h3>
-            <span class="texto-suave"><?= date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion'])) ?></span>
+            <h3><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></h3>
+            <span class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?></span>
         </div>
 
         <div style="margin-bottom: 15px;">
-            <strong>Estudiantes Asistentes: <?= $grupo['total'] ?></strong>
+            <strong>Estudiantes Asistentes: <?= Security::escapeHtml($grupo['total'] ) ?></strong>
         </div>
 
         <div class="tabla-responsiva">
@@ -73,16 +73,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <tbody>
                     <?php foreach ($asistencias as $asist) { ?>
                     <tr>
-                        <td><strong><?= htmlspecialchars($asist['nombreEstudiante'] ?? 'Estudiante') ?></strong></td>
-                        <td><?= $asist['horaUnion'] ? date('H:i', strtotime($asist['horaUnion'])) : '-' ?></td>
-                        <td><?= $asist['horaSalida'] ? date('H:i', strtotime($asist['horaSalida'])) : '-' ?></td>
+                        <td><strong><?= Security::escapeHtml(htmlspecialchars($asist['nombreEstudiante'] ?? 'Estudiante')) ?></strong></td>
+                        <td><?= Security::escapeHtml($asist['horaUnion'] ? date('H:i', strtotime($asist['horaUnion'])) : '-') ?></td>
+                        <td><?= Security::escapeHtml($asist['horaSalida'] ? date('H:i', strtotime($asist['horaSalida'])) : '-') ?></td>
                         <td>
                             <?php
                             $duracion = $asist['duracion'] ?? 0;
                             $minutos = floor($duracion / 60);
                             $segundos = $duracion % 60;
                             ?>
-                            <strong><?= $minutos ?>m <?= $segundos ?>s</strong>
+                            <strong><?= Security::escapeHtml($minutos ) ?>m <?= Security::escapeHtml($segundos) ?>s</strong>
                         </td>
                     </tr>
                     <?php } ?>
@@ -94,3 +94,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+
+

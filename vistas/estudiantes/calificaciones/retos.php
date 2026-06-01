@@ -25,10 +25,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
 <?php } ?>
 
 <div class="panel">
@@ -50,11 +50,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($mis_notas_retos as $nota) { ?>
                     <tr>
-                        <td><b><?= $nota['nombreReto'] ?></b></td>
-                        <td><?= $nota['fechaInicio'] ?></td>
-                        <td><?= $nota['fechaFin'] ?></td>
+                        <td><b><?= Security::escapeHtml($nota['nombreReto'] ) ?></b></td>
+                        <td><?= Security::escapeHtml($nota['fechaInicio'] ) ?></td>
+                        <td><?= Security::escapeHtml($nota['fechaFin'] ) ?></td>
                         <td class="texto-negrita color-primario" style="font-size: 1.1em;">
-                            <?= $nota['nota'] ?>
+                            <?= Security::escapeHtml($nota['nota'] ) ?>
                         </td>
                     </tr>
                     <?php } ?>
@@ -70,4 +70,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+
 

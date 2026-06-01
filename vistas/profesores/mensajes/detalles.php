@@ -48,25 +48,25 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-datos">
         <div class="nombre-detalle">De</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)' ?>
+            <?= Security::escapeHtml(($mensaje['emisor_rol'] == 'estudiante') ? $mensaje['nombreEstudiante'] : $nombreProfeParaVista . ' (Profesor)') ?>
         </div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Para</div>
         <div class="valor-detalle texto-negrita">
-            <?= ($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Direccion') : $nombreProfeParaVista . ' (Profesor)' ?>
+            <?= Security::escapeHtml(($mensaje['emisor_rol'] == 'profesor') ? ($mensaje['nombreEstudiante'] ?: 'Direccion') : $nombreProfeParaVista . ' (Profesor)') ?>
         </div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Fecha</div>
-        <div class="valor-detalle"><?= date('d/m/Y H:i', strtotime($mensaje['fecha'])) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($mensaje['fecha']))) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Asunto</div>
-        <div class="valor-detalle color-primario texto-negrita"><?= strtoupper($mensaje['asunto']) ?></div>
+        <div class="valor-detalle color-primario texto-negrita"><?= Security::escapeHtml(strtoupper($mensaje['asunto'])) ?></div>
     </div>
 
     <div class="fila-datos">
@@ -82,9 +82,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="margen-arriba bg-gris-suave ancho-total" style="padding: 20px; border-radius: 8px; word-break: break-word;">
         <label for="contenidoMensaje" class="texto-suave texto-pequeno" style="display: block; margin-bottom: 10px;">CONTENIDO DEL MENSAJE:</label>
-        <div id="contenidoMensaje" style="max-width: 100%; line-height: 1.6; white-space: pre-wrap;"><?= $mensaje['descripcion'] ?? '' ?></div>
+        <div id="contenidoMensaje" style="max-width: 100%; line-height: 1.6; white-space: pre-wrap;"><?= Security::escapeHtml($mensaje['descripcion'] ?? '') ?></div>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
