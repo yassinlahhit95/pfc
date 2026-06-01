@@ -39,6 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/mensajes/actualizar.php">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReclamacion" value="<?= $id_reclamacion ?>">
 
         <div class="form-cols">

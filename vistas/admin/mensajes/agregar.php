@@ -61,6 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <hr class="margen-abajo" style="opacity: 0.2;">
 
     <form action="../../../controladores/admin/mensajes/insertar.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="emisor_rol" value="admin">
         <input type="hidden" name="tipoDestinatario" value="<?= $tipoDeDestinatario ?>">
         <input type="hidden" name="idCicloMasivo" value="<?= $idCicloSeleccionado ?>">

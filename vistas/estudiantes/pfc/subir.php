@@ -1,5 +1,6 @@
 <?php
 session_start();
+if (empty($_SESSION['idEstudiante'])) { header("Location: ../../login.php"); exit; }
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;

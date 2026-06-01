@@ -142,9 +142,9 @@ include_once __DIR__ . "/../comunes/nav.php";
           <button onclick="abrirEditarCarpeta(<?= Security::escapeHtml($carpeta['idCarpeta'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($carpeta['nombre']))) ?>', '<?= Security::escapeHtml($carpeta['color'] ) ?>')" class="btn-ghost-modern btn-small" title="Editar" style="margin-left:auto;">
             <i class="fas fa-pen"></i>
           </button>
-          <a href="../../../controladores/profesores/aula/borrarCarpeta.php?id=<?= Security::escapeHtml($carpeta['idCarpeta'] ) ?>&modulo=<?= Security::escapeHtml($idModulo ) ?>" class="btn-ghost-modern btn-small" title="Eliminar" onclick="return confirm('¿Eliminar carpeta? Los archivos quedarán sueltos.')">
+          <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('carpeta', <?= Security::escapeHtml($carpeta['idCarpeta'] ) ?>, <?= Security::escapeHtml($idModulo ) ?>, '¿Eliminar definitivamente esta carpeta y todo su contenido? Esta acción no se puede deshacer.')">
             <i class="fas fa-trash"></i>
-          </a>
+          </button>
         </div>
         <div class="carpeta-contenido">
           <?php $archsEnCarpeta = $archivosPorCarpeta[$carpeta['idCarpeta']] ?? []; ?>
@@ -167,7 +167,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                   <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES)) ?>" title="Ver"><i class="fas fa-eye"></i></button>
                   <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
                   <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($arch['nombreOriginal']))) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
-                  <a href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= Security::escapeHtml($arch['idArchivo'] ) ?>&modulo=<?= Security::escapeHtml($arch['idModulo'] ) ?>" class="btn-ghost-modern btn-small" title="Eliminar" onclick="return confirm('¿Eliminar este archivo?')"><i class="fas fa-trash"></i></a>
+                  <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('archivo', <?= Security::escapeHtml($arch['idArchivo'] ) ?>, <?= Security::escapeHtml($arch['idModulo'] ) ?>, '¿Eliminar este archivo?')"><i class="fas fa-trash"></i></button>
                 </div>
               </div>
               <?php endforeach; ?>
@@ -200,7 +200,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES)) ?>" title="Ver"><i class="fas fa-eye"></i></button>
                 <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
                 <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($arch['nombreOriginal']))) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
-                <a href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= Security::escapeHtml($arch['idArchivo'] ) ?>&modulo=<?= Security::escapeHtml($arch['idModulo'] ) ?>" class="btn-ghost-modern btn-small" title="Eliminar" onclick="return confirm('¿Eliminar este archivo?')"><i class="fas fa-trash"></i></a>
+                <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('archivo', <?= Security::escapeHtml($arch['idArchivo'] ) ?>, <?= Security::escapeHtml($arch['idModulo'] ) ?>, '¿Eliminar este archivo?')"><i class="fas fa-trash"></i></button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -434,7 +434,8 @@ include_once __DIR__ . "/../comunes/nav.php";
       <h2 class="modal-header-titulo"><i class="fas fa-folder-arrow-down"></i> Mover Archivo</h2>
       <button class="modal-close-btn" onclick="cerrarModal('modalMover')">✕</button>
     </div>
-    <form id="formMover" method="GET" action="../../../controladores/profesores/aula/moverArchivo.php">
+    <form id="formMover" method="POST" action="../../../controladores/profesores/aula/moverArchivo.php">
+      <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
       <div class="modal-body">
         <input type="hidden" name="id" id="moverArchivoId">
         <input type="hidden" name="modulo" value="<?= Security::escapeHtml($idModulo ) ?>">
@@ -619,6 +620,24 @@ function abrirMoverArchivo(id, nombre) {
   document.getElementById('moverArchivoId').value = id;
   document.getElementById('moverArchivoNombre').textContent = nombre;
   abrirModal('modalMover');
+}
+
+// Eliminar archivo/carpeta vía POST + CSRF (los controladores ya no aceptan GET)
+var CSRF_AULA = '<?= Security::generateCSRFToken() ?>';
+function eliminarRecursoAula(tipo, id, modulo, mensaje) {
+  if (!window.confirm(mensaje)) return;
+  var f = document.createElement('form');
+  f.method = 'POST';
+  f.action = '../../../controladores/profesores/aula/' + (tipo === 'carpeta' ? 'borrarCarpeta.php' : 'borrarArchivo.php');
+  f.style.display = 'none';
+  var campos = { csrf_token: CSRF_AULA, id: id, modulo: modulo };
+  for (var k in campos) {
+    var i = document.createElement('input');
+    i.type = 'hidden'; i.name = k; i.value = campos[k];
+    f.appendChild(i);
+  }
+  document.body.appendChild(f);
+  f.submit();
 }
 
 // Editar sesión

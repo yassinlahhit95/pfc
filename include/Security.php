@@ -17,9 +17,12 @@ class Security {
             session_start();
         }
 
-        // Regenerar ID de sesión periódicamente
+        // Regenerar ID de sesión periódicamente.
+        // OJO: false (no borrar la sesión antigua de inmediato) evita perder la
+        // sesión/token CSRF cuando hay varias peticiones casi simultáneas
+        // (carga de página + AJAX + subida), lo que provocaba fallos de CSRF.
         if (!isset($_SESSION['_last_regen']) || time() - $_SESSION['_last_regen'] > 600) {
-            session_regenerate_id(true);
+            session_regenerate_id(false);
             $_SESSION['_last_regen'] = time();
         }
     }

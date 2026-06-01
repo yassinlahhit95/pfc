@@ -4,12 +4,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- LIMPIEZA: eliminar tablas existentes
 -- ============================================================
 DROP TABLE IF EXISTS
-  `aula_almacenamiento_ciclo`, `aula_enlaces_compartidos`, `aula_archivo_accesos`,
+  `aula_almacenamiento_ciclo`, `aula_archivo_accesos`,
   `aula_favoritos`, `aula_archivo_versiones`, `aula_asistencia_sesion`,
   `aula_sesiones_vivas`, `aula_analytics`, `aula_notificaciones`, `aula_comentarios`,
   `aula_versiones_entrega`, `aula_entregas`, `aula_tareas`, `aula_archivos`,
   `aula_carpetas`, `entregas_ejercicios`, `ejercicios`, `carpetas_ejercicios`,
-  `auditoria`, `login_intentos`, `profesor_modulo`, `modulo_profesor`,
+  `auditoria`, `login_intentos`, `modulo_profesor`,
   `ciclo_profesor`, `eventos`, `pagos`, `reclamaciones`, `anuncios`, `prestamos`,
   `dispositivos`, `calificaciones_tfg`, `calificaciones_modulos`,
   `calificaciones_retos`, `modulo_reto`, `retos`, `directores`, `estudiantes`,
@@ -272,15 +272,6 @@ CREATE TABLE `modulo_profesor` (
   CONSTRAINT `fk_relm_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 20. Profesor-Modulo
-CREATE TABLE `profesor_modulo` (
-  `idProfesor` int(11) NOT NULL,
-  `idModulo` int(11) NOT NULL,
-  PRIMARY KEY (`idProfesor`, `idModulo`),
-  CONSTRAINT `fk_pm_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE,
-  CONSTRAINT `fk_pm_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- ============================================================
 -- MÓDULO AULA DIGITAL
 -- ============================================================
@@ -490,21 +481,6 @@ CREATE TABLE `aula_archivo_accesos` (
   CONSTRAINT `fk_aulaacc_est`  FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`   (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `aula_enlaces_compartidos` (
-  `idEnlace` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(64) NOT NULL,
-  `idArchivo` int(11) NOT NULL,
-  `idProfesor` int(11) NOT NULL,
-  `permitirDescarga` tinyint(1) NOT NULL DEFAULT 1,
-  `fechaExpiracion` datetime DEFAULT NULL,
-  `activo` tinyint(1) NOT NULL DEFAULT 1,
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idEnlace`),
-  UNIQUE KEY `uk_aulaenl_token` (`token`),
-  CONSTRAINT `fk_aulaenl_arch` FOREIGN KEY (`idArchivo`)  REFERENCES `aula_archivos` (`idArchivo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_aulaenl_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores`    (`idProfesor`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE `aula_almacenamiento_ciclo` (
   `idCiclo` int(11) NOT NULL,
   `limiteBytes` bigint(20) NOT NULL DEFAULT 5368709120,
@@ -654,7 +630,6 @@ INSERT INTO `retos` (`idReto`, `nombreReto`, `fechaInicio`, `fechaFin`, `horasRe
 -- Relaciones
 INSERT INTO `modulo_reto` (`idModulo`, `idReto`) VALUES (1, 1), (2, 2), (3, 3), (4, 4), (1, 5), (2, 5), (3, 5), (4, 5);
 INSERT INTO `modulo_profesor` (`idModulo`, `idProfesor`) VALUES (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 2), (7, 2), (8, 2), (9, 2), (10, 2);
-INSERT INTO `profesor_modulo` (`idProfesor`, `idModulo`) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10);
 INSERT INTO `ciclo_profesor` (`idCiclo`, `idProfesor`) VALUES (1, 1), (2, 2);
 INSERT INTO `aula_almacenamiento_ciclo` (`idCiclo`, `limiteBytes`) VALUES (1, 5368709120), (2, 5368709120), (3, 5368709120);
 

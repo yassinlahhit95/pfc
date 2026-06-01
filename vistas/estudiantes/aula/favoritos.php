@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (empty($favoritos)): ?>
   <div class="recurso-vacio"><i class="fas fa-star"></i><p>Todavía no tienes recursos favoritos. Márcalos con la estrella ⭐ desde cualquier módulo.</p></div>
 <?php else: ?>
-<table class="recurso-lista">
+<table class="recurso-lista" data-csrf="<?= Security::generateCSRFToken() ?>">
   <thead><tr><th>Nombre</th><th>Módulo</th><th>Profesor</th><th>Tamaño</th><th style="text-align:right;">Acciones</th></tr></thead>
   <tbody>
     <?php foreach ($favoritos as $a):
@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       $previa = archivoPrevisualizableAula($a['extension']);
       $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $a['idArchivo'];
     ?>
-    <tr>
+    <tr data-archivo-id="<?= Security::escapeHtml($a['idArchivo'] ) ?>">
       <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span><?= Security::escapeHtml(htmlspecialchars($a['nombreOriginal'])) ?></div></td>
       <td><?= Security::escapeHtml(htmlspecialchars($a['nombreModulo'])) ?></td>
       <td><?= Security::escapeHtml(htmlspecialchars($a['nombreProfesor'])) ?></td>
@@ -45,7 +45,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl ) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl ) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
-            <a class="recurso-menu-item peligro" href="../../../controladores/estudiantes/aula/toggleFavorito.php?idArchivo=<?= Security::escapeHtml($a['idArchivo'] ) ?>&origen=favoritos" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-star"></i> Quitar de favoritos</a>
+            <button type="button" class="recurso-menu-item peligro" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($a['idArchivo'] ) ?>, this, 'favoritos')"><i class="fas fa-star"></i> Quitar de favoritos</button>
           </div>
         </div>
       </td>

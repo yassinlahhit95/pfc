@@ -86,7 +86,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </td>
                     <td><?= Security::escapeHtml($estado ) ?></td>
                     <td>
-                        <?php if ($ahora ><?= Security::escapeHtml($fechaSesion && $ahora <= $fechaSesion + 3600) { ) ?>
+                        <?php if ($ahora >= $fechaSesion && $ahora <= $fechaSesion + 3600) { ?>
                             <a href="<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>" target="_blank" class="boton-primario btn-pequeno" title="Acceder a la sesión">
                                 <i class="fas fa-sign-in-alt"></i> ENTRAR
                             </a>

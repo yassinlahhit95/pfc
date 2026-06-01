@@ -3,10 +3,17 @@ session_start();
 require_once "../../../modelos/reclamaciones.php";
 require_once "../../../modelos/directores.php";
 require_once "../../firebase/firebase_helper.php";
+require_once __DIR__ . "/../../../include/Security.php";
+
+if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }
 
 if (isset($_POST['enviarMensaje'])) {
-    $idEstudiante = trim($_POST['idEstudiante']);
-    $idProfesor = trim($_POST['idProfesor']);
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.";
+        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php"); exit;
+    }
+    $idEstudiante = $_SESSION['idEstudiante']; // SIEMPRE el de la sesión (no falsificable)
+    $idProfesor = trim($_POST['idProfesor'] ?? '');
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
     $errores = '';

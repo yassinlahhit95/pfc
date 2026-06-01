@@ -67,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- Borrar carpeta activa -->
     <?php if ($idCarpetaActiva > 0): ?>
     <?php $carpetaActual = obtenerCarpetaPorId($idCarpetaActiva); ?>
-    <?php if ($carpetaActual && $carpetaActual['idProfesor'] =<?= Security::escapeHtml($idProfesor): ) ?>
+    <?php if ($carpetaActual && $carpetaActual['idProfesor'] == $idProfesor): ?>
     <div style="padding:10px 14px;border-top:1px solid #f1f5f9;">
       <a href="../../../controladores/profesores/carpetas/borrar.php?id=<?= Security::escapeHtml($idCarpetaActiva ) ?>"
          class="texto-suave" style="font-size:0.75rem;display:flex;align-items:center;gap:6px;color:#ef4444;"

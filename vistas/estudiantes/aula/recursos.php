@@ -93,13 +93,13 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="favoritos.php" class="boton-secundario"><i class="fas fa-star"></i> Favoritos</a>
 </div>
 
-<div class="recurso-breadcrumb">
+<div class="recurso-breadcrumb" data-csrf="<?= Security::generateCSRFToken() ?>">
   <a href="recursos.php"><i class="fas fa-home"></i></a>
   <span class="sep">/</span>
   <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></a>
   <?php foreach ($ruta as $r): ?>
     <span class="sep">/</span>
-    <?php if ($r['idCarpeta'] =<?= Security::escapeHtml($carpetaActual): ) ?>
+    <?php if ($r['idCarpeta'] == $carpetaActual): ?>
       <span class="actual"><?= Security::escapeHtml(htmlspecialchars($r['nombre'])) ?></span>
     <?php else: ?>
       <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($r['idCarpeta'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($r['nombre'])) ?></a>
@@ -145,7 +145,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl ) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl ) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
-            <a class="recurso-menu-item" href="../../../controladores/estudiantes/aula/toggleFavorito.php?idArchivo=<?= Security::escapeHtml($a['idArchivo'] ) ?>&origen=recursos&idModulo=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($carpetaActual ) ?>" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-star" style="color:<?= Security::escapeHtml($fav ? '#f59e0b' : '') ?>"></i> <?= Security::escapeHtml($fav ? 'Quitar de favoritos' : 'Añadir a favoritos') ?></a>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($a['idArchivo'] ) ?>, this, 'recursos')"><i class="fas fa-star" style="color:<?= Security::escapeHtml($fav ? '#f59e0b' : '') ?>"></i> <?= Security::escapeHtml($fav ? 'Quitar de favoritos' : 'Añadir a favoritos') ?></button>
           </div>
         </div>
       </td>

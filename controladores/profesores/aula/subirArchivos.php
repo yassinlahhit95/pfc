@@ -6,14 +6,30 @@ ob_start();
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../include/Security.php";
 
 if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
+
+// Si los archivos superan post_max_size de PHP, $_POST llega vacío: avisar en vez de fallar en silencio.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+    if (ob_get_level() > 0) ob_end_clean();
+    $_SESSION['errores'] = "Los archivos superan el tamaño máximo que admite el servidor. Prueba a subirlos de uno en uno o más pequeños.";
+    header("Location: ../../../vistas/profesores/aula/index.php");
+    exit;
+}
+
 if (!isset($_POST['subirArchivos'])) { header("Location: ../../../vistas/profesores/aula/index.php"); exit; }
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+    if (ob_get_level() > 0) ob_end_clean();
+    $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
+    header("Location: ../../../vistas/profesores/aula/recursos.php?id=" . intval($_POST['idModulo'] ?? 0));
+    exit;
+}
 
 $idProfesor  = $_SESSION['idProfesor'];
 $idModulo    = intval($_POST['idModulo'] ?? 0);
 $idCarpeta   = intval($_POST['idCarpeta'] ?? 0) ?: null;
-$descripcion = trim($_POST['descripcion'] ?? '');
+$titulo      = trim($_POST['titulo'] ?? '');
 
 // Destino por defecto; se concreta en cuanto validamos el módulo
 $destino = "../../../vistas/profesores/aula/index.php";
@@ -52,10 +68,22 @@ try {
 
     $subidos = 0; $errores = [];
 
-    if (!empty($_FILES['archivos']['name'][0])) {
+    if (isset($_FILES['archivos']) && is_array($_FILES['archivos']['name']) && !empty($_FILES['archivos']['name'][0])) {
         $totalArchivos = count($_FILES['archivos']['name']);
         for ($i = 0; $i < $totalArchivos; $i++) {
-            if ($_FILES['archivos']['error'][$i] !== UPLOAD_ERR_OK) continue;
+            $errCode = $_FILES['archivos']['error'][$i];
+            if ($errCode !== UPLOAD_ERR_OK) {
+                if ($errCode === UPLOAD_ERR_NO_FILE) continue; // hueco vacío en la selección
+                $nombreErr = $_FILES['archivos']['name'][$i] ?: ('archivo #' . ($i + 1));
+                if ($errCode === UPLOAD_ERR_INI_SIZE || $errCode === UPLOAD_ERR_FORM_SIZE) {
+                    $errores[] = "$nombreErr: supera el tamaño máximo permitido.";
+                } elseif ($errCode === UPLOAD_ERR_PARTIAL) {
+                    $errores[] = "$nombreErr: la subida se interrumpió, inténtalo de nuevo.";
+                } else {
+                    $errores[] = "$nombreErr: no se pudo subir.";
+                }
+                continue;
+            }
 
             $nombreOrig = $_FILES['archivos']['name'][$i];
             $ext        = strtolower(pathinfo($nombreOrig, PATHINFO_EXTENSION));
@@ -73,10 +101,15 @@ try {
                 continue;
             }
 
-            // 3. Validar contenido real (MIME type)
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeReal = finfo_file($finfo, $_FILES['archivos']['tmp_name'][$i]);
-            finfo_close($finfo);
+            // 3. Validar contenido real (MIME type) — sólo si la extensión fileinfo está disponible
+            $mimeReal = '';
+            if (function_exists('finfo_open')) {
+                $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+                if ($finfo) {
+                    $mimeReal = (string) finfo_file($finfo, $_FILES['archivos']['tmp_name'][$i]);
+                    finfo_close($finfo);
+                }
+            }
 
             // Mapeo simple para validación de contenido
             $mimesValidos = [
@@ -91,7 +124,7 @@ try {
             ];
 
             // Validación de MIME (si está en nuestro mapa estricto)
-            if (isset($mimesValidos[$ext]) && $mimesValidos[$ext] !== $mimeReal) {
+            if ($mimeReal !== '' && isset($mimesValidos[$ext]) && $mimesValidos[$ext] !== $mimeReal) {
                  // Nota: Algunos servidores pueden devolver mimes ligeramente diferentes para Office/Zips
                  // Solo bloqueamos si es una discrepancia crítica (ej: .txt que es un .exe)
                  if (strpos($mimeReal, 'executable') !== false || strpos($mimeReal, 'php') !== false) {
@@ -110,13 +143,28 @@ try {
             $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $ext;
             
             if (move_uploaded_file($_FILES['archivos']['tmp_name'][$i], $dir . $nombreArchivo)) {
-                $idArchivo = insertarArchivoAula($nombreArchivo, $nombreOrig, $ext, $tamanio, $descripcion, $idCarpeta, $idModulo, $idProfesor);
+                // Nombre visible: el título indicado (con la extensión real) o el nombre original del archivo
+                $nombreVisible = $nombreOrig;
+                if ($titulo !== '') {
+                    $base   = $titulo;
+                    $sufijo = '.' . $ext;
+                    // Si el profesor escribió la misma extensión en el título, se la quitamos para no duplicarla
+                    if ($ext !== '' && strtolower(substr($base, -strlen($sufijo))) === strtolower($sufijo)) {
+                        $base = substr($base, 0, -strlen($sufijo));
+                    }
+                    $base = trim($base);
+                    if ($base !== '') $nombreVisible = ($ext !== '') ? $base . '.' . $ext : $base;
+                }
+                // Evitar conflictos: mismo nombre + extensión en la misma ubicación → " (2)", " (3)"...
+                $nombreVisible = nombreUnicoArchivoAula($idModulo, $idCarpeta, $nombreVisible);
+
+                $idArchivo = insertarArchivoAula($nombreArchivo, $nombreVisible, $ext, $tamanio, '', $idCarpeta, $idModulo, $idProfesor);
                 if ($idArchivo) {
                     $subidos++;
                     notificarEstudiantesCicloAula(
                         $modulo['idCiclo'], 'archivo_subido',
                         'Nuevo archivo en ' . $modulo['nombreModulo'],
-                        $idProfesor . ' ha subido: ' . $nombreOrig,
+                        $idProfesor . ' ha subido: ' . $nombreVisible,
                         $idArchivo, 'archivo'
                     );
                 }
@@ -145,7 +193,8 @@ try {
             }
         } catch (\Throwable $e) { /* el push es opcional, se ignora cualquier fallo */ }
     } else {
-        $_SESSION['errores'] = "No se pudo subir ningún archivo. " . implode(' ', $errores);
+        $detalle = !empty($errores) ? implode(' ', $errores) : "No seleccionaste ningún archivo válido.";
+        $_SESSION['errores'] = "No se pudo subir ningún archivo. " . $detalle;
     }
 } catch (\Throwable $e) {
     if (empty($_SESSION['errores'])) {

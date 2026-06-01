@@ -34,11 +34,15 @@ $tamStr    = $arch['tamanio'] > 0
     <button class="btn-accion" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($arch['nombreOriginal']))) ?>')">
       <i class="fas fa-folder-arrow-down"></i>
     </button>
-    <a href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= Security::escapeHtml($arch['idArchivo'] ) ?>&modulo=<?= Security::escapeHtml($arch['idModulo'] ) ?>"
-       class="btn-accion btn-eliminar" title="Eliminar"
-       onclick="return confirm('¿Eliminar este archivo?')">
-      <i class="fas fa-trash"></i>
-    </a>
+    <form method="POST" action="../../../controladores/profesores/aula/borrarArchivo.php"
+          style="display:inline" onsubmit="return confirm('¿Eliminar este archivo?')">
+      <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+      <input type="hidden" name="id" value="<?= Security::escapeHtml($arch['idArchivo'] ) ?>">
+      <input type="hidden" name="modulo" value="<?= Security::escapeHtml($arch['idModulo'] ) ?>">
+      <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
+        <i class="fas fa-trash"></i>
+      </button>
+    </form>
   </div>
 </div>
 

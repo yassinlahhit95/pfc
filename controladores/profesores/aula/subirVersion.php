@@ -2,8 +2,14 @@
 // Sube una nueva versión de un recurso existente conservando el historial (#8)
 session_start();
 require_once __DIR__ . "/../../../modelos/aula.php";
+require_once __DIR__ . "/../../../include/Security.php";
 
 if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+    $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
+    header("Location: ../../../vistas/profesores/aula/recursos.php?id=" . intval($_POST['idModulo'] ?? 0));
+    exit;
+}
 
 $idProfesor = $_SESSION['idProfesor'];
 $idArchivo  = intval($_POST['idArchivo'] ?? 0);

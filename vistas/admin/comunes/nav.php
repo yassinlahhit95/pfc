@@ -162,22 +162,6 @@ $totalPrestamos_menu = contarPrestamosActivos();
                 </a>
             </div>
 
-            <div class="seccion-del-menu">
-                <p class="titulo-de-seccion">AULA DIGITAL</p>
-
-                <a href="../aula/sesiones.php" class="enlace-menu <?= ($seccion == 'aula_sesiones') ? 'activo' : '' ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>AULA DIGITAL</span>
-                </a>
-
-                <a href="../aula/tareas.php" class="enlace-menu <?= ($seccion == 'aula_tareas') ? 'activo' : '' ?>">
-                    <i class="fas fa-tasks"></i> <span>TAREAS</span>
-                </a>
-
-                <a href="../aula/entregas.php" class="enlace-menu <?= ($seccion == 'aula_entregas') ? 'activo' : '' ?>">
-                    <i class="fas fa-inbox"></i> <span>ENTREGAS</span>
-                </a>
-            </div>
-
             <div class="separador-menu-inferior">
                 <a href="https://yassin.agency" target="_blank" class="enlace-menu">
                     <i class="fas fa-home"></i> <span>PÁGINA INICIO</span>

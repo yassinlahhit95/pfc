@@ -115,13 +115,6 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
                     <i class="fas fa-star"></i> <span>FAVORITOS</span>
                 </a>
 
-                <a href="../aula/tareas.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'aula_tareas') ? 'activo' : '') ?>">
-                    <i class="fas fa-tasks"></i> <span>TAREAS</span>
-                </a>
-
-                <a href="../aula/mis_entregas.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'aula_entregas') ? 'activo' : '') ?>">
-                    <i class="fas fa-file-upload"></i> <span>MIS ENTREGAS</span>
-                </a>
             </div>
 
             <div class="seccion-del-menu">

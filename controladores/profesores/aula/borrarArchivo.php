@@ -1,21 +1,46 @@
 <?php
+// Mueve un archivo a la papelera (soft-delete). Solo el profesor propietario.
+// Acepta POST con token CSRF. Responde JSON si la petición es AJAX; si no, redirige.
 session_start();
 require_once __DIR__ . "/../../../modelos/aula.php";
+require_once __DIR__ . "/../../../include/Security.php";
 
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
+$esAjax = !empty($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
-$idArchivo = intval($_GET['id'] ?? 0);
-$regresar  = intval($_GET['modulo'] ?? 0);
+if (!function_exists('responderAccionAula')) {
+    function responderAccionAula($esAjax, $ok, $destino, $extra = []) {
+        if ($esAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(array_merge(['ok' => $ok], $extra));
+        } else {
+            header("Location: $destino");
+        }
+        exit;
+    }
+}
+
+if (empty($_SESSION['idProfesor'])) {
+    responderAccionAula($esAjax, false, "../../../vistas/login.php", ['error' => 'auth']);
+}
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+    responderAccionAula($esAjax, false, "../../../vistas/profesores/aula/index.php", ['error' => 'csrf']);
+}
+
+$idArchivo = intval($_POST['id'] ?? 0);
+$regresar  = intval($_POST['modulo'] ?? 0);
+$ok        = false;
+$archivo   = null;
 
 if ($idArchivo > 0) {
     $archivo = obtenerArchivoPorId($idArchivo);
     if ($archivo && $archivo['idProfesor'] == $_SESSION['idProfesor']) {
-        borrarArchivoAula($idArchivo);
-        $_SESSION['exito'] = "Archivo movido a la papelera.";
+        eliminarDefinitivoArchivoAula($idArchivo);
+        if (!$esAjax) $_SESSION['exito'] = "Archivo eliminado definitivamente.";
         $regresar = $regresar ?: $archivo['idModulo'];
+        $ok = true;
     }
 }
+
 $destino = "../../../vistas/profesores/aula/recursos.php?id=$regresar";
 if (!empty($archivo['idCarpeta'])) $destino .= "&carpeta=" . $archivo['idCarpeta'];
-header("Location: $destino");
-exit;
+responderAccionAula($esAjax, $ok, $destino);

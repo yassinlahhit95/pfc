@@ -1,25 +1,34 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../include/Security.php";
 
-$hayError = false;
+if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
 
 if (isset($_POST['idReclamacion'])) {
-    $idReclamacion = trim($_POST['idReclamacion']);
-    
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = "Solicitud no válida o expirada.";
+        header("Location: ../../../vistas/profesores/mensajes/lista.php"); exit;
+    }
+    $idReclamacion = intval($_POST['idReclamacion']);
+
+    // Seguridad: solo puede actuar sobre mensajes dirigidos a este profesor (evita IDOR)
+    if (!mensajePerteneceAProfesor($idReclamacion, $_SESSION['idProfesor'])) {
+        $_SESSION['errores'] = "No tienes permiso sobre este mensaje.";
+        header("Location: ../../../vistas/profesores/mensajes/lista.php"); exit;
+    }
+
     if (isset($_POST['guardarRespuesta'])) {
-        $respuesta = trim($_POST['respuesta']);
+        $respuesta = trim($_POST['respuesta'] ?? '');
         if (responderMensaje($idReclamacion, $respuesta)) {
             $_SESSION['exito'] = "Respuesta guardada.";
         } else {
-            $hayError = true;
             $_SESSION['errores'] = "Error al guardar.";
         }
     } else if (isset($_POST['marcarLeido'])) {
         if (marcarMensajeComoLeido($idReclamacion)) {
             $_SESSION['exito'] = "Mensaje leído.";
         } else {
-            $hayError = true;
             $_SESSION['errores'] = "Error al actualizar.";
         }
     }
@@ -27,4 +36,3 @@ if (isset($_POST['idReclamacion'])) {
 
 header("Location: ../../../vistas/profesores/mensajes/lista.php");
 exit;
-?>

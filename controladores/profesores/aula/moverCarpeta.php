@@ -1,13 +1,21 @@
 <?php
+// Mueve una carpeta a otra carpeta (cambia su padre). Solo el propietario. POST + CSRF.
 session_start();
 require_once __DIR__ . "/../../../modelos/aula.php";
+require_once __DIR__ . "/../../../include/Security.php";
 
 if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+    $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
+    header("Location: ../../../vistas/profesores/aula/recursos.php?id=" . intval($_POST['modulo'] ?? 0));
+    exit;
+}
 
 $idProfesor = $_SESSION['idProfesor'];
-$id        = intval($_GET['id'] ?? 0);              // carpeta a mover
-$destino   = intval($_GET['destino'] ?? 0) ?: null; // nuevo padre (0 = raíz)
-$idModulo  = intval($_GET['modulo'] ?? 0);
+$id         = intval($_POST['id'] ?? 0);              // carpeta a mover
+$destino    = intval($_POST['destino'] ?? 0) ?: null; // nuevo padre (0 = raíz)
+$idModulo   = intval($_POST['modulo'] ?? 0);
+$regresar   = intval($_POST['regresar'] ?? 0);        // carpeta actual a la que volver
 
 if ($id > 0) {
     $carpeta = obtenerCarpetaAulaPorId($id);
@@ -22,6 +30,6 @@ if ($id > 0) {
 }
 
 $dest = "../../../vistas/profesores/aula/recursos.php?id=$idModulo";
-if ($destino) $dest .= "&carpeta=$destino";
+if ($regresar) $dest .= "&carpeta=$regresar";
 header("Location: $dest");
 exit;

@@ -220,6 +220,38 @@ function obtenerArchivoPorId($idArchivo) {
     return $fila;
 }
 
+// ¿Existe ya un archivo (no eliminado) con ese nombre visible en la misma ubicación?
+// El nombre incluye la extensión, así que "doc.pdf" y "doc.docx" NO colisionan.
+function existeArchivoNombreAula($idModulo, $idCarpeta, $nombreOriginal) {
+    $con = obtenerConexion();
+    if ($idCarpeta) {
+        $sql  = "SELECT COUNT(*) AS c FROM aula_archivos WHERE idCarpeta=? AND eliminado=0 AND nombreOriginal=?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "is", $idCarpeta, $nombreOriginal);
+    } else {
+        $sql  = "SELECT COUNT(*) AS c FROM aula_archivos WHERE idModulo=? AND idCarpeta IS NULL AND eliminado=0 AND nombreOriginal=?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "is", $idModulo, $nombreOriginal);
+    }
+    mysqli_stmt_execute($stmt);
+    $f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    return intval($f['c']) > 0;
+}
+
+// Devuelve un nombre visible único en la ubicación, añadiendo " (2)", " (3)"... si hace falta
+function nombreUnicoArchivoAula($idModulo, $idCarpeta, $nombreOriginal) {
+    if (!existeArchivoNombreAula($idModulo, $idCarpeta, $nombreOriginal)) return $nombreOriginal;
+    $punto = strrpos($nombreOriginal, '.');
+    if ($punto === false || $punto === 0) { $base = $nombreOriginal; $ext = ''; }
+    else { $base = substr($nombreOriginal, 0, $punto); $ext = substr($nombreOriginal, $punto); }
+    $i = 2;
+    do {
+        $candidato = $base . ' (' . $i . ')' . $ext;
+        $i++;
+    } while ($i < 1000 && existeArchivoNombreAula($idModulo, $idCarpeta, $candidato));
+    return $candidato;
+}
+
 function insertarArchivoAula($nombreArchivo, $nombreOriginal, $extension, $tamanio, $descripcion, $idCarpeta, $idModulo, $idProfesor) {
     $con = obtenerConexion();
     $sql = "INSERT INTO aula_archivos (nombreArchivo, nombreOriginal, extension, tamanio, descripcion, idCarpeta, idModulo, idProfesor)
@@ -280,24 +312,6 @@ function listarTareasPorModuloAula($idModulo) {
     return $lista;
 }
 
-function listarTodasTareasPorModuloAula($idModulo) {
-    $con = obtenerConexion();
-    $sql = "SELECT t.*, p.nombreProfesor,
-                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea) AS totalEntregas
-            FROM aula_tareas t
-            JOIN profesores p ON t.idProfesor = p.idProfesor
-            WHERE t.idModulo = ?
-            ORDER BY t.fechaCreacion DESC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idModulo);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
-    return $lista;
-}
-
 function obtenerTareaPorIdAula($idTarea) {
     $con = obtenerConexion();
     $sql = "SELECT t.*, p.nombreProfesor, m.nombreModulo, m.idCiclo
@@ -314,66 +328,12 @@ function obtenerTareaPorIdAula($idTarea) {
     return $fila;
 }
 
-function insertarTareaAula($titulo, $descripcion, $idModulo, $idProfesor, $archivoAdjunto) {
-    $con = obtenerConexion();
-    $sql = "INSERT INTO aula_tareas (titulo, descripcion, idModulo, idProfesor, archivoAdjunto) VALUES (?,?,?,?,?)";
-    $stmt = mysqli_prepare($con, $sql);
-    $arch = $archivoAdjunto ?: null;
-    mysqli_stmt_bind_param($stmt, "ssiis", $titulo, $descripcion, $idModulo, $idProfesor, $arch);
-    $ok = mysqli_stmt_execute($stmt);
-    $id = mysqli_insert_id($con);
-    
-    return $ok ? $id : false;
-}
-
-function editarTareaAula($idTarea, $titulo, $descripcion) {
-    $con = obtenerConexion();
-    $sql = "UPDATE aula_tareas SET titulo=?, descripcion=? WHERE idTarea=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $titulo, $descripcion, $idTarea);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
-}
-
-function togglePublicadoTareaAula($idTarea) {
-    $con = obtenerConexion();
-    $sql = "UPDATE aula_tareas SET publicado = 1 - publicado WHERE idTarea=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idTarea);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
-}
-
 function moverArchivoAula($idArchivo, $idCarpeta) {
     $con = obtenerConexion();
     $sql = "UPDATE aula_archivos SET idCarpeta=? WHERE idArchivo=?";
     $stmt = mysqli_prepare($con, $sql);
     $idCarp = $idCarpeta ?: null;
     mysqli_stmt_bind_param($stmt, "ii", $idCarp, $idArchivo);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
-}
-
-function contarEstudiantesCicloAula($idCiclo) {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $f = mysqli_fetch_assoc($res);
-    
-    return intval($f['total']);
-}
-
-function borrarTareaAula($idTarea) {
-    $con = obtenerConexion();
-    $sql = "DELETE FROM aula_tareas WHERE idTarea=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idTarea);
     $ok = mysqli_stmt_execute($stmt);
     
     return $ok;
@@ -393,23 +353,6 @@ function obtenerEntregaAula($idTarea, $idEstudiante) {
     $fila = mysqli_fetch_assoc($res);
     
     return $fila;
-}
-
-function listarEntregasPorTareaAula($idTarea) {
-    $con = obtenerConexion();
-    $sql = "SELECT e.*, est.nombreEstudiante, est.emailEstudiante
-            FROM aula_entregas e
-            JOIN estudiantes est ON e.idEstudiante = est.idEstudiante
-            WHERE e.idTarea = ?
-            ORDER BY e.fechaEntrega DESC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idTarea);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
-    return $lista;
 }
 
 function enviarEntregaAula($idTarea, $idEstudiante, $archivoEntrega, $respuesta) {
@@ -453,16 +396,6 @@ function enviarEntregaAula($idTarea, $idEstudiante, $archivoEntrega, $respuesta)
     return $ok;
 }
 
-function calificarEntregaAula($idEntrega, $nota) {
-    $con = obtenerConexion();
-    $sql = "UPDATE aula_entregas SET nota=?, estado='corregida' WHERE idEntrega=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "di", $nota, $idEntrega);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
-}
-
 function listarVersionesPorEntregaAula($idTarea, $idEstudiante) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM aula_versiones_entrega WHERE idTarea=? AND idEstudiante=? ORDER BY version DESC";
@@ -493,18 +426,6 @@ function listarComentariosPorEntregaAula($idEntrega) {
     return $lista;
 }
 
-function insertarComentarioAula($idEntrega, $idUsuario, $tipoUsuario, $mensaje, $archivoCorreccion) {
-    $con = obtenerConexion();
-    $sql = "INSERT INTO aula_comentarios (idEntrega, idUsuario, tipoUsuario, mensaje, archivoCorreccion) VALUES (?,?,?,?,?)";
-    $stmt = mysqli_prepare($con, $sql);
-    $arch = $archivoCorreccion ?: null;
-    mysqli_stmt_bind_param($stmt, "iisss", $idEntrega, $idUsuario, $tipoUsuario, $mensaje, $arch);
-    $ok = mysqli_stmt_execute($stmt);
-    $id = mysqli_insert_id($con);
-    
-    return $ok ? $id : false;
-}
-
 // ═══════════════════════════════════════
 // NOTIFICACIONES
 // ═══════════════════════════════════════
@@ -518,32 +439,6 @@ function insertarNotificacionAula($idUsuario, $tipoUsuario, $tipo, $titulo, $men
     $ok = mysqli_stmt_execute($stmt);
     
     return $ok;
-}
-
-function contarNotificacionesNoLeidasAula($idUsuario, $tipoUsuario) {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) AS total FROM aula_notificaciones WHERE idUsuario=? AND tipoUsuario=? AND leida=0";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "is", $idUsuario, $tipoUsuario);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $f = mysqli_fetch_assoc($res);
-    
-    return intval($f['total']);
-}
-
-function listarNotificacionesAula($idUsuario, $tipoUsuario, $limite = 15) {
-    $con = obtenerConexion();
-    $sql = "SELECT * FROM aula_notificaciones WHERE idUsuario=? AND tipoUsuario=?
-            ORDER BY fechaCreacion DESC LIMIT ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "isi", $idUsuario, $tipoUsuario, $limite);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
-    return $lista;
 }
 
 function marcarTodasLeidasAula($idUsuario, $tipoUsuario) {
@@ -792,57 +687,6 @@ function borrarSesionViva($idSesion) {
     $sql = "DELETE FROM aula_sesiones_vivas WHERE idSesion=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idSesion);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
-}
-
-function actualizarEstadoSesion($idSesion, $estado) {
-    $con = obtenerConexion();
-    $sql = "UPDATE aula_sesiones_vivas SET estado=? WHERE idSesion=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $estado, $idSesion);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
-}
-
-function registrarAsistenciaSesion($idSesion, $idEstudiante, $horaUnion = null, $horaSalida = null, $duracion = null) {
-    $con = obtenerConexion();
-
-    // Validar duración si se proporciona
-    if ($duracion !== null && $duracion < 0) {
-        
-        return false;
-    }
-
-    // Si tanto horaUnion como horaSalida se proporcionan, calcular duración
-    if ($horaUnion && $horaSalida && $duracion === null) {
-        try {
-            $inicio = new DateTime($horaUnion);
-            $fin = new DateTime($horaSalida);
-            $diff = $fin->diff($inicio);
-            $duracion = ($diff->h * 60) + $diff->i;
-
-            // Rechazar si la duración calculada es negativa (fin antes de inicio)
-            if ($duracion < 0) {
-                
-                return false;
-            }
-        } catch (Exception $e) {
-            
-            return false;
-        }
-    }
-
-    $hora = $horaUnion ?: date('H:i:s');
-    $sql = "INSERT INTO aula_asistencia_sesion (idSesion, idEstudiante, horaUnion, horaSalida, duracion)
-            VALUES (?,?,?,?,?)
-            ON DUPLICATE KEY UPDATE horaUnion=?, horaSalida=?, duracion=?, presente=1";
-    $stmt = mysqli_prepare($con, $sql);
-    $horaSal = $horaSalida ?: null;
-    $dur = $duracion ?: null;
-    mysqli_stmt_bind_param($stmt, "iississi", $idSesion, $idEstudiante, $hora, $horaSal, $dur, $hora, $horaSal, $dur);
     $ok = mysqli_stmt_execute($stmt);
     
     return $ok;
@@ -1280,8 +1124,23 @@ function eliminarDefinitivoCarpetaAula($idCarpeta) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
     $ok = mysqli_stmt_execute($stmt);
-    
+
     return $ok;
+}
+
+// Eliminación DEFINITIVA y recursiva de una carpeta: borra los ficheros físicos
+// (y versiones) de todos los archivos del árbol y luego las carpetas (las
+// subcarpetas caen por ON DELETE CASCADE sobre idPadre).
+function eliminarDefinitivoCarpetaRecursivoAula($idCarpeta) {
+    $ids = obtenerArbolCarpetaAula($idCarpeta);
+    if (empty($ids)) $ids = [intval($idCarpeta)];
+    $con = obtenerConexion();
+    $in  = implode(',', array_map('intval', $ids));
+    $res = mysqli_query($con, "SELECT idArchivo FROM aula_archivos WHERE idCarpeta IN ($in)");
+    if ($res) {
+        while ($f = mysqli_fetch_assoc($res)) eliminarDefinitivoArchivoAula($f['idArchivo']);
+    }
+    return eliminarDefinitivoCarpetaAula($idCarpeta);
 }
 
 // Vacía de la papelera los elementos eliminados hace más de $dias días
@@ -1298,52 +1157,6 @@ function purgarPapeleraAntiguaAula($dias = 30) {
     
     foreach ($ids as $id) eliminarDefinitivoArchivoAula($id);
     return count($ids);
-}
-
-// ═══════════════════════════════════════
-// GESTIÓN DE RECURSOS · ENLACES COMPARTIDOS
-// ═══════════════════════════════════════
-
-function crearEnlaceCompartidoAula($idArchivo, $idProfesor, $fechaExpiracion = null, $permitirDescarga = 1) {
-    $con = obtenerConexion();
-    $token = bin2hex(random_bytes(16)); // 32 hex chars
-    $sql = "INSERT INTO aula_enlaces_compartidos (token, idArchivo, idProfesor, permitirDescarga, fechaExpiracion)
-            VALUES (?,?,?,?,?)";
-    $stmt = mysqli_prepare($con, $sql);
-    $exp = $fechaExpiracion ?: null;
-    mysqli_stmt_bind_param($stmt, "siiis", $token, $idArchivo, $idProfesor, $permitirDescarga, $exp);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok ? $token : false;
-}
-
-// Devuelve el enlace + datos del archivo sólo si está activo y no caducado
-function obtenerEnlaceValidoPorToken($token) {
-    $con = obtenerConexion();
-    $sql = "SELECT e.*, a.nombreArchivo, a.nombreOriginal, a.extension, a.tamanio, a.eliminado
-            FROM aula_enlaces_compartidos e
-            JOIN aula_archivos a ON e.idArchivo = a.idArchivo
-            WHERE e.token = ? AND e.activo = 1
-              AND (e.fechaExpiracion IS NULL OR e.fechaExpiracion > NOW())
-              AND a.eliminado = 0
-            LIMIT 1";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $token);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($res);
-    
-    return $fila;
-}
-
-function desactivarEnlaceCompartidoAula($idEnlace, $idProfesor) {
-    $con = obtenerConexion();
-    $sql = "UPDATE aula_enlaces_compartidos SET activo=0 WHERE idEnlace=? AND idProfesor=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idEnlace, $idProfesor);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
 }
 
 // ═══════════════════════════════════════

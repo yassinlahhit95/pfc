@@ -15,8 +15,8 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
-if (!$mensaje) {
-    $_SESSION['errores'] = strtoupper("MENSAJE NO ENCONTRADO.");
+if (!$mensaje || $mensaje['idProfesor'] != $_SESSION['idProfesor']) {
+    $_SESSION['errores'] = strtoupper("MENSAJE NO ENCONTRADO O ACCESO DENEGADO.");
     header("Location: lista.php");
     exit;
 }
