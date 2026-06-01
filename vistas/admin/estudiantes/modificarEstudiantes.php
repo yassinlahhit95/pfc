@@ -42,19 +42,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="formulario">
             <div class="campo">
-                <label>Nombre Completo</label>
-                <input type="text" name="nombreEstudiante" value="<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>">
+                <label for="nombreEstudiante">Nombre Completo</label>
+                <input type="text" id="nombreEstudiante" name="nombreEstudiante" value="<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Email</label>
-                <input type="text" name="emailEstudiante" value="<?= Security::escapeHtml($estudiante['emailEstudiante']) ?>">
+                <label for="emailEstudiante">Email</label>
+                <input type="text" id="emailEstudiante" name="emailEstudiante" value="<?= Security::escapeHtml($estudiante['emailEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Nivel</label>
+                <label for="curso">Nivel</label>
                 <select name="curso" id="curso" onchange="filtrarCiclos()">
                     <option value="Grado Medio" <?php if ($estudiante['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
                     <option value="Grado Superior" <?php if ($estudiante['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
@@ -62,7 +62,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label>Ciclo Formativo</label>
+                <label for="idCiclo">Ciclo Formativo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona un ciclo --</option>
                 </select>
@@ -70,40 +70,40 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label>DNI</label>
-                <input type="text" name="dniEstudiante" value="<?= Security::escapeHtml($estudiante['dniEstudiante']) ?>">
+                <label for="dniEstudiante">DNI</label>
+                <input type="text" id="dniEstudiante" name="dniEstudiante" value="<?= Security::escapeHtml($estudiante['dniEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Teléfono</label>
-                <input type="text" name="telefonoEstudiante" value="<?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?>">
+                <label for="telefonoEstudiante">Teléfono</label>
+                <input type="text" id="telefonoEstudiante" name="telefonoEstudiante" value="<?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Fecha Nacimiento</label>
-                <input type="date" name="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($estudiante['fechaNacimientoEstudiante']) ?>">
+                <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
+                <input type="date" id="fechaNacimientoEstudiante" name="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($estudiante['fechaNacimientoEstudiante']) ?>">
             </div>
 
             <div class="campo ancho-total">
-                <label>Dirección</label>
-                <input type="text" name="direccionEstudiante" value="<?= Security::escapeHtml($estudiante['direccionEstudiante']) ?>">
+                <label for="direccionEstudiante">Dirección</label>
+                <input type="text" id="direccionEstudiante" name="direccionEstudiante" value="<?= Security::escapeHtml($estudiante['direccionEstudiante']) ?>">
             </div>
 
             <div class="campo">
-                <label>Ciudad</label>
-                <input type="text" name="ciudadEstudiante" value="<?= Security::escapeHtml($estudiante['ciudadEstudiante']) ?>">
+                <label for="ciudadEstudiante">Ciudad</label>
+                <input type="text" id="ciudadEstudiante" name="ciudadEstudiante" value="<?= Security::escapeHtml($estudiante['ciudadEstudiante']) ?>">
             </div>
 
             <div class="campo">
-                <label>Código Postal</label>
-                <input type="text" name="codigoPostalEstudiante" value="<?= Security::escapeHtml($estudiante['codigoPostalEstudiante']) ?>">
+                <label for="codigoPostalEstudiante">Código Postal</label>
+                <input type="text" id="codigoPostalEstudiante" name="codigoPostalEstudiante" value="<?= Security::escapeHtml($estudiante['codigoPostalEstudiante']) ?>">
             </div>
 
             <div class="campo ancho-total">
-                <label>Observaciones</label>
-                <textarea name="observacionesEstudiante"><?= Security::escapeHtml($estudiante['observacionesEstudiante']) ?></textarea>
+                <label for="observacionesEstudiante">Observaciones</label>
+                <textarea id="observacionesEstudiante" name="observacionesEstudiante"><?= Security::escapeHtml($estudiante['observacionesEstudiante']) ?></textarea>
             </div>
         </div>
 
@@ -135,3 +135,5 @@ $(function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
+
+?>

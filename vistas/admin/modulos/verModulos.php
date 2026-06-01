@@ -36,17 +36,17 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">
     <div class="caja caja-libre espacio-grande">
         <div class="campo relleno">
-            <label>FILTRAR POR CICLO:</label>
+            <label for="selectFiltroCiclo">FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaModulos')">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
@@ -83,16 +83,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $nombresProfesores = listarNombresProfesoresDeModulo($moduloIndividual['idModulo']);
                     ?>
                     <tr>
-                        <td><?= $moduloIndividual['idModulo'] ?></td>
+                        <td><?= Security::escapeHtml($moduloIndividual['idModulo']) ?></td>
                         <td>
                             <span class="texto-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
                         </td>
-                        <td><b><?= strtoupper($moduloIndividual['nombreModulo']) ?></b></td>
+                        <td><b><?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8')) ?></b></td>
                         <td>
                             <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
-                                <b>[<?= $moduloIndividual['abreviaturaCiclo'] ?>]</b> 
+                                <b>[<?= Security::escapeHtml($moduloIndividual['abreviaturaCiclo']) ?>]</b> 
                             <?php } ?>
-                            <?= strtoupper($moduloIndividual['nombreCiclo']) ?>
+                            <?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreCiclo'], 'UTF-8')) ?>
                         </td>
                         <td>
                             <?php if (empty($nombresProfesores)) { ?>
@@ -105,25 +105,25 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 $listaNombres = '';
                                 foreach ($nombresProfesores as $np) {
                                     if ($listaNombres) $listaNombres .= ', ';
-                                    $listaNombres .= strtoupper($np);
+                                    $listaNombres .= mb_strtoupper($np, 'UTF-8');
                                 }
-                                echo $listaNombres;
+                                echo Security::escapeHtml($listaNombres);
                                 ?>
                                 </div>
                             <?php } ?>
                         </td>
-                        <td><?= $moduloIndividual['horasMaximas'] ?> H</td>
+                        <td><?= Security::escapeHtml($moduloIndividual['horasMaximas']) ?> H</td>
                         <td>
                             <div class="botones-accion">
-                                <a href="asignarProfesorModulo.php?idModulo=<?= $moduloIndividual['idModulo'] ?>"
-                                   class="btn-accion btn-ver">
+                                <a href="asignarProfesorModulo.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"
+                                   class="btn-accion btn-ver" title="Asignar Profesor">
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
-                                <a href="modificarModulos.php?idModulo=<?= $moduloIndividual['idModulo'] ?>" 
-                                   class="btn-accion btn-editar">
+                                <a href="modificarModulos.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>" 
+                                   class="btn-accion btn-editar" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="borrarModulo.php?id=<?= $moduloIndividual['idModulo'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="borrarModulo.php?id=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>" class="btn-accion btn-eliminar" title="Eliminar"><i class="fas fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>
@@ -134,13 +134,5 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
-
-             <?php } ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 

@@ -52,7 +52,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
 <div class="panel margen-abajo">
     <div class="caja caja-libre espacio-grande">
         <div class="campo relleno">
-            <label>FILTRAR POR NIVEL:</label>
+            <label for="selectFiltroNivel">FILTRAR POR NIVEL:</label>
             <select id="selectFiltroNivel" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Niveles --</option>
                 <?php foreach ($listaNiveles as $nivelFiltro) { ?>
@@ -63,7 +63,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
             </select>
         </div>
         <div class="campo relleno">
-            <label>FILTRAR POR CICLO:</label>
+            <label for="selectFiltroCiclo">FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>

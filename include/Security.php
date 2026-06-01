@@ -215,7 +215,7 @@ class Security {
      * Escapa para HTML
      */
     public static function escapeHtml($value) {
-        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
     }
 
     /**

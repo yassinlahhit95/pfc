@@ -76,18 +76,18 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
 
         <div class="campo">
-            <label>Nota (0-10)</label>
-            <input type="text" name="nota" value="<?= $calificacion['nota'] ?? '' ?>" placeholder="Ej: 7.5">
+            <label for="nota">Nota (0-10)</label>
+            <input type="text" id="nota" name="nota" value="<?= $calificacion['nota'] ?? '' ?>" placeholder="Ej: 7.5">
         </div>
 
         <div class="campo">
-            <label>Observaciones</label>
-            <textarea name="observaciones" rows="3"><?= $calificacion['observaciones'] ?? '' ?></textarea>
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" name="observaciones" rows="3"><?= $calificacion['observaciones'] ?? '' ?></textarea>
         </div>
 
         <div class="campo">
-            <label class="campo-checkbox">
-                <input type="checkbox" name="notificarEstudiante" value="1" checked>
+            <label class="campo-checkbox" for="notificarEstudiante">
+                <input type="checkbox" id="notificarEstudiante" name="notificarEstudiante" value="1" checked>
                 <b>Notificar al estudiante (Email + Push)</b>
             </label>
         </div>

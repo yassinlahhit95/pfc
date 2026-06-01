@@ -37,52 +37,52 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
         <div class="formulario">
             <div class="campo">
-                <label>Nombre Completo</label>
-                <input type="text" name="nombreProfesor" value="<?= $datos['nombreProfesor'] ?? '' ?>">
+                <label for="nombreProfesor">Nombre Completo</label>
+                <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= $datos['nombreProfesor'] ?? '' ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Email</label>
-                <input type="text" name="emailProfesor" value="<?= $datos['emailProfesor'] ?? '' ?>">
+                <label for="emailProfesor">Email</label>
+                <input type="text" id="emailProfesor" name="emailProfesor" value="<?= $datos['emailProfesor'] ?? '' ?>">
                 
             </div>
 
             <div class="campo">
-                <label>DNI</label>
-                <input type="text" name="dniProfesor" value="<?= $datos['dniProfesor'] ?? '' ?>">
+                <label for="dniProfesor">DNI</label>
+                <input type="text" id="dniProfesor" name="dniProfesor" value="<?= $datos['dniProfesor'] ?? '' ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Teléfono</label>
-                <input type="text" name="telefonoProfesor" value="<?= $datos['telefonoProfesor'] ?? '' ?>">
+                <label for="telefonoProfesor">Teléfono</label>
+                <input type="text" id="telefonoProfesor" name="telefonoProfesor" value="<?= $datos['telefonoProfesor'] ?? '' ?>">
                 
             </div>
 
             <div class="campo ancho-total">
-                <label>Dirección</label>
-                <input type="text" name="direccionProfesor" value="<?= $datos['direccionProfesor'] ?? '' ?>">
+                <label for="direccionProfesor">Dirección</label>
+                <input type="text" id="direccionProfesor" name="direccionProfesor" value="<?= $datos['direccionProfesor'] ?? '' ?>">
             </div>
 
             <div class="campo">
-                <label>Ciudad</label>
-                <input type="text" name="ciudadProfesor" value="<?= $datos['ciudadProfesor'] ?? '' ?>">
+                <label for="ciudadProfesor">Ciudad</label>
+                <input type="text" id="ciudadProfesor" name="ciudadProfesor" value="<?= $datos['ciudadProfesor'] ?? '' ?>">
             </div>
 
             <div class="campo">
-                <label>Código Postal</label>
-                <input type="text" name="codigoPostalProfesor" value="<?= $datos['codigoPostalProfesor'] ?? '' ?>">
+                <label for="codigoPostalProfesor">Código Postal</label>
+                <input type="text" id="codigoPostalProfesor" name="codigoPostalProfesor" value="<?= $datos['codigoPostalProfesor'] ?? '' ?>">
             </div>
 
             <div class="campo">
-                <label>Fecha de Nacimiento</label>
-                <input type="date" name="fechaNacimientoProfesor" value="<?= $datos['fechaNacimientoProfesor'] ?? '' ?>">
+                <label for="fechaNacimientoProfesor">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimientoProfesor" name="fechaNacimientoProfesor" value="<?= $datos['fechaNacimientoProfesor'] ?? '' ?>">
             </div>
 
             <div class="campo ancho-total">
-                <label>Observaciones</label>
-                <textarea name="observacionesProfesor" rows="3"><?= $datos['observacionesProfesor'] ?? '' ?></textarea>
+                <label for="observacionesProfesor">Observaciones</label>
+                <textarea id="observacionesProfesor" name="observacionesProfesor" rows="3"><?= $datos['observacionesProfesor'] ?? '' ?></textarea>
             </div>
         </div>
 

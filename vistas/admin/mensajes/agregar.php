@@ -68,8 +68,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php if ($tipoDeDestinatario == 'estudiante') { ?>
         <div class="form-cols margen-abajo">
             <div class="campo">
-                <label class="texto-negrita">2. Filtrar por Ciclo (Opcional):</label>
-                <select onchange="window.location.href='?tipoDestinatario=estudiante&idCiclo='+this.value">
+                <label class="texto-negrita" for="filtroCiclo">2. Filtrar por Ciclo (Opcional):</label>
+                <select id="filtroCiclo" onchange="window.location.href='?tipoDestinatario=estudiante&idCiclo='+this.value">
                     <option value="">-- Todos los estudiantes --</option>
                     <?php foreach ($listaDeCiclos as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= ($idCicloSeleccionado == $cicloItem['idCiclo'] ? 'selected' : '') ?>>
@@ -80,8 +80,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
-                <label class="texto-negrita">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><span class="texto-suave">Deja en blanco para enviar a todo el ciclo.</span><?php } ?></label>
-                <select name="idEstudiante" class="ancho-total">
+                <label class="texto-negrita" for="idEstudiante">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><span class="texto-suave">Deja en blanco para enviar a todo el ciclo.</span><?php } ?></label>
+                <select id="idEstudiante" name="idEstudiante" class="ancho-total">
                     <option value="">-- Todos los del ciclo seleccionado --</option>
                     <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
                         <?php $selected = (isset($datos_form['idEstudiante']) && $datos_form['idEstudiante'] == $estudianteItem['idEstudiante']) ? 'selected' : ''; ?>
@@ -95,8 +95,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <?php } else { ?>
         <div class="campo margen-abajo">
-            <label class="texto-negrita">2. Destinatario Específico</label>
-            <select name="idProfesor" class="ancho-total">
+            <label class="texto-negrita" for="idProfesor">2. Destinatario Específico</label>
+            <select id="idProfesor" name="idProfesor" class="ancho-total">
                 <option value="">-- Seleccionar Nombre --</option>
                 <?php foreach ($listaDeProfesores as $profesorItem) { ?>
                     <?php $selected = (isset($datos_form['idProfesor']) && $datos_form['idProfesor'] == $profesorItem['idProfesor']) ? 'selected' : ''; ?>
@@ -110,14 +110,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php } ?>
 
         <div class="campo">
-            <label class="texto-negrita">Asunto del Mensaje</label>
-            <input type="text" name="asunto" class="ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
+            <label class="texto-negrita" for="asunto">Asunto del Mensaje</label>
+            <input type="text" id="asunto" name="asunto" class="ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
             
         </div>
 
         <div class="campo margen-arriba">
-            <label class="texto-negrita">Cuerpo del Mensaje</label>
-            <textarea name="descripcion" rows="6" class="ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
+            <label class="texto-negrita" for="descripcion">Cuerpo del Mensaje</label>
+            <textarea id="descripcion" name="descripcion" rows="6" class="ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
             
         </div>
 

@@ -57,57 +57,57 @@ include_once __DIR__ . "/../comunes/nav.php";
         
         <div class="formulario">
             <div class="campo">
-                <label>Nombre Completo</label>
-                <input type="text" name="nombreProfesor" value="<?= Security::escapeHtml($profesor['nombreProfesor']) ?>">
+                <label for="nombreProfesor">Nombre Completo</label>
+                <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= Security::escapeHtml($profesor['nombreProfesor']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Email</label>
-                <input type="email" name="emailProfesor" value="<?= Security::escapeHtml($profesor['emailProfesor']) ?>">
+                <label for="emailProfesor">Email</label>
+                <input type="email" id="emailProfesor" name="emailProfesor" value="<?= Security::escapeHtml($profesor['emailProfesor']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>DNI</label>
-                <input type="text" name="dniProfesor" value="<?= Security::escapeHtml($profesor['dniProfesor']) ?>">
+                <label for="dniProfesor">DNI</label>
+                <input type="text" id="dniProfesor" name="dniProfesor" value="<?= Security::escapeHtml($profesor['dniProfesor']) ?>">
                 
             </div>
 
             <div class="campo">
-                <label>Teléfono</label>
-                <input type="text" name="telefonoProfesor" value="<?= Security::escapeHtml($profesor['telefonoProfesor']) ?>">
+                <label for="telefonoProfesor">Teléfono</label>
+                <input type="text" id="telefonoProfesor" name="telefonoProfesor" value="<?= Security::escapeHtml($profesor['telefonoProfesor']) ?>">
                 
             </div>
 
             <div class="campo ancho-total">
-                <label>Dirección</label>
-                <input type="text" name="direccionProfesor" value="<?= Security::escapeHtml($profesor['direccionProfesor']) ?>">
+                <label for="direccionProfesor">Dirección</label>
+                <input type="text" id="direccionProfesor" name="direccionProfesor" value="<?= Security::escapeHtml($profesor['direccionProfesor']) ?>">
             </div>
 
             <div class="campo">
-                <label>Ciudad</label>
-                <input type="text" name="ciudadProfesor" value="<?= Security::escapeHtml($profesor['ciudadProfesor']) ?>">
+                <label for="ciudadProfesor">Ciudad</label>
+                <input type="text" id="ciudadProfesor" name="ciudadProfesor" value="<?= Security::escapeHtml($profesor['ciudadProfesor']) ?>">
             </div>
 
             <div class="campo">
-                <label>Código Postal</label>
-                <input type="text" name="codigoPostalProfesor" value="<?= Security::escapeHtml($profesor['codigoPostalProfesor']) ?>">
+                <label for="codigoPostalProfesor">Código Postal</label>
+                <input type="text" id="codigoPostalProfesor" name="codigoPostalProfesor" value="<?= Security::escapeHtml($profesor['codigoPostalProfesor']) ?>">
             </div>
 
             <div class="campo">
-                <label>Fecha de Nacimiento</label>
-                <input type="date" name="fechaNacimientoProfesor" value="<?= Security::escapeHtml($profesor['fechaNacimientoProfesor']) ?>">
+                <label for="fechaNacimientoProfesor">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimientoProfesor" name="fechaNacimientoProfesor" value="<?= Security::escapeHtml($profesor['fechaNacimientoProfesor']) ?>">
             </div>
 
             <div class="campo">
-                <label>Fecha de Alta (en centro)</label>
-                <input type="date" name="fechaAltaProfesor" value="<?= Security::escapeHtml($profesor['fechaAltaProfesor']) ?>">
+                <label for="fechaAltaProfesor">Fecha de Alta (en centro)</label>
+                <input type="date" id="fechaAltaProfesor" name="fechaAltaProfesor" value="<?= Security::escapeHtml($profesor['fechaAltaProfesor']) ?>">
             </div>
 
             <div class="campo ancho-total">
-                <label>Observaciones / Curriculum Vitae (Resumen)</label>
-                <textarea name="observacionesProfesor" rows="3"><?= Security::escapeHtml($profesor['observacionesProfesor']) ?></textarea>
+                <label for="observacionesProfesor">Observaciones / Curriculum Vitae (Resumen)</label>
+                <textarea id="observacionesProfesor" name="observacionesProfesor" rows="3"><?= Security::escapeHtml($profesor['observacionesProfesor']) ?></textarea>
             </div>
         </div>
 

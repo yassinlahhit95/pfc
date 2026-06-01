@@ -91,38 +91,38 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>" data-drop-carpeta="0" title="Arrastra aquí para mover a la raíz">Raíz</a>
     <?php foreach ($ruta as $r): ?>
       <span class="sep">/</span>
-      <?php if ($r['idCarpeta'] =<?= Security::escapeHtml($carpetaActual): ) ?>
-        <span class="actual"><?= Security::escapeHtml(htmlspecialchars($r['nombre'])) ?></span>
+      <?php if ($r['idCarpeta'] == $carpetaActual): ?>
+        <span class="actual"><?= Security::escapeHtml($r['nombre']) ?></span>
       <?php else: ?>
-        <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($r['idCarpeta'] ) ?>" data-drop-carpeta="<?= Security::escapeHtml($r['idCarpeta'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($r['nombre'])) ?></a>
+        <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($r['idCarpeta']) ?>" data-drop-carpeta="<?= Security::escapeHtml($r['idCarpeta']) ?>"><?= Security::escapeHtml($r['nombre']) ?></a>
       <?php endif; ?>
     <?php endforeach; ?>
   <?php endif; ?>
 </div>
 
-<?php if ($exito): ?><div class="alerta-exito" style="margin-bottom:16px;"><i class="fas fa-check-circle"></i><p><?= Security::escapeHtml(htmlspecialchars($exito)) ?></p></div><?php endif; ?>
-<?php if ($errores): ?><div class="alerta-error" style="margin-bottom:16px;"><i class="fas fa-exclamation-circle"></i><p><?= Security::escapeHtml(htmlspecialchars($errores)) ?></p></div><?php endif; ?>
+<?php if ($exito): ?><div class="alerta-exito" style="margin-bottom:16px;"><i class="fas fa-check-circle"></i><p><?= Security::escapeHtml($exito) ?></p></div><?php endif; ?>
+<?php if ($errores): ?><div class="alerta-error" style="margin-bottom:16px;"><i class="fas fa-exclamation-circle"></i><p><?= Security::escapeHtml($errores) ?></p></div><?php endif; ?>
 
 <!-- Carpetas -->
 <?php if (!empty($carpetas)): ?>
 <div class="recurso-carpetas-grid">
   <?php foreach ($carpetas as $c): ?>
-  <div class="recurso-carpeta<?= Security::escapeHtml($c['fijado'] ? ' fijado' : '') ?>" data-drop-carpeta="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"<?php if ($c['idProfesor'] =<?= Security::escapeHtml($idProfesor): ) ?> draggable="true" data-drag-tipo="carpeta" data-drag-id="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"<?php endif; ?>>
-    <a class="recurso-carpeta-link" draggable="false" href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>">
-      <div class="recurso-carpeta-icono" style="background:<?= Security::escapeHtml(htmlspecialchars($c['color'])) ?>"><i class="fas <?= Security::escapeHtml(htmlspecialchars($c['icono'])) ?>"></i></div>
-      <span class="recurso-carpeta-nombre"><?php if ($c['fijado']): ?><i class="fas fa-thumbtack recurso-pin-ind" title="Fijado"></i> <?php endif; ?><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></span>
-      <span class="recurso-carpeta-meta"><?= Security::escapeHtml($c['totalSubcarpetas'] ) ?> carpetas · <?= Security::escapeHtml($c['totalArchivos'] ) ?> archivos</span>
+  <div class="recurso-carpeta<?= $c['fijado'] ? ' fijado' : '' ?>" data-drop-carpeta="<?= Security::escapeHtml($c['idCarpeta']) ?>"<?php if ($c['idProfesor'] == $idProfesor): ?> draggable="true" data-drag-tipo="carpeta" data-drag-id="<?= Security::escapeHtml($c['idCarpeta']) ?>"<?php endif; ?>>
+    <a class="recurso-carpeta-link" draggable="false" href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta']) ?>">
+      <div class="recurso-carpeta-icono" style="background:<?= Security::escapeHtml($c['color']) ?>"><i class="fas <?= Security::escapeHtml($c['icono']) ?>"></i></div>
+      <span class="recurso-carpeta-nombre"><?php if ($c['fijado']): ?><i class="fas fa-thumbtack recurso-pin-ind" title="Fijado"></i> <?php endif; ?><?= Security::escapeHtml($c['nombre']) ?></span>
+      <span class="recurso-carpeta-meta"><?= Security::escapeHtml($c['totalSubcarpetas']) ?> carpetas · <?= Security::escapeHtml($c['totalArchivos']) ?> archivos</span>
     </a>
     <div class="recurso-carpeta-acciones">
       <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
       <div class="recurso-menu">
-        <a class="recurso-menu-item" href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><i class="fas fa-folder-open"></i> Abrir</a>
-        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>')"><i class="fas fa-link"></i> Copiar enlace</button>
-        <?php if ($c['idProfesor'] =<?= Security::escapeHtml($idProfesor): ) ?>
-        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.editarCarpeta(<?= Security::escapeHtml($c['idCarpeta'] ) ?>, <?= Security::escapeHtml(htmlspecialchars(json_encode($c['nombre']), ENT_QUOTES)) ?>, '<?= Security::escapeHtml($c['color'] ) ?>', '<?= Security::escapeHtml($c['icono'] ) ?>')"><i class="fas fa-pen"></i> Renombrar / Editar</button>
-        <a class="recurso-menu-item" href="../../../controladores/profesores/aula/togglePin.php?tipo=carpeta&id=<?= Security::escapeHtml($c['idCarpeta'] ) ?>&modulo=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($carpetaActual ) ?>" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-thumbtack"></i> <?= Security::escapeHtml($c['fijado'] ? 'Quitar fijado' : 'Fijar') ?></a>
+        <a class="recurso-menu-item" href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta']) ?>"><i class="fas fa-folder-open"></i> Abrir</a>
+        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta']) ?>')"><i class="fas fa-link"></i> Copiar enlace</button>
+        <?php if ($c['idProfesor'] == $idProfesor): ?>
+        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.editarCarpeta(<?= Security::escapeHtml($c['idCarpeta']) ?>, <?= Security::escapeHtml(json_encode($c['nombre'])) ?>, '<?= Security::escapeHtml($c['color']) ?>', '<?= Security::escapeHtml($c['icono']) ?>')"><i class="fas fa-pen"></i> Renombrar / Editar</button>
+        <a class="recurso-menu-item" href="../../../controladores/profesores/aula/togglePin.php?tipo=carpeta&id=<?= Security::escapeHtml($c['idCarpeta']) ?>&modulo=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($carpetaActual) ?>" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-thumbtack"></i> <?= $c['fijado'] ? 'Quitar fijado' : 'Fijar' ?></a>
         <div class="recurso-menu-sep"></div>
-        <a class="recurso-menu-item peligro" href="../../../controladores/profesores/aula/borrarCarpeta.php?id=<?= Security::escapeHtml($c['idCarpeta'] ) ?>&modulo=<?= Security::escapeHtml($idModulo ) ?>" onclick="return confirm('¿Mover esta carpeta y su contenido a la papelera?') && AulaRecursos.loaderGo()"><i class="fas fa-trash"></i> Eliminar</a>
+        <a class="recurso-menu-item peligro" href="../../../controladores/profesores/aula/borrarCarpeta.php?id=<?= Security::escapeHtml($c['idCarpeta']) ?>&modulo=<?= Security::escapeHtml($idModulo) ?>" onclick="return confirm('¿Mover esta carpeta y su contenido a la papelera?') && AulaRecursos.loaderGo()"><i class="fas fa-trash"></i> Eliminar</a>
         <?php endif; ?>
       </div>
     </div>
