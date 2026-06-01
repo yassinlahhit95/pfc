@@ -1043,3 +1043,185 @@
 .btn-danger-modern.btn-small,
 .btn-pequeno.color-error,
 .btn-small.color-error           { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+
+/* ============================================================
+   AULA DIGITAL · MENÚ CONTEXTUAL, FIJADOS, LOADER Y TOAST
+   ============================================================ */
+.recurso-menu-wrap { position: relative; display: inline-block; }
+.recurso-menu-btn {
+  width: 34px; height: 34px; border-radius: 9px; border: 1px solid #e2e8f0;
+  background: #fff; color: #475569; cursor: pointer; font-size: .95rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.recurso-menu-btn:hover { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+.recurso-carpeta-acciones .recurso-menu-btn { width: 32px; height: 32px; background: #fff; border: 1px solid #e2e8f0; color: #475569; }
+.recurso-carpeta-acciones .recurso-menu-btn:hover { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+
+.recurso-menu {
+  position: fixed; z-index: 1200; display: none; min-width: 210px;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 6px;
+  box-shadow: 0 16px 40px rgba(2, 8, 23, .18);
+  animation: recursoMenuIn .14s ease;
+}
+.recurso-menu.abierto { display: block; }
+@keyframes recursoMenuIn { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
+.recurso-menu-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 9px 12px; border: none; background: none; cursor: pointer;
+  font-size: .85rem; color: #334155; text-decoration: none; border-radius: 8px;
+  text-align: left; transition: background .12s ease, color .12s ease;
+}
+.recurso-menu-item i { width: 16px; text-align: center; color: #64748b; }
+.recurso-menu-item:hover { background: #f0f9ff; color: #0369a1; }
+.recurso-menu-item:hover i { color: #0ea5e9; }
+.recurso-menu-item.peligro { color: #dc2626; }
+.recurso-menu-item.peligro i { color: #ef4444; }
+.recurso-menu-item.peligro:hover { background: #fef2f2; color: #b91c1c; }
+.recurso-menu-sep { height: 1px; background: #f1f5f9; margin: 5px 8px; }
+
+/* Botón de opciones de carpeta siempre visible */
+.recurso-carpeta-acciones { opacity: 1 !important; top: 8px; right: 8px; }
+
+/* Indicador de fijado (pin) */
+.recurso-pin-ind { color: #0ea5e9; font-size: .72rem; transform: rotate(20deg); }
+.recurso-carpeta.fijado { border-color: #bae6fd; box-shadow: 0 0 0 1px #bae6fd inset, 0 1px 2px rgba(15, 23, 42, .04); }
+
+/* Indicador de carga (spinner moderno) */
+.recurso-loader {
+  position: fixed; inset: 0; z-index: 2000; display: none;
+  align-items: center; justify-content: center;
+  background: rgba(15, 23, 42, .45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+.recurso-loader.activo { display: flex; }
+.recurso-loader-caja {
+  background: #fff; border-radius: 16px; padding: 26px 34px; text-align: center;
+  box-shadow: 0 20px 50px rgba(2, 8, 23, .3);
+  animation: recursoFadeUp .25s ease;
+}
+.recurso-loader-caja p { margin: 14px 0 0; font-size: .85rem; color: #475569; font-weight: 600; }
+.recurso-spinner {
+  width: 46px; height: 46px; margin: 0 auto; border-radius: 50%;
+  border: 4px solid #e0f2fe; border-top-color: #0ea5e9;
+  animation: recursoSpin .8s linear infinite;
+}
+@keyframes recursoSpin { to { transform: rotate(360deg); } }
+
+/* Aviso flotante (toast) */
+.recurso-toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+  background: #0f172a; color: #fff; padding: 12px 18px; border-radius: 10px;
+  font-size: .85rem; box-shadow: 0 12px 30px rgba(2, 8, 23, .35);
+  opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease;
+  z-index: 2100; display: flex; align-items: center; gap: 8px;
+}
+.recurso-toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .recurso-spinner { animation-duration: 1.6s; }
+  .recurso-menu, .recurso-loader-caja { animation: none; }
+}
+
+/* ============================================================
+   AULA DIGITAL · DRAG & DROP, EMPTY-STATE Y PULIDO RESPONSIVE
+   ============================================================ */
+/* Elemento que se está arrastrando */
+[data-drag-id] { cursor: grab; }
+.arrastrando { opacity: .45 !important; }
+tr.arrastrando td { background: #e0f2fe; }
+
+/* Zona de destino resaltada al arrastrar encima */
+.soltar-aqui { outline: 2px dashed #0ea5e9 !important; outline-offset: 2px; }
+.recurso-carpeta.soltar-aqui { background: #f0f9ff; transform: translateY(-4px); box-shadow: 0 14px 28px rgba(14,165,233,.22); }
+.recurso-breadcrumb a.soltar-aqui { background: #e0f2fe; border-radius: 6px; }
+
+/* Empty-state profesional */
+.recurso-vacio { text-align: center; padding: 56px 20px; color: #94a3b8; }
+.recurso-vacio-ilus {
+  width: 92px; height: 92px; margin: 0 auto 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #e0f2fe, #ede9fe); color: #0ea5e9; font-size: 2.4rem;
+  box-shadow: inset 0 0 0 6px rgba(255,255,255,.6);
+  animation: recursoFlotar 3s ease-in-out infinite;
+}
+@keyframes recursoFlotar { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+.recurso-vacio h3 { margin: 0 0 6px; color: #334155; font-size: 1.05rem; }
+.recurso-vacio p { margin: 0 0 18px; font-size: .85rem; line-height: 1.6; }
+.recurso-vacio-acciones { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* Animación de los avisos de éxito/error */
+.alerta-exito, .alerta-error { animation: recursoFadeUp .35s ease; overflow: hidden; }
+.alerta-exito.ocultar { animation: recursoSalida .4s ease forwards; }
+@keyframes recursoSalida { to { opacity: 0; transform: translateY(-8px); max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; } }
+
+/* Responsive: tablet y móvil */
+@media (max-width: 900px) {
+  .recurso-carpetas-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+@media (max-width: 640px) {
+  .cabecera { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .cabecera .grupo-botones { width: 100%; flex-wrap: wrap; }
+  .recurso-lista th:nth-child(3), .recurso-lista td:nth-child(3) { display: none; } /* ocultar columna Profesor */
+  .recurso-menu { min-width: 180px; }
+}
+
+/* ============================================================
+   AULA DIGITAL · RESPONSIVE CONSOLIDADO (escritorio/tablet/móvil)
+   Bloque final = autoridad sobre las reglas responsive previas.
+   ============================================================ */
+
+/* La barra de acciones de la cabecera no se desborda */
+.cabecera { gap: 12px; flex-wrap: wrap; }
+.cabecera .grupo-botones { margin-top: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Permitir scroll horizontal seguro de la lista en pantallas estrechas */
+.recurso-lista-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ---- TABLET (≤ 1024px) ---- */
+@media (max-width: 1024px) {
+  .aula-recursos-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .recurso-carpetas-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .cabecera h1 { font-size: 1.4rem; }
+}
+
+/* ---- MÓVIL (≤ 640px) ---- */
+@media (max-width: 640px) {
+  .cabecera { flex-direction: column; align-items: stretch; }
+  .cabecera .grupo-botones { width: 100%; }
+  .cabecera .grupo-botones .boton-primario,
+  .cabecera .grupo-botones .boton-secundario { flex: 1 1 auto; justify-content: center; }
+
+  /* Tarjetas de ciclo/módulo a una columna */
+  .aula-recursos-grid { grid-template-columns: 1fr; }
+  .recurso-carpetas-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+
+  /* Lista de archivos: ocultar columnas secundarias, dejar Nombre + Acciones */
+  .recurso-lista th:nth-child(2), .recurso-lista td:nth-child(2),  /* Fecha */
+  .recurso-lista th:nth-child(3), .recurso-lista td:nth-child(3) { /* Profesor */
+    display: none;
+  }
+  .recurso-lista th, .recurso-lista td { padding: 10px 8px; font-size: .8rem; }
+
+  /* Barra de almacenamiento y migas más compactas */
+  .recurso-breadcrumb { font-size: .78rem; gap: 4px; }
+
+  /* Menú contextual ocupa casi todo el ancho, anclado abajo */
+  .recurso-menu { min-width: 0; width: calc(100vw - 24px); left: 12px !important; }
+
+  /* Modales a pantalla casi completa */
+  .recurso-visor { width: 100% !important; max-width: 100% !important; border-radius: 12px; }
+  .recurso-visor[style*="height:auto"] { max-width: 100% !important; }
+
+  /* Empty-state más compacto */
+  .recurso-vacio { padding: 38px 14px; }
+  .recurso-vacio-ilus { width: 76px; height: 76px; font-size: 2rem; }
+  .recurso-vacio-acciones { flex-direction: column; }
+  .recurso-vacio-acciones .boton-primario,
+  .recurso-vacio-acciones .boton-secundario { width: 100%; justify-content: center; }
+}
+
+/* ---- MÓVIL PEQUEÑO (≤ 400px) ---- */
+@media (max-width: 400px) {
+  .recurso-carpetas-grid { grid-template-columns: 1fr 1fr; }
+  .cabecera h1 { font-size: 1.2rem; }
+}

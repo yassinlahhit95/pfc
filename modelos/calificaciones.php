@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 require_once __DIR__ . "/modulos.php";
 require_once __DIR__ . "/estudiantes.php";

@@ -16,25 +16,16 @@ if (!$modulo) { header("Location: index.php"); exit; }
 
 $carpetas  = listarCarpetasPorModuloAula($idModulo);
 $archivos  = listarArchivosPorModuloAula($idModulo);
-$tareas    = listarTodasTareasPorModuloAula($idModulo);
 $sesiones  = listarSesionesPorModulo($idModulo);
 
 // PAGINACIÓN
 $itemsPorPagina = 10;
 $paginaArchivos = max(1, intval($_GET['pag_arch'] ?? 1));
-$paginaTareas   = max(1, intval($_GET['pag_tareas'] ?? 1));
 $busquedaArchivos = $_GET['search_arch'] ?? '';
-$busquedaTareas = $_GET['search_tareas'] ?? '';
 
 // Filtrar archivos por búsqueda
 $archivosFiltered = array_filter($archivos, function($a) use ($busquedaArchivos) {
     return empty($busquedaArchivos) || stripos($a['nombreOriginal'], $busquedaArchivos) !== false;
-});
-
-// Filtrar tareas por búsqueda
-$tareasFiltered = array_filter($tareas, function($t) use ($busquedaTareas) {
-    return empty($busquedaTareas) || stripos($t['titulo'], $busquedaTareas) !== false ||
-           stripos($t['descripcion'] ?? '', $busquedaTareas) !== false;
 });
 
 // Paginación archivos
@@ -43,13 +34,6 @@ $totalPaginasArchivos = ceil($totalArquivos / $itemsPorPagina);
 $paginaArchivos = min($paginaArchivos, max(1, $totalPaginasArchivos));
 $offsetArchivos = ($paginaArchivos - 1) * $itemsPorPagina;
 $archivosPaginados = array_slice($archivosFiltered, $offsetArchivos, $itemsPorPagina);
-
-// Paginación tareas
-$totalTareas = count($tareasFiltered);
-$totalPaginasTareas = ceil($totalTareas / $itemsPorPagina);
-$paginaTareas = min($paginaTareas, max(1, $totalPaginasTareas));
-$offsetTareas = ($paginaTareas - 1) * $itemsPorPagina;
-$tareasPaginadas = array_slice($tareasFiltered, $offsetTareas, $itemsPorPagina);
 
 $archivosPorCarpeta = [];
 $archivosSueltos    = [];
@@ -100,9 +84,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     <button onclick="abrirModal('modalSubir')" class="btn-modern btn-secondary-modern btn-small">
       <i class="fas fa-cloud-upload-alt"></i> Subir Archivos
     </button>
-    <button onclick="abrirModal('modalTarea')" class="btn-modern btn-secondary-modern btn-small">
-      <i class="fas fa-plus"></i> Nueva Tarea
-    </button>
     <button onclick="abrirModal('modalSesion')" class="btn-modern btn-primary-modern btn-small">
       <i class="fas fa-video"></i> Nueva Sesión
     </button>
@@ -123,9 +104,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="tabs-modern">
   <button class="tab-modern active" onclick="cambiarTab('archivos', this)">
     <i class="fas fa-folder"></i> Archivos
-  </button>
-  <button class="tab-modern" onclick="cambiarTab('tareas', this)">
-    <i class="fas fa-tasks"></i> Tareas
   </button>
   <button class="tab-modern" onclick="cambiarTab('sesiones', this)">
     <i class="fas fa-video"></i> Sesiones Vivas
@@ -258,98 +236,6 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<!-- TAB: TAREAS -->
-<div id="tab-tareas" style="display:none;">
-  <div class="panel-modern">
-    <div class="panel-header-modern">
-      <h3 class="panel-titulo-modern"><i class="fas fa-tasks" style="color:#8b5cf6;"></i> Tareas</h3>
-      <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
-        <?= count($tareas) ?>
-      </span>
-    </div>
-    <div class="panel-content-modern">
-      <?php if (empty($tareas)): ?>
-      <div class="empty-state-modern">
-        <i class="fas fa-clipboard-list empty-state-icon"></i>
-        <p class="empty-state-text">No hay tareas. Crea la primera.</p>
-        <div class="empty-state-cta">
-          <button onclick="document.getElementById('modalTarea').style.display='flex'" class="btn-modern btn-primary-modern">
-            <i class="fas fa-plus"></i> Crear Tarea
-          </button>
-        </div>
-      </div>
-      <?php else: ?>
-      <div>
-        <?php foreach ($tareasPaginadas as $tarea):
-          $totalEst = contarEstudiantesCicloAula($modulo['idCiclo']);
-          $porcentaje = $totalEst > 0 ? round(($tarea['totalEntregas'] / $totalEst) * 100) : 0;
-          $esReciente = strtotime($tarea['fechaCreacion']) > strtotime('-24 hours');
-        ?>
-        <div class="tarea-card-modern">
-          <div style="display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-3);">
-            <div style="flex:1;">
-              <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);">
-                <h3 class="tarea-titulo-modern"><?= htmlspecialchars($tarea['titulo']) ?></h3>
-                <?php if (!$tarea['publicado']): ?><span class="badge-estado-modern" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-eye-slash"></i> OCULTA</span><?php endif; ?>
-                <?php if ($esReciente): ?><span class="badge-estado-modern" style="background:#dbeafe;color:#1d4ed8;"><i class="fas fa-sparkles"></i> NUEVO</span><?php endif; ?>
-              </div>
-              <?php if ($tarea['descripcion']): ?>
-              <p class="tarea-desc-modern"><?= htmlspecialchars($tarea['descripcion']) ?></p>
-              <?php endif; ?>
-            </div>
-          </div>
-          <div style="margin-bottom:var(--space-3);">
-            <div class="tarea-entregas" style="margin-bottom:var(--space-2);">
-              <i class="fas fa-users"></i> <strong><?= $tarea['totalEntregas'] ?>/<?= $totalEst ?></strong> entregas
-            </div>
-            <div class="progress-modern">
-              <div class="progress-bar" style="width:<?= $porcentaje ?>%;"></div>
-            </div>
-          </div>
-          <div class="tarea-acciones-modern">
-            <button type="button" class="btn-modern btn-ghost-modern btn-small" title="<?= $tarea['publicado'] ? 'Ocultar' : 'Publicar' ?>" onclick="toggleTarea(<?= $tarea['idTarea'] ?>, this, <?= $idModulo ?>)">
-              <i class="fas fa-<?= $tarea['publicado'] ? 'eye' : 'eye-slash' ?>"></i>
-            </button>
-            <button type="button" class="btn-modern btn-ghost-modern btn-small" title="Editar" onclick="abrirEditarTarea(<?= $tarea['idTarea'] ?>, '<?= htmlspecialchars(addslashes($tarea['titulo'])) ?>', '<?= htmlspecialchars(addslashes($tarea['descripcion'] ?? ''), ENT_QUOTES) ?>')">
-              <i class="fas fa-pen"></i>
-            </button>
-            <a href="verEntregas.php?id=<?= $tarea['idTarea'] ?>" class="btn-modern btn-primary-modern btn-small">
-              <i class="fas fa-inbox"></i> Ver entregas
-            </a>
-            <a href="../../../controladores/profesores/aula/borrarTarea.php?id=<?= $tarea['idTarea'] ?>&modulo=<?= $idModulo ?>" class="btn-modern btn-danger-modern btn-small" title="Eliminar" onclick="return confirm('¿Eliminar esta tarea y todas sus entregas?')">
-              <i class="fas fa-trash"></i>
-            </a>
-          </div>
-        </div>
-        <?php endforeach; ?>
-      </div>
-      <?php endif; ?>
-    </div>
-    <!-- PAGINACIÓN TAREAS -->
-    <?php if ($totalPaginasTareas > 1): ?>
-    <div style="border-top:1px solid var(--color-neutral-200);padding:var(--space-4) var(--space-5);">
-      <div class="pagination">
-        <?php if ($paginaTareas > 1): ?>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=1&search_tareas=<?= urlencode($busquedaTareas) ?>" class="pagination-item" title="Primera"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $paginaTareas - 1 ?>&search_tareas=<?= urlencode($busquedaTareas) ?>" class="pagination-item" title="Anterior"><i class="fas fa-chevron-left"></i></a>
-        <?php endif; ?>
-
-        <?php for ($i = max(1, $paginaTareas - 1); $i <= min($totalPaginasTareas, $paginaTareas + 1); $i++): ?>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $i ?>&search_tareas=<?= urlencode($busquedaTareas) ?>" class="pagination-item <?= $i === $paginaTareas ? 'active' : '' ?>"><?= $i ?></a>
-        <?php endfor; ?>
-
-        <?php if ($paginaTareas < $totalPaginasTareas): ?>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $paginaTareas + 1 ?>&search_tareas=<?= urlencode($busquedaTareas) ?>" class="pagination-item" title="Siguiente"><i class="fas fa-chevron-right"></i></a>
-        <a href="?id=<?= $idModulo ?>&pag_tareas=<?= $totalPaginasTareas ?>&search_tareas=<?= urlencode($busquedaTareas) ?>" class="pagination-item" title="Última"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
-        <?php endif; ?>
-
-        <span class="pagination-info"><?= $paginaTareas ?>/<?= $totalPaginasTareas ?></span>
-      </div>
-    </div>
-    <?php endif; ?>
-  </div>
-</div>
-
 <!-- TAB: SESIONES VIVAS -->
 <div id="tab-sesiones" style="display:none;">
   <div class="panel-modern">
@@ -430,7 +316,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <!-- ════════════════════════════════════════════════════════════════
-     MODALES MODERNOS (6)
+     MODALES MODERNOS (4)
      ════════════════════════════════════════════════════════════════ -->
 
 <!-- MODAL: CREAR CARPETA -->
@@ -533,67 +419,6 @@ include_once __DIR__ . "/../comunes/nav.php";
       <div class="modal-footer">
         <button type="button" class="btn-modern btn-secondary-modern" onclick="cerrarModal('modalSubir')">Cancelar</button>
         <button type="submit" class="btn-modern btn-primary-modern" onclick="this.disabled=true;this.form.submit();">Subir</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL: CREAR TAREA -->
-<div id="modalTarea" class="modal-backdrop">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 class="modal-header-titulo"><i class="fas fa-plus"></i> Nueva Tarea</h2>
-      <button class="modal-close-btn" onclick="cerrarModal('modalTarea')">✕</button>
-    </div>
-    <form method="POST" action="../../../controladores/profesores/aula/crearTarea.php">
-      <div class="modal-body">
-        <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
-        <input type="hidden" name="guardarTarea" value="1">
-        <div class="modal-input-group">
-          <label class="modal-label">Título</label>
-          <input type="text" name="titulo" class="modal-input" placeholder="Ej: Práctica 1" required>
-        </div>
-        <div class="modal-input-group">
-          <label class="modal-label">Descripción (Opcional)</label>
-          <textarea name="descripcion" class="modal-textarea" placeholder="Instrucciones para los estudiantes..."></textarea>
-        </div>
-        <div class="modal-input-group">
-          <label class="modal-label">Archivo Adjunto (Opcional)</label>
-          <input type="file" name="archivoTarea" class="modal-input" accept=".pdf,.docx,.txt">
-          <small style="color:var(--color-neutral-400);display:block;margin-top:var(--space-1);">Formatos: PDF, DOCX, TXT (máx 20 MB)</small>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-modern btn-secondary-modern" onclick="cerrarModal('modalTarea')">Cancelar</button>
-        <button type="submit" class="btn-modern btn-primary-modern" onclick="this.disabled=true;this.form.submit();">Crear Tarea</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL: EDITAR TAREA -->
-<div id="modalEditarTarea" class="modal-backdrop">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 class="modal-header-titulo"><i class="fas fa-pen"></i> Editar Tarea</h2>
-      <button class="modal-close-btn" onclick="cerrarModal('modalEditarTarea')">✕</button>
-    </div>
-    <form id="formEditarTarea" method="POST" action="../../../controladores/profesores/aula/editarTarea.php">
-      <div class="modal-body">
-        <input type="hidden" name="idTarea" id="editTareaId">
-        <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
-        <div class="modal-input-group">
-          <label class="modal-label">Título</label>
-          <input type="text" id="editTareaTitulo" name="titulo" class="modal-input" required>
-        </div>
-        <div class="modal-input-group">
-          <label class="modal-label">Descripción</label>
-          <textarea id="editTareaDesc" name="descripcion" class="modal-textarea"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-modern btn-secondary-modern" onclick="cerrarModal('modalEditarTarea')">Cancelar</button>
-        <button type="submit" class="btn-modern btn-primary-modern" onclick="this.disabled=true;this.form.submit();">Guardar Cambios</button>
       </div>
     </form>
   </div>
@@ -768,7 +593,7 @@ document.querySelectorAll('.modal-backdrop').forEach(modal => {
 
 // Tab switching
 function cambiarTab(tabName, btn) {
-  document.querySelectorAll('#tab-archivos, #tab-tareas').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('#tab-archivos, #tab-sesiones').forEach(t => t.style.display = 'none');
   document.getElementById('tab-' + tabName).style.display = 'block';
   document.querySelectorAll('.tab-modern').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
@@ -791,14 +616,6 @@ function abrirMoverArchivo(id, nombre) {
   abrirModal('modalMover');
 }
 
-// Editar tarea
-function abrirEditarTarea(id, titulo, desc) {
-  document.getElementById('editTareaId').value = id;
-  document.getElementById('editTareaTitulo').value = titulo;
-  document.getElementById('editTareaDesc').value = desc;
-  abrirModal('modalEditarTarea');
-}
-
 // Editar sesión
 function abrirEditarSesion(id, titulo, desc, fecha, hora, enlace, plat) {
   document.getElementById('editSesionId').value = id;
@@ -809,13 +626,6 @@ function abrirEditarSesion(id, titulo, desc, fecha, hora, enlace, plat) {
   document.getElementById('editSesionEnlace').value = enlace;
   document.getElementById('editSesionPlat').value = plat;
   abrirModal('modalEditarSesion');
-}
-
-// Toggle tarea (publicar/ocultar)
-function toggleTarea(id, btn, idMod) {
-  fetch('../../../controladores/profesores/aula/toggleTarea.php?id=' + id, { method: 'GET' })
-    .then(() => { location.reload(); })
-    .catch(() => alert('Error al cambiar estado'));
 }
 
 // Viewer de archivos
@@ -937,9 +747,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.tab-modern').forEach(tab => {
     tab.addEventListener('click', function() {
       const tabContent = this.textContent.toLowerCase();
-      currentTab = tabContent.includes('archivo') ? 'archivos' : 'tareas';
+      currentTab = tabContent.includes('archivo') ? 'archivos' : 'sesiones';
       searchInput.value = '';
-      searchContainer.style.display = currentTab === 'archivos' || currentTab === 'tareas' ? 'block' : 'none';
+      searchContainer.style.display = currentTab === 'archivos' ? 'block' : 'none';
       searchInput.placeholder = `Buscar en ${currentTab}...`;
     });
   });
@@ -950,8 +760,8 @@ document.addEventListener('DOMContentLoaded', function() {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         const query = this.value.trim();
-        const param = currentTab === 'archivos' ? 'search_arch' : 'search_tareas';
-        const pagParam = currentTab === 'archivos' ? 'pag_arch' : 'pag_tareas';
+        const param = 'search_arch';
+        const pagParam = 'pag_arch';
         const url = new URL(window.location);
         url.searchParams.set(param, query);
         url.searchParams.set(pagParam, '1');

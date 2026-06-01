@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Cargar configuración
 require_once __DIR__ . '/../config/Config.php';
 

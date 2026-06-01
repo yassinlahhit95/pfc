@@ -66,13 +66,16 @@ function initFormValidation() {
       // File size validation
       this.querySelectorAll('input[type="file"]').forEach(field => {
         if (field.files.length > 0) {
-          const file = field.files[0];
           const maxSize = parseInt(field.getAttribute('data-max-size') || '10485760'); // 10MB default
-
-          if (file.size > maxSize) {
-            isValid = false;
-            errorMessages.push(`Archivo muy grande. Máximo: ${formatFileSize(maxSize)}`);
-            field.classList.add('error');
+          for (let i = 0; i < field.files.length; i++) {
+            const file = field.files[i];
+            if (file.size > maxSize) {
+              isValid = false;
+              const fileName = field.files.length > 1 ? `(${file.name}) ` : '';
+              errorMessages.push(`${fileName}Archivo muy grande. Máximo: ${formatFileSize(maxSize)}`);
+              field.classList.add('error');
+              break;
+            }
           }
         }
       });

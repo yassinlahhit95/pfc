@@ -12,7 +12,7 @@ function listarCarpetasPorModuloAula($idModulo) {
                    (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.eliminado = 0) AS totalSubcarpetas
             FROM aula_carpetas c
             WHERE c.idModulo = ? AND c.eliminado = 0
-            ORDER BY c.nombre ASC";
+            ORDER BY c.fijado DESC, c.nombre ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
@@ -57,25 +57,81 @@ function actualizarCarpetaAula($idCarpeta, $nombre, $color, $icono = 'fa-folder'
     return $ok;
 }
 
-// Borrado lógico (papelera): la carpeta y su contenido se marcan como eliminados
-function borrarCarpetaAula($idCarpeta) {
+// Devuelve el idCarpeta indicado + TODAS sus subcarpetas (recursivo, cualquier nivel)
+function obtenerArbolCarpetaAula($idCarpeta) {
     $con = obtenerConexion();
-    $ahora = date('Y-m-d H:i:s');
-    // Marcar la carpeta
-    $sql = "UPDATE aula_carpetas SET eliminado=1, fechaEliminacion=? WHERE idCarpeta=?";
+    $ids  = [intval($idCarpeta)];
+    $cola = [intval($idCarpeta)];
+    while ($cola) {
+        $actual = array_shift($cola);
+        $sql = "SELECT idCarpeta FROM aula_carpetas WHERE idPadre = ?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $actual);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        while ($f = mysqli_fetch_assoc($res)) {
+            $hijo = intval($f['idCarpeta']);
+            if (!in_array($hijo, $ids, true)) { $ids[] = $hijo; $cola[] = $hijo; }
+        }
+    }
+    mysqli_close($con);
+    return $ids;
+}
+
+// Borrado lógico (papelera) RECURSIVO: la carpeta, todas sus subcarpetas (a
+// cualquier nivel) y todos sus archivos se marcan como eliminados. Evita
+// registros huérfanos al borrar un árbol de carpetas.
+function borrarCarpetaAula($idCarpeta) {
+    $ids = obtenerArbolCarpetaAula($idCarpeta);
+    if (empty($ids)) return false;
+    $con = obtenerConexion();
+    $ahora = mysqli_real_escape_string($con, date('Y-m-d H:i:s'));
+    $in = implode(',', array_map('intval', $ids));
+    $ok = mysqli_query($con, "UPDATE aula_carpetas SET eliminado=1, fechaEliminacion='$ahora' WHERE idCarpeta IN ($in)");
+    mysqli_query($con, "UPDATE aula_archivos SET eliminado=1, fechaEliminacion='$ahora' WHERE idCarpeta IN ($in)");
+    mysqli_close($con);
+    return $ok;
+}
+
+// Fijar / desfijar (pin) una carpeta
+function togglePinCarpetaAula($idCarpeta) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_carpetas SET fijado = 1 - fijado WHERE idCarpeta = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $ahora, $idCarpeta);
+    mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
     $ok = mysqli_stmt_execute($stmt);
-    // Marcar subcarpetas directas
-    $sqlSub = "UPDATE aula_carpetas SET eliminado=1, fechaEliminacion=? WHERE idPadre=?";
-    $s = mysqli_prepare($con, $sqlSub);
-    mysqli_stmt_bind_param($s, "si", $ahora, $idCarpeta);
-    mysqli_stmt_execute($s);
-    // Marcar archivos de la carpeta
-    $sqlArch = "UPDATE aula_archivos SET eliminado=1, fechaEliminacion=? WHERE idCarpeta=?";
-    $a = mysqli_prepare($con, $sqlArch);
-    mysqli_stmt_bind_param($a, "si", $ahora, $idCarpeta);
-    mysqli_stmt_execute($a);
+    mysqli_close($con);
+    return $ok;
+}
+
+// Fijar / desfijar (pin) un archivo
+function togglePinArchivoAula($idArchivo) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_archivos SET fijado = 1 - fijado WHERE idArchivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idArchivo);
+    $ok = mysqli_stmt_execute($stmt);
+    mysqli_close($con);
+    return $ok;
+}
+
+// Mueve una carpeta a un nuevo padre ($idPadre = null => raíz del módulo).
+// Evita ciclos: no dentro de sí misma ni de sus descendientes; mismo módulo.
+function moverCarpetaAula($idCarpeta, $idPadre) {
+    $carpeta = obtenerCarpetaAulaPorId($idCarpeta);
+    if (!$carpeta) return false;
+    $idPadre = $idPadre ? intval($idPadre) : null;
+    if ($idPadre !== null) {
+        if ($idPadre === intval($idCarpeta)) return false;
+        if (in_array($idPadre, obtenerArbolCarpetaAula($idCarpeta), true)) return false;
+        $destino = obtenerCarpetaAulaPorId($idPadre);
+        if (!$destino || $destino['idModulo'] != $carpeta['idModulo'] || $destino['eliminado']) return false;
+    }
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_carpetas SET idPadre=? WHERE idCarpeta=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idPadre, $idCarpeta);
+    $ok = mysqli_stmt_execute($stmt);
     mysqli_close($con);
     return $ok;
 }
@@ -92,7 +148,7 @@ function listarArchivosPorModuloAula($idModulo) {
             JOIN profesores p ON a.idProfesor = p.idProfesor
             LEFT JOIN aula_carpetas c ON a.idCarpeta = c.idCarpeta
             WHERE a.idModulo = ? AND a.eliminado = 0
-            ORDER BY a.nombreOriginal ASC";
+            ORDER BY a.fijado DESC, a.nombreOriginal ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
@@ -109,7 +165,7 @@ function listarArchivosPorCarpetaAula($idCarpeta) {
             FROM aula_archivos a
             JOIN profesores p ON a.idProfesor = p.idProfesor
             WHERE a.idCarpeta = ? AND a.eliminado = 0
-            ORDER BY a.nombreOriginal ASC";
+            ORDER BY a.fijado DESC, a.nombreOriginal ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
     mysqli_stmt_execute($stmt);
@@ -898,7 +954,7 @@ function listarCarpetasPorPadreAula($idModulo, $idPadre = null) {
                        (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.eliminado = 0) AS totalSubcarpetas
                 FROM aula_carpetas c
                 WHERE c.idModulo = ? AND c.idPadre IS NULL AND c.eliminado = 0
-                ORDER BY c.nombre ASC";
+                ORDER BY c.fijado DESC, c.nombre ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idModulo);
     } else {
@@ -907,7 +963,7 @@ function listarCarpetasPorPadreAula($idModulo, $idPadre = null) {
                        (SELECT COUNT(*) FROM aula_carpetas sc WHERE sc.idPadre = c.idCarpeta AND sc.eliminado = 0) AS totalSubcarpetas
                 FROM aula_carpetas c
                 WHERE c.idModulo = ? AND c.idPadre = ? AND c.eliminado = 0
-                ORDER BY c.nombre ASC";
+                ORDER BY c.fijado DESC, c.nombre ASC";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $idModulo, $idPadre);
     }
@@ -1157,12 +1213,14 @@ function restaurarArchivoAula($idArchivo) {
     return $ok;
 }
 
+// Restaura la carpeta y todo su árbol (subcarpetas + archivos)
 function restaurarCarpetaAula($idCarpeta) {
+    $ids = obtenerArbolCarpetaAula($idCarpeta);
+    if (empty($ids)) return false;
     $con = obtenerConexion();
-    $sql = "UPDATE aula_carpetas SET eliminado=0, fechaEliminacion=NULL WHERE idCarpeta=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
-    $ok = mysqli_stmt_execute($stmt);
+    $in = implode(',', array_map('intval', $ids));
+    $ok = mysqli_query($con, "UPDATE aula_carpetas SET eliminado=0, fechaEliminacion=NULL WHERE idCarpeta IN ($in)");
+    mysqli_query($con, "UPDATE aula_archivos SET eliminado=0, fechaEliminacion=NULL WHERE idCarpeta IN ($in)");
     mysqli_close($con);
     return $ok;
 }

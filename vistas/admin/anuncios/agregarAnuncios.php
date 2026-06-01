@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $errores = $_SESSION['errores'] ?? null;

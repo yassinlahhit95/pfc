@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 
 // Listado rápido de todos los directores para las tablas del admin

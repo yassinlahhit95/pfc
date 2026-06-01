@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 
 // devuelve todos los ciclos con su nivel (medio o superior)

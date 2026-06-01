@@ -82,19 +82,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <!-- Migas de pan -->
-<div class="recurso-breadcrumb">
+<div class="recurso-breadcrumb" data-modulo="<?= $idModulo ?>">
   <a href="index.php"><i class="fas fa-home"></i></a>
   <span class="sep">/</span>
   <a href="modulos.php?idCiclo=<?= $idCiclo ?>"><?= htmlspecialchars($modulo['nombreModulo']) ?></a>
   <?php if ($carpetaActual): ?>
     <span class="sep">/</span>
-    <a href="recursos.php?id=<?= $idModulo ?>">Raíz</a>
+    <a href="recursos.php?id=<?= $idModulo ?>" data-drop-carpeta="0" title="Arrastra aquí para mover a la raíz">Raíz</a>
     <?php foreach ($ruta as $r): ?>
       <span class="sep">/</span>
       <?php if ($r['idCarpeta'] == $carpetaActual): ?>
         <span class="actual"><?= htmlspecialchars($r['nombre']) ?></span>
       <?php else: ?>
-        <a href="recursos.php?id=<?= $idModulo ?>&carpeta=<?= $r['idCarpeta'] ?>"><?= htmlspecialchars($r['nombre']) ?></a>
+        <a href="recursos.php?id=<?= $idModulo ?>&carpeta=<?= $r['idCarpeta'] ?>" data-drop-carpeta="<?= $r['idCarpeta'] ?>"><?= htmlspecialchars($r['nombre']) ?></a>
       <?php endif; ?>
     <?php endforeach; ?>
   <?php endif; ?>
@@ -107,18 +107,25 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (!empty($carpetas)): ?>
 <div class="recurso-carpetas-grid">
   <?php foreach ($carpetas as $c): ?>
-  <div class="recurso-carpeta">
-    <a class="recurso-carpeta-link" href="recursos.php?id=<?= $idModulo ?>&carpeta=<?= $c['idCarpeta'] ?>">
+  <div class="recurso-carpeta<?= $c['fijado'] ? ' fijado' : '' ?>" data-drop-carpeta="<?= $c['idCarpeta'] ?>"<?php if ($c['idProfesor'] == $idProfesor): ?> draggable="true" data-drag-tipo="carpeta" data-drag-id="<?= $c['idCarpeta'] ?>"<?php endif; ?>>
+    <a class="recurso-carpeta-link" draggable="false" href="recursos.php?id=<?= $idModulo ?>&carpeta=<?= $c['idCarpeta'] ?>">
       <div class="recurso-carpeta-icono" style="background:<?= htmlspecialchars($c['color']) ?>"><i class="fas <?= htmlspecialchars($c['icono']) ?>"></i></div>
-      <span class="recurso-carpeta-nombre"><?= htmlspecialchars($c['nombre']) ?></span>
+      <span class="recurso-carpeta-nombre"><?php if ($c['fijado']): ?><i class="fas fa-thumbtack recurso-pin-ind" title="Fijado"></i> <?php endif; ?><?= htmlspecialchars($c['nombre']) ?></span>
       <span class="recurso-carpeta-meta"><?= $c['totalSubcarpetas'] ?> carpetas · <?= $c['totalArchivos'] ?> archivos</span>
     </a>
-    <?php if ($c['idProfesor'] == $idProfesor): ?>
     <div class="recurso-carpeta-acciones">
-      <button type="button" title="Renombrar/Editar" onclick="AulaRecursos.editarCarpeta(<?= $c['idCarpeta'] ?>,'<?= htmlspecialchars(addslashes($c['nombre']),ENT_QUOTES) ?>','<?= $c['color'] ?>','<?= $c['icono'] ?>')"><i class="fas fa-pen"></i></button>
-      <a href="../../../controladores/profesores/aula/borrarCarpeta.php?id=<?= $c['idCarpeta'] ?>&modulo=<?= $idModulo ?>" title="Eliminar" onclick="return confirm('¿Mover esta carpeta y su contenido a la papelera?')"><i class="fas fa-trash"></i></a>
+      <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
+      <div class="recurso-menu">
+        <a class="recurso-menu-item" href="recursos.php?id=<?= $idModulo ?>&carpeta=<?= $c['idCarpeta'] ?>"><i class="fas fa-folder-open"></i> Abrir</a>
+        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('recursos.php?id=<?= $idModulo ?>&carpeta=<?= $c['idCarpeta'] ?>')"><i class="fas fa-link"></i> Copiar enlace</button>
+        <?php if ($c['idProfesor'] == $idProfesor): ?>
+        <button type="button" class="recurso-menu-item" onclick="AulaRecursos.editarCarpeta(<?= $c['idCarpeta'] ?>, <?= htmlspecialchars(json_encode($c['nombre']), ENT_QUOTES) ?>, '<?= $c['color'] ?>', '<?= $c['icono'] ?>')"><i class="fas fa-pen"></i> Renombrar / Editar</button>
+        <a class="recurso-menu-item" href="../../../controladores/profesores/aula/togglePin.php?tipo=carpeta&id=<?= $c['idCarpeta'] ?>&modulo=<?= $idModulo ?>&carpeta=<?= $carpetaActual ?>" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-thumbtack"></i> <?= $c['fijado'] ? 'Quitar fijado' : 'Fijar' ?></a>
+        <div class="recurso-menu-sep"></div>
+        <a class="recurso-menu-item peligro" href="../../../controladores/profesores/aula/borrarCarpeta.php?id=<?= $c['idCarpeta'] ?>&modulo=<?= $idModulo ?>" onclick="return confirm('¿Mover esta carpeta y su contenido a la papelera?') && AulaRecursos.loaderGo()"><i class="fas fa-trash"></i> Eliminar</a>
+        <?php endif; ?>
+      </div>
     </div>
-    <?php endif; ?>
   </div>
   <?php endforeach; ?>
 </div>
@@ -127,8 +134,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 <!-- Archivos -->
 <?php if (empty($archivos) && empty($carpetas)): ?>
   <div class="recurso-vacio">
-    <i class="fas fa-folder-open"></i>
-    <p>Esta carpeta está vacía. Crea una subcarpeta o sube archivos.</p>
+    <div class="recurso-vacio-ilus"><i class="fas fa-cloud-arrow-up"></i></div>
+    <h3>Esta carpeta está vacía</h3>
+    <p>Sube tus primeros recursos o crea una carpeta para organizarlos.<br>También puedes arrastrar archivos sobre las carpetas para moverlos.</p>
+    <div class="recurso-vacio-acciones">
+      <button type="button" class="boton-primario" onclick="AulaRecursos.abrirModal('modalSubir')"><i class="fas fa-cloud-arrow-up"></i> Subir archivos</button>
+      <button type="button" class="boton-secundario" onclick="document.getElementById('hPadre').value='<?= $carpetaActual ?>';AulaRecursos.abrirModal('modalCarpeta')"><i class="fas fa-folder-plus"></i> Nueva carpeta</button>
+    </div>
   </div>
 <?php elseif (!empty($archivos)): ?>
 <table class="recurso-lista">
@@ -142,28 +154,34 @@ include_once __DIR__ . "/../comunes/nav.php";
         $esMio  = $a['idProfesor'] == $idProfesor;
         $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $a['idArchivo'];
     ?>
-    <tr>
+    <tr<?php if ($esMio): ?> draggable="true" data-drag-tipo="archivo" data-drag-id="<?= $a['idArchivo'] ?>"<?php endif; ?>>
       <td>
         <div class="recurso-archivo-nombre">
           <span class="recurso-archivo-icono <?= $cls ?>"><i class="fas <?= $ico ?>"></i></span>
-          <span><?= htmlspecialchars($a['nombreOriginal']) ?><?php if ($a['version'] > 1): ?><span class="recurso-version-badge" title="Versión <?= $a['version'] ?>">v<?= $a['version'] ?></span><?php endif; ?></span>
+          <span><?php if ($a['fijado']): ?><i class="fas fa-thumbtack recurso-pin-ind" title="Fijado"></i> <?php endif; ?><?= htmlspecialchars($a['nombreOriginal']) ?><?php if ($a['version'] > 1): ?><span class="recurso-version-badge" title="Versión <?= $a['version'] ?>">v<?= $a['version'] ?></span><?php endif; ?></span>
         </div>
       </td>
       <td><?= date('d/m/Y', strtotime($a['fechaSubida'])) ?></td>
       <td><?= htmlspecialchars($a['nombreProfesor']) ?></td>
       <td><?= formatearTamanioAula($a['tamanio']) ?></td>
-      <td>
-        <div class="recurso-acciones-fila" style="justify-content:flex-end;">
-          <?php if ($previa): ?>
-          <button class="recurso-accion ver" title="Ver" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver','<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>','<?= $a['extension'] ?>')"><i class="fas fa-eye"></i></button>
-          <?php endif; ?>
-          <a class="recurso-accion descargar" title="Descargar" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i></a>
-          <?php if ($esMio): ?>
-          <button class="recurso-accion renombrar" title="Renombrar" onclick="AulaRecursos.renombrar(<?= $a['idArchivo'] ?>,'<?= htmlspecialchars(addslashes(pathinfo($a['nombreOriginal'],PATHINFO_FILENAME)),ENT_QUOTES) ?>')"><i class="fas fa-i-cursor"></i></button>
-          <button class="recurso-accion version" title="Nueva versión" onclick="AulaRecursos.nuevaVersion(<?= $a['idArchivo'] ?>,'<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>')"><i class="fas fa-clock-rotate-left"></i></button>
-          <button class="recurso-accion mover" title="Mover" onclick="AulaRecursos.mover(<?= $a['idArchivo'] ?>)"><i class="fas fa-folder-tree"></i></button>
-          <a class="recurso-accion eliminar" title="Eliminar" href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= $a['idArchivo'] ?>&modulo=<?= $idModulo ?>" onclick="return confirm('¿Mover este archivo a la papelera?')"><i class="fas fa-trash"></i></a>
-          <?php endif; ?>
+      <td style="text-align:right;">
+        <div class="recurso-menu-wrap">
+          <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
+          <div class="recurso-menu">
+            <?php if ($previa): ?>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver', <?= htmlspecialchars(json_encode($a['nombreOriginal']), ENT_QUOTES) ?>, '<?= $a['extension'] ?>')"><i class="fas fa-eye"></i> Ver</button>
+            <?php endif; ?>
+            <a class="recurso-menu-item" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= $verUrl ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
+            <?php if ($esMio): ?>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.renombrar(<?= $a['idArchivo'] ?>, <?= htmlspecialchars(json_encode(pathinfo($a['nombreOriginal'], PATHINFO_FILENAME)), ENT_QUOTES) ?>)"><i class="fas fa-i-cursor"></i> Renombrar</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.nuevaVersion(<?= $a['idArchivo'] ?>, <?= htmlspecialchars(json_encode($a['nombreOriginal']), ENT_QUOTES) ?>)"><i class="fas fa-pen-to-square"></i> Editar</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.mover(<?= $a['idArchivo'] ?>)"><i class="fas fa-folder-tree"></i> Mover</button>
+            <a class="recurso-menu-item" href="../../../controladores/profesores/aula/togglePin.php?tipo=archivo&id=<?= $a['idArchivo'] ?>&modulo=<?= $idModulo ?>&carpeta=<?= $carpetaActual ?>" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-thumbtack"></i> <?= $a['fijado'] ? 'Quitar fijado' : 'Fijar' ?></a>
+            <div class="recurso-menu-sep"></div>
+            <a class="recurso-menu-item peligro" href="../../../controladores/profesores/aula/borrarArchivo.php?id=<?= $a['idArchivo'] ?>&modulo=<?= $idModulo ?>" onclick="return confirm('¿Mover este archivo a la papelera?') && AulaRecursos.loaderGo()"><i class="fas fa-trash"></i> Eliminar</a>
+            <?php endif; ?>
+          </div>
         </div>
       </td>
     </tr>
@@ -181,14 +199,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/profesores/aula/crearCarpeta.php" style="padding:18px;">
       <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
       <input type="hidden" name="idPadre" id="hPadre" value="<?= $carpetaActual ?>">
-      <label class="modal-label">Nombre</label>
+      <span class="modal-label">Nombre</span>
       <input type="text" name="nombre" class="modal-input" placeholder="Ej: Tema 1" required style="width:100%;">
-      <label class="modal-label" style="margin-top:12px;">Color</label>
+      <span class="modal-label" style="margin-top:12px;">Color</span>
       <div class="selector-colores" data-target="colorCarpeta">
         <?php foreach ($COLORES as $i => $col): ?><span class="swatch <?= $i===0?'activo':'' ?>" data-color="<?= $col ?>" style="background:<?= $col ?>"></span><?php endforeach; ?>
       </div>
       <input type="hidden" name="color" id="colorCarpeta" value="<?= $COLORES[0] ?>">
-      <label class="modal-label" style="margin-top:12px;">Icono</label>
+      <span class="modal-label" style="margin-top:12px;">Icono</span>
       <div class="selector-iconos" data-target="iconoCarpeta">
         <?php foreach ($ICONOS as $i => $ic): ?><button type="button" class="icono-op <?= $i===0?'activo':'' ?>" data-icono="<?= $ic ?>"><i class="fas <?= $ic ?>"></i></button><?php endforeach; ?>
       </div>
@@ -205,14 +223,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/profesores/aula/editarCarpeta.php" style="padding:18px;">
       <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
       <input type="hidden" name="idCarpeta" id="edCarpetaId">
-      <label class="modal-label">Nombre</label>
+      <span class="modal-label">Nombre</span>
       <input type="text" name="nombre" id="edCarpetaNombre" class="modal-input" required style="width:100%;">
-      <label class="modal-label" style="margin-top:12px;">Color</label>
+      <span class="modal-label" style="margin-top:12px;">Color</span>
       <div class="selector-colores" data-target="edColorCarpeta">
         <?php foreach ($COLORES as $col): ?><span class="swatch" data-color="<?= $col ?>" style="background:<?= $col ?>"></span><?php endforeach; ?>
       </div>
       <input type="hidden" name="color" id="edColorCarpeta" value="<?= $COLORES[0] ?>">
-      <label class="modal-label" style="margin-top:12px;">Icono</label>
+      <span class="modal-label" style="margin-top:12px;">Icono</span>
       <div class="selector-iconos" data-target="edIconoCarpeta">
         <?php foreach ($ICONOS as $ic): ?><button type="button" class="icono-op" data-icono="<?= $ic ?>"><i class="fas <?= $ic ?>"></i></button><?php endforeach; ?>
       </div>
@@ -230,11 +248,12 @@ include_once __DIR__ . "/../comunes/nav.php";
       <input type="hidden" name="subirArchivos" value="1">
       <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
       <input type="hidden" name="idCarpeta" value="<?= $carpetaActual ?>">
-      <label class="modal-label">Archivos (máx. 20 MB c/u)</label>
+      <span class="modal-label">Archivos (máx. 20 MB c/u)</span>
       <input type="file" name="archivos[]" multiple required class="modal-input" style="width:100%;"
+             data-max-size="20971520"
              accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.xls,.xlsx,.ods,.csv,.ppt,.pptx,.odp,.jpg,.jpeg,.png,.gif,.webp,.svg,.zip,.rar">
       <p class="texto-suave" style="font-size:.75rem;margin-top:6px;">PDF, Word, Excel, PowerPoint, imágenes y otros documentos académicos.</p>
-      <label class="modal-label" style="margin-top:12px;">Descripción (opcional)</label>
+      <span class="modal-label" style="margin-top:12px;">Descripción (opcional)</span>
       <input type="text" name="descripcion" class="modal-input" style="width:100%;">
       <div style="text-align:right;margin-top:18px;"><button type="submit" class="boton-primario"><i class="fas fa-upload"></i> Subir</button></div>
     </form>
@@ -248,25 +267,26 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="POST" action="../../../controladores/profesores/aula/renombrarArchivo.php" style="padding:18px;">
       <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
       <input type="hidden" name="idArchivo" id="rnId">
-      <label class="modal-label">Nuevo nombre</label>
+      <span class="modal-label">Nuevo nombre</span>
       <input type="text" name="nombre" id="rnNombre" class="modal-input" required style="width:100%;">
       <div style="text-align:right;margin-top:18px;"><button type="submit" class="boton-primario"><i class="fas fa-check"></i> Renombrar</button></div>
     </form>
   </div>
 </div>
 
-<!-- Nueva versión -->
+<!-- Editar archivo (reemplazar, conservando versiones) -->
 <div id="modalVersion" class="recurso-visor-overlay">
   <div class="recurso-visor" style="height:auto;max-width:460px;">
-    <div class="recurso-visor-cabecera"><h3><i class="fas fa-clock-rotate-left"></i> Nueva versión</h3><button class="recurso-visor-cerrar" onclick="AulaRecursos.cerrarModal('modalVersion')">✕</button></div>
+    <div class="recurso-visor-cabecera"><h3><i class="fas fa-pen-to-square"></i> Editar archivo</h3><button class="recurso-visor-cerrar" onclick="AulaRecursos.cerrarModal('modalVersion')">✕</button></div>
     <form method="POST" action="../../../controladores/profesores/aula/subirVersion.php" enctype="multipart/form-data" style="padding:18px;">
       <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
       <input type="hidden" name="idArchivo" id="verId">
-      <p class="texto-suave" style="font-size:.8rem;">Actualizando: <strong id="verNombre"></strong>. La versión anterior se conserva en el historial.</p>
-      <label class="modal-label" style="margin-top:10px;">Nuevo archivo (máx. 20 MB)</label>
+      <p class="texto-suave" style="font-size:.8rem;">Reemplazar: <strong id="verNombre"></strong>. La versión anterior se conserva en el historial.</p>
+      <span class="modal-label" style="margin-top:10px;">Nuevo archivo (máx. 20 MB)</span>
       <input type="file" name="archivo" required class="modal-input" style="width:100%;"
+             data-max-size="20971520"
              accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.xls,.xlsx,.ods,.csv,.ppt,.pptx,.odp,.jpg,.jpeg,.png,.gif,.webp,.svg,.zip,.rar">
-      <div style="text-align:right;margin-top:18px;"><button type="submit" class="boton-primario"><i class="fas fa-upload"></i> Subir versión</button></div>
+      <div style="text-align:right;margin-top:18px;"><button type="submit" class="boton-primario"><i class="fas fa-check"></i> Guardar cambios</button></div>
     </form>
   </div>
 </div>
@@ -276,7 +296,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="recurso-visor" style="height:auto;max-width:440px;">
     <div class="recurso-visor-cabecera"><h3><i class="fas fa-folder-tree"></i> Mover archivo</h3><button class="recurso-visor-cerrar" onclick="AulaRecursos.cerrarModal('modalMover')">✕</button></div>
     <div style="padding:18px;">
-      <label class="modal-label">Carpeta de destino</label>
+      <span class="modal-label">Carpeta de destino</span>
       <select id="mvCarpeta" class="modal-input" style="width:100%;">
         <option value="0">— Raíz del módulo —</option>
         <?php foreach ($todasCarpetas as $c): ?><option value="<?= $c['idCarpeta'] ?>"><?= htmlspecialchars($c['nombre']) ?></option><?php endforeach; ?>
@@ -300,5 +320,15 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<script src="../../../public/js/aula-recursos.js"></script>
+<!-- Indicador de carga (operaciones asíncronas) -->
+<div id="recursoLoader" class="recurso-loader">
+  <div class="recurso-loader-caja">
+    <div class="recurso-spinner"></div>
+    <p>Procesando…</p>
+  </div>
+</div>
+<!-- Aviso flotante (toast) -->
+<div id="recursoToast" class="recurso-toast"></div>
+
+<script src="../../../public/js/aula-recursos.js?v=<?= @filemtime(__DIR__."/../../../public/js/aula-recursos.js") ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

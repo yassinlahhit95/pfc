@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 $exito = $_SESSION['exito'] ?? '';

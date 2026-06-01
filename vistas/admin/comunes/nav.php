@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
@@ -38,9 +38,9 @@ $totalPrestamos_menu = contarPrestamosActivos();
     <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../../public/css/aula-digital.css">
+    <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__."/../../../public/css/aula-digital.css") ?>">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../../public/js/aula-digital.js"></script>
+    <script src="../../../public/js/aula-digital.js?v=<?= @filemtime(__DIR__."/../../../public/js/aula-digital.js") ?>"></script>
 </head>
 <body>
 

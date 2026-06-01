@@ -21,8 +21,11 @@ $idCiclo = $modulo['idCiclo'] ?? 0;
 $autorizado = false;
 $esEstudiante = false;
 if (!empty($_SESSION['idProfesor'])) {
-    // El profesor puede ver cualquier recurso de los módulos que imparte
-    $autorizado = true;
+    // El profesor solo puede acceder a recursos de los módulos que imparte
+    $misModulos = listarModulosDeProfesor($_SESSION['idProfesor']);
+    if (in_array($archivo['idModulo'], array_column($misModulos, 'idModulo'))) {
+        $autorizado = true;
+    }
 } elseif (!empty($_SESSION['idEstudiante'])) {
     // El estudiante sólo recursos de su propio ciclo
     require_once __DIR__ . "/../../modelos/estudiantes.php";

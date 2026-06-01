@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/conectar.php";
 
 // saca todos los estudiantes con el nombre del ciclo

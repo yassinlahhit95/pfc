@@ -136,13 +136,17 @@ include_once __DIR__ . "/../comunes/nav.php";
       <td><?= date('d/m/Y', strtotime($a['fechaSubida'])) ?></td>
       <td><?= htmlspecialchars($a['nombreProfesor']) ?></td>
       <td><?= formatearTamanioAula($a['tamanio']) ?></td>
-      <td>
-        <div class="recurso-acciones-fila" style="justify-content:flex-end;">
-          <a class="recurso-accion favorito <?= $fav ? 'activo' : '' ?>" title="<?= $fav ? 'Quitar de favoritos' : 'Añadir a favoritos' ?>" href="../../../controladores/estudiantes/aula/toggleFavorito.php?idArchivo=<?= $a['idArchivo'] ?>&origen=recursos&idModulo=<?= $idModulo ?>&carpeta=<?= $carpetaActual ?>"><i class="fas fa-star"></i></a>
-          <?php if ($previa): ?>
-          <button class="recurso-accion ver" title="Ver" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver','<?= htmlspecialchars(addslashes($a['nombreOriginal']),ENT_QUOTES) ?>','<?= $a['extension'] ?>')"><i class="fas fa-eye"></i></button>
-          <?php endif; ?>
-          <a class="recurso-accion descargar" title="Descargar" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i></a>
+      <td style="text-align:right;">
+        <div class="recurso-menu-wrap">
+          <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
+          <div class="recurso-menu">
+            <?php if ($previa): ?>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= $verUrl ?>&modo=ver', <?= htmlspecialchars(json_encode($a['nombreOriginal']), ENT_QUOTES) ?>, '<?= $a['extension'] ?>')"><i class="fas fa-eye"></i> Ver</button>
+            <?php endif; ?>
+            <a class="recurso-menu-item" href="<?= $verUrl ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= $verUrl ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
+            <a class="recurso-menu-item" href="../../../controladores/estudiantes/aula/toggleFavorito.php?idArchivo=<?= $a['idArchivo'] ?>&origen=recursos&idModulo=<?= $idModulo ?>&carpeta=<?= $carpetaActual ?>" onclick="return AulaRecursos.loaderGo()"><i class="fas fa-star" style="color:<?= $fav ? '#f59e0b' : '' ?>"></i> <?= $fav ? 'Quitar de favoritos' : 'Añadir a favoritos' ?></a>
+          </div>
         </div>
       </td>
     </tr>
@@ -165,5 +169,8 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<script src="../../../public/js/aula-recursos.js"></script>
+<div id="recursoLoader" class="recurso-loader"><div class="recurso-loader-caja"><div class="recurso-spinner"></div><p>Procesando…</p></div></div>
+<div id="recursoToast" class="recurso-toast"></div>
+
+<script src="../../../public/js/aula-recursos.js?v=<?= @filemtime(__DIR__."/../../../public/js/aula-recursos.js") ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

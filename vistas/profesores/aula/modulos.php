@@ -56,7 +56,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="aula-recursos-grid">
   <?php foreach ($modulos as $i => $modulo):
     $nArchivos = contarArchivosPorModuloAula($modulo['idModulo']);
-    $nTareas   = count(listarTodasTareasPorModuloAula($modulo['idModulo']));
     $p = $paleta[$i % count($paleta)];
   ?>
   <a href="recursos.php?id=<?= $modulo['idModulo'] ?>" class="recurso-ciclo-card <?= $p['clase'] ?>">
@@ -65,8 +64,6 @@ include_once __DIR__ . "/../comunes/nav.php";
       <h3><?= htmlspecialchars($modulo['nombreModulo']) ?></h3>
       <div class="recurso-ciclo-meta">
         <span><i class="fas fa-file"></i> <?= $nArchivos ?> archivos</span>
-        &nbsp;·&nbsp;
-        <span><i class="fas fa-tasks"></i> <?= $nTareas ?> tareas</span>
       </div>
     </div>
     <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
