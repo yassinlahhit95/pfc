@@ -106,16 +106,14 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                         <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>
                         <td><?= strtoupper(Security::escapeHtml($estudianteIndividual['nombreCiclo'])) ?></td>
                         <td>
-                            <div class="botones-accion">
-                                <a href="verDetallesEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" 
-                                   class="btn-accion btn-ver">
-                                    <i class="fas fa-id-card"></i>
-                                </a>
-                                <a href="modificarEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" 
-                                   class="btn-accion btn-editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="borrarEstudiante.php?id=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <a class="recurso-menu-item" href="verDetallesEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>"><i class="fas fa-id-card"></i> Ver detalles</a>
+                                    <a class="recurso-menu-item" href="modificarEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item peligro" href="borrarEstudiante.php?id=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" onclick="return confirm('¿Eliminar este estudiante?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

@@ -29,6 +29,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/admin/retos/insertar.php" method="POST" class="formulario">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="campo">
                 <label for="nombreReto">Nombre del Reto</label>
                 <input type="text" name="nombreReto" id="nombreReto" value="<?= $datos['nombreReto'] ?? '' ?>">

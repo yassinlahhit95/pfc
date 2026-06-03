@@ -16,6 +16,8 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
+$datosProfesor_menu = obtenerProfesorPorId($idProfesor);
+$nombreUsuario_menu = $datosProfesor_menu['nombreProfesor'] ?? 'Profesor';
 
 // _menu suffix avoids collisions with variables in pages that include this nav
 $totalAlumnos_menu = contarEstudiantesDeProfesor($idProfesor);
@@ -42,77 +44,87 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/css/aula-digital.css")) ?>">
+    <link rel="stylesheet" href="../../../public/css/sidebar.css?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/css/sidebar.css")) ?>">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../../public/js/aula-digital.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/aula-digital.js")) ?>"></script>
 </head>
 <body>
+<?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
 
 <header class="navbar-superior">
     <div class="logo-navbar-contenedor">
-        <img src="../../../public/imagenes/aulapro.png" alt="Logo" class="logo-navbar logo-navbar-png">
-        <img src="../../../public/imagenes/aulapro.jpeg" alt="Logo" class="logo-navbar logo-navbar-jpeg">
+        <img src="../../../public/imagenes/aulapro.jpeg" alt="AulaPro" class="logo-navbar">
     </div>
     <div class="menu-superior">
         <ul class="navbar-nav">
-            <li><a href="../perfil/ver.php"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
-            <li><a href="../../../controladores/logout.php"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+            <li><a href="../perfil/ver.php"><svg class="ico" aria-hidden="true"><use href="#ic-user-circle"/></svg> Mi Perfil</a></li>
+            <li><a href="../../../controladores/logout.php"><svg class="ico" aria-hidden="true"><use href="#ic-sign-out-alt"/></svg> Salir</a></li>
         </ul>
     </div>
     <button class="menu-toggle" onclick="toggleMenu()">
-        <i class="fas fa-bars"></i>
+        <svg class="ico" aria-hidden="true"><use href="#ic-bars"/></svg>
     </button>
 </header>
 
 <div class="contenedor-principal">
     <aside class="barra-lateral" id="barraLateral">
         <div class="cabecera-menu">
-            <img src="../../../public/imagenes/aulapro.png" alt="Logo" class="sidebar-logo sidebar-logo-png">
-            <img src="../../../public/imagenes/aulapro.jpeg" alt="Logo" class="sidebar-logo sidebar-logo-jpeg">
-            <div class="titulo-panel-sidebar">PROFESORES PANEL</div>
+            <div class="sb-traffic" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="sb-brand">
+                <img src="../../../public/imagenes/aulapro.jpeg" alt="AulaPro" class="sidebar-logo">
+                <!-- <span class="sb-brand-name">AulaPro</span> -->
+                <button type="button" class="sb-more" id="sbMore" aria-label="Opciones" aria-haspopup="true" aria-expanded="false">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-ellipsis-v"/></svg>
+                </button>
+            </div>
+            <div class="titulo-panel-sidebar">
+                <svg class="ico" aria-hidden="true"><use href="#ic-user-circle"/></svg>
+                <span><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
+            </div>
         </div>
 
         <nav class="menu-navegacion">
             <a href="../inicio/dashboard.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'inicio') ? 'activo' : '') ?>">
-                <i class="fas fa-home"></i> <span>INICIO</span>
+                <svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg> <span>INICIO</span>
             </a>
 
             <div class="seccion-del-menu">
                 <p class="titulo-de-seccion">GESTIÓN ACADÉMICA</p>
                 
                 <a href="../estudiantes/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'estudiantes') ? 'activo' : '') ?>">
-                    <i class="fas fa-user-graduate"></i> <span>ESTUDIANTES</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-user-graduate"/></svg> <span>ESTUDIANTES</span>
                     <span class="texto-contador"><?= Security::escapeHtml($totalAlumnos_menu ) ?></span>
                 </a>
 
                 <a href="../ciclos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'ciclos') ? 'activo' : '') ?>">
-                    <i class="fas fa-layer-group"></i> <span>MIS CICLOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-layer-group"/></svg> <span>MIS CICLOS</span>
                     <span class="texto-contador"><?= Security::escapeHtml($totalCiclos_menu ) ?></span>
                 </a>
 
                 <a href="../modulos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'modulos') ? 'activo' : '') ?>">
-                    <i class="fas fa-cubes"></i> <span>MÓDULOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-cubes"/></svg> <span>MÓDULOS</span>
                     <span class="texto-contador"><?= Security::escapeHtml($totalModulos_menu ) ?></span>
                 </a>
 
                 <a href="../retos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'retos') ? 'activo' : '') ?>">
-                    <i class="fas fa-tasks"></i> <span>RETOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-tasks"/></svg> <span>RETOS</span>
                     <span class="texto-contador"><?= Security::escapeHtml($totalRetos_menu ) ?></span>
                 </a>
 
                 <a href="../calificaciones/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'calificaciones') ? 'activo' : '') ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>NOTAS MÓDULOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-graduation-cap"/></svg> <span>NOTAS MÓDULOS</span>
                 </a>
 
                 <a href="../academico/calificacionesRetos.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'notas_retos') ? 'activo' : '') ?>">
-                    <i class="fas fa-tasks"></i> <span>NOTAS RETOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-tasks"/></svg> <span>NOTAS RETOS</span>
                 </a>
 
                 <a href="../calificaciones/tfg.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'notas_tfg') ? 'activo' : '') ?>">
-                    <i class="fas fa-star"></i> <span>NOTAS TFG</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-star"/></svg> <span>NOTAS TFG</span>
                 </a>
 
                 <a href="../academico/resultadosFinales.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'resultados_finales') ? 'activo' : '') ?>">
-                    <i class="fas fa-check-double"></i> <span>RESULTADOS FINALES</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-check-double"/></svg> <span>RESULTADOS FINALES</span>
                 </a>
             </div>
 
@@ -120,11 +132,11 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
                 <p class="titulo-de-seccion">AULA DIGITAL</p>
 
                 <a href="../aula/sesiones.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'aula_sesiones') ? 'activo' : '') ?>">
-                    <i class="fas fa-graduation-cap"></i> <span>AULA DIGITAL</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-graduation-cap"/></svg> <span>AULA DIGITAL</span>
                 </a>
 
                 <a href="../aula/index.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'aula_recursos') ? 'activo' : '') ?>">
-                    <i class="fas fa-folder-open"></i> <span>RECURSOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-folder-open"/></svg> <span>RECURSOS</span>
                 </a>
             </div>
 
@@ -132,28 +144,28 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
                 <p class="titulo-de-seccion">COMUNICACIÓN</p>
 
                 <a href="../anuncios/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'anuncios') ? 'activo' : '') ?>">
-                    <i class="fas fa-bullhorn"></i> <span>ANUNCIOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-bullhorn"/></svg> <span>ANUNCIOS</span>
                 </a>
 
                 <a href="../mensajes/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'reclamaciones') ? 'activo' : '') ?>">
-                    <i class="fas fa-paper-plane"></i> <span>MENSAJERÍA</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-paper-plane"/></svg> <span>MENSAJERÍA</span>
                     <span class="texto-contador <?= Security::escapeHtml(($totalSinLeer_menu > 0) ? 'alerta-roja' : '') ?>"><?= Security::escapeHtml($totalMensajes_menu ) ?></span>
                 </a>
 
                 <a href="../eventos/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'eventos') ? 'activo' : '') ?>">
-                    <i class="fas fa-calendar-alt"></i> <span>EVENTOS</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-calendar-alt"/></svg> <span>EVENTOS</span>
                 </a>
             </div>
 
             <div class="separador-menu-inferior">
                 <a href="../perfil/ver.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'perfil') ? 'activo' : '') ?>">
-                    <i class="fas fa-user-circle"></i> <span>MI PERFIL</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-user-circle"/></svg> <span>MI PERFIL</span>
                 </a>
                 <a href="https://yassin.agency" target="_blank" class="enlace-menu">
-                    <i class="fas fa-home"></i> <span>PÁGINA INICIO</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg> <span>PÁGINA INICIO</span>
                 </a>
                 <a href="../../../controladores/logout.php" class="enlace-menu">
-                    <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
+                    <svg class="ico" aria-hidden="true"><use href="#ic-sign-out-alt"/></svg> <span>CERRAR SESIÓN</span>
                 </a>
                 <div class="info-sistema-footer">
                     &copy; <?= Security::escapeHtml(date('Y')) ?> Yassin Lahhit
@@ -161,6 +173,11 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
             </div>
         </nav>
     </aside>
+
+    <div class="sb-menu" id="sbMenu" role="menu" aria-label="Opciones">
+        <a href="../perfil/ver.php" class="sb-menu-item" role="menuitem"><svg class="ico" aria-hidden="true"><use href="#ic-user-circle"/></svg> Mi Perfil</a>
+        <a href="../../../controladores/logout.php" class="sb-menu-item salir" role="menuitem"><svg class="ico" aria-hidden="true"><use href="#ic-sign-out-alt"/></svg> Cerrar Sesión</a>
+    </div>
 
     <section class="contenido-principal"><?php if (isset($_SESSION['idProfesor'])) { ?>
         <div id="firebase-user-data" data-user-id="<?= Security::escapeHtml($_SESSION['idProfesor'] ) ?>" data-user-role="profesor" class="oculto"></div>

@@ -44,6 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/retos/actualizar.php" class="formulario">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
 
         <div class="campo">

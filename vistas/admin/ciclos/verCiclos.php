@@ -71,11 +71,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><?= Security::escapeHtml($ciclo['nombreNivel']) ?></td>
                         <td><?= $textoTutores ?></td>
                         <td>
-                            <div class="botones-accion">
-                                <a href="modificarCiclos.php?idCiclo=<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="btn-accion btn-editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="borrarCiclo.php?id=<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <a class="recurso-menu-item" href="modificarCiclos.php?idCiclo=<?= Security::escapeHtml($ciclo['idCiclo']) ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item peligro" href="borrarCiclo.php?id=<?= Security::escapeHtml($ciclo['idCiclo']) ?>" onclick="return confirm('¿Eliminar este ciclo?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

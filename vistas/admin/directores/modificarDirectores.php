@@ -34,6 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/admin/directores/actualizar.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idDirector" value="<?= $id_director ?>">
         
         <div class="formulario">

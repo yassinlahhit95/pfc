@@ -114,16 +114,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td><?= Security::escapeHtml($moduloIndividual['horasMaximas']) ?> H</td>
                         <td>
-                            <div class="botones-accion">
-                                <a href="asignarProfesorModulo.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"
-                                   class="btn-accion btn-ver" title="Asignar Profesor">
-                                    <i class="fas fa-chalkboard-teacher"></i>
-                                </a>
-                                <a href="modificarModulos.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>" 
-                                   class="btn-accion btn-editar" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="borrarModulo.php?id=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>" class="btn-accion btn-eliminar" title="Eliminar"><i class="fas fa-trash"></i></a>
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <a class="recurso-menu-item" href="asignarProfesorModulo.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"><i class="fas fa-chalkboard-teacher"></i> Asignar profesor</a>
+                                    <a class="recurso-menu-item" href="modificarModulos.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item peligro" href="borrarModulo.php?id=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>" onclick="return confirm('¿Eliminar este módulo?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

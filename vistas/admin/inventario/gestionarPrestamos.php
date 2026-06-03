@@ -68,14 +68,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </span>
                         </td>
                         <td>
-                            <div class="botones-accion">
-                                <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
-                                    <form action="../../../controladores/admin/inventario/devolver.php" method="POST">
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
+                                    <form action="../../../controladores/admin/inventario/devolver.php" method="POST" style="margin:0">
                                         <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
                                         <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
-                                        <input type="submit" class="boton-primario boton-pequeno" value="Devolver">
+                                        <button type="submit" class="recurso-menu-item"><i class="fas fa-rotate-left"></i> Marcar devuelto</button>
                                     </form>
-                                <?php } ?>
+                                    <?php } else { ?>
+                                    <span class="recurso-menu-item" style="opacity:.6;cursor:default;"><i class="fas fa-check"></i> Devuelto</span>
+                                    <?php } ?>
+                                </div>
                             </div>
                         </td>
                     </tr>

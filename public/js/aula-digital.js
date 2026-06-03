@@ -1,23 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
- initMenuToggle();
  initFormValidation();
  initTableSearch();
 });
-function initMenuToggle() {
- const menuToggle = document.querySelector('.menu-toggle');
- const barraLateral = document.getElementById('barraLateral');
- if (!menuToggle) return;
- menuToggle.addEventListener('click', function() {
- barraLateral.classList.toggle('activo');
- });
- document.querySelectorAll('.enlace-menu').forEach(link => {
- link.addEventListener('click', function() {
- if (window.innerWidth <= 768) {
- barraLateral.classList.remove('activo');
- }
- });
- });
-}
+// El toggle del sidebar lo gestiona menu.js (toggleMenu); aqui se eliminó
+// el duplicado que provocaba un doble toggle de la clase .activo.
 function initFormValidation() {
  const forms = document.querySelectorAll('form');
  forms.forEach(form => {

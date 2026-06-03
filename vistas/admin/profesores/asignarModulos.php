@@ -41,6 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <form action="../../../controladores/admin/profesores/actualizarModulos.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idProfesor" value="<?= $idProfesor ?>">
         
         <?php foreach ($lista_ciclos as $ciclo) { ?>

@@ -28,18 +28,23 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 <?php else: ?>
 <?php
+  // Color e icono DETERMINISTAS por idCiclo: cada ciclo tiene su propio icono/color
+  // y es el mismo para cualquier profesor del mismo ciclo (no depende del orden).
   $paleta = ['recurso-card-azul', 'recurso-card-violeta', 'recurso-card-rosa', 'recurso-card-verde', 'recurso-card-ambar', 'recurso-card-teal'];
+  $iconos = ['fa-laptop-code', 'fa-network-wired', 'fa-database', 'fa-microchip', 'fa-code', 'fa-server', 'fa-diagram-project', 'fa-shield-halved'];
 ?>
 <div class="aula-recursos-grid">
-  <?php foreach ($ciclos as $i => $c):
-      $modulos = listarModulosDeProfesorPorCiclo($idProfesor, $c['idCiclo']);
-      $usado   = obtenerUsoAlmacenamientoCicloAula($c['idCiclo']);
-      $limite  = obtenerLimiteAlmacenamientoCicloAula($c['idCiclo']);
+  <?php foreach ($ciclos as $c):
+      $idc     = (int) $c['idCiclo'];
+      $modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idc);
+      $usado   = obtenerUsoAlmacenamientoCicloAula($idc);
+      $limite  = obtenerLimiteAlmacenamientoCicloAula($idc);
       $pct     = $limite > 0 ? min(100, round($usado / $limite * 100)) : 0;
-      $clase   = $paleta[$i % count($paleta)];
+      $clase   = $paleta[$idc % count($paleta)];
+      $icono   = $iconos[$idc % count($iconos)];
   ?>
   <a href="modulos.php?idCiclo=<?= Security::escapeHtml($c['idCiclo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($clase ) ?>">
-    <div class="recurso-ciclo-icon"><i class="fas fa-layer-group"></i></div>
+    <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($icono ) ?>"></i></div>
     <div class="recurso-ciclo-body">
       <h3><?= Security::escapeHtml(htmlspecialchars($c['nombreCiclo'])) ?></h3>
       <span class="recurso-ciclo-abrev"><?= Security::escapeHtml(htmlspecialchars($c['abreviaturaCiclo'])) ?></span>

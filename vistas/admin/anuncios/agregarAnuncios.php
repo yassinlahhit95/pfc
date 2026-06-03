@@ -23,6 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <div class="campo">
                 <label for="tituloAnuncio">TÍTULO DEL ANUNCIO</label>
                 <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">

@@ -46,6 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/ciclos/actualizar.php">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo) ?>">
         
         <div class="formulario">

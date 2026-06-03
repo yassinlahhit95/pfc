@@ -53,6 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($id_profesor) ?>">
         
         <div class="formulario">

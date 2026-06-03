@@ -35,6 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/admin/profesores/insertar.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="formulario">
             <div class="campo">
                 <label for="nombreProfesor">Nombre Completo</label>
