@@ -126,6 +126,10 @@ $totalRetos_menu = count(listarRetosDeProfesor($idProfesor));
                 <a href="../academico/resultadosFinales.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'resultados_finales') ? 'activo' : '') ?>">
                     <svg class="ico" aria-hidden="true"><use href="#ic-check-double"/></svg> <span>RESULTADOS FINALES</span>
                 </a>
+
+                <a href="../horario/horario.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'horario') ? 'activo' : '') ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-calendar-alt"/></svg> <span>CUADRO HORARIO</span>
+                </a>
             </div>
 
             <div class="seccion-del-menu">

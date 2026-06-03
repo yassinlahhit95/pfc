@@ -59,11 +59,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </span>
                         </td>
                         <td>
-                            <div class="botones-accion">
-                                <a href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>" class="btn-accion btn-editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="borrarArticulo.php?id=<?= $art['idArticulo'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <a class="recurso-menu-item" href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item peligro" href="borrarArticulo.php?id=<?= $art['idArticulo'] ?>" onclick="return confirm('¿Eliminar este artículo?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

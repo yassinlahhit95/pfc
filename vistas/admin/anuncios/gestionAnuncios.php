@@ -55,14 +55,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td><span><?= substr($anuncio['contenidoAnuncio'], 0, 100) ?>...</span></td>
                             <td><?= date('d/m/Y H:i', strtotime($anuncio['fechaAnuncio'])) ?></td>
                             <td>
-                                <div class="botones-accion">
-                                    <a href="detallesAnuncio.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-ver">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="borrarAnuncio.php?id=<?= $anuncio['idAnuncio'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                                <div class="recurso-menu-wrap">
+                                    <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                    <div class="recurso-menu">
+                                        <a class="recurso-menu-item" href="detallesAnuncio.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>"><i class="fas fa-eye"></i> Ver detalles</a>
+                                        <a class="recurso-menu-item" href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                        <div class="recurso-menu-sep"></div>
+                                        <a class="recurso-menu-item peligro" href="borrarAnuncio.php?id=<?= $anuncio['idAnuncio'] ?>" onclick="return confirm('¿Eliminar este anuncio?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

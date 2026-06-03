@@ -85,11 +85,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                         </td>
                         <td>
-                            <div class="botones-accion">
-                                <a href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-ver">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="borrarMensaje.php?id=<?= $mensaje['idReclamacion'] ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <a class="recurso-menu-item" href="detalles.php?id=<?= $mensaje['idReclamacion'] ?>"><i class="fas fa-eye"></i> Ver</a>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item peligro" href="borrarMensaje.php?id=<?= $mensaje['idReclamacion'] ?>" onclick="return confirm('¿Eliminar este mensaje?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

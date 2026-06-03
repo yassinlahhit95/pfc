@@ -209,3 +209,336 @@
 .recurso-menu-item svg {
   pointer-events: none !important;
 }
+
+/* ==========================================================================
+   CUADRO HORARIO (calendario-horario)  -  prefijo .horario-* para evitar
+   colisiones; paleta del proyecto (#667eea, #e2e8f0, #f8fafc), sin var().
+   ========================================================================== */
+.horario-selector-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.horario-selector-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+}
+.horario-selector-form select {
+  padding: 9px 12px;
+  border: 1px solid #667eea;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+  color: #2d3748;
+  cursor: pointer;
+}
+
+/* Layout: panel lateral (tarjetas) + tabla */
+.horario-workspace {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* --- Panel lateral de asignaturas --- */
+.horario-panel-lateral {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.horario-panel-cabecera h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a202c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.horario-panel-cabecera p {
+  font-size: 12.5px;
+  color: #718096;
+  line-height: 1.4;
+}
+.horario-buscador {
+  position: relative;
+}
+.horario-buscador i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+  font-size: 13px;
+}
+.horario-buscar-input {
+  width: 100%;
+  padding: 10px 12px 10px 34px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: #f8fafc;
+  font-size: 14px;
+  color: #2d3748;
+}
+.horario-buscar-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: #fff;
+}
+.horario-lista-tarjetas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 540px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.horario-panel-vacio {
+  font-size: 13px;
+  color: #a0aec0;
+  text-align: center;
+  padding: 20px 0;
+}
+.horario-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: grab;
+  user-select: none;
+}
+.horario-tarjeta:active {
+  cursor: grabbing;
+}
+.horario-tarjeta.seleccionada {
+  background: #eef2ff;
+  border-color: #667eea;
+}
+.horario-tarjeta-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+.horario-avatar {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid #667eea;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+.horario-tarjeta-modulo {
+  font-weight: 600;
+  font-size: 13px;
+  color: #2d3748;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.3;
+}
+.horario-tarjeta-prof {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: #e2e8f0;
+  color: #4a5568;
+  white-space: nowrap;
+}
+
+/* --- Tabla del horario --- */
+.horario-contenido {
+  min-width: 0;
+}
+.horario-tabla-envoltura {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow-x: auto;
+  width: 100%;
+}
+.horario-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 760px;
+}
+.horario-tabla th,
+.horario-tabla td {
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  padding: 10px;
+}
+.horario-tabla th:last-child,
+.horario-tabla td:last-child {
+  border-right: none;
+}
+.horario-tabla tr:last-child td {
+  border-bottom: none;
+}
+.horario-tabla th {
+  background: #667eea;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+.horario-col-hora {
+  width: 110px;
+}
+.horario-hora {
+  width: 110px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #718096;
+  background: #f8fafc;
+  vertical-align: middle;
+}
+.horario-fila-recreo td {
+  background: #f8fafc;
+}
+.horario-celda-recreo {
+  text-align: center;
+  color: #a0aec0;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+/* Celda asignable */
+.horario-celda {
+  vertical-align: top;
+  height: 86px;
+  position: relative;
+}
+.horario-editable .horario-celda {
+  cursor: pointer;
+}
+.horario-editable .horario-celda:hover {
+  background: #f8fafc;
+  box-shadow: inset 0 0 0 2px #eef2ff;
+}
+.horario-celda-drop {
+  background: #eef2ff !important;
+  box-shadow: inset 0 0 0 2px #667eea !important;
+}
+.horario-vacia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 64px;
+  color: #cbd5e0;
+  font-size: 12px;
+  border: 1px dashed #e2e8f0;
+  border-radius: 4px;
+}
+.horario-editable .horario-celda:hover .horario-vacia {
+  color: #667eea;
+  border-color: #667eea;
+}
+.horario-vacia-lectura {
+  text-align: center;
+  color: #cbd5e0;
+  font-size: 16px;
+}
+
+/* Caja asignada (modulo + profesor) */
+.horario-asignado {
+  position: relative;
+  padding: 9px 10px;
+  border-radius: 4px;
+  color: #fff;
+}
+.horario-asignado-modulo {
+  font-weight: 700;
+  font-size: 12.5px;
+  line-height: 1.25;
+  margin-bottom: 3px;
+  padding-right: 14px;
+}
+.horario-asignado-prof {
+  font-size: 11.5px;
+  opacity: 0.92;
+}
+.horario-asignado-aula {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 3px;
+}
+.horario-aula-select {
+  margin-top: 6px;
+  width: 100%;
+  padding: 3px 6px;
+  font-size: 11px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2d3748;
+  cursor: pointer;
+}
+.horario-aula-select:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+}
+.horario-limpiar {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+}
+.horario-asignado:hover .horario-limpiar {
+  opacity: 1;
+}
+.horario-limpiar:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive: el panel pasa arriba y las tarjetas se ponen en fila */
+@media (max-width: 900px) {
+  .horario-workspace {
+    grid-template-columns: 1fr;
+  }
+  .horario-lista-tarjetas {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-height: none;
+  }
+  .horario-tarjeta {
+    flex: 0 0 auto;
+  }
+  .horario-limpiar {
+    opacity: 1;
+  }
+}

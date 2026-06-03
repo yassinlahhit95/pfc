@@ -167,32 +167,51 @@
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: var(--sb-text-muted);
-  margin: 12px 0 6px 12px;
+  margin: 0 0 6px 12px;
 }
 
 /* ---- Collapsible sections (accordion) ---------------------- */
 .titulo-de-seccion.titulo-clic {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
   margin-right: 12px;
-  padding: 2px 0;
-  cursor: pointer;
+  padding: 2px 2px 2px 0;
+  cursor: grab;
   user-select: none;
-  border-radius: 6px;
-  transition: color 0.15s var(--sb-ease);
 }
-.titulo-de-seccion.titulo-clic:hover { color: var(--sb-text); }
-.seccion-chevron {
+.titulo-de-seccion.titulo-clic:active { cursor: grabbing; }
+.seccion-grip {
+  flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--sb-text-muted);
-  transition: transform 0.28s var(--sb-ease);
+  color: #c4c4cd;
 }
-.seccion-chevron .ico { width: 15px; height: 15px; }
-.seccion-del-menu.colapsada .seccion-chevron { transform: rotate(-90deg); }
+.seccion-grip .ico { width: 14px; height: 14px; }
+.titulo-de-seccion.titulo-clic:hover .seccion-grip { color: var(--sb-text-muted); }
+.seccion-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* open/close button on the right — plain +/- icon, no background */
+.seccion-toggle {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--sb-blue);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color 0.15s var(--sb-ease);
+}
+.seccion-toggle:hover { color: #1f4fd6; }
+.seccion-toggle .ico { width: 18px; height: 18px; stroke-width: 2.4; }
+.seccion-toggle .ico-mas { display: none; }
+.seccion-del-menu.colapsada .seccion-toggle .ico-menos { display: none; }
+.seccion-del-menu.colapsada .seccion-toggle .ico-mas { display: block; }
+/* dragging feedback */
+.seccion-del-menu.arrastrando { opacity: 0.45; }
 
 /* smooth height collapse using grid 0fr/1fr */
 .seccion-items {

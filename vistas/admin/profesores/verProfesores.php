@@ -58,16 +58,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td><b><?= strtoupper(Security::escapeHtml($profesorIndividual['nombreProfesor'])) ?></b></td>
                         <td><?= Security::escapeHtml($profesorIndividual['emailProfesor']) ?></td>
                         <td>
-                            <div class="botones-accion">
-                                <a href="../../../vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" 
-                                   class="btn-accion btn-ver">
-                                    <i class="fas fa-search"></i>
-                                </a>
-<a href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" 
-                                   class="btn-accion btn-editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="borrarProfesor.php?id=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                            <div class="recurso-menu-wrap">
+                                <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                <div class="recurso-menu">
+                                    <a class="recurso-menu-item" href="../../../vistas/admin/profesores/verDetallesProfesores.php?idProfesor=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>"><i class="fas fa-search"></i> Ver detalles</a>
+                                    <a class="recurso-menu-item" href="../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item peligro" href="borrarProfesor.php?id=<?= Security::escapeHtml($profesorIndividual['idProfesor']) ?>" onclick="return confirm('¿Eliminar este profesor?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

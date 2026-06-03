@@ -4,6 +4,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- LIMPIEZA: eliminar tablas existentes
 -- ============================================================
 DROP TABLE IF EXISTS
+  `horarios`, `aulas`,
   `aula_almacenamiento_ciclo`, `aula_archivo_accesos`,
   `aula_favoritos`, `aula_archivo_versiones`, `aula_asistencia_sesion`,
   `aula_sesiones_vivas`, `aula_analytics`, `aula_notificaciones`, `aula_comentarios`,
@@ -566,6 +567,47 @@ CREATE TABLE `login_intentos` (
   UNIQUE KEY `uk_ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Aulas (catalogo de espacios fisicos; codigoAula generado = planta + numero, ej. 101)
+CREATE TABLE `aulas` (
+  `idAula`     int(11) NOT NULL AUTO_INCREMENT,
+  `planta`     tinyint(4) NOT NULL,
+  `numero`     int(11) NOT NULL,
+  `codigoAula` varchar(10) AS (CONCAT(`planta`, LPAD(`numero`, 2, '0'))) STORED,
+  `nombreAula` varchar(60) DEFAULT NULL,
+  `tipoAula`   enum('teoria','laboratorio','taller','otro') NOT NULL DEFAULT 'teoria',
+  `capacidad`  int(11) DEFAULT NULL,
+  `activa`     tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`idAula`),
+  UNIQUE KEY `uk_aula_planta_numero` (`planta`,`numero`),
+  UNIQUE KEY `uk_aula_codigo` (`codigoAula`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Cuadro Horario semanal (una asignacion por celda: ciclo + dia + franja).
+-- Las claves unicas uk_horario_aula / uk_horario_profesor impiden doble reserva
+-- de una misma aula o profesor en la misma franja (MySQL permite varios NULL).
+CREATE TABLE `horarios` (
+  `idHorario` int(11) NOT NULL AUTO_INCREMENT,
+  `idCiclo` int(11) NOT NULL,
+  `diaSemana` enum('Lunes','Martes','Miércoles','Jueves','Viernes') NOT NULL,
+  `horaInicio` time NOT NULL,
+  `horaFin` time NOT NULL,
+  `idModulo` int(11) DEFAULT NULL,
+  `idProfesor` int(11) DEFAULT NULL,
+  `idAula` int(11) DEFAULT NULL,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idHorario`),
+  UNIQUE KEY `uk_horario_celda` (`idCiclo`,`diaSemana`,`horaInicio`),
+  UNIQUE KEY `uk_horario_aula` (`idAula`,`diaSemana`,`horaInicio`),
+  UNIQUE KEY `uk_horario_profesor` (`idProfesor`,`diaSemana`,`horaInicio`),
+  KEY `indice_horario_ciclo` (`idCiclo`),
+  KEY `indice_horario_modulo` (`idModulo`),
+  KEY `indice_horario_aula` (`idAula`),
+  CONSTRAINT `fk_horario_ciclo`    FOREIGN KEY (`idCiclo`)    REFERENCES `ciclos`     (`idCiclo`)    ON DELETE CASCADE,
+  CONSTRAINT `fk_horario_modulo`   FOREIGN KEY (`idModulo`)   REFERENCES `modulos`    (`idModulo`)   ON DELETE SET NULL,
+  CONSTRAINT `fk_horario_profesor` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL,
+  CONSTRAINT `fk_horario_aula`     FOREIGN KEY (`idAula`)     REFERENCES `aulas`      (`idAula`)     ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
@@ -632,4 +674,24 @@ INSERT INTO `modulo_reto` (`idModulo`, `idReto`) VALUES (1, 1), (2, 2), (3, 3), 
 INSERT INTO `modulo_profesor` (`idModulo`, `idProfesor`) VALUES (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 2), (7, 2), (8, 2), (9, 2), (10, 2);
 INSERT INTO `ciclo_profesor` (`idCiclo`, `idProfesor`) VALUES (1, 1), (2, 2);
 INSERT INTO `aula_almacenamiento_ciclo` (`idCiclo`, `limiteBytes`) VALUES (1, 5368709120), (2, 5368709120), (3, 5368709120);
+
+-- Aulas (planta 0 = baja). codigoAula se genera solo: planta + numero a 2 digitos.
+INSERT INTO `aulas` (`idAula`, `planta`, `numero`, `nombreAula`, `tipoAula`, `capacidad`) VALUES
+(1, 1, 1, 'Aula 101',          'teoria',       30),
+(2, 1, 2, 'Aula 102',          'teoria',       30),
+(3, 2, 1, 'Laboratorio 201',   'laboratorio',  24),
+(4, 2, 2, 'Laboratorio 202',   'laboratorio',  24),
+(5, 0, 1, 'Aula 001 (Taller)', 'taller',       20);
+
+-- Cuadro Horario de ejemplo (Ciclo 1 - DAW; modulos 1-5 impartidos por el profesor 1)
+INSERT INTO `horarios` (`idCiclo`, `diaSemana`, `horaInicio`, `horaFin`, `idModulo`, `idProfesor`, `idAula`) VALUES
+(1, 'Lunes',     '08:00:00', '09:00:00', 1, 1, 1),
+(1, 'Lunes',     '09:00:00', '10:00:00', 2, 1, 1),
+(1, 'Lunes',     '10:00:00', '11:00:00', 3, 1, 1),
+(1, 'Martes',    '08:00:00', '09:00:00', 2, 1, 1),
+(1, 'Martes',    '11:30:00', '12:30:00', 4, 1, 3),
+(1, 'Miércoles', '09:00:00', '10:00:00', 3, 1, 1),
+(1, 'Miércoles', '12:30:00', '13:30:00', 5, 1, 3),
+(1, 'Jueves',    '10:00:00', '11:00:00', 4, 1, 3),
+(1, 'Viernes',   '13:30:00', '14:30:00', 5, 1, 3);
 

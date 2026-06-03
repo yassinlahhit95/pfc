@@ -127,6 +127,10 @@ $totalPrestamos_menu = contarPrestamosActivos();
                     <svg class="ico" aria-hidden="true"><use href="#ic-check-double"/></svg> <span>RESULTADOS FINALES</span>
                 </a>
 
+                <a href="../horario/horario.php" class="enlace-menu <?= ($seccion == 'horario') ? 'activo' : '' ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-calendar-alt"/></svg> <span>CUADRO HORARIO</span>
+                </a>
+
             </div>
 
             <div class="seccion-del-menu">
@@ -173,6 +177,10 @@ $totalPrestamos_menu = contarPrestamosActivos();
                 <a href="../inventario/gestionarPrestamos.php" class="enlace-menu <?= ($seccion == 'prestamos') ? 'activo' : '' ?>">
                     <svg class="ico" aria-hidden="true"><use href="#ic-hand-holding"/></svg> <span>PRÉSTAMOS</span>
                     <span class="texto-contador"><?= $totalPrestamos_menu ?></span>
+                </a>
+
+                <a href="../aulas/gestionAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-layer-group"/></svg> <span>AULAS</span>
                 </a>
             </div>
 

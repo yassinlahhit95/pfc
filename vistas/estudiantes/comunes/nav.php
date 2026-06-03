@@ -109,6 +109,10 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
                 <a href="../pfc/subir.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'tfg') ? 'activo' : '') ?>">
                     <svg class="ico" aria-hidden="true"><use href="#ic-file-pdf"/></svg> <span>MI TFG</span>
                 </a>
+
+                <a href="../horario/horario.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'horario') ? 'activo' : '') ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-calendar-alt"/></svg> <span>MI HORARIO</span>
+                </a>
             </div>
 
             <div class="seccion-del-menu">
