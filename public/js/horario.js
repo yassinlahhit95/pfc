@@ -1,18 +1,17 @@
 /**
  * Cuadro Horario - interacciones del director (CRUD por AJAX).
  * Todo encapsulado en el objeto Horario para no contaminar el ambito global.
- * Depende de jQuery (ya cargado en el nav) y de window.HORARIO_AULAS.
+ * Depende de jQuery (ya cargado en el nav) y de window.HORARIO_AULAS / HORARIO_END_SLOTS.
  */
 var Horario = (function () {
     var $app, idCiclo, csrf;
-    var seleccionada = null; // tarjeta seleccionada por clic
+    var seleccionada = null;
 
     function escapar(texto) {
         return $('<div>').text(texto == null ? '' : texto).html();
     }
 
     function rutaControlador(archivo) {
-        // La vista vive en vistas/admin/horario/ -> 3 niveles hasta la raiz
         return '../../../controladores/admin/horario/' + archivo;
     }
 
@@ -27,7 +26,7 @@ var Horario = (function () {
     }
 
     function pintarAsignada($celda, datos, idAula) {
-        var html = '' +
+        var html =
             '<div class="horario-asignado" style="background-color:' + escapar(datos.color) + ';"' +
             ' data-modulo="' + escapar(datos.modulo) + '" data-profesor="' + escapar(datos.profesor) + '">' +
                 '<button type="button" class="horario-limpiar" aria-label="Quitar"><i class="fas fa-xmark"></i></button>' +
@@ -42,7 +41,6 @@ var Horario = (function () {
         $celda.html('<div class="horario-vacia"><i class="fas fa-plus"></i> Asignar</div>');
     }
 
-    // Guarda modulo + profesor (+ aula si la celda ya tenia una) al colocar una tarjeta
     function asignar($celda, datos) {
         var idAula = $celda.find('.horario-aula-select').val() || '';
         $.post(rutaControlador('guardar.php'), {
@@ -65,10 +63,9 @@ var Horario = (function () {
         });
     }
 
-    // Cambia solo el aula de una celda ya asignada
     function cambiarAula($sel) {
         var $celda = $sel.closest('.horario-celda');
-        var $box = $sel.closest('.horario-asignado');
+        var $box   = $sel.closest('.horario-asignado');
         var previo = $sel.data('prev') || '';
         $.post(rutaControlador('guardar.php'), {
             csrf_token: csrf,
@@ -111,31 +108,57 @@ var Horario = (function () {
 
     function datosDeTarjeta($tarjeta) {
         return {
-            modulo: $tarjeta.data('modulo'),
-            profesor: $tarjeta.data('profesor'),
-            moduloNombre: $tarjeta.data('modulo-nombre'),
+            modulo:         $tarjeta.data('modulo'),
+            profesor:       $tarjeta.data('profesor'),
+            moduloNombre:   $tarjeta.data('modulo-nombre'),
             profesorNombre: $tarjeta.data('profesor-nombre'),
-            color: $tarjeta.data('color')
+            color:          $tarjeta.data('color')
         };
+    }
+
+    // ── Franja: actualiza el select de fin cuando cambia el inicio ──
+    function actualizarSelectFin(inicio) {
+        var $fin  = $('#franjaFin');
+        var $btn  = $('#btnAddFranja');
+        $fin.empty().append('<option value="">— hora —</option>');
+        if (!inicio) {
+            $fin.prop('disabled', true);
+            $btn.prop('disabled', true);
+            return;
+        }
+        // Max fin = inicio + 60 min
+        var parts = inicio.split(':');
+        var h = parseInt(parts[0], 10), m = parseInt(parts[1], 10) + 60;
+        h += Math.floor(m / 60); m = m % 60;
+        var maxFin = ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2);
+
+        var slots = window.HORARIO_END_SLOTS || [];
+        slots.forEach(function (s) {
+            if (s > inicio && s <= maxFin) {
+                $fin.append($('<option>', { value: s, text: s }));
+            }
+        });
+        $fin.prop('disabled', false).val('');
+        $btn.prop('disabled', true);
     }
 
     function init() {
         $app = $('#horarioApp');
         if (!$app.length) return;
         idCiclo = $app.data('ciclo');
-        csrf = $app.attr('data-csrf');
+        csrf    = $app.attr('data-csrf');
 
         // Buscador en vivo
         $('#horarioBuscar').on('input', function () {
             var q = $(this).val().toLowerCase().trim();
             $('.horario-tarjeta').each(function () {
-                var mod = ($(this).data('modulo-nombre') + '').toLowerCase();
+                var mod  = ($(this).data('modulo-nombre')   + '').toLowerCase();
                 var prof = ($(this).data('profesor-nombre') + '').toLowerCase();
                 $(this).toggle(mod.indexOf(q) !== -1 || prof.indexOf(q) !== -1);
             });
         });
 
-        // Seleccion por clic
+        // Seleccion por clic en tarjeta
         $app.on('click', '.horario-tarjeta', function () {
             if ($(this).hasClass('seleccionada')) {
                 $(this).removeClass('seleccionada');
@@ -147,31 +170,95 @@ var Horario = (function () {
             }
         });
 
-        // Clic en celda -> asignar la tarjeta seleccionada
+        // Clic en celda → asignar tarjeta seleccionada
         $app.on('click', '.horario-celda', function (e) {
-            if ($(e.target).closest('.horario-limpiar').length) return;
+            if ($(e.target).closest('.horario-limpiar').length)    return;
             if ($(e.target).closest('.horario-aula-select').length) return;
-            if (seleccionada) {
-                asignar($(this), datosDeTarjeta(seleccionada));
-            }
+            if (seleccionada) asignar($(this), datosDeTarjeta(seleccionada));
         });
 
-        // Boton limpiar
+        // Quitar módulo de una celda
         $app.on('click', '.horario-limpiar', function (e) {
             e.stopPropagation();
             limpiar($(this).closest('.horario-celda'));
         });
 
-        // Aula: recordar valor previo y guardar al cambiar
-        $app.on('focus', '.horario-aula-select', function () {
-            $(this).data('prev', $(this).val());
-        });
-        $app.on('change', '.horario-aula-select', function (e) {
+        // ── Eliminar franja (botón x en la cabecera de la fila) ──
+        $app.on('click', '.horario-quitar-franja', function (e) {
+            e.preventDefault();
             e.stopPropagation();
-            cambiarAula($(this));
+            var $btn = $(this);
+            var inicio = $btn.data('inicio');
+            if (!inicio) return;
+
+            var $tr = $btn.closest('tr');
+            if ($tr.find('.horario-asignado').length > 0) {
+                alert('Esta franja tiene módulos asignados.\nElimínalos primero haciendo clic en x dentro de cada celda.');
+                return;
+            }
+
+            if (!confirm('¿Eliminar la franja ' + inicio + '?')) return;
+
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+            $.post(rutaControlador('removeFranja.php'), {
+                csrf_token: csrf,
+                idCiclo:    idCiclo,
+                horaInicio: inicio
+            }, null, 'json').done(function (resp) {
+                if (resp && resp.ok) {
+                    window.location.reload();
+                } else {
+                    $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
+                    alert(resp && resp.msg ? resp.msg : 'No se pudo eliminar la franja.');
+                }
+            }).fail(function () {
+                $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
+                alert('Error de conexión.');
+            });
         });
 
-        // Drag & drop (escritorio)
+        // ── Añadir nueva franja: Inicio select ──
+        $app.on('change', '#franjaInicio', function () {
+            actualizarSelectFin($(this).val());
+        });
+
+        // ── Añadir nueva franja: Fin select ──
+        $app.on('change', '#franjaFin', function () {
+            $('#btnAddFranja').prop('disabled', !$(this).val());
+        });
+
+        // ── Añadir nueva franja: botón ──
+        $('#btnAddFranja').on('click', function () {
+            var inicio = $('#franjaInicio').val();
+            var fin    = $('#franjaFin').val();
+            var receso = $('#franjaReceso').is(':checked') ? 1 : 0;
+            if (!inicio || !fin) { alert('Selecciona la hora de inicio y fin.'); return; }
+            var $btn = $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando…');
+            $.post(rutaControlador('addFranja.php'), {
+                csrf_token: csrf,
+                idCiclo:    idCiclo,
+                horaInicio: inicio,
+                horaFin:    fin,
+                esReceso:   receso
+            }, null, 'json').done(function (resp) {
+                if (resp && resp.ok) {
+                    window.location.reload();
+                } else {
+                    $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
+                    alert(resp && resp.msg ? resp.msg : 'No se pudo agregar la franja.');
+                }
+            }).fail(function () {
+                $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
+                alert('Error de conexión.');
+            });
+        });
+
+        // Aula: guardar valor previo + actualizar al cambiar
+        $app.on('focus',  '.horario-aula-select', function ()    { $(this).data('prev', $(this).val()); });
+        $app.on('change', '.horario-aula-select', function (e)   { e.stopPropagation(); cambiarAula($(this)); });
+
+        // Drag & drop
         $app.on('dragstart', '.horario-tarjeta', function (e) {
             e.originalEvent.dataTransfer.setData('text/plain', JSON.stringify(datosDeTarjeta($(this))));
         });

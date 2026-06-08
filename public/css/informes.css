@@ -1,0 +1,98 @@
+.informes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 8px 0 32px;
+}
+
+.informe-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 24px 28px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform .15s, box-shadow .15s;
+}
+.informe-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.12);
+}
+
+.informe-icono {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    color: #fff;
+    margin-bottom: 4px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+
+.informe-titulo {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.informe-desc {
+    font-size: .85rem;
+    color: #6b7280;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+}
+
+.informe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.informe-select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: .875rem;
+    color: #374151;
+    background: #f9fafb;
+    appearance: auto;
+    transition: border-color .15s;
+}
+.informe-select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: #fff;
+}
+
+.informe-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1e3a6e, #2d5be3);
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity .15s, transform .1s;
+    margin-top: 4px;
+}
+.informe-btn:hover  { opacity: .9; transform: translateY(-1px); }
+.informe-btn:active { transform: translateY(0); }
+
+@media (max-width: 1100px) { .informes-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width:  700px) { .informes-grid { grid-template-columns: 1fr; } }

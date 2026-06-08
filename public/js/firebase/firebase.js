@@ -28,10 +28,10 @@ export async function setupFirebase(id, rol) {
             }
 
             // Registramos el worker
-            var sw = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            var sw = await navigator.serviceWorker.register('../../../firebase-messaging-sw.js');
             await navigator.serviceWorker.ready;
 
-            var t = await getToken(fcm, { 
+            var t = await getToken(fcm, {
                 vapidKey: 'BNoCI0P78ggUa8HVX8t4q3uSLeq7PoWZV3dAMuCoNCrkLKQfCKJ6PyhoLy0ZE_kaagS9S9bJzlx-gpElLlVm8y0',
                 serviceWorkerRegistration: sw
             });
@@ -42,7 +42,7 @@ export async function setupFirebase(id, rol) {
                 fd.append('userId', id);
                 fd.append('userRole', rol);
 
-                var r = await fetch('/controladores/firebase/guardar_token.php', {
+                var r = await fetch('../../../controladores/firebase/guardar_token.php', {
                     method: 'POST',
                     body: fd
                 });

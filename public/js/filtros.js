@@ -1,6 +1,5 @@
 function filtrarTabla(inputId, tablaId) {
     var q = $('#' + inputId).val().toLowerCase();
-    console.log('filtrando tabla:', tablaId, 'con:', q);
 
     $('#' + tablaId + ' tbody tr').each(function() {
         let s = $(this).text().toLowerCase();
@@ -12,6 +11,30 @@ function filtrarTabla(inputId, tablaId) {
     });
 
     if (typeof resetearPaginacion === 'function' && _paginaciones && _paginaciones[tablaId]) {
+        resetearPaginacion(tablaId);
+    }
+}
+
+function filtrarTablaMulti(tablaId) {
+    var filtros = {};
+    $('[data-filtro-tabla="' + tablaId + '"]').each(function() {
+        filtros[$(this).data('filtro-campo')] = $(this).val().toLowerCase();
+    });
+
+    $('#' + tablaId + ' tbody tr').each(function() {
+        var $tr = $(this);
+        var visible = true;
+        $.each(filtros, function(campo, valor) {
+            if (!valor) return true;
+            if ($tr.find('[data-campo="' + campo + '"]').text().toLowerCase().indexOf(valor) === -1) {
+                visible = false;
+                return false;
+            }
+        });
+        $tr.toggleClass('fila-filtro-oculta', !visible);
+    });
+
+    if (typeof resetearPaginacion === 'function' && typeof _paginaciones !== 'undefined' && _paginaciones && _paginaciones[tablaId]) {
         resetearPaginacion(tablaId);
     }
 }

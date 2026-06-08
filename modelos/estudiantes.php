@@ -151,25 +151,9 @@ function validarLoginEstudiante($email, $password) {
 }
 
 function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
-    $con = obtenerConexion();
-    $sql = "UPDATE estudiantes SET fcm_token = ? WHERE idEstudiante = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $nuevoToken, $idEstudiante);
-    $resultado = mysqli_stmt_execute($stmt);
-    return $resultado;
+    return actualizarTokenFCM('estudiantes', 'idEstudiante', $idEstudiante, $nuevoToken);
 }
 
 function obtenerTokenFCMEstudiante($idEstudiante) {
-    $con = obtenerConexion();
-    $sql = "SELECT fcm_token FROM estudiantes WHERE idEstudiante = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    $token = null;
-    if ($fila) {
-        $token = $fila['fcm_token'];
-    }
-    return $token;
+    return obtenerTokenFCM('estudiantes', 'idEstudiante', $idEstudiante);
 }

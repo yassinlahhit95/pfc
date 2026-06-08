@@ -190,8 +190,8 @@ function listarResultadosFinalesCiclo($idCiclo)
     if (empty($moduloIds)) return [];
 
     // 3. Obtener todas las calificaciones de módulos para estos estudiantes/módulos
-    $idsStr = implode(',', $estudianteIds);
-    $modIdsStr = implode(',', $moduloIds);
+    $idsStr = implode(',', array_map('intval', $estudianteIds));
+    $modIdsStr = implode(',', array_map('intval', $moduloIds));
     $sqlGrades = "SELECT * FROM calificaciones_modulos WHERE idEstudiante IN ($idsStr) AND idModulo IN ($modIdsStr)";
     $resG = mysqli_query($con, $sqlGrades);
     $allGrades = [];
@@ -456,4 +456,47 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     }
 
     return $resumen;
+}
+
+function generarDatosBoletinCiclo($idCiclo) {
+    $con = obtenerConexion();
+
+    $stmt = mysqli_prepare($con,
+        "SELECT e.*, c.nombreCiclo, c.abreviaturaCiclo, n.nombreNivel
+         FROM estudiantes e
+         JOIN ciclos c ON e.idCiclo = c.idCiclo
+         JOIN niveles n ON c.idNivel = n.idNivel
+         WHERE e.idCiclo = ? ORDER BY e.nombreEstudiante ASC");
+    mysqli_stmt_bind_param($stmt, 'i', $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $estudiantes = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+
+    $stmt = mysqli_prepare($con, "SELECT * FROM modulos WHERE idCiclo = ? ORDER BY nombreModulo ASC");
+    mysqli_stmt_bind_param($stmt, 'i', $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $modulos = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+
+    if (empty($modulos) || empty($estudiantes)) {
+        return ['estudiantes' => $estudiantes, 'modulos' => $modulos];
+    }
+
+    $modIds  = implode(',', array_map('intval', array_column($modulos, 'idModulo')));
+    $resG    = mysqli_query($con, "SELECT * FROM calificaciones_modulos WHERE idModulo IN ($modIds)");
+    $gradeMap = [];
+    while ($row = mysqli_fetch_assoc($resG)) {
+        $gradeMap[$row['idEstudiante']][$row['idModulo']] = $row;
+    }
+
+    foreach ($estudiantes as &$est) {
+        $est['modulos'] = [];
+        foreach ($modulos as $mod) {
+            $est['modulos'][] = [
+                'idModulo'     => $mod['idModulo'],
+                'nombreModulo' => $mod['nombreModulo'],
+                'notas'        => $gradeMap[$est['idEstudiante']][$mod['idModulo']] ?? null,
+            ];
+        }
+    }
+
+    return ['estudiantes' => $estudiantes, 'modulos' => $modulos];
 }

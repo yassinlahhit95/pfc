@@ -46,8 +46,25 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel margen-abajo">
     <div class="caja caja-libre espacio-grande">
         <div class="campo relleno">
+            <label for="filtroNivel">FILTRAR POR NIVEL:</label>
+            <select id="filtroNivel"
+                    data-filtro-tabla="tablaModulos"
+                    data-filtro-campo="nivel"
+                    onchange="cascadeCicloSelect(this); filtrarTablaMulti('tablaModulos')">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $n) { ?>
+                    <option value="<?= Security::escapeHtml($n['nombreNivel']) ?>">
+                        <?= Security::escapeHtml($n['nombreNivel']) ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="campo relleno">
             <label for="selectFiltroCiclo">FILTRAR POR CICLO:</label>
-            <select id="selectFiltroCiclo" onchange="filtrarTabla('selectFiltroCiclo', 'tablaModulos')">
+            <select id="selectFiltroCiclo"
+                    data-filtro-tabla="tablaModulos"
+                    data-filtro-campo="ciclo"
+                    onchange="filtrarTablaMulti('tablaModulos')">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                     <option value="<?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>">
@@ -84,13 +101,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr>
                         <td><?= Security::escapeHtml($moduloIndividual['idModulo']) ?></td>
-                        <td>
+                        <td data-campo="nivel">
                             <span class="texto-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
                         </td>
                         <td><b><?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8')) ?></b></td>
-                        <td>
+                        <td data-campo="ciclo">
                             <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
-                                <b>[<?= Security::escapeHtml($moduloIndividual['abreviaturaCiclo']) ?>]</b> 
+                                <b>[<?= Security::escapeHtml($moduloIndividual['abreviaturaCiclo']) ?>]</b>
                             <?php } ?>
                             <?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreCiclo'], 'UTF-8')) ?>
                         </td>
@@ -133,4 +150,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+var _ciclosData = <?= json_encode(array_map(fn($c) => [
+    'valor'    => strtoupper($c['nombreCiclo']),
+    'label'    => '[' . $c['nombreNivel'] . '] ' . strtoupper($c['nombreCiclo']),
+    'idNivel'  => (int)$c['idNivel']
+], $listaDeCiclosParaFiltro), JSON_UNESCAPED_UNICODE) ?>;
+
+function cascadeCicloSelect(selectNivel) {
+    var idNivel = parseInt($(selectNivel).val()) || 0;
+    var $ciclo  = $('#selectFiltroCiclo');
+    var prev    = $ciclo.val();
+
+    $ciclo.find('option:not(:first)').remove();
+    _ciclosData.forEach(function(c) {
+        if (!idNivel || c.idNivel === idNivel) {
+            $('<option>', { value: c.valor }).text(c.label).appendTo($ciclo);
+        }
+    });
+
+    $ciclo.val($ciclo.find('option[value="' + prev + '"]').length ? prev : '');
+}
+</script>
 

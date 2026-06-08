@@ -35,7 +35,6 @@ if (isset($_POST['guardarAnuncio'])) {
                 $tokens = array_merge($tokens, obtenerTokensEstudiantes());
             }
             if ($dirigidoA == 'profesores' || $dirigidoA == 'todos') {
-                require_once __DIR__ . "/../../../modelos/profesores.php";
                 $tokens = array_merge($tokens, obtenerTokensProfesores());
             }
 

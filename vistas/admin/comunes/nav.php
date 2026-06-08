@@ -39,8 +39,8 @@ $totalPrestamos_menu = contarPrestamosActivos();
     <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
-    <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__."/../../../public/css/aula-digital.css") ?>">
     <link rel="stylesheet" href="../../../public/css/sidebar.css?v=<?= @filemtime(__DIR__."/../../../public/css/sidebar.css") ?>">
@@ -181,6 +181,20 @@ $totalPrestamos_menu = contarPrestamosActivos();
 
                 <a href="../aulas/gestionAulas.php" class="enlace-menu <?= ($seccion == 'aulas') ? 'activo' : '' ?>">
                     <svg class="ico" aria-hidden="true"><use href="#ic-layer-group"/></svg> <span>AULAS</span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">DOCUMENTOS</p>
+                <a href="../informes/informes.php" class="enlace-menu <?= ($seccion == 'informes') ? 'activo' : '' ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-file-alt"/></svg> <span>INFORMES Y PDF</span>
+                </a>
+            </div>
+
+            <div class="seccion-del-menu">
+                <p class="titulo-de-seccion">SISTEMA</p>
+                <a href="../configuracion/configuracion.php" class="enlace-menu <?= ($seccion == 'configuracion') ? 'activo' : '' ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-cog"/></svg> <span>CONFIGURACIÓN</span>
                 </a>
             </div>
 

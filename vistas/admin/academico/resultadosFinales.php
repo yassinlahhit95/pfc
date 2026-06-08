@@ -6,12 +6,25 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
+
+$listaDeTodosLosCiclos = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
+
+$idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
+$ciclosFiltrados = $idNivelFiltro
+    ? array_values(array_filter($listaDeTodosLosCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    : $listaDeTodosLosCiclos;
 
 $idCicloElegidoParaVer = (int)($_GET['idCiclo'] ?? 0);
 
-$listaDeTodosLosCiclos = listarTodosLosCiclos();
-$listaDeDatosFinalesAMostrar = [];
+if ($idNivelFiltro && $idCicloElegidoParaVer) {
+    if (!in_array($idCicloElegidoParaVer, array_column($ciclosFiltrados, 'idCiclo'))) {
+        $idCicloElegidoParaVer = 0;
+    }
+}
 
+$listaDeDatosFinalesAMostrar = [];
 if (!empty($idCicloElegidoParaVer)) {
     $listaDeDatosFinalesAMostrar = listarResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
@@ -33,12 +46,23 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="caja alinear-centro espacio-grande">
         <form method="GET" action="resultadosFinales.php" class="relleno caja alinear-centro">
             <div class="campo relleno">
+                <label>Filtrar por Nivel:</label>
+                <select name="idNivel" onchange="this.form.submit()">
+                    <option value="">-- Todos los Niveles --</option>
+                    <?php foreach ($listaNiveles as $n) { ?>
+                        <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($n['nombreNivel']) ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="campo relleno">
                 <label>Seleccione un Ciclo formativo para ver el resumen:</label>
                 <select name="idCiclo" id="selectCicloFinal" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
-                        <option value="<?= $cicloItem['idCiclo'] ?>" <?php if ($idCicloElegidoParaVer == $cicloItem['idCiclo']) { echo 'selected'; } ?>>
-                            [<?= $cicloItem['nombreNivel'] ?>] <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                    <?php foreach ($ciclosFiltrados as $cicloItem) { ?>
+                        <option value="<?= (int)$cicloItem['idCiclo'] ?>" <?= ($idCicloElegidoParaVer == $cicloItem['idCiclo']) ? 'selected' : '' ?>>
+                            [<?= htmlspecialchars($cicloItem['nombreNivel']) ?>] <?= strtoupper(htmlspecialchars($cicloItem['nombreCiclo'])) ?>
                         </option>
                     <?php } ?>
                 </select>

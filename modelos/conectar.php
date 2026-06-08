@@ -32,6 +32,25 @@ function obtenerConexion() {
     }
 
     mysqli_set_charset($conexion, "utf8mb4");
-    
+
     return $conexion;
+}
+
+function actualizarTokenFCM($tabla, $campoId, $id, $token) {
+    $con = obtenerConexion();
+    $sql = "UPDATE $tabla SET fcm_token = ? WHERE $campoId = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $token, $id);
+    return mysqli_stmt_execute($stmt);
+}
+
+function obtenerTokenFCM($tabla, $campoId, $id) {
+    $con = obtenerConexion();
+    $sql = "SELECT fcm_token FROM $tabla WHERE $campoId = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $fila = mysqli_fetch_assoc($resultado);
+    return ($fila && $fila['fcm_token']) ? $fila['fcm_token'] : null;
 }

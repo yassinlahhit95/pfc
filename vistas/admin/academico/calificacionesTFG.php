@@ -6,10 +6,23 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
+
+$listaCiclos  = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
+
+$idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
+$ciclosFiltrados = $idNivelFiltro
+    ? array_values(array_filter($listaCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    : $listaCiclos;
 
 $idCicloElegido = $_GET['idCiclo'] ?? '';
-$listaCiclos = listarTodosLosCiclos();
-$listaEvaluacion = listarEvaluacionTFG($idCicloElegido);
+
+if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_column($ciclosFiltrados, 'idCiclo'))) {
+    $idCicloElegido = '';
+}
+
+$listaEvaluacion = listarEvaluacionTFG($idCicloElegido ?: null);
 
 $titulo_pagina = "AULAPRO | GESTIÓN TFG";
 $seccion = 'notas_tfg';
@@ -23,18 +36,29 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="GET" action="calificacionesTFG.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
+            <label>Filtrar por Nivel:</label>
+            <select name="idNivel" onchange="this.form.submit()">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $n) { ?>
+                    <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($n['nombreNivel']) ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <div class="campo relleno">
             <label>Filtrar por Ciclo:</label>
             <select name="idCiclo" id="selectCicloTFG" onchange="this.form.submit()">
                 <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($listaCiclos as $ciclo) { ?>
+                <?php foreach ($ciclosFiltrados as $ciclo) { ?>
                     <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                         [<?= $ciclo['nombreNivel'] ?>] <?= $ciclo['nombreCiclo'] ?>
                     </option>
                 <?php } ?>
             </select>
         </div>
-
-</form>
+    </form>
 </div>
 
 <?php if ($exito) { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>

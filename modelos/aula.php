@@ -113,7 +113,7 @@ function borrarCarpetaAula($idCarpeta) {
     $ids = obtenerArbolCarpetaAula($idCarpeta);
     if (empty($ids)) return false;
     $con = obtenerConexion();
-    $ahora = mysqli_real_escape_string($con, date('Y-m-d H:i:s'));
+    $ahora = date('Y-m-d H:i:s');
     $in = implode(',', array_map('intval', $ids));
     $ok = mysqli_query($con, "UPDATE aula_carpetas SET eliminado=1, fechaEliminacion='$ahora' WHERE idCarpeta IN ($in)");
     mysqli_query($con, "UPDATE aula_archivos SET eliminado=1, fechaEliminacion='$ahora' WHERE idCarpeta IN ($in)");

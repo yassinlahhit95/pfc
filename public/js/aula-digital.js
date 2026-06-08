@@ -145,7 +145,7 @@ function closeModal(modalId) {
  document.body.style.overflow = 'auto';
  }
 }
-function confirm(message, onConfirm, onCancel) {
+function confirmAction(message, onConfirm, onCancel) {
  if (window.confirm(message)) {
  onConfirm && onConfirm();
  } else {
@@ -165,7 +165,7 @@ function setLoading(element, isLoading) {
 window.AulaDigital = {
  openModal,
  closeModal,
- confirm,
+ confirm: confirmAction,
  setLoading,
  showError,
  showSuccess,

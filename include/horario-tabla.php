@@ -14,7 +14,7 @@ if (!isset($puedeEditar))   $puedeEditar = false;
 if (!isset($idCicloHorario)) $idCicloHorario = 0;
 if (!isset($aulasDisponibles)) $aulasDisponibles = []; // solo se usa en modo edicion
 
-$franjasHorario = obtenerFranjasHorario();
+$franjasHorario = obtenerFranjasHorario($idCicloHorario);
 $diasHorario    = obtenerDiasHorario();
 // horarioColorModulo() y horarioIniciales() viven en modelos/horarios.php
 ?>
@@ -32,15 +32,33 @@ $diasHorario    = obtenerDiasHorario();
         <tbody>
             <?php foreach ($franjasHorario as $franja) { ?>
                 <?php if (!empty($franja['recreo'])) { ?>
-                    <tr class="horario-fila-recreo">
-                        <td class="horario-hora"><?= Security::escapeHtml($franja['inicio'] . ' - ' . $franja['fin']) ?></td>
+                    <tr class="horario-fila-recreo" data-franja-inicio="<?= Security::escapeHtml($franja['inicio']) ?>">
+                        <td class="horario-hora">
+                            <div class="horario-hora-wrap">
+                                <span class="horario-hora-texto"><?= Security::escapeHtml($franja['inicio'] . ' – ' . $franja['fin']) ?></span>
+                                <?php if ($puedeEditar) { ?>
+                                    <button type="button" class="horario-quitar-franja"
+                                            data-inicio="<?= Security::escapeHtml($franja['inicio']) ?>"
+                                            title="Eliminar franja"><i class="fas fa-xmark"></i></button>
+                                <?php } ?>
+                            </div>
+                        </td>
                         <td colspan="<?= count($diasHorario) ?>" class="horario-celda-recreo">
-                            <i class="fas fa-mug-hot"></i> RECREO
+                            <i class="fas fa-mug-hot"></i> DESCANSO
                         </td>
                     </tr>
                 <?php } else { ?>
-                    <tr>
-                        <td class="horario-hora"><?= Security::escapeHtml($franja['inicio'] . ' - ' . $franja['fin']) ?></td>
+                    <tr data-franja-inicio="<?= Security::escapeHtml($franja['inicio']) ?>">
+                        <td class="horario-hora">
+                            <div class="horario-hora-wrap">
+                                <span class="horario-hora-texto"><?= Security::escapeHtml($franja['inicio'] . ' – ' . $franja['fin']) ?></span>
+                                <?php if ($puedeEditar) { ?>
+                                    <button type="button" class="horario-quitar-franja"
+                                            data-inicio="<?= Security::escapeHtml($franja['inicio']) ?>"
+                                            title="Eliminar franja"><i class="fas fa-xmark"></i></button>
+                                <?php } ?>
+                            </div>
+                        </td>
                         <?php foreach ($diasHorario as $dia) {
                             $clave  = $dia . '|' . $franja['inicio'];
                             $celda  = $horarioCeldas[$clave] ?? null;

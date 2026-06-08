@@ -1,11 +1,7 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-/**
- * Franjas horarias fijas del cuadro semanal.
- * Cada franja: etiqueta visible, hora de inicio y fin (formato HH:MM), y si es recreo.
- */
-function obtenerFranjasHorario() {
+function _defaultFranjas() {
     return [
         ['inicio' => '08:00', 'fin' => '09:00', 'recreo' => false],
         ['inicio' => '09:00', 'fin' => '10:00', 'recreo' => false],
@@ -15,6 +11,75 @@ function obtenerFranjasHorario() {
         ['inicio' => '12:30', 'fin' => '13:30', 'recreo' => false],
         ['inicio' => '13:30', 'fin' => '14:30', 'recreo' => false],
     ];
+}
+
+function _seedDefaultFranjas($idCiclo) {
+    $con = obtenerConexion();
+    foreach (_defaultFranjas() as $f) {
+        $sql  = "INSERT IGNORE INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)";
+        $stmt = mysqli_prepare($con, $sql);
+        $rec  = $f['recreo'] ? 1 : 0;
+        mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $f['inicio'], $f['fin'], $rec);
+        mysqli_stmt_execute($stmt);
+    }
+}
+
+/**
+ * Franjas horarias de un ciclo. Si no hay personalizadas, usa las predeterminadas.
+ * Pasa $idCiclo = 0 para obtener solo las predeterminadas sin tocar la BD.
+ */
+function obtenerFranjasHorario($idCiclo = 0) {
+    if (!$idCiclo) return _defaultFranjas();
+
+    $con  = obtenerConexion();
+    $sql  = "SELECT horaInicio, horaFin, esReceso FROM horario_franjas WHERE idCiclo = ? ORDER BY horaInicio";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+
+    $franjas = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $franjas[] = [
+            'inicio' => substr($fila['horaInicio'], 0, 5),
+            'fin'    => substr($fila['horaFin'],    0, 5),
+            'recreo' => (bool)$fila['esReceso'],
+        ];
+    }
+
+    if (empty($franjas)) {
+        _seedDefaultFranjas($idCiclo);
+        return _defaultFranjas();
+    }
+
+    return $franjas;
+}
+
+function agregarFranjaHorario($idCiclo, $inicio, $fin, $esReceso) {
+    _seedDefaultFranjas($idCiclo); // garantiza que los defaults ya están en BD
+    $con       = obtenerConexion();
+    $esRecInt  = $esReceso ? 1 : 0;
+    $sql       = "INSERT INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)
+                  ON DUPLICATE KEY UPDATE horaFin = VALUES(horaFin), esReceso = VALUES(esReceso)";
+    $stmt      = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $inicio, $fin, $esRecInt);
+    return mysqli_stmt_execute($stmt);
+}
+
+function tieneCeldasEnFranja($idCiclo, $inicio) {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "SELECT COUNT(*) FROM horarios WHERE idCiclo = ? AND horaInicio = ?");
+    mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
+    mysqli_stmt_execute($stmt);
+    $row  = mysqli_fetch_row(mysqli_stmt_get_result($stmt));
+    return (int)$row[0] > 0;
+}
+
+function eliminarFranjaHorario($idCiclo, $inicio) {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "DELETE FROM horario_franjas WHERE idCiclo = ? AND horaInicio = ?");
+    mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
+    return mysqli_stmt_execute($stmt);
 }
 
 /**

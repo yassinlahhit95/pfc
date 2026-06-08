@@ -12,16 +12,25 @@ if (empty($_SESSION['idAdmin'])) {
 
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
+
+$listaDeTodosLosCiclos = listarTodosLosCiclos();
+$listaNiveles          = listarNiveles();
+
+$idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
+$ciclosFiltrados = $idNivelFiltro
+    ? array_values(array_filter($listaDeTodosLosCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    : $listaDeTodosLosCiclos;
 
 $idDelCicloParaFiltrar = $_GET['idCiclo'] ?? '';
 
-if (!empty($idDelCicloParaFiltrar)) {
-    $listaDePagosAMostrar = listarPagosFiltrados($idDelCicloParaFiltrar);
-} else {
-    $listaDePagosAMostrar = listarTodosLosPagos();
+if ($idNivelFiltro && $idDelCicloParaFiltrar && !in_array((int)$idDelCicloParaFiltrar, array_column($ciclosFiltrados, 'idCiclo'))) {
+    $idDelCicloParaFiltrar = '';
 }
 
-$listaDeTodosLosCiclos = listarTodosLosCiclos();
+$listaDePagosAMostrar = $idDelCicloParaFiltrar
+    ? listarPagosFiltrados($idDelCicloParaFiltrar)
+    : listarTodosLosPagos();
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE PAGOS";
 $seccion = 'pagos';
@@ -47,17 +56,28 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="GET" action="verPagosGeneral.php">
         <div class="caja al-final espacio-grande">
             <div class="campo relleno">
+                <label>FILTRAR POR NIVEL:</label>
+                <select name="idNivel" onchange="this.form.submit()">
+                    <option value="">-- Todos los Niveles --</option>
+                    <?php foreach ($listaNiveles as $n) { ?>
+                        <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($n['nombreNivel']) ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="campo relleno">
                 <label>FILTRAR POR CICLO FORMATIVO:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
-                    <?php foreach ($listaDeTodosLosCiclos as $cicloItem) { ?>
+                    <?php foreach ($ciclosFiltrados as $cicloItem) { ?>
                         <option value="<?= $cicloItem['idCiclo'] ?>" <?= $idDelCicloParaFiltrar == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
                             <?= strtoupper($cicloItem['nombreCiclo']) ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
-</div>
+        </div>
     </form>
 </div>
 

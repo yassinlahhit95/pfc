@@ -1,8 +1,6 @@
 <?php
-session_start();
-header('Content-Type: application/json; charset=utf-8');
-
 require_once __DIR__ . "/../../../include/Security.php";
+header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . "/../../../modelos/horarios.php";
 
 if (empty($_SESSION['idAdmin'])) {
@@ -26,7 +24,7 @@ $idAula     = $idAula > 0 ? $idAula : null;   // 0 / vacio = sin aula
 // Validar contra los valores permitidos (dia y franja reales)
 $diasValidos    = obtenerDiasHorario();
 $franjasValidas = [];
-foreach (obtenerFranjasHorario() as $f) {
+foreach (obtenerFranjasHorario($idCiclo) as $f) {
     if (empty($f['recreo'])) $franjasValidas[$f['inicio']] = $f['fin'];
 }
 

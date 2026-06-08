@@ -103,27 +103,9 @@ function validarLoginDirector($email, $password) {
 }
 
 function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
-    $con = obtenerConexion();
-    $sql = "UPDATE directores SET fcm_token = ? WHERE idDirector = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $nuevoToken, $idDirector);
-    $resultado = mysqli_stmt_execute($stmt);
-    
-    return $resultado;
+    return actualizarTokenFCM('directores', 'idDirector', $idDirector, $nuevoToken);
 }
 
 function obtenerTokenFCMDirector($idDirector) {
-    $con = obtenerConexion();
-    $sql = "SELECT fcm_token FROM directores WHERE idDirector = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idDirector);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    $token = null;
-    if ($fila && $fila['fcm_token']) {
-        $token = $fila['fcm_token'];
-    }
-    
-    return $token;
+    return obtenerTokenFCM('directores', 'idDirector', $idDirector);
 }

@@ -8,12 +8,25 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/niveles.php";
 
-$idCicloElegido = $_GET['idCiclo'] ?? '';
+$listaCiclos  = listarTodosLosCiclos();
+$listaNiveles = listarNiveles();
+
+$idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
+$ciclosFiltrados = $idNivelFiltro
+    ? array_values(array_filter($listaCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    : $listaCiclos;
+
+$idCicloElegido  = $_GET['idCiclo']  ?? '';
 $idModuloElegido = $_GET['idModulo'] ?? '';
 
-$listaCiclos = listarTodosLosCiclos();
-$listaModulos = !empty($idCicloElegido) ? listarModulosPorCiclo($idCicloElegido) : [];
+if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_column($ciclosFiltrados, 'idCiclo'))) {
+    $idCicloElegido  = '';
+    $idModuloElegido = '';
+}
+
+$listaModulos     = !empty($idCicloElegido)  ? listarModulosPorCiclo($idCicloElegido)         : [];
 $listaEstudiantes = !empty($idModuloElegido) ? listarCalificacionesPorModulo($idModuloElegido) : [];
 
 $titulo_pagina = "AULAPRO | NOTAS DE MÓDULOS";
@@ -28,10 +41,22 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="GET" action="calificacionesModulos.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
+            <label>Filtrar por Nivel:</label>
+            <select name="idNivel" onchange="this.form.submit()">
+                <option value="">-- Todos los Niveles --</option>
+                <?php foreach ($listaNiveles as $n) { ?>
+                    <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($n['nombreNivel']) ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <div class="campo relleno">
             <label for="selectCicloMod">Seleccione un Ciclo:</label>
             <select name="idCiclo" id="selectCicloMod" onchange="this.form.submit()">
                 <option value="">-Seleccionar Ciclo-</option>
-                <?php foreach ($listaCiclos as $ciclo) { ?>
+                <?php foreach ($ciclosFiltrados as $ciclo) { ?>
                     <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                         [<?= Security::escapeHtml($ciclo['nombreNivel']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
