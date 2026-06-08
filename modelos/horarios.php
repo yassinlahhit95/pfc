@@ -14,14 +14,17 @@ function _defaultFranjas() {
 }
 
 function _seedDefaultFranjas($idCiclo) {
-    $con = obtenerConexion();
+    $con  = obtenerConexion();
+    $sql  = "INSERT IGNORE INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    if (!$stmt) return;
+
     foreach (_defaultFranjas() as $f) {
-        $sql  = "INSERT IGNORE INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        $rec  = $f['recreo'] ? 1 : 0;
+        $rec = $f['recreo'] ? 1 : 0;
         mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $f['inicio'], $f['fin'], $rec);
         mysqli_stmt_execute($stmt);
     }
+    mysqli_stmt_close($stmt);
 }
 
 /**
@@ -46,6 +49,7 @@ function obtenerFranjasHorario($idCiclo = 0) {
             'recreo' => (bool)$fila['esReceso'],
         ];
     }
+    mysqli_stmt_close($stmt);
 
     if (empty($franjas)) {
         _seedDefaultFranjas($idCiclo);
@@ -63,23 +67,37 @@ function agregarFranjaHorario($idCiclo, $inicio, $fin, $esReceso) {
                   ON DUPLICATE KEY UPDATE horaFin = VALUES(horaFin), esReceso = VALUES(esReceso)";
     $stmt      = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $inicio, $fin, $esRecInt);
-    return mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    return $res;
 }
 
 function tieneCeldasEnFranja($idCiclo, $inicio) {
     $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT COUNT(*) FROM horarios WHERE idCiclo = ? AND horaInicio = ?");
+    // Solo contamos si realmente hay un módulo asignado (evita bloqueos por filas huérfanas o vacías)
+    $stmt = mysqli_prepare($con, "SELECT COUNT(*) FROM horarios WHERE idCiclo = ? AND horaInicio = ? AND idModulo > 0");
     mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
     mysqli_stmt_execute($stmt);
     $row  = mysqli_fetch_row(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
     return (int)$row[0] > 0;
 }
 
 function eliminarFranjaHorario($idCiclo, $inicio) {
     $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "DELETE FROM horario_franjas WHERE idCiclo = ? AND horaInicio = ?");
-    mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
-    return mysqli_stmt_execute($stmt);
+
+    // 1. Limpiar cualquier residuo en la tabla de asignaciones para esta franja en este ciclo
+    $stmt1 = mysqli_prepare($con, "DELETE FROM horarios WHERE idCiclo = ? AND horaInicio = ?");
+    mysqli_stmt_bind_param($stmt1, "is", $idCiclo, $inicio);
+    mysqli_stmt_execute($stmt1);
+    mysqli_stmt_close($stmt1);
+
+    // 2. Eliminar la franja en sí
+    $stmt2 = mysqli_prepare($con, "DELETE FROM horario_franjas WHERE idCiclo = ? AND horaInicio = ?");
+    mysqli_stmt_bind_param($stmt2, "is", $idCiclo, $inicio);
+    $res = mysqli_stmt_execute($stmt2);
+    mysqli_stmt_close($stmt2);
+    return $res;
 }
 
 /**
@@ -134,6 +152,7 @@ function listarHorarioPorCiclo($idCiclo) {
         $clave = $fila['diaSemana'] . '|' . substr($fila['horaInicio'], 0, 5);
         $celdas[$clave] = $fila;
     }
+    mysqli_stmt_close($stmt);
     return $celdas;
 }
 
@@ -158,6 +177,7 @@ function listarAsignacionesPorCiclo($idCiclo) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
     }
+    mysqli_stmt_close($stmt);
     return $lista;
 }
 
@@ -176,7 +196,9 @@ function guardarCeldaHorario($idCiclo, $dia, $horaInicio, $horaFin, $idModulo, $
                 idAula     = VALUES(idAula)";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "isssiii", $idCiclo, $dia, $horaInicio, $horaFin, $idModulo, $idProfesor, $idAula);
-    return mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    return $res;
 }
 
 /**
@@ -196,7 +218,9 @@ function aulaOcupadaPorOtro($idAula, $dia, $horaInicio, $idCicloActual) {
     mysqli_stmt_bind_param($stmt, "issi", $idAula, $dia, $horaInicio, $idCicloActual);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_assoc($resultado);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_stmt_close($stmt);
+    return $fila;
 }
 
 /**
@@ -216,7 +240,9 @@ function profesorOcupadoPorOtro($idProfesor, $dia, $horaInicio, $idCicloActual) 
     mysqli_stmt_bind_param($stmt, "issi", $idProfesor, $dia, $horaInicio, $idCicloActual);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_assoc($resultado);
+    $fila = mysqli_fetch_assoc($resultado);
+    mysqli_stmt_close($stmt);
+    return $fila;
 }
 
 /**
@@ -242,6 +268,7 @@ function listarOcupacionAula($idAula) {
         $clave = $fila['diaSemana'] . '|' . substr($fila['horaInicio'], 0, 5);
         $celdas[$clave] = $fila;
     }
+    mysqli_stmt_close($stmt);
     return $celdas;
 }
 
@@ -253,5 +280,7 @@ function borrarCeldaHorario($idCiclo, $dia, $horaInicio) {
     $sql = "DELETE FROM horarios WHERE idCiclo = ? AND diaSemana = ? AND horaInicio = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "iss", $idCiclo, $dia, $horaInicio);
-    return mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    return $res;
 }
