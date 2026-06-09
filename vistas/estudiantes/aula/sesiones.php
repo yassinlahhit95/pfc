@@ -77,9 +77,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     }
                 ?>
                 <tr>
-                    <td><strong><?= Security::escapeHtml(htmlspecialchars($sesion['nombreModulo'])) ?></strong></td>
-                    <td><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></td>
-                    <td><?= Security::escapeHtml(htmlspecialchars($sesion['nombreProfesor'])) ?></td>
+                    <td><strong><?= Security::escapeHtml($sesion['nombreModulo']) ?></strong></td>
+                    <td><?= Security::escapeHtml($sesion['titulo']) ?></td>
+                    <td><?= Security::escapeHtml($sesion['nombreProfesor']) ?></td>
                     <td>
                         <div><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?></div>
                         <span class="texto-pequeno texto-suave"><?= Security::escapeHtml($detalleEstado ) ?></span>
@@ -87,7 +87,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td><?= Security::escapeHtml($estado ) ?></td>
                     <td>
                         <?php if ($ahora >= $fechaSesion && $ahora <= $fechaSesion + 3600) { ?>
-                            <a href="<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>" target="_blank" class="boton-primario btn-pequeno" title="Acceder a la sesión">
+                            <a href="<?= Security::escapeHtml($sesion['enlaceReunion']) ?>" target="_blank" class="boton-primario btn-pequeno" title="Acceder a la sesión">
                                 <i class="fas fa-sign-in-alt"></i> ENTRAR
                             </a>
                         <?php } else { ?>

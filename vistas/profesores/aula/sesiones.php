@@ -33,14 +33,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php if (!empty($exito)) { ?>
     <div class="alerta-exito" style="margin-bottom: 20px;">
         <i class="fas fa-check-circle"></i>
-        <p><?= Security::escapeHtml(htmlspecialchars($exito)) ?></p>
+        <p><?= Security::escapeHtml($exito) ?></p>
     </div>
 <?php } ?>
 
 <?php if (!empty($errores)) { ?>
     <div class="alerta-error" style="margin-bottom: 20px;">
         <i class="fas fa-exclamation-circle"></i>
-        <p><?= Security::escapeHtml(htmlspecialchars($errores)) ?></p>
+        <p><?= Security::escapeHtml($errores) ?></p>
     </div>
 <?php } ?>
 
@@ -85,8 +85,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     $totalAsistencias = contarAsistenciaPorSesion($sesion['idSesion']);
                 ?>
                 <tr>
-                    <td><strong><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></strong></td>
-                    <td><?= Security::escapeHtml(htmlspecialchars($sesion['nombreModulo'])) ?></td>
+                    <td><strong><?= Security::escapeHtml($sesion['titulo']) ?></strong></td>
+                    <td><?= Security::escapeHtml($sesion['nombreModulo']) ?></td>
                     <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?></td>
                     <td>
                         <span class="badge badge-gris">
@@ -98,7 +98,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <strong><?= Security::escapeHtml($totalAsistencias ) ?></strong> estudiantes
                     </td>
                     <td>
-                        <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>')">
+                        <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= Security::escapeHtml($sesion['enlaceReunion']) ?>')">
                             <i class="fas fa-copy"></i>
                         </button>
                         <a href="../../../controladores/aula/enviar_sesion_brevo.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Enviar a estudiantes del ciclo" onclick="return confirm('¿Enviar el enlace de esta sesión a todos los estudiantes del ciclo?')">

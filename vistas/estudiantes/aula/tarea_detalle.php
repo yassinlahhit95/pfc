@@ -34,8 +34,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1><?= Security::escapeHtml(htmlspecialchars($tarea['titulo'])) ?></h1>
-    <p class="texto-suave"><?= Security::escapeHtml(htmlspecialchars($tarea['nombreModulo'])) ?> - Prof. <?= Security::escapeHtml(htmlspecialchars($tarea['nombreProfesor'])) ?></p>
+    <h1><?= Security::escapeHtml($tarea['titulo']) ?></h1>
+    <p class="texto-suave"><?= Security::escapeHtml($tarea['nombreModulo']) ?> - Prof. <?= Security::escapeHtml($tarea['nombreProfesor']) ?></p>
 </div>
 
 <?php
@@ -65,7 +65,7 @@ if ($errores) { ?>
             <?php if ($tarea['archivoAdjunto']) { ?>
             <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
                 <strong><i class="fas fa-paperclip"></i> Archivo Adjunto:</strong><br>
-                <a href="../../../public/uploads/aula/tareas/<?= Security::escapeHtml(htmlspecialchars($tarea['archivoAdjunto'])) ?>"
+                <a href="../../../public/uploads/aula/tareas/<?= Security::escapeHtml($tarea['archivoAdjunto']) ?>"
                    class="boton-secundario" download>
                     <i class="fas fa-download"></i> Descargar
                 </a>
@@ -97,7 +97,7 @@ if ($errores) { ?>
                 </div>
 
                 <strong><i class="fas fa-file"></i> Tu Entrega:</strong><br>
-                <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoEntrega'])) ?>"
+                <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($entrega['archivoEntrega']) ?>"
                    class="boton-secundario" download style="margin: 10px 0;">
                     <i class="fas fa-download"></i> Descargar Mi Entrega
                 </a>
@@ -105,8 +105,8 @@ if ($errores) { ?>
                 <?php if ($entrega['archivoCorreccion']) { ?>
                 <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 3px;">
                     <strong><i class="fas fa-comment"></i> Retroalimentación del Profesor:</strong><br>
-                    <?= Security::escapeHtml(htmlspecialchars($entrega['comentarioCalificacion'])) ?><br><br>
-                    <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoCorreccion'])) ?>"
+                    <?= Security::escapeHtml($entrega['comentarioCalificacion']) ?><br><br>
+                    <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml($entrega['archivoCorreccion']) ?>"
                        class="boton-secundario btn-pequeno" download>
                         <i class="fas fa-file-pdf"></i> Ver Corrección
                     </a>
@@ -116,8 +116,8 @@ if ($errores) { ?>
             <?php } else { ?>
                 <form method="POST" action="../../../controladores/estudiantes/aula/enviar_entrega.php" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                    <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml(htmlspecialchars($csrfToken)) ?>">
-                    <input type="hidden" name="idTarea" value="<?= Security::escapeHtml(htmlspecialchars($idTarea)) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
+                    <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea) ?>">
 
                     <div class="grupo-formulario">
                         <label for="archivo">SUBIR ARCHIVO DE ENTREGA *</label>

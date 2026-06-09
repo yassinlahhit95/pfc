@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
 if (isset($_POST['idEvento'])) {

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
 if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }

@@ -35,8 +35,8 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php } ?>
+<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
 
 <div class="ejercicios-layout" style="margin-top:20px;">
 
@@ -54,8 +54,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <?php foreach ($carpetas as $c): ?>
     <a href="panel.php?idCarpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>" class="carpeta-item <?= Security::escapeHtml($idCarpetaActiva == $c['idCarpeta'] ? 'activa' : '') ?>">
-      <span class="carpeta-punto" style="background:<?= Security::escapeHtml(htmlspecialchars($c['color'])) ?>;"></span>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></span>
+      <span class="carpeta-punto" style="background:<?= Security::escapeHtml($c['color']) ?>;"></span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= Security::escapeHtml($c['nombre']) ?></span>
       <span class="carpeta-count"><?= Security::escapeHtml($c['totalEjercicios'] ) ?></span>
     </a>
     <?php endforeach; ?>
@@ -105,16 +105,16 @@ include_once __DIR__ . "/../comunes/nav.php";
       ?>
       <div class="ejercicio-card">
         <?php if ($ej['nombreCarpeta']): ?>
-        <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>22;color:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>;">
+        <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml($ej['colorCarpeta']) ?>22;color:<?= Security::escapeHtml($ej['colorCarpeta']) ?>;">
           <i class="fas fa-folder" style="font-size:0.65rem;"></i>
-          <?= Security::escapeHtml(htmlspecialchars($ej['nombreCarpeta'])) ?>
+          <?= Security::escapeHtml($ej['nombreCarpeta']) ?>
         </span>
         <?php endif; ?>
 
-        <p class="ejercicio-card-titulo"><?= Security::escapeHtml(htmlspecialchars($ej['titulo'])) ?></p>
+        <p class="ejercicio-card-titulo"><?= Security::escapeHtml($ej['titulo']) ?></p>
 
         <?php if ($ej['descripcion']): ?>
-        <p class="ejercicio-card-desc"><?= Security::escapeHtml(htmlspecialchars($ej['descripcion'])) ?></p>
+        <p class="ejercicio-card-desc"><?= Security::escapeHtml($ej['descripcion']) ?></p>
         <?php endif; ?>
 
         <div class="ejercicio-card-footer">
@@ -164,7 +164,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select name="idCiclo" required>
           <option value="">-- Seleccionar --</option>
           <?php foreach ($ciclos as $c): ?>
-          <option value="<?= Security::escapeHtml($c['idCiclo'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($c['nombreCiclo'])) ?></option>
+          <option value="<?= Security::escapeHtml($c['idCiclo'] ) ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
           <?php endforeach; ?>
         </select>
       </div>

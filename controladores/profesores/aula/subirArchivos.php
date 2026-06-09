@@ -1,12 +1,11 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 // Buffer de salida: garantiza que ninguna salida accidental (avisos del helper
 // de Firebase, etc.) impida el header("Location: ...") final.
 ob_start();
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../include/Security.php";
 
 if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
 

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../include/ProfesorGuard.php';
 
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../vistas/login.php");

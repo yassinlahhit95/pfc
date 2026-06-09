@@ -61,7 +61,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
   <div>
-    <h1><i class="fas fa-folder-open"></i> <?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($modulo['nombreModulo'], 'UTF-8'))) ?></h1>
+    <h1><i class="fas fa-folder-open"></i> <?= Security::escapeHtml(mb_strtoupper($modulo['nombreModulo'], 'UTF-8')) ?></h1>
     <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">Gestión de recursos educativos</p>
   </div>
   <div class="grupo-botones">
@@ -84,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="recurso-breadcrumb" data-modulo="<?= Security::escapeHtml($idModulo ) ?>" data-carpeta="<?= Security::escapeHtml($carpetaActual ) ?>" data-csrf="<?= Security::generateCSRFToken() ?>">
   <a href="index.php"><i class="fas fa-home"></i></a>
   <span class="sep">/</span>
-  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($idCiclo ) ?>"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></a>
+  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($idCiclo ) ?>"><?= Security::escapeHtml($modulo['nombreModulo']) ?></a>
   <?php if ($carpetaActual): ?>
     <span class="sep">/</span>
     <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>" data-drop-carpeta="0" title="Arrastra aquí para mover a la raíz">Raíz</a>
@@ -163,11 +163,11 @@ include_once __DIR__ . "/../comunes/nav.php";
       <td>
         <div class="recurso-archivo-nombre">
           <span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span>
-          <span><?php if ($a['fijado']): ?><i class="fas fa-thumbtack recurso-pin-ind" title="Fijado"></i> <?php endif; ?><?= Security::escapeHtml(htmlspecialchars($a['nombreOriginal'])) ?><?php if ($a['version'] > 1): ?><span class="recurso-version-badge" title="Versión <?= Security::escapeHtml($a['version'] ) ?>">v<?= Security::escapeHtml($a['version'] ) ?></span><?php endif; ?></span>
+          <span><?php if ($a['fijado']): ?><i class="fas fa-thumbtack recurso-pin-ind" title="Fijado"></i> <?php endif; ?><?= Security::escapeHtml($a['nombreOriginal']) ?><?php if ($a['version'] > 1): ?><span class="recurso-version-badge" title="Versión <?= Security::escapeHtml($a['version'] ) ?>">v<?= Security::escapeHtml($a['version'] ) ?></span><?php endif; ?></span>
         </div>
       </td>
       <td><?= Security::escapeHtml(date('d/m/Y', strtotime($a['fechaSubida']))) ?></td>
-      <td><?= Security::escapeHtml(htmlspecialchars($a['nombreProfesor'])) ?></td>
+      <td><?= Security::escapeHtml($a['nombreProfesor']) ?></td>
       <td><?= Security::escapeHtml(formatearTamanioAula($a['tamanio'])) ?></td>
       <td style="text-align:right;">
         <div class="recurso-menu-wrap">
@@ -316,7 +316,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <span class="modal-label">Carpeta de destino</span>
       <select id="mvCarpeta" class="modal-input" style="width:100%;">
         <option value="0">— Raíz del módulo —</option>
-        <?php foreach ($todasCarpetas as $c): ?><option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></option><?php endforeach; ?>
+        <?php foreach ($todasCarpetas as $c): ?><option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml($c['nombre']) ?></option><?php endforeach; ?>
       </select>
       <div style="text-align:right;margin-top:18px;"><button type="button" class="boton-primario" onclick="AulaRecursos.confirmarMover(<?= Security::escapeHtml($idModulo ) ?>)"><i class="fas fa-check"></i> Mover</button></div>
     </div>

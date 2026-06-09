@@ -1,16 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
-require_once __DIR__ . "/../../../include/Security.php";
 
 if (isset($_POST['subirTFG'])) {
-    // 1. Validar CSRF
-    if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "Solicitud no válida (CSRF).";
-        header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
-        exit;
-    }
 
     $idEstudiante = trim($_POST['idEstudiante'] ?? '');
     $archivo = $_FILES['archivoTFG'] ?? null;

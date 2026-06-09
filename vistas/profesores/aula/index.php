@@ -46,8 +46,8 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="modulos.php?idCiclo=<?= Security::escapeHtml($c['idCiclo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($clase ) ?>">
     <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($icono ) ?>"></i></div>
     <div class="recurso-ciclo-body">
-      <h3><?= Security::escapeHtml(htmlspecialchars($c['nombreCiclo'])) ?></h3>
-      <span class="recurso-ciclo-abrev"><?= Security::escapeHtml(htmlspecialchars($c['abreviaturaCiclo'])) ?></span>
+      <h3><?= Security::escapeHtml($c['nombreCiclo']) ?></h3>
+      <span class="recurso-ciclo-abrev"><?= Security::escapeHtml($c['abreviaturaCiclo']) ?></span>
       <div class="recurso-ciclo-meta">
         <span><i class="fas fa-cubes"></i> <?= Security::escapeHtml(count($modulos)) ?> módulos</span>
       </div>

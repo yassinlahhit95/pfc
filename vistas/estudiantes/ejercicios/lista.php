@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <?php foreach ($carpetas as $c): ?>
     <a href="lista.php?idCarpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>" class="carpeta-item <?= Security::escapeHtml($idCarpeta == $c['idCarpeta'] ? 'activa' : '') ?>">
-      <span class="carpeta-punto" style="background:<?= Security::escapeHtml(htmlspecialchars($c['color'])) ?>;"></span>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></span>
+      <span class="carpeta-punto" style="background:<?= Security::escapeHtml($c['color']) ?>;"></span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= Security::escapeHtml($c['nombre']) ?></span>
       <span class="carpeta-count"><?= Security::escapeHtml($c['totalEjercicios'] ) ?></span>
     </a>
     <?php endforeach; ?>
@@ -95,16 +95,16 @@ include_once __DIR__ . "/../comunes/nav.php";
       ?>
       <a href="ver.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>" class="ejercicio-card">
         <?php if ($ej['nombreCarpeta']): ?>
-        <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>22;color:<?= Security::escapeHtml(htmlspecialchars($ej['colorCarpeta'])) ?>;">
+        <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml($ej['colorCarpeta']) ?>22;color:<?= Security::escapeHtml($ej['colorCarpeta']) ?>;">
           <i class="fas fa-folder" style="font-size:0.65rem;"></i>
-          <?= Security::escapeHtml(htmlspecialchars($ej['nombreCarpeta'])) ?>
+          <?= Security::escapeHtml($ej['nombreCarpeta']) ?>
         </span>
         <?php endif; ?>
 
-        <p class="ejercicio-card-titulo"><?= Security::escapeHtml(htmlspecialchars($ej['titulo'])) ?></p>
+        <p class="ejercicio-card-titulo"><?= Security::escapeHtml($ej['titulo']) ?></p>
 
         <?php if ($ej['descripcion']): ?>
-        <p class="ejercicio-card-desc"><?= Security::escapeHtml(htmlspecialchars($ej['descripcion'])) ?></p>
+        <p class="ejercicio-card-desc"><?= Security::escapeHtml($ej['descripcion']) ?></p>
         <?php endif; ?>
 
         <div class="ejercicio-card-footer">

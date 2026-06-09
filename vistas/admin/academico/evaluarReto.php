@@ -71,6 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <form action="../../../controladores/admin/academico/calificarRetoUnico.php" method="POST" class="formulario">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
         <input type="hidden" name="idReto"       value="<?= (int)$idReto ?>">
         <input type="hidden" name="idCiclo"      value="<?= (int)$idCiclo ?>">

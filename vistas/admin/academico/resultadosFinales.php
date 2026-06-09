@@ -71,6 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
             <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <input type="submit" class="boton-primario" value="ENVIAR RESULTADOS POR EMAIL A TODOS">
             </form>

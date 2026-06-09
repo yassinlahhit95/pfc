@@ -31,6 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="mensaje-error"><?= $errores ?></div>
 <?php } ?>
     <form method="POST" action="../../../controladores/admin/eventos/actualizar.php">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idEvento" value="<?= $idEvento ?>">
 
         <div class="formulario">

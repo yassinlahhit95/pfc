@@ -106,12 +106,25 @@ function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idM
     return $lista;
 }
 
-function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones)
+function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1final, $val2ev, $val2final, $observaciones)
 {
-    if ($nota1ev === '')   $nota1ev   = null;
-    if ($nota1final === '') $nota1final = null;
-    if ($nota2ev === '')   $nota2ev   = null;
-    if ($nota2final === '') $nota2final = null;
+    $especiales = ['NP', 'EX', 'CO'];
+    $parse = function($v) use ($especiales) {
+        $v = strtoupper(trim((string)$v));
+        if ($v === '')                    return ['nota' => null, 'estado' => null];
+        if (in_array($v, $especiales))    return ['nota' => null, 'estado' => $v];
+        return ['nota' => (float)$v, 'estado' => null];
+    };
+
+    $p1ev    = $parse($val1ev);
+    $p1final = $parse($val1final);
+    $p2ev    = $parse($val2ev);
+    $p2final = $parse($val2final);
+
+    $nota1ev    = $p1ev['nota'];    $est1ev    = $p1ev['estado'];
+    $nota1final = $p1final['nota']; $est1final = $p1final['estado'];
+    $nota2ev    = $p2ev['nota'];    $est2ev    = $p2ev['estado'];
+    $nota2final = $p2final['nota']; $est2final = $p2final['estado'];
 
     $con = obtenerConexion();
 
@@ -122,17 +135,67 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $nota1ev, $nota1
     $resultado = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($resultado) > 0) {
-        $sql1 = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
+        $sql1 = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, estado_1ev=?, estado_1final=?, estado_2ev=?, estado_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
         $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "ddddsii", $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones, $idEstudiante, $idModulo);
+        mysqli_stmt_bind_param($stmt, "ddddsssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $est1ev, $est1final, $est2ev, $est2final, $observaciones, $idEstudiante, $idModulo);
     } else {
-        $sql1 = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql1 = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, estado_1ev, estado_1final, estado_2ev, estado_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "iidddds", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $observaciones);
+        mysqli_stmt_bind_param($stmt, "iiddddsssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $est1ev, $est1final, $est2ev, $est2final, $observaciones);
     }
 
     $exito = mysqli_stmt_execute($stmt);
     return $exito;
+}
+
+function guardarBoletinLog($serial, $idEstudiante, $idCiclo, $nombreEstudiante, $nombreCiclo, $cursoEscolar)
+{
+    $con = obtenerConexion();
+    $sql = "INSERT INTO boletines_log (serial, idEstudiante, idCiclo, nombreEstudiante, nombreCiclo, cursoEscolar)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE fechaGeneracion = CURRENT_TIMESTAMP";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "siisss", $serial, $idEstudiante, $idCiclo, $nombreEstudiante, $nombreCiclo, $cursoEscolar);
+    return mysqli_stmt_execute($stmt);
+}
+
+function verificarBoletinPorSerial($serial, $ip = '')
+{
+    $con = obtenerConexion();
+
+    $stmt = mysqli_prepare($con, "SELECT * FROM boletines_log WHERE serial = ?");
+    mysqli_stmt_bind_param($stmt, "s", $serial);
+    mysqli_stmt_execute($stmt);
+    $doc = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+    // Update scan counter on the found document
+    if ($doc) {
+        $upd = mysqli_prepare($con,
+            "UPDATE boletines_log SET scan_count = scan_count + 1, last_scan_at = NOW(), last_scan_ip = ? WHERE serial = ?");
+        mysqli_stmt_bind_param($upd, "ss", $ip, $serial);
+        mysqli_stmt_execute($upd);
+    }
+
+    // Always log the attempt for rate-limiting and audit
+    $log = mysqli_prepare($con,
+        "INSERT INTO verificaciones_log (serial_buscado, ip, resultado) VALUES (?, ?, ?)");
+    $found = $doc ? 1 : 0;
+    mysqli_stmt_bind_param($log, "ssi", $serial, $ip, $found);
+    mysqli_stmt_execute($log);
+
+    return $doc;
+}
+
+function contarIntentosVerificacion($ip, $minutos = 60)
+{
+    $con = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT COUNT(*) FROM verificaciones_log WHERE ip = ? AND created_at >= NOW() - INTERVAL ? MINUTE");
+    mysqli_stmt_bind_param($stmt, "si", $ip, $minutos);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $total);
+    mysqli_stmt_fetch($stmt);
+    return (int)$total;
 }
 
 function listarCalificacionesPorModulo($idModulo)
@@ -469,12 +532,22 @@ function generarDatosBoletinCiclo($idCiclo) {
          WHERE e.idCiclo = ? ORDER BY e.nombreEstudiante ASC");
     mysqli_stmt_bind_param($stmt, 'i', $idCiclo);
     mysqli_stmt_execute($stmt);
-    $estudiantes = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+    $resEst = mysqli_stmt_get_result($stmt);
+    $estudiantes = [];
+    while ($fila = mysqli_fetch_assoc($resEst)) {
+        $estudiantes[] = $fila;
+    }
+    mysqli_stmt_close($stmt);
 
     $stmt = mysqli_prepare($con, "SELECT * FROM modulos WHERE idCiclo = ? ORDER BY nombreModulo ASC");
     mysqli_stmt_bind_param($stmt, 'i', $idCiclo);
     mysqli_stmt_execute($stmt);
-    $modulos = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+    $resMod = mysqli_stmt_get_result($stmt);
+    $modulos = [];
+    while ($fila = mysqli_fetch_assoc($resMod)) {
+        $modulos[] = $fila;
+    }
+    mysqli_stmt_close($stmt);
 
     if (empty($modulos) || empty($estudiantes)) {
         return ['estudiantes' => $estudiantes, 'modulos' => $modulos];
@@ -487,7 +560,15 @@ function generarDatosBoletinCiclo($idCiclo) {
         $gradeMap[$row['idEstudiante']][$row['idModulo']] = $row;
     }
 
+    $estIds = implode(',', array_map('intval', array_column($estudiantes, 'idEstudiante')));
+    $resTFG = mysqli_query($con, "SELECT idEstudiante, nota FROM calificaciones_tfg WHERE idEstudiante IN ($estIds)");
+    $tfgMap = [];
+    while ($row = mysqli_fetch_assoc($resTFG)) {
+        $tfgMap[$row['idEstudiante']] = $row['nota'];
+    }
+
     foreach ($estudiantes as &$est) {
+        $est['nota_tfg'] = $tfgMap[$est['idEstudiante']] ?? null;
         $est['modulos'] = [];
         foreach ($modulos as $mod) {
             $est['modulos'][] = [

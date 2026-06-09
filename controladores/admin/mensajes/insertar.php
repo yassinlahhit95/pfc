@@ -1,9 +1,8 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../firebase/firebase_helper.php";
-require_once __DIR__ . "/../../../include/Security.php";
 
 if (empty($_SESSION['idAdmin'])) { header("Location: ../../../vistas/login.php"); exit; }
 

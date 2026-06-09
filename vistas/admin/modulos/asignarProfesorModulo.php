@@ -36,6 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form action="../../../controladores/admin/modulos/actualizarProfesores.php" method="POST" class="formulario">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
 
         <div class="campo">

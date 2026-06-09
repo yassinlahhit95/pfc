@@ -44,12 +44,26 @@
     ExpiresByType video/webm "access plus 1 year"
 </IfModule>
 
-# 3. SEGURIDAD BÁSICA
-# Desactivar listado de directorios
+# 3. SEGURIDAD
 Options -Indexes
 
-# Protección contra ataques de Clickjacking
+# Bloquear acceso directo a archivos sensibles (Apache 2.4)
+<IfModule mod_authz_core.c>
+    <FilesMatch "(\.env|composer\.(json|lock)|database\.sql|\.htpasswd|\.gitignore)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+# Bloquear acceso directo a carpetas internas
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(config|include|modelos|templates|logs|vendor)(/|$) - [F,L]
+</IfModule>
+
+# Cabeceras de seguridad HTTP
 <IfModule mod_headers.c>
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>

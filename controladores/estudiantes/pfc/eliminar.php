@@ -1,7 +1,6 @@
 <?php
-session_start();
-require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../modelos/tfg.php";
 
 // Solo un estudiante autenticado puede eliminar SU propio TFG
 if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }

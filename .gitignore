@@ -8,6 +8,7 @@
 .env.*.local
 config/secrets.php
 config/local.php
+config/db.php
 
 # Logs
 logs/
@@ -35,6 +36,8 @@ apply_xss_protection.py
 apply_xss.php
 apply_xss.py
 presentation.txt
+debug_*.php
+PROBLEMA_ENV_SOLUCION.txt
 .claude/
 
 # Docker & Testing (Uncomment if you want them strictly local)

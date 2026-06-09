@@ -30,12 +30,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php if ($ejercicio['nombreCarpeta']): ?>
     <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml($ejercicio['colorCarpeta'] ) ?>22;color:<?= Security::escapeHtml($ejercicio['colorCarpeta'] ) ?>;margin-bottom:8px;display:inline-flex;">
       <i class="fas fa-folder" style="font-size:0.65rem;"></i>
-      <?= Security::escapeHtml(htmlspecialchars($ejercicio['nombreCarpeta'])) ?>
+      <?= Security::escapeHtml($ejercicio['nombreCarpeta']) ?>
     </span>
     <?php endif; ?>
-    <h1><?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($ejercicio['titulo'], 'UTF-8'))) ?></h1>
+    <h1><?= Security::escapeHtml(mb_strtoupper($ejercicio['titulo'], 'UTF-8')) ?></h1>
     <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">
-      <i class="fas fa-chalkboard-teacher"></i> <?= Security::escapeHtml(htmlspecialchars($ejercicio['nombreProfesor'])) ?>
+      <i class="fas fa-chalkboard-teacher"></i> <?= Security::escapeHtml($ejercicio['nombreProfesor']) ?>
       <?php if ($limite): ?>
       &nbsp;·&nbsp; <i class="fas fa-clock <?= Security::escapeHtml($tarde ? 'texto-rojo' : '') ?>"></i>
       <span class="<?= Security::escapeHtml($tarde ? 'texto-rojo' : '') ?>">
@@ -47,19 +47,19 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php endif; ?>
 
 <!-- ENUNCIADO -->
 <?php if ($ejercicio['descripcion'] || $ejercicio['archivoAdjunto']): ?>
 <div class="panel margen-arriba">
   <div class="titulo-tarjeta"><h3>Enunciado</h3></div>
   <?php if ($ejercicio['descripcion']): ?>
-  <p style="white-space:pre-wrap;line-height:1.7;color:#374151;"><?= Security::escapeHtml(htmlspecialchars($ejercicio['descripcion'])) ?></p>
+  <p style="white-space:pre-wrap;line-height:1.7;color:#374151;"><?= Security::escapeHtml($ejercicio['descripcion']) ?></p>
   <?php endif; ?>
   <?php if ($ejercicio['archivoAdjunto']): ?>
   <div style="margin-top:16px;">
-    <a href="../../../public/uploads/ejercicios/adjuntos/<?= Security::escapeHtml(htmlspecialchars($ejercicio['archivoAdjunto'], ENT_QUOTES)) ?>"
+    <a href="../../../public/uploads/ejercicios/adjuntos/<?= Security::escapeHtml($ejercicio['archivoAdjunto']) ?>"
        target="_blank" class="boton-secundario" style="display:inline-flex;">
       <i class="fas fa-paperclip"></i> Ver archivo del profesor
     </a>
@@ -83,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <?php if ($entrega['comentarioProfesor']): ?>
   <div style="margin-top:16px;padding:14px 18px;background:#f0fdf4;border-radius:10px;">
     <p style="font-size:0.85rem;color:#166534;"><strong>Comentario del profesor:</strong></p>
-    <p style="color:#374151;margin-top:4px;"><?= Security::escapeHtml(htmlspecialchars($entrega['comentarioProfesor'])) ?></p>
+    <p style="color:#374151;margin-top:4px;"><?= Security::escapeHtml($entrega['comentarioProfesor']) ?></p>
   </div>
   <?php endif; ?>
 </div>
@@ -111,12 +111,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     </p>
     <?php if ($entrega['respuesta']): ?>
     <div style="background:#f8fafc;border-radius:10px;padding:14px 18px;border:1px solid #e2e8f0;">
-      <p style="white-space:pre-wrap;font-size:0.9rem;color:#374151;"><?= Security::escapeHtml(htmlspecialchars($entrega['respuesta'])) ?></p>
+      <p style="white-space:pre-wrap;font-size:0.9rem;color:#374151;"><?= Security::escapeHtml($entrega['respuesta']) ?></p>
     </div>
     <?php endif; ?>
     <?php if ($entrega['archivoEntrega']): ?>
     <div style="margin-top:10px;">
-      <a href="../../../public/uploads/ejercicios/entregas/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoEntrega'], ENT_QUOTES)) ?>"
+      <a href="../../../public/uploads/ejercicios/entregas/<?= Security::escapeHtml($entrega['archivoEntrega']) ?>"
          target="_blank" class="boton-secundario btn-pequeno" style="display:inline-flex;">
         <i class="fas fa-paperclip"></i> Mi archivo adjunto
       </a>

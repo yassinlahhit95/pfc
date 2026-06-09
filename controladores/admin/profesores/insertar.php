@@ -1,15 +1,8 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
-require_once __DIR__ . "/../../../include/Security.php";
 
 if (isset($_POST['guardarProfesor'])) {
-    // Validar CSRF
-    if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "Solicitud no válida o expirada (CSRF).";
-        header("Location: " . ($_SERVER['HTTP_REFERER'] ?? '../../../vistas/admin/profesores/agregarProfesores.php'));
-        exit;
-    }
 
     $nombreNuevoProfesor = trim($_POST['nombreProfesor']);
     $emailNuevoProfesor = trim($_POST['emailProfesor']);

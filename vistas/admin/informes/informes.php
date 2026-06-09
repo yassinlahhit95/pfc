@@ -49,19 +49,30 @@ $ciclosJson = json_encode(array_map(fn($c) => [
         </div>
         <h2 class="informe-titulo">Boletín de Notas</h2>
         <p class="informe-desc">Genera un boletín por alumno con todas las calificaciones por módulo (1ª y 2ª evaluación).</p>
-        <form method="GET" action="../../../controladores/admin/informes/generarBoletin.php" target="_blank" class="informe-form">
+        <form method="POST" action="../../../controladores/admin/informes/generarBoletin.php" target="_blank" class="informe-form">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-boletin" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
                 <?php foreach ($niveles as $n): ?>
                     <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
-            <select name="idCiclo" id="ciclo-boletin" class="informe-select" required>
+            <select name="idCiclo" id="ciclo-boletin" class="informe-select" required onchange="fetchEstudiantes(this)">
                 <option value="">— Seleccionar ciclo —</option>
                 <?php foreach ($ciclos as $c): ?>
                     <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
+
+            <!-- Selector de estudiantes (oculto por defecto) -->
+            <div id="wrapper-boletin" class="estudiantes-selector-wrapper" style="display:none;">
+                <div class="selector-header">
+                    <span>Seleccionar alumnos:</span>
+                    <label><input type="checkbox" onchange="toggleAllCheckboxes(this, 'wrapper-boletin')"> Todos</label>
+                </div>
+                <div id="list-boletin" class="estudiantes-lista-check"></div>
+            </div>
+
             <button type="submit" class="informe-btn">
                 <i class="fas fa-file-pdf"></i> Generar PDF
             </button>
@@ -75,19 +86,29 @@ $ciclosJson = json_encode(array_map(fn($c) => [
         </div>
         <h2 class="informe-titulo">Listado de Alumnado</h2>
         <p class="informe-desc">Lista completa de estudiantes de un ciclo con DNI, email y teléfono. Deja en blanco para todos.</p>
-        <form method="GET" action="../../../controladores/admin/informes/generarListado.php" target="_blank" class="informe-form">
+        <form method="POST" action="../../../controladores/admin/informes/generarListado.php" target="_blank" class="informe-form">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-listado" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
                 <?php foreach ($niveles as $n): ?>
                     <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
-            <select name="idCiclo" id="ciclo-listado" class="informe-select">
+            <select name="idCiclo" id="ciclo-listado" class="informe-select" onchange="fetchEstudiantes(this)">
                 <option value="">— Todos los ciclos —</option>
                 <?php foreach ($ciclos as $c): ?>
                     <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
+
+            <div id="wrapper-listado" class="estudiantes-selector-wrapper" style="display:none;">
+                <div class="selector-header">
+                    <span>Filtrar alumnos (opcional):</span>
+                    <label><input type="checkbox" onchange="toggleAllCheckboxes(this, 'wrapper-listado')"> Todos</label>
+                </div>
+                <div id="list-listado" class="estudiantes-lista-check"></div>
+            </div>
+
             <button type="submit" class="informe-btn">
                 <i class="fas fa-file-pdf"></i> Generar PDF
             </button>
@@ -101,7 +122,8 @@ $ciclosJson = json_encode(array_map(fn($c) => [
         </div>
         <h2 class="informe-titulo">Horario del Ciclo</h2>
         <p class="informe-desc">Cuadro horario semanal de un ciclo con módulos, profesores y aulas asignadas.</p>
-        <form method="GET" action="../../../controladores/admin/informes/generarHorario.php" target="_blank" class="informe-form">
+        <form method="POST" action="../../../controladores/admin/informes/generarHorario.php" target="_blank" class="informe-form">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-horario" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
                 <?php foreach ($niveles as $n): ?>
@@ -130,7 +152,11 @@ function cascadeInforme(selectNivel) {
     var targetId  = selectNivel.dataset.target;
     var $ciclo    = document.getElementById(targetId);
     var prevVal   = $ciclo.value;
-    var firstOpt  = $ciclo.options[0];
+    
+    // Al cambiar el nivel, reseteamos el selector de alumnos si lo hubiera
+    var wrapperId = 'wrapper-' + targetId.split('-')[1];
+    var $wrapper  = document.getElementById(wrapperId);
+    if ($wrapper) $wrapper.style.display = 'none';
 
     while ($ciclo.options.length > 1) $ciclo.remove(1);
 
@@ -145,6 +171,53 @@ function cascadeInforme(selectNivel) {
 
     $ciclo.value = prevVal;
     if (!$ciclo.value) $ciclo.value = '';
+}
+
+function fetchEstudiantes(selectCiclo) {
+    var idCiclo = selectCiclo.value;
+    var type    = selectCiclo.id.split('-')[1]; // 'boletin' o 'listado'
+    var $wrapper = document.getElementById('wrapper-' + type);
+    var $list    = document.getElementById('list-' + type);
+
+    if (!idCiclo) {
+        $wrapper.style.display = 'none';
+        return;
+    }
+
+    $list.innerHTML = '<p style="font-size:0.8rem; color:#64748b; padding:10px;">Cargando alumnos...</p>';
+    $wrapper.style.display = 'block';
+
+    fetch('../../../controladores/admin/estudiantes/get_por_ciclo.php?idCiclo=' + idCiclo)
+        .then(r => r.json())
+        .then(data => {
+            if (!data || !data.length) {
+                $list.innerHTML = '<p style="font-size:0.8rem; color:#ef4444; padding:10px;">No hay alumnos en este ciclo.</p>';
+                return;
+            }
+            $list.innerHTML = '';
+            data.forEach(est => {
+                var div = document.createElement('div');
+                div.className = 'estudiante-check-item';
+                div.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="estudiantes[]" value="${est.idEstudiante}" checked>
+                        <span>${est.nombreEstudiante}</span>
+                    </label>
+                `;
+                $list.appendChild(div);
+            });
+        })
+        .catch(() => {
+            $list.innerHTML = '<p style="font-size:0.8rem; color:#ef4444; padding:10px;">Error al cargar alumnos.</p>';
+        });
+}
+
+function toggleAllCheckboxes(master, wrapperId) {
+    var $wrapper = document.getElementById(wrapperId);
+    var checks   = $wrapper.querySelectorAll('input[type="checkbox"]');
+    checks.forEach(c => {
+        if (c !== master) c.checked = master.checked;
+    });
 }
 </script>
 

@@ -32,16 +32,16 @@ include_once __DIR__ . "/../comunes/nav.php";
       $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $a['idArchivo'];
     ?>
     <tr data-archivo-id="<?= Security::escapeHtml($a['idArchivo'] ) ?>">
-      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span><?= Security::escapeHtml(htmlspecialchars($a['nombreOriginal'])) ?></div></td>
-      <td><?= Security::escapeHtml(htmlspecialchars($a['nombreModulo'])) ?></td>
-      <td><?= Security::escapeHtml(htmlspecialchars($a['nombreProfesor'])) ?></td>
+      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span><?= Security::escapeHtml($a['nombreOriginal']) ?></div></td>
+      <td><?= Security::escapeHtml($a['nombreModulo']) ?></td>
+      <td><?= Security::escapeHtml($a['nombreProfesor']) ?></td>
       <td><?= Security::escapeHtml(formatearTamanioAula($a['tamanio'])) ?></td>
       <td style="text-align:right;">
         <div class="recurso-menu-wrap">
           <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
           <div class="recurso-menu">
             <?php if ($previa): ?>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl ) ?>&modo=ver', <?= Security::escapeHtml(htmlspecialchars(json_encode($a['nombreOriginal']), ENT_QUOTES)) ?>, '<?= Security::escapeHtml($a['extension'] ) ?>')"><i class="fas fa-eye"></i> Ver</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl ) ?>&modo=ver', <?= Security::escapeHtml(json_encode($a['nombreOriginal'])) ?>, '<?= Security::escapeHtml($a['extension'] ) ?>')"><i class="fas fa-eye"></i> Ver</button>
             <?php endif; ?>
             <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl ) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl ) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>

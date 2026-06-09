@@ -33,14 +33,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <nav class="breadcrumb-modern">
   <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
-  <a href="modulo.php?id=<?= Security::escapeHtml($sesion['idModulo']) ?>"><i class="fas fa-book"></i> <?= Security::escapeHtml(htmlspecialchars($sesion['nombreModulo'])) ?></a>
+  <a href="modulo.php?id=<?= Security::escapeHtml($sesion['idModulo']) ?>"><i class="fas fa-book"></i> <?= Security::escapeHtml($sesion['nombreModulo']) ?></a>
   <span class="breadcrumb-sep">/</span>
   <span class="breadcrumb-actual">Asistencia</span>
 </nav>
 
 <div class="header-modern">
   <div>
-    <h1 class="header-titulo"><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></h1>
+    <h1 class="header-titulo"><?= Security::escapeHtml($sesion['titulo']) ?></h1>
     <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">
       <i class="fas fa-calendar"></i> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?>
       · <i class="fas fa-users"></i> <?= Security::escapeHtml(count($asistencias)) ?> asistentes
@@ -84,8 +84,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?= Security::escapeHtml(strtoupper(substr($asist['nombreEstudiante'], 0, 1))) ?>
               </div>
               <div>
-                <div style="font-weight:var(--font-weight-semibold);color:var(--color-neutral-800);"><?= Security::escapeHtml(htmlspecialchars($asist['nombreEstudiante'])) ?></div>
-                <div style="font-size:0.85rem;color:var(--color-neutral-500);"><?= Security::escapeHtml(htmlspecialchars($asist['emailEstudiante'])) ?></div>
+                <div style="font-weight:var(--font-weight-semibold);color:var(--color-neutral-800);"><?= Security::escapeHtml($asist['nombreEstudiante']) ?></div>
+                <div style="font-size:0.85rem;color:var(--color-neutral-500);"><?= Security::escapeHtml($asist['emailEstudiante']) ?></div>
               </div>
             </div>
           </td>

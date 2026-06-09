@@ -27,8 +27,8 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="panel.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php endif; ?>
 
 <div class="panel margen-arriba" style="max-width:720px;">
   <form action="../../../controladores/profesores/ejercicios/actualizar.php" method="POST" class="formulario">
@@ -37,12 +37,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="campo">
       <label>Título *</label>
-      <input type="text" name="titulo" value="<?= Security::escapeHtml(htmlspecialchars($ejercicio['titulo'])) ?>" required maxlength="150">
+      <input type="text" name="titulo" value="<?= Security::escapeHtml($ejercicio['titulo']) ?>" required maxlength="150">
     </div>
 
     <div class="campo">
       <label>Descripción / Enunciado</label>
-      <textarea name="descripcion" rows="6"><?= Security::escapeHtml(htmlspecialchars($ejercicio['descripcion'] ?? '')) ?></textarea>
+      <textarea name="descripcion" rows="6"><?= Security::escapeHtml($ejercicio['descripcion'] ?? '') ?></textarea>
     </div>
 
     <div class="form-cols">
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <option value="">Sin carpeta</option>
           <?php foreach ($carpetas as $c): ?>
           <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>" <?= Security::escapeHtml($ejercicio['idCarpeta'] == $c['idCarpeta'] ? 'selected' : '') ?>>
-            <?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?>
+            <?= Security::escapeHtml($c['nombre']) ?>
           </option>
           <?php endforeach; ?>
         </select>

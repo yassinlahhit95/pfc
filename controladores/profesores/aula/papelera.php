@@ -1,10 +1,8 @@
 <?php
+require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 // Operaciones de la papelera de reciclaje (#12): restaurar o eliminar
 // definitivamente archivos y carpetas. Sólo el profesor propietario.
-session_start();
 require_once __DIR__ . "/../../../modelos/aula.php";
-
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
 
 $idProfesor = $_SESSION['idProfesor'];
 $accion     = $_POST['accion']   ?? '';   // restaurar | eliminar

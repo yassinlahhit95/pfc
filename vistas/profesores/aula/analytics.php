@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <nav class="breadcrumb-modern">
   <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
-  <a href="modulo.php?id=<?= Security::escapeHtml($idModulo ) ?>"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></a>
+  <a href="modulo.php?id=<?= Security::escapeHtml($idModulo ) ?>"><?= Security::escapeHtml($modulo['nombreModulo']) ?></a>
   <span class="breadcrumb-sep">/</span>
   <span class="breadcrumb-actual">Estadísticas</span>
 </nav>
@@ -133,7 +133,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <span style="display: inline-block; width: 24px; height: 24px; background: var(--color-primary); color: white; border-radius: 50%; text-align: center; font-weight: 600; margin-right: var(--space-2);">
               <?= Security::escapeHtml($i + 1 ) ?>
             </span>
-            <?= Security::escapeHtml(htmlspecialchars($archivo['nombreOriginal'])) ?>
+            <?= Security::escapeHtml($archivo['nombreOriginal']) ?>
           </td>
           <td style="padding: var(--space-3); text-align: right; font-weight: 600; color: var(--color-primary);">
             <?= Security::escapeHtml($archivo['descargas'] ) ?>
@@ -176,7 +176,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <span style="display: inline-block; width: 24px; height: 24px; background: var(--color-success); color: white; border-radius: 50%; text-align: center; font-weight: 600; margin-right: var(--space-2);">
               <?= Security::escapeHtml($i + 1 ) ?>
             </span>
-            <?= Security::escapeHtml(htmlspecialchars($tarea['titulo'])) ?>
+            <?= Security::escapeHtml($tarea['titulo']) ?>
           </td>
           <td style="padding: var(--space-3); text-align: right; font-weight: 600; color: var(--color-success);">
             <?= Security::escapeHtml($tarea['entregas'] ) ?>

@@ -1,12 +1,12 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $hayError = false;
 
 if (isset($_POST['idEstudiante'])) {
-    $idEstudiantePfc = trim($_POST['idEstudiante']);
-    $nombreFicheroPfc = trim($_POST['nombreArchivo']);
+    $idEstudiantePfc = (int)trim($_POST['idEstudiante']);
+    $nombreFicheroPfc = basename(trim($_POST['nombreArchivo'] ?? ''));
 
     if (empty($idEstudiantePfc)) {
         $hayError = true;
@@ -16,10 +16,12 @@ if (isset($_POST['idEstudiante'])) {
     }
 
     $rutaDelArchivo = __DIR__ . "/../../../public/uploads/pfc/" . $nombreFicheroPfc;
+    $directorioBase = realpath(__DIR__ . "/../../../public/uploads/pfc");
+    $rutaReal = $nombreFicheroPfc ? realpath($rutaDelArchivo) : false;
 
     if (eliminarTFG($idEstudiantePfc)) {
-        if (file_exists($rutaDelArchivo)) {
-            unlink($rutaDelArchivo);
+        if ($rutaReal && $directorioBase && strpos($rutaReal, $directorioBase . DIRECTORY_SEPARATOR) === 0) {
+            unlink($rutaReal);
         }
         $_SESSION['exito'] = "TFG eliminado.";
     } else {

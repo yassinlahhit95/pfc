@@ -1,21 +1,5 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ============================================================
--- LIMPIEZA: eliminar tablas existentes
--- ============================================================
-DROP TABLE IF EXISTS
-  `horarios`, `aulas`,
-  `aula_almacenamiento_ciclo`, `aula_archivo_accesos`,
-  `aula_favoritos`, `aula_archivo_versiones`, `aula_asistencia_sesion`,
-  `aula_sesiones_vivas`, `aula_analytics`, `aula_notificaciones`, `aula_comentarios`,
-  `aula_versiones_entrega`, `aula_entregas`, `aula_tareas`, `aula_archivos`,
-  `aula_carpetas`, `entregas_ejercicios`, `ejercicios`, `carpetas_ejercicios`,
-  `auditoria`, `login_intentos`, `modulo_profesor`,
-  `ciclo_profesor`, `eventos`, `pagos`, `reclamaciones`, `anuncios`, `prestamos`,
-  `dispositivos`, `calificaciones_tfg`, `calificaciones_modulos`,
-  `calificaciones_retos`, `modulo_reto`, `retos`, `directores`, `estudiantes`,
-  `profesores`, `modulos`, `ciclos`, `niveles`;
-
 -- 1. Niveles
 CREATE TABLE `niveles` (
   `idNivel` int(11) NOT NULL AUTO_INCREMENT,
@@ -150,10 +134,14 @@ CREATE TABLE `calificaciones_modulos` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
   `idModulo` int(11) NOT NULL,
-  `nota_1ev` decimal(4,2),
-  `nota_1final` decimal(4,2),
-  `nota_2ev` decimal(4,2),
-  `nota_2final` decimal(4,2),
+  `nota_1ev` decimal(4,2) DEFAULT NULL,
+  `nota_1final` decimal(4,2) DEFAULT NULL,
+  `nota_2ev` decimal(4,2) DEFAULT NULL,
+  `nota_2final` decimal(4,2) DEFAULT NULL,
+  `estado_1ev` varchar(2) DEFAULT NULL COMMENT 'NP, EX o CO',
+  `estado_1final` varchar(2) DEFAULT NULL COMMENT 'NP, EX o CO',
+  `estado_2ev` varchar(2) DEFAULT NULL COMMENT 'NP, EX o CO',
+  `estado_2final` varchar(2) DEFAULT NULL COMMENT 'NP, EX o CO',
   `observaciones` text,
   PRIMARY KEY (`idCalificacion`),
   UNIQUE KEY `uk_est_mod` (`idEstudiante`, `idModulo`),
@@ -608,11 +596,72 @@ CREATE TABLE `horarios` (
   CONSTRAINT `fk_horario_aula`     FOREIGN KEY (`idAula`)     REFERENCES `aulas`      (`idAula`)     ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Franjas horarias personalizables por ciclo
+CREATE TABLE `horario_franjas` (
+  `idFranja`   int(11) NOT NULL AUTO_INCREMENT,
+  `idCiclo`    int(11) NOT NULL,
+  `horaInicio` time NOT NULL,
+  `horaFin`    time NOT NULL,
+  `esReceso`   tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`idFranja`),
+  UNIQUE KEY `uk_franja_ciclo_inicio` (`idCiclo`,`horaInicio`),
+  CONSTRAINT `fk_franja_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 41. Configuración del centro
+CREATE TABLE `configuracion_centro` (
+  `idConfig` int(11) NOT NULL DEFAULT 1,
+  `nombreCentro` varchar(200) NOT NULL DEFAULT 'Centro de Formación Profesional',
+  `codigoCentro` varchar(20) DEFAULT NULL,
+  `direccionCentro` varchar(255) DEFAULT NULL,
+  `ciudadCentro` varchar(100) DEFAULT NULL,
+  `cpCentro` varchar(10) DEFAULT NULL,
+  `telefonoCentro` varchar(20) DEFAULT NULL,
+  `emailCentro` varchar(100) DEFAULT NULL,
+  `cursoEscolar` varchar(20) DEFAULT NULL,
+  `logoCentro` varchar(255) DEFAULT NULL,
+  `logoGobierno1` varchar(255) DEFAULT NULL,
+  `logoGobierno2` varchar(255) DEFAULT NULL,
+  `textoLegal` text DEFAULT NULL,
+  `nombreDirectorFirmante` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`idConfig`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 42. Registro de boletines generados (para verificación QR)
+CREATE TABLE `boletines_log` (
+  `serial` varchar(30) NOT NULL,
+  `idEstudiante` int(11) NOT NULL,
+  `idCiclo` int(11) NOT NULL,
+  `nombreEstudiante` varchar(255) NOT NULL,
+  `nombreCiclo` varchar(255) NOT NULL,
+  `cursoEscolar` varchar(20) NOT NULL,
+  `fechaGeneracion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `scan_count` int(11) NOT NULL DEFAULT 0,
+  `last_scan_at` datetime DEFAULT NULL,
+  `last_scan_ip` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`serial`),
+  KEY `idx_bl_estudiante` (`idEstudiante`),
+  KEY `idx_bl_ciclo` (`idCiclo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `verificaciones_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `serial_buscado` varchar(30) NOT NULL,
+  `ip` varchar(45) NOT NULL,
+  `resultado` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_vl_ip_time` (`ip`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- DATOS INICIALES (SEMILLA)
 -- ============================================================
+
+INSERT INTO `configuracion_centro` (`idConfig`, `nombreCentro`, `codigoCentro`, `direccionCentro`, `ciudadCentro`, `cpCentro`, `telefonoCentro`, `emailCentro`, `cursoEscolar`, `textoLegal`, `nombreDirectorFirmante`)
+VALUES (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '');
 
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES (1, 'Grado Medio'), (2, 'Grado Superior');
 

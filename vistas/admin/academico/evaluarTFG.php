@@ -73,6 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <form action="../../../controladores/admin/pfc/calificar.php" method="POST" class="formulario">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
 
         <div class="campo">

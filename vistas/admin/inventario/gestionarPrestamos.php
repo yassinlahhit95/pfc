@@ -73,6 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <div class="recurso-menu">
                                     <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
                                     <form action="../../../controladores/admin/inventario/devolver.php" method="POST" style="margin:0">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
                                         <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
                                         <button type="submit" class="recurso-menu-item"><i class="fas fa-rotate-left"></i> Marcar devuelto</button>

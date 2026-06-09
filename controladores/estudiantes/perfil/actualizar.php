@@ -1,9 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once "../../../modelos/estudiantes.php";
 
 if (isset($_POST['actualizarPerfil'])) {
-    $idEstudiante = trim($_POST['idEstudiante']);
+    $idEstudiante = $_SESSION['idEstudiante'];
     $nombre = trim($_POST['nombreEstudiante']);
     $email = strtolower(trim($_POST['emailEstudiante']));
     $telefono = trim($_POST['telefonoEstudiante']);

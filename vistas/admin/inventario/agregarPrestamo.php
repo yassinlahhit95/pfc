@@ -51,6 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 
     <form method="POST" action="../../../controladores/admin/inventario/prestar.php">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="form-cols">
 
             <div class="campo">

@@ -1,11 +1,10 @@
 <?php
+require_once __DIR__ . "/../../../include/Security.php";
 // Marca / desmarca un recurso como favorito (#9). POST + CSRF.
 // Responde JSON si la petición es AJAX; si no, vuelve a la página de origen.
-session_start();
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../include/Security.php";
 
 $esAjax = !empty($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 

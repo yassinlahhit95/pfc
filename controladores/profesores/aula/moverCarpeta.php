@@ -1,8 +1,7 @@
 <?php
-// Mueve una carpeta a otra carpeta (cambia su padre). Solo el propietario. POST + CSRF.
-session_start();
-require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../include/Security.php";
+// Mueve una carpeta a otra carpeta (cambia su padre). Solo el propietario. POST + CSRF.
+require_once __DIR__ . "/../../../modelos/aula.php";
 
 if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
 if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {

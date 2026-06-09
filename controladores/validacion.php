@@ -1,8 +1,15 @@
 <?php
-// Seguridad: Inicializar sesión y cargar clases de seguridad
 session_start();
 require_once __DIR__ . "/../include/Security.php";
-require_once __DIR__ . "/../include/Logger.php";
+// Logger is optional — login must work even if Logger.php is absent on server
+@include_once __DIR__ . "/../include/Logger.php";
+if (!class_exists('Logger')) {
+    class Logger {
+        public static function security($e, $d = []) {}
+        public static function warning($m, $d = []) {}
+        public static function activity($a, $u = null, $d = []) {}
+    }
+}
 require_once __DIR__ . "/../modelos/directores.php";
 require_once __DIR__ . "/../modelos/profesores.php";
 require_once __DIR__ . "/../modelos/estudiantes.php";

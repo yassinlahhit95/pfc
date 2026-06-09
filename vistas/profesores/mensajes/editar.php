@@ -11,7 +11,7 @@ $idReclamacion = $_GET['id'] ?? 0;
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
-    header("Location: /pfc/vistas/profesores/mensajes/lista.php");
+    header("Location: lista.php");
     exit;
 }
 

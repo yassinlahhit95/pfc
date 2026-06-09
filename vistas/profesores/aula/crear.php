@@ -32,14 +32,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } else { ?>
     <form method="POST" action="../../../controladores/aula/crear_sesion.php" class="formulario-principal">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml(htmlspecialchars($csrfToken)) ?>">
+        <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
 
         <div class="grupo-formulario">
             <label for="idModulo">MÓDULO *</label>
             <select id="idModulo" name="idModulo" required>
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($modulos as $modulo) { ?>
-                    <option value="<?= Security::escapeHtml($modulo['idModulo'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></option>
+                    <option value="<?= Security::escapeHtml($modulo['idModulo'] ) ?>"><?= Security::escapeHtml($modulo['nombreModulo']) ?></option>
                 <?php } ?>
             </select>
         </div>

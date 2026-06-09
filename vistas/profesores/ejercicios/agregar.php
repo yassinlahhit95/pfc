@@ -21,7 +21,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="panel.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php endif; ?>
 
 <div class="panel margen-arriba" style="max-width:720px;">
   <form action="../../../controladores/profesores/ejercicios/insertar.php" method="POST" enctype="multipart/form-data" class="formulario">
@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <select name="idCiclo" required>
           <option value="">-- Seleccionar ciclo --</option>
           <?php foreach ($ciclos as $c): ?>
-          <option value="<?= Security::escapeHtml($c['idCiclo'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($c['nombreCiclo'])) ?></option>
+          <option value="<?= Security::escapeHtml($c['idCiclo'] ) ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
@@ -54,7 +54,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <option value="">Sin carpeta</option>
           <?php foreach ($carpetas as $c): ?>
           <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>" <?= Security::escapeHtml($idCarpetaPresel == $c['idCarpeta'] ? 'selected' : '') ?>>
-            <?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?>
+            <?= Security::escapeHtml($c['nombre']) ?>
           </option>
           <?php endforeach; ?>
         </select>

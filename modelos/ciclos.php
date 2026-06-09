@@ -97,13 +97,13 @@ function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $id
 
 function obtenerCicloPorId($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM ciclos WHERE idCiclo = ?";
+    $sql = "SELECT c.*, n.nombreNivel FROM ciclos c LEFT JOIN niveles n ON n.idNivel = c.idNivel WHERE c.idCiclo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datosCiclo = mysqli_fetch_assoc($resultado);
-    
+
     return $datosCiclo;
 }
 

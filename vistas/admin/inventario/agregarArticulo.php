@@ -24,6 +24,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/inventario/insertar.php">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <div class="formulario">
                 <div class="campo">
                     <label for="nombreArticulo">NOMBRE DEL ARTÍCULO</label>

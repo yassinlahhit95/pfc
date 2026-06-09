@@ -84,10 +84,10 @@ $tareasNoPublicadas = array_filter($todasLasTareas, function($t) { return $t['pu
                         $estado = $tieneEntrega ? '<span class="badge badge-verde">ENTREGADA</span>' : '<span class="badge badge-azul">PENDIENTE</span>';
                     ?>
                     <tr>
-                        <td><strong><?= Security::escapeHtml(htmlspecialchars(substr($tarea['titulo'], 0, 40))) ?></strong></td>
-                        <td><?= Security::escapeHtml(htmlspecialchars($tarea['nombreModulo'])) ?></td>
-                        <td><?= Security::escapeHtml(htmlspecialchars($tarea['nombreProfesor'])) ?></td>
-                        <td><span class="texto-pequeño"><?= Security::escapeHtml(htmlspecialchars(substr(strip_tags($tarea['descripcion']), 0, 60))) ?>...</span></td>
+                        <td><strong><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></strong></td>
+                        <td><?= Security::escapeHtml($tarea['nombreModulo']) ?></td>
+                        <td><?= Security::escapeHtml($tarea['nombreProfesor']) ?></td>
+                        <td><span class="texto-pequeño"><?= Security::escapeHtml(substr(strip_tags($tarea['descripcion']), 0, 60)) ?>...</span></td>
                         <td><?= Security::escapeHtml($estado ) ?></td>
                         <td>
                             <a href="tarea_detalle.php?id=<?= Security::escapeHtml($tarea['idTarea'] ) ?>" class="boton-primario btn-pequeno">

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../include/Security.php";
 
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../vistas/login.php");
@@ -7,7 +7,6 @@ if (!isset($_SESSION['idProfesor'])) {
 }
 
 require_once __DIR__ . "/../../modelos/aula.php";
-require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/Logger.php";
 
 $idProfesor = $_SESSION['idProfesor'];

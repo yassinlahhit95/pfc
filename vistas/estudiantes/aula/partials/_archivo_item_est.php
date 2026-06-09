@@ -13,9 +13,9 @@ $tamStr    = $arch['tamanio'] > 0
     <i class="fas <?= Security::escapeHtml($faIcon ) ?>"></i>
   </div>
   <div class="aula-archivo-info">
-    <div class="aula-archivo-nombre" title="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'])) ?>"><?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'])) ?></div>
+    <div class="aula-archivo-nombre" title="<?= Security::escapeHtml($arch['nombreOriginal']) ?>"><?= Security::escapeHtml($arch['nombreOriginal']) ?></div>
     <div class="aula-archivo-meta">
-      <?= Security::escapeHtml(htmlspecialchars($arch['nombreProfesor'])) ?> ·
+      <?= Security::escapeHtml($arch['nombreProfesor']) ?> ·
       <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?>
       <?= Security::escapeHtml($tamStr ? ' · '.$tamStr : '') ?>
     </div>
@@ -24,10 +24,10 @@ $tamStr    = $arch['tamanio'] > 0
     <button class="btn-accion btn-ver" title="Ver"
             data-ver-archivo="<?= Security::escapeHtml($url ) ?>"
             data-ext="<?= Security::escapeHtml($ext ) ?>"
-            data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'], ENT_QUOTES)) ?>">
+            data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>">
       <i class="fas fa-eye"></i>
     </button>
-    <a href="<?= Security::escapeHtml($url ) ?>" download="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'], ENT_QUOTES)) ?>"
+    <a href="<?= Security::escapeHtml($url ) ?>" download="<?= Security::escapeHtml($arch['nombreOriginal']) ?>"
        class="btn-accion" title="Descargar" style="background:#f1f5f9;color:#475569;">
       <i class="fas fa-download"></i>
     </a>

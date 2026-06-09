@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (empty($_SESSION['idProfesor'])) {

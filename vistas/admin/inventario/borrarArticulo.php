@@ -17,6 +17,7 @@ include __DIR__ . '/../comunes/nav.php';
     <p>Quieres eliminar el articulo "<?= $registro['nombreArticulo'] ?>"!</p>
     <div class="acciones" style="margin-top:20px;">
         <form method="POST" action="../../../controladores/admin/inventario/borrar.php">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idArticulo" value="<?= $id ?>">
             <button type="submit" class="boton-primario" style="background:#f87171;border-color:#f87171;min-width:160px;">Sí, eliminar</button>
         </form>

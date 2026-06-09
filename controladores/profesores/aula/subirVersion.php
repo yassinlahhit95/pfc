@@ -1,8 +1,7 @@
 <?php
-// Sube una nueva versión de un recurso existente conservando el historial (#8)
-session_start();
-require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../include/Security.php";
+// Sube una nueva versión de un recurso existente conservando el historial (#8)
+require_once __DIR__ . "/../../../modelos/aula.php";
 
 if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
 if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {

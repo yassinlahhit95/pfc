@@ -108,6 +108,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <p class="mensaje-error">Periodo de pagos finalizado (30/06 superado).</p>
     <?php } else { ?>
         <form action="../../../controladores/admin/pagos/insertar.php" method="POST">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
             <input type="hidden" name="fechaPago" value="<?= $hoy ?>">
 

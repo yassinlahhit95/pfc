@@ -97,8 +97,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php foreach ($todasLasEntregas as $entrega) { ?>
                 <tr>
-                    <td><strong><?= Security::escapeHtml(htmlspecialchars(substr($entrega['nombreTarea'], 0, 40))) ?></strong></td>
-                    <td><?= Security::escapeHtml(htmlspecialchars($entrega['nombreModulo'])) ?></td>
+                    <td><strong><?= Security::escapeHtml(substr($entrega['nombreTarea'], 0, 40)) ?></strong></td>
+                    <td><?= Security::escapeHtml($entrega['nombreModulo']) ?></td>
                     <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?></td>
                     <td>
                         <?php if ($entrega['nota'] !== null) { ?>

@@ -65,15 +65,15 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
   <?php if ($ciclo): ?>
-  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($ciclo['idCiclo'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($ciclo['nombreCiclo'])) ?></a>
+  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($ciclo['idCiclo'] ) ?>"><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></a>
   <span class="breadcrumb-sep">/</span>
   <?php endif; ?>
-  <span class="breadcrumb-actual"><?= Security::escapeHtml(htmlspecialchars($modulo['nombreModulo'])) ?></span>
+  <span class="breadcrumb-actual"><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
 </nav>
 
 <!-- HEADER -->
 <div class="header-modern">
-  <h1 class="header-titulo"><?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($modulo['nombreModulo'], 'UTF-8'))) ?></h1>
+  <h1 class="header-titulo"><?= Security::escapeHtml(mb_strtoupper($modulo['nombreModulo'], 'UTF-8')) ?></h1>
   <div class="header-acciones">
     <a href="analytics.php?id=<?= Security::escapeHtml($idModulo ) ?>" class="btn-modern btn-secondary-modern btn-small" title="Ver estadísticas">
       <i class="fas fa-chart-bar"></i> Analytics
@@ -90,8 +90,8 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml($errores) ?></div><?php endif; ?>
 
 <!-- BÚSQUEDA DINÁMICA -->
 <div id="searchContainer" style="margin-bottom:var(--space-4);display:none;">
@@ -135,11 +135,11 @@ include_once __DIR__ . "/../comunes/nav.php";
       <?php foreach ($carpetas as $carpeta): ?>
       <div class="carpeta" style="margin-bottom:var(--space-4);">
         <div class="carpeta-header-modern">
-          <span class="carpeta-dot" style="background:<?= Security::escapeHtml(htmlspecialchars($carpeta['color'])) ?>;"></span>
-          <span class="carpeta-nombre"><?= Security::escapeHtml(htmlspecialchars($carpeta['nombre'])) ?></span>
+          <span class="carpeta-dot" style="background:<?= Security::escapeHtml($carpeta['color']) ?>;"></span>
+          <span class="carpeta-nombre"><?= Security::escapeHtml($carpeta['nombre']) ?></span>
           <span class="carpeta-count"><?= Security::escapeHtml($carpeta['totalArchivos'] ) ?></span>
           <i class="fas fa-chevron-right carpeta-chevron"></i>
-          <button onclick="abrirEditarCarpeta(<?= Security::escapeHtml($carpeta['idCarpeta'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($carpeta['nombre']))) ?>', '<?= Security::escapeHtml($carpeta['color'] ) ?>')" class="btn-ghost-modern btn-small" title="Editar" style="margin-left:auto;">
+          <button onclick="abrirEditarCarpeta(<?= Security::escapeHtml($carpeta['idCarpeta'] ) ?>, '<?= Security::escapeHtml(addslashes($carpeta['nombre'])) ?>', '<?= Security::escapeHtml($carpeta['color'] ) ?>')" class="btn-ghost-modern btn-small" title="Editar" style="margin-left:auto;">
             <i class="fas fa-pen"></i>
           </button>
           <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('carpeta', <?= Security::escapeHtml($carpeta['idCarpeta'] ) ?>, <?= Security::escapeHtml($idModulo ) ?>, '¿Eliminar definitivamente esta carpeta y todo su contenido? Esta acción no se puede deshacer.')">
@@ -160,13 +160,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                   <i class="fas fa-file-<?= Security::escapeHtml($arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt')) ?>"></i>
                 </div>
                 <div class="archivo-info-modern">
-                  <div class="archivo-nombre-modern"><?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'])) ?></div>
+                  <div class="archivo-nombre-modern"><?= Security::escapeHtml($arch['nombreOriginal']) ?></div>
                   <div class="archivo-meta-modern"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?> · <?= Security::escapeHtml($arch['tamanio'] > 1048576 ? round($arch['tamanio']/1048576,1).'MB' : round($arch['tamanio']/1024,1).'KB') ?></div>
                 </div>
                 <div class="archivo-acciones-modern">
-                  <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES)) ?>" title="Ver"><i class="fas fa-eye"></i></button>
-                  <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
-                  <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($arch['nombreOriginal']))) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
+                  <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>" title="Ver"><i class="fas fa-eye"></i></button>
+                  <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
+                  <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(addslashes($arch['nombreOriginal'])) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
                   <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('archivo', <?= Security::escapeHtml($arch['idArchivo'] ) ?>, <?= Security::escapeHtml($arch['idModulo'] ) ?>, '¿Eliminar este archivo?')"><i class="fas fa-trash"></i></button>
                 </div>
               </div>
@@ -193,13 +193,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <i class="fas fa-file-<?= Security::escapeHtml($arch['extension'] === 'pdf' ? 'pdf' : ($arch['extension'] === 'docx' ? 'word' : 'alt')) ?>"></i>
               </div>
               <div class="archivo-info-modern">
-                <div class="archivo-nombre-modern"><?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'])) ?></div>
+                <div class="archivo-nombre-modern"><?= Security::escapeHtml($arch['nombreOriginal']) ?></div>
                 <div class="archivo-meta-modern"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($arch['fechaSubida']))) ?></div>
               </div>
               <div class="archivo-acciones-modern">
-                <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml(htmlspecialchars($arch['nombreOriginal'],ENT_QUOTES)) ?>" title="Ver"><i class="fas fa-eye"></i></button>
-                <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml(htmlspecialchars($arch['nombreArchivo'],ENT_QUOTES)) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
-                <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($arch['nombreOriginal']))) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
+                <button class="btn-ghost-modern btn-small" data-ver-archivo="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" data-ext="<?= Security::escapeHtml($arch['extension'] ) ?>" data-nombre="<?= Security::escapeHtml($arch['nombreOriginal']) ?>" title="Ver"><i class="fas fa-eye"></i></button>
+                <a href="../../../public/uploads/aula/archivos/<?= Security::escapeHtml($arch['nombreArchivo']) ?>" download class="btn-ghost-modern btn-small" title="Descargar"><i class="fas fa-download"></i></a>
+                <button class="btn-ghost-modern btn-small" title="Mover" onclick="abrirMoverArchivo(<?= Security::escapeHtml($arch['idArchivo'] ) ?>, '<?= Security::escapeHtml(addslashes($arch['nombreOriginal'])) ?>')"><i class="fas fa-folder-arrow-down"></i></button>
                 <button type="button" class="btn-ghost-modern btn-small" title="Eliminar" onclick="eliminarRecursoAula('archivo', <?= Security::escapeHtml($arch['idArchivo'] ) ?>, <?= Security::escapeHtml($arch['idModulo'] ) ?>, '¿Eliminar este archivo?')"><i class="fas fa-trash"></i></button>
               </div>
             </div>
@@ -273,11 +273,11 @@ include_once __DIR__ . "/../comunes/nav.php";
           <div style="display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-3);">
             <div style="flex:1;">
               <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);">
-                <h3 class="tarea-titulo-modern"><?= Security::escapeHtml(htmlspecialchars($sesion['titulo'])) ?></h3>
+                <h3 class="tarea-titulo-modern"><?= Security::escapeHtml($sesion['titulo']) ?></h3>
                 <span class="badge-estado-modern" style="background:<?= Security::escapeHtml($estilo['bg'] ) ?>;color:<?= Security::escapeHtml($estilo['text'] ) ?>;"><i class="fas fa-<?= Security::escapeHtml($estilo['icon'] ) ?>"></i> <?= Security::escapeHtml(strtoupper($estado)) ?></span>
               </div>
               <?php if ($sesion['descripcion']): ?>
-              <p class="tarea-desc-modern"><?= Security::escapeHtml(htmlspecialchars($sesion['descripcion'])) ?></p>
+              <p class="tarea-desc-modern"><?= Security::escapeHtml($sesion['descripcion']) ?></p>
               <?php endif; ?>
               <div style="margin-top:var(--space-2);display:flex;gap:var(--space-4);font-size:var(--font-size-sm);color:var(--color-neutral-600);">
                 <span><i class="fas fa-calendar"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($sesion['fechaSesion']))) ?></span>
@@ -286,9 +286,9 @@ include_once __DIR__ . "/../comunes/nav.php";
               </div>
               <?php if ($sesion['plataforma']): ?>
               <div style="margin-top:var(--space-2);padding:var(--space-2);background:var(--color-neutral-50);border-radius:4px;font-size:var(--font-size-sm);">
-                <strong><?= Security::escapeHtml(htmlspecialchars($sesion['plataforma'])) ?></strong>
+                <strong><?= Security::escapeHtml($sesion['plataforma']) ?></strong>
                 <?php if ($sesion['enlaceReunion']): ?>
-                <a href="<?= Security::escapeHtml(htmlspecialchars($sesion['enlaceReunion'])) ?>" target="_blank" class="btn-modern btn-ghost-modern btn-small" style="margin-left:var(--space-2);">
+                <a href="<?= Security::escapeHtml($sesion['enlaceReunion']) ?>" target="_blank" class="btn-modern btn-ghost-modern btn-small" style="margin-left:var(--space-2);">
                   <i class="fas fa-external-link-alt"></i> Abrir enlace
                 </a>
                 <?php endif; ?>
@@ -297,7 +297,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
           </div>
           <div class="tarea-acciones-modern">
-            <button type="button" class="btn-modern btn-ghost-modern btn-small" title="Editar" onclick="abrirEditarSesion(<?= Security::escapeHtml($sesion['idSesion']) ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($sesion['titulo']))) ?>', '<?= Security::escapeHtml(htmlspecialchars(addslashes($sesion['descripcion'] ?? ''), ENT_QUOTES)) ?>', '<?= Security::escapeHtml($sesion['fechaSesion']) ?>', '<?= Security::escapeHtml($sesion['horaSesion']) ?>', '<?= Security::escapeHtml(htmlspecialchars(addslashes($sesion['enlaceReunion'] ?? ''))) ?>', '<?= Security::escapeHtml(htmlspecialchars($sesion['plataforma'] ?? '')) ?>')">
+            <button type="button" class="btn-modern btn-ghost-modern btn-small" title="Editar" onclick="abrirEditarSesion(<?= Security::escapeHtml($sesion['idSesion']) ?>, '<?= Security::escapeHtml(addslashes($sesion['titulo'])) ?>', '<?= Security::escapeHtml(addslashes($sesion['descripcion'] ?? '')) ?>', '<?= Security::escapeHtml($sesion['fechaSesion']) ?>', '<?= Security::escapeHtml($sesion['horaSesion']) ?>', '<?= Security::escapeHtml(addslashes($sesion['enlaceReunion'] ?? '')) ?>', '<?= Security::escapeHtml($sesion['plataforma'] ?? '') ?>')">
               <i class="fas fa-pen"></i>
             </button>
             <a href="sesionAsistencia.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="btn-modern btn-primary-modern btn-small">
@@ -339,8 +339,8 @@ include_once __DIR__ . "/../comunes/nav.php";
           <div class="color-picker-group">
             <?php foreach ($colores as $color): ?>
             <label style="cursor:pointer;">
-              <input type="radio" name="color" value="<?= Security::escapeHtml(htmlspecialchars($color)) ?>" style="display:none;" <?= Security::escapeHtml($color === '#0ea5e9' ? 'checked' : '') ?>>
-              <span class="color-picker-option" style="background:<?= Security::escapeHtml(htmlspecialchars($color)) ?>;border-color:<?= Security::escapeHtml($color === '#0ea5e9' ? '#000' : 'transparent') ?>;"></span>
+              <input type="radio" name="color" value="<?= Security::escapeHtml($color) ?>" style="display:none;" <?= Security::escapeHtml($color === '#0ea5e9' ? 'checked' : '') ?>>
+              <span class="color-picker-option" style="background:<?= Security::escapeHtml($color) ?>;border-color:<?= Security::escapeHtml($color === '#0ea5e9' ? '#000' : 'transparent') ?>;"></span>
             </label>
             <?php endforeach; ?>
           </div>
@@ -375,8 +375,8 @@ include_once __DIR__ . "/../comunes/nav.php";
           <div id="editColorPickerGroup" class="color-picker-group">
             <?php foreach ($colores as $color): ?>
             <label style="cursor:pointer;">
-              <input type="radio" name="color" value="<?= Security::escapeHtml(htmlspecialchars($color)) ?>" style="display:none;">
-              <span class="color-picker-option" style="background:<?= Security::escapeHtml(htmlspecialchars($color)) ?>;"></span>
+              <input type="radio" name="color" value="<?= Security::escapeHtml($color) ?>" style="display:none;">
+              <span class="color-picker-option" style="background:<?= Security::escapeHtml($color) ?>;"></span>
             </label>
             <?php endforeach; ?>
           </div>
@@ -407,7 +407,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <select name="idCarpeta" class="modal-select">
             <option value="0">Sin carpeta</option>
             <?php foreach ($carpetas as $c): ?>
-            <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></option>
+            <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml($c['nombre']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -447,7 +447,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <select name="carpeta" class="modal-select" required>
             <option value="0">Sin carpeta</option>
             <?php foreach ($carpetas as $c): ?>
-            <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml(htmlspecialchars($c['nombre'])) ?></option>
+            <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml($c['nombre']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>

@@ -38,8 +38,8 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
     <link rel="stylesheet" href="../../../public/css/estilo.css">
     <link rel="stylesheet" href="../../../public/css/responsive.css">
     <link rel="stylesheet" href="../../../public/css/notificaciones.css">
-    <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/css/aula-digital.css")) ?>">
     <link rel="stylesheet" href="../../../public/css/sidebar.css?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/css/sidebar.css")) ?>">

@@ -32,18 +32,18 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
   <div>
-    <h1><?= Security::escapeHtml(htmlspecialchars(mb_strtoupper($ejercicio['titulo'], 'UTF-8'))) ?></h1>
+    <h1><?= Security::escapeHtml(mb_strtoupper($ejercicio['titulo'], 'UTF-8')) ?></h1>
     <?php if ($ejercicio['nombreCarpeta']): ?>
     <span class="ejercicio-card-carpeta" style="background:<?= Security::escapeHtml($ejercicio['colorCarpeta'] ) ?>22;color:<?= Security::escapeHtml($ejercicio['colorCarpeta'] ) ?>;margin-top:6px;display:inline-flex;">
-      <i class="fas fa-folder" style="font-size:0.65rem;"></i> <?= Security::escapeHtml(htmlspecialchars($ejercicio['nombreCarpeta'])) ?>
+      <i class="fas fa-folder" style="font-size:0.65rem;"></i> <?= Security::escapeHtml($ejercicio['nombreCarpeta']) ?>
     </span>
     <?php endif; ?>
   </div>
   <a href="panel.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml(htmlspecialchars($exito)) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml(htmlspecialchars($errores)) ?></div><?php endif; ?>
+<?php if ($exito): ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php endif; ?>
+<?php if ($errores): ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php endif; ?>
 
 <div class="entregas-stats">
   <div class="entrega-stat-card">
@@ -83,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           $entrega = $entregasMap[$est['idEstudiante']] ?? null;
         ?>
         <tr>
-          <td class="texto-negrita"><?= Security::escapeHtml(htmlspecialchars($est['nombreEstudiante'])) ?></td>
+          <td class="texto-negrita"><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
           <td>
             <?php if (!$entrega): ?>
               <span class="badge-estado badge-pendiente">Pendiente</span>
@@ -101,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           </td>
           <td>
             <?php if ($entrega && $entrega['archivoEntrega']): ?>
-            <a href="../../../public/uploads/ejercicios/entregas/<?= Security::escapeHtml(htmlspecialchars($entrega['archivoEntrega'], ENT_QUOTES)) ?>"
+            <a href="../../../public/uploads/ejercicios/entregas/<?= Security::escapeHtml($entrega['archivoEntrega']) ?>"
                target="_blank" class="btn-accion btn-ver" title="Ver archivo">
               <i class="fas fa-paperclip"></i>
             </a>
@@ -113,7 +113,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <td>
             <?php if ($entrega): ?>
             <button type="button" class="btn-accion btn-editar"
-                    onclick="abrirCalificar(<?= Security::escapeHtml($est['idEstudiante'] ) ?>, '<?= Security::escapeHtml(htmlspecialchars($est['nombreEstudiante'], ENT_QUOTES)) ?>', <?= Security::escapeHtml($entrega['nota'] ?? 'null') ?>, '<?= Security::escapeHtml(htmlspecialchars(addslashes($entrega['comentarioProfesor'] ?? ''), ENT_QUOTES)) ?>')"
+                    onclick="abrirCalificar(<?= Security::escapeHtml($est['idEstudiante'] ) ?>, '<?= Security::escapeHtml($est['nombreEstudiante']) ?>', <?= Security::escapeHtml($entrega['nota'] ?? 'null') ?>, '<?= Security::escapeHtml(addslashes($entrega['comentarioProfesor'] ?? '')) ?>')"
                     title="Calificar">
               <i class="fas fa-star"></i>
             </button>
