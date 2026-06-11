@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -58,17 +58,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <span class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h</span>
                         </td>
                         <td>
-                            <span class="texto-negrita"><?= $evento['tituloEvento'] ?></span><br>
+                            <span class="texto-negrita"><?= Security::escapeHtml($evento['tituloEvento']) ?></span><br>
                             <span><?= substr($evento['descripcionEvento'], 0, 80) ?>...</span>
                         </td>
-                        <td><?= $evento['ubicacionEvento'] ?></td>
+                        <td><?= Security::escapeHtml($evento['ubicacionEvento']) ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="modificarEvento.php?idEvento=<?= $evento['idEvento'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <a class="recurso-menu-item" href="modificarEvento.php?idEvento=<?= Security::escapeHtml($evento['idEvento']) ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarEvento.php?id=<?= $evento['idEvento'] ?>" onclick="return confirm('¿Eliminar este evento?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="borrarEvento.php?id=<?= Security::escapeHtml($evento['idEvento']) ?>" onclick="return confirm('¿Eliminar este evento?')"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>

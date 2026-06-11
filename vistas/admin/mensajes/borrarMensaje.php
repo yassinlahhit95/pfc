@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 if (empty($_SESSION['idAdmin'])) { header("Location: ../../login.php"); exit; }
 $id = $_GET['id'] ?? '';
 require_once __DIR__ . '/../../../modelos/reclamaciones.php';

@@ -1,7 +1,7 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
-$exito = $_SESSION['exito'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
@@ -18,30 +18,22 @@ $estudiantes = listarEstudiantesDeProfesor($idProfesor);
 $listaDeCiclosParaFiltro = listarCiclosDeProfesor($idProfesor);
 
 $tituloDelPagina = "AULAPRO | LISTA DE ESTUDIANTES";
-$seccionActual = 'estudiantes';
+$seccionActual   = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>GESTION DE ESTUDIANTES</h1>
-    <div class="acciones-pagina">
-        <a href="agregar.php" class="boton-primario">
-            <i class="fas fa-plus"></i> NUEVO ESTUDIANTE
-        </a>
-    </div>
+    <h1>GESTIÓN DE ESTUDIANTES</h1>
+    <a href="agregar.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVO ESTUDIANTE</a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
+<?php if ($exito)   { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito)   ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
 
 <div class="panel margen-abajo">
     <div class="campo">
         <label for="selectFiltroCicloProf">FILTRAR POR CICLO:</label>
-        <select id="selectFiltroCicloProf" name="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
+        <select id="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                 <option value="<?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>">
@@ -53,10 +45,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel">
-    <div class="titulo-tarjeta">
-        <h3>Estudiantes Registrados</h3>
-    </div>
-
+    <div class="titulo-tarjeta"><h3>Estudiantes Registrados</h3></div>
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaEstudiantesProf">
             <thead>
@@ -66,37 +55,39 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Email</th>
                     <th>DNI</th>
                     <th>Ciclo</th>
-                    <th>Acciones</th>
+                    <th style="text-align:right;width:60px;"></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($estudiantes) { ?>
-                    <?php foreach ($estudiantes as $estudianteItem) { ?>
+                    <?php foreach ($estudiantes as $est) { ?>
                         <tr>
                             <td>
-                                <span class="texto-estado <?= Security::escapeHtml($estudianteItem['idNivel'] == 1 ? 'azul' : 'verde') ?>"><?= Security::escapeHtml($estudianteItem['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?></span>
-                                <span class="texto-estado gris"><?= Security::escapeHtml($estudianteItem['curso'] ) ?></span>
+                                <span class="texto-estado <?= Security::escapeHtml($est['idNivel'] == 1 ? 'azul' : 'verde') ?>">
+                                    <?= Security::escapeHtml($est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?>
+                                </span>
+                                <span class="texto-estado gris"><?= Security::escapeHtml($est['curso']) ?></span>
                             </td>
-                            <td class="texto-negrita"><?= Security::escapeHtml($estudianteItem['nombreEstudiante'] ) ?></td>
-                            <td><?= Security::escapeHtml($estudianteItem['emailEstudiante'] ) ?></td>
-                            <td><?= Security::escapeHtml($estudianteItem['dniEstudiante'] ) ?></td>
-                            <td><?= Security::escapeHtml($estudianteItem['nombreCiclo'] ) ?></td>
-                            <td>
-                                <div class="botones-accion">
-                                    <a href="detalles.php?idEstudiante=<?= Security::escapeHtml($estudianteItem['idEstudiante'] ) ?>" class="btn-accion btn-ver">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="editar.php?idEstudiante=<?= Security::escapeHtml($estudianteItem['idEstudiante'] ) ?>" class="btn-accion btn-editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="borrarEstudiante.php?id=<?= Security::escapeHtml($estudianteItem['idEstudiante'] ) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
+                            <td class="texto-negrita"><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($est['emailEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($est['dniEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($est['nombreCiclo']) ?></td>
+                            <td style="text-align:right;">
+                                <div class="recurso-menu-wrap">
+                                    <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
+                                    <div class="recurso-menu">
+                                        <a class="recurso-menu-item" href="detalles.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-eye"></i> Ver perfil</a>
+                                        <a class="recurso-menu-item" href="editar.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                        <div class="recurso-menu-sep"></div>
+                                        <a class="recurso-menu-item peligro" href="borrarEstudiante.php?id=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-trash"></i> Eliminar</a>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="5" class="vacio">No hay estudiantes registrados.</td>
+                        <td colspan="6" class="vacio">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -105,6 +96,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-

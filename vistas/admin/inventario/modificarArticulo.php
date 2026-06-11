@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -22,14 +22,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR ARTÍCULO: <?= $articulo['nombreArticulo'] ?></h1>
+    <h1>MODIFICAR ARTÍCULO: <?= Security::escapeHtml($articulo['nombreArticulo']) ?></h1>
     <a href="verInventario.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
 <div class="panel">
     <form action="../../../controladores/admin/inventario/actualizar.php" method="POST">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idArticulo" value="<?= $articulo['idArticulo'] ?>">
+        <input type="hidden" name="idArticulo" value="<?= Security::escapeHtml($articulo['idArticulo']) ?>">
 
         <div class="formulario">
             <div class="campo">

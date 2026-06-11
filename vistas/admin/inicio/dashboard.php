@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 if (empty($_SESSION['idAdmin'])) {
     header("Location: ../../login.php");
@@ -93,13 +93,13 @@ include __DIR__ . '/../comunes/nav.php';
             <div class="anuncio-item">
                 <div class="anuncio-contenido">
                     <div class="caja espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo"><?= strtoupper($anuncio['titulo']) ?></strong>
+                        <strong class="anuncio-titulo"><?= strtoupper(Security::escapeHtml($anuncio['titulo'])) ?></strong>
                         <span class="texto-suave"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
                     </div>
                     <br>
-                    <p class="texto-pequeno" style="margin: 0;"><?= nl2br($anuncio['mensaje']) ?></p>
+                    <p class="texto-pequeno" style="margin: 0;"><?= nl2br(Security::escapeHtml($anuncio['mensaje'])) ?></p>
                     <div style="margin-top: 5px;">
-                        <span class="texto-dirigido"><?= strtoupper($anuncio['dirigidoA']) ?></span>
+                        <span class="texto-dirigido"><?= strtoupper(Security::escapeHtml($anuncio['dirigidoA'])) ?></span>
                     </div>
                 </div>
             </div>
@@ -132,8 +132,8 @@ include __DIR__ . '/../comunes/nav.php';
             <div class="elemento-evento">
               <div class="fecha-evento azul"><div class="dia"><?= $dia ?></div><div class="mes"><?= $mes ?></div></div>
               <div>
-                <p class="texto-negrita"><?= strtoupper($evento['tituloEvento']) ?></p>
-                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= $evento['ubicacionEvento'] ?></p>
+                <p class="texto-negrita"><?= strtoupper(Security::escapeHtml($evento['tituloEvento'])) ?></p>
+                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= Security::escapeHtml($evento['ubicacionEvento']) ?></p>
               </div>
             </div>
             <?php

@@ -36,6 +36,22 @@ function obtenerConexion() {
     return $conexion;
 }
 
+/**
+ * Execute a prepared statement and return the first result row, or null.
+ * Usage: dbFetchOne("SELECT COUNT(*) as n FROM t")
+ *        dbFetchOne("SELECT * FROM t WHERE id=?", "i", $id)
+ */
+function dbFetchOne(string $sql, string $types = '', ...$params): ?array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, $sql);
+    if ($params) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($res) ?: null;
+}
+
 function actualizarTokenFCM($tabla, $campoId, $id, $token) {
     $con = obtenerConexion();
     $sql = "UPDATE $tabla SET fcm_token = ? WHERE $campoId = ?";

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -29,8 +29,10 @@ $califTFG = obtenerCalificacionTFG($idEstudiante);
 
 $idCiclo = $estudianteActual['idCiclo'] ?? 0;
 
-$listaModulos = listarModulosPorCiclo($idCiclo);
-$listaRetos = listarRetosPorCiclo($idCiclo);
+$listaModulos        = listarModulosPorCiclo($idCiclo);
+$listaRetos          = listarRetosPorCiclo($idCiclo);
+$califModulos        = listarCalificacionesPorEstudiante($idEstudiante);
+$califRetos          = listarCalificacionesRetoPorEstudiante($idEstudiante);
 $cantidadPagos = contarPagosEstudiante($idEstudiante);
 $listaMensajes = listarMensajesDeEstudiante($idEstudiante);
 
@@ -135,6 +137,91 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
   </div>
 </div>
+
+<?php
+// Build chart data — only modules that have at least one grade recorded
+$chartLabels  = [];
+$chartNotas   = [];
+$chartColores = [];
+foreach ($califModulos as $cm) {
+    $nota = $cm['nota_2final'] ?? $cm['nota_1final'] ?? null;
+    if ($nota === null) continue;
+    $nota             = (float)$nota;
+    $chartLabels[]    = $cm['nombreModulo'];
+    $chartNotas[]     = $nota;
+    $chartColores[]   = $nota >= 5 ? 'rgba(22,163,74,0.75)' : 'rgba(239,68,68,0.75)';
+}
+
+$chartRetosLabels  = [];
+$chartRetosNotas   = [];
+$chartRetosColores = [];
+foreach ($califRetos as $cr) {
+    $nota                = (float)$cr['nota'];
+    $chartRetosLabels[]  = $cr['nombreReto'];
+    $chartRetosNotas[]   = $nota;
+    $chartRetosColores[] = $nota >= 5 ? 'rgba(14,165,233,0.75)' : 'rgba(239,68,68,0.75)';
+}
+?>
+<?php if (!empty($chartLabels) || !empty($chartRetosLabels)) { ?>
+<div class="panel" style="margin-top:24px;">
+    <div class="titulo-tarjeta"><h3>HISTORIAL DE CALIFICACIONES</h3></div>
+    <div style="display:grid;grid-template-columns:<?= !empty($chartLabels) && !empty($chartRetosLabels) ? '1fr 1fr' : '1fr' ?>;gap:24px;padding:16px;">
+        <?php if (!empty($chartLabels)) { ?>
+        <div>
+            <p style="font-size:.8rem;font-weight:600;color:#64748b;margin-bottom:8px;">MÓDULOS</p>
+            <canvas id="chartModulos" height="220"></canvas>
+        </div>
+        <?php } ?>
+        <?php if (!empty($chartRetosLabels)) { ?>
+        <div>
+            <p style="font-size:.8rem;font-weight:600;color:#64748b;margin-bottom:8px;">RETOS</p>
+            <canvas id="chartRetos" height="220"></canvas>
+        </div>
+        <?php } ?>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+    var optsBase = {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { min: 0, max: 10, ticks: { stepSize: 1 },
+                 grid: { color: 'rgba(0,0,0,.05)' } },
+            x: { ticks: { font: { size: 11 }, maxRotation: 30 } }
+        }
+    };
+
+    <?php if (!empty($chartLabels)) { ?>
+    new Chart(document.getElementById('chartModulos'), {
+        type: 'bar',
+        data: {
+            labels:   <?= json_encode($chartLabels, JSON_UNESCAPED_UNICODE) ?>,
+            datasets: [{ data: <?= json_encode($chartNotas) ?>,
+                         backgroundColor: <?= json_encode($chartColores) ?>,
+                         borderRadius: 6, borderSkipped: false }]
+        },
+        options: optsBase
+    });
+    <?php } ?>
+
+    <?php if (!empty($chartRetosLabels)) { ?>
+    new Chart(document.getElementById('chartRetos'), {
+        type: 'bar',
+        data: {
+            labels:   <?= json_encode($chartRetosLabels, JSON_UNESCAPED_UNICODE) ?>,
+            datasets: [{ data: <?= json_encode($chartRetosNotas) ?>,
+                         backgroundColor: <?= json_encode($chartRetosColores) ?>,
+                         borderRadius: 6, borderSkipped: false }]
+        },
+        options: optsBase
+    });
+    <?php } ?>
+})();
+</script>
+<?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 

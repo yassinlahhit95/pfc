@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 if (!$idProfesor) { header("Location: ../../login.php"); exit; }
 
@@ -567,6 +567,23 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
+<!-- MODAL: CONFIRMACIÓN ELIMINAR -->
+<div id="modalConfirmar" class="modal-backdrop">
+  <div class="modal-content" style="max-width:420px;">
+    <div class="modal-header">
+      <h2 class="modal-header-titulo"><i class="fas fa-triangle-exclamation" style="color:#ef4444;"></i> Confirmar eliminación</h2>
+      <button class="modal-close-btn" onclick="cerrarModal('modalConfirmar')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="modalConfirmarMensaje" style="margin:0;font-size:.95rem;color:var(--color-neutral-700,#374151);"></p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-modern btn-secondary-modern" onclick="cerrarModal('modalConfirmar')">Cancelar</button>
+      <button type="button" id="modalConfirmarOk" class="btn-modern" style="background:#ef4444;color:#fff;">Eliminar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════════════════════════════════════════════════════════
      JAVASCRIPT AVANZADO
      ════════════════════════════════════════════════════════════════ -->
@@ -625,19 +642,23 @@ function abrirMoverArchivo(id, nombre) {
 // Eliminar archivo/carpeta vía POST + CSRF (los controladores ya no aceptan GET)
 var CSRF_AULA = '<?= Security::generateCSRFToken() ?>';
 function eliminarRecursoAula(tipo, id, modulo, mensaje) {
-  if (!window.confirm(mensaje)) return;
-  var f = document.createElement('form');
-  f.method = 'POST';
-  f.action = '../../../controladores/profesores/aula/' + (tipo === 'carpeta' ? 'borrarCarpeta.php' : 'borrarArchivo.php');
-  f.style.display = 'none';
-  var campos = { csrf_token: CSRF_AULA, id: id, modulo: modulo };
-  for (var k in campos) {
-    var i = document.createElement('input');
-    i.type = 'hidden'; i.name = k; i.value = campos[k];
-    f.appendChild(i);
-  }
-  document.body.appendChild(f);
-  f.submit();
+  document.getElementById('modalConfirmarMensaje').textContent = mensaje;
+  document.getElementById('modalConfirmarOk').onclick = function() {
+    cerrarModal('modalConfirmar');
+    var f = document.createElement('form');
+    f.method = 'POST';
+    f.action = '../../../controladores/profesores/aula/' + (tipo === 'carpeta' ? 'borrarCarpeta.php' : 'borrarArchivo.php');
+    f.style.display = 'none';
+    var campos = { csrf_token: CSRF_AULA, id: id, modulo: modulo };
+    for (var k in campos) {
+      var inp = document.createElement('input');
+      inp.type = 'hidden'; inp.name = k; inp.value = campos[k];
+      f.appendChild(inp);
+    }
+    document.body.appendChild(f);
+    f.submit();
+  };
+  abrirModal('modalConfirmar');
 }
 
 // Editar sesión

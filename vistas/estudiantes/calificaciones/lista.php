@@ -1,7 +1,7 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
-$exito = $_SESSION['exito'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
@@ -10,33 +10,36 @@ if (!isset($_SESSION['idEstudiante'])) {
     exit;
 }
 
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
-
-$resumen = obtenerResultadosFinalesEstudiante($idEstudiante);
+$resumen      = obtenerResultadosFinalesEstudiante($idEstudiante);
+$retosNotas   = listarCalificacionesRetoPorEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MIS CALIFICACIONES";
-$seccionActual = 'calificaciones';
+$seccionActual   = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
     <h1>MIS CALIFICACIONES</h1>
+    <p class="subtitulo"><?= Security::escapeHtml($resumen['nombreCiclo'] ?? '') ?></p>
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
+<!-- ═══════════════ MÓDULOS ═══════════════ -->
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3>DETALLE POR MÓDULO (75% EXÁMENES | 25% RETOS)</h3>
+        <h3>MÓDULOS <span class="texto-suave" style="font-size:.8rem;font-weight:400;">(75% exámenes + 25% retos)</span></h3>
     </div>
-
     <div class="contenedor-tabla">
         <table class="tabla-datos">
             <thead>
@@ -50,46 +53,121 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if (!empty($resumen['detalles_modulos'])) { ?>
-                    <?php foreach ($resumen['detalles_modulos'] as $detalle) {
-                        $isAprobado = ($detalle['estado'] == 'Aprobado');
+                    <?php foreach ($resumen['detalles_modulos'] as $d) {
+                        $est = $d['estado'];
+                        $cls = $est === 'Aprobado' ? 'badge-exito' : ($est === 'Suspenso' ? 'badge-error' : 'badge-alerta');
                     ?>
-                        <tr>
-                            <td><b><?= Security::escapeHtml($detalle['nombreModulo'] ) ?></b></td>
-                            <td><?= Security::escapeHtml($detalle['media_notas'] ) ?></td>
-                            <td><?= Security::escapeHtml($detalle['media_retos'] ) ?></td>
-                            <td class="texto-negrita"><?= Security::escapeHtml($detalle['nota_final'] ) ?></td>
-                            <td>
-                                <span class="badge <?= Security::escapeHtml($isAprobado ? 'badge-exito' : ($detalle['estado'] == 'Suspenso' ? 'badge-error' : 'badge-alerta')) ?>">
-                                    <?= Security::escapeHtml(strtoupper($detalle['estado'])) ?>
-                                </span>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td><b><?= Security::escapeHtml($d['nombreModulo']) ?></b></td>
+                        <td><?= Security::escapeHtml($d['media_notas']) ?></td>
+                        <td><?= Security::escapeHtml($d['media_retos']) ?></td>
+                        <td class="texto-negrita"><?= Security::escapeHtml($d['nota_final']) ?></td>
+                        <td><span class="badge <?= Security::escapeHtml($cls) ?>"><?= Security::escapeHtml(strtoupper($est)) ?></span></td>
+                    </tr>
                     <?php } ?>
                 <?php } else { ?>
-                    <tr>
-                        <td colspan="5" class="vacio">No hay calificaciones registradas o módulos asignados.</td>
-                    </tr>
+                    <tr><td colspan="5" class="vacio">No hay calificaciones registradas.</td></tr>
                 <?php } ?>
             </tbody>
         </table>
     </div>
+</div>
 
-    <div class="resumen-global" style="border-left: none; margin-top: 20px;">
-        <div class="item-resumen">
-            <span class="nombre">PROMEDIO GLOBAL:</span>
-            <span class="valor <?= Security::escapeHtml(is_numeric($resumen['promedio_global']) && $resumen['promedio_global'] >= 5 ? 'texto-verde' : 'texto-rojo') ?>">
-                <?= Security::escapeHtml($resumen['promedio_global'] ) ?>
+<!-- ═══════════════ RETOS ═══════════════ -->
+<div class="panel" style="margin-top:20px;">
+    <div class="titulo-tarjeta">
+        <h3>RETOS</h3>
+    </div>
+    <div class="contenedor-tabla">
+        <table class="tabla-datos">
+            <thead>
+                <tr>
+                    <th>Reto</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($retosNotas)) { ?>
+                    <?php foreach ($retosNotas as $r) {
+                        $nota = (float)$r['nota'];
+                        $cls  = $nota >= 5 ? 'texto-verde' : 'texto-rojo';
+                    ?>
+                    <tr>
+                        <td><b><?= Security::escapeHtml($r['nombreReto']) ?></b></td>
+                        <td><?= Security::escapeHtml($r['fechaInicio']) ?></td>
+                        <td><?= Security::escapeHtml($r['fechaFin']) ?></td>
+                        <td class="texto-negrita <?= Security::escapeHtml($cls) ?>" style="font-size:1.05em;"><?= Security::escapeHtml($r['nota']) ?></td>
+                    </tr>
+                    <?php } ?>
+                <?php } else { ?>
+                    <tr><td colspan="4" class="vacio">Aún no tienes calificaciones en retos.</td></tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════════════ TFG ═══════════════ -->
+<div class="panel" style="margin-top:20px;">
+    <div class="titulo-tarjeta">
+        <h3>TFG — TRABAJO DE FIN DE GRADO</h3>
+    </div>
+    <div style="padding:16px 20px;display:flex;align-items:center;gap:24px;">
+        <?php
+        $notaTfg = $resumen['nota_tfg'] ?? null;
+        if ($notaTfg !== null) {
+            $tfgCls = (float)$notaTfg >= 5 ? 'badge-exito' : 'badge-error';
+            $tfgEst = (float)$notaTfg >= 5 ? 'APROBADO' : 'SUSPENSO';
+        } else {
+            $tfgCls = 'badge-alerta';
+            $tfgEst = 'PENDIENTE';
+        }
+        ?>
+        <div>
+            <p class="texto-suave" style="margin:0 0 4px;">Nota obtenida:</p>
+            <span style="font-size:2rem;font-weight:700;color:var(--color-primario);">
+                <?= Security::escapeHtml($notaTfg !== null ? $notaTfg : '—') ?>
             </span>
         </div>
-        <div class="item-resumen">
-            <span class="nombre">ESTADO GLOBAL:</span>
-            <span class="badge <?= Security::escapeHtml($resumen['estado_global'] == 'APROBADO' ? 'badge-exito' : ($resumen['estado_global'] == 'SUSPENSO' ? 'badge-error' : 'badge-alerta')) ?>">
-                <?= Security::escapeHtml($resumen['estado_global'] ) ?>
+        <div>
+            <p class="texto-suave" style="margin:0 0 4px;">Estado:</p>
+            <span class="badge <?= Security::escapeHtml($tfgCls) ?>" style="font-size:1rem;">
+                <?= Security::escapeHtml($tfgEst) ?>
             </span>
         </div>
+        <?php if (!empty($resumen['obs_tfg'])) { ?>
+        <div style="flex:1;">
+            <p class="texto-suave" style="margin:0 0 4px;">Observaciones:</p>
+            <p style="margin:0;"><?= Security::escapeHtml($resumen['obs_tfg']) ?></p>
+        </div>
+        <?php } ?>
+    </div>
+</div>
+
+<!-- ═══════════════ RESUMEN GLOBAL ═══════════════ -->
+<div class="panel" style="margin-top:20px;">
+    <div class="titulo-tarjeta"><h3>RESUMEN GLOBAL</h3></div>
+    <div class="caja espacio-entre-elementos alinear-centro" style="padding:16px 20px;">
+        <div>
+            <p class="texto-suave">Promedio General:</p>
+            <h2 class="color-primario"><?= Security::escapeHtml((string)$resumen['promedio_global']) ?></h2>
+        </div>
+        <div style="text-align:right;">
+            <p class="texto-suave">Estado Académico:</p>
+            <?php
+            $gCls = $resumen['estado_global'] === 'APROBADO' ? 'badge-exito' : ($resumen['estado_global'] === 'SUSPENSO' ? 'badge-error' : 'badge-alerta');
+            ?>
+            <span class="badge <?= Security::escapeHtml($gCls) ?>" style="font-size:1rem;">
+                <?= Security::escapeHtml($resumen['estado_global']) ?>
+            </span>
+        </div>
+    </div>
+    <div class="tarjeta-gris-suave" style="margin:0 16px 16px;">
+        <p><b>Nota:</b> La nota final de cada módulo se calcula como 75% media de exámenes + 25% media de retos.</p>
+        <p><b>Estados:</b> <span class="texto-verde">Aprobado (≥ 5.0)</span>, <span class="texto-rojo">Suspenso (&lt; 5.0)</span>, <span class="texto-gris">Pendiente (sin notas)</span>.</p>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

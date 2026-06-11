@@ -6,9 +6,10 @@ if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard
 if (isset($_SESSION['idProfesor']))   { header("Location: profesores/inicio/dashboard.php");  exit; }
 if (isset($_SESSION['idEstudiante'])) { header("Location: estudiantes/inicio/dashboard.php"); exit; }
 
-$err = $_SESSION['errores'] ?? null;
-$vals = $_SESSION['datos_login'] ?? [];
-unset($_SESSION['errores'], $_SESSION['datos_login']);
+$err    = $_SESSION['errores']   ?? null;
+$ok     = $_SESSION['reset_ok']  ?? null;
+$vals   = $_SESSION['datos_login'] ?? [];
+unset($_SESSION['errores'], $_SESSION['datos_login'], $_SESSION['reset_ok']);
 
 // Generar token CSRF
 $csrfToken = Security::generateCSRFToken();
@@ -55,6 +56,9 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Introduce tus datos para entrar al sistema</p>
             </div>
 
+            <?php if ($ok) { ?>
+            <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($ok) ?></div>
+            <?php } ?>
             <?php if ($err) { ?>
             <div class="error-alerta">
                 <?= $err ?>
@@ -81,6 +85,8 @@ $csrfToken = Security::generateCSRFToken();
                 </div>
 
                 <button type="submit" name="enviar" class="boton-acceso">Entrar</button>
+
+                <a href="auth/solicitar_reset.php" style="display:block;text-align:center;margin-top:12px;font-size:.875rem;color:#6b7280;">¿Olvidaste tu contraseña?</a>
 
                 <a href="../index.html" class="enlace-volver">Volver a la web</a>
 

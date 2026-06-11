@@ -1,9 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
-$exito   = $_SESSION['exito']   ?? '';
-$errores = $_SESSION['errores'] ?? null;
-unset($_SESSION['exito'], $_SESSION['errores']);
+// Merged into lista.php — redirect permanently
+header("Location: lista.php", true, 301);
+exit;
 
 if (!isset($_SESSION['idEstudiante'])) {
     header("Location: ../../login.php");

@@ -1,16 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
-$exito = $_SESSION['exito'] ?? '';
-$errores = $_SESSION['errores'] ?? null;
-unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
-$idEstudiante = $_SESSION['idEstudiante'];
+// Merged into calificaciones/lista.php — redirect permanently
+header("Location: ../calificaciones/lista.php", true, 301);
+exit;
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";

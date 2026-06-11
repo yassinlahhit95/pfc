@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 unset($_SESSION['exito'], $_SESSION['errores']);
 if (!isset($_SESSION['idAdmin'])) {

@@ -1,3 +1,39 @@
+/* ── Print PDF button ── */
+.btn-exportar-horario {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #0ea5e9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: .875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    white-space: nowrap;
+}
+.btn-exportar-horario:hover { background: #0284c7; }
+
+/* ── Horario loading overlay ── */
+.horario-loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,.45);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.horario-loading-overlay.activo { display: flex; }
+.horario-loading-overlay i { font-size: 2rem; }
+
 /* ── Horario: eliminar franja (botón × en cada fila) ── */
 .horario-hora {
     position: relative;

@@ -35,6 +35,8 @@
   }
 
   document.addEventListener('click', function (e) {
+    // aula-recursos.js manages its own menus; skip to avoid double-open
+    if (window.AulaRecursos) return;
     var btn = e.target.closest('.recurso-menu-btn');
     if (btn) { e.preventDefault(); abrirMenu(btn); return; }
     if (e.target.closest('.recurso-menu-item')) { setTimeout(cerrarMenus, 200); return; }

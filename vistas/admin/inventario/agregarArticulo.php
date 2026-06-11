@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -28,13 +28,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="formulario">
                 <div class="campo">
                     <label for="nombreArticulo">NOMBRE DEL ARTÍCULO</label>
-                    <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= $datos['nombreArticulo'] ?? '' ?>" placeholder="Ej: Portátil HP ProBook">
+                    <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= Security::escapeHtml($datos['nombreArticulo'] ?? '') ?>" placeholder="Ej: Portátil HP ProBook">
                     
                 </div>
 
                 <div class="campo">
                     <label for="numeroSerie">NÚMERO DE SERIE</label>
-                    <input type="text" name="numeroSerie" id="numeroSerie" value="<?= $datos['numeroSerie'] ?? '' ?>" placeholder="Ej: SN-12345678">
+                    <input type="text" name="numeroSerie" id="numeroSerie" value="<?= Security::escapeHtml($datos['numeroSerie'] ?? '') ?>" placeholder="Ej: SN-12345678">
                     
                 </div>
             </div>

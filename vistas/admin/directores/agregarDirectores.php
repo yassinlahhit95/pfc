@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -27,55 +27,55 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario">
             <div class="campo">
                 <label for="nombreDirector">Nombre Completo</label>
-                <input type="text" id="nombreDirector" name="nombreDirector" value="<?= $datos['nombreDirector'] ?? '' ?>">
+                <input type="text" id="nombreDirector" name="nombreDirector" value="<?= Security::escapeHtml($datos['nombreDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="emailDirector">Email</label>
-                <input type="text" id="emailDirector" name="emailDirector" value="<?= $datos['emailDirector'] ?? '' ?>">
+                <input type="text" id="emailDirector" name="emailDirector" value="<?= Security::escapeHtml($datos['emailDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="dniDirector">DNI</label>
-                <input type="text" id="dniDirector" name="dniDirector" value="<?= $datos['dniDirector'] ?? '' ?>">
+                <input type="text" id="dniDirector" name="dniDirector" value="<?= Security::escapeHtml($datos['dniDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="telefonoDirector">Teléfono</label>
-                <input type="text" id="telefonoDirector" name="telefonoDirector" value="<?= $datos['telefonoDirector'] ?? '' ?>">
+                <input type="text" id="telefonoDirector" name="telefonoDirector" value="<?= Security::escapeHtml($datos['telefonoDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="fechaNacimientoDirector">Fecha de Nacimiento</label>
-                <input type="date" id="fechaNacimientoDirector" name="fechaNacimientoDirector" value="<?= $datos['fechaNacimientoDirector'] ?? '' ?>">
+                <input type="date" id="fechaNacimientoDirector" name="fechaNacimientoDirector" value="<?= Security::escapeHtml($datos['fechaNacimientoDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="ciudadDirector">Ciudad</label>
-                <input type="text" id="ciudadDirector" name="ciudadDirector" value="<?= $datos['ciudadDirector'] ?? '' ?>">
+                <input type="text" id="ciudadDirector" name="ciudadDirector" value="<?= Security::escapeHtml($datos['ciudadDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="codigoPostalDirector">Código Postal</label>
-                <input type="text" id="codigoPostalDirector" name="codigoPostalDirector" value="<?= $datos['codigoPostalDirector'] ?? '' ?>">
+                <input type="text" id="codigoPostalDirector" name="codigoPostalDirector" value="<?= Security::escapeHtml($datos['codigoPostalDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo campo-ancho-total">
                 <label for="direccionDirector">Dirección Completa</label>
-                <input type="text" id="direccionDirector" name="direccionDirector" value="<?= $datos['direccionDirector'] ?? '' ?>">
+                <input type="text" id="direccionDirector" name="direccionDirector" value="<?= Security::escapeHtml($datos['direccionDirector'] ?? '') ?>">
                 
             </div>
 
             <div class="campo campo-ancho-total">
                 <label for="observacionesDirector">Observaciones / Notas Internas</label>
-                <textarea id="observacionesDirector" name="observacionesDirector" rows="3"><?= $datos['observacionesDirector'] ?? '' ?></textarea>
+                <textarea id="observacionesDirector" name="observacionesDirector" rows="3"><?= Security::escapeHtml($datos['observacionesDirector'] ?? '') ?></textarea>
             </div>
         </div>
 

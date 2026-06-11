@@ -60,6 +60,23 @@ Options -Indexes
     RewriteRule ^(config|include|modelos|templates|logs|vendor)(/|$) - [F,L]
 </IfModule>
 
+# Páginas de error genéricas (sin revelar 403 vs 404)
+# Uses <If> to work both at domain root (server) and /pfc/ subdirectory (local Laragon)
+<IfModule mod_rewrite.c>
+    <If "%{REQUEST_URI} =~ m|^/pfc/|">
+        ErrorDocument 400 /pfc/vistas/error.php
+        ErrorDocument 403 /pfc/vistas/error.php
+        ErrorDocument 404 /pfc/vistas/error.php
+        ErrorDocument 500 /pfc/vistas/error.php
+    </If>
+    <Else>
+        ErrorDocument 400 /vistas/error.php
+        ErrorDocument 403 /vistas/error.php
+        ErrorDocument 404 /vistas/error.php
+        ErrorDocument 500 /vistas/error.php
+    </Else>
+</IfModule>
+
 # Cabeceras de seguridad HTTP
 <IfModule mod_headers.c>
     Header set X-Frame-Options "SAMEORIGIN"

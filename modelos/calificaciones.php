@@ -253,30 +253,41 @@ function listarResultadosFinalesCiclo($idCiclo)
     if (empty($moduloIds)) return [];
 
     // 3. Obtener todas las calificaciones de módulos para estos estudiantes/módulos
-    $idsStr = implode(',', array_map('intval', $estudianteIds));
-    $modIdsStr = implode(',', array_map('intval', $moduloIds));
-    $sqlGrades = "SELECT * FROM calificaciones_modulos WHERE idEstudiante IN ($idsStr) AND idModulo IN ($modIdsStr)";
-    $resG = mysqli_query($con, $sqlGrades);
+    $phEst = implode(',', array_fill(0, count($estudianteIds), '?'));
+    $phMod = implode(',', array_fill(0, count($moduloIds), '?'));
+    $tEst  = str_repeat('i', count($estudianteIds));
+    $tMod  = str_repeat('i', count($moduloIds));
+
+    $stmtG = mysqli_prepare($con, "SELECT * FROM calificaciones_modulos WHERE idEstudiante IN ($phEst) AND idModulo IN ($phMod)");
+    mysqli_stmt_bind_param($stmtG, $tEst . $tMod, ...[...$estudianteIds, ...$moduloIds]);
+    mysqli_stmt_execute($stmtG);
+    $resG = mysqli_stmt_get_result($stmtG);
     $allGrades = [];
     while ($fila = mysqli_fetch_assoc($resG)) {
         $allGrades[$fila['idEstudiante']][$fila['idModulo']] = $fila;
     }
 
     // 4. Obtener promedios de retos
-    $sqlRetos = "SELECT cr.idEstudiante, mr.idModulo, AVG(cr.nota) AS promedio
-                 FROM calificaciones_retos cr
-                 JOIN modulo_reto mr ON cr.idReto = mr.idReto
-                 WHERE mr.idModulo IN ($modIdsStr) AND cr.idEstudiante IN ($idsStr)
-                 GROUP BY cr.idEstudiante, mr.idModulo";
-    $resR = mysqli_query($con, $sqlRetos);
+    $stmtR = mysqli_prepare($con,
+        "SELECT cr.idEstudiante, mr.idModulo, AVG(cr.nota) AS promedio
+         FROM calificaciones_retos cr
+         JOIN modulo_reto mr ON cr.idReto = mr.idReto
+         WHERE mr.idModulo IN ($phMod) AND cr.idEstudiante IN ($phEst)
+         GROUP BY cr.idEstudiante, mr.idModulo"
+    );
+    mysqli_stmt_bind_param($stmtR, $tMod . $tEst, ...[...$moduloIds, ...$estudianteIds]);
+    mysqli_stmt_execute($stmtR);
+    $resR = mysqli_stmt_get_result($stmtR);
     $allRetos = [];
     while ($fila = mysqli_fetch_assoc($resR)) {
         $allRetos[$fila['idEstudiante']][$fila['idModulo']] = $fila['promedio'];
     }
 
     // 5. Obtener calificaciones de TFG
-    $sqlTFG = "SELECT * FROM calificaciones_tfg WHERE idEstudiante IN ($idsStr)";
-    $resT = mysqli_query($con, $sqlTFG);
+    $stmtT = mysqli_prepare($con, "SELECT * FROM calificaciones_tfg WHERE idEstudiante IN ($phEst)");
+    mysqli_stmt_bind_param($stmtT, $tEst, ...$estudianteIds);
+    mysqli_stmt_execute($stmtT);
+    $resT = mysqli_stmt_get_result($stmtT);
     $allTFG = [];
     while ($fila = mysqli_fetch_assoc($resT)) {
         $allTFG[$fila['idEstudiante']] = $fila;

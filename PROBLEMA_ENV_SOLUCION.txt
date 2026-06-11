@@ -1,0 +1,160 @@
+================================================================
+  PROBLEMA DE CONEXIÓN A BASE DE DATOS — QUÉ PASÓ Y CÓMO SE ARREGLÓ
+  Explicación para principiantes
+================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  EL ERROR QUE APARECÍA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  "Error: Credenciales de base de datos no configuradas."
+
+  Este mensaje viene de conectar.php y significa que el sistema
+  intentó conectarse a la base de datos pero no encontró
+  usuario ni contraseña.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CÓMO FUNCIONA EL SISTEMA (FÁCIL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  El proyecto usa un archivo llamado .env para guardar
+  configuraciones privadas como la contraseña de la base de datos.
+
+  El flujo es así:
+
+  .env  →  Config.php  →  conectar.php  →  Base de datos
+
+  Es decir:
+  1. El archivo .env tiene la contraseña escrita.
+  2. Config.php lee el .env y guarda los valores en memoria.
+  3. conectar.php pide esos valores a Config.php.
+  4. Con esos datos se conecta a MySQL.
+
+  Si en cualquier paso se pierde la contraseña → error.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PROBLEMA 1 — EL ARCHIVO .env EN EL SERVIDOR ESTABA VACÍO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Cuando subiste el .env al servidor por FTP, la línea de
+  contraseña llegó así:
+
+    DB_PASS=          ← SIN contraseña
+
+  En lugar de:
+
+    DB_PASS=Yassin1995***   ← CON contraseña
+
+  ¿Por qué pasó esto?
+  La contraseña contiene asteriscos (***). Algunos programas
+  de FTP y editores de texto interpretan el símbolo * como
+  un "comodín" especial (como en búsquedas de archivos) y
+  lo eliminan o cortan la línea ahí.
+
+  Resultado: el archivo llegaba al servidor con la contraseña
+  borrada aunque en tu ordenador estuviera bien.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PROBLEMA 2 — EL CÓDIGO NO USABA EL PLAN B CORRECTAMENTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Creamos un archivo de respaldo llamado config/db.php con
+  la contraseña en PHP puro (sin asteriscos problemáticos en
+  la transferencia):
+
+    define('DB_PASS_VALUE', 'Yassin1995***');
+
+  Config.php intentaba usarlo como plan B si el .env fallaba.
+  Pero tenía un error de lógica:
+
+  El código decía:
+    "Si existe la clave DB_PASS → devuelve su valor"
+
+  El problema:
+    La clave DB_PASS SÍ existía en el .env (la línea estaba),
+    pero su valor era VACÍO ("").
+    Para PHP, una clave vacía sigue siendo una clave que existe.
+    Así que el código encontraba DB_PASS="" y devolvía ""
+    sin llegar nunca al plan B (config/db.php).
+
+  Es como buscar tu llave en el bolsillo → la encuentras,
+  pero está rota. El código cogía la llave rota sin buscar
+  la de repuesto.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LA SOLUCIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Se hicieron 2 cosas:
+
+  1. Crear config/db.php
+     Un archivo PHP normal con la contraseña real.
+     PHP no tiene problemas con asteriscos en el código.
+     Este archivo NO se sube a GitHub (está en .gitignore)
+     porque contiene datos privados.
+
+     Contenido:
+       define('DB_PASS_VALUE', 'Yassin1995***');
+
+  2. Arreglar Config.php
+     Se cambió la condición de:
+
+       "si existe la clave → devuelve su valor"
+     a:
+       "si existe la clave Y NO ESTÁ VACÍA → devuelve su valor"
+
+     En código, el cambio fue añadir:  && $this->env[$key] !== ''
+
+     Con esto, si el .env tiene DB_PASS vacío, el sistema
+     lo ignora y pasa al plan B (config/db.php) correctamente.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LECCIONES APRENDIDAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✓ Los archivos .env son cómodos pero pueden dar problemas
+    en algunos servidores compartidos (cPanel/hosting barato).
+
+  ✓ Una contraseña que "existe pero está vacía" es diferente
+    a una contraseña que "no existe". El código debe
+    comprobar las dos cosas.
+
+  ✓ Cuando algo no funciona, lo mejor es crear un archivo
+    de diagnóstico (debug_env.php) que muestre exactamente
+    qué ve el servidor — sin adivinar.
+
+  ✓ Siempre borrar el archivo de diagnóstico del servidor
+    cuando terminas, porque muestra rutas y datos internos.
+
+  ✓ config/db.php es un buen plan B para hosting compartido.
+    Los archivos PHP no sufren el problema de caracteres
+    especiales que pueden tener los archivos .env al subirse.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ARCHIVOS MODIFICADOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  config/Config.php   → lógica de lectura mejorada
+  config/db.php       → nuevo archivo con credenciales (NUEVO)
+  .gitignore          → añadido config/db.php para no subir a git
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  RECUERDA EN EL FUTURO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Cuando subas el proyecto a un servidor nuevo:
+
+  1. Sube config/db.php con las credenciales del nuevo servidor.
+  2. El .env puede estar vacío o incompleto — no pasa nada,
+     config/db.php es el respaldo.
+  3. Nunca subas config/db.php a GitHub.
+
+================================================================

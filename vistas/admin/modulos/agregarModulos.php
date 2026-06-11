@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="nombreModulo">Nombre del Módulo</label>
-            <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $datos['nombreModulo'] ?? '' ?>">
+            <input type="text" name="nombreModulo" id="nombreModulo" value="<?= Security::escapeHtml($datos['nombreModulo'] ?? '') ?>">
             
         </div>
 
@@ -63,7 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="horasMaximas">Horas Máximas</label>
-            <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $datos['horasMaximas'] ?? '' ?>">
+            <input type="text" name="horasMaximas" id="horasMaximas" value="<?= Security::escapeHtml($datos['horasMaximas'] ?? '') ?>">
             
         </div>
 
@@ -95,7 +95,7 @@ $(function() {
     if ($('#nivel').val() !== '') {
         filtrarCiclos();
         <?php if (!empty($datos['idCiclo'])) { ?>
-        $('#idCiclo').val('<?= $datos['idCiclo'] ?>');
+        $('#idCiclo').val('<?= Security::escapeHtml($datos['idCiclo']) ?>');
         <?php } ?>
     }
 });

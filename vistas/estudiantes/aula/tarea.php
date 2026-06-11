@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 $idEstudiante = $_SESSION['idEstudiante'] ?? '';
 if (!$idEstudiante) { header("Location: ../../login.php"); exit; }
 

@@ -1,6 +1,5 @@
 <?php
-session_start();
-if (empty($_SESSION['idAdmin'])) { http_response_code(403); exit('Acceso denegado'); }
+require_once __DIR__ . '/../../../include/AdminGuard.php';
 
 $_proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $_dir   = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_NAME']))));

@@ -1,5 +1,7 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
+
+if (empty($_SESSION['idAdmin'])) { header("Location: ../../login.php"); exit; }
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -70,10 +72,17 @@ include_once __DIR__ . "/../comunes/nav.php";
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <input type="submit" class="boton-primario" value="ENVIAR RESULTADOS POR EMAIL A TODOS">
+            </form>
+            <form action="../../../controladores/admin/academico/exportarCalificaciones.php" method="POST" style="display:inline;margin-left:8px;">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
+                <button type="submit" class="boton-primario" style="background:#16a34a;">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </button>
             </form>
         <?php } ?>
     </div>
@@ -103,13 +112,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                             if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
                         ?>
                         <tr>
-                            <td><?= $fila['nombreEstudiante'] ?></td>
-                            <td><?= $fila['media_modulos'] ?></td>
-                            <td><?= $fila['media_retos'] ?></td>
-                            <td class="color-primario texto-negrita"><?= $fila['nota_tfg'] ?? ' ' ?></td>
-                            <td class="texto-negrita"><?= $fila['promedio_global'] ?></td>
+                            <td><?= Security::escapeHtml($fila['nombreEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($fila['media_modulos']) ?></td>
+                            <td><?= Security::escapeHtml($fila['media_retos']) ?></td>
+                            <td class="color-primario texto-negrita"><?= Security::escapeHtml($fila['nota_tfg'] ?? ' ') ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($fila['promedio_global']) ?></td>
                             <td class="<?= $claseDelColor ?> texto-negrita">
-                                <?= $fila['estado_global'] ?>
+                                <?= Security::escapeHtml($fila['estado_global']) ?>
                                 <?php if($fila['tiene_suspensos'] == true && strpos($fila['estado_global'], "PENDIENTE") === false) { 
                                     echo " <span title='Tiene módulos suspensos'>(!)</span>"; 
                                 } ?>

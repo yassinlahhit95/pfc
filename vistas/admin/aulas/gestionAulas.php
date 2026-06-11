@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito   = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -76,8 +76,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="modulosReto" id="modulosReto">
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
-                    <option value="<?= $modulo['idModulo'] ?>" <?= $idModuloActual == $modulo['idModulo'] ? 'selected' : '' ?>>
-                        <?= $modulo['nombreModulo'] ?> (<?= $modulo['nombreCiclo'] ?>)
+                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= $idModuloActual == $modulo['idModulo'] ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo']) ?>)
                     </option>
                 <?php } ?>
             </select>

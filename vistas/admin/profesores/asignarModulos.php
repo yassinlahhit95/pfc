@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -47,7 +47,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php foreach ($lista_ciclos as $ciclo) { ?>
             <div class="seccion-asignacion" style="margin-bottom: 30px;">
                 <h4 class="borde-abajo-primario color-primario" style="margin-bottom: 15px;">
-                    <i class="fas fa-layer-group"></i> <?= $ciclo['nombreCiclo'] ?>
+                    <i class="fas fa-layer-group"></i> <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                 </h4>
                 
                 <div class="cuadricula-asignacion">
@@ -55,10 +55,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { ?>
                             
                             <label class="elemento-asignacion">
-                                <input type="checkbox" name="modulos[]" value="<?= $modulo['idModulo'] ?>" 
+                                <input type="checkbox" name="modulos[]" value="<?= Security::escapeHtml($modulo['idModulo']) ?>" 
                                     class="checkbox-grande"
                                     <?php if (in_array($modulo['idModulo'], $modulos_del_profesor)) { echo "checked"; } ?>>
-                                <span><?= $modulo['nombreModulo'] ?></span>
+                                <span><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
                             </label>
 
                         <?php } ?>

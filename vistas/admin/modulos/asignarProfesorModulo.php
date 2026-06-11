@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>ASIGNAR PROFESOR AL MÓDULO: <?= $modulo['nombreModulo'] ?></h1>
+    <h1>ASIGNAR PROFESOR AL MÓDULO: <?= Security::escapeHtml($modulo['nombreModulo']) ?></h1>
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

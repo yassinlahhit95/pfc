@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR MÓDULO: <?= $modulo['nombreModulo'] ?></h1>
+    <h1>MODIFICAR MÓDULO: <?= Security::escapeHtml($modulo['nombreModulo']) ?></h1>
     <a href="verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
@@ -53,7 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario">
             <div class="campo">
                 <label for="nombreModulo">Nombre del Módulo</label>
-                <input type="text" name="nombreModulo" id="nombreModulo" value="<?= $modulo['nombreModulo'] ?>">
+                <input type="text" name="nombreModulo" id="nombreModulo" value="<?= Security::escapeHtml($modulo['nombreModulo']) ?>">
                 
             </div>
 
@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="horasMaximas">Horas Totales</label>
-                <input type="text" name="horasMaximas" id="horasMaximas" value="<?= $modulo['horasMaximas'] ?>">
+                <input type="text" name="horasMaximas" id="horasMaximas" value="<?= Security::escapeHtml($modulo['horasMaximas']) ?>">
                 
             </div>
         </div>
@@ -108,7 +108,7 @@ function filtrarCiclos() {
 $(function() {
     if ($('#nivel').val() !== '') {
         filtrarCiclos();
-        $('#idCiclo').val('<?= $modulo['idCiclo'] ?>');
+        $('#idCiclo').val('<?= Security::escapeHtml($modulo['idCiclo']) ?>');
     }
 });
 </script>

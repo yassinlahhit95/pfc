@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -52,8 +52,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idCiclo" id="selectCicloTFG" onchange="this.form.submit()">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($ciclosFiltrados as $ciclo) { ?>
-                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        [<?= $ciclo['nombreNivel'] ?>] <?= $ciclo['nombreCiclo'] ?>
+                    <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        [<?= Security::escapeHtml($ciclo['nombreNivel']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -86,8 +86,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($listaEvaluacion as $item) { ?>
                     <tr>
-                        <td><?= $item['nombreEstudiante'] ?></td>
-                        <td><?= $item['abreviaturaCiclo'] ?></td>
+                        <td><?= Security::escapeHtml($item['nombreEstudiante']) ?></td>
+                        <td><?= Security::escapeHtml($item['abreviaturaCiclo']) ?></td>
                         <td>
                             <?php if (!empty($item['archivoTFG'])) { ?>
                                 <span class="indicador-estado activo-verde">ENTREGADO</span>
@@ -104,7 +104,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?php if (!empty($item['archivoTFG'])) { ?>
-                                <a href="../../../public/uploads/pfc/<?= $item['archivoTFG'] ?>" target="_blank" class="btn-accion btn-ver">
+                                <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($item['archivoTFG']) ?>" target="_blank" class="btn-accion btn-ver">
                                     <i class="fas fa-file-pdf"></i> Descargar
                                 </a>
                             <?php } else { ?>
@@ -114,14 +114,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <?php if ($item['nota'] !== null) { ?>
                                 <span class="texto-negrita <?= $item['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-                                    <?= $item['nota'] ?>
+                                    <?= Security::escapeHtml($item['nota']) ?>
                                 </span>
                             <?php } else { ?>
                                 <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
-                            <a href="evaluarTFG.php?idEstudiante=<?= $item['idEstudiante'] ?>" class="btn-accion btn-editar">
+                            <a href="evaluarTFG.php?idEstudiante=<?= Security::escapeHtml($item['idEstudiante']) ?>" class="btn-accion btn-editar">
                                 <i class="fas fa-edit"></i> Evaluar
                             </a>
                         </td>

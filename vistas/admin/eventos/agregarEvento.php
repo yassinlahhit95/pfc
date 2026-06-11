@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -27,13 +27,13 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="formulario">
             <div class="campo">
                 <label for="tituloEvento">Título del Evento</label>
-                <input type="text" name="tituloEvento" id="tituloEvento" value="<?= $datos['tituloEvento'] ?? '' ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <input type="text" name="tituloEvento" id="tituloEvento" value="<?= Security::escapeHtml($datos['tituloEvento'] ?? '') ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
                 
             </div>
 
             <div class="campo">
                 <label for="ubicacionEvento">Ubicación</label>
-                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= $datos['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
+                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= Security::escapeHtml($datos['ubicacionEvento'] ?? '') ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
                 
             </div>
 
@@ -45,13 +45,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="horaEvento">Hora</label>
-                <input type="time" name="horaEvento" id="horaEvento" value="<?= $datos['horaEvento'] ?? '09:00' ?>">
+                <input type="time" name="horaEvento" id="horaEvento" value="<?= Security::escapeHtml($datos['horaEvento'] ?? '09:00') ?>">
                 
             </div>
 
             <div class="campo">
                 <label for="descripcionEvento">Descripción</label>
-                <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."><?= $datos['descripcionEvento'] ?? '' ?></textarea>
+                <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."><?= Security::escapeHtml($datos['descripcionEvento'] ?? '') ?></textarea>
             </div>
         </div>
 

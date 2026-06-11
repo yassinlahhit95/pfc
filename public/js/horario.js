@@ -6,6 +6,17 @@
 var Horario = (function () {
     var $app, idCiclo, csrf;
     var seleccionada = null;
+    var $overlay;
+
+    function mostrarOverlay(texto) {
+        if (!$overlay) $overlay = $('#horarioOverlay');
+        $overlay.find('span').text(texto || 'Guardando…');
+        $overlay.addClass('activo');
+    }
+    function ocultarOverlay() {
+        if (!$overlay) $overlay = $('#horarioOverlay');
+        $overlay.removeClass('activo');
+    }
 
     function escapar(texto) {
         return $('<div>').text(texto == null ? '' : texto).html();
@@ -43,6 +54,7 @@ var Horario = (function () {
 
     function asignar($celda, datos) {
         var idAula = $celda.find('.horario-aula-select').val() || '';
+        mostrarOverlay('Guardando…');
         $.post(rutaControlador('guardar.php'), {
             csrf_token: csrf,
             idCiclo: idCiclo,
@@ -53,12 +65,14 @@ var Horario = (function () {
             idProfesor: datos.profesor,
             idAula: idAula
         }, null, 'json').done(function (resp) {
+            ocultarOverlay();
             if (resp && resp.ok) {
                 pintarAsignada($celda, datos, idAula);
             } else {
                 alert(resp && resp.msg ? resp.msg : 'No se pudo guardar.');
             }
         }).fail(function () {
+            ocultarOverlay();
             alert('Error de conexión al guardar.');
         });
     }
@@ -90,18 +104,21 @@ var Horario = (function () {
     }
 
     function limpiar($celda) {
+        mostrarOverlay('Eliminando…');
         $.post(rutaControlador('borrar.php'), {
             csrf_token: csrf,
             idCiclo: idCiclo,
             dia: $celda.data('dia'),
             horaInicio: $celda.data('inicio')
         }, null, 'json').done(function (resp) {
+            ocultarOverlay();
             if (resp && resp.ok) {
                 pintarVacia($celda);
             } else {
                 alert(resp && resp.msg ? resp.msg : 'No se pudo eliminar.');
             }
         }).fail(function () {
+            ocultarOverlay();
             alert('Error de conexión al eliminar.');
         });
     }
@@ -235,6 +252,7 @@ var Horario = (function () {
             var receso = $('#franjaReceso').is(':checked') ? 1 : 0;
             if (!inicio || !fin) { alert('Selecciona la hora de inicio y fin.'); return; }
             var $btn = $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando…');
+            mostrarOverlay('Añadiendo franja…');
             $.post(rutaControlador('addFranja.php'), {
                 csrf_token: csrf,
                 idCiclo:    idCiclo,
@@ -242,6 +260,7 @@ var Horario = (function () {
                 horaFin:    fin,
                 esReceso:   receso
             }, null, 'json').done(function (resp) {
+                ocultarOverlay();
                 if (resp && resp.ok) {
                     window.location.reload();
                 } else {
@@ -249,6 +268,7 @@ var Horario = (function () {
                     alert(resp && resp.msg ? resp.msg : 'No se pudo agregar la franja.');
                 }
             }).fail(function () {
+                ocultarOverlay();
                 $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
                 alert('Error de conexión.');
             });

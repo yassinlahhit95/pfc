@@ -79,6 +79,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </select>
     </form>
+    <?php if ($idCicloHorario) { ?>
+    <form method="POST" action="../../../controladores/admin/informes/generarHorario.php" target="_blank" style="display:inline;">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idCiclo"    value="<?= (int)$idCicloHorario ?>">
+        <button type="submit" class="btn-exportar-horario">
+            <i class="fas fa-print"></i> Imprimir PDF
+        </button>
+    </form>
+    <?php } ?>
 </div>
 
 <?php if ($exito) { ?>
@@ -181,6 +190,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 <?php } ?>
+
+<div id="horarioOverlay" class="horario-loading-overlay">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Guardando…</span>
+</div>
 
 <script>
 window.HORARIO_AULAS     = <?= json_encode($aulasParaJs, JSON_UNESCAPED_UNICODE) ?>;

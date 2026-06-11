@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <div class="campo">
                 <label for="tituloAnuncio">TÍTULO DEL ANUNCIO</label>
-                <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= $datos['tituloAnuncio'] ?? '' ?>" placeholder="Ej: Mantenimiento de la plataforma">
+                <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= Security::escapeHtml($datos['tituloAnuncio'] ?? '') ?>" placeholder="Ej: Mantenimiento de la plataforma">
                 
             </div>
 
@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label for="contenidoAnuncio">CONTENIDO DEL ANUNCIO</label>
-                <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" placeholder="Escriba aquí el mensaje..."><?= $datos['contenidoAnuncio'] ?? '' ?></textarea>
+                <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" placeholder="Escriba aquí el mensaje..."><?= Security::escapeHtml($datos['contenidoAnuncio'] ?? '') ?></textarea>
                 
             </div>
 

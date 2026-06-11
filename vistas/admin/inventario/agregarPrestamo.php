@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../../../include/Security.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -42,8 +42,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Todos los ciclos --</option>
                 <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                    <option value="<?= $ciclo['idCiclo'] ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        <?= $ciclo['nombreCiclo'] ?>
+                    <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -84,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo">
                 <label>Fecha de Préstamo</label>
-                <input type="date" name="fechaPrestamo" value="<?= $datos['fechaPrestamo'] ?? '' ?>">
+                <input type="date" name="fechaPrestamo" value="<?= Security::escapeHtml($datos['fechaPrestamo'] ?? '') ?>">
                 
             </div>
 

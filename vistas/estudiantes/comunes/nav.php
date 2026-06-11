@@ -45,6 +45,7 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
     <link rel="stylesheet" href="../../../public/css/sidebar.css?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/css/sidebar.css")) ?>">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../../public/js/aula-digital.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/aula-digital.js")) ?>"></script>
+    <script src="../../../public/js/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/menu-contextual.js') ?>"></script>
 </head>
 <body>
 <?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>
@@ -94,16 +95,8 @@ $totalRetos_menu = count(listarRetosPorCiclo($idCicloEst_menu));
                     <span class="texto-contador"><?= Security::escapeHtml($totalRetos_menu ) ?></span>
                 </a>
 
-                <a href="../calificaciones/lista.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'calificaciones') ? 'activo' : '') ?>">
-                    <svg class="ico" aria-hidden="true"><use href="#ic-graduation-cap"/></svg> <span>MIS NOTAS</span>
-                </a>
-
-                <a href="../calificaciones/retos.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'notas_retos') ? 'activo' : '') ?>">
-                    <svg class="ico" aria-hidden="true"><use href="#ic-tasks"/></svg> <span>MIS NOTAS RETOS</span>
-                </a>
-
-                <a href="../academico/resultadosFinales.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'resultados_finales') ? 'activo' : '') ?>">
-                    <svg class="ico" aria-hidden="true"><use href="#ic-check-double"/></svg> <span>RESULTADOS FINALES</span>
+                <a href="../calificaciones/lista.php" class="enlace-menu <?= Security::escapeHtml(in_array($seccionActual, ['calificaciones', 'notas_retos', 'resultados_finales']) ? 'activo' : '') ?>">
+                    <svg class="ico" aria-hidden="true"><use href="#ic-graduation-cap"/></svg> <span>MIS CALIFICACIONES</span>
                 </a>
 
                 <a href="../pfc/subir.php" class="enlace-menu <?= Security::escapeHtml(($seccionActual == 'tfg') ? 'activo' : '') ?>">
