@@ -1,11 +1,19 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . "/../../include/Security.php";
+require_once __DIR__ . "/../../include/BotGuard.php";
 require_once __DIR__ . "/../../modelos/password_reset.php";
 require_once __DIR__ . "/../../controladores/comunes/email_helper.php";
 require_once __DIR__ . "/../../config/Config.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: ../../vistas/auth/solicitar_reset.php");
+    exit;
+}
+
+// Rechazar bots (honeypot + tiempo mínimo)
+if (!BotGuard::validate()) {
+    $_SESSION['reset_ok'] = "Si el email existe en el sistema, recibirás las instrucciones en breve.";
     header("Location: ../../vistas/auth/solicitar_reset.php");
     exit;
 }
@@ -53,6 +61,18 @@ if ($row) {
 $email = trim($_POST['email'] ?? '');
 if (!Security::validateEmail($email)) {
     $_SESSION['reset_error'] = "Introduce un email válido.";
+    header("Location: ../../vistas/auth/solicitar_reset.php");
+    exit;
+}
+
+// Per-email cooldown: max 1 reset request per email per 5 minutes
+$reciente = dbFetchOne(
+    "SELECT creado_at FROM password_resets WHERE email = ? AND usado = 0 AND creado_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY creado_at DESC LIMIT 1",
+    "s", $email
+);
+if ($reciente) {
+    // Silently show success to avoid email enumeration
+    $_SESSION['reset_ok'] = "Si el email existe en el sistema, recibirás las instrucciones en breve.";
     header("Location: ../../vistas/auth/solicitar_reset.php");
     exit;
 }

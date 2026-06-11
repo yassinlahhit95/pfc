@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . "/../include/Security.php";
+require_once __DIR__ . "/../include/BotGuard.php";
 // Logger is optional — login must work even if Logger.php is absent on server
 @include_once __DIR__ . "/../include/Logger.php";
 if (!class_exists('Logger')) {
@@ -13,8 +14,15 @@ if (!class_exists('Logger')) {
 require_once __DIR__ . "/../modelos/directores.php";
 require_once __DIR__ . "/../modelos/profesores.php";
 require_once __DIR__ . "/../modelos/estudiantes.php";
+require_once __DIR__ . "/../modelos/conectar.php";
 
 if (!isset($_POST["enviar"])) {
+    header("Location: ../vistas/login.php");
+    exit;
+}
+
+// Rechazar bots (honeypot + tiempo mínimo)
+if (!BotGuard::validate()) {
     header("Location: ../vistas/login.php");
     exit;
 }
@@ -49,7 +57,21 @@ if (!Security::validateEmail($email)) {
     exit;
 }
 
-// Rate limiting - Prevenir ataques de fuerza bruta
+// Rate limiting por IP (DB) — no bypasseable sin sesión
+$ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+$con = obtenerConexion();
+$rowIp = dbFetchOne("SELECT intentos, bloqueado_hasta FROM login_intentos WHERE ip = ?", "s", $ip);
+if ($rowIp) {
+    if ($rowIp['bloqueado_hasta'] && strtotime($rowIp['bloqueado_hasta']) > time()) {
+        $espera = ceil((strtotime($rowIp['bloqueado_hasta']) - time()) / 60);
+        $_SESSION['errores'] = "Demasiados intentos. Inténtalo de nuevo en $espera minutos.";
+        Logger::security('IP_RATE_LIMIT_EXCEEDED', ['ip' => $ip]);
+        header("Location: ../vistas/login.php");
+        exit;
+    }
+}
+
+// Rate limiting por sesión (fallback para usuarios legítimos con intentos fallidos)
 $rateLimit = Security::checkRateLimit($email);
 if (!$rateLimit['allowed']) {
     $_SESSION['errores'] = $rateLimit['message'];
@@ -58,6 +80,13 @@ if (!$rateLimit['allowed']) {
     exit;
 }
 
+// Helper: limpiar contador IP tras login exitoso
+$clearIpAttempts = function() use ($con, $ip) {
+    $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = 0, bloqueado_hasta = NULL WHERE ip = ?");
+    mysqli_stmt_bind_param($upd, "s", $ip);
+    mysqli_stmt_execute($upd);
+};
+
 // Limpiar sesiones previas
 unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante']);
 
@@ -65,6 +94,7 @@ unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante']);
 $admin = validarLoginDirector($email, $pass);
 if ($admin) {
     Security::clearFailedLogins($email);
+    $clearIpAttempts();
     $_SESSION['idAdmin'] = $admin['idDirector'];
     Logger::activity('LOGIN_SUCCESS', $admin['idDirector'], ['role' => 'admin', 'email' => $email]);
     header("Location: ../vistas/admin/inicio/dashboard.php");
@@ -75,6 +105,7 @@ if ($admin) {
 $profe = validarLoginProfesor($email, $pass);
 if ($profe) {
     Security::clearFailedLogins($email);
+    $clearIpAttempts();
     $_SESSION['idProfesor'] = $profe['idProfesor'];
     Logger::activity('LOGIN_SUCCESS', $profe['idProfesor'], ['role' => 'profesor', 'email' => $email]);
     header("Location: ../vistas/profesores/inicio/dashboard.php");
@@ -85,20 +116,39 @@ if ($profe) {
 $estu = validarLoginEstudiante($email, $pass);
 if ($estu) {
     Security::clearFailedLogins($email);
+    $clearIpAttempts();
     $_SESSION['idEstudiante'] = $estu['idEstudiante'];
     Logger::activity('LOGIN_SUCCESS', $estu['idEstudiante'], ['role' => 'estudiante', 'email' => $email]);
     header("Location: ../vistas/estudiantes/inicio/dashboard.php");
     exit;
 }
 
-// Login fallido - Registrar intento
+// Login fallido - Registrar intento (sesión + IP en DB)
 $failureResult = Security::recordFailedLogin($email);
 $_SESSION['errores'] = "El email o la contraseña no son correctos.";
-$_SESSION['datos_login'] = ['usuario' => $email]; // No guardar contraseña
+$_SESSION['datos_login'] = ['usuario' => $email];
+
+// Actualizar contador IP en DB
+if ($rowIp) {
+    $nuevosIntentos = $rowIp['intentos'] + 1;
+    if ($nuevosIntentos >= 10) {
+        $hasta = date('Y-m-d H:i:s', time() + 600);
+        $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = 0, bloqueado_hasta = ?, ultimo_intento = NOW() WHERE ip = ?");
+        mysqli_stmt_bind_param($upd, "ss", $hasta, $ip);
+    } else {
+        $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = intentos + 1, ultimo_intento = NOW() WHERE ip = ?");
+        mysqli_stmt_bind_param($upd, "s", $ip);
+    }
+    mysqli_stmt_execute($upd);
+} else {
+    $ins = mysqli_prepare($con, "INSERT INTO login_intentos (ip, intentos) VALUES (?, 1)");
+    mysqli_stmt_bind_param($ins, "s", $ip);
+    mysqli_stmt_execute($ins);
+}
 
 Logger::security('LOGIN_FAILED', [
     'email' => $email,
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+    'ip' => $ip,
     'attempt_blocked' => $failureResult['blocked']
 ]);
 

@@ -16,135 +16,294 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 $totalEstudiantes = contarEstudiantes();
-$totalProfesores = contarProfesores();
-$totalRetos = contarRetos();
-$totalModulos = contarModulos();
-$recaudado = obtenerTotalRecaudado();
-$totalCobros = contarPagosRealizados();
+$totalProfesores  = contarProfesores();
+$totalRetos       = contarRetos();
+$totalModulos     = contarModulos();
+$recaudado        = obtenerTotalRecaudado();
+$totalCobros      = contarPagosRealizados();
+$totalTFGs        = contarTFGsEntregados();
 
-$totalTFGs = contarTFGsEntregados();
-
-$adminInfo = obtenerDirectorPorId($_SESSION['idAdmin']);
+$adminInfo   = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
 $listaAnuncios = listarTodosLosAnuncios();
+$eventos       = listarEventosProximos();
 
-$eventos = listarEventosProximos();
-$titulo_pagina = 'AULAPRO | PANEL DE CONTROL';
-$seccion = 'inicio';
-
+$titulo_pagina = 'AulaPro — Panel de Control';
+$seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
+
+// Spanish date
+$dias   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+$meses  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+$eyebrow = $dias[date('w')] . ', ' . date('j') . ' de ' . $meses[date('n')-1];
+
+// Time-aware greeting
+$hora   = (int)date('H');
+$saludo = $hora < 12 ? 'Buenos días' : ($hora < 19 ? 'Buenas tardes' : 'Buenas noches');
+
+// Arrow SVG helper
+$arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 ?>
 
-<h1 style="margin-bottom: 20px;">BIENVENIDO/A, <?= strtoupper($nombreAdmin) ?></h1>
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow"><?= Security::escapeHtml($eyebrow) ?></p>
+    <h1><?= Security::escapeHtml($saludo) ?>, <span><?= Security::escapeHtml($nombreAdmin) ?></span></h1>
+    <p class="sub">Panel de control — <b><?= $totalEstudiantes ?> estudiantes</b> · <b><?= $totalProfesores ?> profesores</b> · <b><?= $totalModulos ?> módulos</b></p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-k">Estudiantes</span><span class="stat-v"><?= $totalEstudiantes ?></span></div>
+    <div class="stat"><span class="stat-k">Profesores</span><span class="stat-v"><?= $totalProfesores ?></span></div>
+    <div class="stat"><span class="stat-k">Recaudado</span><span class="stat-v"><?= number_format($recaudado, 0, ',', '.') ?>€</span></div>
+  </div>
+</section>
 
-
-<div class="cuadricula-estadisticas">
-  <div class="tarjeta-estadistica tarjeta-estadistica-azul">
-    <div class="info-estadistica"><h3><?= $totalEstudiantes ?></h3><p>Estudiantes</p></div>
-  </div>
-  <div id="stat-prof" class="tarjeta-estadistica tarjeta-estadistica-cian">
-    <div class="info-estadistica"><h3><?= $totalProfesores ?></h3><p>Profesores</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-verde">
-    <div class="info-estadistica"><h3><?= $totalModulos ?></h3><p>MÓDULOS</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-violeta">
-    <div class="info-estadistica"><h3><?= $totalRetos ?></h3><p>Retos</p></div>
-  </div>
+<div class="section-head">
+  <h2>Acceso rápido</h2>
+  <span class="count">Gestión del centro</span>
 </div>
 
-<br>
+<section class="dash-grid">
 
-<div class="cuadricula-estadisticas">
-  <div class="tarjeta-estadistica tarjeta-estadistica-morada">
-    <div class="info-estadistica"><h3><?= number_format($recaudado, 2, ',', '.') ?> €</h3><p>Total Recaudado</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-cian-claro">
-    <div class="info-estadistica"><h3><?= $totalCobros ?></h3><p>Cobros Realizados</p></div>
-  </div>
-  <div class="tarjeta-estadistica tarjeta-estadistica-morada">
-    <div class="info-estadistica"><h3><?= $totalTFGs ?></h3><p>TFGs Entregados</p></div>
-  </div>
-</div>
+  <a href="../estudiantes/verEstudiantes.php" class="tile card-soft" style="--tint:#F59E0B; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <?php if ($totalEstudiantes > 0) { ?><span class="tile-badge"><?= $totalEstudiantes ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Estudiantes</span>
+      <span class="tile-desc">Expedientes y matrículas</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalEstudiantes ?> matriculados</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
 
-<div class="cuadricula-secundaria">
-  <div class="caja direccion-columna espacio-grande relleno">
+  <a href="../profesores/verProfesores.php" class="tile card-soft" style="--tint:#0EA5E9; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <?php if ($totalProfesores > 0) { ?><span class="tile-badge"><?= $totalProfesores ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Profesores</span>
+      <span class="tile-desc">Equipo docente</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalProfesores ?> activos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
 
-    <div class="panel">
-      <div class="titulo-tarjeta"><h3>ACCIONES RÁPIDAS</h3></div>
-      <div class="cuadricula-acciones-rapidas">
-        <a href="../estudiantes/agregarEstudiantes.php" class="accion-rapida"><span>Nuevo Estudiante</span></a>
-        <a href="../profesores/agregarProfesores.php" class="accion-rapida"><span>Nuevo Profesor</span></a>
-        <a href="../pagos/agregarPagos.php" class="accion-rapida"><span>Registrar Pago</span></a>
-        <a href="../anuncios/gestionAnuncios.php" class="accion-rapida"><span>Avisos</span></a>
-        <a href="../eventos/gestionEventos.php" class="accion-rapida"><span>Nuevo Evento</span></a>
-      </div>
+  <a href="../modulos/verModulos.php" class="tile card-soft" style="--tint:#14B8A6; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg>
+      <?php if ($totalModulos > 0) { ?><span class="tile-badge"><?= $totalModulos ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Módulos</span>
+      <span class="tile-desc">Contenidos curriculares</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalModulos ?> módulos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../retos/verRetos.php" class="tile card-soft" style="--tint:#8B5CF6; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      <?php if ($totalRetos > 0) { ?><span class="tile-badge"><?= $totalRetos ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Retos</span>
+      <span class="tile-desc">Proyectos y desafíos</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalRetos ?> retos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../pagos/verPagosGeneral.php" class="tile card-soft" style="--tint:#22C55E; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <?php if ($totalCobros > 0) { ?><span class="tile-badge"><?= $totalCobros ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Pagos</span>
+      <span class="tile-desc">Gestión de cobros</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= number_format($recaudado, 0, ',', '.') ?>€ recaudado</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../horario/horario.php" class="tile card-soft" style="--tint:#4F46E5; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Horario</span>
+      <span class="tile-desc">Cuadro de horarios</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Ver horario</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../mensajes/lista.php" class="tile card-soft" style="--tint:#F43F5E; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <?php if (($totalSinLeer_menu ?? 0) > 0) { ?><span class="tile-badge"><?= $totalSinLeer_menu ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Mensajería</span>
+      <span class="tile-desc">Comunicación interna</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalMensajes_menu ?? 0 ?> mensajes</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../informes/informes.php" class="tile card-soft" style="--tint:#D946EF; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Informes PDF</span>
+      <span class="tile-desc">Generación de informes</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Exportar datos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../inventario/verInventario.php" class="tile card-soft" style="--tint:#F97316; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <?php if (($totalInventario_menu ?? 0) > 0) { ?><span class="tile-badge"><?= $totalInventario_menu ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Inventario</span>
+      <span class="tile-desc">Recursos materiales</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalInventario_menu ?? 0 ?> artículos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../eventos/gestionEventos.php" class="tile card-soft" style="--tint:#06B6D4; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Eventos</span>
+      <span class="tile-desc">Calendario del centro</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Ver eventos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../configuracion/configuracion.php" class="tile card-soft" style="--tint:#64748B; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Configuración</span>
+      <span class="tile-desc">Ajustes del sistema</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Sistema</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+</section>
+
+<!-- Announcements + Events panels -->
+<div class="dash-panels">
+  <div class="dash-panel">
+    <div class="dash-panel-head">
+      <h3>Anuncios</h3>
+      <a href="../anuncios/gestionAnuncios.php">Ver todos</a>
     </div>
-
-
-    <div class="panel">
-      <div class="titulo-tarjeta">
-        <h3>TABLA DE ANUNCIOS</h3>
-      </div>
-      <?php if ($listaAnuncios) { ?>
-        <div class="lista-anuncios-dashboard">
-            <?php foreach ($listaAnuncios as $anuncio) { ?>
-            <div class="anuncio-item">
-                <div class="anuncio-contenido">
-                    <div class="caja espacio-entre-elementos alinear-centro">
-                        <strong class="anuncio-titulo"><?= strtoupper(Security::escapeHtml($anuncio['titulo'])) ?></strong>
-                        <span class="texto-suave"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
-                    </div>
-                    <br>
-                    <p class="texto-pequeno" style="margin: 0;"><?= nl2br(Security::escapeHtml($anuncio['mensaje'])) ?></p>
-                    <div style="margin-top: 5px;">
-                        <span class="texto-dirigido"><?= strtoupper(Security::escapeHtml($anuncio['dirigidoA'])) ?></span>
-                    </div>
-                </div>
+    <div class="dash-panel-body">
+      <?php if (!empty($listaAnuncios)) {
+        $cnt = 0;
+        foreach ($listaAnuncios as $anuncio) {
+          if ($cnt >= 4) break; ?>
+          <div class="ann-item">
+            <div class="ann-item-head">
+              <span class="ann-item-title"><?= Security::escapeHtml($anuncio['titulo']) ?></span>
+              <span class="ann-item-date"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
             </div>
-            <?php } ?>
-        </div>
-
-
-      <?php } else { ?>
-        <p class="texto-suave">No hay anuncios activos por ahora.</p>
+            <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['mensaje']), 0, 120)) ?>…</p>
+            <span class="ann-item-tag"><?= Security::escapeHtml(strtoupper($anuncio['dirigidoA'])) ?></span>
+          </div>
+      <?php $cnt++; } } else { ?>
+        <p class="empty-state">No hay anuncios activos por ahora.</p>
       <?php } ?>
     </div>
   </div>
 
-  <div class="caja direccion-columna espacio-grande relleno">
-    <div class="panel">
-      <div class="titulo-tarjeta">
-        <h3>PRÓXIMOS EVENTOS</h3>
-      </div>
-      <div class="lista-eventos">
-        <?php if (empty($eventos)) { ?>
-            <p class="texto-suave">No hay eventos próximos programados.</p>
-        <?php } else { ?>
-            <?php
-            $i = 0;
-            foreach ($eventos as $evento) {
-                if ($i < 4) {
-                    $dia = date('d', strtotime($evento['fechaEvento']));
-                    $mes = strtoupper(date('M', strtotime($evento['fechaEvento'])));
-            ?>
-            <div class="elemento-evento">
-              <div class="fecha-evento azul"><div class="dia"><?= $dia ?></div><div class="mes"><?= $mes ?></div></div>
-              <div>
-                <p class="texto-negrita"><?= strtoupper(Security::escapeHtml($evento['tituloEvento'])) ?></p>
-                <p class="texto-suave"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h - <?= Security::escapeHtml($evento['ubicacionEvento']) ?></p>
-              </div>
+  <div class="dash-panel">
+    <div class="dash-panel-head">
+      <h3>Próximos Eventos</h3>
+      <a href="../eventos/gestionEventos.php">Ver todos</a>
+    </div>
+    <div class="dash-panel-body">
+      <?php if (!empty($eventos)) {
+        $cnt = 0;
+        foreach ($eventos as $evento) {
+          if ($cnt >= 4) break;
+          $dia = date('d', strtotime($evento['fechaEvento']));
+          $mes = strtoupper(date('M', strtotime($evento['fechaEvento']))); ?>
+          <div class="evt-item">
+            <div class="evt-date-box">
+              <span class="evt-day"><?= $dia ?></span>
+              <span class="evt-mon"><?= $mes ?></span>
             </div>
-            <?php
-                    $i++;
-                }
-            } ?>
-        <?php } ?>
-      </div>
+            <div class="evt-info">
+              <span class="evt-title"><?= Security::escapeHtml($evento['tituloEvento']) ?></span>
+              <span class="evt-meta"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h · <?= Security::escapeHtml($evento['ubicacionEvento']) ?></span>
+            </div>
+          </div>
+      <?php $cnt++; } } else { ?>
+        <p class="empty-state">No hay eventos próximos programados.</p>
+      <?php } ?>
     </div>
   </div>
 </div>
 
-<?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  var factor = ((window.TWEAK_DEFAULTS && window.TWEAK_DEFAULTS.animation) || 7) / 10;
+  gsap.fromTo('.tile',
+    { opacity: 0, y: 24 + 30 * factor, scale: 0.96 },
+    { opacity: 1, y: 0, scale: 1, duration: 0.5 + 0.35 * factor, ease: 'power3.out',
+      stagger: { each: 0.04, from: 'start' }, clearProps: 'transform,opacity',
+      delay: 0.3 });
+}
+</script>
 
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../include/Security.php";
+require_once __DIR__ . "/../../include/BotGuard.php";
 
 if (isset($_SESSION['idAdmin']))      { header("Location: ../admin/inicio/dashboard.php");      exit; }
 if (isset($_SESSION['idProfesor']))   { header("Location: ../profesores/inicio/dashboard.php");  exit; }
@@ -55,6 +56,7 @@ $csrfToken = Security::generateCSRFToken();
             <?php if (!$ok) { ?>
             <form action="../../controladores/auth/solicitar_reset.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
+                <?= BotGuard::renderFields() ?>
                 <div class="campo-grupo">
                     <label>Email</label>
                     <input type="email" name="email" placeholder="ejemplo@correo.com" required autofocus>
