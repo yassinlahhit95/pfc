@@ -7,9 +7,10 @@ function listarTodosLosMensajes() {
             FROM reclamaciones r
             LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante
             LEFT JOIN profesores p ON r.idProfesor = p.idProfesor
-            WHERE (r.emisor_rol = 'estudiante' AND r.idProfesor IS NULL)
+            WHERE r.id_parent IS NULL
+              AND ((r.emisor_rol = 'estudiante' AND r.idProfesor IS NULL)
                OR (r.emisor_rol = 'profesor' AND r.idEstudiante IS NULL)
-               OR (r.emisor_rol = 'admin')
+               OR (r.emisor_rol = 'admin'))
             ORDER BY r.idReclamacion DESC";
 
     $resultado = mysqli_query($con, $sql);
@@ -71,7 +72,7 @@ function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion,
 
 function listarMensajesDeEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, p.nombreProfesor FROM reclamaciones r LEFT JOIN profesores p ON r.idProfesor = p.idProfesor WHERE r.idEstudiante = ? ORDER BY r.idReclamacion DESC";
+    $sql = "SELECT r.*, p.nombreProfesor FROM reclamaciones r LEFT JOIN profesores p ON r.idProfesor = p.idProfesor WHERE r.idEstudiante = ? AND r.id_parent IS NULL ORDER BY r.idReclamacion DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
@@ -86,7 +87,7 @@ function listarMensajesDeEstudiante($idEstudiante) {
 
 function listarMensajesParaProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.idProfesor = ? OR (r.emisor_rol = 'profesor' AND r.idProfesor = ?) ORDER BY r.idReclamacion DESC";
+    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.id_parent IS NULL AND (r.idProfesor = ? OR (r.emisor_rol = 'profesor' AND r.idProfesor = ?)) ORDER BY r.idReclamacion DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
@@ -177,7 +178,37 @@ function contarMensajesNoLeidosEstudiante($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($resultado);
-    
+
     return intval($fila['total']);
+}
+
+function obtenerHiloCompleto(int $idRaiz): array {
+    $con = obtenerConexion();
+    $st = mysqli_prepare($con,
+        'SELECT r.*, e.nombreEstudiante, p.nombreProfesor
+         FROM reclamaciones r
+         LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante
+         LEFT JOIN profesores  p ON r.idProfesor   = p.idProfesor
+         WHERE r.idReclamacion = ? OR r.id_parent = ?
+         ORDER BY r.fecha ASC, r.idReclamacion ASC');
+    mysqli_stmt_bind_param($st, 'ii', $idRaiz, $idRaiz);
+    mysqli_stmt_execute($st);
+    return mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC);
+}
+
+function insertarRespuestaMensaje(int $idParent, ?int $idEstudiante, ?int $idProfesor, string $contenido, string $emisorRol): bool {
+    $con   = obtenerConexion();
+    $ahora = date('Y-m-d H:i:s');
+    // Inherit asunto from parent
+    $parent = obtenerMensajePorId($idParent);
+    $asunto = $parent['asunto'] ?? 'Respuesta';
+    $estId  = $idEstudiante ?? ($parent['idEstudiante'] ? (int)$parent['idEstudiante'] : null);
+    $profId = $idProfesor   ?? ($parent['idProfesor']   ? (int)$parent['idProfesor']   : null);
+    $st = mysqli_prepare($con,
+        'INSERT INTO reclamaciones
+         (idEstudiante, idProfesor, id_parent, emisor_rol, asunto, descripcion, fecha, estadoReclamacion, leido, respuesta)
+         VALUES (?, ?, ?, ?, ?, ?, ?, "atendido", 0, "")');
+    mysqli_stmt_bind_param($st, 'iiissss', $estId, $profId, $idParent, $emisorRol, $asunto, $contenido, $ahora);
+    return mysqli_stmt_execute($st);
 }
 

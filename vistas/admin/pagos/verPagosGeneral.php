@@ -45,11 +45,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
 <?php } ?>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel margen-abajo">

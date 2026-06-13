@@ -31,8 +31,12 @@ $celdas = listarHorarioPorCiclo($idCiclo);
 $franjas = obtenerFranjasHorario($idCiclo);
 $dias    = obtenerDiasHorario();
 
-$reportService = new ReportService();
-$reportService->generateHorario($cfg, $ciclo, $celdas, $franjas, $dias);
-
-$filename = 'horario_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
-$reportService->stream($filename);
+try {
+    $reportService = new ReportService();
+    $reportService->generateHorario($cfg, $ciclo, $celdas, $franjas, $dias);
+    $filename = 'horario_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
+    $reportService->stream($filename);
+} catch (\Throwable $e) {
+    $_SESSION['errores'] = 'Error al generar el PDF: ' . $e->getMessage();
+    header("Location: $_back"); exit;
+}

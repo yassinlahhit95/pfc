@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <?php if ($esDespuesDeJunio) { ?>

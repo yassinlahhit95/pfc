@@ -2,33 +2,46 @@
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-if (empty($_SESSION['idAdmin'])) { header("Location: ../../../vistas/login.php"); exit; }
+if (empty($_SESSION['idAdmin'])) {
+    header("Location: ../../../vistas/login.php");
+    exit;
+}
 
-if (isset($_POST['idReclamacion'])) {
-    if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "Solicitud no válida o expirada.";
-        header("Location: ../../../vistas/admin/mensajes/lista.php"); exit;
+if (!isset($_POST['idReclamacion'])) {
+    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = "Solicitud no válida o expirada.";
+    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    exit;
+}
+
+$idReclamacion = (int)$_POST['idReclamacion'];
+
+if ($idReclamacion <= 0) {
+    $_SESSION['errores'] = "ID no válido.";
+    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    exit;
+}
+
+if (isset($_POST['guardarCambios'])) {
+    $respuesta = trim($_POST['respuesta'] ?? '');
+    if ($respuesta === '') {
+        $_SESSION['errores'] = "El mensaje no puede estar vacío.";
+    } elseif (insertarRespuestaMensaje($idReclamacion, null, null, $respuesta, 'admin')) {
+        $_SESSION['exito'] = "Respuesta enviada correctamente.";
+    } else {
+        $_SESSION['errores'] = "Error al enviar la respuesta.";
     }
-    $idReclamacion = trim($_POST['idReclamacion']);
-    
-    if (isset($_POST['guardarCambios'])) {
-        $respuestaAdmin = trim($_POST['respuesta']);
-        if (responderMensaje($idReclamacion, $respuestaAdmin)) {
-            $_SESSION['exito'] = "Respuesta guardada.";
-        } else {
-            $hayError = true;
-            $_SESSION['errores'] = "Error al guardar.";
-        }
-    } else if (isset($_POST['marcarLeido'])) {
-        if (marcarMensajeComoLeido($idReclamacion)) {
-            $_SESSION['exito'] = "Mensaje revisado.";
-        } else {
-            $hayError = true;
-            $_SESSION['errores'] = "Error al actualizar.";
-        }
+} elseif (isset($_POST['marcarLeido'])) {
+    if (marcarMensajeComoLeido($idReclamacion)) {
+        $_SESSION['exito'] = "Mensaje marcado como leído.";
+    } else {
+        $_SESSION['errores'] = "Error al actualizar el estado.";
     }
 }
 
-header("Location: ../../../vistas/admin/mensajes/lista.php");
+header("Location: ../../../vistas/admin/mensajes/detalles.php?id=" . $idReclamacion);
 exit;
-?>

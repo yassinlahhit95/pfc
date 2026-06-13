@@ -1,13 +1,18 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 
-$exito = $_SESSION['exito'] ?? '';
+if (!isset($_SESSION['idAdmin'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+$exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-$id_reclamacion = $_GET['idReclamacion'] ?? 0;
+$id_reclamacion = (int)($_GET['idReclamacion'] ?? 0);
 $reclamacion = obtenerMensajePorId($id_reclamacion);
 
 if (!$reclamacion) {
@@ -15,61 +20,77 @@ if (!$reclamacion) {
     exit;
 }
 
+// Merge with any stored form data (re-fill after error)
 $datos = $_SESSION['datos_reclamacion'] ?? [];
+unset($_SESSION['datos_reclamacion']);
+if (!empty($datos)) {
+    $reclamacion = $datos + $reclamacion;
+}
 
-$reclamacion = !empty($datos) ? $datos + $reclamacion : $reclamacion;
-
-$titulo_pagina = "AULAPRO | MODIFICAR RECLAMACIÓN";
+$titulo_pagina = "AULAPRO | GESTIONAR MENSAJE";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>MODIFICAR RECLAMACIÓN</h1>
-    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <h1><i class="fas fa-edit"></i> GESTIONAR MENSAJE</h1>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
-<?php } ?>
+<?php if ($exito): ?>
+    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
+<?php endif; ?>
+<?php if ($errores): ?>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
+<?php endif; ?>
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/mensajes/actualizar.php">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReclamacion" value="<?= $id_reclamacion ?>">
 
-        <div class="form-cols">
-            <div class="campo">
-                <label>Asunto</label>
-                <input type="text" name="asuntoReclamacion" value="<?= $reclamacion['asuntoReclamacion'] ?? '' ?>">
-                
-            </div>
+        <div class="fila-datos">
+            <div class="nombre-detalle">Asunto</div>
+            <div class="valor-detalle texto-negrita"><?= Security::escapeHtml($reclamacion['asunto'] ?? '') ?></div>
+        </div>
 
-            <div class="campo">
-                <label>Estado</label>
-                <select name="estadoReclamacion">
-                    <option value="Pendiente" <?= ($reclamacion['estadoReclamacion'] == 'Pendiente') ? 'selected' : '' ?>>Pendiente</option>
-                    <option value="En Proceso" <?= ($reclamacion['estadoReclamacion'] == 'En Proceso') ? 'selected' : '' ?>>En Proceso</option>
-                    <option value="Resuelta" <?= ($reclamacion['estadoReclamacion'] == 'Resuelta') ? 'selected' : '' ?>>Resuelta</option>
-                </select>
-            </div>
-
-            <div class="campo campo-ancho-total">
-                <label>Descripción</label>
-                <textarea name="descripcionReclamacion" rows="6"><?= $reclamacion['descripcionReclamacion'] ?? '' ?></textarea>
-                
+        <div class="fila-datos">
+            <div class="nombre-detalle">Estado actual</div>
+            <div class="valor-detalle">
+                <?php if ($reclamacion['leido']): ?>
+                    <span class="indicador-estado activo-verde">Leído / Atendido</span>
+                <?php else: ?>
+                    <span class="indicador-estado inactivo-rojo">Pendiente</span>
+                <?php endif; ?>
             </div>
         </div>
 
-        <div class="margen-arriba">
-            <input type="submit" name="actualizarReclamacion" class="boton-primario" value="Guardar Cambios">
+        <div class="fila-datos">
+            <div class="nombre-detalle">Mensaje original</div>
+            <div class="valor-detalle valor-mensaje"><?= Security::escapeHtml($reclamacion['descripcion'] ?? '') ?></div>
+        </div>
+
+        <div class="msg-respuesta-box">
+            <div class="campo">
+                <label for="respuesta">Respuesta / Nota interna</label>
+                <textarea id="respuesta" name="respuesta" rows="5" class="ancho-total" maxlength="1000"
+                          placeholder="Escribe tu respuesta..."><?= Security::escapeHtml($reclamacion['respuesta'] ?? '') ?></textarea>
+            </div>
+        </div>
+
+        <div class="acciones">
+            <button type="submit" name="guardarCambios" class="boton-primario">
+                <i class="fas fa-save"></i> Guardar Respuesta
+            </button>
+            <?php if (!$reclamacion['leido']): ?>
+            <button type="submit" name="marcarLeido" class="boton-secundario">
+                <i class="fas fa-check"></i> Marcar como Leído
+            </button>
+            <?php endif; ?>
+            <a href="lista.php" class="boton-secundario">Cancelar</a>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
+<script src="../../../public/js/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/mensajes.js') ?>"></script>

@@ -45,9 +45,11 @@ class Config {
         $this->config['DB_NAME'] = $this->env('DB_NAME', defined('DB_NAME_VALUE') ? DB_NAME_VALUE : 'yassjjzw_pfc');
 
         // Firebase
-        $this->config['FIREBASE_API_KEY']    = $this->env('FIREBASE_API_KEY', '');
-        $this->config['FIREBASE_AUTH_DOMAIN'] = $this->env('FIREBASE_AUTH_DOMAIN', '');
-        $this->config['FIREBASE_PROJECT_ID']  = $this->env('FIREBASE_PROJECT_ID', '');
+        $this->config['FIREBASE_API_KEY']     = $this->env('FIREBASE_API_KEY', '');
+        $this->config['FIREBASE_AUTH_DOMAIN']  = $this->env('FIREBASE_AUTH_DOMAIN', '');
+        $this->config['FIREBASE_PROJECT_ID']   = $this->env('FIREBASE_PROJECT_ID', '');
+        $this->config['FIREBASE_MESSAGING_SENDER_ID'] = $this->env('FIREBASE_MESSAGING_SENDER_ID', '');
+        $this->config['FIREBASE_APP_ID']       = $this->env('FIREBASE_APP_ID', '');
 
         // Brevo
         $this->config['BREVO_API_KEY'] = $this->env('BREVO_API_KEY', '');

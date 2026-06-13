@@ -93,11 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }, { threshold: 0.1 });
 
-    var animElements = document.querySelectorAll('.animar');
-    for (var j = 0; i < animElements.length; i++) { // Fixed bug here: i should be j
-       // Wait, I see I used 'i' instead of 'j' in the loop. Fixing below.
-    }
-    // Correcting the loop:
     document.querySelectorAll('.animar').forEach(function(el) {
       animObserver.observe(el);
     });

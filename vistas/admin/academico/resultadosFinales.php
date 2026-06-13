@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
 </div>
 
-<?php if (!empty($exito)) { ?> <div class="mensaje-exito"><?= $exito ?></div> <?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
+<?php if (!empty($exito)) { ?> <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div> <?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
 
 <div class="panel">
     <div class="caja alinear-centro espacio-grande">

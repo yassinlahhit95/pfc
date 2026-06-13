@@ -4,6 +4,7 @@ if (empty($_SESSION['idAdmin'])) { http_response_code(403); echo json_encode([])
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-store');
 
 require_once __DIR__ . '/../../modelos/conectar.php';
 
@@ -15,49 +16,111 @@ $like  = '%' . $qEsc . '%';
 $con   = obtenerConexion();
 $results = [];
 
-// Estudiantes
-$stmt = mysqli_prepare($con, "SELECT nombreEstudiante FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 4");
-mysqli_stmt_bind_param($stmt, 's', $like);
+// Estudiantes → detalle individual (por nombre o DNI)
+$stmt = mysqli_prepare($con,
+    "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes
+     WHERE nombreEstudiante LIKE ? OR dniEstudiante LIKE ?
+     ORDER BY nombreEstudiante LIMIT 5");
+mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'estudiante', 'label' => $row['nombreEstudiante'], 'url' => '../estudiantes/verEstudiantes.php'];
+    $label = $row['nombreEstudiante'];
+    if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
+        $label .= ' (' . $row['dniEstudiante'] . ')';
+    }
+    $results[] = [
+        'type'  => 'estudiante',
+        'label' => $label,
+        'url'   => '../estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
+    ];
 }
 
-// Profesores
-$stmt = mysqli_prepare($con, "SELECT nombreProfesor FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 3");
-mysqli_stmt_bind_param($stmt, 's', $like);
+// Profesores → detalle individual (por nombre o DNI)
+$stmt = mysqli_prepare($con,
+    "SELECT idProfesor, nombreProfesor, dniProfesor FROM profesores
+     WHERE nombreProfesor LIKE ? OR dniProfesor LIKE ?
+     ORDER BY nombreProfesor LIMIT 3");
+mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'profesor', 'label' => $row['nombreProfesor'], 'url' => '../profesores/verProfesores.php'];
+    $label = $row['nombreProfesor'];
+    if (!empty($row['dniProfesor']) && stripos($row['dniProfesor'], $q) !== false) {
+        $label .= ' (' . $row['dniProfesor'] . ')';
+    }
+    $results[] = [
+        'type'  => 'profesor',
+        'label' => $label,
+        'url'   => '../profesores/verDetallesProfesores.php?idProfesor=' . (int)$row['idProfesor'],
+    ];
 }
 
-// Retos
-$stmt = mysqli_prepare($con, "SELECT nombreReto FROM retos WHERE nombreReto LIKE ? ORDER BY nombreReto LIMIT 3");
+// Retos → editar
+$stmt = mysqli_prepare($con,
+    "SELECT idReto, nombreReto FROM retos
+     WHERE nombreReto LIKE ? ORDER BY nombreReto LIMIT 4");
 mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'reto', 'label' => $row['nombreReto'], 'url' => '../retos/verRetos.php'];
+    $results[] = [
+        'type'  => 'reto',
+        'label' => $row['nombreReto'],
+        'url'   => '../retos/modificarRetos.php?idReto=' . (int)$row['idReto'],
+    ];
 }
 
-// Módulos
-$stmt = mysqli_prepare($con, "SELECT nombreModulo FROM modulos WHERE nombreModulo LIKE ? ORDER BY nombreModulo LIMIT 3");
+// Módulos → dos acciones por módulo: Editar y Asignar profesor
+$stmt = mysqli_prepare($con,
+    "SELECT idModulo, nombreModulo FROM modulos
+     WHERE nombreModulo LIKE ? ORDER BY nombreModulo LIMIT 3");
 mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'modulo', 'label' => $row['nombreModulo'], 'url' => '../modulos/verModulos.php'];
+    $id = (int)$row['idModulo'];
+    $results[] = [
+        'type'    => 'modulo',
+        'label'   => $row['nombreModulo'] . ' — Editar',
+        'url'     => '../modulos/modificarModulos.php?idModulo=' . $id,
+    ];
+    $results[] = [
+        'type'    => 'modulo-asignar',
+        'label'   => $row['nombreModulo'] . ' — Asignar profesor',
+        'url'     => '../modulos/asignarProfesorModulo.php?idModulo=' . $id,
+    ];
+}
+
+// Ciclos → editar
+$stmt = mysqli_prepare($con,
+    "SELECT idCiclo, nombreCiclo FROM ciclos
+     WHERE nombreCiclo LIKE ? ORDER BY nombreCiclo LIMIT 3");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'ciclo',
+        'label' => $row['nombreCiclo'],
+        'url'   => '../ciclos/modificarCiclos.php?idCiclo=' . (int)$row['idCiclo'],
+    ];
 }
 
 // Anuncios activos
-$stmt = mysqli_prepare($con, "SELECT titulo FROM anuncios WHERE titulo LIKE ? AND fechaExpiracion >= CURDATE() LIMIT 3");
+$stmt = mysqli_prepare($con,
+    "SELECT titulo FROM anuncios
+     WHERE titulo LIKE ? AND fechaExpiracion >= CURDATE()
+     LIMIT 3");
 mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'anuncio', 'label' => $row['titulo'], 'url' => '../anuncios/gestionAnuncios.php'];
+    $results[] = [
+        'type'  => 'anuncio',
+        'label' => $row['titulo'],
+        'url'   => '../anuncios/gestionAnuncios.php',
+    ];
 }
 
 echo json_encode($results, JSON_UNESCAPED_UNICODE);

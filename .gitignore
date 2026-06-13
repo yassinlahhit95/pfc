@@ -1,6 +1,7 @@
 # Credentials — never commit
 .env
 config/db.php
+config/service-account.json
 
 # Dependencies
 vendor/
@@ -11,6 +12,9 @@ public/uploads/
 # Logs
 logs/
 *.log
+
+# Local dev docs (not for server)
+docs/
 
 # OS / editor
 .DS_Store

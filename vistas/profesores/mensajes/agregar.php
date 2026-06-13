@@ -1,104 +1,117 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 
-$exito = $_SESSION['exito'] ?? '';
+if (!isset($_SESSION['idProfesor'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+$exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_mensaje'] ?? [];
+unset($_SESSION['datos_mensaje']);
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idProfesor = $_SESSION['idProfesor'];
-$listaDeCiclos = listarCiclosDeProfesor($idProfesor);
-$idCicloSeleccionado = $_GET['idCiclo'] ?? "";
+$idProfesor          = (int)$_SESSION['idProfesor'];
+$listaDeCiclos       = listarCiclosDeProfesor($idProfesor);
+$idCicloSeleccionado = $_GET['idCiclo'] ?? '';
 
-if (!empty($idCicloSeleccionado)) {
-    $listaDeEstudiantes = listarEstudiantesPorCiclo($idCicloSeleccionado);
-} else {
-    $listaDeEstudiantes = listarEstudiantesDeProfesor($idProfesor);
-}
+$listaDeEstudiantes = !empty($idCicloSeleccionado)
+    ? listarEstudiantesPorCiclo($idCicloSeleccionado)
+    : listarEstudiantesDeProfesor($idProfesor);
 
-$tituloDelPagina = "AULAPRO | NUEVO MENSAJE";
-$seccionActual = 'reclamaciones';
+$tituloDelPagina = "AULAPRO | Redactar Mensaje";
+$seccionActual   = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
+<link rel="stylesheet" href="../../../public/css/mensajes.css">
 
-<div class="cabecera">
-    <h1>REDACTAR MENSAJE</h1>
-    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:var(--gap);">
+    <a href="lista.php" class="ibtn ibtn-secondary"><i class="fas fa-arrow-left"></i> Volver al buzón</a>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
+<?php if ($errores): ?>
+<div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#dc2626;">
+    <i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml($errores) ?>
+    <button class="inbox-banner-close" style="color:#dc2626;" onclick="this.parentElement.remove()">×</button>
+</div>
+<?php endif; ?>
+<?php if ($exito): ?>
+<div class="inbox-banner" style="margin-bottom:var(--gap);">
+    <i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?>
+    <button class="inbox-banner-close" onclick="this.parentElement.remove()">×</button>
+</div>
+<?php endif; ?>
 
-<div class="panel">
-    <form method="GET" class="margen-abajo">
-        <div class="caja al-final espacio-grande">
-            <div class="campo relleno">
-                <label for="idCiclo">Filtrar Estudiantes por Ciclo:</label>
-                <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
-                    <option value="">-- Todos mis alumnos --</option>
-                    <?php foreach ($listaDeCiclos as $ciclo) { ?>
-                        <option value="<?= Security::escapeHtml($ciclo['idCiclo'] ) ?>" <?= Security::escapeHtml(($idCicloSeleccionado == $ciclo['idCiclo'] ? 'selected' : '')) ?>>
-                            <?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ) ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <input type="reset" class="boton-secundario" value="LIMPIAR">
-            </div>
-        </div>
-    </form>
-
-    <div class="titulo-tarjeta" style="margin-top: 30px;">
-        <h3><i class="fas fa-paper-plane"></i> NUEVO MENSAJE</h3>
+<div class="compose-card">
+    <div class="compose-head">
+        <h2><i class="fas fa-pen" style="color:var(--accent);margin-right:8px;"></i> Redactar Mensaje</h2>
+        <p>Envía un mensaje a uno de tus <b>alumnos</b> o a la <b>dirección</b> del centro</p>
     </div>
 
-    <form action="../../../controladores/profesores/mensajes/insertar.php" method="POST" class="formulario">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($idProfesor ) ?>">
+    <?php if (!empty($listaDeCiclos)): ?>
+    <div style="padding:0 var(--pad);margin-bottom:18px;">
+        <div class="compose-label" style="margin-bottom:8px;">Filtrar alumnos por ciclo</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="agregar.php" class="ibtn <?= empty($idCicloSeleccionado) ? 'ibtn-primary' : 'ibtn-secondary' ?>">
+                Todos
+            </a>
+            <?php foreach ($listaDeCiclos as $ciclo): ?>
+            <a href="?idCiclo=<?= (int)$ciclo['idCiclo'] ?>" class="ibtn <?= $idCicloSeleccionado == $ciclo['idCiclo'] ? 'ibtn-primary' : 'ibtn-secondary' ?>">
+                <?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
-        <div class="campo">
-            <label for="idEstudiante">Destinatario</label>
-            <select name="idEstudiante" id="idEstudiante">
-                <option value="">-- Seleccionar Destinatario --</option>
-                <option value="1" <?= Security::escapeHtml(($datos['idEstudiante'] ?? '') == '1' ? 'selected' : '') ?>>Direccion (Administracion)</option>
-                <optgroup label="Estudiantes">
-                    <?php foreach ($listaDeEstudiantes as $estudiante) {
-                        $selected = ($datos['idEstudiante'] ?? '') == $estudiante['idEstudiante'] ? 'selected' : '';
-                    ?>
-                        <option value="<?= Security::escapeHtml($estudiante['idEstudiante'] ) ?>" <?= Security::escapeHtml($selected) ?>>
-                            <?= Security::escapeHtml($estudiante['nombreEstudiante'] ) ?> (<?= Security::escapeHtml($estudiante['abreviaturaCiclo'] ) ?>)
+    <form action="../../../controladores/profesores/mensajes/insertar.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+
+        <div class="compose-body">
+            <div class="compose-field">
+                <label class="compose-label" for="idEstudiante">Destinatario</label>
+                <select name="idEstudiante" id="idEstudiante" class="compose-select">
+                    <option value="">— Dirección (Administración) —</option>
+                    <optgroup label="Mis Estudiantes">
+                        <?php foreach ($listaDeEstudiantes as $est): ?>
+                        <option value="<?= (int)$est['idEstudiante'] ?>"
+                            <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($est['nombreEstudiante']) ?>
+                            (<?= Security::escapeHtml($est['abreviaturaCiclo'] ?? '') ?>)
                         </option>
-                    <?php } ?>
-                </optgroup>
-            </select>
+                        <?php endforeach; ?>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="compose-field">
+                <label class="compose-label" for="asunto">Asunto</label>
+                <input type="text" id="asunto" name="asunto" class="compose-input"
+                       placeholder="Asunto del mensaje"
+                       value="<?= Security::escapeHtml($datos['asunto'] ?? '') ?>">
+            </div>
+
+            <div class="compose-field">
+                <label class="compose-label" for="descripcion">Mensaje</label>
+                <textarea id="descripcion" name="descripcion" class="compose-textarea" maxlength="1000"
+                          placeholder="Escribe tu mensaje..."><?= Security::escapeHtml($datos['descripcion'] ?? '') ?></textarea>
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="asunto">Asunto del Mensaje</label>
-            <input type="text" name="asunto" id="asunto" value="<?= Security::escapeHtml($datos['asunto'] ?? '') ?>" placeholder="Asunto del mensaje">
-        </div>
-
-        <div class="campo">
-            <label for="descripcion">Mensaje</label>
-            <textarea name="descripcion" id="descripcion" rows="4" placeholder="Escribe tu mensaje..."><?= Security::escapeHtml($datos['descripcion'] ?? '') ?></textarea>
-        </div>
-
-        <div class="acciones">
-            <input type="submit" name="enviarMensaje" class="boton-primario" value="ENVIAR MENSAJE">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
+        <div class="compose-actions">
+            <button type="submit" name="enviarMensaje" class="ibtn ibtn-primary">
+                <i class="fas fa-paper-plane"></i> Enviar Mensaje
+            </button>
+            <input type="reset" class="ibtn ibtn-secondary" value="Limpiar">
+            <a href="lista.php" class="ibtn ibtn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
+<script src="../../../public/js/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/mensajes.js') ?>"></script>

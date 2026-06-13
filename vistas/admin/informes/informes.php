@@ -187,7 +187,8 @@ function fetchEstudiantes(selectCiclo) {
     $list.innerHTML = '<p style="font-size:0.8rem; color:#64748b; padding:10px;">Cargando alumnos...</p>';
     $wrapper.style.display = 'block';
 
-    fetch('../../../controladores/admin/estudiantes/get_por_ciclo.php?idCiclo=' + idCiclo)
+    var fetchUrl = window.resolveAppPath('controladores/admin/estudiantes/get_por_ciclo.php?idCiclo=' + idCiclo);
+    fetch(fetchUrl)
         .then(r => r.json())
         .then(data => {
             if (!data || !data.length) {

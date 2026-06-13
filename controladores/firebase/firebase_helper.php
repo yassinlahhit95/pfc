@@ -4,6 +4,9 @@ require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/directores.php";
 
 function obtenerAccessToken() {
+    static $accessTokenCache = null;
+    if ($accessTokenCache !== null) return $accessTokenCache;
+
     $rutaConfig = __DIR__ . '/../../config/service-account.json';
 
     if (!file_exists($rutaConfig)) {
@@ -60,13 +63,15 @@ function obtenerAccessToken() {
     $datosRespuesta = json_decode($resultado, true);
     curl_close($ch);
 
-    return $datosRespuesta['access_token'] ?? null;
+    $accessTokenCache = $datosRespuesta['access_token'] ?? null;
+    return $accessTokenCache;
 }
 
 function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     if (empty($token)) return false;
 
-    $idProyecto = "pfc1-5c23c";
+    $config = Config::getInstance();
+    $idProyecto = $config->get('FIREBASE_PROJECT_ID', 'pfc1-5c23c');
     $urlFCM = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
 
     $accessToken = obtenerAccessToken();

@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="mensaje-exito"><?= $exito ?></div>
 <?php } ?>
 <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
+    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
 <?php } ?>
 
 <div class="panel">

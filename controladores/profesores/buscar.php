@@ -4,6 +4,7 @@ if (empty($_SESSION['idProfesor'])) { http_response_code(403); echo json_encode(
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-store');
 
 require_once __DIR__ . '/../../modelos/conectar.php';
 
@@ -16,27 +17,35 @@ $like  = '%' . $qEsc . '%';
 $con   = obtenerConexion();
 $results = [];
 
-// Estudiantes asignados al profesor
+// Estudiantes asignados al profesor (por nombre o DNI)
 $stmt = mysqli_prepare($con,
-    "SELECT DISTINCT e.nombreEstudiante
+    "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.dniEstudiante
      FROM estudiantes e
      WHERE (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
         OR  e.idCiclo IN (SELECT m.idCiclo FROM modulos m
                           JOIN modulo_profesor pm ON m.idModulo = pm.idModulo
                           WHERE pm.idProfesor = ?))
-       AND e.nombreEstudiante LIKE ?
+       AND (e.nombreEstudiante LIKE ? OR e.dniEstudiante LIKE ?)
      ORDER BY e.nombreEstudiante
      LIMIT 4");
-mysqli_stmt_bind_param($stmt, 'iis', $idProfesor, $idProfesor, $like);
+mysqli_stmt_bind_param($stmt, 'iiss', $idProfesor, $idProfesor, $like, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'estudiante', 'label' => $row['nombreEstudiante'], 'url' => '../estudiantes/lista.php'];
+    $label = $row['nombreEstudiante'];
+    if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
+        $label .= ' (' . $row['dniEstudiante'] . ')';
+    }
+    $results[] = [
+        'type'  => 'estudiante',
+        'label' => $label,
+        'url'   => '../estudiantes/lista.php',
+    ];
 }
 
 // Retos del profesor
 $stmt = mysqli_prepare($con,
-    "SELECT DISTINCT r.nombreReto
+    "SELECT DISTINCT r.idReto, r.nombreReto
      FROM retos r
      JOIN modulo_reto mr ON r.idReto = mr.idReto
      JOIN modulo_profesor pm ON mr.idModulo = pm.idModulo
@@ -47,12 +56,16 @@ mysqli_stmt_bind_param($stmt, 'is', $idProfesor, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'reto', 'label' => $row['nombreReto'], 'url' => '../retos/lista.php'];
+    $results[] = [
+        'type'  => 'reto',
+        'label' => $row['nombreReto'],
+        'url'   => '../retos/lista.php',
+    ];
 }
 
 // Módulos del profesor
 $stmt = mysqli_prepare($con,
-    "SELECT m.nombreModulo
+    "SELECT m.idModulo, m.nombreModulo
      FROM modulos m
      JOIN modulo_profesor pm ON m.idModulo = pm.idModulo
      WHERE pm.idProfesor = ? AND m.nombreModulo LIKE ?
@@ -62,19 +75,29 @@ mysqli_stmt_bind_param($stmt, 'is', $idProfesor, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'modulo', 'label' => $row['nombreModulo'], 'url' => '../modulos/lista.php'];
+    $results[] = [
+        'type'  => 'modulo',
+        'label' => $row['nombreModulo'],
+        'url'   => '../modulos/lista.php',
+    ];
 }
 
-// Anuncios activos
+// Anuncios activos (todos y profesores)
 $stmt = mysqli_prepare($con,
     "SELECT titulo FROM anuncios
-     WHERE titulo LIKE ? AND fechaExpiracion >= CURDATE()
+     WHERE (dirigidoA = 'todos' OR dirigidoA = 'profesores')
+       AND titulo LIKE ?
+       AND fechaExpiracion >= CURDATE()
      LIMIT 3");
 mysqli_stmt_bind_param($stmt, 's', $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
-    $results[] = ['type' => 'anuncio', 'label' => $row['titulo'], 'url' => '../anuncios/lista.php'];
+    $results[] = [
+        'type'  => 'anuncio',
+        'label' => $row['titulo'],
+        'url'   => '../anuncios/lista.php',
+    ];
 }
 
 echo json_encode($results, JSON_UNESCAPED_UNICODE);

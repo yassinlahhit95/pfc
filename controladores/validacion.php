@@ -95,6 +95,7 @@ $admin = validarLoginDirector($email, $pass);
 if ($admin) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
+    Security::regenerateSession();
     $_SESSION['idAdmin'] = $admin['idDirector'];
     Logger::activity('LOGIN_SUCCESS', $admin['idDirector'], ['role' => 'admin', 'email' => $email]);
     header("Location: ../vistas/admin/inicio/dashboard.php");
@@ -106,6 +107,7 @@ $profe = validarLoginProfesor($email, $pass);
 if ($profe) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
+    Security::regenerateSession();
     $_SESSION['idProfesor'] = $profe['idProfesor'];
     Logger::activity('LOGIN_SUCCESS', $profe['idProfesor'], ['role' => 'profesor', 'email' => $email]);
     header("Location: ../vistas/profesores/inicio/dashboard.php");
@@ -117,6 +119,7 @@ $estu = validarLoginEstudiante($email, $pass);
 if ($estu) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
+    Security::regenerateSession();
     $_SESSION['idEstudiante'] = $estu['idEstudiante'];
     Logger::activity('LOGIN_SUCCESS', $estu['idEstudiante'], ['role' => 'estudiante', 'email' => $email]);
     header("Location: ../vistas/estudiantes/inicio/dashboard.php");

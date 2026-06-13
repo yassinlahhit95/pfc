@@ -29,6 +29,24 @@
   var G = window.gsap;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /**
+   * Resolves a URL relative to the app root, based on the 'vistas' segment in the path.
+   * This makes paths robust even if the page depth changes.
+   */
+  function resolveAppPath(relPath) {
+    if (!relPath) return "";
+    // If it's already absolute (starts with / or http), return it
+    if (relPath.startsWith('/') || relPath.startsWith('http')) return relPath;
+
+    var parts = location.pathname.split('/');
+    var vi = parts.indexOf('vistas');
+    var base = vi > -1 ? parts.slice(0, vi).join('/') : '';
+    
+    // Clean up the relative part (remove leading ../)
+    var cleanRel = relPath.replace(/^(\.\.\/)+/, '');
+    return base + '/' + cleanRel;
+  }
+
   function syncThemeBtn() {
     var knob = qs("#theme .theme-knob");
     if (knob) knob.innerHTML = state.dark ? SUN_SVG : MOON_SVG;
@@ -61,9 +79,13 @@
     if (!G || reduced || factor === 0) return;
     G.from(".sidebar", { x: -40, opacity: 0, duration: 0.6, ease: "power3.out", clearProps: "transform,opacity" });
     G.from(".topbar > *", { y: -16, opacity: 0, duration: 0.5, stagger: 0.05, ease: "power2.out", delay: 0.1, clearProps: "transform,opacity" });
-    G.from(".hero-text > *", { y: 18, opacity: 0, duration: 0.55, stagger: 0.07, ease: "power3.out", delay: 0.15, clearProps: "transform,opacity" });
-    G.from(".stat", { y: 18, opacity: 0, scale: 0.95, duration: 0.5, stagger: 0.08, ease: "back.out(1.5)", delay: 0.25, clearProps: "transform,opacity" });
-    failsafe(".sidebar, .topbar > *, .hero-text > *, .stat");
+    if (document.querySelector(".hero-text")) {
+      G.from(".hero-text > *", { y: 18, opacity: 0, duration: 0.55, stagger: 0.07, ease: "power3.out", delay: 0.15, clearProps: "transform,opacity" });
+    }
+    if (document.querySelector(".stat")) {
+      G.from(".stat", { y: 18, opacity: 0, scale: 0.95, duration: 0.5, stagger: 0.08, ease: "back.out(1.5)", delay: 0.25, clearProps: "transform,opacity" });
+    }
+    failsafe(".sidebar, .topbar > *" + (document.querySelector(".hero-text") ? ", .hero-text > *" : "") + (document.querySelector(".stat") ? ", .stat" : ""));
   }
 
   function animateTiles() {
@@ -89,11 +111,12 @@
     var list  = qs("#search-results");
     if (!input || !list) return;
 
-    var url = input.dataset.url;
-    if (!url) return;
+    var rawUrl = input.dataset.url;
+    if (!rawUrl) return;
+    var url = resolveAppPath(rawUrl);
 
     var timer;
-    var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo" };
+    var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo", "modulo-asignar": "Módulo", ciclo: "Ciclo" };
 
     function escHtml(s) {
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
@@ -114,7 +137,7 @@
       }
       data.forEach(function (r) {
         var li = document.createElement("li");
-        li.innerHTML = '<a href="' + escHtml(r.url) + '" class="search-result-item">'
+        li.innerHTML = '<a href="' + escHtml(resolveAppPath(r.url)) + '" class="search-result-item">'
           + '<span class="search-result-tag">' + escHtml(TYPE_LABELS[r.type] || r.type) + '</span>'
           + '<span class="search-result-label">' + escHtml(r.label) + '</span>'
           + "</a>";
@@ -156,8 +179,6 @@
     try { seenIds = JSON.parse(localStorage.getItem(SEEN_KEY) || "[]"); } catch (e) { seenIds = []; }
 
     var pagoItems = document.querySelectorAll(".notif-item--pago");
-    /* true if the dot was rendered visible for unread messages (server-side) */
-    var dotHasMsgs = dot && parseInt(dot.dataset.msgs || "0", 10) > 0;
 
     /* Hide "Nuevo" badge on already-seen pagos */
     pagoItems.forEach(function (item) {
@@ -189,8 +210,8 @@
         });
         seenIds = seenIds.slice(-50);
         try { localStorage.setItem(SEEN_KEY, JSON.stringify(seenIds)); } catch (e) {}
-        /* Hide dot only if it was NOT shown for unread messages */
-        if (!dotHasMsgs && dot) dot.setAttribute("hidden", "");
+        /* Hide dot only if there are no current unread messages */
+        if (dot && parseInt(dot.dataset.msgs || "0", 10) <= 0) dot.setAttribute("hidden", "");
       }
     });
 
@@ -259,6 +280,27 @@
     /* Notifications */
     initNotifications();
 
+    /* Poll unread count every 30 s — keeps dot in sync without a page reload */
+    (function pollUnread() {
+      var dot = qs("#notif-dot");
+      if (!dot) return;
+      var POLL_URL = resolveAppPath('controladores/comunes/contar_no_leidos.php');
+      
+      setInterval(function() {
+        fetch(POLL_URL, { credentials: 'same-origin' })
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            var n = parseInt(d.count || 0, 10);
+            var prev = parseInt(dot.dataset.msgs || '0', 10);
+            if (n > prev) {
+              dot.dataset.msgs = n;
+              dot.removeAttribute('hidden');
+            }
+          })
+          .catch(function() {});
+      }, 30000);
+    })();
+
     /* Tile click elastic feedback */
     document.addEventListener("click", function (e) {
       var tile = e.target.closest(".tile");
@@ -271,5 +313,8 @@
     animateIntro();
     animateTiles();
   });
+
+  // Expose helper to global scope if needed
+  window.resolveAppPath = resolveAppPath;
 
 })();

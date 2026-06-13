@@ -185,6 +185,12 @@ function _nav_active_prof($check) {
         <?php if (_nav_active_prof('reclamaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../chat/index.php" class="nav-item<?= _nav_active_prof('chat') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="nav-label">Chat</span>
+        <?php if (_nav_active_prof('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
       <a href="../eventos/lista.php" class="nav-item<?= _nav_active_prof('eventos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>
         <span class="nav-label">Eventos</span>
@@ -264,7 +270,28 @@ function _nav_active_prof($check) {
       </div>
     </header>
     <div class="content">
-      <?php if (isset($_SESSION['idProfesor'])) { ?>
-        <div id="firebase-user-data" data-user-id="<?= Security::escapeHtml($_SESSION['idProfesor']) ?>" data-user-role="profesor" class="oculto"></div>
-        <script type="module" src="../../../public/js/firebase/firebase-init.js"></script>
+      <?php if (isset($_SESSION['idProfesor'])) { 
+          $configFB = Config::getInstance();
+      ?>
+        <div id="firebase-user-data" 
+             data-user-id="<?= Security::escapeHtml($_SESSION['idProfesor']) ?>" 
+             data-user-role="profesor" 
+             data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
+             data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"
+             data-project-id="<?= $configFB->get('FIREBASE_PROJECT_ID') ?>"
+             data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
+             data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
+             data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
+             class="oculto"></div>
+        <script type="module">
+            import { setupFirebase } from '../../../public/js/firebase/firebase.js';
+            const userData = document.getElementById('firebase-user-data');
+            if (userData) {
+                const userId = userData.dataset.userId;
+                const userRole = userData.dataset.userRole;
+                if (userId && userRole) {
+                    setupFirebase(userId, userRole);
+                }
+            }
+        </script>
       <?php } ?>

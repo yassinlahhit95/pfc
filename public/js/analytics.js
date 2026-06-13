@@ -8,6 +8,11 @@ class AulaAnalytics {
         this.tipoUsuario = tipoUsuario;
         this.idModulo = idModulo;
         this.sessionStart = Date.now();
+        
+        // Determine the root path relative to this script (3 levels up from public/js/analytics.js)
+        const scriptUrl = new URL(document.currentScript ? document.currentScript.src : window.location.origin + '/public/js/analytics.js');
+        this.appRoot = new URL('../../../', scriptUrl).pathname;
+        
         this.init();
     }
 
@@ -110,7 +115,7 @@ class AulaAnalytics {
         };
 
         // Enviar a servidor (asíncrono, no bloquea)
-        fetch('/controladores/comunes/registrarAnalytics.php', {
+        fetch(this.appRoot + 'controladores/comunes/registrarAnalytics.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

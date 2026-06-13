@@ -45,8 +45,12 @@ if (empty($estudiantes)) {
     header("Location: $_back"); exit;
 }
 
-$reportService = new ReportService();
-$reportService->generateListado($cfg, $ciclo, $estudiantes);
-
-$filename = 'listado_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
-$reportService->stream($filename);
+try {
+    $reportService = new ReportService();
+    $reportService->generateListado($cfg, $ciclo, $estudiantes);
+    $filename = 'listado_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
+    $reportService->stream($filename);
+} catch (\Throwable $e) {
+    $_SESSION['errores'] = 'Error al generar el PDF: ' . $e->getMessage();
+    header("Location: $_back"); exit;
+}

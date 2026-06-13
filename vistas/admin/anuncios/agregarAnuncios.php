@@ -18,8 +18,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <?php if ($errores) { ?>
-        <div class="mensaje-error"><?= $errores ?></div>
-<?php } ?>
+        <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
+    <?php } ?>
 
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">

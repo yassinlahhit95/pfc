@@ -37,8 +37,8 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="calificacionesRetos.php?idReto=<?= $idReto ?>&idCiclo=<?= $idCiclo ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($errores) { ?><div class="mensaje-error"><?= $errores ?></div><?php } ?>
-<?php if ($exito)   { ?><div class="mensaje-exito"><?= $exito ?></div><?php } ?>
+<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
+<?php if ($exito)   { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php } ?>
 
 <div class="panel">
     <div class="titulo-tarjeta">

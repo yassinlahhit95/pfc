@@ -1,0 +1,63 @@
+<?php
+require_once __DIR__ . '/../../config/Config.php';
+require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../modelos/chat.php';
+
+if (session_status() === PHP_SESSION_NONE) session_start();
+header('Content-Type: application/json; charset=utf-8');
+
+function jsonErr(string $msg): never {
+    echo json_encode(['ok' => false, 'error' => $msg]);
+    exit;
+}
+
+if (!empty($_SESSION['idAdmin'])) {
+    $myRol = 'admin';    $myId = (int)$_SESSION['idAdmin'];
+} elseif (!empty($_SESSION['idProfesor'])) {
+    $myRol = 'profesor'; $myId = (int)$_SESSION['idProfesor'];
+} elseif (!empty($_SESSION['idEstudiante'])) {
+    $myRol = 'estudiante'; $myId = (int)$_SESSION['idEstudiante'];
+} else {
+    jsonErr('Sin sesión');
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('Método no permitido');
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) jsonErr('CSRF inválido');
+
+$convId   = (int)($_POST['conv_id'] ?? 0);
+$contenido = trim($_POST['contenido'] ?? '');
+if ($convId <= 0 || $contenido === '') jsonErr('Datos incompletos');
+
+$conv = chatConversacionPorId($convId);
+if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) jsonErr('No autorizado');
+
+$newId = chatInsertarMensaje($convId, $myRol, $myId, $contenido);
+
+// ── Push notification to the other participant (non-fatal) ──────────────────
+$destRol = ($conv['user_a_rol'] === $myRol && (int)$conv['user_a_id'] === $myId)
+    ? $conv['user_b_rol'] : $conv['user_a_rol'];
+$destId  = ($conv['user_a_rol'] === $myRol && (int)$conv['user_a_id'] === $myId)
+    ? (int)$conv['user_b_id'] : (int)$conv['user_a_id'];
+
+$emisorNombre = chatNombreUsuario($myRol, $myId);
+
+require_once __DIR__ . '/../firebase/firebase_helper.php';
+$destToken = obtenerTokenUsuario($destId, $destRol);
+if ($destToken) {
+    $cuerpoPush = mb_strimwidth($contenido, 0, 120, '…');
+    @enviarNotificacionFirebase($destToken, 'Nuevo mensaje de ' . $emisorNombre, $cuerpoPush);
+}
+
+$msg = [
+    'id'           => $newId,
+    'conversacion_id' => $convId,
+    'emisor_rol'   => $myRol,
+    'emisor_id'    => $myId,
+    'emisor_nombre'=> $emisorNombre,
+    'contenido'    => $contenido,
+    'fecha'        => date('Y-m-d H:i:s'),
+    'leido'        => 0,
+];
+
+echo json_encode(['ok' => true, 'message' => $msg]);

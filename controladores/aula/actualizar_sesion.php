@@ -16,7 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-Security::validateCSRFToken($_POST['csrf_token'] ?? '') or die('CSRF validation failed');
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+    $_SESSION['errores'] = "Solicitud inválida (error de seguridad). Por favor, intenta de nuevo.";
+    header("Location: ../../vistas/profesores/aula/editar.php?id=" . (int)($_POST['idSesion'] ?? 0));
+    exit;
+}
 
 $idSesion = (int)($_POST['id'] ?? 0);
 $titulo = Security::sanitize($_POST['titulo'] ?? '');

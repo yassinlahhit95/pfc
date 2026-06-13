@@ -12,7 +12,14 @@ $tokenFCM = $_REQUEST['token'] ?? '';
 $idUsuario = (int)($_REQUEST['userId'] ?? 0);
 $rolUsuario = $_REQUEST['userRole'] ?? '';
 
-if (!empty($tokenFCM) && $idUsuario > 0 && !empty($rolUsuario)) {
+// Verify the session matches the claimed identity before saving the token
+$sessionOk = (
+    ($rolUsuario === 'admin'      && !empty($_SESSION['idAdmin'])      && (int)$_SESSION['idAdmin']      === $idUsuario) ||
+    ($rolUsuario === 'profesor'   && !empty($_SESSION['idProfesor'])   && (int)$_SESSION['idProfesor']   === $idUsuario) ||
+    ($rolUsuario === 'estudiante' && !empty($_SESSION['idEstudiante']) && (int)$_SESSION['idEstudiante'] === $idUsuario)
+);
+
+if (!empty($tokenFCM) && $idUsuario > 0 && !empty($rolUsuario) && $sessionOk) {
 
     $resultado = false;
 

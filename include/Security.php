@@ -16,14 +16,20 @@ class Security {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    }
 
-        // Regenerar ID de sesión periódicamente.
-        // OJO: false (no borrar la sesión antigua de inmediato) evita perder la
-        // sesión/token CSRF cuando hay varias peticiones casi simultáneas
-        // (carga de página + AJAX + subida), lo que provocaba fallos de CSRF.
-        if (!isset($_SESSION['_last_regen']) || time() - $_SESSION['_last_regen'] > 600) {
-            session_regenerate_id(false);
-            $_SESSION['_last_regen'] = time();
+    // Call this ONLY at login/logout, not on every request.
+    // Periodic regeneration during normal requests loses the CSRF token on
+    // shared hosting (LiteSpeed/cPanel) even with the keep-old-data flag.
+    public static function regenerateSession() {
+        $keep = ['csrf_token', 'csrf_token_time'];
+        $saved = [];
+        foreach ($keep as $k) {
+            if (isset($_SESSION[$k])) $saved[$k] = $_SESSION[$k];
+        }
+        session_regenerate_id(true);
+        foreach ($saved as $k => $v) {
+            $_SESSION[$k] = $v;
         }
     }
 

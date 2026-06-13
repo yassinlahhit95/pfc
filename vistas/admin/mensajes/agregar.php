@@ -1,132 +1,151 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 
-$exito = $_SESSION['exito'] ?? '';
+if (!isset($_SESSION['idAdmin'])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
+$exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
+
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$tipoDeDestinatario = $_GET['tipoDestinatario'] ?? "profesor";
-$idCicloSeleccionado = $_GET['idCiclo'] ?? "";
-
-$listaDeProfesores = [];
-$listaDeEstudiantes = [];
+$tipo   = $_GET['tipoDestinatario'] ?? 'profesor';
+$idCiclo = $_GET['idCiclo'] ?? '';
 $listaDeCiclos = listarTodosLosCiclos();
 
-if ($tipoDeDestinatario == 'profesor') {
-    $listaDeProfesores = listarProfesores();
+if ($tipo === 'profesor') {
+    $listaDeProfesores  = listarProfesores();
+    $listaDeEstudiantes = [];
 } else {
-    if (!empty($idCicloSeleccionado)) {
-        $listaDeEstudiantes = listarEstudiantesPorCiclo($idCicloSeleccionado);
-    } else {
-        $listaDeEstudiantes = listarEstudiantes();
-    }
+    $listaDeProfesores  = [];
+    $listaDeEstudiantes = !empty($idCiclo) ? listarEstudiantesPorCiclo($idCiclo) : listarEstudiantes();
 }
 
-$datos_form = $_SESSION['datos_mensaje'] ?? [];
+$datos = $_SESSION['datos_mensaje'] ?? [];
+unset($_SESSION['datos_mensaje']);
 
-$titulo_pagina = "AULAPRO | REDACTAR MENSAJE OFICIAL";
+$titulo_pagina = "AULAPRO | Redactar Mensaje";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
+<link rel="stylesheet" href="../../../public/css/mensajes.css">
 
-<div class="cabecera">
-    <h1>REDACTAR NUEVO MENSAJE</h1>
-    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:var(--gap);">
+    <a href="lista.php" class="ibtn ibtn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= $errores ?></div>
-<?php } ?>
+<?php if ($errores): ?>
+<div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#dc2626;">
+    <i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml($errores) ?>
+    <button class="inbox-banner-close" style="color:#dc2626;" onclick="this.parentElement.remove()">×</button>
+</div>
+<?php endif; ?>
 
-<div class="panel">
+<div class="compose-card">
+    <div class="compose-head">
+        <h2><i class="fas fa-pen" style="color:var(--accent);margin-right:8px;"></i> Redactar Mensaje Oficial</h2>
+        <p>Envía un mensaje a un profesor, estudiante o a todo un ciclo formativo</p>
+    </div>
 
-    <div class="campo margen-abajo">
-        <label class="texto-negrita">1. Seleccionar Grupo de Destino:</label>
-        <div class="caja espacio-pequeno" style="margin-top: 10px;">
-            <a href="?tipoDestinatario=profesor" class="boton-<?= ($tipoDeDestinatario == 'profesor' ? 'primario' : 'secundario') ?>">
+    <!-- Recipient type toggle -->
+    <div style="padding:0 var(--pad);margin-bottom:18px;">
+        <div class="compose-label" style="margin-bottom:8px;">1. Grupo de destino</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="?tipoDestinatario=profesor<?= !empty($idCiclo) ? '&idCiclo='.$idCiclo : '' ?>"
+               class="ibtn <?= $tipo === 'profesor' ? 'ibtn-primary' : 'ibtn-secondary' ?>">
                 <i class="fas fa-chalkboard-teacher"></i> Profesores
             </a>
-            <a href="?tipoDestinatario=estudiante" class="boton-<?= ($tipoDeDestinatario == 'estudiante' ? 'primario' : 'secundario') ?>">
+            <a href="?tipoDestinatario=estudiante<?= !empty($idCiclo) ? '&idCiclo='.$idCiclo : '' ?>"
+               class="ibtn <?= $tipo === 'estudiante' ? 'ibtn-primary' : 'ibtn-secondary' ?>">
                 <i class="fas fa-user-graduate"></i> Estudiantes
             </a>
         </div>
     </div>
 
-    <hr class="margen-abajo" style="opacity: 0.2;">
-
     <form action="../../../controladores/admin/mensajes/insertar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="emisor_rol" value="admin">
-        <input type="hidden" name="tipoDestinatario" value="<?= $tipoDeDestinatario ?>">
-        <input type="hidden" name="idCicloMasivo" value="<?= $idCicloSeleccionado ?>">
+        <input type="hidden" name="tipoDestinatario" value="<?= Security::escapeHtml($tipo) ?>">
+        <input type="hidden" name="idCicloMasivo" value="<?= Security::escapeHtml($idCiclo) ?>">
 
-        <?php if ($tipoDeDestinatario == 'estudiante') { ?>
-        <div class="form-cols margen-abajo">
-            <div class="campo">
-                <label class="texto-negrita" for="filtroCiclo">2. Filtrar por Ciclo (Opcional):</label>
-                <select id="filtroCiclo" onchange="window.location.href='?tipoDestinatario=estudiante&idCiclo='+this.value">
-                    <option value="">-- Todos los estudiantes --</option>
-                    <?php foreach ($listaDeCiclos as $cicloItem) { ?>
-                        <option value="<?= $cicloItem['idCiclo'] ?>" <?= ($idCicloSeleccionado == $cicloItem['idCiclo'] ? 'selected' : '') ?>>
-                            <?= $cicloItem['nombreCiclo'] ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+        <div class="compose-body">
 
-            <div class="campo">
-                <label class="texto-negrita" for="idEstudiante">3. Estudiante Específico: <?php if (!empty($idCicloSeleccionado)) { ?><span class="texto-suave">Deja en blanco para enviar a todo el ciclo.</span><?php } ?></label>
-                <select id="idEstudiante" name="idEstudiante" class="ancho-total">
-                    <option value="">-- Todos los del ciclo seleccionado --</option>
-                    <?php foreach ($listaDeEstudiantes as $estudianteItem) { ?>
-                        <?php $selected = (isset($datos_form['idEstudiante']) && $datos_form['idEstudiante'] == $estudianteItem['idEstudiante']) ? 'selected' : ''; ?>
-                        <option value="<?= $estudianteItem['idEstudiante'] ?>" <?= $selected ?>>
-                            <?= $estudianteItem['nombreEstudiante'] ?> (<?= $estudianteItem['nombreCiclo'] ?>)
+        <?php if ($tipo === 'estudiante'): ?>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:18px;" class="compose-cols">
+                <div class="compose-field">
+                    <label class="compose-label">2. Filtrar por ciclo (opcional)</label>
+                    <select class="compose-select" onchange="window.location.href='?tipoDestinatario=estudiante&idCiclo='+this.value">
+                        <option value="">— Todos los estudiantes —</option>
+                        <?php foreach ($listaDeCiclos as $c): ?>
+                        <option value="<?= (int)$c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($c['nombreCiclo']) ?>
                         </option>
-                    <?php } ?>
-                </select>
-                
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="compose-field">
+                    <label class="compose-label">
+                        3. Estudiante específico
+                        <?php if (!empty($idCiclo)): ?><span style="font-weight:500;color:var(--mut);text-transform:none;letter-spacing:0;">(vacío = enviar a todo el ciclo)</span><?php endif; ?>
+                    </label>
+                    <select name="idEstudiante" class="compose-select">
+                        <option value="">— Todos del ciclo —</option>
+                        <?php foreach ($listaDeEstudiantes as $est): ?>
+                        <option value="<?= (int)$est['idEstudiante'] ?>"
+                            <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($est['nombreEstudiante']) ?> (<?= Security::escapeHtml($est['nombreCiclo'] ?? '') ?>)
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
-        </div>
-        <?php } else { ?>
-        <div class="campo margen-abajo">
-            <label class="texto-negrita" for="idProfesor">2. Destinatario Específico</label>
-            <select id="idProfesor" name="idProfesor" class="ancho-total">
-                <option value="">-- Seleccionar Nombre --</option>
-                <?php foreach ($listaDeProfesores as $profesorItem) { ?>
-                    <?php $selected = (isset($datos_form['idProfesor']) && $datos_form['idProfesor'] == $profesorItem['idProfesor']) ? 'selected' : ''; ?>
-                    <option value="<?= $profesorItem['idProfesor'] ?>" <?= $selected ?>>
-                        <?= $profesorItem['nombreProfesor'] ?>
+        <?php else: ?>
+            <div class="compose-field">
+                <label class="compose-label">2. Destinatario específico</label>
+                <select name="idProfesor" class="compose-select">
+                    <option value="">— Seleccionar profesor —</option>
+                    <?php foreach ($listaDeProfesores as $prof): ?>
+                    <option value="<?= (int)$prof['idProfesor'] ?>"
+                        <?= (isset($datos['idProfesor']) && $datos['idProfesor'] == $prof['idProfesor']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($prof['nombreProfesor']) ?>
                     </option>
-                <?php } ?>
-            </select>
-            
-        </div>
-        <?php } ?>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        <?php endif; ?>
 
-        <div class="campo">
-            <label class="texto-negrita" for="asunto">Asunto del Mensaje</label>
-            <input type="text" id="asunto" name="asunto" class="ancho-total" placeholder="Ej: Convocatoria de reunión, Aviso importante..." value="<?= $datos_form['asunto'] ?? '' ?>">
-            
+            <div class="compose-field">
+                <label class="compose-label" for="asunto">Asunto</label>
+                <input type="text" id="asunto" name="asunto" class="compose-input"
+                       placeholder="Escribe el asunto del mensaje..."
+                       value="<?= Security::escapeHtml($datos['asunto'] ?? '') ?>">
+            </div>
+
+            <div class="compose-field">
+                <label class="compose-label" for="descripcion">Mensaje</label>
+                <textarea id="descripcion" name="descripcion" class="compose-textarea" maxlength="1000"
+                          placeholder="Escribe el contenido del mensaje..."><?= Security::escapeHtml($datos['descripcion'] ?? '') ?></textarea>
+            </div>
+
         </div>
 
-        <div class="campo margen-arriba">
-            <label class="texto-negrita" for="descripcion">Cuerpo del Mensaje</label>
-            <textarea id="descripcion" name="descripcion" rows="6" class="ancho-total" placeholder="Escribe aquí el contenido detallado del mensaje..."><?= $datos_form['descripcion'] ?? '' ?></textarea>
-            
-        </div>
-
-        <div class="acciones">
-            <input type="reset" class="boton-secundario" value="Limpiar">
-            <input type="submit" name="enviarMensaje" class="boton-primario" value="Enviar Mensaje Oficial">
+        <div class="compose-actions">
+            <button type="submit" name="enviarMensaje" class="ibtn ibtn-primary">
+                <i class="fas fa-paper-plane"></i> Enviar Mensaje
+            </button>
+            <input type="reset" class="ibtn ibtn-secondary" value="Limpiar">
+            <a href="lista.php" class="ibtn ibtn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script src="../../../public/js/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/mensajes.js') ?>"></script>
+<style>
+@media(max-width:640px){.compose-cols{grid-template-columns:1fr !important;}}
+</style>
