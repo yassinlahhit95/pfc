@@ -12,7 +12,22 @@ function obtenerConfiguracionCentro() {
         'cursoEscolar' => date('Y') . '-' . (date('Y') + 1),
         'logoCentro' => '', 'logoGobierno1' => '', 'logoGobierno2' => '',
         'textoLegal' => '', 'nombreDirectorFirmante' => '',
+        'feature_prematricula' => 1,
+        'feature_chat' => 1,
+        'feature_inventario' => 1
     ];
+}
+
+function actualizarFeatureToggle($feature, $estado) {
+    $con = obtenerConexion();
+    $featuresValidas = ['feature_prematricula', 'feature_chat', 'feature_inventario'];
+    if (!in_array($feature, $featuresValidas)) return false;
+    
+    $sql = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";
+    $stmt = mysqli_prepare($con, $sql);
+    $val = ($estado == 1) ? 1 : 0;
+    mysqli_stmt_bind_param($stmt, 'i', $val);
+    return mysqli_stmt_execute($stmt);
 }
 
 function guardarConfiguracionCentro($d) {

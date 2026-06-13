@@ -52,17 +52,95 @@
       document.getElementById('verNombre').textContent = nombre;
       this.abrirModal('modalVersion');
     },
-    mover(id, nombre, tipo) {
-      document.getElementById('mvId').value = id;
-      document.getElementById('mvTipo').value = tipo;
-      document.getElementById('mvNombre').textContent = nombre;
+    // ── Menú contextual de cada recurso ──────────────────
+    menu(btn) {
+      if (btn._menu === undefined) btn._menu = btn.nextElementSibling;
+      const m = btn._menu;
+      if (!m || !m.classList.contains('recurso-menu')) return;
+      const yaAbierto = m.classList.contains('abierto');
+      cerrarMenus();
+      if (yaAbierto) return;
+      // Mover al <body> para que no lo recorte el overflow de la tabla
+      if (m.parentNode !== document.body) document.body.appendChild(m);
+      m.classList.add('abierto');
+      const r = btn.getBoundingClientRect();
+      const ancho = m.offsetWidth || 200;
+      let izq = r.right - ancho;
+      if (izq < 8) izq = 8;
+      let top = r.bottom + 6;
+      const alto = m.offsetHeight || 180;
+      if (top + alto > window.innerHeight) {
+        top = r.top - alto - 6;
+        if (top < 8) top = 8;
+      }
+      m.style.top = top + 'px';
+      m.style.left = izq + 'px';
+    },
+
+    // ── Mover archivo ────────────────────────────────────
+    mover(id) {
+      this._moverId = id;
       this.abrirModal('modalMover');
     },
-    borrar(id, nombre, tipo) {
-      document.getElementById('delId').value = id;
-      document.getElementById('delTipo').value = tipo;
-      document.getElementById('delNombre').textContent = nombre;
-      this.abrirModal('modalBorrar');
+    confirmarMover(idModulo) {
+      // moverArchivo.php requiere POST + token CSRF y termina con un redirect,
+      // por eso enviamos un formulario real (no fetch/GET).
+      const destino = document.getElementById('mvCarpeta').value;
+      const campos = {
+        csrf_token: tokenCSRF(),
+        id: this._moverId,
+        carpeta: destino,
+        modulo: idModulo,
+        regresar: carpetaActual()
+      };
+      const f = document.createElement('form');
+      f.method = 'POST';
+      f.action = CTRL + 'moverArchivo.php';
+      for (const k in campos) {
+        const inp = document.createElement('input');
+        inp.type = 'hidden';
+        inp.name = k;
+        inp.value = campos[k];
+        f.appendChild(inp);
+      }
+      document.body.appendChild(f);
+      f.submit();
+    },
+
+    // ── Copiar enlace al portapapeles ────────────────────
+    copiarEnlace(url) {
+      const abs = new URL(url, window.location.href).href;
+      const ok = () => this.toast('<i class="fas fa-check"></i> Enlace copiado');
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(abs).then(ok).catch(() => this._copiaManual(abs, ok));
+      } else {
+        this._copiaManual(abs, ok);
+      }
+      cerrarMenus();
+    },
+    _copiaManual(texto, ok) {
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); ok(); } catch (e) { /* noop */ }
+      document.body.removeChild(ta);
+    },
+
+    // ── Visor de documentos ──────────────────────────────
+    verDocumento(url, nombre, ext) {
+      const cuerpo = document.getElementById('visorCuerpo');
+      document.getElementById('visorTitulo').textContent = nombre;
+      document.getElementById('visorDescargar').href = url.replace('modo=ver', 'modo=descarga');
+      ext = (ext || '').toLowerCase();
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+        cuerpo.innerHTML = '<img src="' + url + '" alt="">';
+      } else {
+        cuerpo.innerHTML = '<iframe src="' + url + '"></iframe>';
+      }
+      this.abrirModal('modalVisor');
     },
 
     // ── Acciones AJAX (sin recargar la página) ──────────────────────────────
@@ -158,7 +236,7 @@
   }
 
   function cerrarMenus() {
-    document.querySelectorAll('.menu-contextual.visible').forEach(m => m.classList.remove('visible'));
+    document.querySelectorAll('.recurso-menu.abierto').forEach(m => m.classList.remove('abierto'));
   }
 
   // Eventos globales
@@ -170,5 +248,12 @@
       AulaRecursos.cerrarModal(e.target.id);
     }
   });
+
+  // Cerrar menús contextuales al hacer clic fuera de ellos
+  document.addEventListener('click', e => {
+    if (e.target.closest('.recurso-menu-btn') || e.target.closest('.recurso-menu')) return;
+    cerrarMenus();
+  });
+  window.addEventListener('resize', cerrarMenus);
 
 })();

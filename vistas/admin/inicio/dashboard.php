@@ -223,6 +223,21 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
+  <a href="../admisiones/listado.php" class="tile card-soft" style="--tint:#4F46E5; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 5.9L11.8 16.1l-4.2-4.2"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Admisiones</span>
+      <span class="tile-desc">Gestión de pre-matrículas</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Revisar solicitudes</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
   <a href="../configuracion/configuracion.php" class="tile card-soft" style="--tint:#64748B; text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">

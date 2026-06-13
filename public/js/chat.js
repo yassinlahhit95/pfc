@@ -60,7 +60,7 @@ function playSound(dir) {
             osc.frequency.setValueAtTime(520, now);
         }
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(dir === 'in' ? 0.22 : 0.12, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.7, now + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.0001, now + (dir === 'in' ? 0.3 : 0.16));
         osc.start(now);
         osc.stop(now + (dir === 'in' ? 0.32 : 0.18));
@@ -247,6 +247,9 @@ window.AulaChat = (function () {
                 clearInterval(pollTimer);
                 pollTimer = setInterval(fetchNew, POLL_MS);
             }
+
+            // Focus automático al iniciar
+            setTimeout(() => el.input()?.focus(), 200);
         },
         destroy() {
             clearInterval(pollTimer);

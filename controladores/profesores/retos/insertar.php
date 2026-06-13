@@ -60,6 +60,26 @@ if (isset($_POST['insertarReto'])) {
 
     $resultado = insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $modulosSeleccionados);
     if ($resultado) {
+        $idNuevoReto = mysqli_insert_id(obtenerConexion());
+
+        // Manejo de archivos adjuntos
+        if (!empty($_FILES['archivosReto']['name'][0])) {
+            $uploadDir = "../../../public/uploads/retos/";
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+            foreach ($_FILES['archivosReto']['tmp_name'] as $key => $tmpName) {
+                $fileName = $_FILES['archivosReto']['name'][$key];
+                $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+                $newFileName = "reto_" . $idNuevoReto . "_" . time() . "_" . $key . "." . $fileExt;
+                $dest = $uploadDir . $newFileName;
+
+                if (move_uploaded_file($tmpName, $dest)) {
+                    $tipo = (in_array(strtolower($fileExt), ['jpg', 'jpeg', 'png', 'gif'])) ? 'imagen' : 'pdf';
+                    registrarArchivoReto($idNuevoReto, $fileName, "public/uploads/retos/" . $newFileName, $tipo);
+                }
+            }
+        }
+
         $_SESSION['exito'] = "Reto insertado correctamente.";
         header("Location: ../../../vistas/profesores/retos/lista.php");
         exit;

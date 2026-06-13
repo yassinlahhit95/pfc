@@ -91,17 +91,26 @@ export async function setupFirebase(id, rol) {
 }
 
 function bumpNotifDot() {
-    var dot = document.getElementById('notif-dot');
+    const dot = document.getElementById('notif-dot');
     if (!dot) return;
-    var prev = parseInt(dot.dataset.msgs || '0', 10);
-    dot.dataset.msgs = prev + 1;
+
+    let current = parseInt(dot.dataset.msgs || '0', 10);
+    current++;
+    
+    dot.dataset.msgs = current;
+    dot.textContent = current > 9 ? '9+' : current;
     dot.removeAttribute('hidden');
+    
+    // Animación de pulso opcional
+    dot.style.animation = 'none';
+    dot.offsetHeight; // trigger reflow
+    dot.style.animation = 'pulse 0.5s ease-in-out';
 }
 
 if (fcm) {
     onMessage(fcm, function(p) {
-        var t = (p.data && p.data.title) ? p.data.title : (p.notification ? p.notification.title : "Aviso");
-        var m = (p.data && p.data.body)  ? p.data.body  : (p.notification ? p.notification.body  : "Tienes un mensaje nuevo");
+        const t = (p.data && p.data.title) ? p.data.title : (p.notification ? p.notification.title : "Aviso");
+        const m = (p.data && p.data.body)  ? p.data.body  : (p.notification ? p.notification.body  : "Tienes un mensaje nuevo");
 
         avisoPush(t, m);
         bumpNotifDot();

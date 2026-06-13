@@ -1,85 +1,70 @@
-# AulaPro - Sistema de Gestión Académica (TFG)
+# AulaPro - Sistema de Gestión Académica Premium (TFG)
 
 [![PHP Version](https://img.shields.io/badge/php-%5E8.2-blue.svg)](https://www.php.net/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**AulaPro** es una plataforma web integral diseñada para la gestión de centros de formación y escuelas, con un enfoque especial en Ciclos de Formación Profesional (FP). Este proyecto fue desarrollado como Trabajo de Fin de Grado (TFG) para modernizar y centralizar la administración académica, la comunicación y el control de recursos.
+**AulaPro** es una plataforma web integral de alto nivel diseñada para la gestión de centros de formación y escuelas, con un enfoque especial en Ciclos de Formación Profesional (FP). Desarrollada como Trabajo de Fin de Grado (TFG), la plataforma combina una arquitectura robusta con una experiencia de usuario fluida (Smooth UI) para modernizar la administración académica.
 
-## 🚀 Funcionalidades Principales
+## 🚀 Funcionalidades Destacadas
 
-### 📚 Gestión Académica
-- **Matriculación y Usuarios:** Control total sobre el alta de alumnos, profesores y personal administrativo.
-- **Ciclos y Módulos:** Estructuración de la oferta formativa por ciclos y sus respectivos módulos.
-- **Sistema de Calificaciones Avanzado:** Cálculo automático de la nota final basado en un baremo configurable (por defecto: 75% módulos y 25% retos/proyectos).
-- **Generación de Boletines:** Creación de informes de notas en PDF con códigos QR de verificación.
+### 📝 Sistema de Admisión Inteligente (CRM)
+- **Portal de Pre-matrícula:** Asistente dinámico (Wizard) por pasos para solicitantes con subida asíncrona de documentación (DNI, Expedientes).
+- **Conversión Automática:** Proceso de un solo clic para convertir aspirantes en alumnos activos, generando automáticamente sus cuentas.
+- **Identidad Institucional:** Generación automática de correos corporativos (`nombre.apellido@aulapro.com`) para los nuevos alumnos.
+- **Seguimiento de Estado:** Los aspirantes pueden consultar el estado de su solicitud en tiempo real mediante su DNI.
 
-### 💬 Comunicación y Notificaciones
-- **Chat Interno:** Sistema de mensajería en tiempo real para la comunidad educativa.
-- **Notificaciones Push:** Integración con Firebase para alertas instantáneas.
-- **Email Transaccional:** Envío de avisos y reportes a través de la API de Brevo.
+### 🏆 Gestión de Retos y Proyectos (Premium)
+- **Materiales Multi-archivo:** Soporte para adjuntar múltiples documentos (PDF, imágenes) a cada reto.
+- **Barra de Progreso AJAX:** Feedback visual en tiempo real durante la subida de archivos pesados.
+- **Descarga Inteligente:** Sistema de "Hover Reveal" para archivos individuales y opción de descarga masiva en formato **ZIP**.
+- **Edición Fluida:** Borrado de materiales mediante AJAX con animaciones de desvanecimiento sin recarga de página.
 
-### 📦 Gestión de Recursos
-- **Inventario:** Control de existencias y sistema de préstamos de material para estudiantes.
-- **Gestión de Pagos:** Seguimiento de las cuotas mensuales de los alumnos.
-- **Repositorio de TFG:** Espacio para la subida y corrección de proyectos finales.
+### 💬 Comunicación y Control Modular
+- **Notificaciones Premium:** Sistema basado en Firebase con interfaz **Glassmorphism**, animaciones suaves y sincronización con el contador de la campana en el menú superior.
+- **Chat en Tiempo Real:** Mensajería instantánea optimizada con foco automático y notificaciones sonoras.
+- **Panel de Control Modular:** Sistema de **Feature Toggles** que permite activar o desactivar módulos (Chat, Admisiones, Inventario) en tiempo real desde la configuración.
+- **Email Transaccional:** Automatización de avisos y credenciales mediante la API de Brevo.
 
 ## 🛠️ Stack Tecnológico
 
-- **Backend:** PHP 8.2 (Nativo)
-- **Base de Datos:** MySQL / MariaDB
-- **Frontend:** HTML5, CSS3 (Fuente Gilroy), JavaScript (jQuery)
+- **Backend:** PHP 8.2 (Programación Orientada a Objetos y Procedimental)
+- **Base de Datos:** MySQL / MariaDB (Esquema optimizado con integridad referencial)
+- **Frontend:** HTML5, CSS3 (Custom Dashboard UI), JavaScript (jQuery + AJAX)
 - **Librerías principales:**
-  - `mpdf/mpdf`: Generación de documentos PDF.
-  - `endroid/qr-code`: Creación de códigos QR.
-  - `phpoffice/phpspreadsheet`: Exportación de datos a Excel.
-- **Servicios Externos:** Firebase (Notificaciones) y Brevo (Emails).
+  - `mpdf/mpdf`: Generación de informes y boletines PDF.
+  - `endroid/qr-code`: Códigos QR para verificación de documentos.
+  - `SweetAlert2`: Notificaciones y modales elegantes.
+  - `GSAP`: Animaciones de interfaz de alto rendimiento.
 
-## 📋 Requisitos
+## 📋 Requisitos e Instalación
 
-- Servidor web (Apache recomendado) con PHP 8.2 o superior.
+### Requisitos del Sistema
+- Servidor web (Apache/Nginx) con PHP 8.2+.
 - MySQL 5.7 o MariaDB 10.4+.
-- [Composer](https://getcomposer.org/) instalado.
-- (Opcional) Docker Desktop para ejecución en contenedores.
+- Extensión `zip` de PHP habilitada (para descargas masivas).
+- [Composer](https://getcomposer.org/) para gestión de dependencias.
 
-## 🔧 Instalación
-
-### Opción 1: Servidor Local (XAMPP/Laragon)
-1. **Clonar el repositorio:**
+### Pasos de Instalación
+1. **Clonar e instalar dependencias:**
    ```bash
    git clone https://github.com/tu-usuario/pfc.git
    cd pfc
-   ```
-
-2. **Instalar dependencias:**
-   ```bash
    composer install
    ```
 
-3. **Configuración de la Base de Datos:**
-   - Crea una base de datos en tu servidor MySQL.
-   - Importa el archivo inicial `database.sql`.
-   - Aplica las actualizaciones en la carpeta `migrations/` en orden cronológico.
+2. **Base de Datos:**
+   - Importa el archivo `database.sql` en tu servidor MySQL. Este archivo contiene la estructura completa y datos iniciales optimizados.
 
-4. **Variables de Entorno:**
-   - Copia el archivo de ejemplo: `cp .env.example .env` (en Windows: `copy .env.example .env`).
-   - Edita el archivo `.env` con tus credenciales de base de datos y claves de API.
-   - **Nota:** Si tienes problemas con caracteres especiales en el `.env` (común en algunos hostings), puedes usar el plan B creando un archivo `config/db.php` (ver `docs/PROBLEMA_ENV_SOLUCION.txt`).
+3. **Configuración de APIs:**
+   - Renombra `.env.example` a `.env` y configura tus credenciales:
+     - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`.
+     - `BREVO_API_KEY` (para emails).
+     - `FIREBASE_PROJECT_ID` (para notificaciones push).
 
-### Opción 2: Docker (Recomendado)
-Para una ejecución rápida sin instalar dependencias locales:
-1. Navega a la carpeta de Docker: `cd adocker`
-2. Inicia los contenedores: `docker compose up --build`
-3. Accede a `http://localhost:8080`
-4. Consulta `adocker/howtorun.txt` para más detalles.
-
-## 🧪 Pruebas
-
-El proyecto incluye tests unitarios básicos para validaciones y seguridad.
-Para ejecutarlos (asumiendo que PHPUnit está disponible):
-```bash
-./vendor/bin/phpunit tests
-```
+4. **Permisos de Carpeta:**
+   - Asegúrate de que `public/uploads/` y sus subcarpetas tengan permisos de escritura (775/777).
 
 ---
-**Autor:** Yassin Lahhit
+**Autor:** Yassin Lahhut
 **Año:** 2026
-**Proyecto:** Trabajo de Fin de Grado (TFG)
+**Proyecto:** Trabajo de Fin de Grado (TFG) - AulaPro Premium

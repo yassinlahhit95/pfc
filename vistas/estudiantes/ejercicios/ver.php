@@ -131,7 +131,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="idEjercicio" value="<?= Security::escapeHtml($idEjercicio ) ?>">
     <div class="campo">
       <label><?= Security::escapeHtml($entrega ? 'Actualizar respuesta (opcional)' : 'Tu respuesta') ?></label>
-      <textarea name="respuesta" rows="5" placeholder="Escribe tu respuesta aquí..."><?= Security::escapeHtml($entrega ? htmlspecialchars($entrega['respuesta'] ?? '') : '') ?></textarea>
+      <textarea name="respuesta" rows="5" placeholder="Escribe tu respuesta aquí..."><?= Security::escapeHtml($entrega ? ($entrega['respuesta'] ?? '') : '') ?></textarea>
     </div>
     <div class="campo">
       <label><?= Security::escapeHtml($entrega ? 'Actualizar archivo adjunto (opcional)' : 'Archivo adjunto (opcional)') ?></label>

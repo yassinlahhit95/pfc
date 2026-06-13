@@ -222,10 +222,94 @@
     panel.addEventListener("click", function (e) { e.stopPropagation(); });
   }
 
+  /* ── Collapsible nav categories (+/-) ─────────────────────────────────── */
+  function initNavSections() {
+    var nav = qs("#sidebar-nav");
+    if (!nav) return;
+    var KEY = "aulapro_nav_sections";
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+
+    var titles = nav.querySelectorAll(".nav-section-title");
+    Array.prototype.forEach.call(titles, function (title) {
+      var name = (title.textContent || "").trim();
+
+      // Collect the nav items that belong to this section (until the next title).
+      var items = [];
+      var el = title.nextElementSibling;
+      while (el && !el.classList.contains("nav-section-title")) {
+        if (el.classList.contains("nav-item")) items.push(el);
+        el = el.nextElementSibling;
+      }
+      if (!items.length) return;
+
+      title.classList.add("nav-section-toggle");
+      title.setAttribute("role", "button");
+      title.setAttribute("tabindex", "0");
+
+      function apply(collapsed) {
+        title.classList.toggle("collapsed", collapsed);
+        items.forEach(function (it) { it.classList.toggle("nav-collapsed", collapsed); });
+      }
+
+      // Never start collapsed if the active page lives inside this section.
+      var hasActive = items.some(function (it) { return it.classList.contains("active"); });
+      var collapsed = !hasActive && saved[name] === true;
+      apply(collapsed);
+
+      function toggle() {
+        collapsed = !collapsed;
+        apply(collapsed);
+        saved[name] = collapsed;
+        try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      }
+      title.addEventListener("click", toggle);
+      title.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+      });
+    });
+  }
+
+  /* ── Sidebar Scroll Persistence ───────────────────────────────────────── */
+  function initSidebarScroll() {
+    var nav = qs("#sidebar-nav");
+    if (!nav) return;
+
+    var SCROLL_KEY = "aulapro_sidebar_scroll";
+    
+    // Restore scroll position
+    var savedScroll = localStorage.getItem(SCROLL_KEY);
+    if (savedScroll !== null) {
+      nav.scrollTop = parseInt(savedScroll, 10);
+    }
+
+    // Scroll active item into view if not visible
+    var activeItem = nav.querySelector(".nav-item.active");
+    if (activeItem) {
+      var rect = activeItem.getBoundingClientRect();
+      var navRect = nav.getBoundingClientRect();
+      if (rect.top < navRect.top || rect.bottom > navRect.bottom) {
+        activeItem.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+
+    // Save scroll position on scroll (debounced)
+    var scrollTimer;
+    nav.addEventListener("scroll", function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        localStorage.setItem(SCROLL_KEY, nav.scrollTop);
+      }, 150);
+    });
+  }
+
   /* ── Boot on DOMContentLoaded ─────────────────────────────────────────── */
   document.addEventListener("DOMContentLoaded", function () {
     /* Sync theme icon */
     syncThemeBtn();
+
+    /* Sidebar Scroll Persistence */
+    initSidebarScroll();
 
     /* Collapse button */
     var collapseBtn = qs("#collapse");
@@ -273,6 +357,9 @@
         if (search) search.focus();
       }
     });
+
+    /* Collapsible nav categories (+/-) */
+    initNavSections();
 
     /* Search */
     initSearch();

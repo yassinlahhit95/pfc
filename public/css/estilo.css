@@ -27,3 +27,300 @@
 .margen-abajo{margin-bottom:20px;}
 .margen-arriba{margin-top:20px;}
 @media(max-width:640px){.msg-preview{display:none;}.tabla-datos{min-width:400px;}.tabla-datos th:nth-child(2),.tabla-datos td:nth-child(2){display:none;}}
+/* ── Estilos para adjuntos de Retos ── */
+.reto-file-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #4a5568;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: fit-content;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.reto-file-pill:hover {
+    border-color: #667eea;
+    background: #f8faff;
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.reto-file-pill i {
+    font-size: 13px;
+}
+
+/* ── Estilos Premium para Gestión de Archivos ── */
+.file-manager-premium {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+.file-list-premium {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+.file-item-premium {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    position: relative;
+    transition: all 0.2s;
+}
+.file-item-premium:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.file-info-premium {
+    flex-grow: 1;
+    overflow: hidden;
+}
+.file-name-premium {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.file-type-premium {
+    font-size: 10px;
+    color: #a0aec0;
+    text-transform: uppercase;
+}
+.file-delete-btn {
+    color: #e53e3e;
+    font-size: 18px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+.file-delete-btn:hover {
+    opacity: 1;
+}
+
+/* Barra de progreso */
+.upload-progress-container {
+    margin-top: 15px;
+    display: none;
+}
+.progress-bar-premium {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.progress-fill-premium {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    width: 0%;
+    transition: width 0.3s;
+}
+.progress-text-premium {
+    font-size: 12px;
+    color: #4a5568;
+    margin-top: 5px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.btn-zip-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #2d3748;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.btn-zip-download:hover {
+    background: #1a202c;
+}
+
+/* ── Mejoras Premium: Hover Reveal y AJAX Deletion ── */
+.materiales-container {
+    position: relative;
+    width: 140px;
+    z-index: 10; /* Asegura que el contenedor tenga prioridad base */
+}
+
+/* IMPORTANTE: Para que el dropdown no se corte, el contenedor de la tabla debe permitir overflow visible */
+.contenedor-tabla, .table-responsive {
+    overflow: visible !important;
+}
+
+@media (max-width: 992px) {
+    .contenedor-tabla, .table-responsive {
+        overflow-x: auto !important; /* En móviles permitimos scroll si es necesario */
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.materiales-main-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--text);
+    color: var(--surface);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 2;
+    position: relative;
+}
+
+.materiales-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 260px;
+    background: var(--surface); /* Fondo sólido para máxima legibilidad */
+    background: color-mix(in oklab, var(--surface) 98%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg), 0 10px 30px rgba(0,0,0,0.1);
+    padding: 14px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99999 !important; /* Z-index altísimo para superar cualquier scroll */
+    border: 1px solid var(--border-2);
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+    .materiales-dropdown {
+        left: auto;
+        right: 0; /* Lo alinea a la derecha en móvil para evitar que se salga */
+        width: 220px;
+    }
+}
+
+.materiales-container:hover .materiales-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(8px);
+}
+
+.materiales-container:hover .materiales-main-btn {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.dropdown-file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text) !important;
+    font-size: 12.5px;
+    font-weight: 500;
+    transition: all 0.2s;
+    width: 100%; /* Asegura que ocupe todo el ancho del dropdown */
+}
+
+.dropdown-file-item span {
+    flex: 1;
+    min-width: 0; /* Crucial para que el ellipsis funcione en flex */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-file-item:hover {
+    background: var(--surface-3);
+    color: var(--accent) !important;
+    transform: translateX(4px);
+}
+
+.dropdown-file-item i {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* Animación de borrado suave */
+.file-item-premium.removing {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Mejoras de Responsividad Global ── */
+@media (max-width: 992px) {
+    .contenido-derecha, .contenido-principal {
+        margin-left: 0;
+        padding: 15px;
+    }
+    .cabecera {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .cabecera .boton-primario, .cabecera .boton-secundario {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .caja-libre.espacio-grande > .relleno {
+        flex: 1 1 100%;
+    }
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+    .dash-panel-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .dash-panel-head .actions {
+        width: 100%;
+    }
+    .dash-panel-head .actions button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    .tile-body .tile-label {
+        font-size: 12px;
+    }
+    .tile-body .tile-desc {
+        font-size: 14px;
+    }
+}

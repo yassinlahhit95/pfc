@@ -65,8 +65,8 @@ function _nav_active_prof($check) {
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="../../../public/js/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/aula-digital.js') ?>"></script>
-  <script src="../../../public/js/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/menu-contextual.js') ?>"></script>
+  <script defer src="../../../public/js/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/aula-digital.js') ?>"></script>
+  <script defer src="../../../public/js/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/menu-contextual.js') ?>"></script>
 </head>
 <body>
 <?php require __DIR__ . "/../../../include/icon-sprite.php"; ?>

@@ -34,7 +34,7 @@ include_once "../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario">
+    <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="campo">
             <label for="nombreReto">Nombre del Reto</label>
@@ -46,14 +46,29 @@ include_once "../comunes/nav.php";
             <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
         </div>
 
-        <div class="campo">
-            <label for="fechaInicio">Fecha Inicio</label>
-            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
+        <div class="row">
+            <div class="campo">
+                <label for="fechaInicio">Fecha Inicio</label>
+                <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
+            </div>
+
+            <div class="campo">
+                <label for="fechaFin">Fecha Fin</label>
+                <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($datos['fechaFin'] ?? '') ?>">
+            </div>
         </div>
 
         <div class="campo">
-            <label for="fechaFin">Fecha Fin</label>
-            <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($datos['fechaFin'] ?? '') ?>">
+            <label for="archivosReto">Materiales del Reto (PDF / Imágenes)</label>
+            <div class="file-manager-premium">
+                <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" class="form-control mb-2">
+                <div class="upload-progress-container" id="progressWrapper">
+                    <div class="progress-bar-premium">
+                        <div class="progress-fill-premium" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text-premium" id="progressText">0%</div>
+                </div>
+            </div>
         </div>
 
         <div class="campo">
@@ -76,11 +91,54 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="acciones" style="margin-top: 20px;">
-            <input type="submit" name="insertarReto" class="boton-primario" value="REGISTRAR RETO">
+            <button type="submit" name="insertarReto" class="boton-primario" id="btnGuardar">
+                <i class="fas fa-plus"></i> REGISTRAR RETO
+            </button>
             <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('.formulario').on('submit', function(e) {
+        if ($('#archivosReto').get(0).files.length === 0) return true;
+
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('insertarReto', '1');
+
+        $('#progressWrapper').fadeIn();
+        $('#btnGuardar').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Registrando...');
+
+        $.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (xhr.lengthComputable) {
+                        var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                        $('#progressFill').css('width', percentComplete + '%');
+                        $('#progressText').text(percentComplete + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function() {
+                window.location.href = 'lista.php';
+            },
+            error: function() {
+                alert('Error al registrar el reto');
+                $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-plus"></i> REGISTRAR RETO');
+            }
+        });
+    });
+});
+</script>
 
 <?php include '../comunes/footer.php'; ?>
 

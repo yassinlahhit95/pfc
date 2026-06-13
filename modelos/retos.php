@@ -131,6 +131,58 @@ function obtenerRetoPorId($idReto) {
     return $reto;
 }
 
+/**
+ * Registra un archivo para un reto
+ */
+function registrarArchivoReto($idReto, $nombre, $ruta, $tipo) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO reto_archivos (idReto, nombreArchivo, rutaArchivo, tipoArchivo) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "isss", $idReto, $nombre, $ruta, $tipo);
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Obtiene los archivos de un reto
+ */
+function obtenerArchivosReto($idReto) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM reto_archivos WHERE idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idReto);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $archivos = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $archivos[] = $fila;
+    }
+    return $archivos;
+}
+
+/**
+ * Obtiene un archivo por su ID
+ */
+function obtenerArchivoRetoPorId($idArchivo) {
+    $con = obtenerConexion();
+    $sql = "SELECT * FROM reto_archivos WHERE idArchivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idArchivo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($res) ?: null;
+}
+
+/**
+ * Elimina un archivo de la base de datos
+ */
+function eliminarArchivoReto($idArchivo) {
+    $con = obtenerConexion();
+    $sql = "DELETE FROM reto_archivos WHERE idArchivo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idArchivo);
+    return mysqli_stmt_execute($stmt);
+}
+
 function listarModulosDeReto($idReto) {
     $con = obtenerConexion();
     $sql1 = "SELECT m.*, c.nombreCiclo FROM modulos m JOIN ciclos c ON m.idCiclo = c.idCiclo JOIN modulo_reto mr ON m.idModulo = mr.idModulo WHERE mr.idReto = ?";

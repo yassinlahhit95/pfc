@@ -1,0 +1,28 @@
+tareas realizadas: 
+- Automatización de la generación de PDFs de aceptación mediante la librería FPDF.
+- Implementación de un sistema de subida de archivos (DNI) con validaciones de tipo y tamaño.
+- Desarrollo de un módulo de inserción de alumnado admitido con control de duplicados por DNI.
+- Integración de consultas dinámicas a la base de datos para obtener precios y condiciones por ciclo.
+
+en que consiste?:
+Consiste en un sistema de gestión de admisiones que permite a los alumnos completar su proceso de matriculación online, subiendo su documentación y recibiendo un documento formal de aceptación con las condiciones económicas del centro.
+
+cómo se realiza?:
+Se realiza mediante PHP para el procesamiento de datos, MySQL para el almacenamiento, y la librería FPDF para la maquetación de documentos. Se incluyen scripts de validación de archivos y sentencias preparadas para garantizar la integridad y seguridad de los datos.
+
+para que sirve:
+Sirve para digitalizar y automatizar el flujo de matriculación, eliminando procesos manuales de generación de documentos y asegurando que la información del alumnado esté centralizada y verificada.
+
+aprendizaje adquirido:
+- Dominio de la generación dinámica de documentos PDF con FPDF.
+- Implementación de medidas de seguridad en la subida de archivos y prevención de SQL Injection.
+- Gestión de codificación de caracteres en entornos web y documentos impresos.
+- Lógica de flujo de usuario (redirecciones, estados y confirmaciones).
+
+dificultades encontradas:
+- Manejo de caracteres especiales y tildes en la generación de PDFs (problemas de encoding).
+- Coordinación entre la inserción en base de datos y la generación inmediata del archivo físico.
+- Validación robusta de la subida de archivos para evitar vulnerabilidades.
+
+observaciones:
+El código es modular y permite añadir fácilmente nuevas condiciones o ciclos formativos. Se ha priorizado la experiencia del usuario con redirecciones automáticas tras cada acción exitosa.

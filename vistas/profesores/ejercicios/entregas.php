@@ -97,7 +97,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?= Security::escapeHtml($entrega ? date('d/m/Y H:i', strtotime($entrega['fechaEntrega'])) : '—') ?>
           </td>
           <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-            <?= Security::escapeHtml($entrega && $entrega['respuesta'] ? htmlspecialchars(substr($entrega['respuesta'], 0, 80)) . (strlen($entrega['respuesta']) > 80 ? '…' : '') : '<span class="texto-suave">—</span>') ?>
+            <?php if ($entrega && $entrega['respuesta']): ?>
+              <?= Security::escapeHtml(substr($entrega['respuesta'], 0, 80)) . (strlen($entrega['respuesta']) > 80 ? '…' : '') ?>
+            <?php else: ?>
+              <span class="texto-suave">—</span>
+            <?php endif; ?>
           </td>
           <td>
             <?php if ($entrega && $entrega['archivoEntrega']): ?>

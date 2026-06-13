@@ -41,7 +41,7 @@ include_once "../comunes/nav.php";
 <?php } ?>
 
 <div class="panel">
-    <form action="../../../controladores/profesores/retos/actualizar.php" method="POST" class="formulario">
+    <form action="../../../controladores/profesores/retos/actualizar.php" method="POST" class="formulario" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReto" value="<?= Security::escapeHtml($idReto ) ?>">
 
@@ -55,14 +55,54 @@ include_once "../comunes/nav.php";
             <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($reto['horasReto'] ) ?>">
         </div>
 
-        <div class="campo">
-            <label for="fechaInicio">Fecha Inicio</label>
-            <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($reto['fechaInicio'] ) ?>">
+        <div class="row">
+            <div class="campo">
+                <label for="fechaInicio">Fecha Inicio</label>
+                <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($reto['fechaInicio'] ) ?>">
+            </div>
+
+            <div class="campo">
+                <label for="fechaFin">Fecha Fin</label>
+                <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($reto['fechaFin'] ) ?>">
+            </div>
         </div>
 
         <div class="campo">
-            <label for="fechaFin">Fecha Fin</label>
-            <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($reto['fechaFin'] ) ?>">
+            <label for="archivosReto">Añadir Materiales (PDF / Imágenes)</label>
+            <div class="file-manager-premium">
+                <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" class="form-control mb-3">
+                
+                <div class="upload-progress-container" id="progressWrapper">
+                    <div class="progress-bar-premium">
+                        <div class="progress-fill-premium" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text-premium" id="progressText">0%</div>
+                </div>
+
+                <?php 
+                $archivosExistentes = obtenerArchivosReto($idReto);
+                if (!empty($archivosExistentes)) {
+                    echo '<div class="mt-4">
+                            <label class="small text-muted fw-bold text-uppercase">Archivos cargados actualmente:</label>
+                            <div class="file-list-premium">';
+                    foreach ($archivosExistentes as $ae) {
+                        $isPdf = ($ae['tipoArchivo'] === 'pdf');
+                        $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
+                        echo "<div class='file-item-premium' id='file-{$ae['idArchivo']}'>
+                                <i class='fas {$icon} fa-lg'></i> 
+                                <div class='file-info-premium'>
+                                    <span class='file-name-premium' title='{$ae['nombreArchivo']}'>{$ae['nombreArchivo']}</span>
+                                    <span class='file-type-premium'>" . ($isPdf ? 'Documento PDF' : 'Imagen') . "</span>
+                                </div>
+                                <button type='button' class='file-delete-btn' onclick='borrarArchivoSmooth({$ae['idArchivo']}, {$idReto})' title='Eliminar archivo'>
+                                   <i class='fas fa-times-circle'></i>
+                                </button>
+                              </div>";
+                    }
+                    echo '</div></div>';
+                }
+                ?>
+            </div>
         </div>
 
         <div class="campo">
@@ -81,11 +121,78 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="acciones" style="margin-top: 20px;">
-            <input type="submit" name="actualizarReto" class="boton-primario" value="GUARDAR CAMBIOS">
+            <button type="submit" name="actualizarReto" class="boton-primario" id="btnGuardar">
+                <i class="fas fa-save"></i> GUARDAR CAMBIOS
+            </button>
             <input type="reset" class="boton-secundario" value="LIMPIAR">
         </div>
     </form>
 </div>
+
+<script>
+function borrarArchivoSmooth(idArchivo, idReto) {
+    if (!confirm('¿Estás seguro de que quieres eliminar este archivo?')) return;
+
+    const $item = $('#file-' + idArchivo);
+    
+    $.ajax({
+        url: '../../../controladores/comunes/borrar_archivo_reto.php',
+        type: 'GET',
+        data: { id: idArchivo, idReto: idReto, ajax: 1 },
+        success: function(res) {
+            const data = typeof res === 'string' ? JSON.parse(res) : res;
+            if (data.status === 'success') {
+                $item.addClass('removing');
+                setTimeout(() => $item.remove(), 400);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        },
+        error: function() {
+            alert('Error de conexión');
+        }
+    });
+}
+
+$(document).ready(function() {
+    $('.formulario').on('submit', function(e) {
+        if ($('#archivosReto').get(0).files.length === 0) return true;
+
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('actualizarReto', '1');
+
+        $('#progressWrapper').fadeIn();
+        $('#btnGuardar').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Subiendo...');
+
+        $.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (xhr.lengthComputable) {
+                        var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                        $('#progressFill').css('width', percentComplete + '%');
+                        $('#progressText').text(percentComplete + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function() {
+                window.location.reload();
+            },
+            error: function() {
+                alert('Error al subir archivos');
+                $('#btnGuardar').prop('disabled', false).text('GUARDAR CAMBIOS');
+            }
+        });
+    });
+});
+</script>
 
 <?php include '../comunes/footer.php'; ?>
 

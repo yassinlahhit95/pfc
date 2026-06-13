@@ -45,7 +45,10 @@ DROP TABLE IF EXISTS `calificaciones_tfg`;
 DROP TABLE IF EXISTS `calificaciones_modulos`;
 DROP TABLE IF EXISTS `calificaciones_retos`;
 DROP TABLE IF EXISTS `modulo_reto`;
+DROP TABLE IF EXISTS `reto_archivos`;
 DROP TABLE IF EXISTS `retos`;
+DROP TABLE IF EXISTS `pre_matricula_archivos`;
+DROP TABLE IF EXISTS `pre_matriculas`;
 DROP TABLE IF EXISTS `estudiantes`;
 DROP TABLE IF EXISTS `profesores`;
 DROP TABLE IF EXISTS `directores`;
@@ -239,7 +242,8 @@ CREATE TABLE `prestamos` (
   PRIMARY KEY (`idPrestamo`),
   KEY `idx_pres_est`   (`idEstudiante`),
   KEY `idx_pres_serie` (`numeroSerie`),
-  CONSTRAINT `fk_pres_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+  CONSTRAINT `fk_pres_estudiante`  FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`  (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pres_dispositivo` FOREIGN KEY (`numeroSerie`)  REFERENCES `dispositivos` (`numeroSerie`)  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 14. Anuncios
@@ -688,6 +692,9 @@ CREATE TABLE `configuracion_centro` (
   `logoGobierno2` varchar(255) DEFAULT NULL,
   `textoLegal` text DEFAULT NULL,
   `nombreDirectorFirmante` varchar(150) DEFAULT NULL,
+  `feature_prematricula` tinyint(1) DEFAULT 1,
+  `feature_chat` tinyint(1) DEFAULT 1,
+  `feature_inventario` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`idConfig`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -751,8 +758,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- ── Datos iniciales ──────────────────────────────────────────
 
-INSERT INTO `configuracion_centro` (`idConfig`, `nombreCentro`, `codigoCentro`, `direccionCentro`, `ciudadCentro`, `cpCentro`, `telefonoCentro`, `emailCentro`, `cursoEscolar`, `textoLegal`, `nombreDirectorFirmante`)
-VALUES (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '');
+INSERT INTO `configuracion_centro` (`idConfig`, `nombreCentro`, `codigoCentro`, `direccionCentro`, `ciudadCentro`, `cpCentro`, `telefonoCentro`, `emailCentro`, `cursoEscolar`, `textoLegal`, `nombreDirectorFirmante`, `feature_prematricula`, `feature_chat`, `feature_inventario`)
+VALUES (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '', 1, 1, 1);
 
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES
 (1, 'Grado Medio'),
@@ -836,3 +843,46 @@ INSERT INTO `horarios` (`idCiclo`,`diaSemana`,`horaInicio`,`horaFin`,`idModulo`,
 (1,'Miércoles','12:30:00','13:30:00',5,1,3),
 (1,'Jueves',   '10:00:00','11:00:00',4,1,3),
 (1,'Viernes',  '13:30:00','14:30:00',5,1,3);
+
+-- --------------------------------------------------------
+-- ADMISIONES (SISTEMA DE PRE-MATRICULACIÓN)
+-- --------------------------------------------------------
+
+-- Tabla para las solicitudes de pre-matriculación
+CREATE TABLE IF NOT EXISTS `pre_matriculas` (
+    `idPreMatricula` INT AUTO_INCREMENT PRIMARY KEY,
+    `dni` VARCHAR(20) NOT NULL UNIQUE,
+    `nombre` VARCHAR(100) NOT NULL,
+    `apellidos` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(100) NOT NULL,
+    `telefono` VARCHAR(20),
+    `idCiclo` INT NOT NULL,
+    `curso` VARCHAR(50) DEFAULT '1º',
+    `estado` ENUM('PENDIENTE', 'EN_REVISION', 'SUBSANACION', 'ADMITIDO', 'RECHAZADO') DEFAULT 'PENDIENTE',
+    `observaciones` TEXT,
+    `fechaSolicitud` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `fechaActualizacion` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`idCiclo`) REFERENCES `ciclos`(`idCiclo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla para los archivos adjuntos a la pre-matrícula
+CREATE TABLE IF NOT EXISTS `pre_matricula_archivos` (
+    `idArchivo` INT AUTO_INCREMENT PRIMARY KEY,
+    `idPreMatricula` INT NOT NULL,
+    `tipoDocumento` VARCHAR(50) NOT NULL, -- 'DNI_FRONTAL', 'DNI_REVERSO', 'EXPEDIENTE', 'FOTO'
+    `nombreArchivo` VARCHAR(255) NOT NULL,
+    `rutaArchivo` VARCHAR(255) NOT NULL,
+    `fechaSubida` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`idPreMatricula`) REFERENCES `pre_matriculas`(`idPreMatricula`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla para los archivos adjuntos a los retos
+CREATE TABLE IF NOT EXISTS `reto_archivos` (
+    `idArchivo` INT AUTO_INCREMENT PRIMARY KEY,
+    `idReto` INT NOT NULL,
+    `nombreArchivo` VARCHAR(255) NOT NULL,
+    `rutaArchivo` VARCHAR(255) NOT NULL,
+    `tipoArchivo` VARCHAR(50), -- 'pdf', 'imagen', etc.
+    `fechaSubida` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`idReto`) REFERENCES `retos`(`idReto`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

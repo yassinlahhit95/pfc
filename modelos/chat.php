@@ -38,13 +38,6 @@ function chatNombreUsuario(string $rol, int $id): string {
     }
 }
 
-function chatAvatarIniciales(string $nombre): string {
-    $parts = preg_split('/\s+/', trim($nombre));
-    $a = mb_strtoupper(mb_substr($parts[0] ?? '?', 0, 1));
-    $b = mb_strtoupper(mb_substr($parts[1] ?? '', 0, 1));
-    return $a . $b;
-}
-
 // ── Conversations ─────────────────────────────────────────────────────────────
 
 function chatEncontrarOCrear(string $rolA, int $idA, string $rolB, int $idB): int {
@@ -168,22 +161,6 @@ function chatMarcarLeidos(int $convId, string $lectoRol, int $lectoId): void {
            AND NOT (emisor_rol = ? AND emisor_id = ?)');
     mysqli_stmt_bind_param($st, 'isi', $convId, $lectoRol, $lectoId);
     mysqli_stmt_execute($st);
-}
-
-function chatContarNoLeidos(string $rol, int $id): int {
-    $con = obtenerConexion();
-    $st = mysqli_prepare($con,
-        'SELECT COUNT(*) FROM chat_mensajes m
-         JOIN chat_conversaciones c ON c.id = m.conversacion_id
-         WHERE m.leido = 0
-           AND NOT (m.emisor_rol = ? AND m.emisor_id = ?)
-           AND ((c.user_a_rol = ? AND c.user_a_id = ?)
-             OR (c.user_b_rol = ? AND c.user_b_id = ?))');
-    mysqli_stmt_bind_param($st, 'sisisi', $rol, $id, $rol, $id, $rol, $id);
-    mysqli_stmt_execute($st);
-    mysqli_stmt_bind_result($st, $count);
-    mysqli_stmt_fetch($st);
-    return (int)$count;
 }
 
 // ── Contacts ──────────────────────────────────────────────────────────────────

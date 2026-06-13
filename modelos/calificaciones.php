@@ -57,55 +57,6 @@ function listarCalificacionesPorEstudiante($idEstudiante)
     return $lista;
 }
 
-function listarCalificacionesPorProfesorFiltrado($idProfesor, $idCiclo = 0, $idModulo = 0)
-{
-    $con = obtenerConexion();
-    $select = "SELECT e.idEstudiante, e.nombreEstudiante, m.idModulo, m.nombreModulo,
-                      cm.idCalificacion, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final";
-
-    if ($idModulo > 0) {
-        $sql1 = "$select
-                FROM modulos m
-                JOIN modulo_profesor pm ON m.idModulo = pm.idModulo AND pm.idProfesor = ?
-                JOIN estudiantes e ON m.idCiclo = e.idCiclo
-                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
-                WHERE m.idModulo = ?
-                ORDER BY e.nombreEstudiante ASC";
-        $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idModulo);
-
-    } elseif ($idCiclo > 0) {
-        $sql1 = "$select
-                FROM modulos m
-                JOIN ciclo_profesor cp ON m.idCiclo = cp.idCiclo AND cp.idProfesor = ?
-                JOIN estudiantes e ON m.idCiclo = e.idCiclo
-                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
-                WHERE m.idCiclo = ?
-                ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
-        $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idCiclo);
-
-    } else {
-        $sql1 = "$select
-                FROM modulos m
-                JOIN estudiantes e ON m.idCiclo = e.idCiclo
-                LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND m.idModulo = cm.idModulo
-                WHERE m.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-                   OR m.idModulo IN (SELECT idModulo FROM modulo_profesor WHERE idProfesor = ?)
-                ORDER BY m.nombreModulo ASC, e.nombreEstudiante ASC";
-        $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
-    }
-
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    return $lista;
-}
-
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1final, $val2ev, $val2final, $observaciones)
 {
     $especiales = ['NP', 'EX', 'CO'];

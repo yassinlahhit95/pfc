@@ -59,6 +59,24 @@ if (isset($_POST['actualizarReto'])) {
     }
 
     if (actualizarReto($idRetoActualizar, $nombreRetoActualizar, $fechaInicioDelReto, $fechaFinDelReto, $horasDelReto, [$idModuloAsociado])) {
+        // Manejo de nuevos archivos adjuntos
+        if (!empty($_FILES['archivosReto']['name'][0])) {
+            $uploadDir = "../../../public/uploads/retos/";
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+            foreach ($_FILES['archivosReto']['tmp_name'] as $key => $tmpName) {
+                $fileName = $_FILES['archivosReto']['name'][$key];
+                $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+                $newFileName = "reto_" . $idRetoActualizar . "_" . time() . "_" . $key . "." . $fileExt;
+                $dest = $uploadDir . $newFileName;
+
+                if (move_uploaded_file($tmpName, $dest)) {
+                    $tipo = (in_array(strtolower($fileExt), ['jpg', 'jpeg', 'png', 'gif'])) ? 'imagen' : 'pdf';
+                    registrarArchivoReto($idRetoActualizar, $fileName, "public/uploads/retos/" . $newFileName, $tipo);
+                }
+            }
+        }
+
         $_SESSION['exito'] = "Reto actualizado correctamente.";
         header("Location: ../../../vistas/admin/retos/verRetos.php");
         exit;

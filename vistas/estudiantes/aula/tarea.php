@@ -115,7 +115,7 @@ include_once __DIR__ . "/../comunes/nav.php";
           <?php endif; ?>
         </div>
         <div class="aula-feedback-fecha">
-          <?= Security::escapeHtml($esProfesor ? htmlspecialchars($tarea['nombreProfesor']) : 'Tú') ?> ·
+          <?= Security::escapeHtml($esProfesor ? $tarea['nombreProfesor'] : 'Tú') ?> ·
           <?= Security::escapeHtml(date('d/m H:i', strtotime($com['fechaComentario']))) ?>
         </div>
       </div>
@@ -161,7 +161,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div style="flex:1;">
           <p style="font-size:0.78rem;color:#64748b;"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($v['fechaVersion']))) ?></p>
           <?php if ($v['respuesta']): ?>
-          <p style="font-size:0.8rem;color:#374151;margin-top:2px;"><?= Security::escapeHtml(substr($v['respuesta'],0,100))(strlen($v['respuesta'])>100?'…':'')) ?></p>
+          <p style="font-size:0.8rem;color:#374151;margin-top:2px;"><?= Security::escapeHtml(substr($v['respuesta'],0,100)) . (strlen($v['respuesta'])>100?'…':'') ?></p>
           <?php endif; ?>
         </div>
         <?php if ($v['archivoEntrega']): ?>
@@ -181,7 +181,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea ) ?>">
     <div class="campo">
       <label><?= Security::escapeHtml($entrega ? 'Actualizar respuesta' : 'Tu respuesta') ?></label>
-      <textarea name="respuesta" rows="5" placeholder="Escribe tu respuesta, explicación o código..."><?= Security::escapeHtml($entrega ? htmlspecialchars($entrega['respuesta'] ?? '') : '') ?></textarea>
+      <textarea name="respuesta" rows="5" placeholder="Escribe tu respuesta, explicación o código..."><?= Security::escapeHtml($entrega ? ($entrega['respuesta'] ?? '') : '') ?></textarea>
     </div>
     <div class="aula-upload-zona" id="aulaUploadZona" style="margin-bottom:12px;">
       <i class="fas fa-cloud-upload-alt icono-upload"></i>

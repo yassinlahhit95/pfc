@@ -254,31 +254,3 @@ function calificarEntrega($idEjercicio, $idEstudiante, $nota, $comentario) {
     return $ok;
 }
 
-function contarEntregasPorEjercicio($idEjercicio) {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM entregas_ejercicios WHERE idEjercicio = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEjercicio);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($res);
-    
-    return intval($fila['total']);
-}
-
-function contarEjerciciosPendientesEstudiante($idEstudiante, $idCiclo) {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total
-            FROM ejercicios e
-            WHERE e.idCiclo = ? AND e.publicado = 1
-              AND e.idEjercicio NOT IN (
-                SELECT idEjercicio FROM entregas_ejercicios WHERE idEstudiante = ?
-              )";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($res);
-    
-    return intval($fila['total']);
-}

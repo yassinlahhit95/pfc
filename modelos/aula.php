@@ -106,21 +106,6 @@ function obtenerArbolCarpetaAula($idCarpeta) {
     return $ids;
 }
 
-// Borrado lógico (papelera) RECURSIVO: la carpeta, todas sus subcarpetas (a
-// cualquier nivel) y todos sus archivos se marcan como eliminados. Evita
-// registros huérfanos al borrar un árbol de carpetas.
-function borrarCarpetaAula($idCarpeta) {
-    $ids = obtenerArbolCarpetaAula($idCarpeta);
-    if (empty($ids)) return false;
-    $con = obtenerConexion();
-    $ahora = date('Y-m-d H:i:s');
-    $in = implode(',', array_map('intval', $ids));
-    $ok = mysqli_query($con, "UPDATE aula_carpetas SET eliminado=1, fechaEliminacion='$ahora' WHERE idCarpeta IN ($in)");
-    mysqli_query($con, "UPDATE aula_archivos SET eliminado=1, fechaEliminacion='$ahora' WHERE idCarpeta IN ($in)");
-    
-    return $ok;
-}
-
 // Fijar / desfijar (pin) una carpeta
 function togglePinCarpetaAula($idCarpeta) {
     $con = obtenerConexion();
@@ -263,18 +248,6 @@ function insertarArchivoAula($nombreArchivo, $nombreOriginal, $extension, $taman
     $id = mysqli_insert_id($con);
     
     return $ok ? $id : false;
-}
-
-// Borrado lógico: el archivo se envía a la papelera (no se borra del disco)
-function borrarArchivoAula($idArchivo) {
-    $con = obtenerConexion();
-    $ahora = date('Y-m-d H:i:s');
-    $sql = "UPDATE aula_archivos SET eliminado=1, fechaEliminacion=? WHERE idArchivo=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $ahora, $idArchivo);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
 }
 
 function contarArchivosPorModuloAula($idModulo) {
@@ -491,7 +464,7 @@ function registrarAnalytics($idUsuario, $tipoUsuario, $accion, $idModulo = null,
     $sql = "INSERT INTO aula_analytics (idUsuario, tipoUsuario, accion, idModulo, ip, userAgent, metadatos)
             VALUES (?,?,?,?,?,?,?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "issiiss", $idUsuario, $tipoUsuario, $accion, $idModulo, $ip, $userAgent, $metadatos_json);
+    mysqli_stmt_bind_param($stmt, "ississs", $idUsuario, $tipoUsuario, $accion, $idModulo, $ip, $userAgent, $metadatos_json);
     $ok = mysqli_stmt_execute($stmt);
     
     return $ok;
