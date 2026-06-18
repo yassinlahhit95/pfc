@@ -1,10 +1,8 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-require_once "../../../modelos/reclamaciones.php";
-require_once "../../../modelos/directores.php";
-require_once "../../firebase/firebase_helper.php";
-
-if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 if (isset($_POST['enviarMensaje'])) {
     if (!Security::validateCSRFToken()) {
@@ -12,7 +10,7 @@ if (isset($_POST['enviarMensaje'])) {
         header("Location: ../../../vistas/estudiantes/mensajes/agregar.php"); exit;
     }
     $idEstudiante = $_SESSION['idEstudiante']; // SIEMPRE el de la sesión (no falsificable)
-    $idProfesor = trim($_POST['idProfesor'] ?? '');
+    $idProfesor = (int)($_POST['idProfesor'] ?? 0);
     $asunto = trim($_POST['asunto']);
     $descripcion = trim($_POST['descripcion']);
     $errores = '';

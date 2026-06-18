@@ -1,8 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-if (empty($_SESSION['idAdmin'])) { header("Location: ../../login.php"); exit; }
-
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $idAula = (int)($_GET['id'] ?? 0);
@@ -28,7 +25,7 @@ include __DIR__ . "/../comunes/nav.php";
     <div class="acciones" style="margin-top:20px;">
         <form method="POST" action="../../../controladores/admin/aulas/borrar.php">
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-            <input type="hidden" name="idAula" value="<?= Security::escapeHtml($aula['idAula']) ?>">
+            <input type="hidden" name="idAula" value="<?= (int)$aula['idAula'] ?>">
             <button type="submit" class="boton-primario" style="background:#f87171;border-color:#f87171;min-width:160px;">Sí, eliminar</button>
         </form>
         <a href="gestionAulas.php" class="boton-secundario" style="min-width:160px;">Cancelar</a>

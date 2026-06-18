@@ -62,19 +62,18 @@ if (isset($_POST['insertarReto'])) {
     if ($resultado) {
         $idNuevoReto = mysqli_insert_id(obtenerConexion());
 
-        // Manejo de archivos adjuntos
         if (!empty($_FILES['archivosReto']['name'][0])) {
-            $uploadDir = "../../../public/uploads/retos/";
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-
+            $uploadDir = __DIR__ . "/../../../public/uploads/retos/";
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            $permitidos = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'zip'];
             foreach ($_FILES['archivosReto']['tmp_name'] as $key => $tmpName) {
+                if ($_FILES['archivosReto']['error'][$key] !== UPLOAD_ERR_OK) continue;
                 $fileName = $_FILES['archivosReto']['name'][$key];
-                $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-                $newFileName = "reto_" . $idNuevoReto . "_" . time() . "_" . $key . "." . $fileExt;
-                $dest = $uploadDir . $newFileName;
-
-                if (move_uploaded_file($tmpName, $dest)) {
-                    $tipo = (in_array(strtolower($fileExt), ['jpg', 'jpeg', 'png', 'gif'])) ? 'imagen' : 'pdf';
+                $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                if (!in_array($fileExt, $permitidos)) continue;
+                $newFileName = bin2hex(random_bytes(8)) . '.' . $fileExt;
+                if (move_uploaded_file($tmpName, $uploadDir . $newFileName)) {
+                    $tipo = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']) ? 'imagen' : 'pdf';
                     registrarArchivoReto($idNuevoReto, $fileName, "public/uploads/retos/" . $newFileName, $tipo);
                 }
             }

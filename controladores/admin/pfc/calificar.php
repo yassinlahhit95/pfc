@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 
 if (isset($_POST['calificarTFG'])) {
-    $idEstudiante = trim($_POST['idEstudiante']);
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $nota = trim($_POST['nota']);
     $nota = str_replace(',', '.', $nota);
     $observaciones = trim($_POST['observaciones']);

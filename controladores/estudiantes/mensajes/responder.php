@@ -1,12 +1,7 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../controladores/firebase/firebase_helper.php";
-
-if (empty($_SESSION['idEstudiante'])) {
-    header("Location: ../../../vistas/login.php");
-    exit;
-}
 
 if (!isset($_POST['enviarRespuesta'])) {
     header("Location: ../../../vistas/estudiantes/mensajes/lista.php");

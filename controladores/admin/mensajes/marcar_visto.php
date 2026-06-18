@@ -1,11 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../../vistas/login.php");
-    exit;
-}
 
 if (!isset($_POST['marcarVisto'])) {
     header("Location: ../../../vistas/admin/mensajes/lista.php");

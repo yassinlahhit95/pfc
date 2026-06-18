@@ -1,18 +1,11 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
-require_once __DIR__ . "/../../../include/Security.php";
 
 $idProfesor = $_SESSION['idProfesor'];
-$idSesion = $_GET['id'] ?? null;
+$idSesion = (int)($_GET['id'] ?? 0);
 
 if (!$idSesion) {
     header("Location: sesiones.php");

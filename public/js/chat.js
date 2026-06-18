@@ -272,18 +272,34 @@ window.ChatModal = (function () {
         if (!list) return;
         list.innerHTML = '';
         if (!contacts.length) {
-            list.innerHTML = '<p style="color:var(--mut);font-size:.82rem;padding:10px 6px">Sin resultados</p>';
+            const p = document.createElement('p');
+            p.style.cssText = 'color:var(--mut);font-size:.82rem;padding:10px 6px';
+            p.textContent = 'Sin resultados';
+            list.appendChild(p);
             return;
         }
         contacts.forEach(c => {
             const div = document.createElement('div');
             div.className = 'chat-contact-item';
-            div.innerHTML = `
-                <div class="chat-ava ${avaClass(c.rol)}">${avaInit(c.nombre)}</div>
-                <div>
-                    <div class="chat-contact-name">${c.nombre}</div>
-                    <div class="chat-contact-role">${roleLabel(c.rol)}</div>
-                </div>`;
+
+            const ava = document.createElement('div');
+            ava.className = 'chat-ava ' + avaClass(c.rol);
+            ava.textContent = avaInit(c.nombre);
+
+            const info = document.createElement('div');
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'chat-contact-name';
+            nameEl.textContent = c.nombre;
+
+            const roleEl = document.createElement('div');
+            roleEl.className = 'chat-contact-role';
+            roleEl.textContent = roleLabel(c.rol);
+
+            info.appendChild(nameEl);
+            info.appendChild(roleEl);
+            div.appendChild(ava);
+            div.appendChild(info);
             div.addEventListener('click', () => startChat(c));
             list.appendChild(div);
         });
@@ -299,11 +315,18 @@ window.ChatModal = (function () {
     function startChat(contact) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `${cfg.basePath}controladores/chat/iniciar.php`;
-        form.innerHTML = `
-            <input type="hidden" name="csrf_token" value="${cfg.csrfToken}">
-            <input type="hidden" name="target_rol" value="${contact.rol}">
-            <input type="hidden" name="target_id"  value="${contact.uid}">`;
+        form.action = cfg.basePath + 'controladores/chat/iniciar.php';
+
+        function hidden(name, value) {
+            const inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = name;
+            inp.value = value;
+            return inp;
+        }
+        form.appendChild(hidden('csrf_token', cfg.csrfToken));
+        form.appendChild(hidden('target_rol', contact.rol));
+        form.appendChild(hidden('target_id',  contact.uid));
         document.body.appendChild(form);
         form.submit();
     }

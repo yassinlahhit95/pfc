@@ -28,6 +28,13 @@ function chatNombreUsuario(string $rol, int $id): string {
             $r = mysqli_stmt_get_result($st);
             $row = mysqli_fetch_assoc($r);
             return $row['nombreProfesor'] ?? 'Profesor';
+        case 'tutor':
+            $st = mysqli_prepare($con, 'SELECT nombreTutor FROM tutores WHERE idTutor = ?');
+            mysqli_stmt_bind_param($st, 'i', $id);
+            mysqli_stmt_execute($st);
+            $r = mysqli_stmt_get_result($st);
+            $row = mysqli_fetch_assoc($r);
+            return $row['nombreTutor'] ?? 'Tutor';
         default:
             $st = mysqli_prepare($con, 'SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
@@ -186,6 +193,27 @@ function chatContactosPosibles(string $rol, int $id): array {
              FROM estudiantes ORDER BY nombreEstudiante');
         while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
 
+        $r = mysqli_query($con,
+            'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
+             FROM directores ORDER BY nombreDirector');
+        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+
+    } elseif ($rol === 'tutor') {
+        // Profesores vinculados a sus hijos
+        $sql = 'SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, "profesor" AS rol
+                FROM profesores p
+                JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
+                JOIN modulos m ON mp.idModulo = m.idModulo
+                JOIN estudiantes e ON m.idCiclo = e.idCiclo
+                JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
+                WHERE et.idTutor = ?';
+        $st = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($st, 'i', $id);
+        mysqli_stmt_execute($st);
+        $r = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+
+        // Administradores
         $r = mysqli_query($con,
             'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
              FROM directores ORDER BY nombreDirector');

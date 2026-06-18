@@ -39,9 +39,18 @@ $ciclos = listarTodosLosCiclos();
             color: white;
             text-align: center;
         }
-        .wizard-wrapper {
+        .asistente-wrapper {
             margin-top: -6rem;
             padding-bottom: 4rem;
+        }
+        .politica-box {
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -54,10 +63,10 @@ $ciclos = listarTodosLosCiclos();
         </div>
     </div>
 
-    <div class="container wizard-wrapper">
-        <div class="wizard-container">
+    <div class="container asistente-wrapper">
+        <div class="asistente-container">
             <!-- Steps Progress -->
-            <div class="wizard-steps">
+            <div class="asistente-steps">
                 <div class="step-item active" data-step="1">
                     <div class="step-number">1</div>
                     <div class="step-label">Datos Personales</div>
@@ -72,12 +81,12 @@ $ciclos = listarTodosLosCiclos();
                 </div>
             </div>
 
-            <!-- Wizard Content -->
-            <div class="wizard-content">
-                <!-- Step 1: Datos Personales -->
+            <!-- Form Content -->
+            <div class="asistente-content">
+                <!-- Step 1: Datos Personales y Tutor -->
                 <div class="step-content active" data-step="1">
                     <h3 class="mb-4">Información del Solicitante</h3>
-                    <div class="row g-3">
+                    <div class="row g-3 mb-5">
                         <div class="col-md-6">
                             <label class="form-label">DNI / NIE *</label>
                             <input type="text" id="dni" class="form-control" placeholder="12345678X" required>
@@ -115,6 +124,49 @@ $ciclos = listarTodosLosCiclos();
                                 <option value="1º">1º Curso</option>
                                 <option value="2º">2º Curso</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <h3 class="mb-4 pt-3 border-top">Datos del Tutor Legal</h3>
+                    <p class="text-muted small mb-4">Información del padre, madre o representante legal responsable.</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre del Tutor *</label>
+                            <input type="text" id="nombreTutor" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">DNI del Tutor *</label>
+                            <input type="text" id="dniTutor" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email del Tutor *</label>
+                            <input type="email" id="emailTutor" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Teléfono del Tutor *</label>
+                            <input type="tel" id="telefonoTutor" class="form-control" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Parentesco *</label>
+                            <select id="parentescoTutor" class="form-select form-control" required>
+                                <option value="Padre">Padre</option>
+                                <option value="Madre">Madre</option>
+                                <option value="Tutor Legal">Tutor Legal</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="politica-box">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="aceptoRGPD" required>
+                                    <label class="form-check-label fw-bold" for="aceptoRGPD">
+                                        He leído y acepto la <a href="privacidad.php" target="_blank">Política de Privacidad</a> y el tratamiento de mis datos personales.
+                                    </label>
+                                </div>
+                                <p class="mt-2 mb-0" style="font-size: 0.75rem;">
+                                    <strong>Información básica:</strong> AulaPro tratará sus datos para gestionar su pre-matrícula y, en su caso, la formalización de su expediente académico. No se cederán datos a terceros salvo obligación legal. Tiene derecho a acceder, rectificar y suprimir sus datos escribiendo al centro.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,9 +249,9 @@ $ciclos = listarTodosLosCiclos();
             </div>
 
             <!-- Footer Buttons -->
-            <div class="wizard-buttons">
-                <button class="btn-wizard btn-secondary-wizard btn-prev" style="display:none;">Anterior</button>
-                <button class="btn-wizard btn-primary-wizard btn-next ms-auto">Siguiente</button>
+            <div class="asistente-buttons">
+                <button class="btn-asistente btn-secondary-asistente btn-prev" style="display:none;">Anterior</button>
+                <button class="btn-asistente btn-primary-asistente btn-next ms-auto">Siguiente</button>
             </div>
         </div>
     </div>

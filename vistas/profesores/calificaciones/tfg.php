@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -10,7 +10,7 @@ $idProfesor = $_SESSION['idProfesor'] ?? '';
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idCicloElegido = $_GET['idCiclo'] ?? '';
+$idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
 $mis_ciclos = listarCiclosDeProfesor($idProfesor);
 $listaEvaluacion = listarEvaluacionTFGporProfesor($idProfesor, $idCicloElegido);
 
@@ -39,8 +39,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div><?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">

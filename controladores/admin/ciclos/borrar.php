@@ -74,7 +74,7 @@ if (isset($_POST['idCiclo'])) {
     if (mysqli_stmt_execute($resultado)) {
         $_SESSION['exito'] = "Ciclo eliminado.";
     } else {
-        $_SESSION['errores'] = "Error al eliminar.";
+        $_SESSION['errores'] = "No se pudo eliminar el ciclo.";
     }
 }
 

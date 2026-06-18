@@ -36,11 +36,7 @@ function obtenerConexion() {
     return $conexion;
 }
 
-/**
- * Execute a prepared statement and return the first result row, or null.
- * Usage: dbFetchOne("SELECT COUNT(*) as n FROM t")
- *        dbFetchOne("SELECT * FROM t WHERE id=?", "i", $id)
- */
+/** Ejecuta un SELECT preparado y devuelve la primera fila como array asociativo, o null. */
 function dbFetchOne(string $sql, string $types = '', ...$params): ?array {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con, $sql);
@@ -52,21 +48,28 @@ function dbFetchOne(string $sql, string $types = '', ...$params): ?array {
     return mysqli_fetch_assoc($res) ?: null;
 }
 
+// Lista blanca de tablas y sus columnas id para funciones FCM
+const FCM_TABLAS = [
+    'estudiantes' => 'idEstudiante',
+    'profesores'  => 'idProfesor',
+    'directores'  => 'idDirector',
+    'tutores'     => 'idTutor',
+];
+
 function actualizarTokenFCM($tabla, $campoId, $id, $token) {
-    $con = obtenerConexion();
-    $sql = "UPDATE $tabla SET fcm_token = ? WHERE $campoId = ?";
-    $stmt = mysqli_prepare($con, $sql);
+    if (!isset(FCM_TABLAS[$tabla]) || FCM_TABLAS[$tabla] !== $campoId) return false;
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "UPDATE `$tabla` SET fcm_token = ? WHERE `$campoId` = ?");
     mysqli_stmt_bind_param($stmt, "si", $token, $id);
     return mysqli_stmt_execute($stmt);
 }
 
 function obtenerTokenFCM($tabla, $campoId, $id) {
-    $con = obtenerConexion();
-    $sql = "SELECT fcm_token FROM $tabla WHERE $campoId = ?";
-    $stmt = mysqli_prepare($con, $sql);
+    if (!isset(FCM_TABLAS[$tabla]) || FCM_TABLAS[$tabla] !== $campoId) return null;
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "SELECT fcm_token FROM `$tabla` WHERE `$campoId` = ?");
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
+    $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     return ($fila && $fila['fcm_token']) ? $fila['fcm_token'] : null;
 }

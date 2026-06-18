@@ -1,12 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (!isset($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/aulas.php";
 require_once __DIR__ . "/../../../modelos/horarios.php";
 

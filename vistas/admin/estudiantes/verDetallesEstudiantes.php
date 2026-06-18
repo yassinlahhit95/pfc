@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idDelEstudiante = $_GET['idEstudiante'] ?? 0;
+$idDelEstudiante = (int)($_GET['idEstudiante'] ?? 0);
 
 $estudiante = obtenerEstudiantePorId($idDelEstudiante);
 

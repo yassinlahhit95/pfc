@@ -1,11 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../../vistas/login.php");
-    exit;
-}
 
 if (!isset($_POST['idReclamacion'])) {
     header("Location: ../../../vistas/admin/mensajes/lista.php");
@@ -21,7 +16,7 @@ if (!Security::validateCSRFToken()) {
 $idReclamacion = (int)$_POST['idReclamacion'];
 
 if ($idReclamacion <= 0) {
-    $_SESSION['errores'] = "ID no válido.";
+    $_SESSION['errores'] = "Mensaje no válido.";
     header("Location: ../../../vistas/admin/mensajes/lista.php");
     exit;
 }

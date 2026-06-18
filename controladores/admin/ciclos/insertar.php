@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 if (isset($_POST['guardarCiclo'])) {
     $nombre = trim($_POST['nombreCiclo']);
     $abreviatura = trim($_POST['abreviaturaCiclo']);
-    $idNivelEducativo = $_POST['idNivel'];
+    $idNivelEducativo = (int)($_POST['idNivel'] ?? 0);
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 

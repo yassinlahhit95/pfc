@@ -18,14 +18,14 @@ if (isset($_POST['guardarDirector'])) {
     if (empty($nombre)) $avisos['nombreDirector'] = "Falta el nombre";
     if (empty($email)) {
         $avisos['emailDirector'] = "El email es obligatorio.";
-    } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $avisos['emailDirector'] = "Email no válido";
+    } elseif (!Security::validateEmail($email)) {
+        $avisos['emailDirector'] = "El formato del email no es válido.";
     }
     if (empty($dni)) $avisos['dniDirector'] = "El DNI es obligatorio.";
     if (empty($telefono)) {
-        $avisos['telefonoDirector'] = "Teléfono obligatorio";
-    } elseif (!preg_match('/^[0-9]{9}$/', $telefono)) {
-        $avisos['telefonoDirector'] = "9 dígitos exactos";
+        $avisos['telefonoDirector'] = "El teléfono es obligatorio.";
+    } elseif (!Security::validatePhone($telefono)) {
+        $avisos['telefonoDirector'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
     }
     if (!empty($codigoPostal) && !is_numeric($codigoPostal)) {
         $avisos['codigoPostalDirector'] = "Código postal no válido";
@@ -43,7 +43,7 @@ if (isset($_POST['guardarDirector'])) {
     }
 
     if (insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)) {
-        $_SESSION['exito'] = "Director registrado correctamente.";
+        $_SESSION['exito'] = mensajeExitoConCredenciales("Director registrado correctamente.");
         header("Location: ../../../vistas/admin/directores/verDirectores.php");
         exit;
     }

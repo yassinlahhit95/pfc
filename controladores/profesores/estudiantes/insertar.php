@@ -2,11 +2,6 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../../vistas/login.php");
-    exit;
-}
-
 if (isset($_POST['guardarEstudiante'])) {
     $nombre = trim($_POST['nombreEstudiante']);
     $email = trim($_POST['emailEstudiante']);
@@ -18,20 +13,25 @@ if (isset($_POST['guardarEstudiante'])) {
     $ciudad = trim($_POST['ciudadEstudiante']);
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = isset($_POST['observacionesEstudiante']) ? trim($_POST['observacionesEstudiante']) : '';
-    $idCiclo = $_POST['idCiclo'];
-    $curso = $_POST['curso'] ?? 'Grado Medio';
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
+    $cursosPermitidos = ['Grado Medio', 'Grado Superior', '1º', '2º'];
+    $curso = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : 'Grado Medio';
 
     $avisos = [];
     if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es obligatorio.";
     if (empty($email)) {
         $avisos['emailEstudiante'] = "Falta el email";
-    } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $avisos['emailEstudiante'] = "Email no válido";
+    } elseif (!Security::validateEmail($email)) {
+        $avisos['emailEstudiante'] = "El formato del email no es válido.";
     }
     if (empty($dni)) $avisos['dniEstudiante'] = "El DNI es obligatorio.";
-    if (empty($telefono)) $avisos['telefonoEstudiante'] = "Teléfono requerido";
+    if (empty($telefono)) {
+        $avisos['telefonoEstudiante'] = "El teléfono es obligatorio.";
+    } elseif (!Security::validatePhone($telefono)) {
+        $avisos['telefonoEstudiante'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
+    }
     if (empty($fechaNacimiento)) $avisos['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
-    if (empty($idCiclo)) $avisos['idCiclo'] = "Selecciona un ciclo";
+    if ($idCiclo <= 0) $avisos['idCiclo'] = "Selecciona un ciclo";
 
     if (empty($avisos) && checkEstudianteExistente($dni, $email)) {
         $avisos['dniEstudiante'] = "El DNI o Email ya están registrados.";
@@ -45,7 +45,7 @@ if (isset($_POST['guardarEstudiante'])) {
     }
 
     if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
-        $_SESSION['exito'] = "Estudiante registrado correctamente.";
+        $_SESSION['exito'] = mensajeExitoConCredenciales("Estudiante registrado correctamente.");
         header("Location: ../../../vistas/profesores/estudiantes/lista.php");
         exit;
     }

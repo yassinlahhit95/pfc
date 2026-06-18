@@ -1,12 +1,9 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../config/Config.php';
 
-// Absolute base path — works locally (/pfc) and on server (/)
-$_proto    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$_dir      = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_NAME']))));
-if ($_dir === '/' || $_dir === '\\' || $_dir === '.') $_dir = '';
-$_base     = $_proto . '://' . $_SERVER['HTTP_HOST'] . $_dir;
-$_back     = $_base . '/vistas/admin/informes/informes.php';
+$_base = rtrim(Config::getInstance()->get('APP_URL', ''), '/');
+$_back = $_base . '/vistas/admin/informes/informes.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;
@@ -14,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $_vendor = __DIR__ . '/../../../vendor/autoload.php';
 if (!file_exists($_vendor)) {
-    $_SESSION['errores'] = "Error: la carpeta vendor/ no está disponible en el servidor. Ejecuta 'composer install' y sube la carpeta vendor/.";
+    $_SESSION['errores'] = "Error interno del servidor. Contacta con el administrador del sistema.";
     header("Location: $_back"); exit;
 }
 
@@ -27,7 +24,7 @@ require_once __DIR__ . '/../../../modelos/configuracion.php';
 
 $_secret = Config::getInstance()->get('BOLETIN_SECRET');
 if (empty($_secret)) {
-    $_SESSION['errores'] = "Error de configuración: BOLETIN_SECRET no definido en .env";
+    $_SESSION['errores'] = "Error de configuración del servidor. Contacta con el administrador.";
     header("Location: $_back"); exit;
 }
 
@@ -87,6 +84,7 @@ try {
     $filename = 'boletines_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
     $reportService->stream($filename);
 } catch (\Throwable $e) {
-    $_SESSION['errores'] = 'Error al generar el PDF: ' . $e->getMessage();
+    error_log('generarBoletin error: ' . $e->getMessage());
+    $_SESSION['errores'] = 'No se pudo generar el PDF. Inténtalo de nuevo.';
     header("Location: $_back"); exit;
 }

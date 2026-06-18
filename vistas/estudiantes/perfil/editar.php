@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -22,12 +22,14 @@ include_once "../comunes/nav.php";
     <a href="ver.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <form action="../../../controladores/estudiantes/perfil/actualizar.php" method="POST" class="formulario">

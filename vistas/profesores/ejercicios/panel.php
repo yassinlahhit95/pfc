@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) { header("Location: ../../login.php"); exit; }
 
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -35,8 +34,14 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="ejercicios-layout" style="margin-top:20px;">
 
@@ -69,11 +74,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php $carpetaActual = obtenerCarpetaPorId($idCarpetaActiva); ?>
     <?php if ($carpetaActual && $carpetaActual['idProfesor'] == $idProfesor): ?>
     <div style="padding:10px 14px;border-top:1px solid #f1f5f9;">
-      <a href="../../../controladores/profesores/carpetas/borrar.php?id=<?= Security::escapeHtml($idCarpetaActiva ) ?>"
-         class="texto-suave" style="font-size:0.75rem;display:flex;align-items:center;gap:6px;color:#ef4444;"
-         onclick="return confirm('¿Eliminar carpeta y sus ejercicios asociados?')">
-        <i class="fas fa-trash"></i> Eliminar carpeta
-      </a>
+      <form method="POST" action="../../../controladores/profesores/carpetas/borrar.php"
+            onsubmit="return confirm('¿Eliminar carpeta y sus ejercicios asociados?')" style="margin:0;">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="id" value="<?= Security::escapeHtml($idCarpetaActiva) ?>">
+        <button type="submit" class="texto-suave" style="background:none;border:none;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;gap:6px;color:#ef4444;padding:0;">
+          <i class="fas fa-trash"></i> Eliminar carpeta
+        </button>
+      </form>
     </div>
     <?php endif; ?>
     <?php endif; ?>
@@ -133,11 +141,14 @@ include_once __DIR__ . "/../comunes/nav.php";
           <a href="entregas.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>" class="boton-primario btn-pequeno" style="flex:1;justify-content:center;">
             <i class="fas fa-inbox"></i> Entregas
           </a>
-          <a href="../../../controladores/profesores/ejercicios/borrar.php?id=<?= Security::escapeHtml($ej['idEjercicio'] ) ?>"
-             class="btn-accion btn-eliminar" title="Eliminar"
-             onclick="return confirm('¿Eliminar este ejercicio y todas sus entregas?')">
-            <i class="fas fa-trash"></i>
-          </a>
+          <form method="POST" action="../../../controladores/profesores/ejercicios/borrar.php"
+                onsubmit="return confirm('¿Eliminar este ejercicio y todas sus entregas?')" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <input type="hidden" name="id" value="<?= Security::escapeHtml($ej['idEjercicio']) ?>">
+            <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
         </div>
       </div>
       <?php endforeach; ?>

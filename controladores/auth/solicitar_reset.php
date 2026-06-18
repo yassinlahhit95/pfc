@@ -24,7 +24,7 @@ if (!Security::validateCSRFToken()) {
     exit;
 }
 
-// Rate-limit: max 5 reset requests per IP per 10 minutes
+// Límite de tasa: máximo 5 solicitudes de restablecimiento por IP cada 10 minutos
 $ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 $con = obtenerConexion();
 
@@ -40,7 +40,6 @@ if ($row) {
         exit;
     }
     if ($row['intentos'] >= 5) {
-        // Block for 10 minutes
         $hasta = date('Y-m-d H:i:s', time() + 600);
         $upd   = mysqli_prepare($con, "UPDATE login_intentos SET bloqueado_hasta=?, intentos=0 WHERE ip=?");
         mysqli_stmt_bind_param($upd, "ss", $hasta, $ip);
@@ -65,22 +64,22 @@ if (!Security::validateEmail($email)) {
     exit;
 }
 
-// Per-email cooldown: max 1 reset request per email per 5 minutes
+// Límite por email: una solicitud cada 5 minutos (evita enumeración y spam)
 $reciente = dbFetchOne(
     "SELECT creado_at FROM password_resets WHERE email = ? AND usado = 0 AND creado_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY creado_at DESC LIMIT 1",
     "s", $email
 );
 if ($reciente) {
-    // Silently show success to avoid email enumeration
+    // Respuesta genérica para evitar enumeración de emails
     $_SESSION['reset_ok'] = "Si el email existe en el sistema, recibirás las instrucciones en breve.";
     header("Location: ../../vistas/auth/solicitar_reset.php");
     exit;
 }
 
-// Always show success to avoid user enumeration
+// Siempre mostrar respuesta genérica al final para evitar enumeración de usuarios
 $usuario = buscarUsuarioPorEmail($email);
 
-// Debug: show exact failure reason in development
+// En desarrollo se muestra el motivo exacto del fallo para facilitar la depuración
 if (!$usuario && $config->get('APP_ENV') === 'development') {
     error_log("PASSWORD RESET DEV: email '$email' no encontrado en ninguna tabla.");
     $_SESSION['reset_error'] = "[DEV] Email '$email' no existe en la base de datos local.";
@@ -91,11 +90,18 @@ if (!$usuario && $config->get('APP_ENV') === 'development') {
 if ($usuario) {
     $token = crearTokenReset($email, $usuario['tipo']);
 
-    $proto  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $base   = $proto . '://' . $_SERVER['HTTP_HOST'];
-    $dir    = dirname(dirname(dirname($_SERVER['SCRIPT_NAME'])));
-    if ($dir === '/' || $dir === '\\' || $dir === '.') $dir = '';
-    $enlace = $base . $dir . '/vistas/auth/nueva_contrasena.php?token=' . urlencode($token);
+    // Construir el enlace desde APP_URL (canónico) para evitar Host-header injection.
+    $appUrl = $config->get('APP_URL', '');
+    if ($appUrl !== '') {
+        $enlace = rtrim($appUrl, '/') . '/vistas/auth/nueva_contrasena.php?token=' . urlencode($token);
+    } else {
+        // Fallback solo para desarrollo local; en producción define APP_URL en .env
+        $proto  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $base   = $proto . '://' . $_SERVER['HTTP_HOST'];
+        $dir    = dirname(dirname(dirname($_SERVER['SCRIPT_NAME'])));
+        if ($dir === '/' || $dir === '\\' || $dir === '.') $dir = '';
+        $enlace = $base . $dir . '/vistas/auth/nueva_contrasena.php?token=' . urlencode($token);
+    }
 
     $html = "
     <div style='font-family:sans-serif;max-width:520px;margin:0 auto;'>
@@ -112,7 +118,6 @@ if ($usuario) {
     $sent = sendEmail($email, 'Restablecer contraseña — AulaPro', $html);
     if (!$sent) {
         error_log("PASSWORD RESET: falló el envío de email a $email");
-        $config = Config::getInstance();
         if ($config->get('APP_ENV') === 'development') {
             $_SESSION['reset_error'] = "Error al enviar el email. Revisa los logs y la API key de Brevo.";
             header("Location: ../../vistas/auth/solicitar_reset.php");

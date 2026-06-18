@@ -12,6 +12,10 @@ if (empty($_SESSION['idEstudiante']) && empty($_SESSION['idProfesor'])) {
     http_response_code(401);
     exit;
 }
+if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+    http_response_code(200);
+    exit;
+}
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -20,8 +24,8 @@ if (!$data || !isset($data['accion'])) {
     exit;
 }
 
-$idUsuario = $data['idUsuario'] ?? ($_SESSION['idEstudiante'] ?? $_SESSION['idProfesor'] ?? 0);
-$tipoUsuario = $data['tipoUsuario'] ?? ($_SESSION['idEstudiante'] ? 'estudiante' : 'profesor');
+$idUsuario = $_SESSION['idEstudiante'] ?? $_SESSION['idProfesor'] ?? 0;
+$tipoUsuario = !empty($_SESSION['idEstudiante']) ? 'estudiante' : 'profesor';
 $accion = trim($data['accion']);
 $idModulo = intval($data['idModulo'] ?? 0);
 $metadatos = $data['metadatos'] ?? null;

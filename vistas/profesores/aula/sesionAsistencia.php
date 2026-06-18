@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) { header("Location: ../../login.php"); exit; }
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";

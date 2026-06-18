@@ -1,14 +1,9 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
@@ -23,12 +18,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>TABLA DE ANUNCIOS</h1>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <?php if (!empty($listaAnuncios)) { ?>
     <?php foreach ($listaAnuncios as $anuncio) { ?>

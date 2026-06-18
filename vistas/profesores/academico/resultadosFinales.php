@@ -1,15 +1,11 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -20,7 +16,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 $todos_los_ciclos = listarCiclosDeProfesor($idProfesor);
 
-$id_ciclo_elegido = $_GET['idCiclo'] ?? 0;
+$id_ciclo_elegido = (int)($_GET['idCiclo'] ?? 0);
 if ($id_ciclo_elegido) {
     $tieneAcceso = false;
     foreach ($todos_los_ciclos as $cicloIndividual) {
@@ -123,12 +119,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Resumen global (75% Modulos / 25% Retos)</p>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <div class="caja alinear-centro espacio-grande">

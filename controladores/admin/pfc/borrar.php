@@ -26,7 +26,7 @@ if (isset($_POST['idEstudiante'])) {
         $_SESSION['exito'] = "TFG eliminado.";
     } else {
         $hayError = true;
-        $_SESSION['errores'] = "Error al eliminar.";
+        $_SESSION['errores'] = "No se pudo eliminar el archivo del TFG.";
     }
 }
 

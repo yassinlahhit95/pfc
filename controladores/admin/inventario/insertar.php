@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['guardarArticulo'])) {

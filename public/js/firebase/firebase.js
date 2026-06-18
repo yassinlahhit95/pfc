@@ -17,12 +17,14 @@ function getFirebaseConfig() {
         storageBucket: `${el.dataset.projectId}.firebasestorage.app`,
         messagingSenderId: el.dataset.messagingSenderId,
         appId: el.dataset.appId,
-        databaseURL: el.dataset.databaseUrl
+        databaseURL: el.dataset.databaseUrl,
+        vapidKey: el.dataset.vapidKey
     };
 }
 
-let appFB, fcm;
+let appFB, fcm, vapidKey;
 const config = getFirebaseConfig();
+if (config) vapidKey = config.vapidKey;
 
 if (config && config.apiKey && config.appId) {
     appFB = initializeApp(config);
@@ -35,6 +37,10 @@ export async function setupFirebase(id, rol) {
         return;
     }
 
+    // Only register once per browser session to avoid calling getToken on every page load
+    const sessionKey = 'fcm_registered_' + id;
+    if (sessionStorage.getItem(sessionKey)) return;
+
     try {
         var p = await Notification.requestPermission();
         if (p !== 'granted') return;
@@ -45,7 +51,7 @@ export async function setupFirebase(id, rol) {
             var scriptUrl = (r.active || r.installing || r.waiting || {}).scriptURL || '';
             return scriptUrl.includes('firebase-messaging-sw.js');
         });
-        
+
         if (!sw) {
             // Use appRoot to make the path robust
             sw = await navigator.serviceWorker.register(appRoot + 'firebase-messaging-sw.js');
@@ -53,23 +59,46 @@ export async function setupFirebase(id, rol) {
 
         // Wait until the SW is active
         if (sw.installing || sw.waiting) {
-            await new Promise(function(resolve) {
+            await new Promise(function(resolve, reject) {
                 var target = sw.installing || sw.waiting;
                 target.addEventListener('statechange', function onStateChange() {
                     if (this.state === 'activated') {
                         target.removeEventListener('statechange', onStateChange);
                         resolve();
+                    } else if (this.state === 'redundant') {
+                        target.removeEventListener('statechange', onStateChange);
+                        reject(new Error('Service worker became redundant'));
                     }
                 });
             });
         }
 
-        var t = await getToken(fcm, {
-            vapidKey: 'BNoCI0P78ggUa8HVX8t4q3uSLeq7PoWZV3dAMuCoNCrkLKQfCKJ6PyhoLy0ZE_kaagS9S9bJzlx-gpElLlVm8y0',
+        if (!sw.active) throw new Error('Service worker did not activate');
+
+        if (!vapidKey) throw new Error('FIREBASE_VAPID_KEY not set in configuration');
+
+        var tokenOpts = {
+            vapidKey: vapidKey,
             serviceWorkerRegistration: sw
-        });
+        };
+
+        var t;
+        try {
+            t = await getToken(fcm, tokenOpts);
+        } catch (e) {
+            if (e.name === 'AbortError') {
+                // Stale push subscription from a previous session/deploy — clear it and retry once
+                var sub = await sw.pushManager.getSubscription();
+                if (sub) await sub.unsubscribe();
+                t = await getToken(fcm, tokenOpts);
+            } else {
+                throw e;
+            }
+        }
 
         if (t) {
+            sessionStorage.setItem(sessionKey, '1');
+
             var fd = new FormData();
             fd.append('token', t);
             fd.append('userId', id);

@@ -1,15 +1,11 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 unset($_SESSION['exito'], $_SESSION['errores']);
-if (!isset($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-$idAnuncio = $_GET['idAnuncio'] ?? 0;
+$idAnuncio = (int)($_GET['idAnuncio'] ?? 0);
 $anuncio = obtenerAnuncioPorId($idAnuncio);
 
 if (!$anuncio) {
@@ -30,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="cabecera-detalles" style="margin-bottom: 20px;">
-        <h2 class="texto-azul"><?= $anuncio['tituloAnuncio'] ?></h2>
+        <h2 class="texto-azul"><?= Security::escapeHtml($anuncio['tituloAnuncio']) ?></h2>
     </div>
     
     <div class="fila-datos">
@@ -48,7 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="nombre-detalle">Contenido</div>
             <div class="valor-detalle">
                 <?php if (!empty($anuncio['contenidoAnuncio'])) { ?>
-                    <?= $anuncio['contenidoAnuncio'] ?>
+                    <?= Security::escapeHtml($anuncio['contenidoAnuncio']) ?>
                 <?php } else { ?>
                     <span class="texto-suave">Sin contenido.</span>
                 <?php } ?>

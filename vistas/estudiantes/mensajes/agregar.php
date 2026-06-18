@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;

@@ -1,14 +1,9 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
 $exito  = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (!isset($_SESSION['idEstudiante'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
@@ -57,12 +52,14 @@ $tfgEstado = $califTFG ? $califTFG['nota'] : (empty($tfgActual['archivoTFG']) ? 
 $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 ?>
 
-<?php if ($exito) { ?>
-  <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
-<?php } ?>
-<?php if ($errores) { ?>
-  <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <section class="hero">
   <div class="hero-text">

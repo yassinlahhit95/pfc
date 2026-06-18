@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) { header("Location: ../../login.php"); exit; }
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -121,12 +120,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         <button type="button" class="recurso-menu-item" onclick="AulaRecursos.editarCarpeta(<?= Security::escapeHtml($c['idCarpeta']) ?>, <?= Security::escapeHtml(json_encode($c['nombre'])) ?>, '<?= Security::escapeHtml($c['color']) ?>', '<?= Security::escapeHtml($c['icono']) ?>')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg> Renombrar / Editar</button>
         <button type="button" class="recurso-menu-item" onclick="AulaRecursos.pin('carpeta', <?= Security::escapeHtml($c['idCarpeta']) ?>, this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin"><path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg> <span class="recurso-pin-label"><?= $c['fijado'] ? 'Quitar fijado' : 'Fijar' ?></span></button>
         <div class="recurso-menu-sep"></div>
-<form method="POST" action="../../../controladores/profesores/aula/borrarCarpeta.php" style="margin:0" onsubmit="return confirm('¿Eliminar definitivamente esta carpeta y TODO su contenido? Esta acción no se puede deshacer.')">
+<form method="POST" action="../../../controladores/profesores/aula/borrarCarpeta.php" style="margin:0">
           <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
           <input type="hidden" name="id" value="<?= Security::escapeHtml($c['idCarpeta']) ?>">
           <input type="hidden" name="modulo" value="<?= Security::escapeHtml($idModulo) ?>">
           <input type="hidden" name="carpeta" value="<?= Security::escapeHtml($carpetaActual) ?>">
-          <button type="submit" class="recurso-menu-item peligro"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg> Eliminar</button>
+          <button type="submit" class="recurso-menu-item peligro" data-confirmar="¿Eliminar definitivamente esta carpeta y TODO su contenido? Esta acción no se puede deshacer."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg> Eliminar</button>
         </form>
         <?php endif; ?>
       </div>
@@ -184,12 +183,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.mover(<?= Security::escapeHtml($a['idArchivo'] ) ?>)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-tree"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg> Mover</button>
             <button type="button" class="recurso-menu-item" onclick="AulaRecursos.pin('archivo', <?= Security::escapeHtml($a['idArchivo'] ) ?>, this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin"><path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg> <span class="recurso-pin-label"><?= Security::escapeHtml($a['fijado'] ? 'Quitar fijado' : 'Fijar') ?></span></button>
             <div class="recurso-menu-sep"></div>
-<form method="POST" action="../../../controladores/profesores/aula/borrarArchivo.php" style="margin:0" onsubmit="return confirm('¿Eliminar definitivamente este archivo? Esta acción no se puede deshacer.')">
+<form method="POST" action="../../../controladores/profesores/aula/borrarArchivo.php" style="margin:0">
               <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
               <input type="hidden" name="id" value="<?= Security::escapeHtml($a['idArchivo'] ) ?>">
               <input type="hidden" name="modulo" value="<?= Security::escapeHtml($idModulo ) ?>">
               <input type="hidden" name="carpeta" value="<?= Security::escapeHtml($carpetaActual ) ?>">
-              <button type="submit" class="recurso-menu-item peligro"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg> Eliminar</button>
+              <button type="submit" class="recurso-menu-item peligro" data-confirmar="¿Eliminar definitivamente este archivo? Esta acción no se puede deshacer."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg> Eliminar</button>
             </form>
             <?php endif; ?>
           </div>
@@ -358,6 +357,23 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
   </div>
 </div>
+<!-- Modal de confirmación de borrado -->
+<div id="modalConfirmar" class="recurso-visor-overlay">
+  <div class="recurso-visor" style="height:auto;max-width:420px;">
+    <div class="recurso-visor-cabecera">
+      <h3 style="display:flex;align-items:center;gap:8px;"><i class="fas fa-triangle-exclamation" style="color:#ef4444;"></i> Confirmar eliminación</h3>
+      <button class="recurso-visor-cerrar" onclick="AulaRecursos.cerrarModal('modalConfirmar')">✕</button>
+    </div>
+    <div style="padding:20px 22px;">
+      <p id="modalConfirmarTexto" style="color:#334155;margin:0 0 22px;line-height:1.6;font-size:.9rem;"></p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" class="boton-secundario" onclick="AulaRecursos.cerrarModal('modalConfirmar')">Cancelar</button>
+        <button type="button" id="modalConfirmarBtn" class="boton-primario" style="background:#ef4444;border-color:#ef4444;">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Zona de arrastre (subir archivos desde el equipo) -->
 <div id="recursoDropZone" class="recurso-dropzone">
   <div class="recurso-dropzone-caja">

@@ -33,6 +33,7 @@ if (!empty($_SESSION['idProfesor'])) {
     if ($datos && $datos['idCiclo'] == $idCiclo) { $autorizado = true; $esEstudiante = true; }
 }
 if (!$autorizado) { http_response_code(403); exit('No tienes permiso para acceder a este recurso.'); }
+if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); exit('Acción bloqueada.'); }
 
 // ── Localizar el fichero físico ───────────────────────────
 $ruta = __DIR__ . "/../../public/uploads/aula/archivos/" . $archivo['nombreArchivo'];
@@ -61,7 +62,7 @@ $ext  = strtolower($archivo['extension']);
 $mime = $mimes[$ext] ?? 'application/octet-stream';
 
 // Sólo se pueden ver embebidos los formatos que el navegador soporta
-$inlineOk = in_array($ext, ['pdf','txt','csv','jpg','jpeg','png','gif','webp','svg']);
+$inlineOk = in_array($ext, ['pdf','txt','csv','jpg','jpeg','png','gif','webp']);
 $disposition = ($modo === 'ver' && $inlineOk) ? 'inline' : 'attachment';
 
 $nombreDescarga = $archivo['nombreOriginal'];

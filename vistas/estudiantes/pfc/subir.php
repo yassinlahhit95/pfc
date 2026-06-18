@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-if (empty($_SESSION['idEstudiante'])) { header("Location: ../../login.php"); exit; }
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -8,11 +7,14 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/configuracion.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $tfg = obtenerTFGporEstudiante($idEstudiante);
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $notaTFG = obtenerCalificacionTFG($idEstudiante);
+$cfg = obtenerConfiguracionCentro();
+$entregaAbierta = (bool)($cfg['feature_subida_tfg'] ?? 1);
 
 $tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
@@ -25,12 +27,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <div class="titulo-tarjeta">ESTADO DE LA ENTREGA</div>
@@ -84,15 +88,20 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     <?php } ?>
 
-    <div class="titulo-tarjeta" style="margin-top: 25px; padding-top: 20px; ">SUBIR ARCHIVO</div>
+    <div class="titulo-tarjeta" style="margin-top: 25px; padding-top: 20px;">SUBIR ARCHIVO</div>
 
+    <?php if (!$entregaAbierta): ?>
+        <div class="mensaje-error" style="margin-top: 15px;">
+            <i class="fas fa-lock"></i> La entrega del TFG está cerrada en este momento. Contacta con tu profesor o director para más información.
+        </div>
+    <?php else: ?>
     <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="formulario">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
+        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
 
         <div class="campo">
             <label>Seleccione el archivo de su TFG (PDF o Word)</label>
-            <p class="texto-suave" style="margin-bottom: 10px;">Formatos aceptados: .pdf, .doc, .docx. Tamaño máximo recomendado: 10MB.</p>
+            <p class="texto-suave" style="margin-bottom: 10px;">Formatos aceptados: .pdf, .doc, .docx. Tamaño máximo: 20 MB.</p>
             <input type="file" name="archivoTFG" accept=".pdf,.doc,.docx">
         </div>
 
@@ -101,6 +110,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="reset" class="boton-secundario" value="REINICIAR">
         </div>
     </form>
+    <?php endif; ?>
 </div>
 
 <?php include '../comunes/footer.php'; ?>

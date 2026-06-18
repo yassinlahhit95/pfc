@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -7,7 +7,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$id_del_estudiante = $_GET['idEstudiante'] ?? '';
+$id_del_estudiante = (int)($_GET['idEstudiante'] ?? 0);
 $estudiante = obtenerEstudiantePorId($id_del_estudiante);
 
 if (!$estudiante) {

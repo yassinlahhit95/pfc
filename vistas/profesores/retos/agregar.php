@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -26,12 +26,6 @@ include_once "../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
 
 <div class="panel">
     <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario" enctype="multipart/form-data">
@@ -101,6 +95,13 @@ include_once "../comunes/nav.php";
 
 <script>
 $(document).ready(function() {
+    <?php if ($errores): ?>
+    if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');
+    <?php endif; ?>
+    <?php if ($exito): ?>
+    if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');
+    <?php endif; ?>
+
     $('.formulario').on('submit', function(e) {
         if ($('#archivosReto').get(0).files.length === 0) return true;
 
@@ -132,7 +133,7 @@ $(document).ready(function() {
                 window.location.href = 'lista.php';
             },
             error: function() {
-                alert('Error al registrar el reto');
+                if (window.Toast) Toast.show('Error al registrar el reto. Inténtalo de nuevo.', 'error');
                 $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-plus"></i> REGISTRAR RETO');
             }
         });

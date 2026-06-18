@@ -3,7 +3,7 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 if (isset($_POST['idAnuncio'])) {
-    $idAnuncio = trim($_POST['idAnuncio']);
+    $idAnuncio = (int)($_POST['idAnuncio'] ?? 0);
 
     if (eliminarAnuncio($idAnuncio)) {
         $_SESSION['exito'] = "Anuncio eliminado correctamente.";

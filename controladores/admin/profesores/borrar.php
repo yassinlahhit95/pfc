@@ -6,7 +6,7 @@ $hayError = false;
 
 if (isset($_POST['idProfesor'])) {
 
-    $idProfesorBorrar = trim($_POST['idProfesor']);
+    $idProfesorBorrar = (int)($_POST['idProfesor'] ?? 0);
     if (eliminarProfesor($idProfesorBorrar)) {
         $_SESSION['exito'] = "Profesor eliminado.";
     } else {

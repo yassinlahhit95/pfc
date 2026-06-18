@@ -16,10 +16,15 @@ if (!empty($_SESSION['idAdmin'])) {
     $myRol = 'admin';    $myId = (int)$_SESSION['idAdmin'];
 } elseif (!empty($_SESSION['idProfesor'])) {
     $myRol = 'profesor'; $myId = (int)$_SESSION['idProfesor'];
+} elseif (!empty($_SESSION['idTutor'])) {
+    $myRol = 'tutor';    $myId = (int)$_SESSION['idTutor'];
 } elseif (!empty($_SESSION['idEstudiante'])) {
     $myRol = 'estudiante'; $myId = (int)$_SESSION['idEstudiante'];
 } else {
     jsonErr('Sin sesión');
+}
+if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+    jsonErr('Acción bloqueada.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('Método no permitido');
@@ -34,7 +39,7 @@ if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) jsonErr('No autorizado'
 
 $newId = chatInsertarMensaje($convId, $myRol, $myId, $contenido);
 
-// ── Push notification to the other participant (non-fatal) ──────────────────
+// Notificación push al destinatario (no fatal si falla)
 $destRol = ($conv['user_a_rol'] === $myRol && (int)$conv['user_a_id'] === $myId)
     ? $conv['user_b_rol'] : $conv['user_a_rol'];
 $destId  = ($conv['user_a_rol'] === $myRol && (int)$conv['user_a_id'] === $myId)

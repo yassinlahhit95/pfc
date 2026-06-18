@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 require_once __DIR__ . "/../../../modelos/admisiones.php";
 $admisiones = listarPreMatriculas();
@@ -103,17 +98,17 @@ include __DIR__ . '/../comunes/nav.php';
                             <td>
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="avatar-circle" style="background: var(--bg-2); color: var(--accent); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; border: 1px solid var(--border);">
-                                        <?php echo strtoupper(substr($adm['nombre'], 0, 1)); ?>
+                                        <?php echo Security::escapeHtml(strtoupper(substr($adm['nombre'], 0, 1))); ?>
                                     </div>
                                     <div>
                                         <div class="fw-bold text-dark"><?php echo htmlspecialchars($adm['nombre'] . ' ' . $adm['apellidos']); ?></div>
-                                        <div class="small text-muted"><?php echo $adm['dni']; ?></div>
+                                        <div class="small text-muted"><?php echo Security::escapeHtml($adm['dni']); ?></div>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="badge rounded-pill bg-light text-dark fw-medium border px-3 py-2"><?php echo htmlspecialchars($adm['nombreCiclo']); ?></div>
-                                <div class="small text-muted mt-1 px-1"><?php echo $adm['curso']; ?> curso</div>
+                                <div class="small text-muted mt-1 px-1"><?php echo Security::escapeHtml($adm['curso']); ?> curso</div>
                             </td>
                             <td>
                                 <?php
@@ -329,6 +324,7 @@ function verDetalle(id) {
             } else {
                 res.archivos.forEach(f => {
                     let icon = f.tipoDocumento.includes('DNI') ? 'fa-id-card' : (f.tipoDocumento.includes('EXPEDIENTE') ? 'fa-graduation-cap' : 'fa-file-alt');
+                    if (f.tipoDocumento === 'DOCUMENTO_ACEPTACION') icon = 'fa-file-signature text-success';
                     htmlArchivos += `
                         <a href="${f.rutaArchivo}" target="_blank" class="doc-link">
                             <div class="d-flex align-items-center gap-3">

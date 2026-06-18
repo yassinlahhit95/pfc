@@ -1,0 +1,39 @@
+# ════════════════════════════════════════════════════════════════════════════
+#  AULAPRO · MySQL / MariaDB HARDENING  (my.cnf)
+# ════════════════════════════════════════════════════════════════════════════
+
+[mysqld]
+# ── Red: nunca exponer la BD a Internet ─────────────────────────────────────
+bind-address = 127.0.0.1
+skip-name-resolve
+# skip-networking          # actívalo si la app conecta por socket Unix
+
+# ── Seguridad de carga de ficheros / funciones ──────────────────────────────
+local-infile = 0
+secure-file-priv = /var/lib/mysql-files
+symbolic-links = 0
+
+# ── Logging para auditoría / detección de intrusos ──────────────────────────
+log_error = /var/log/mysql/error.log
+general_log = 0
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = 2
+
+# ── Límites anti-DoS ────────────────────────────────────────────────────────
+max_connections = 100
+max_user_connections = 40
+max_connect_errors = 20
+
+# Recomendado tras instalar: ejecutar  mysql_secure_installation
+#
+# Principio de mínimo privilegio para el usuario de la app
+# (NO usar root; conceder solo lo necesario sobre la BD de la app):
+#
+#   CREATE USER 'aulapro_app'@'127.0.0.1' IDENTIFIED BY '<larga-aleatoria>';
+#   GRANT SELECT, INSERT, UPDATE, DELETE ON yassjjzw_pfc.* TO 'aulapro_app'@'127.0.0.1';
+#   -- NADA de: DROP, ALTER, CREATE, GRANT, FILE, SUPER, PROCESS
+#   FLUSH PRIVILEGES;
+#
+# Las migraciones de esquema se aplican con un usuario administrador separado,
+# nunca con el usuario de runtime de la aplicación.

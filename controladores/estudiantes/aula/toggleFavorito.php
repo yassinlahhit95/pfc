@@ -18,7 +18,7 @@ function responderFavorito($esAjax, $ok, $destino, $extra = []) {
     exit;
 }
 
-if (empty($_SESSION['idEstudiante'])) {
+if (empty($_SESSION['idEstudiante']) || !empty($_SESSION['must_change_password'])) {
     responderFavorito($esAjax, false, "../../../vistas/login.php", ['error' => 'auth']);
 }
 if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {

@@ -1,10 +1,8 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../firebase/firebase_helper.php";
-
-if (empty($_SESSION['idAdmin'])) { header("Location: ../../../vistas/login.php"); exit; }
 
 if (isset($_POST['enviarMensaje'])) {
     if (!Security::validateCSRFToken()) {
@@ -13,12 +11,12 @@ if (isset($_POST['enviarMensaje'])) {
     }
     $idEstudianteDestino = '';
     if (!empty($_POST['idEstudiante'])) {
-        $idEstudianteDestino = trim($_POST['idEstudiante']);
+        $idEstudianteDestino = (int)($_POST['idEstudiante'] ?? 0);
     }
 
     $idProfesorDestino = '';
     if (!empty($_POST['idProfesor'])) {
-        $idProfesorDestino = trim($_POST['idProfesor']);
+        $idProfesorDestino = (int)($_POST['idProfesor'] ?? 0);
     }
 
     $rolEmisorMensaje = 'admin';
@@ -33,7 +31,7 @@ if (isset($_POST['enviarMensaje'])) {
 
     $idCicloMasivo = '';
     if (!empty($_POST['idCicloMasivo'])) {
-        $idCicloMasivo = trim($_POST['idCicloMasivo']);
+        $idCicloMasivo = (int)($_POST['idCicloMasivo'] ?? 0);
     }
 
     $asuntoMensaje = trim($_POST['asunto']);

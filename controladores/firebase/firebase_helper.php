@@ -52,7 +52,8 @@ function obtenerAccessToken() {
         CURLOPT_URL => 'https://oauth2.googleapis.com/token',
         CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
         CURLOPT_POSTFIELDS => http_build_query([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             'assertion' => $jwt
@@ -116,7 +117,8 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
         CURLOPT_POST => true,
         CURLOPT_HTTPHEADER => $cabeceras,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
         CURLOPT_POSTFIELDS => $datosJson
     ]);
 

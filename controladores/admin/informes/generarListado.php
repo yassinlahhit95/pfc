@@ -1,10 +1,8 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../config/Config.php';
 
-$_proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$_dir   = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_NAME']))));
-if ($_dir === '/' || $_dir === '\\' || $_dir === '.') $_dir = '';
-$_back  = $_proto . '://' . $_SERVER['HTTP_HOST'] . $_dir . '/vistas/admin/informes/informes.php';
+$_back = rtrim(Config::getInstance()->get('APP_URL', ''), '/') . '/vistas/admin/informes/informes.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;

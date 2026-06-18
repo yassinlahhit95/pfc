@@ -367,25 +367,55 @@
     /* Notifications */
     initNotifications();
 
-    /* Poll unread count every 30 s — keeps dot in sync without a page reload */
+    /* Poll unread count — keeps dot in sync without a page reload.
+       Uses recursive setTimeout with exponential backoff so network errors
+       (ERR_NETWORK_CHANGED, etc.) don't flood the console. */
     (function pollUnread() {
       var dot = qs("#notif-dot");
       if (!dot) return;
       var POLL_URL = resolveAppPath('controladores/comunes/contar_no_leidos.php');
-      
-      setInterval(function() {
+      var INTERVAL  = 30000;   // normal interval ms
+      var MAX_DELAY = 300000;  // cap backoff at 5 min
+      var errors    = 0;
+      var timer     = null;
+      var paused    = false;
+
+      function schedule(delay) {
+        clearTimeout(timer);
+        timer = setTimeout(poll, delay);
+      }
+
+      function poll() {
+        if (!navigator.onLine) { schedule(INTERVAL); return; }
         fetch(POLL_URL, { credentials: 'same-origin' })
-          .then(function(r) { return r.json(); })
+          .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
           .then(function(d) {
-            var n = parseInt(d.count || 0, 10);
+            errors = 0;
+            var n    = parseInt(d.count || 0, 10);
             var prev = parseInt(dot.dataset.msgs || '0', 10);
             if (n > prev) {
               dot.dataset.msgs = n;
               dot.removeAttribute('hidden');
             }
+            schedule(INTERVAL);
           })
-          .catch(function() {});
-      }, 30000);
+          .catch(function() {
+            errors++;
+            // Exponential backoff: 30s, 60s, 120s … capped at MAX_DELAY
+            var delay = Math.min(INTERVAL * Math.pow(2, errors - 1), MAX_DELAY);
+            schedule(delay);
+          });
+      }
+
+      // Pause while offline, resume immediately when back online
+      window.addEventListener('offline', function() { paused = true; clearTimeout(timer); });
+      window.addEventListener('online',  function() {
+        paused = false;
+        errors = 0;
+        poll();
+      });
+
+      schedule(INTERVAL);
     })();
 
     /* Tile click elastic feedback */

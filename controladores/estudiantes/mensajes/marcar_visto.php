@@ -1,8 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
-
-if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }
 
 if (isset($_POST['marcarVisto'])) {
     if (!Security::validateCSRFToken()) {
@@ -20,7 +18,7 @@ if (isset($_POST['marcarVisto'])) {
     if (marcarMensajeComoLeido($idReclamacion)) {
         $_SESSION['exito'] = "Mensaje marcado como leído.";
     } else {
-        $_SESSION['errores'] = "Error al actualizar el estado.";
+        $_SESSION['errores'] = "No se pudo marcar el mensaje como leído.";
     }
     header("Location: ../../../vistas/estudiantes/mensajes/detalles.php?id=" . $idReclamacion);
     exit;

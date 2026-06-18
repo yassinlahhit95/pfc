@@ -5,9 +5,9 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 $hayError = false;
 
 if (isset($_POST['guardarNotasReto'])) {
-    $idReto = trim($_POST['idReto']);
-    $idCiclo = trim($_POST['idCiclo']);
-    $idModulo = trim($_POST['idModulo']);
+    $idReto = (int)($_POST['idReto'] ?? 0);
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
+    $idModulo = (int)($_POST['idModulo'] ?? 0);
     
     $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
     $listaNotas = $_POST['notas'] ?? [];

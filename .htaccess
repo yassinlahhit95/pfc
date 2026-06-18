@@ -49,7 +49,7 @@ Options -Indexes
 
 # Bloquear acceso directo a archivos sensibles (Apache 2.4)
 <IfModule mod_authz_core.c>
-    <FilesMatch "(\.env|composer\.(json|lock)|database\.sql|\.htpasswd|\.gitignore)$">
+    <FilesMatch "(\.env|\.user\.ini|composer\.(json|lock)|database\.sql|\.htpasswd|\.gitignore)$">
         Require all denied
     </FilesMatch>
 </IfModule>
@@ -57,7 +57,7 @@ Options -Indexes
 # Bloquear acceso directo a carpetas internas
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(config|include|modelos|templates|logs|vendor)(/|$) - [F,L]
+    RewriteRule ^(config|include|modelos|templates|logs|vendor|security)(/|$) - [F,L]
 </IfModule>
 
 # Páginas de error genéricas (sin revelar 403 vs 404)
@@ -79,15 +79,53 @@ Options -Indexes
 
 # Cabeceras de seguridad HTTP
 <IfModule mod_headers.c>
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    # Anti-clickjacking — DENY is stricter than SAMEORIGIN
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Desactivar APIs que la app no necesita
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+
+    # Aislamiento de origen (Spectre / cross-origin leaks)
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+
+    # Ocultar versión de servidor
+    Header always unset X-Powered-By
+    Header unset Server
+
+    # HSTS: activo solo bajo HTTPS
+    <If "%{HTTPS} == 'on'">
+        Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    </If>
+
+    # Protección XSS legacy (IE/Edge antiguos)
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Bloquear acceso cross-domain (Flash, PDF, Silverlight)
+    Header always set X-Permitted-Cross-Domain-Policies "none"
+
+    # CSP — permite self + recursos externos que usa la app (Firebase, Google Fonts, jQuery CDN)
+    # Elimina 'unsafe-inline' cuando migres los estilos/scripts inline a archivos externos.
+    Header always set Content-Security-Policy "\
+default-src 'self'; \
+base-uri 'self'; \
+object-src 'none'; \
+frame-ancestors 'none'; \
+img-src 'self' data: https:; \
+font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; \
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; \
+script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://code.jquery.com https://cdn.jsdelivr.net; \
+connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://www.gstatic.com https://api.brevo.com; \
+form-action 'self'; \
+upgrade-insecure-requests"
 </IfModule>
 
 # 4. PROTECCIÓN CONTRA BOTS / DDoS (nivel Apache)
-# Limitar tamaño máximo de cuerpo POST (100 KB) — evita body floods
-LimitRequestBody 102400
+# 21 MB — covers the 20 MB TFG upload limit + form fields overhead.
+# A smaller value here silently blocks large uploads with Apache 413 before PHP runs.
+LimitRequestBody 22020096
 
 # Bloquear User-Agents típicos de bots maliciosos y scanners
 <IfModule mod_rewrite.c>

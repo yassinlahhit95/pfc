@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
 if (isset($_POST['actualizarEvento'])) {
-    $idEvento = trim($_POST['idEvento']);
+    $idEvento = (int)($_POST['idEvento'] ?? 0);
     $titulo = trim($_POST['tituloEvento']);
     $descripcion = trim($_POST['descripcionEvento']);
     $fechaEvento = trim($_POST['fechaEvento']);

@@ -1,19 +1,14 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 
-$idEstudiante = $_GET['idEstudiante'] ?? 0;
+$idEstudiante = (int)($_GET['idEstudiante'] ?? 0);
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 

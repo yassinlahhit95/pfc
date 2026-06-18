@@ -25,7 +25,8 @@ function checkProfesorExistente($dni, $email, $idExcluir = 0) {
 
 function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
     $con = obtenerConexion();
-    $pass = password_hash('123456', PASSWORD_DEFAULT);
+    require_once __DIR__ . '/../include/credenciales.php';
+    [$pass] = generarCredencialesTemporales($email, $nombre, 'Profesor');
     $sql1 = "INSERT INTO profesores (nombreProfesor, emailProfesor, password, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "sssssssssss", $nombre, $email, $pass, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
@@ -116,11 +117,14 @@ function limpiarCiclosProfesor($idProf) {
 
 function actualizarPasswordProfesor($id, $pass) {
     $con = obtenerConexion();
-    $passwordHasheada = password_hash($pass, PASSWORD_DEFAULT);
+    $passwordHasheada = password_hash($pass, PASSWORD_BCRYPT, ['cost' => 12]);
     $sql1 = "UPDATE profesores SET password = ? WHERE idProfesor = ?";
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "si", $passwordHasheada, $id);
     $ok = mysqli_stmt_execute($resultado);
+    if ($ok && class_exists('Security')) {
+        Security::touchPasswordChanged($con, 'profesores', 'idProfesor', $id);
+    }
     return $ok;
 }
 
@@ -191,6 +195,7 @@ function validarLoginProfesor($email, $pass) {
     $datos = mysqli_fetch_assoc($res);
 
     if ($datos && password_verify($pass, $datos['password'])) {
+        if (class_exists('Security')) Security::rehashOnLogin($con, 'profesores', 'idProfesor', $datos['idProfesor'], $pass, $datos['password']);
         return $datos;
     }
     return null;

@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
 if (isset($_POST['actualizarArticulo'])) {
-    $idArticulo = trim($_POST['idArticulo']);
+    $idArticulo = (int)($_POST['idArticulo'] ?? 0);
     $nombreArticulo = trim($_POST['nombreArticulo']);
     $numeroSerie = trim($_POST['numeroSerie']);
 

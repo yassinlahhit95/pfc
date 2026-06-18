@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 $hayError = false;
 
 if (isset($_POST['idReto'])) {
-    $idReto = trim($_POST['idReto']);
+    $idReto = (int)$_POST['idReto'];
     
     if (eliminarReto($idReto)) {
         $_SESSION['exito'] = "Reto eliminado.";

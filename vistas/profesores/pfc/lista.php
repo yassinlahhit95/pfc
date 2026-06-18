@@ -1,19 +1,17 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/configuracion.php";
 
 $idProfesor = $_SESSION['idProfesor'];
 $tfgs = listarTFGsPorProfesor($idProfesor);
+$cfg = obtenerConfiguracionCentro();
+$entregaAbierta = (bool)($cfg['feature_subida_tfg'] ?? 1);
 
 $calificacionesTFG = [];
 foreach ($tfgs as $tfg) {
@@ -29,12 +27,32 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>GESTION DE TFGS ENTREGADOS</h1>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
+<div class="panel margen-abajo">
+    <div class="feature-card">
+        <div class="feature-info">
+            <i class="fas fa-file-upload feature-icon" style="color: #8b5cf6;"></i>
+            <div>
+                <div class="feature-label">Entrega de TFG</div>
+                <div class="feature-desc">
+                    <?= $entregaAbierta ? 'Los estudiantes pueden subir su TFG.' : 'La entrega está cerrada para los estudiantes.' ?>
+                </div>
+            </div>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="toggle-subida-tfg" <?= $entregaAbierta ? 'checked' : '' ?>>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <div class="contenedor-tabla">
@@ -115,6 +133,32 @@ include_once __DIR__ . "/../comunes/nav.php";
 function toggleFormCalificar(idFormulario) {
     $('#' + idFormulario).toggle();
 }
+
+document.getElementById('toggle-subida-tfg').addEventListener('change', function() {
+    var estado = this.checked ? 1 : 0;
+    var toggle = this;
+    fetch('../../../controladores/profesores/pfc/toggle_subida.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'estado=' + estado + '&csrf_token=<?= Security::generateCSRFToken() ?>'
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status !== 'success') {
+            toggle.checked = !toggle.checked;
+            Toast.show('No se pudo actualizar la configuración.', 'error');
+        } else {
+            var desc = toggle.closest('.feature-card').querySelector('.feature-desc');
+            desc.textContent = toggle.checked
+                ? 'Los estudiantes pueden subir su TFG.'
+                : 'La entrega está cerrada para los estudiantes.';
+        }
+    })
+    .catch(function() {
+        toggle.checked = !toggle.checked;
+        Toast.show('Error de red.', 'error');
+    });
+});
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

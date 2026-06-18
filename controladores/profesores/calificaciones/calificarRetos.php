@@ -5,9 +5,14 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 $hayError = false;
 
 if (isset($_POST['guardarNotasReto'])) {
-    $idReto = trim($_POST['idReto']);
-    $idCiclo = trim($_POST['idCiclo']);
-    $idModulo = trim($_POST['idModulo']);
+    $idReto = (int)($_POST['idReto'] ?? 0);
+
+    if (!$idReto || !retoPerteneceAProfesor($idReto, $_SESSION['idProfesor'])) {
+        $_SESSION['errores'] = "No tienes permiso para calificar este reto.";
+        header("Location: ../../../vistas/profesores/academico/calificacionesRetos.php"); exit;
+    }
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
+    $idModulo = (int)($_POST['idModulo'] ?? 0);
     
     $idsEstudiantes = $_POST['estudiantes'] ?? [];
     $notas = $_POST['notas'] ?? [];

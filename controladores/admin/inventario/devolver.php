@@ -1,13 +1,15 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
-$idPrestamo = trim($_POST['idPrestamo'] ?? $_GET['id'] ?? '');
+$idPrestamo = (int)($_POST['idPrestamo'] ?? $_GET['id'] ?? 0);
 
 $hayError = false;
 
-if (empty($idPrestamo)) {
-    $_SESSION['errores'] = "Error del préstamo.";
+if ($idPrestamo <= 0) {
+    $_SESSION['errores'] = "Préstamo no encontrado.";
     $hayError = true;
 }
 
@@ -15,7 +17,7 @@ if (!$hayError) {
     if (devolverPrestamo($idPrestamo)) {
         $_SESSION['exito'] = "Préstamo devuelto.";
     } else {
-        $_SESSION['errores'] = "Error al devolver.";
+        $_SESSION['errores'] = "No se pudo registrar la devolución.";
     }
 }
 

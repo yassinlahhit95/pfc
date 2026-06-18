@@ -1,18 +1,13 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-$idDirector = $_GET['id'] ?? 0;
+$idDirector = (int)($_GET['id'] ?? 0);
 $director = obtenerDirectorPorId($idDirector);
 
 if (!$director) {

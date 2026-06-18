@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -18,7 +13,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $idProfesor          = (int)$_SESSION['idProfesor'];
 $listaDeCiclos       = listarCiclosDeProfesor($idProfesor);
-$idCicloSeleccionado = $_GET['idCiclo'] ?? '';
+$idCicloSeleccionado = (int)($_GET['idCiclo'] ?? 0);
 
 $listaDeEstudiantes = !empty($idCicloSeleccionado)
     ? listarEstudiantesPorCiclo($idCicloSeleccionado)

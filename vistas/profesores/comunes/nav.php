@@ -1,11 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-
-if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
@@ -282,6 +275,7 @@ function _nav_active_prof($check) {
              data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
              data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
              data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
+             data-vapid-key="<?= $configFB->get('FIREBASE_VAPID_KEY') ?>"
              class="oculto"></div>
         <script type="module">
             import { setupFirebase } from '../../../public/js/firebase/firebase.js';

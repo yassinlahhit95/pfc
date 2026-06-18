@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 
 if (isset($_POST['actualizarProfesor'])) {
 
-    $idProfesorActualizar = $_POST['idProfesor'];
+    $idProfesorActualizar = (int)($_POST['idProfesor'] ?? 0);
     $nombreProfesorActualizar = trim($_POST['nombreProfesor']);
     $emailProfesorActualizar = trim($_POST['emailProfesor']);
     $dniProfesorActualizar = trim($_POST['dniProfesor']);
@@ -16,33 +16,33 @@ if (isset($_POST['actualizarProfesor'])) {
     $codigoPostalProfesor = trim($_POST['codigoPostalProfesor']);
     $observacionesProfesor = trim($_POST['observacionesProfesor']);
 
-    $errores = '';
-    if (empty($nombreProfesorActualizar)) $errores = "El nombre es obligatorio.";
+    $errores = [];
+    if (empty($nombreProfesorActualizar)) $errores['nombreProfesor'] = "El nombre es obligatorio.";
     if (empty($emailProfesorActualizar)) {
-        $errores = "Falta el email";
-    } else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $emailProfesorActualizar)) {
-        $errores = "Email no válido";
+        $errores['emailProfesor'] = "El email es obligatorio.";
+    } elseif (!Security::validateEmail($emailProfesorActualizar)) {
+        $errores['emailProfesor'] = "El formato del email no es válido.";
     }
-    if (empty($dniProfesorActualizar)) $errores = "El DNI es obligatorio.";
+    if (empty($dniProfesorActualizar)) $errores['dniProfesor'] = "El DNI es obligatorio.";
     if (empty($telefonoProfesorActualizar)) {
-        $errores = "Teléfono requerido";
-    } else if (!is_numeric($telefonoProfesorActualizar)) {
-        $errores = "El teléfono debe ser numérico.";
+        $errores['telefonoProfesor'] = "El teléfono es obligatorio.";
+    } elseif (!Security::validatePhone($telefonoProfesorActualizar)) {
+        $errores['telefonoProfesor'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
     }
-    if (empty($direccionProfesorActualizar)) $errores = "Dirección obligatoria";
-    if (empty($ciudadProfesor)) $errores = "La ciudad es obligatoria.";
+    if (empty($direccionProfesorActualizar)) $errores['direccionProfesor'] = "La dirección es obligatoria.";
+    if (empty($ciudadProfesor)) $errores['ciudadProfesor'] = "La ciudad es obligatoria.";
     if (empty($codigoPostalProfesor)) {
-        $errores = "Falta el código postal";
-    } else if (!is_numeric($codigoPostalProfesor)) {
-        $errores = "Código postal incorrecto";
+        $errores['codigoPostalProfesor'] = "El código postal es obligatorio.";
+    } elseif (!is_numeric($codigoPostalProfesor)) {
+        $errores['codigoPostalProfesor'] = "El código postal debe ser numérico.";
     }
-    if (empty($fechaNacimientoProfesor)) $errores = "Falta la fecha de nacimiento";
+    if (empty($fechaNacimientoProfesor)) $errores['fechaNacimientoProfesor'] = "La fecha de nacimiento es obligatoria.";
 
-    if (!$errores && checkProfesorExistente($dniProfesorActualizar, $emailProfesorActualizar, $idProfesorActualizar)) {
-        $errores = "El DNI o Email ya están registrados por otro profesor.";
+    if (empty($errores) && checkProfesorExistente($dniProfesorActualizar, $emailProfesorActualizar, $idProfesorActualizar)) {
+        $errores['dniProfesor'] = "El DNI o Email ya están registrados por otro profesor.";
     }
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_profesor'] = $_POST;
         header("Location: ../../../vistas/admin/profesores/modificarProfesores.php?idProfesor=$idProfesorActualizar");

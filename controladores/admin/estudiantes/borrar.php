@@ -4,12 +4,12 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['idEstudiante'])) {
 
-    $idEstudiante = trim($_POST['idEstudiante']);
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     
     if (eliminarEstudiante($idEstudiante)) {
         $_SESSION['exito'] = "Estudiante eliminado.";
     } else {
-        $_SESSION['errores'] = "Error al eliminar.";
+        $_SESSION['errores'] = "No se pudo eliminar el estudiante.";
     }
 }
 

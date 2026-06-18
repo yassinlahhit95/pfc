@@ -2,7 +2,7 @@ $(document).ready(function() {
     let currentStep = 1;
     let idPreMatricula = null;
 
-    // Navegación del Wizard
+    // Navegación del Asistente
     function showStep(step) {
         $('.step-content').removeClass('active');
         $(`.step-content[data-step="${step}"]`).addClass('active');
@@ -36,7 +36,7 @@ $(document).ready(function() {
             showStep(currentStep);
             updateSummary();
         } else if (currentStep === 3) {
-            finalizeWizard();
+            finalizarAsistente();
         }
     });
 
@@ -56,12 +56,24 @@ $(document).ready(function() {
             email: $('#email').val(),
             telefono: $('#telefono').val(),
             idCiclo: $('#idCiclo').val(),
-            curso: $('#curso').val()
+            curso: $('#curso').val(),
+            // Datos del Tutor
+            nombreTutor: $('#nombreTutor').val(),
+            dniTutor: $('#dniTutor').val(),
+            emailTutor: $('#emailTutor').val(),
+            telefonoTutor: $('#telefonoTutor').val(),
+            parentescoTutor: $('#parentescoTutor').val()
         };
 
         // Validaciones básicas
-        if (!formData.dni || !formData.nombre || !formData.email || !formData.idCiclo) {
-            Swal.fire('Error', 'Por favor, rellena todos los campos obligatorios', 'error');
+        if (!formData.dni || !formData.nombre || !formData.email || !formData.idCiclo || !formData.nombreTutor || !formData.dniTutor) {
+            Swal.fire('Error', 'Por favor, rellena todos los campos obligatorios del alumno y del tutor', 'error');
+            return;
+        }
+
+        // Validación RGPD
+        if (!$('#aceptoRGPD').is(':checked')) {
+            Swal.fire('Atención', 'Debe aceptar la política de privacidad para continuar', 'warning');
             return;
         }
 
@@ -127,7 +139,7 @@ $(document).ready(function() {
         $('#summary-email').text($('#email').val());
     }
 
-    function finalizeWizard() {
+    function finalizarAsistente() {
         $.ajax({
             url: '../../controladores/admisiones/acciones.php?action=finalize',
             type: 'POST',

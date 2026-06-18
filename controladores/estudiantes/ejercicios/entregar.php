@@ -2,8 +2,6 @@
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
-if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }
-
 if (isset($_POST['entregar'])) {
     $idEjercicio  = intval($_POST['idEjercicio'] ?? 0);
     $respuesta    = trim($_POST['respuesta'] ?? '');
@@ -27,7 +25,7 @@ if (isset($_POST['entregar'])) {
         }
         $nombreArchivo = 'ENT_' . $idEstudiante . '_' . $idEjercicio . '_' . date('dmY_His') . '.' . $ext;
         $destino = __DIR__ . "/../../../public/uploads/ejercicios/entregas/" . $nombreArchivo;
-        if (!is_dir(dirname($destino))) mkdir(dirname($destino), 0777, true);
+        if (!is_dir(dirname($destino))) mkdir(dirname($destino), 0755, true);
         if (move_uploaded_file($archivo['tmp_name'], $destino)) {
             $archivoEntrega = $nombreArchivo;
         }

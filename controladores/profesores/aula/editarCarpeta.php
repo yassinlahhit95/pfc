@@ -1,13 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
-
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
-    $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
-    header("Location: ../../../vistas/profesores/aula/recursos.php?id=" . intval($_POST['idModulo'] ?? 0));
-    exit;
-}
 
 $idCarpeta  = intval($_POST['idCarpeta'] ?? 0);
 $nombre     = trim($_POST['nombre'] ?? '');

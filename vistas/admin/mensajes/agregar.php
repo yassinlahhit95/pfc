@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (!isset($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -15,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $tipo   = $_GET['tipoDestinatario'] ?? 'profesor';
-$idCiclo = $_GET['idCiclo'] ?? '';
+$idCiclo = (int)($_GET['idCiclo'] ?? 0);
 $listaDeCiclos = listarTodosLosCiclos();
 
 if ($tipo === 'profesor') {

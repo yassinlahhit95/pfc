@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS `boletines_log`;
 DROP TABLE IF EXISTS `horario_franjas`;
 DROP TABLE IF EXISTS `horarios`;
 DROP TABLE IF EXISTS `aulas`;
+DROP TABLE IF EXISTS `account_lockout`;
+DROP TABLE IF EXISTS `rate_limits`;
 DROP TABLE IF EXISTS `login_intentos`;
 DROP TABLE IF EXISTS `auditoria`;
 DROP TABLE IF EXISTS `entregas_ejercicios`;
@@ -49,6 +51,8 @@ DROP TABLE IF EXISTS `reto_archivos`;
 DROP TABLE IF EXISTS `retos`;
 DROP TABLE IF EXISTS `pre_matricula_archivos`;
 DROP TABLE IF EXISTS `pre_matriculas`;
+DROP TABLE IF EXISTS `estudiante_tutor`;
+DROP TABLE IF EXISTS `tutores`;
 DROP TABLE IF EXISTS `estudiantes`;
 DROP TABLE IF EXISTS `profesores`;
 DROP TABLE IF EXISTS `directores`;
@@ -94,7 +98,9 @@ CREATE TABLE `profesores` (
   `idProfesor` int(11) NOT NULL AUTO_INCREMENT,
   `nombreProfesor` varchar(100) NOT NULL,
   `emailProfesor` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL DEFAULT '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',
+  `password` varchar(255) NOT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT 1,
+  `pwd_changed_at` datetime DEFAULT NULL,
   `telefonoProfesor` varchar(15),
   `dniProfesor` varchar(12),
   `fechaNacimientoProfesor` date,
@@ -114,7 +120,9 @@ CREATE TABLE `estudiantes` (
   `idEstudiante` int(11) NOT NULL AUTO_INCREMENT,
   `nombreEstudiante` varchar(100) NOT NULL,
   `emailEstudiante` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL DEFAULT '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',
+  `password` varchar(255) NOT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT 1,
+  `pwd_changed_at` datetime DEFAULT NULL,
   `telefonoEstudiante` varchar(15),
   `dniEstudiante` varchar(12) NOT NULL,
   `fechaNacimientoEstudiante` date,
@@ -141,7 +149,12 @@ CREATE TABLE `directores` (
   `idDirector` int(11) NOT NULL AUTO_INCREMENT,
   `nombreDirector` varchar(150) NOT NULL,
   `emailDirector` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL DEFAULT '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',
+  `password` varchar(255) NOT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT 1,
+  `pwd_changed_at` datetime DEFAULT NULL,
+  `mfa_enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `mfa_secret` varchar(64) DEFAULT NULL,
+  `mfa_backup_codes` text DEFAULT NULL,
   `telefonoDirector` varchar(20),
   `dniDirector` varchar(20) NOT NULL,
   `fechaNacimientoDirector` date,
@@ -156,7 +169,33 @@ CREATE TABLE `directores` (
   UNIQUE KEY `uk_dni_dir` (`dniDirector`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 7. Retos
+-- 7. Tutores (familias)
+CREATE TABLE `tutores` (
+  `idTutor` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreTutor` varchar(100) NOT NULL,
+  `emailTutor` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT 1,
+  `pwd_changed_at` datetime DEFAULT NULL,
+  `telefonoTutor` varchar(20),
+  `dniTutor` varchar(20) NOT NULL,
+  `fcm_token` text,
+  PRIMARY KEY (`idTutor`),
+  UNIQUE KEY `uk_email_tutor` (`emailTutor`),
+  UNIQUE KEY `uk_dni_tutor` (`dniTutor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 8. Relación Estudiante–Tutor
+CREATE TABLE `estudiante_tutor` (
+  `idEstudiante` int(11) NOT NULL,
+  `idTutor` int(11) NOT NULL,
+  `parentesco` enum('Padre','Madre','Tutor Legal') NOT NULL DEFAULT 'Padre',
+  PRIMARY KEY (`idEstudiante`,`idTutor`),
+  CONSTRAINT `fk_et_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_et_tutor`      FOREIGN KEY (`idTutor`)      REFERENCES `tutores`     (`idTutor`)      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 9. Retos
 CREATE TABLE `retos` (
   `idReto` int(11) NOT NULL AUTO_INCREMENT,
   `nombreReto` varchar(150) NOT NULL,
@@ -166,7 +205,7 @@ CREATE TABLE `retos` (
   PRIMARY KEY (`idReto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 8. Módulo–Reto
+-- 10. Módulo–Reto
 CREATE TABLE `modulo_reto` (
   `idModulo` int(11) NOT NULL,
   `idReto` int(11) NOT NULL,
@@ -175,7 +214,19 @@ CREATE TABLE `modulo_reto` (
   CONSTRAINT `fk_mr_reto`   FOREIGN KEY (`idReto`)   REFERENCES `retos`   (`idReto`)   ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 9. Calificaciones retos
+-- 11. Archivos adjuntos a retos
+CREATE TABLE `reto_archivos` (
+  `idArchivo` int(11) NOT NULL AUTO_INCREMENT,
+  `idReto` int(11) NOT NULL,
+  `nombreArchivo` varchar(255) NOT NULL,
+  `rutaArchivo` varchar(255) NOT NULL,
+  `tipoArchivo` varchar(50),
+  `fechaSubida` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idArchivo`),
+  CONSTRAINT `fk_retoarch_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 12. Calificaciones retos
 CREATE TABLE `calificaciones_retos` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
@@ -188,7 +239,7 @@ CREATE TABLE `calificaciones_retos` (
   CONSTRAINT `fk_cr_reto`       FOREIGN KEY (`idReto`)       REFERENCES `retos`       (`idReto`)       ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 10. Calificaciones módulos
+-- 13. Calificaciones módulos
 CREATE TABLE `calificaciones_modulos` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
@@ -210,7 +261,7 @@ CREATE TABLE `calificaciones_modulos` (
   CONSTRAINT `fk_cm_modulo`     FOREIGN KEY (`idModulo`)     REFERENCES `modulos`     (`idModulo`)     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 11. Calificaciones TFG
+-- 14. Calificaciones TFG
 CREATE TABLE `calificaciones_tfg` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
@@ -221,7 +272,7 @@ CREATE TABLE `calificaciones_tfg` (
   CONSTRAINT `fk_ctfg_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 12. Dispositivos (inventario)
+-- 15. Dispositivos (inventario)
 CREATE TABLE `dispositivos` (
   `idDispositivo` int(11) NOT NULL AUTO_INCREMENT,
   `nombreDispositivo` varchar(100) NOT NULL,
@@ -231,7 +282,7 @@ CREATE TABLE `dispositivos` (
   UNIQUE KEY `uk_serie` (`numeroSerie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 13. Préstamos
+-- 16. Préstamos
 CREATE TABLE `prestamos` (
   `idPrestamo` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
@@ -246,19 +297,19 @@ CREATE TABLE `prestamos` (
   CONSTRAINT `fk_pres_dispositivo` FOREIGN KEY (`numeroSerie`)  REFERENCES `dispositivos` (`numeroSerie`)  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 14. Anuncios
+-- 17. Anuncios
 CREATE TABLE `anuncios` (
   `idAnuncio` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` varchar(150) NOT NULL,
   `mensaje` text NOT NULL,
   `fechaAnuncio` datetime DEFAULT CURRENT_TIMESTAMP,
   `fechaExpiracion` date NOT NULL,
-  `dirigidoA` enum('todos','estudiantes','profesores') DEFAULT 'todos',
+  `dirigidoA` enum('todos','estudiantes','profesores','tutores') DEFAULT 'todos',
   PRIMARY KEY (`idAnuncio`),
   KEY `idx_anuncio_fecha` (`fechaAnuncio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 15. Reclamaciones (mensajería formal)
+-- 18. Reclamaciones (mensajería formal)
 CREATE TABLE `reclamaciones` (
   `idReclamacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11),
@@ -272,8 +323,8 @@ CREATE TABLE `reclamaciones` (
   `respuesta` text,
   `id_parent` int(11) DEFAULT NULL,
   PRIMARY KEY (`idReclamacion`),
-  KEY `idx_rec_est`        (`idEstudiante`),
-  KEY `idx_rec_prof`       (`idProfesor`),
+  KEY `idx_rec_est`         (`idEstudiante`),
+  KEY `idx_rec_prof`        (`idProfesor`),
   KEY `idx_recl_prof_leido` (`idProfesor`, `leido`),
   KEY `idx_recl_est_leido`  (`idEstudiante`, `leido`),
   KEY `idx_recl_parent`     (`id_parent`),
@@ -281,7 +332,7 @@ CREATE TABLE `reclamaciones` (
   CONSTRAINT `fk_rec_profesor`   FOREIGN KEY (`idProfesor`)   REFERENCES `profesores`  (`idProfesor`)   ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 16. Pagos
+-- 19. Pagos
 CREATE TABLE `pagos` (
   `idPago` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
@@ -295,7 +346,7 @@ CREATE TABLE `pagos` (
   CONSTRAINT `fk_pag_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 17. Eventos
+-- 20. Eventos
 CREATE TABLE `eventos` (
   `idEvento` int(11) NOT NULL AUTO_INCREMENT,
   `tituloEvento` varchar(150) NOT NULL,
@@ -307,22 +358,60 @@ CREATE TABLE `eventos` (
   KEY `idx_evento_fecha` (`fechaEvento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 18. Ciclo–Profesor
+-- 21. Ciclo–Profesor
 CREATE TABLE `ciclo_profesor` (
   `idCiclo` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
   PRIMARY KEY (`idCiclo`, `idProfesor`),
-  CONSTRAINT `fk_rel_ciclo` FOREIGN KEY (`idCiclo`)   REFERENCES `ciclos`     (`idCiclo`)   ON DELETE CASCADE,
+  CONSTRAINT `fk_rel_ciclo` FOREIGN KEY (`idCiclo`)    REFERENCES `ciclos`     (`idCiclo`)    ON DELETE CASCADE,
   CONSTRAINT `fk_rel_prof`  FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 19. Módulo–Profesor
+-- 22. Módulo–Profesor
 CREATE TABLE `modulo_profesor` (
   `idModulo` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
   PRIMARY KEY (`idModulo`, `idProfesor`),
-  CONSTRAINT `fk_relm_mod`  FOREIGN KEY (`idModulo`)  REFERENCES `modulos`    (`idModulo`)  ON DELETE CASCADE,
+  CONSTRAINT `fk_relm_mod`  FOREIGN KEY (`idModulo`)   REFERENCES `modulos`    (`idModulo`)   ON DELETE CASCADE,
   CONSTRAINT `fk_relm_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── Pre-matrícula ─────────────────────────────────────────────
+
+-- 23. Solicitudes de pre-matriculación
+CREATE TABLE `pre_matriculas` (
+  `idPreMatricula` int(11) NOT NULL AUTO_INCREMENT,
+  `dni` varchar(20) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `apellidos` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `telefono` varchar(20),
+  `idCiclo` int(11) NOT NULL,
+  `curso` varchar(50) DEFAULT '1º',
+  `nombreTutor` varchar(100),
+  `dniTutor` varchar(20),
+  `emailTutor` varchar(100),
+  `telefonoTutor` varchar(20),
+  `parentescoTutor` varchar(50),
+  `estado` enum('PENDIENTE','EN_REVISION','SUBSANACION','ADMITIDO','RECHAZADO') DEFAULT 'PENDIENTE',
+  `observaciones` text,
+  `fechaSolicitud` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fechaActualizacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPreMatricula`),
+  UNIQUE KEY `uk_pm_dni` (`dni`),
+  CONSTRAINT `fk_pm_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 24. Archivos adjuntos a pre-matrículas
+CREATE TABLE `pre_matricula_archivos` (
+  `idArchivo` int(11) NOT NULL AUTO_INCREMENT,
+  `idPreMatricula` int(11) NOT NULL,
+  `tipoDocumento` varchar(50) NOT NULL,
+  `nombreArchivo` varchar(255) NOT NULL,
+  `rutaArchivo` varchar(255) NOT NULL,
+  `fechaSubida` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idArchivo`),
+  CONSTRAINT `fk_pma_pm` FOREIGN KEY (`idPreMatricula`) REFERENCES `pre_matriculas` (`idPreMatricula`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Aula Digital ─────────────────────────────────────────────
@@ -342,9 +431,9 @@ CREATE TABLE `aula_carpetas` (
   PRIMARY KEY (`idCarpeta`),
   KEY `idx_aula_carp_mod`   (`idModulo`),
   KEY `idx_aula_carp_padre` (`idPadre`),
-  CONSTRAINT `fk_aulacarp_mod`   FOREIGN KEY (`idModulo`)  REFERENCES `modulos`      (`idModulo`)  ON DELETE CASCADE,
-  CONSTRAINT `fk_aulacarp_prof`  FOREIGN KEY (`idProfesor`) REFERENCES `profesores`  (`idProfesor`) ON DELETE CASCADE,
-  CONSTRAINT `fk_aulacarp_padre` FOREIGN KEY (`idPadre`)   REFERENCES `aula_carpetas` (`idCarpeta`) ON DELETE CASCADE
+  CONSTRAINT `fk_aulacarp_mod`   FOREIGN KEY (`idModulo`)   REFERENCES `modulos`       (`idModulo`)   ON DELETE CASCADE,
+  CONSTRAINT `fk_aulacarp_prof`  FOREIGN KEY (`idProfesor`) REFERENCES `profesores`    (`idProfesor`) ON DELETE CASCADE,
+  CONSTRAINT `fk_aulacarp_padre` FOREIGN KEY (`idPadre`)    REFERENCES `aula_carpetas` (`idCarpeta`)  ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `aula_archivos` (
@@ -366,8 +455,8 @@ CREATE TABLE `aula_archivos` (
   KEY `idx_aula_arch_mod`  (`idModulo`),
   KEY `idx_aula_arch_carp` (`idCarpeta`),
   KEY `idx_aula_arch_elim` (`eliminado`),
-  CONSTRAINT `fk_aulaarch_carp` FOREIGN KEY (`idCarpeta`)  REFERENCES `aula_carpetas` (`idCarpeta`) ON DELETE SET NULL,
-  CONSTRAINT `fk_aulaarch_mod`  FOREIGN KEY (`idModulo`)   REFERENCES `modulos`       (`idModulo`)  ON DELETE CASCADE,
+  CONSTRAINT `fk_aulaarch_carp` FOREIGN KEY (`idCarpeta`)  REFERENCES `aula_carpetas` (`idCarpeta`)  ON DELETE SET NULL,
+  CONSTRAINT `fk_aulaarch_mod`  FOREIGN KEY (`idModulo`)   REFERENCES `modulos`       (`idModulo`)   ON DELETE CASCADE,
   CONSTRAINT `fk_aulaarch_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores`    (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -414,8 +503,8 @@ CREATE TABLE `aula_versiones_entrega` (
   `version` int(11) NOT NULL,
   `fechaVersion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idVersion`),
-  CONSTRAINT `fk_aulavers_tar` FOREIGN KEY (`idTarea`)      REFERENCES `aula_tareas` (`idTarea`)      ON DELETE CASCADE,
-  CONSTRAINT `fk_aulavers_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+  CONSTRAINT `fk_aulavers_tar` FOREIGN KEY (`idTarea`)      REFERENCES `aula_tareas`  (`idTarea`)      ON DELETE CASCADE,
+  CONSTRAINT `fk_aulavers_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`  (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `aula_comentarios` (
@@ -568,7 +657,7 @@ CREATE TABLE `ejercicios` (
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idEjercicio`),
   KEY `idx_ej_ciclo_pub` (`idCiclo`, `publicado`),
-  CONSTRAINT `fk_ej_carp_ej`  FOREIGN KEY (`idCarpeta`)  REFERENCES `carpetas_ejercicios` (`idCarpeta`) ON DELETE SET NULL,
+  CONSTRAINT `fk_ej_carp_ej`  FOREIGN KEY (`idCarpeta`)  REFERENCES `carpetas_ejercicios` (`idCarpeta`)  ON DELETE SET NULL,
   CONSTRAINT `fk_ej_prof_ej`  FOREIGN KEY (`idProfesor`) REFERENCES `profesores`           (`idProfesor`) ON DELETE CASCADE,
   CONSTRAINT `fk_ej_ciclo_ej` FOREIGN KEY (`idCiclo`)    REFERENCES `ciclos`               (`idCiclo`)    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -585,8 +674,8 @@ CREATE TABLE `entregas_ejercicios` (
   `estado` enum('entregado','calificado') NOT NULL DEFAULT 'entregado',
   PRIMARY KEY (`idEntrega`),
   UNIQUE KEY `uk_entrega_unica_ej` (`idEjercicio`,`idEstudiante`),
-  CONSTRAINT `fk_entr_ej_ej`  FOREIGN KEY (`idEjercicio`)  REFERENCES `ejercicios`   (`idEjercicio`)  ON DELETE CASCADE,
-  CONSTRAINT `fk_entr_est_ej` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes`  (`idEstudiante`) ON DELETE CASCADE
+  CONSTRAINT `fk_entr_ej_ej`  FOREIGN KEY (`idEjercicio`)  REFERENCES `ejercicios`  (`idEjercicio`)  ON DELETE CASCADE,
+  CONSTRAINT `fk_entr_est_ej` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Seguridad ────────────────────────────────────────────────
@@ -617,12 +706,32 @@ CREATE TABLE `login_intentos` (
 CREATE TABLE `password_resets` (
   `token` varchar(64) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `tipo_usuario` enum('admin','profesor','estudiante') NOT NULL,
+  `tipo_usuario` enum('admin','profesor','estudiante','tutor') NOT NULL,
   `expires_at` datetime NOT NULL,
   `usado` tinyint(1) NOT NULL DEFAULT 0,
   `creado_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`token`),
   KEY `idx_pr_email_tipo` (`email`, `tipo_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `rate_limits` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `scope` varchar(64) NOT NULL,
+  `ip` varchar(45) NOT NULL,
+  `hits` int(10) unsigned NOT NULL DEFAULT 0,
+  `window_start` int(10) unsigned NOT NULL,
+  `blocked_until` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_scope_ip` (`scope`, `ip`),
+  KEY `idx_blocked_until` (`blocked_until`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `account_lockout` (
+  `email` varchar(190) NOT NULL,
+  `intentos` int(10) unsigned NOT NULL DEFAULT 0,
+  `window_start` int(10) unsigned NOT NULL,
+  `locked_until` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Aulas físicas y horarios ─────────────────────────────────
@@ -675,7 +784,7 @@ CREATE TABLE `horario_franjas` (
   CONSTRAINT `fk_franja_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ── Configuración y boletines ────────────────────────────────
+-- ── Configuración del centro ─────────────────────────────────
 
 CREATE TABLE `configuracion_centro` (
   `idConfig` int(11) NOT NULL DEFAULT 1,
@@ -692,11 +801,22 @@ CREATE TABLE `configuracion_centro` (
   `logoGobierno2` varchar(255) DEFAULT NULL,
   `textoLegal` text DEFAULT NULL,
   `nombreDirectorFirmante` varchar(150) DEFAULT NULL,
-  `feature_prematricula` tinyint(1) DEFAULT 1,
-  `feature_chat` tinyint(1) DEFAULT 1,
-  `feature_inventario` tinyint(1) DEFAULT 1,
+  `feature_prematricula` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_chat` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_inventario` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_subida_tfg` tinyint(1) NOT NULL DEFAULT 1,
+  `instance_status` enum('active','suspended') NOT NULL DEFAULT 'active',
+  `suspension_message` text DEFAULT NULL,
+  `saas_lock_features` tinyint(1) NOT NULL DEFAULT 0,
+  `saas_message` text DEFAULT NULL,
+  `saas_message_type` varchar(20) NOT NULL DEFAULT 'info',
+  `saas_last_sync` datetime DEFAULT NULL,
+  `license_token` text DEFAULT NULL,
+  `license_token_exp` datetime DEFAULT NULL,
   PRIMARY KEY (`idConfig`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── Boletines y verificaciones ───────────────────────────────
 
 CREATE TABLE `boletines_log` (
   `serial` varchar(30) NOT NULL,
@@ -728,9 +848,9 @@ CREATE TABLE `verificaciones_log` (
 
 CREATE TABLE `chat_conversaciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_a_rol` enum('admin','profesor','estudiante') NOT NULL,
+  `user_a_rol` enum('admin','profesor','estudiante','tutor') NOT NULL,
   `user_a_id`  int(11) NOT NULL,
-  `user_b_rol` enum('admin','profesor','estudiante') NOT NULL,
+  `user_b_rol` enum('admin','profesor','estudiante','tutor') NOT NULL,
   `user_b_id`  int(11) NOT NULL,
   `created_at`      datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_message_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -743,58 +863,64 @@ CREATE TABLE `chat_conversaciones` (
 CREATE TABLE `chat_mensajes` (
   `id`              int(11) NOT NULL AUTO_INCREMENT,
   `conversacion_id` int(11) NOT NULL,
-  `emisor_rol`      enum('admin','profesor','estudiante') NOT NULL,
+  `emisor_rol`      enum('admin','profesor','estudiante','tutor') NOT NULL,
   `emisor_id`       int(11) NOT NULL,
   `contenido`       text NOT NULL,
   `fecha`           datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `leido`           tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idx_conv_fecha` (`conversacion_id`, `fecha`),
-  CONSTRAINT `fk_chat_conv` FOREIGN KEY (`conversacion_id`)
-      REFERENCES `chat_conversaciones` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_chat_conv` FOREIGN KEY (`conversacion_id`) REFERENCES `chat_conversaciones` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ── Datos iniciales ──────────────────────────────────────────
 
-INSERT INTO `configuracion_centro` (`idConfig`, `nombreCentro`, `codigoCentro`, `direccionCentro`, `ciudadCentro`, `cpCentro`, `telefonoCentro`, `emailCentro`, `cursoEscolar`, `textoLegal`, `nombreDirectorFirmante`, `feature_prematricula`, `feature_chat`, `feature_inventario`)
-VALUES (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '', 1, 1, 1);
+INSERT INTO `configuracion_centro`
+  (`idConfig`, `nombreCentro`, `codigoCentro`, `direccionCentro`, `ciudadCentro`, `cpCentro`,
+   `telefonoCentro`, `emailCentro`, `cursoEscolar`, `textoLegal`, `nombreDirectorFirmante`,
+   `feature_prematricula`, `feature_chat`, `feature_inventario`, `feature_subida_tfg`,
+   `instance_status`, `suspension_message`, `saas_lock_features`, `saas_message`,
+   `saas_message_type`, `saas_last_sync`, `license_token`, `license_token_exp`)
+VALUES
+  (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '',
+   1, 1, 1, 1, 'active', NULL, 0, NULL, 'info', NULL, NULL, NULL);
 
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES
 (1, 'Grado Medio'),
 (2, 'Grado Superior');
 
--- Admin por defecto (contraseña: 123456)
+-- Cuenta de arranque — contraseña: 123456. CAMBIA email y contraseña tras el primer login.
 INSERT INTO `directores` (`nombreDirector`, `emailDirector`, `password`, `dniDirector`)
 VALUES ('Administrador', 'admin@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '00000000T');
 
 INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`) VALUES
-(1, 'Desarrollo de Aplicaciones Web',           'DAW',  1200.00, 2),
-(2, 'Desarrollo de Aplicaciones Multiplataforma','DAM',  1200.00, 2),
-(3, 'Sistemas Informáticos en Red',              'ASIR', 1200.00, 2);
+(1, 'Desarrollo de Aplicaciones Web',            'DAW',  1200.00, 2),
+(2, 'Desarrollo de Aplicaciones Multiplataforma', 'DAM',  1200.00, 2),
+(3, 'Sistemas Informáticos en Red',               'ASIR', 1200.00, 2);
 
 -- Profesores de ejemplo (contraseña: 123456)
 INSERT INTO `profesores` (`idProfesor`, `nombreProfesor`, `emailProfesor`, `password`, `telefonoProfesor`, `dniProfesor`, `fechaNacimientoProfesor`, `fechaAltaProfesor`, `direccionProfesor`, `ciudadProfesor`, `codigoPostalProfesor`) VALUES
-(1, 'Juan García Martínez',    'juan.garcia@aulapro.com',  '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '612345678', '12345678A', '1980-05-15', '2023-09-01', 'Calle Principal 123', 'Madrid',    '28001'),
-(2, 'María López Rodríguez',   'maria.lopez@aulapro.com',  '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '623456789', '87654321B', '1985-03-22', '2023-09-01', 'Avenida Principal 456', 'Barcelona', '08002');
+(1, 'Juan García Martínez',  'juan.garcia@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '612345678', '12345678A', '1980-05-15', '2023-09-01', 'Calle Principal 123',    'Madrid',    '28001'),
+(2, 'María López Rodríguez', 'maria.lopez@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '623456789', '87654321B', '1985-03-22', '2023-09-01', 'Avenida Principal 456', 'Barcelona', '08002');
 
 INSERT INTO `modulos` (`idModulo`, `nombreModulo`, `horasMaximas`, `idCiclo`) VALUES
-(1,  'Lenguajes de Marcas',                       42,  1),
-(2,  'Programación del Lado del Cliente',         126, 1),
-(3,  'Bases de Datos',                             84, 1),
-(4,  'Programación del Lado del Servidor',        126, 1),
-(5,  'Despliegue de Aplicaciones Web',             63, 1),
-(6,  'Lenguajes de Programación',                 105, 2),
-(7,  'Fundamentos de Bases de Datos',              84, 2),
-(8,  'Programación Multimedia',                   105, 2),
-(9,  'Acceso a Datos',                             84, 2),
-(10, 'Interfaces',                                 84, 2),
-(11, 'Planificación y Administración de Redes',    84, 3),
-(12, 'Gestión e Instalación de Sistemas Operativos',105,3),
-(13, 'Servicios en Red',                           105, 3),
-(14, 'Sistemas Gestores de Bases de Datos',         84, 3),
-(15, 'Seguridad Informática',                       105, 3);
+(1,  'Lenguajes de Marcas',                          42,  1),
+(2,  'Programación del Lado del Cliente',            126, 1),
+(3,  'Bases de Datos',                                84, 1),
+(4,  'Programación del Lado del Servidor',           126, 1),
+(5,  'Despliegue de Aplicaciones Web',                63, 1),
+(6,  'Lenguajes de Programación',                    105, 2),
+(7,  'Fundamentos de Bases de Datos',                 84, 2),
+(8,  'Programación Multimedia',                      105, 2),
+(9,  'Acceso a Datos',                                84, 2),
+(10, 'Interfaces',                                    84, 2),
+(11, 'Planificación y Administración de Redes',       84, 3),
+(12, 'Gestión e Instalación de Sistemas Operativos', 105, 3),
+(13, 'Servicios en Red',                             105, 3),
+(14, 'Sistemas Gestores de Bases de Datos',           84, 3),
+(15, 'Seguridad Informática',                        105, 3);
 
 -- Estudiantes de ejemplo (contraseña: 123456)
 INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`, `password`, `dniEstudiante`, `fechaNacimientoEstudiante`, `fechaAltaEstudiante`, `idCiclo`, `curso`) VALUES
@@ -809,11 +935,11 @@ INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`
 (9, 'Roberto Vega Herrera',      'roberto.vega@aulapro.com',      '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '99999999K', '2004-12-08', '2023-09-01', 3, 'Grado Superior');
 
 INSERT INTO `retos` (`idReto`, `nombreReto`, `fechaInicio`, `fechaFin`, `horasReto`) VALUES
-(1, 'Reto HTML y CSS',   '2026-02-01', '2026-02-28', 20),
-(2, 'Reto JavaScript',   '2026-03-01', '2026-03-31', 25),
-(3, 'Reto Base de Datos','2026-04-01', '2026-04-30', 30),
-(4, 'Reto Backend',      '2026-05-01', '2026-05-31', 35),
-(5, 'Reto Full Stack',   '2026-06-01', '2026-06-30', 50);
+(1, 'Reto HTML y CSS',    '2026-02-01', '2026-02-28', 20),
+(2, 'Reto JavaScript',    '2026-03-01', '2026-03-31', 25),
+(3, 'Reto Base de Datos', '2026-04-01', '2026-04-30', 30),
+(4, 'Reto Backend',       '2026-05-01', '2026-05-31', 35),
+(5, 'Reto Full Stack',    '2026-06-01', '2026-06-30', 50);
 
 INSERT INTO `modulo_reto` (`idModulo`, `idReto`) VALUES
 (1,1),(2,2),(3,3),(4,4),(1,5),(2,5),(3,5),(4,5);
@@ -821,17 +947,18 @@ INSERT INTO `modulo_reto` (`idModulo`, `idReto`) VALUES
 INSERT INTO `modulo_profesor` (`idModulo`, `idProfesor`) VALUES
 (1,1),(2,1),(3,1),(4,1),(5,1),(6,2),(7,2),(8,2),(9,2),(10,2);
 
-INSERT INTO `ciclo_profesor` (`idCiclo`, `idProfesor`) VALUES (1,1),(2,2);
+INSERT INTO `ciclo_profesor` (`idCiclo`, `idProfesor`) VALUES
+(1,1),(2,2);
 
 INSERT INTO `aula_almacenamiento_ciclo` (`idCiclo`, `limiteBytes`) VALUES
 (1,5368709120),(2,5368709120),(3,5368709120);
 
 INSERT INTO `aulas` (`idAula`, `planta`, `numero`, `nombreAula`, `tipoAula`, `capacidad`) VALUES
-(1,1,1,'Aula 101',        'teoria',      30),
-(2,1,2,'Aula 102',        'teoria',      30),
-(3,2,1,'Laboratorio 201', 'laboratorio', 24),
-(4,2,2,'Laboratorio 202', 'laboratorio', 24),
-(5,0,1,'Aula 001 (Taller)','taller',     20);
+(1,1,1,'Aula 101',         'teoria',      30),
+(2,1,2,'Aula 102',         'teoria',      30),
+(3,2,1,'Laboratorio 201',  'laboratorio', 24),
+(4,2,2,'Laboratorio 202',  'laboratorio', 24),
+(5,0,1,'Aula 001 (Taller)','taller',      20);
 
 INSERT INTO `horarios` (`idCiclo`,`diaSemana`,`horaInicio`,`horaFin`,`idModulo`,`idProfesor`,`idAula`) VALUES
 (1,'Lunes',    '08:00:00','09:00:00',1,1,1),
@@ -843,46 +970,3 @@ INSERT INTO `horarios` (`idCiclo`,`diaSemana`,`horaInicio`,`horaFin`,`idModulo`,
 (1,'Miércoles','12:30:00','13:30:00',5,1,3),
 (1,'Jueves',   '10:00:00','11:00:00',4,1,3),
 (1,'Viernes',  '13:30:00','14:30:00',5,1,3);
-
--- --------------------------------------------------------
--- ADMISIONES (SISTEMA DE PRE-MATRICULACIÓN)
--- --------------------------------------------------------
-
--- Tabla para las solicitudes de pre-matriculación
-CREATE TABLE IF NOT EXISTS `pre_matriculas` (
-    `idPreMatricula` INT AUTO_INCREMENT PRIMARY KEY,
-    `dni` VARCHAR(20) NOT NULL UNIQUE,
-    `nombre` VARCHAR(100) NOT NULL,
-    `apellidos` VARCHAR(100) NOT NULL,
-    `email` VARCHAR(100) NOT NULL,
-    `telefono` VARCHAR(20),
-    `idCiclo` INT NOT NULL,
-    `curso` VARCHAR(50) DEFAULT '1º',
-    `estado` ENUM('PENDIENTE', 'EN_REVISION', 'SUBSANACION', 'ADMITIDO', 'RECHAZADO') DEFAULT 'PENDIENTE',
-    `observaciones` TEXT,
-    `fechaSolicitud` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `fechaActualizacion` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`idCiclo`) REFERENCES `ciclos`(`idCiclo`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabla para los archivos adjuntos a la pre-matrícula
-CREATE TABLE IF NOT EXISTS `pre_matricula_archivos` (
-    `idArchivo` INT AUTO_INCREMENT PRIMARY KEY,
-    `idPreMatricula` INT NOT NULL,
-    `tipoDocumento` VARCHAR(50) NOT NULL, -- 'DNI_FRONTAL', 'DNI_REVERSO', 'EXPEDIENTE', 'FOTO'
-    `nombreArchivo` VARCHAR(255) NOT NULL,
-    `rutaArchivo` VARCHAR(255) NOT NULL,
-    `fechaSubida` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`idPreMatricula`) REFERENCES `pre_matriculas`(`idPreMatricula`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabla para los archivos adjuntos a los retos
-CREATE TABLE IF NOT EXISTS `reto_archivos` (
-    `idArchivo` INT AUTO_INCREMENT PRIMARY KEY,
-    `idReto` INT NOT NULL,
-    `nombreArchivo` VARCHAR(255) NOT NULL,
-    `rutaArchivo` VARCHAR(255) NOT NULL,
-    `tipoArchivo` VARCHAR(50), -- 'pdf', 'imagen', etc.
-    `fechaSubida` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`idReto`) REFERENCES `retos`(`idReto`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

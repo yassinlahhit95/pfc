@@ -3,10 +3,10 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 if (isset($_POST['actualizarCiclo'])) {
-    $idCiclo = trim($_POST['idCiclo']);
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
     $nombre = trim($_POST['nombreCiclo']);
     $abreviatura = trim($_POST['abreviaturaCiclo']);
-    $idNivelEducativo = trim($_POST['idNivel']);
+    $idNivelEducativo = (int)($_POST['idNivel'] ?? 0);
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 

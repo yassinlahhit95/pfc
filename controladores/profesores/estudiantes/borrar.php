@@ -8,9 +8,13 @@ if (empty($_SESSION['idProfesor'])) {
 }
 
 if (!empty($_POST['idEstudiante'])) {
-    $idEstudiante = $_POST['idEstudiante'] ?? 0;
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
 
     if ($idEstudiante > 0) {
+        if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {
+            $_SESSION['errores'] = "No tienes permiso sobre este estudiante.";
+            header("Location: ../../../vistas/profesores/estudiantes/lista.php"); exit;
+        }
         $resultado = eliminarEstudiante($idEstudiante);
         if ($resultado) {
             $_SESSION['exito'] = "Estudiante eliminado correctamente.";

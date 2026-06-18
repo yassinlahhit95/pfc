@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $id = (int)($_GET['id'] ?? 0);
 require_once __DIR__ . '/../../../modelos/reclamaciones.php';

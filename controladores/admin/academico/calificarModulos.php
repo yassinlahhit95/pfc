@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
 $hayError = false;
@@ -10,8 +10,8 @@ if (isset($_POST['guardarNotas'])) {
         header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
         exit;
     }
-    $idModulo  = trim($_POST['idModulo'] ?? '');
-    $idCiclo   = trim($_POST['idCiclo']  ?? '');
+    $idModulo = (int)($_POST['idModulo'] ?? 0);
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
     $listaIds  = $_POST['estudiantes']   ?? [];
     $lista1ev    = $_POST['notas_1ev']    ?? [];
     $lista1final = $_POST['notas_1final'] ?? [];

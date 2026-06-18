@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
@@ -107,9 +102,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <a href="editar.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="../../../controladores/aula/borrar_sesion.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-peligro btn-pequeno" onclick="return confirm('¿Estás seguro de que deseas eliminar esta sesión?')" title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                        <form method="POST" action="../../../controladores/aula/borrar_sesion.php"
+                              onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta sesión?')" style="display:inline;margin:0;">
+                            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                            <input type="hidden" name="id" value="<?= Security::escapeHtml($sesion['idSesion']) ?>">
+                            <button type="submit" class="boton-peligro btn-pequeno" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 <?php } ?>

@@ -18,7 +18,7 @@ if (!function_exists('responderAccionAula')) {
     }
 }
 
-if (empty($_SESSION['idProfesor'])) {
+if (empty($_SESSION['idProfesor']) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     responderAccionAula($esAjax, false, "../../../vistas/login.php", ['error' => 'auth']);
 }
 if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {

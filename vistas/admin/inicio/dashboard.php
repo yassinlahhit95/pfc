@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -14,9 +9,11 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/tutores.php";
 
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores  = contarProfesores();
+$totalTutores     = contarTutores();
 $totalRetos       = contarRetos();
 $totalModulos     = contarModulos();
 $recaudado        = obtenerTotalRecaudado();
@@ -55,6 +52,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
   <div class="hero-stats">
     <div class="stat"><span class="stat-k">Estudiantes</span><span class="stat-v"><?= $totalEstudiantes ?></span></div>
     <div class="stat"><span class="stat-k">Profesores</span><span class="stat-v"><?= $totalProfesores ?></span></div>
+    <div class="stat"><span class="stat-k">Tutores</span><span class="stat-v"><?= $totalTutores ?></span></div>
     <div class="stat"><span class="stat-k">Recaudado</span><span class="stat-v"><?= number_format($recaudado, 0, ',', '.') ?>€</span></div>
   </div>
 </section>
@@ -94,6 +92,22 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
     <span class="tile-foot">
       <span class="tile-stat"><?= $totalProfesores ?> activos</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../tutores/verTutores.php" class="tile card-soft" style="--tint:#10B981; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <?php if ($totalTutores > 0) { ?><span class="tile-badge"><?= $totalTutores ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Tutores</span>
+      <span class="tile-desc">Gestión de familias</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalTutores ?> registrados</span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>

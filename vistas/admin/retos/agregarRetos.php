@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -20,42 +20,47 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="verRetos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
-    <?php } ?>
-
-    <?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores) && !is_array($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <form action="../../../controladores/admin/retos/insertar.php" method="POST" class="formulario" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="campo">
                 <label for="nombreReto">Nombre del Reto</label>
-                <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>">
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>" class="<?= (is_array($errores) && isset($errores['nombreReto'])) ? 'border-error' : '' ?>">
+                <?php if (is_array($errores) && isset($errores['nombreReto'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['nombreReto']) ?></span><?php endif; ?>
             </div>
 
             <div class="campo">
                 <label for="horasReto">Horas Totales Estimadas</label>
-                <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
+                <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>" class="<?= (is_array($errores) && isset($errores['horasReto'])) ? 'border-error' : '' ?>">
+                <?php if (is_array($errores) && isset($errores['horasReto'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['horasReto']) ?></span><?php endif; ?>
             </div>
 
             <div class="row">
                 <div class="campo">
                     <label for="fechaInicioReto">Fecha de Inicio</label>
-                    <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaInicioReto'] ?? '') ?>">
+                    <input type="date" name="fechaInicioReto" id="fechaInicioReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaInicioReto'] ?? '') ?>" class="<?= (is_array($errores) && isset($errores['fechaInicioReto'])) ? 'border-error' : '' ?>">
+                    <?php if (is_array($errores) && isset($errores['fechaInicioReto'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['fechaInicioReto']) ?></span><?php endif; ?>
                 </div>
 
                 <div class="campo">
                     <label for="fechaFinReto">Fecha de Fin</label>
-                    <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaFinReto'] ?? '') ?>">
+                    <input type="date" name="fechaFinReto" id="fechaFinReto" min="<?= date('Y-m-d') ?>" value="<?= Security::escapeHtml($datos['fechaFinReto'] ?? '') ?>" class="<?= (is_array($errores) && isset($errores['fechaFinReto'])) ? 'border-error' : '' ?>">
+                    <?php if (is_array($errores) && isset($errores['fechaFinReto'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['fechaFinReto']) ?></span><?php endif; ?>
                 </div>
             </div>
 
         <div class="campo">
             <label for="modulosReto">Módulo Asociado</label>
-            <select name="modulosReto" id="modulosReto">
+            <select name="modulosReto" id="modulosReto" class="<?= (is_array($errores) && isset($errores['modulosReto'])) ? 'border-error' : '' ?>">
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= ($datos['modulosReto'] ?? '') == $modulo['idModulo'] ? 'selected' : '' ?>>
@@ -63,6 +68,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </option>
                 <?php } ?>
             </select>
+            <?php if (is_array($errores) && isset($errores['modulosReto'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['modulosReto']) ?></span><?php endif; ?>
         </div>
 
         <div class="campo">
@@ -130,3 +136,11 @@ $(document).ready(function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
+<?php if (is_array($errores) && !empty($errores)): ?>
+<script>
+(function(){
+    var first = document.querySelector('.border-error');
+    if (first) { first.focus(); first.scrollIntoView({behavior:'smooth', block:'center'}); }
+})();
+</script>
+<?php endif; ?>

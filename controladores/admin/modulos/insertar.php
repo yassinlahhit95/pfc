@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 
 if (isset($_POST['guardarModulo'])) {
     $nombreNuevoModulo = trim($_POST['nombreModulo']);
-    $idCicloNuevoModulo = $_POST['idCiclo'];
+    $idCicloNuevoModulo = (int)($_POST['idCiclo'] ?? 0);
     $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
 
     $avisos = [];

@@ -6,6 +6,8 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('X-Content-Type-Options: nosniff');
 
+if (session_status() === PHP_SESSION_NONE) session_start();
+
 $role = null;
 $uid  = null;
 
@@ -16,6 +18,10 @@ elseif (!empty($_SESSION['idEstudiante'])){ $role = 'estudiante'; $uid = (int)$_
 if (!$role) {
     http_response_code(401);
     echo json_encode(['ok' => false]);
+    exit;
+}
+if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+    echo json_encode(['ok' => true, 'unread' => 0]);
     exit;
 }
 

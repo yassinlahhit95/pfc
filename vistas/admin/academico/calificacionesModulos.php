@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito  = $_SESSION['exito']  ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -18,8 +18,8 @@ $ciclosFiltrados = $idNivelFiltro
     ? array_values(array_filter($listaCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
     : $listaCiclos;
 
-$idCicloElegido  = $_GET['idCiclo']  ?? '';
-$idModuloElegido = $_GET['idModulo'] ?? '';
+$idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
+$idModuloElegido = (int)($_GET['idModulo'] ?? 0);
 
 if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_column($ciclosFiltrados, 'idCiclo'))) {
     $idCicloElegido = $idModuloElegido = '';
@@ -153,8 +153,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito)   { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito)   ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <?php if (!empty($idModuloElegido)) { ?>
     <div class="glosario-bar">

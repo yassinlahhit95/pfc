@@ -5,7 +5,7 @@
     --step-text: #1e293b;
 }
 
-.wizard-container {
+.asistente-container {
     max-width: 800px;
     margin: 2rem auto;
     background: white;
@@ -14,14 +14,14 @@
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.wizard-steps {
+.asistente-steps {
     display: flex;
     justify-content: space-between;
     margin-bottom: 3rem;
     position: relative;
 }
 
-.wizard-steps::before {
+.asistente-steps::before {
     content: '';
     position: absolute;
     top: 25px;
@@ -79,7 +79,7 @@
     color: var(--step-primary);
 }
 
-.wizard-content {
+.asistente-content {
     min-height: 300px;
 }
 
@@ -123,7 +123,7 @@
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.wizard-buttons {
+.asistente-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 3rem;
@@ -131,30 +131,30 @@
     border-top: 1px solid #e2e8f0;
 }
 
-.btn-wizard {
+.btn-asistente {
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 600;
     transition: all 0.2s;
 }
 
-.btn-primary-wizard {
+.btn-primary-asistente {
     background: var(--step-primary);
     color: white;
     border: none;
 }
 
-.btn-primary-wizard:hover {
+.btn-primary-asistente:hover {
     background: #4338ca;
 }
 
-.btn-secondary-wizard {
+.btn-secondary-asistente {
     background: #f8fafc;
     color: #64748b;
     border: 1px solid #e2e8f0;
 }
 
-.btn-secondary-wizard:hover {
+.btn-secondary-asistente:hover {
     background: #f1f5f9;
 }
 
@@ -185,14 +185,14 @@
     margin-bottom: 0.5rem;
 }
 
-/* -- Responsividad para el Wizard de Admisiones -- */
+/* -- Responsividad para el Asistente de Admisiones -- */
 @media (max-width: 640px) {
-    .wizard-container {
+    .asistente-container {
         padding: 1.5rem;
         margin: 1rem;
         border-radius: 1rem;
     }
-    .wizard-steps {
+    .asistente-steps {
         margin-bottom: 2rem;
     }
     .step-number {
@@ -201,9 +201,9 @@
         font-size: 14px;
     }
     .step-label {
-        display: none; /* Ocultar etiquetas en móvil para evitar amontonamiento */
+        display: none; /* Ocultar etiquetas en mÃ³vil para evitar amontonamiento */
     }
-    .wizard-steps::before {
+    .asistente-steps::before {
         top: 17px;
     }
     .header-bg {
@@ -212,10 +212,10 @@
     .header-bg h1 {
         font-size: 1.75rem;
     }
-    .wizard-wrapper {
+    .asistente-wrapper {
         margin-top: -4rem;
     }
-    .btn-wizard {
+    .btn-asistente {
         padding: 0.6rem 1rem;
         font-size: 14px;
     }

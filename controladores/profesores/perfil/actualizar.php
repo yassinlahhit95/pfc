@@ -3,8 +3,8 @@ require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once "../../../modelos/profesores.php";
 
 if (isset($_POST['actualizarPerfil'])) {
-    $idProfesor = trim($_POST['idProfesor']);
-    $nombre = trim($_POST['nombreProfesor']);
+    $idProfesor = (int)$_SESSION['idProfesor'];
+    $nombre = Security::sanitize($_POST['nombreProfesor']);
     $email = strtolower(trim($_POST['emailProfesor']));
     $telefono = trim($_POST['telefonoProfesor']);
 
@@ -20,8 +20,8 @@ if (isset($_POST['actualizarPerfil'])) {
 
     if (empty($nombre)) $errores = "El nombre es obligatorio.";
     if (empty($email)) $errores = "El correo es obligatorio.";
-    else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) $errores = "Formato inválido.";
-    if (!empty($telefono) && !is_numeric($telefono)) $errores = "Debe ser un número.";
+    elseif (!Security::validateEmail($email)) $errores = "El formato del correo no es válido.";
+    if (!empty($telefono) && !Security::validatePhone($telefono)) $errores = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
 
     if (!empty($passwordNueva)) {
         if (empty($passwordActual)) {

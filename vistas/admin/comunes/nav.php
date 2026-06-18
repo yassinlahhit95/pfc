@@ -1,22 +1,17 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/tutores.php";
 
 $datosAdmin_menu        = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreUsuario_menu     = $datosAdmin_menu['nombreDirector'] ?? 'Administrador';
 $totalEstudiantes_menu  = contarEstudiantes();
 $totalProfesores_menu   = contarProfesores();
+$totalTutores_menu      = contarTutores();
 $totalDirectores_menu   = contarDirectores();
 $totalPagos_menu        = contarPagosRealizados();
 $totalAnuncios_menu     = contarAnuncios();
@@ -172,6 +167,13 @@ function _nav_active_admin($check) {
         <?php if (_nav_active_admin('profesores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_admin('tutores') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="nav-label">Tutores (Familias)</span>
+        <?php if ($totalTutores_menu > 0) { ?><span class="nav-badge"><?= $totalTutores_menu ?></span><?php } ?>
+        <?php if (_nav_active_admin('tutores') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
       <a href="../pagos/verPagosGeneral.php" class="nav-item<?= _nav_active_admin('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
@@ -241,6 +243,15 @@ function _nav_active_admin($check) {
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <span class="nav-label">Configuración</span>
         <?php if (_nav_active_admin('configuracion') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
+      <!-- PLATAFORMA -->
+      <span class="nav-section-title">PLATAFORMA</span>
+
+      <a href="../saas/estado.php" class="nav-item<?= _nav_active_admin('saas_estado') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <span class="nav-label">Estado SaaS</span>
+        <?php if (_nav_active_admin('saas_estado') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
     </nav>
@@ -315,7 +326,33 @@ function _nav_active_admin($check) {
       </div>
     </header>
     <div class="content">
-      <?php if (isset($_SESSION['idAdmin'])) { 
+      <?php
+      // SaaS platform message banner — shown on every admin page
+      if (!isset($FeatureGuardLoaded)) {
+          @include_once __DIR__ . '/../../../include/FeatureGuard.php';
+          $FeatureGuardLoaded = true;
+      }
+      if (class_exists('FeatureGuard')) {
+          $_saas_nav_msg  = FeatureGuard::getMessage();
+          $_saas_nav_type = FeatureGuard::getMessageType();
+          if ($_saas_nav_msg) {
+              $__colors = [
+                  'info'         => ['#3b82f6','#eff6ff','#dbeafe','ℹ️'],
+                  'warning'      => ['#d97706','#fffbeb','#fde68a','⚠️'],
+                  'error'        => ['#dc2626','#fef2f2','#fecaca','🚨'],
+                  'subscription' => ['#7c3aed','#f5f3ff','#ddd6fe','💳'],
+                  'activation'   => ['#0369a1','#f0f9ff','#bae6fd','🔑'],
+              ];
+              [$__c,$__bg,$__bd,$__icon] = $__colors[$_saas_nav_type] ?? $__colors['info'];
+              echo '<div style="margin-bottom:16px;padding:12px 18px;border-radius:10px;background:'.$__bg.';border:1px solid '.$__bd.';display:flex;align-items:center;gap:12px;">';
+              echo '<span style="font-size:1.25rem;line-height:1;">'.$__icon.'</span>';
+              echo '<div style="flex:1;"><span style="font-weight:700;color:'.$__c.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:#374151;">'.htmlspecialchars($_saas_nav_msg, ENT_QUOTES).'</span></div>';
+              echo '<a href="../saas/estado.php" style="font-size:.8rem;color:'.$__c.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
+              echo '</div>';
+          }
+      }
+      ?>
+      <?php if (isset($_SESSION['idAdmin'])) {
           $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data" 
@@ -327,6 +364,7 @@ function _nav_active_admin($check) {
              data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
              data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
              data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
+             data-vapid-key="<?= $configFB->get('FIREBASE_VAPID_KEY') ?>"
              class="oculto"></div>
         <script type="module">
             import { setupFirebase } from '../../../public/js/firebase/firebase.js';

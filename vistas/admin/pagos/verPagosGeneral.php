@@ -1,14 +1,9 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -22,7 +17,7 @@ $ciclosFiltrados = $idNivelFiltro
     ? array_values(array_filter($listaDeTodosLosCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
     : $listaDeTodosLosCiclos;
 
-$idDelCicloParaFiltrar = $_GET['idCiclo'] ?? '';
+$idDelCicloParaFiltrar = (int)($_GET['idCiclo'] ?? 0);
 
 if ($idNivelFiltro && $idDelCicloParaFiltrar && !in_array((int)$idDelCicloParaFiltrar, array_column($ciclosFiltrados, 'idCiclo'))) {
     $idDelCicloParaFiltrar = '';
@@ -44,13 +39,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div>
-<?php } ?>
-
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel margen-abajo">
     <form method="GET" action="verPagosGeneral.php">
@@ -71,8 +67,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
                     <?php foreach ($ciclosFiltrados as $cicloItem) { ?>
-                        <option value="<?= $cicloItem['idCiclo'] ?>" <?= $idDelCicloParaFiltrar == $cicloItem['idCiclo'] ? 'selected' : '' ?>>
-                            <?= strtoupper($cicloItem['nombreCiclo']) ?>
+                        <option value="<?= (int)$cicloItem['idCiclo'] ?>" <?= (int)$idDelCicloParaFiltrar === (int)$cicloItem['idCiclo'] ? 'selected' : '' ?>>
+                            <?= strtoupper(Security::escapeHtml($cicloItem['nombreCiclo'])) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -103,10 +99,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($listaDePagosAMostrar as $pagoIndividual) { ?>
                     <tr>
-                        <td><b><?= strtoupper($pagoIndividual['nombreEstudiante']) ?></b></td>
-                        <td><?= strtoupper($pagoIndividual['nombreCiclo']) ?></td>
+                        <td><b><?= strtoupper(Security::escapeHtml($pagoIndividual['nombreEstudiante'])) ?></b></td>
+                        <td><?= strtoupper(Security::escapeHtml($pagoIndividual['nombreCiclo'])) ?></td>
                         <td>
-                            <span class="texto-pago"><?= strtoupper($pagoIndividual['tipoPago']) ?></span>
+                            <span class="texto-pago"><?= strtoupper(Security::escapeHtml($pagoIndividual['tipoPago'])) ?></span>
                         </td>
                         <td class="texto-negrita"><?= number_format($pagoIndividual['monto'], 2) ?> €</td>
                         <td><?= date('d/m/Y', strtotime($pagoIndividual['fechaPago'])) ?></td>
@@ -121,10 +117,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="historialEstudiante.php?idEstudiante=<?= $pagoIndividual['idEstudiante'] ?>"><i class="fas fa-history"></i> Historial</a>
-                                    <a class="recurso-menu-item" href="modificarPagos.php?idPago=<?= $pagoIndividual['idPago'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <a class="recurso-menu-item" href="historialEstudiante.php?idEstudiante=<?= (int)$pagoIndividual['idEstudiante'] ?>"><i class="fas fa-history"></i> Historial</a>
+                                    <a class="recurso-menu-item" href="modificarPagos.php?idPago=<?= (int)$pagoIndividual['idPago'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarPago.php?id=<?= $pagoIndividual['idPago'] ?>" onclick="return confirm('¿Eliminar este pago?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="borrarPago.php?id=<?= (int)$pagoIndividual['idPago'] ?>" onclick="return confirm('¿Eliminar este pago?')"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>

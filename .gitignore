@@ -3,6 +3,9 @@
 config/db.php
 config/service-account.json
 
+# Staging con secretos para subir al servidor (nunca commitear ni servir)
+/deploy/
+
 # Dependencies
 vendor/
 

@@ -3,7 +3,7 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $vendor = __DIR__ . '/../../../vendor/autoload.php';
 if (!file_exists($vendor)) {
-    $_SESSION['errores'] = "Error: vendor/ no disponible. Ejecuta composer install.";
+    $_SESSION['errores'] = "Error interno del servidor. Contacta con el administrador del sistema.";
     header("Location: ../../../vistas/admin/academico/resultadosFinales.php");
     exit;
 }

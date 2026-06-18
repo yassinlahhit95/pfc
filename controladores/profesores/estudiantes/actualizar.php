@@ -2,13 +2,8 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../../vistas/login.php");
-    exit;
-}
-
 if (isset($_POST['actualizarEstudiante'])) {
-    $idEstudiante = $_POST['idEstudiante'];
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $nombre = trim($_POST['nombreEstudiante']);
     $email = trim($_POST['emailEstudiante']);
     $dni = trim($_POST['dniEstudiante']);
@@ -18,22 +13,32 @@ if (isset($_POST['actualizarEstudiante'])) {
     $ciudad = trim($_POST['ciudadEstudiante']);
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = isset($_POST['observacionesEstudiante']) ? trim($_POST['observacionesEstudiante']) : '';
-    $idCiclo = trim($_POST['idCiclo']);
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
 
-    $errores = '';
-
-    if (empty($nombre)) { $errores = "El nombre es obligatorio."; }
-    if (empty($email)) { $errores = "El email es obligatorio."; }
-    if (empty($dni)) { $errores = "El DNI es obligatorio."; }
-    if (empty($idCiclo)) { $errores = "Debe seleccionar un ciclo."; }
-
-    if (!$errores) {
-        if (checkEstudianteExistente($dni, $email, $idEstudiante)) {
-            $errores = "El DNI o Email ya están registrados.";
-        }
+    if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {
+        $_SESSION['errores'] = "No tienes permiso sobre este estudiante.";
+        header("Location: ../../../vistas/profesores/estudiantes/lista.php"); exit;
     }
 
-    if (!$errores) {
+    $errores = [];
+
+    if (empty($nombre)) $errores['nombreEstudiante'] = "El nombre es obligatorio.";
+    if (empty($email)) {
+        $errores['emailEstudiante'] = "El email es obligatorio.";
+    } elseif (!Security::validateEmail($email)) {
+        $errores['emailEstudiante'] = "El formato del email no es válido.";
+    }
+    if (empty($dni)) $errores['dniEstudiante'] = "El DNI es obligatorio.";
+    if (!empty($telefono) && !Security::validatePhone($telefono)) {
+        $errores['telefonoEstudiante'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
+    }
+    if (empty($idCiclo)) $errores['idCiclo'] = "Debe seleccionar un ciclo.";
+
+    if (empty($errores) && checkEstudianteExistente($dni, $email, $idEstudiante)) {
+        $errores['dniEstudiante'] = "El DNI o Email ya están registrados.";
+    }
+
+    if (empty($errores)) {
         $estudianteOriginal = obtenerEstudiantePorId($idEstudiante);
         $fechaAlta = $estudianteOriginal['fechaAltaEstudiante'];
 

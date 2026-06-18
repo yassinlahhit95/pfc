@@ -1,12 +1,14 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_inventario');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
-$idArticulo = $_GET['idArticulo'] ?? 0;
+$idArticulo = (int)($_GET['idArticulo'] ?? 0);
 $articulo = obtenerArticuloPorId($idArticulo);
 
 if (!$articulo) {

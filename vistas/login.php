@@ -5,6 +5,7 @@ require_once __DIR__ . '/../include/BotGuard.php';
 
 if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard.php");      exit; }
 if (isset($_SESSION['idProfesor']))   { header("Location: profesores/inicio/dashboard.php");  exit; }
+if (isset($_SESSION['idTutor']))      { header("Location: tutores/inicio/dashboard.php");     exit; }
 if (isset($_SESSION['idEstudiante'])) { header("Location: estudiantes/inicio/dashboard.php"); exit; }
 
 $err    = $_SESSION['errores']   ?? null;
@@ -90,7 +91,7 @@ $csrfToken = Security::generateCSRFToken();
 
                 <a href="auth/solicitar_reset.php" style="display:block;text-align:center;margin-top:12px;font-size:.875rem;color:#6b7280;">¿Olvidaste tu contraseña?</a>
 
-                <a href="../index.html" class="enlace-volver">Volver a la web</a>
+                <a href="../index.php" class="enlace-volver">Volver a la web</a>
 
             </form>
         </div>

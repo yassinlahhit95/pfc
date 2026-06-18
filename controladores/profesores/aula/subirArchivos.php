@@ -1,13 +1,10 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-// Buffer de salida: garantiza que ninguna salida accidental (avisos del helper
-// de Firebase, etc.) impida el header("Location: ...") final.
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 ob_start();
+$ajax = !empty($_POST['ajax']);
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
-
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
 
 // Si los archivos superan post_max_size de PHP, $_POST llega vacío: avisar en vez de fallar en silencio.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
@@ -48,14 +45,14 @@ try {
     if ($idCarpeta) $destino .= "&carpeta=$idCarpeta";
 
     $dir = __DIR__ . "/../../../public/uploads/aula/archivos/";
-    if (!is_dir($dir)) mkdir($dir, 0777, true);
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
 
     // Tipos permitidos: PDF, Word, Excel, PowerPoint, imágenes y otros documentos académicos
     $permitidos = [
         'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt',
         'xls', 'xlsx', 'ods', 'csv',
         'ppt', 'pptx', 'odp',
-        'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
+        'jpg', 'jpeg', 'png', 'gif', 'webp',
         'zip', 'rar'
     ];
     $LIMITE_ARCHIVO = 20 * 1024 * 1024; // 20 MB por archivo
@@ -201,7 +198,14 @@ try {
     }
 }
 
-// Descartar cualquier salida acumulada y redirigir SIEMPRE
 if (ob_get_level() > 0) ob_end_clean();
-header("Location: $destino");
+if ($ajax) {
+    header('Content-Type: application/json');
+    $ok  = empty($_SESSION['errores']);
+    $msg = $ok ? ($_SESSION['exito'] ?? '') : ($_SESSION['errores'] ?? '');
+    unset($_SESSION['exito'], $_SESSION['errores']);
+    echo json_encode(['ok' => $ok, 'msg' => $msg]);
+} else {
+    header("Location: $destino");
+}
 exit;

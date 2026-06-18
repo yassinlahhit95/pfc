@@ -1,8 +1,9 @@
 (function () {
   'use strict';
 
-  // Determine the root path relative to this script (3 levels up from public/js/aula-recursos.js)
-  const scriptUrl = new URL(import.meta.url || document.currentScript.src);
+  // Determine the root path (3 levels up from public/js/aula-recursos.js).
+  // document.currentScript is reliable here because the IIFE runs synchronously at parse time.
+  const scriptUrl = new URL((document.currentScript || {src: location.href}).src);
   const appRoot = new URL('../../../', scriptUrl).pathname;
 
   const CTRL = appRoot + 'controladores/profesores/aula/';
@@ -201,13 +202,22 @@
       });
     },
 
-    toast(msg) {
+    toast(msg, type) {
         if (window.Toast) {
-            window.Toast.show(msg);
+            window.Toast.show(msg, type);
         } else {
-            // fallback si no está cargado toast.js
-            console.log("Toast:", msg);
+            console.log('Toast:', msg);
         }
+    },
+
+    // ── Confirmación de borrado ──────────────────────────
+    confirmar(form, msg) {
+      document.getElementById('modalConfirmarTexto').textContent = msg;
+      document.getElementById('modalConfirmarBtn').onclick = () => {
+        this.cerrarModal('modalConfirmar');
+        form.submit();
+      };
+      this.abrirModal('modalConfirmar');
     }
   };
 
@@ -227,12 +237,14 @@
     }
   }
 
-  function seleccionarValor(id, attr, val) {
-    const grid = document.getElementById(id);
-    if (!grid) return;
-    grid.querySelectorAll('.opcion-item').forEach(i => {
-      i.classList.toggle('seleccionado', i.getAttribute(attr) === val);
+  function seleccionarValor(hiddenId, attr, val) {
+    const container = document.querySelector('[data-target="' + hiddenId + '"]');
+    if (!container) return;
+    container.querySelectorAll('[' + attr + ']').forEach(i => {
+      i.classList.toggle('activo', i.getAttribute(attr) === val);
     });
+    const hidden = document.getElementById(hiddenId);
+    if (hidden) hidden.value = val;
   }
 
   function cerrarMenus() {
@@ -255,5 +267,105 @@
     cerrarMenus();
   });
   window.addEventListener('resize', cerrarMenus);
+
+  // ── Selectores de color e icono ──────────────────────
+  document.addEventListener('click', function(e) {
+    // Color
+    var swatch = e.target.closest('.swatch[data-color]');
+    if (swatch) {
+      var grid = swatch.closest('.selector-colores');
+      if (!grid) return;
+      grid.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('activo'); });
+      swatch.classList.add('activo');
+      var inp = document.getElementById(grid.getAttribute('data-target'));
+      if (inp) inp.value = swatch.getAttribute('data-color');
+      return;
+    }
+    // Icono
+    var ico = e.target.closest('.icono-op[data-icono]');
+    if (ico) {
+      var grid2 = ico.closest('.selector-iconos');
+      if (!grid2) return;
+      grid2.querySelectorAll('.icono-op').forEach(function(b) { b.classList.remove('activo'); });
+      ico.classList.add('activo');
+      var inp2 = document.getElementById(grid2.getAttribute('data-target'));
+      if (inp2) inp2.value = ico.getAttribute('data-icono');
+      return;
+    }
+    // Borrado con confirmación
+    var delBtn = e.target.closest('[data-confirmar]');
+    if (delBtn && delBtn.type === 'submit') {
+      e.preventDefault();
+      AulaRecursos.confirmar(delBtn.closest('form'), delBtn.getAttribute('data-confirmar'));
+    }
+  });
+
+  // ── Drag-and-drop desde el sistema de archivos ──────────────
+  (function() {
+    var dropZone = document.getElementById('recursoDropZone');
+    if (!dropZone) return;
+
+    var depth = 0;
+
+    function tieneArchivos(e) {
+      if (!e.dataTransfer || !e.dataTransfer.types) return false;
+      return Array.prototype.indexOf.call(e.dataTransfer.types, 'Files') !== -1;
+    }
+
+    document.addEventListener('dragenter', function(e) {
+      if (!tieneArchivos(e)) return;
+      depth++;
+      dropZone.classList.add('activo');
+    });
+
+    document.addEventListener('dragleave', function(e) {
+      if (!tieneArchivos(e) && depth <= 0) return;
+      depth--;
+      if (depth <= 0) { depth = 0; dropZone.classList.remove('activo'); }
+    });
+
+    document.addEventListener('dragover', function(e) {
+      if (tieneArchivos(e)) e.preventDefault();
+    });
+
+    document.addEventListener('drop', function(e) {
+      depth = 0;
+      dropZone.classList.remove('activo');
+      if (!tieneArchivos(e)) return;
+      e.preventDefault();
+
+      var files = e.dataTransfer.files;
+      if (!files || !files.length) return;
+
+      var loader = document.getElementById('recursoLoader');
+      if (loader) loader.classList.add('activo');
+
+      var fd = new FormData();
+      fd.append('subirArchivos', '1');
+      fd.append('ajax', '1');
+      fd.append('csrf_token', tokenCSRF());
+      fd.append('idModulo', moduloActual());
+      fd.append('idCarpeta', carpetaActual() || '0');
+      for (var i = 0; i < files.length; i++) {
+        fd.append('archivos[]', files[i], files[i].name);
+      }
+
+      fetch(CTRL + 'subirArchivos.php', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (loader) loader.classList.remove('activo');
+          if (data.ok) {
+            AulaRecursos.toast('<i class="fas fa-check-circle"></i> ' + data.msg, 'success');
+            setTimeout(function() { window.location.reload(); }, 900);
+          } else {
+            AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> ' + (data.msg || 'No se pudo subir.'), 'error');
+          }
+        })
+        .catch(function() {
+          if (loader) loader.classList.remove('activo');
+          AulaRecursos.toast('<i class="fas fa-exclamation-triangle"></i> Error al subir. Inténtalo de nuevo.', 'error');
+        });
+    });
+  })();
 
 })();

@@ -3,7 +3,7 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 
 if (isset($_POST['idDirector'])) {
-    $idDirector = trim($_POST['idDirector']);
+    $idDirector = (int)($_POST['idDirector'] ?? 0);
     
     if (eliminarDirector($idDirector)) {
         $_SESSION['exito'] = "Director eliminado correctamente.";

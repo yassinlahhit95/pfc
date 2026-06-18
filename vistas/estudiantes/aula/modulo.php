@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 $idEstudiante = $_SESSION['idEstudiante'] ?? '';
-if (!$idEstudiante) { header("Location: ../../login.php"); exit; }
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -89,8 +88,14 @@ include_once __DIR__ . "/../comunes/nav.php";
   </a>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml($errores) ?></div><?php endif; ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <!-- TABS -->
 <div class="tabs-modern">
@@ -391,18 +396,6 @@ function cambiarTab(tabName, btn) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Mostrar mensajes de sesión
-  const exito = document.querySelector('.mensaje-exito');
-  const error = document.querySelector('.mensaje-error');
-  if (exito) {
-    mostrarToast(exito.textContent.trim(), 'success', 4000);
-    exito.remove();
-  }
-  if (error) {
-    mostrarToast(error.textContent.trim(), 'error', 5000);
-    error.remove();
-  }
-
   var primera = document.querySelector('.carpeta');
   if (primera) primera.classList.add('abierta');
 

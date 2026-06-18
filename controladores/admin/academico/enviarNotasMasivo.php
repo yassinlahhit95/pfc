@@ -19,8 +19,9 @@ if (isset($_REQUEST['idCiclo']) && !empty($_REQUEST['idCiclo'])) {
             $_SESSION['exito'] = "Se han enviado $enviados correos electrónicos correctamente.";
         } else {
             $ultimoError = $_SESSION['ultimo_error_email'] ?? 'Sin respuesta del servidor';
-            $_SESSION['errores'] = "Error crítico: No se pudo enviar ningún correo. Detalle: $ultimoError";
+            error_log('enviarNotasMasivo error: ' . $ultimoError);
             unset($_SESSION['ultimo_error_email']);
+            $_SESSION['errores'] = "No se pudo enviar ningún correo. Comprueba la configuración de correo del servidor.";
         }
     }
 } else {

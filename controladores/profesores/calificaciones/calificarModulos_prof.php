@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 if (!isset($_POST['guardarNotas'])) {
     header("Location: ../../../vistas/profesores/calificaciones/lista.php");
@@ -9,6 +10,12 @@ if (!isset($_POST['guardarNotas'])) {
 
 $idModulo  = (int)trim($_POST['idModulo'] ?? 0);
 $idCiclo   = (int)trim($_POST['idCiclo']  ?? 0);
+
+if (!$idModulo || !in_array($_SESSION['idProfesor'], listarProfesoresDeModulo($idModulo))) {
+    $_SESSION['errores'] = "No tienes permiso para calificar este módulo.";
+    header("Location: ../../../vistas/profesores/calificaciones/lista.php");
+    exit;
+}
 $listaIds  = $_POST['estudiantes']   ?? [];
 $lista1ev    = $_POST['notas_1ev']    ?? [];
 $lista1final = $_POST['notas_1final'] ?? [];

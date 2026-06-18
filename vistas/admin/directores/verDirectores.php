@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -21,12 +21,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= $exito ?></div>
-<?php } ?>
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <div class="contenedor-tabla">
@@ -46,18 +48,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($todos_los_directores as $director) { ?>
                     <tr>
-                        <td><?= $director['idDirector'] ?></td>
-                        <td><b><?= $director['nombreDirector'] ?></b></td>
-                        <td><?= $director['emailDirector'] ?></td>
-                        <td><?= $director['telefonoDirector'] ?></td>
+                        <td><?= (int)$director['idDirector'] ?></td>
+                        <td><b><?= Security::escapeHtml($director['nombreDirector']) ?></b></td>
+                        <td><?= Security::escapeHtml($director['emailDirector']) ?></td>
+                        <td><?= Security::escapeHtml($director['telefonoDirector']) ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="verDetallesDirectores.php?id=<?= $director['idDirector'] ?>"><i class="fas fa-search"></i> Ver detalles</a>
-                                    <a class="recurso-menu-item" href="modificarDirectores.php?idDirector=<?= $director['idDirector'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <a class="recurso-menu-item" href="verDetallesDirectores.php?id=<?= (int)$director['idDirector'] ?>"><i class="fas fa-search"></i> Ver detalles</a>
+                                    <a class="recurso-menu-item" href="modificarDirectores.php?idDirector=<?= (int)$director['idDirector'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarDirector.php?id=<?= $director['idDirector'] ?>" onclick="return confirm('¿Eliminar este director?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="borrarDirector.php?id=<?= (int)$director['idDirector'] ?>" onclick="return confirm('¿Eliminar este director?')"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>

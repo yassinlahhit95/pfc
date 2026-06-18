@@ -7,6 +7,11 @@ if (empty($_SESSION['idAdmin'])) {
     echo json_encode(['error' => 'No autorizado']);
     exit;
 }
+if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Acción bloqueada']);
+    exit;
+}
 
 require_once __DIR__ . '/../../../modelos/estudiantes.php';
 

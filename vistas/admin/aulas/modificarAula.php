@@ -1,17 +1,10 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $exito   = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (!isset($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
-require_once __DIR__ . "/../../../include/Security.php";
-require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $idAula = (int)($_GET['id'] ?? 0);
 $aula = obtenerAulaPorId($idAula);
@@ -34,14 +27,19 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="gestionAulas.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode(is_array($errores) ? implode(' ', $errores) : $errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/aulas/actualizar.php">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idAula" value="<?= Security::escapeHtml($aula['idAula']) ?>">
+        <input type="hidden" name="idAula" value="<?= (int)$aula['idAula'] ?>">
         <div class="formulario">
             <div class="form-fila">
                 <div class="campo">

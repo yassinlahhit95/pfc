@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -9,7 +9,7 @@ if (!isset($_GET['idProfesor'])) {
     exit;
 }
 
-$idProfesor = $_GET['idProfesor'];
+$idProfesor = (int)($_GET['idProfesor'] ?? 0);
 $profesor = obtenerProfesorPorId($idProfesor);
 
 if (!$profesor) {

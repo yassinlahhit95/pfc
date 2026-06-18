@@ -1,12 +1,15 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
-
-// Solo un estudiante autenticado puede subir SU propio TFG
-if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }
+require_once __DIR__ . "/../../../modelos/configuracion.php";
 
 if (isset($_POST['subirTFG'])) {
+    $cfg = obtenerConfiguracionCentro();
+    if (empty($cfg['feature_subida_tfg'])) {
+        $_SESSION['errores'] = "La entrega del TFG está cerrada en este momento.";
+        header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
+    }
     if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
         $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
         header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
@@ -17,10 +20,13 @@ if (isset($_POST['subirTFG'])) {
     $archivoTFG   = $_FILES['archivoTFG'] ?? null;
     $errores      = [];
 
-    if (!$archivoTFG || $archivoTFG['error'] === UPLOAD_ERR_NO_FILE) {
+    // When post_max_size is exceeded PHP empties $_FILES entirely — catch it explicitly
+    if (empty($_FILES) && isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > 0) {
+        $errores[] = "El archivo supera el tamaño máximo permitido (20 MB).";
+    } elseif (!$archivoTFG || $archivoTFG['error'] === UPLOAD_ERR_NO_FILE) {
         $errores[] = "Debes seleccionar un archivo.";
     } elseif ($archivoTFG['error'] === UPLOAD_ERR_INI_SIZE || $archivoTFG['error'] === UPLOAD_ERR_FORM_SIZE) {
-        $errores[] = "El archivo supera el tamaño máximo permitido.";
+        $errores[] = "El archivo supera el tamaño máximo permitido (20 MB).";
     } elseif ($archivoTFG['error'] !== UPLOAD_ERR_OK) {
         $errores[] = "Error al subir el archivo, inténtalo de nuevo.";
     } else {
@@ -28,7 +34,7 @@ if (isset($_POST['subirTFG'])) {
         if (!in_array($ext, ['pdf', 'doc', 'docx'])) {
             $errores[] = "Solo se permiten archivos PDF o Word (.doc, .docx).";
         } elseif ($archivoTFG['size'] > 20 * 1024 * 1024) {
-            $errores[] = "El archivo supera el límite de 20 MB.";
+            $errores[] = "El archivo supera el tamaño máximo permitido (20 MB).";
         }
     }
 

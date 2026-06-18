@@ -49,7 +49,7 @@ if (isset($_POST['idModulo'])) {
     if (mysqli_stmt_execute($resultado)) {
         $_SESSION['exito'] = "Módulo eliminado.";
     } else {
-        $_SESSION['errores'] = "Error al eliminar.";
+        $_SESSION['errores'] = "No se pudo eliminar el módulo.";
     }
 
     

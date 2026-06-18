@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 $idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) { header("Location: ../../login.php"); exit; }
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -90,8 +89,14 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
 </div>
 
-<?php if ($exito): ?><div class="mensaje-exito"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?></div><?php endif; ?>
-<?php if ($errores): ?><div class="mensaje-error"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml($errores) ?></div><?php endif; ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <!-- BÚSQUEDA DINÁMICA -->
 <div id="searchContainer" style="margin-bottom:var(--space-4);display:none;">
@@ -768,20 +773,6 @@ function crearToastContainer() {
   document.body.appendChild(container);
   return container;
 }
-
-// Detectar mensajes de sesión
-document.addEventListener('DOMContentLoaded', function() {
-  const exito = document.querySelector('.mensaje-exito');
-  const error = document.querySelector('.mensaje-error');
-  if (exito) {
-    mostrarToast(exito.textContent.trim(), 'success', 4000);
-    exito.remove();
-  }
-  if (error) {
-    mostrarToast(error.textContent.trim(), 'error', 5000);
-    error.remove();
-  }
-});
 
 // BÚSQUEDA EN TIEMPO REAL
 document.addEventListener('DOMContentLoaded', function() {

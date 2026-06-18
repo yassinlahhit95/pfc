@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . "/../../include/Security.php";
-
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../vistas/login.php");
-    exit;
-}
+require_once __DIR__ . "/../../include/ProfesorGuard.php";
 
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../include/Logger.php";
@@ -39,11 +34,11 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
 
 $errores = [];
 
-if (empty($titulo)) $errores[] = 'El título es requerido';
-if (empty($fechaSesion)) $errores[] = 'La fecha es requerida';
-if (empty($horaSesion)) $errores[] = 'La hora es requerida';
-if (empty($enlaceReunion)) $errores[] = 'El enlace es requerido';
-if (empty($plataforma)) $errores[] = 'La plataforma es requerida';
+if (empty($titulo)) $errores[] = 'El título es obligatorio.';
+if (empty($fechaSesion)) $errores[] = 'La fecha es obligatoria.';
+if (empty($horaSesion)) $errores[] = 'La hora es obligatoria.';
+if (empty($enlaceReunion)) $errores[] = 'El enlace de reunión es obligatorio.';
+if (empty($plataforma)) $errores[] = 'La plataforma es obligatoria.';
 
 $validacionFecha = validarFechaHoraSesion($fechaSesion, $horaSesion);
 if ($validacionFecha) $errores[] = $validacionFecha;
@@ -65,7 +60,7 @@ if ($actualizado) {
     Logger::activity('SESION_ACTUALIZADA', $idProfesor, ['idSesion' => $idSesion, 'titulo' => $titulo]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
 } else {
-    $_SESSION['errores'] = 'Error al actualizar la sesión. Intenta de nuevo.';
+    $_SESSION['errores'] = 'Error al actualizar la sesión. Inténtalo de nuevo.';
     Logger::error('Error actualizando sesión', ['profesor' => $idProfesor, 'sesion' => $idSesion]);
     header("Location: ../../vistas/profesores/aula/editar.php?id=$idSesion");
 }

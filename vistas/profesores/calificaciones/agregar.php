@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -13,8 +13,8 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$idCiclo = $_GET['idCiclo'] ?? 0;
-$idModulo = $_GET['idModulo'] ?? 0;
+$idCiclo = (int)($_GET['idCiclo'] ?? 0);
+$idModulo = (int)($_GET['idModulo'] ?? 0);
 
 $listaDeCiclos = listarCiclosDeProfesor($idProfesor);
 $listaDeModulos = [];
@@ -75,12 +75,14 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <?php if ($idModulo) { ?>
     <div class="panel margen-arriba">

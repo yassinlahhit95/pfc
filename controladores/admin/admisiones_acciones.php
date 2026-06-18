@@ -2,14 +2,15 @@
 header('Content-Type: application/json');
 require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../include/AdminGuard.php"; // Asegurar que solo admins acceden
+require_once __DIR__ . "/../../include/AdminGuard.php";
 
+$loginUrl = rtrim(Config::getInstance()->get('APP_URL', ''), '/') . '/vistas/login.php';
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'get_details':
-        $id = $_GET['id'] ?? '';
-        if (empty($id)) {
+        $id = (int)($_GET['id'] ?? 0);
+        if ($id <= 0) {
             echo json_encode(['status' => 'error', 'message' => 'ID no proporcionado']);
             break;
         }
@@ -19,11 +20,12 @@ switch ($action) {
         break;
 
     case 'update_status':
-        $id = $_POST['id'] ?? '';
-        $estado = $_POST['estado'] ?? '';
-        $observaciones = $_POST['observaciones'] ?? '';
+        $id = (int)($_POST['id'] ?? 0);
+        $estadosPermitidos = ['EN_REVISION', 'ADMITIDO', 'RECHAZADO', 'SUBSANACION'];
+        $estado = in_array($_POST['estado'] ?? '', $estadosPermitidos, true) ? $_POST['estado'] : '';
+        $observaciones = htmlspecialchars(trim($_POST['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8');
 
-        if (empty($id) || empty($estado)) {
+        if ($id <= 0 || empty($estado)) {
             echo json_encode(['status' => 'error', 'message' => 'Faltan datos']);
             break;
         }
@@ -43,18 +45,17 @@ switch ($action) {
                 if ($estado === 'ADMITIDO') {
                     // CONVERSIÓN AUTOMÁTICA A ESTUDIANTE
                     
-                    // GENERAR EMAIL INSTITUCIONAL: nombre.apellido1.apellido2@aulapro.com
-                    function cleanString($string) {
-                        $string = str_replace(' ', '.', trim($string));
-                        $string = strtr(utf8_decode($string), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
-                        return strtolower($string);
-                    }
+                    // Genera la parte local del email institucional: nombre.apellidos@aulapro.com
+                    $cleanString = function(string $s): string {
+                        $s = str_replace(' ', '.', trim($s));
+                        $s = strtr(utf8_decode($s), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+                        return strtolower($s);
+                    };
 
-                    $nombreLimpio = cleanString($datos['nombre']);
-                    $apellidosLimpios = cleanString($datos['apellidos']);
+                    $nombreLimpio = $cleanString($datos['nombre']);
+                    $apellidosLimpios = $cleanString($datos['apellidos']);
                     $emailInstitucional = $nombreLimpio . "." . $apellidosLimpios . "@aulapro.com";
 
-                    // Verificar si ya existe por DNI para evitar duplicados
                     $con = obtenerConexion();
                     $checkSql = "SELECT idEstudiante FROM estudiantes WHERE dniEstudiante = ?";
                     $stmtCheck = mysqli_prepare($con, $checkSql);
@@ -63,9 +64,8 @@ switch ($action) {
                     $resCheck = mysqli_stmt_get_result($stmtCheck);
                     
                     if (mysqli_num_rows($resCheck) === 0) {
-                        // Generar password temporal
-                        $tempPass = bin2hex(random_bytes(4)); // 8 caracteres aleatorios
-                        $passHash = password_hash($tempPass, PASSWORD_DEFAULT);
+                        $tempPass = bin2hex(random_bytes(4));
+                        $passHash = password_hash($tempPass, PASSWORD_BCRYPT, ['cost' => 12]);
                         
                         // Determinar 'curso'
                         $sqlNivel = "SELECT idNivel FROM ciclos WHERE idCiclo = ?";
@@ -89,6 +89,58 @@ switch ($action) {
                             $cursoEnum
                         );
                         mysqli_stmt_execute($stmtIns);
+                        $idNuevoEstudiante = mysqli_insert_id($con);
+
+                        // --- CONVERSIÓN DEL TUTOR ---
+                        if (!empty($datos['dniTutor'])) {
+                            $sqlTutorCheck = "SELECT idTutor FROM tutores WHERE dniTutor = ?";
+                            $stmtTC = mysqli_prepare($con, $sqlTutorCheck);
+                            mysqli_stmt_bind_param($stmtTC, "s", $datos['dniTutor']);
+                            mysqli_stmt_execute($stmtTC);
+                            $resTC = mysqli_stmt_get_result($stmtTC);
+                            
+                            $idTutorFinal = null;
+                            if (mysqli_num_rows($resTC) > 0) {
+                                $filaT = mysqli_fetch_assoc($resTC);
+                                $idTutorFinal = $filaT['idTutor'];
+                            } else {
+                                // Crear cuenta de tutor y notificarle por email
+                                $passTutor = bin2hex(random_bytes(4));
+                                $hashTutor = password_hash($passTutor, PASSWORD_BCRYPT, ['cost' => 12]);
+                                
+                                $sqlTutorIns = "INSERT INTO tutores (nombreTutor, emailTutor, password, telefonoTutor, dniTutor) VALUES (?, ?, ?, ?, ?)";
+                                $stmtTI = mysqli_prepare($con, $sqlTutorIns);
+                                mysqli_stmt_bind_param($stmtTI, "sssss", 
+                                    $datos['nombreTutor'], 
+                                    $datos['emailTutor'], 
+                                    $hashTutor, 
+                                    $datos['telefonoTutor'], 
+                                    $datos['dniTutor']
+                                );
+                                mysqli_stmt_execute($stmtTI);
+                                $idTutorFinal = mysqli_insert_id($con);
+                                
+                                // Enviar email al tutor con sus credenciales (opcional, pero recomendado)
+                                $subjT = "Bienvenida a AulaPro - Cuenta de Tutor Legal";
+                                $htmlT = "<h3>Hola {$datos['nombreTutor']},</h3>
+                                          <p>Su hijo/a <strong>{$datos['nombre']}</strong> ha sido admitido/a en AulaPro.</p>
+                                          <p>Se le ha creado una cuenta de tutor para realizar el seguimiento académico.</p>
+                                          <div style='background:#f3f4f6; padding:15px; border-radius:8px;'>
+                                            <p><strong>URL:</strong> <a href='{$loginUrl}'>Acceso AulaPro</a></p>
+                                            <p><strong>Usuario (DNI):</strong> {$datos['dniTutor']}</p>
+                                            <p><strong>Contraseña:</strong> $passTutor</p>
+                                          </div>";
+                                sendEmail($datos['emailTutor'], $subjT, $htmlT);
+                            }
+
+                            // Crear la relación Estudiante-Tutor
+                            if ($idTutorFinal && $idNuevoEstudiante) {
+                                $sqlRel = "INSERT IGNORE INTO estudiante_tutor (idEstudiante, idTutor, parentesco) VALUES (?, ?, ?)";
+                                $stmtR = mysqli_prepare($con, $sqlRel);
+                                mysqli_stmt_bind_param($stmtR, "iis", $idNuevoEstudiante, $idTutorFinal, $datos['parentescoTutor']);
+                                mysqli_stmt_execute($stmtR);
+                            }
+                        }
                     } else {
                         $tempPass = "(Usa tu contraseña actual)";
                         // Si ya existe, recuperamos su email institucional para el correo
@@ -107,7 +159,7 @@ switch ($action) {
                              <p>Se ha generado tu nueva cuenta institucional para acceder a la plataforma:</p>
                              <div style='background: #f3f4f6; padding: 20px; border-radius: 10px; margin: 20px 0;'>
                                 <h3 style='margin-top: 0;'>Tus credenciales de acceso:</h3>
-                                <p><strong>URL:</strong> <a href='https://aulapro.yassin.agency/vistas/login.php'>Acceso AulaPro</a></p>
+                                <p><strong>URL:</strong> <a href='{$loginUrl}'>Acceso AulaPro</a></p>
                                 <p><strong>Email Institucional:</strong> <span style='color: #4f46e5; font-weight: bold;'>$emailInstitucional</span></p>
                                 <p><strong>Contraseña Temporal:</strong> $tempPass</p>
                                 <p><small>* Por seguridad, cambia tu contraseña al entrar por primera vez.</small></p>

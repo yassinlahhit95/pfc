@@ -3,7 +3,7 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 if (isset($_POST['actualizarAnuncio'])) {
-    $idAnuncio = trim($_POST['idAnuncio']);
+    $idAnuncio = (int)($_POST['idAnuncio'] ?? 0);
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
 

@@ -1,13 +1,12 @@
 <?php
 $seccion      = 'chat';
 $titulo_pagina = 'Chat — Estudiante';
+require_once __DIR__ . '/../../../include/EstudianteGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_chat');
 require_once __DIR__ . '/../../../config/Config.php';
-require_once __DIR__ . '/../../../include/Security.php';
 require_once __DIR__ . '/../../../modelos/conectar.php';
 require_once __DIR__ . '/../../../modelos/chat.php';
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-if (empty($_SESSION['idEstudiante'])) { header('Location: ../../login.php'); exit; }
 
 $myRol = 'estudiante';
 $myId  = (int)$_SESSION['idEstudiante'];

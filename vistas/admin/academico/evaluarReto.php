@@ -1,21 +1,16 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
-
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$idEstudiante = $_GET['idEstudiante'] ?? 0;
-$idReto       = $_GET['idReto']       ?? 0;
-$idCiclo      = $_GET['idCiclo']      ?? 0;
+$idEstudiante = (int)($_GET['idEstudiante'] ?? 0);
+$idReto = (int)($_GET['idReto'] ?? 0);
+$idCiclo = (int)($_GET['idCiclo'] ?? 0);
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 $reto       = obtenerRetoPorId($idReto);
@@ -34,25 +29,31 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>EVALUAR RETO</h1>
-    <a href="calificacionesRetos.php?idReto=<?= $idReto ?>&idCiclo=<?= $idCiclo ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <a href="calificacionesRetos.php?idReto=<?= (int)$idReto ?>&idCiclo=<?= (int)$idCiclo ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
-<?php if ($exito)   { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel">
     <div class="titulo-tarjeta">
-        <h3><i class="fas fa-user-graduate"></i> <?= strtoupper($estudiante['nombreEstudiante']) ?></h3>
+        <h3><i class="fas fa-user-graduate"></i> <?= strtoupper(Security::escapeHtml($estudiante['nombreEstudiante'])) ?></h3>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciclo</div>
-        <div class="valor-detalle"><?= $estudiante['nombreCiclo'] ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Reto</div>
-        <div class="valor-detalle texto-negrita"><?= $reto['nombreReto'] ?></div>
+        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml($reto['nombreReto']) ?></div>
     </div>
 
     <?php if ($notaActual !== '') { ?>
@@ -78,7 +79,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label>Nota (0-10) — dejar vacío para eliminar</label>
-            <input type="text" name="nota" value="<?= $notaActual ?>" placeholder="Ej: 7.5">
+            <input type="text" name="nota" value="<?= Security::escapeHtml((string)$notaActual) ?>" placeholder="Ej: 7.5">
         </div>
 
         <div class="acciones">

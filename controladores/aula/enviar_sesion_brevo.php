@@ -17,7 +17,7 @@ $idProfesor = $_SESSION['idProfesor'];
 $idSesion = (int)($_GET['id'] ?? 0);
 
 if (!$idSesion) {
-    $_SESSION['errores'] = 'ID de sesión inválido';
+    $_SESSION['errores'] = 'ID de sesión no válido.';
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
 }
@@ -26,7 +26,7 @@ if (!$idSesion) {
 $sesion = obtenerSesionPorId($idSesion);
 
 if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
-    $_SESSION['errores'] = 'No tienes permiso para enviar esta sesión';
+    $_SESSION['errores'] = 'No tienes permiso para enviar esta sesión.';
     Logger::warning('Intento no autorizado de enviar sesión', ['profesor' => $idProfesor, 'sesion' => $idSesion]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
@@ -35,7 +35,7 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
 // Obtener el ciclo del módulo
 $modulo = obtenerModuloPorId($sesion['idModulo']);
 if (!$modulo) {
-    $_SESSION['errores'] = 'No se encontró el módulo asociado';
+    $_SESSION['errores'] = 'No se encontró el módulo asociado.';
     Logger::error('Módulo no encontrado', ['modulo' => $sesion['idModulo']]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
@@ -47,7 +47,7 @@ $idCiclo = $modulo['idCiclo'];
 $estudiantes = listarEstudiantesPorCiclo($idCiclo);
 
 if (empty($estudiantes)) {
-    $_SESSION['errores'] = 'No hay estudiantes en este ciclo';
+    $_SESSION['errores'] = 'No hay estudiantes en este ciclo.';
     Logger::warning('Sin estudiantes en ciclo', ['ciclo' => $idCiclo, 'modulo' => $sesion['idModulo']]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
@@ -179,9 +179,9 @@ if ($enviados > 0) {
 } else {
     error_log("DEBUG: Fallo total enviando sesión. Estudiantes encontrados: " . count($estudiantes));
     if (!empty($emailsInvalidos)) {
-        $_SESSION['errores'] = 'Los estudiantes del ciclo no tienen emails registrados';
+        $_SESSION['errores'] = 'Los estudiantes de este ciclo no tienen email registrado.';
     } else {
-        $_SESSION['errores'] = 'Error al enviar emails. Por favor intenta nuevamente o contacta con soporte.';
+        $_SESSION['errores'] = 'Error al enviar los correos. Inténtalo de nuevo o contacta con soporte.';
     }
 }
 

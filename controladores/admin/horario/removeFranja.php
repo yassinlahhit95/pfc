@@ -2,7 +2,9 @@
 require_once __DIR__ . '/../../../include/Security.php';
 header('Content-Type: application/json');
 
-if (empty($_SESSION['idAdmin'])) { http_response_code(403); echo json_encode(['ok' => false]); exit; }
+if (empty($_SESSION['idAdmin']) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+    http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
+}
 
 require_once __DIR__ . '/../../../modelos/horarios.php';
 

@@ -2,8 +2,6 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
-
 if (isset($_POST['guardarEjercicio'])) {
     $titulo      = trim($_POST['titulo'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
@@ -30,7 +28,7 @@ if (isset($_POST['guardarEjercicio'])) {
         }
         $nombreArchivo = 'EJ_' . $idProfesor . '_' . date('dmY_His') . '.' . $ext;
         $destino = __DIR__ . "/../../../public/uploads/ejercicios/adjuntos/" . $nombreArchivo;
-        if (!is_dir(dirname($destino))) mkdir(dirname($destino), 0777, true);
+        if (!is_dir(dirname($destino))) mkdir(dirname($destino), 0755, true);
         if (move_uploaded_file($archivo['tmp_name'], $destino)) {
             $archivoAdjunto = $nombreArchivo;
         }

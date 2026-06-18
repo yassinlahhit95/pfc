@@ -1,7 +1,7 @@
 <?php
 /**
- * Configuración centralizada y segura del sistema
- * Carga variables desde .env o environment
+ * Gestión centralizada de configuración.
+ * Carga variables desde .env, variables de entorno del sistema o db.php (fallback para hosting compartido).
  */
 
 class Config {
@@ -21,7 +21,7 @@ class Config {
     }
 
     private function loadEnvironmentVariables() {
-        // Try multiple possible .env locations
+        // Buscar .env en múltiples ubicaciones posibles según el entorno de despliegue
         $candidates = [
             __DIR__ . '/../.env',
             dirname(__DIR__) . '/.env',
@@ -34,7 +34,7 @@ class Config {
             }
         }
 
-        // Load PHP credentials file as fallback (more reliable than .env on shared hosting)
+        // Fallback a db.php para hosting compartido donde el .env no es accesible
         $dbFile = __DIR__ . '/db.php';
         if (file_exists($dbFile)) require_once $dbFile;
 
@@ -45,19 +45,24 @@ class Config {
         $this->config['DB_NAME'] = $this->env('DB_NAME', defined('DB_NAME_VALUE') ? DB_NAME_VALUE : 'yassjjzw_pfc');
 
         // Firebase
-        $this->config['FIREBASE_API_KEY']     = $this->env('FIREBASE_API_KEY', '');
-        $this->config['FIREBASE_AUTH_DOMAIN']  = $this->env('FIREBASE_AUTH_DOMAIN', '');
-        $this->config['FIREBASE_PROJECT_ID']   = $this->env('FIREBASE_PROJECT_ID', '');
+        $this->config['FIREBASE_API_KEY']            = $this->env('FIREBASE_API_KEY', '');
+        $this->config['FIREBASE_AUTH_DOMAIN']         = $this->env('FIREBASE_AUTH_DOMAIN', '');
+        $this->config['FIREBASE_PROJECT_ID']          = $this->env('FIREBASE_PROJECT_ID', '');
         $this->config['FIREBASE_MESSAGING_SENDER_ID'] = $this->env('FIREBASE_MESSAGING_SENDER_ID', '');
-        $this->config['FIREBASE_APP_ID']       = $this->env('FIREBASE_APP_ID', '');
+        $this->config['FIREBASE_APP_ID']              = $this->env('FIREBASE_APP_ID', '');
+        $this->config['FIREBASE_DATABASE_URL']        = $this->env('FIREBASE_DATABASE_URL', '');
+        $this->config['FIREBASE_VAPID_KEY']           = $this->env('FIREBASE_VAPID_KEY', '');
 
         // Brevo
         $this->config['BREVO_API_KEY'] = $this->env('BREVO_API_KEY', '');
 
-        // Boletín QR secret — must be set in .env, never hardcoded
+        // El secreto del QR del boletín debe estar en .env; nunca hardcodeado
         $this->config['BOLETIN_SECRET'] = $this->env('BOLETIN_SECRET', '');
 
         // Application
+        // URL pública canónica (p. ej. https://aulapro.yassin.agency). Se usa para
+        // construir enlaces en emails y evitar inyección de cabecera Host.
+        $this->config['APP_URL']         = rtrim($this->env('APP_URL', ''), '/');
         $this->config['APP_ENV']         = $this->env('APP_ENV', 'development');
         $this->config['APP_DEBUG']        = filter_var($this->env('APP_DEBUG', 'false'), FILTER_VALIDATE_BOOLEAN);
         $this->config['SESSION_TIMEOUT']  = intval($this->env('SESSION_TIMEOUT', '3600'));
@@ -75,7 +80,7 @@ class Config {
             $key   = trim($key);
             $value = trim($value);
 
-            // Strip surrounding quotes if present
+            // Eliminar comillas envolventes si las tiene
             if (strlen($value) >= 2) {
                 $q = $value[0];
                 if (($q === '"' || $q === "'") && $value[-1] === $q) {
@@ -92,7 +97,7 @@ class Config {
         }
     }
 
-    // Read from parsed .env first, then system env, then default
+    // Prioridad: .env parseado → variable de entorno del sistema → valor por defecto
     private function env($key, $default = '') {
         if (isset($this->env[$key]) && $this->env[$key] !== '') return $this->env[$key];
         $v = getenv($key);
@@ -100,49 +105,30 @@ class Config {
         return $default;
     }
 
-    /**
-     * Obtiene valor de configuración
-     */
     public function get($key, $default = null) {
         return isset($this->config[$key]) ? $this->config[$key] : $default;
     }
 
-    /**
-     * Obtiene valor booleano
-     */
     public function getBoolean($key, $default = false) {
         return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
 
-    /**
-     * Obtiene valor entero
-     */
     public function getInteger($key, $default = 0) {
         return intval($this->get($key, $default));
     }
 
-    /**
-     * Genera clave de aplicación aleatoria
-     */
     private function generateAppKey() {
         return bin2hex(random_bytes(32));
     }
 
-    /**
-     * Verifica si está en modo debug
-     */
     public function isDebug() {
         return $this->getBoolean('APP_DEBUG');
     }
 
-    /**
-     * Verifica si está en producción
-     */
     public function isProduction() {
         return $this->get('APP_ENV') === 'production';
     }
 }
 
-// Singleton instance
 $config = Config::getInstance();
 ?>

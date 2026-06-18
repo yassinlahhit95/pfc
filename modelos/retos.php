@@ -15,6 +15,16 @@ function listarRetos() {
     return $listaRetos;
 }
 
+function retoPerteneceAProfesor($idReto, $idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT 1 FROM modulo_reto mr JOIN modulo_profesor pm ON mr.idModulo = pm.idModulo WHERE mr.idReto = ? AND pm.idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idReto, $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_num_rows($res) > 0;
+}
+
 function listarRetosDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql1 = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulo_profesor pm ON mr.idModulo = pm.idModulo WHERE pm.idProfesor = ?";

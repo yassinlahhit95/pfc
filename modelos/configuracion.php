@@ -14,13 +14,14 @@ function obtenerConfiguracionCentro() {
         'textoLegal' => '', 'nombreDirectorFirmante' => '',
         'feature_prematricula' => 1,
         'feature_chat' => 1,
-        'feature_inventario' => 1
+        'feature_inventario' => 1,
+        'feature_subida_tfg' => 1
     ];
 }
 
 function actualizarFeatureToggle($feature, $estado) {
     $con = obtenerConexion();
-    $featuresValidas = ['feature_prematricula', 'feature_chat', 'feature_inventario'];
+    $featuresValidas = ['feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg'];
     if (!in_array($feature, $featuresValidas)) return false;
     
     $sql = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";

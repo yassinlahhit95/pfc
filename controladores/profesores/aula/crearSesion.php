@@ -1,12 +1,11 @@
 <?php
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
-$idProfesor = $_SESSION['idProfesor'] ?? '';
-if (!$idProfesor) { header("Location: ../../../vistas/login.php"); exit; }
+$idProfesor = $_SESSION['idProfesor'];
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$idModulo = $_POST['idModulo'] ?? 0;
+$idModulo = (int)($_POST['idModulo'] ?? 0);
 $titulo = $_POST['titulo'] ?? '';
 $descripcion = $_POST['descripcion'] ?? '';
 $fechaSesion = $_POST['fechaSesion'] ?? '';
@@ -15,10 +14,10 @@ $enlaceReunion = $_POST['enlaceReunion'] ?? '';
 $plataforma = $_POST['plataforma'] ?? '';
 
 $errores = [];
-if (!$idModulo) $errores[] = "Módulo requerido";
-if (!$titulo) $errores[] = "Título requerido";
-if (!$fechaSesion) $errores[] = "Fecha requerida";
-if (!$horaSesion) $errores[] = "Hora requerida";
+if (!$idModulo) $errores[] = "El módulo es obligatorio.";
+if (!$titulo) $errores[] = "El título es obligatorio.";
+if (!$fechaSesion) $errores[] = "La fecha es obligatoria.";
+if (!$horaSesion) $errores[] = "La hora es obligatoria.";
 
 // Validar fecha y hora
 if ($fechaSesion && $horaSesion) {
@@ -33,14 +32,14 @@ if ($enlaceReunion) {
 }
 
 if ($errores) {
-    $_SESSION['errores'] = implode(', ', $errores);
-    header("Location: ../../../vistas/profesores/aula/modulos.php?idCiclo=" . ($_POST['idCiclo'] ?? 0));
+    $_SESSION['errores'] = implode('<br>', $errores);
+    header("Location: ../../../vistas/profesores/aula/modulos.php?idCiclo=" . (int)($_POST['idCiclo'] ?? 0));
     exit;
 }
 
 $modulo = obtenerModuloPorId($idModulo);
 if (!$modulo || $modulo['idProfesor'] != $idProfesor) {
-    $_SESSION['errores'] = "No tienes permiso para este módulo";
+    $_SESSION['errores'] = "No tienes permiso para acceder a este módulo.";
     header("Location: ../../../vistas/profesores/aula/modulos.php");
     exit;
 }
@@ -61,7 +60,7 @@ if ($idSesion) {
     $_SESSION['exito'] = "Sesión creada exitosamente y se notificó a los estudiantes";
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . $idModulo);
 } else {
-    $_SESSION['errores'] = "Error al crear la sesión";
+    $_SESSION['errores'] = "Error al crear la sesión. Inténtalo de nuevo.";
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . $idModulo);
 }
 ?>

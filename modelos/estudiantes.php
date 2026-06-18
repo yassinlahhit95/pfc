@@ -23,7 +23,8 @@ function listarEstudiantes() {
 
 function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
     $con = obtenerConexion();
-    $pass = password_hash('123456', PASSWORD_DEFAULT);
+    require_once __DIR__ . '/../include/credenciales.php';
+    [$pass] = generarCredencialesTemporales($email, $nombre, 'Estudiante');
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sssssssssssis", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
@@ -38,6 +39,19 @@ function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fec
     mysqli_stmt_bind_param($stmt, "ssssssssssisi", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $id);
     $res = mysqli_stmt_execute($stmt);
     return $res;
+}
+
+function estudiantePerteneceAProfesor($idEstudiante, $idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT 1 FROM estudiantes e
+            WHERE e.idEstudiante = ?
+            AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+              OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "iii", $idEstudiante, $idProfesor, $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_num_rows($res) > 0;
 }
 
 function listarEstudiantesDeProfesor($idProfesor) {
@@ -96,11 +110,14 @@ function obtenerEstudiantePorId($idEstudiante) {
 
 function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $con = obtenerConexion();
-    $hash = password_hash($nuevaPassword, PASSWORD_DEFAULT);
+    $hash = password_hash($nuevaPassword, PASSWORD_BCRYPT, ['cost' => 12]);
     $sql = "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $hash, $idEstudiante);
     $resultado = mysqli_stmt_execute($stmt);
+    if ($resultado && class_exists('Security')) {
+        Security::touchPasswordChanged($con, 'estudiantes', 'idEstudiante', $idEstudiante);
+    }
     return $resultado;
 }
 
@@ -145,6 +162,7 @@ function validarLoginEstudiante($email, $password) {
     $datosUsuario = mysqli_fetch_assoc($resultado);
 
     if ($datosUsuario && password_verify($password, $datosUsuario['password'])) {
+        if (class_exists('Security')) Security::rehashOnLogin($con, 'estudiantes', 'idEstudiante', $datosUsuario['idEstudiante'], $password, $datosUsuario['password']);
         return $datosUsuario;
     }
     return null;

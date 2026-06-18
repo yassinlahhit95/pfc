@@ -14,21 +14,22 @@ if (isset($_POST['guardarEstudiante'])) {
     $ciudad = trim($_POST['ciudadEstudiante']);
     $codigoPostal = trim($_POST['codigoPostalEstudiante']);
     $observaciones = trim($_POST['observacionesEstudiante']);
-    $idCiclo = $_POST['idCiclo'];
-    $curso = $_POST['curso'] ?? '';
+    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
+    $cursosPermitidos = ['Grado Medio', 'Grado Superior', '1º', '2º'];
+    $curso = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
 
     $avisos = [];
     if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es obligatorio.";
     if (empty($email)) {
         $avisos['emailEstudiante'] = "Email requerido";
-    } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
-        $avisos['emailEstudiante'] = "Email no válido";
+    } elseif (!Security::validateEmail($email)) {
+        $avisos['emailEstudiante'] = "El formato del email no es válido.";
     }
-    if (empty($dni)) $avisos['dniEstudiante'] = "Falta el DNI";
+    if (empty($dni)) $avisos['dniEstudiante'] = "El DNI es obligatorio.";
     if (empty($telefono)) {
         $avisos['telefonoEstudiante'] = "El teléfono es obligatorio.";
-    } elseif (!is_numeric($telefono) || !preg_match('/^[0-9]{9}$/', $telefono)) {
-        $avisos['telefonoEstudiante'] = "Teléfono incorrecto";
+    } elseif (!Security::validatePhone($telefono)) {
+        $avisos['telefonoEstudiante'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
     }
     if (empty($fechaNacimiento)) $avisos['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
     if (empty($direccion)) $avisos['direccionEstudiante'] = "Dirección requerida";
@@ -39,7 +40,7 @@ if (isset($_POST['guardarEstudiante'])) {
         $avisos['codigoPostalEstudiante'] = "Código postal no válido";
     }
     if (empty($curso)) $avisos['curso'] = "Selecciona un grado";
-    if (empty($idCiclo)) $avisos['idCiclo'] = "Selecciona un ciclo";
+    if ($idCiclo <= 0) $avisos['idCiclo'] = "Selecciona un ciclo";
 
     if (empty($avisos) && checkEstudianteExistente($dni, $email)) {
         $avisos['dniEstudiante'] = "El DNI o Email ya están registrados.";
@@ -53,7 +54,7 @@ if (isset($_POST['guardarEstudiante'])) {
     }
 
     if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
-        $_SESSION['exito'] = "Estudiante registrado correctamente.";
+        $_SESSION['exito'] = mensajeExitoConCredenciales("Estudiante registrado correctamente.");
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
         exit;
     }

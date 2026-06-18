@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/aula.php";
-
-if (empty($_SESSION['idEstudiante'])) { header("Location: ../../../vistas/login.php"); exit; }
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (!isset($_POST['enviarEntrega'])) { header("Location: ../../../vistas/estudiantes/aula/index.php"); exit; }
 
@@ -13,6 +12,12 @@ $respuesta    = trim($_POST['respuesta'] ?? '');
 $tarea = obtenerTareaPorIdAula($idTarea);
 if (!$tarea || !$tarea['publicado']) {
     $_SESSION['errores'] = "Tarea no disponible.";
+    header("Location: ../../../vistas/estudiantes/aula/index.php"); exit;
+}
+
+$estudiante = obtenerEstudiantePorId($idEstudiante);
+if (!$estudiante || $estudiante['idCiclo'] != $tarea['idCiclo']) {
+    $_SESSION['errores'] = "No tienes acceso a esta tarea.";
     header("Location: ../../../vistas/estudiantes/aula/index.php"); exit;
 }
 
@@ -34,8 +39,8 @@ if (!empty($_FILES['archivoEntrega']['name'])) {
         header("Location: ../../../vistas/estudiantes/aula/tarea.php?id=$idTarea"); exit;
     }
     $dir = __DIR__ . "/../../../public/uploads/aula/entregas/";
-    if (!is_dir($dir)) mkdir($dir, 0777, true);
-    $nombreArchivo = 'ENT_' . $idEstudiante . '_' . $idTarea . '_' . date('dmY_His') . '.' . $ext;
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
     if (move_uploaded_file($archivo['tmp_name'], $dir . $nombreArchivo)) {
         $archivoEntrega = $nombreArchivo;
     } else {

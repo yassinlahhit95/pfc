@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
 // Merged into calificaciones/lista.php — redirect permanently
 header("Location: ../calificaciones/lista.php", true, 301);
@@ -20,12 +20,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="subtitulo">Ciclo: <?= Security::escapeHtml($resumenFinal['nombreCiclo'] ) ?></p>
 </div>
 
-<?php if ($errores) { ?>
-    <div class="mensaje-error"><?= Security::escapeHtml($errores ) ?></div>
-<?php } ?>
-<?php if ($exito) { ?>
-    <div class="mensaje-exito"><?= Security::escapeHtml($exito ) ?></div>
-<?php } ?>
 
 <div class="panel">
     <div class="contenedor-tabla">

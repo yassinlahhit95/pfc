@@ -1,11 +1,17 @@
 <?php
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/modulos.php";
 
 if (isset($_POST['actualizarNota'])) {
-    $idCalificacion = trim($_POST['idCalificacion']);
-    $idEstudiante = trim($_POST['idEstudiante']);
-    $idModulo = trim($_POST['idModulo']);
+    $idCalificacion = (int)($_POST['idCalificacion'] ?? 0);
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
+    $idModulo = (int)($_POST['idModulo'] ?? 0);
+
+    if (!$idModulo || !in_array($_SESSION['idProfesor'], listarProfesoresDeModulo($idModulo))) {
+        $_SESSION['errores'] = "No tienes permiso para calificar este módulo.";
+        header("Location: ../../../vistas/profesores/calificaciones/lista.php"); exit;
+    }
     $nota1Ev = trim($_POST['nota_1ev']);
     $nota1Final = trim($_POST['nota_1final']);
     $nota2Ev = trim($_POST['nota_2ev']);
@@ -45,7 +51,7 @@ if (isset($_POST['actualizarNota'])) {
             header("Location: ../../../vistas/profesores/calificaciones/lista.php");
             exit;
         }
-        $_SESSION['errores'] = "Error al guardar.";
+        $_SESSION['errores'] = "No se pudieron guardar las calificaciones.";
     } else {
         $_SESSION['errores'] = $errores;
     }

@@ -6,7 +6,7 @@ $hayError = false;
 
 if (isset($_POST['actualizarModulos'])) {
 
-    $idProfesorAsignacion = trim($_POST['idProfesor']);
+    $idProfesorAsignacion = (int)($_POST['idProfesor'] ?? 0);
     $listaModulosSeleccionados = $_POST['modulos'] ?? [];
 
     limpiarModulosProfesor($idProfesorAsignacion);

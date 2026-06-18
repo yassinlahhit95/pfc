@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
 if (isset($_POST['guardarPago'])) {
-    $idEstudiante = $_POST['idEstudiante'];
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $tipoPago     = $_POST['tipoPago'];
     $monto        = trim($_POST['monto']);
     $fechaPago    = trim($_POST['fechaPago']);

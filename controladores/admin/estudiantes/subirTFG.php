@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 
 if (isset($_POST['subirTFG'])) {
 
-    $idEstudiante = trim($_POST['idEstudiante'] ?? '');
+    $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $archivo = $_FILES['archivoTFG'] ?? null;
     
     $errores = [];

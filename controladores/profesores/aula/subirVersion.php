@@ -1,14 +1,6 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
-// Sube una nueva versión de un recurso existente conservando el historial (#8)
+require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
-
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
-    $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
-    header("Location: ../../../vistas/profesores/aula/recursos.php?id=" . intval($_POST['idModulo'] ?? 0));
-    exit;
-}
 
 $idProfesor = $_SESSION['idProfesor'];
 $idArchivo  = intval($_POST['idArchivo'] ?? 0);
@@ -24,7 +16,7 @@ $permitidos = [
     'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt',
     'xls', 'xlsx', 'ods', 'csv',
     'ppt', 'pptx', 'odp',
-    'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
+    'jpg', 'jpeg', 'png', 'gif', 'webp',
     'zip', 'rar'
 ];
 
@@ -44,7 +36,7 @@ if (!in_array($ext, $permitidos)) {
 } else {
     $dir = __DIR__ . "/../../../public/uploads/aula/archivos/";
     if (!is_dir($dir)) mkdir($dir, 0777, true);
-    $nombreArchivo = 'AULA_' . $idProfesor . '_' . date('dmY_His') . '_' . mt_rand(100,999) . '.' . $ext;
+    $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
     if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir . $nombreArchivo)) {
         $nuevaVersion = actualizarArchivoConVersionAula($idArchivo, $nombreArchivo, $nombreOrig, $ext, $tamanio, $idProfesor);
         if ($nuevaVersion) {

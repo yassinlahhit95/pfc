@@ -19,8 +19,13 @@ if (!empty($_SESSION['idAdmin'])) {
     $rol = 'estudiante';
 }
 
-if (!$id) {
-    die("Debes estar logueado para probar la notificación.");
+if (!$id || $rol !== 'admin') {
+    http_response_code(403);
+    die("Acceso restringido.");
+}
+if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+    http_response_code(403);
+    die("Acción bloqueada.");
 }
 
 $token = obtenerTokenUsuario($id, $rol);
@@ -37,10 +42,9 @@ $resultado = enviarNotificacionFirebase($token, $titulo, $mensaje);
 if ($resultado) {
     echo "<h1>Notificación enviada correctamente</h1>";
     echo "<p>Deberías ver un aviso en pantalla en un par de segundos.</p>";
-    echo "<p>Respuesta de Firebase: <pre>$resultado</pre></p>";
     echo "<br><a href='../../vistas/admin/inicio/dashboard.php'>Volver al Dashboard</a>";
 } else {
     echo "<h1>Error al enviar la notificación</h1>";
-    echo "<p>Revisa los logs de error del servidor o el archivo service-account.json.</p>";
+    echo "<p>Consulta los logs del servidor para más detalles.</p>";
 }
 ?>

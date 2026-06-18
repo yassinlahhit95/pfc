@@ -1,14 +1,9 @@
 <?php
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
-
-if (empty($_SESSION['idAdmin'])) {
-    header("Location: ../../login.php");
-    exit;
-}
 
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -23,8 +18,8 @@ $ciclosFiltrados = $idNivelFiltro
     ? array_values(array_filter($listaCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
     : $listaCiclos;
 
-$idCicloElegido = $_GET['idCiclo'] ?? 0;
-$idRetoElegido  = $_GET['idReto']  ?? 0;
+$idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
+$idRetoElegido = (int)($_GET['idReto'] ?? 0);
 
 if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_column($ciclosFiltrados, 'idCiclo'))) {
     $idCicloElegido = 0;
@@ -77,8 +72,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idReto" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar Reto --</option>
                 <?php foreach ($listaRetos as $reto) { ?>
-                    <option value="<?= $reto['idReto'] ?>" <?= ($idRetoElegido == $reto['idReto']) ? 'selected' : '' ?>>
-                        <?= $reto['nombreReto'] ?>
+                    <option value="<?= (int)$reto['idReto'] ?>" <?= ((int)$idRetoElegido === (int)$reto['idReto']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($reto['nombreReto']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -87,8 +82,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 </form>
 </div>
 
-<?php if ($exito) { ?><div class="mensaje-exito"><?= Security::escapeHtml($exito) ?></div><?php } ?>
-<?php if ($errores) { ?><div class="mensaje-error"><?= Security::escapeHtml($errores) ?></div><?php } ?>
+<?php if (!empty($errores) || !empty($exito)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
+    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
+});
+</script>
+<?php endif; ?>
 
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
@@ -115,19 +116,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $notaActual = obtenerCalificacionReto($est['idEstudiante'], $idRetoElegido);
                     ?>
                     <tr>
-                        <td><?= $est['nombreEstudiante'] ?></td>
-                        <td><?= $est['nombreCiclo'] ?></td>
+                        <td><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
+                        <td><?= Security::escapeHtml($est['nombreCiclo']) ?></td>
                         <td>
                             <?php if ($notaActual !== '') { ?>
                                 <span class="texto-negrita <?= $notaActual >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-                                    <?= $notaActual ?>
+                                    <?= Security::escapeHtml((string)$notaActual) ?>
                                 </span>
                             <?php } else { ?>
                                 <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
-                            <a href="evaluarReto.php?idEstudiante=<?= $est['idEstudiante'] ?>&idReto=<?= $idRetoElegido ?>&idCiclo=<?= $idCicloElegido ?>" class="btn-accion btn-editar">
+                            <a href="evaluarReto.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>&idReto=<?= (int)$idRetoElegido ?>&idCiclo=<?= (int)$idCicloElegido ?>" class="btn-accion btn-editar">
                                 <i class="fas fa-edit"></i> Evaluar
                             </a>
                         </td>

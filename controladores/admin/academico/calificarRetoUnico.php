@@ -2,9 +2,9 @@
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$idEstudiante = $_POST['idEstudiante'] ?? 0;
-$idReto = $_POST['idReto'] ?? 0;
-$idCiclo = $_POST['idCiclo'] ?? 0;
+$idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
+$idReto = (int)($_POST['idReto'] ?? 0);
+$idCiclo = (int)($_POST['idCiclo'] ?? 0);
 $nota = trim($_POST['nota'] ?? '');
 $nota = str_replace(',', '.', $nota);
 

@@ -4,7 +4,7 @@ require_once "../../../modelos/estudiantes.php";
 
 if (isset($_POST['actualizarPerfil'])) {
     $idEstudiante = $_SESSION['idEstudiante'];
-    $nombre = trim($_POST['nombreEstudiante']);
+    $nombre = Security::sanitize($_POST['nombreEstudiante']);
     $email = strtolower(trim($_POST['emailEstudiante']));
     $telefono = trim($_POST['telefonoEstudiante']);
 
@@ -20,7 +20,7 @@ if (isset($_POST['actualizarPerfil'])) {
 
     if (empty($nombre)) $errores = "El nombre es obligatorio.";
     if (empty($email)) $errores = "El correo es obligatorio.";
-    else if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) $errores = "Formato de correo inválido.";
+    elseif (!Security::validateEmail($email)) $errores = "El formato del correo no es válido.";
 
     if (!empty($passwordNueva)) {
         if (empty($passwordActual)) {

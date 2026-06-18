@@ -8,7 +8,7 @@
 ## 🚀 Funcionalidades Destacadas
 
 ### 📝 Sistema de Admisión Inteligente (CRM)
-- **Portal de Pre-matrícula:** Asistente dinámico (Wizard) por pasos para solicitantes con subida asíncrona de documentación (DNI, Expedientes).
+- **Portal de Pre-matrícula:** Asistente dinámico por pasos para solicitantes con subida asíncrona de documentación (DNI, Expedientes).
 - **Conversión Automática:** Proceso de un solo clic para convertir aspirantes en alumnos activos, generando automáticamente sus cuentas.
 - **Identidad Institucional:** Generación automática de correos corporativos (`nombre.apellido@aulapro.com`) para los nuevos alumnos.
 - **Seguimiento de Estado:** Los aspirantes pueden consultar el estado de su solicitud en tiempo real mediante su DNI.

@@ -3,9 +3,9 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
 if (isset($_POST['guardarModulo'])) {
-    $idModuloActualizar = trim($_POST['idModulo']);
+    $idModuloActualizar = (int)($_POST['idModulo'] ?? 0);
     $nombreModuloActualizar = trim($_POST['nombreModulo']);
-    $idCicloAsociado = trim($_POST['idCiclo']);
+    $idCicloAsociado = (int)($_POST['idCiclo'] ?? 0);
     $horasMaximasModulo = trim($_POST['horasMaximas']);
 
     $errores = '';
