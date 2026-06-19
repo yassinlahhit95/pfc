@@ -32,14 +32,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
 
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/mensajes/actualizar.php">

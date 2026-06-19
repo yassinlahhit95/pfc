@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/Security.php';
 header('Content-Type: application/json');
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['idAdmin']) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
 }
@@ -12,6 +18,9 @@ if (!Security::validateCSRFToken()) {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida']); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $idCiclo  = (int)($_POST['idCiclo']   ?? 0);
 $inicio   = trim($_POST['horaInicio'] ?? '');
 $fin      = trim($_POST['horaFin']    ?? '');
@@ -43,5 +52,8 @@ if (in_array($inicio, $usedStarts)) {
     echo json_encode(['ok' => false, 'msg' => 'Esa hora de inicio ya está en uso para este ciclo']); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $ok = agregarFranjaHorario($idCiclo, $inicio, $fin, $esReceso);
 echo json_encode(['ok' => (bool)$ok]);

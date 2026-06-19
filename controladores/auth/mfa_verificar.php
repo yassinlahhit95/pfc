@@ -1,8 +1,9 @@
 <?php
-/**
- * Segundo factor en el login (TOTP o código de respaldo).
- * Hasta superarlo NO existe $_SESSION['idAdmin'] → sin acceso.
- */
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
+// Segundo factor en el login (TOTP o código de respaldo).
+// Hasta superarlo no existe $_SESSION['idAdmin'] → sin acceso al sistema.
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
 require_once __DIR__ . '/../../modelos/directores.php';
@@ -11,6 +12,9 @@ if (!class_exists('Logger')) {
     class Logger { public static function security($e,$d=[]){} public static function activity($a,$u=null,$d=[]){} }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN Y VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['mfa_pending']['id'])) {
     header('Location: ../../vistas/login.php');
     exit;
@@ -35,7 +39,6 @@ if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
     exit;
 }
 
-// Límite de intentos del segundo factor
 $_SESSION['mfa_attempts'] = ($_SESSION['mfa_attempts'] ?? 0) + 1;
 if ($_SESSION['mfa_attempts'] > 5) {
     Logger::security('MFA_TOO_MANY_ATTEMPTS', ['id' => $pending['id']]);
@@ -53,6 +56,9 @@ if (!$mfa || empty($mfa['mfa_secret'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VERIFICACIÓN DEL CÓDIGO
+// ══════════════════════════════════════════════════════════════════════
 $ok = false; $usedBackup = false;
 
 // 1) Código TOTP de 6 dígitos
@@ -80,6 +86,9 @@ if (!$ok) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// CONCEDER SESIÓN
+// ══════════════════════════════════════════════════════════════════════
 Security::regenerateSession();
 $_SESSION['idAdmin'] = (int)$pending['id'];
 $_SESSION['must_change_password'] = !empty($pending['must_change']);

@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 ob_start();
 $ajax = !empty($_POST['ajax']);
@@ -6,7 +9,11 @@ $ajax = !empty($_POST['ajax']);
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-// Si los archivos superan post_max_size de PHP, $_POST llega vacío: avisar en vez de fallar en silencio.
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN PREVIA
+// ══════════════════════════════════════════════════════════════════════
+
+// Si se supera post_max_size, PHP vacía $_POST — detectarlo antes de continuar
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     if (ob_get_level() > 0) ob_end_clean();
     $_SESSION['errores'] = "Los archivos superan el tamaño máximo que admite el servidor. Prueba a subirlos de uno en uno o más pequeños.";
@@ -22,12 +29,14 @@ if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idProfesor  = $_SESSION['idProfesor'];
 $idModulo    = intval($_POST['idModulo'] ?? 0);
 $idCarpeta   = intval($_POST['idCarpeta'] ?? 0) ?: null;
 $titulo      = trim($_POST['titulo'] ?? '');
 
-// Destino por defecto; se concreta en cuanto validamos el módulo
 $destino = "../../../vistas/profesores/aula/index.php";
 
 try {
@@ -47,7 +56,6 @@ try {
     $dir = __DIR__ . "/../../../public/uploads/aula/archivos/";
     if (!is_dir($dir)) mkdir($dir, 0755, true);
 
-    // Tipos permitidos: PDF, Word, Excel, PowerPoint, imágenes y otros documentos académicos
     $permitidos = [
         'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt',
         'xls', 'xlsx', 'ods', 'csv',
@@ -57,7 +65,7 @@ try {
     ];
     $LIMITE_ARCHIVO = 20 * 1024 * 1024; // 20 MB por archivo
 
-    // Control de almacenamiento por ciclo (#13)
+    // Verificar cuota de almacenamiento del ciclo
     $idCiclo     = intval($modulo['idCiclo']);
     $limiteCiclo = obtenerLimiteAlmacenamientoCicloAula($idCiclo);
     $usadoCiclo  = obtenerUsoAlmacenamientoCicloAula($idCiclo);
@@ -85,7 +93,7 @@ try {
             $ext        = strtolower(pathinfo($nombreOrig, PATHINFO_EXTENSION));
             $tamanio    = $_FILES['archivos']['size'][$i];
 
-            // 1. Validar extensión básica
+            // 1. Validar extensión
             if (!in_array($ext, $permitidos)) {
                 $errores[] = "$nombreOrig: tipo no permitido ($ext).";
                 continue;
@@ -97,7 +105,7 @@ try {
                 continue;
             }
 
-            // 3. Validar contenido real (MIME type) — sólo si la extensión fileinfo está disponible
+            // 3. Validar tipo MIME real (si fileinfo está disponible)
             $mimeReal = '';
             if (function_exists('finfo_open')) {
                 $finfo = @finfo_open(FILEINFO_MIME_TYPE);
@@ -107,7 +115,6 @@ try {
                 }
             }
 
-            // Mapeo simple para validación de contenido
             $mimesValidos = [
                 'pdf' => 'application/pdf',
                 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
@@ -119,10 +126,8 @@ try {
                 'txt' => 'text/plain'
             ];
 
-            // Validación de MIME (si está en nuestro mapa estricto)
+            // Algunos servidores devuelven tipos MIME distintos para Office/ZIP; solo bloqueamos discrepancias críticas.
             if ($mimeReal !== '' && isset($mimesValidos[$ext]) && $mimesValidos[$ext] !== $mimeReal) {
-                 // Nota: Algunos servidores pueden devolver mimes ligeramente diferentes para Office/Zips
-                 // Solo bloqueamos si es una discrepancia crítica (ej: .txt que es un .exe)
                  if (strpos($mimeReal, 'executable') !== false || strpos($mimeReal, 'php') !== false) {
                      $errores[] = "$nombreOrig: contenido malicioso detectado.";
                      continue;
@@ -135,23 +140,22 @@ try {
             }
             $usadoCiclo += $tamanio;
 
-            // 4. Nombre aleatorio seguro
+            // 4. Nombre aleatorio para evitar colisiones y exposición del nombre original
             $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $ext;
-            
+
             if (move_uploaded_file($_FILES['archivos']['tmp_name'][$i], $dir . $nombreArchivo)) {
-                // Nombre visible: el título indicado (con la extensión real) o el nombre original del archivo
                 $nombreVisible = $nombreOrig;
                 if ($titulo !== '') {
                     $base   = $titulo;
                     $sufijo = '.' . $ext;
-                    // Si el profesor escribió la misma extensión en el título, se la quitamos para no duplicarla
+                    // Si el profesor incluyó la extensión en el título, evitar duplicarla
                     if ($ext !== '' && strtolower(substr($base, -strlen($sufijo))) === strtolower($sufijo)) {
                         $base = substr($base, 0, -strlen($sufijo));
                     }
                     $base = trim($base);
                     if ($base !== '') $nombreVisible = ($ext !== '') ? $base . '.' . $ext : $base;
                 }
-                // Evitar conflictos: mismo nombre + extensión en la misma ubicación → " (2)", " (3)"...
+                // Evitar conflictos de nombre en el mismo módulo/carpeta → " (2)", " (3)"...
                 $nombreVisible = nombreUnicoArchivoAula($idModulo, $idCarpeta, $nombreVisible);
 
                 $idArchivo = insertarArchivoAula($nombreArchivo, $nombreVisible, $ext, $tamanio, '', $idCarpeta, $idModulo, $idProfesor);
@@ -174,7 +178,7 @@ try {
         $_SESSION['exito'] = "$subidos archivo(s) subido(s) correctamente.";
         if (!empty($errores)) $_SESSION['exito'] .= " (" . implode(', ', $errores) . ")";
 
-        // Push FCM en tiempo real (#7). Aislado: nunca debe impedir la redirección.
+        // Notificación push FCM (aislada, nunca debe bloquear la redirección)
         try {
             $firebaseHelper = __DIR__ . "/../../firebase/firebase_helper.php";
             if (file_exists($firebaseHelper)) {
@@ -198,6 +202,9 @@ try {
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 if (ob_get_level() > 0) ob_end_clean();
 if ($ajax) {
     header('Content-Type: application/json');

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 
 if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
-    echo json_encode(['status' => 'error', 'message' => 'Solicitud no válida.']);
+    echo json_encode(['status' => 'error', 'message' => 'La sesión ha expirado o la solicitud no es válida. Por favor, inténtelo de nuevo.']);
     exit;
 }
 
@@ -13,5 +13,5 @@ $estado = isset($_POST['estado']) ? (int)$_POST['estado'] : 0;
 if (actualizarFeatureToggle('feature_subida_tfg', $estado)) {
     echo json_encode(['status' => 'success']);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar.']);
+    echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el estado de subida en la configuración del sistema.']);
 }

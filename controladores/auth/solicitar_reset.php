@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/BotGuard.php";
@@ -6,12 +9,14 @@ require_once __DIR__ . "/../../modelos/password_reset.php";
 require_once __DIR__ . "/../../controladores/comunes/email_helper.php";
 require_once __DIR__ . "/../../config/Config.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN PREVIA
+// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../vistas/auth/solicitar_reset.php");
     exit;
 }
 
-// Rechazar bots (honeypot + tiempo mínimo)
 if (!BotGuard::validate()) {
     $_SESSION['reset_ok'] = "Si el email existe en el sistema, recibirás las instrucciones en breve.";
     header("Location: ../../vistas/auth/solicitar_reset.php");
@@ -24,7 +29,10 @@ if (!Security::validateCSRFToken()) {
     exit;
 }
 
-// Límite de tasa: máximo 5 solicitudes de restablecimiento por IP cada 10 minutos
+// ══════════════════════════════════════════════════════════════════════
+// LÍMITE DE TASA POR IP
+// ══════════════════════════════════════════════════════════════════════
+// Máximo 5 solicitudes por IP cada 10 minutos
 $ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 $con = obtenerConexion();
 
@@ -57,6 +65,9 @@ if ($row) {
     mysqli_stmt_execute($ins);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN DEL EMAIL
+// ══════════════════════════════════════════════════════════════════════
 $email = trim($_POST['email'] ?? '');
 if (!Security::validateEmail($email)) {
     $_SESSION['reset_error'] = "Introduce un email válido.";
@@ -76,10 +87,12 @@ if ($reciente) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 // Siempre mostrar respuesta genérica al final para evitar enumeración de usuarios
 $usuario = buscarUsuarioPorEmail($email);
 
-// En desarrollo se muestra el motivo exacto del fallo para facilitar la depuración
 if (!$usuario && $config->get('APP_ENV') === 'development') {
     error_log("PASSWORD RESET DEV: email '$email' no encontrado en ninguna tabla.");
     $_SESSION['reset_error'] = "[DEV] Email '$email' no existe en la base de datos local.";
@@ -90,7 +103,7 @@ if (!$usuario && $config->get('APP_ENV') === 'development') {
 if ($usuario) {
     $token = crearTokenReset($email, $usuario['tipo']);
 
-    // Construir el enlace desde APP_URL (canónico) para evitar Host-header injection.
+    // Construir el enlace desde APP_URL (canónico) para evitar Host-header injection
     $appUrl = $config->get('APP_URL', '');
     if ($appUrl !== '') {
         $enlace = rtrim($appUrl, '/') . '/vistas/auth/nueva_contrasena.php?token=' . urlencode($token);

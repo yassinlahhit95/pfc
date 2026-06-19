@@ -1,10 +1,15 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../include/ProfesorGuard.php";
-
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../modelos/modulos.php";
 require_once __DIR__ . "/../../include/Logger.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN Y VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -27,7 +32,6 @@ $enlaceReunion = $_POST['enlaceReunion'] ?? '';
 $plataforma = Security::sanitize($_POST['plataforma'] ?? '');
 
 $errores = [];
-
 if (empty($titulo)) $errores[] = 'El título es obligatorio.';
 if (empty($fechaSesion)) $errores[] = 'La fecha es obligatoria.';
 if (empty($horaSesion)) $errores[] = 'La hora es obligatoria.';
@@ -53,14 +57,15 @@ if (!$idModulo || !in_array($idProfesor, listarProfesoresDeModulo($idModulo))) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO Y RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 $idSesion = crearSesionViva($idModulo, $idProfesor, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma);
 
 if ($idSesion) {
     $_SESSION['exito'] = 'Sesión viva creada exitosamente';
     Logger::activity('SESION_CREADA', $idProfesor, ['idSesion' => $idSesion, 'titulo' => $titulo]);
-
     notificarEstudiantesPorModulo($idModulo, 'NUEVA_SESION', 'Nueva Sesión Viva', "Se ha programado una nueva sesión viva: $titulo el $fechaSesion a las $horaSesion", $idSesion, 'SESION');
-
     header("Location: ../../vistas/profesores/aula/sesiones.php");
 } else {
     $_SESSION['errores'] = 'Error al crear la sesión. Inténtalo de nuevo.';

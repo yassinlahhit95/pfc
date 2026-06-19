@@ -21,21 +21,43 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div>
         <h1>LISTADO DE ESTUDIANTES</h1>
     </div>
-    <div class="acciones-pagina">
+    <div class="acciones-pagina" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a href="../../../controladores/admin/estudiantes/exportarCSV.php" class="boton-secundario">
+            <i class="fas fa-file-export"></i> EXPORTAR CSV
+        </a>
+        <button type="button" class="boton-secundario" onclick="document.getElementById('modal-import-est').style.display='flex'">
+            <i class="fas fa-file-import"></i> IMPORTAR CSV
+        </button>
         <a href="agregarEstudiantes.php" class="boton-primario">
             <i class="fas fa-plus"></i> NUEVO ESTUDIANTE
         </a>
     </div>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
+<!-- Import CSV Modal -->
+<div id="modal-import-est" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:var(--bg-1,#fff);border-radius:14px;padding:32px;width:520px;max-width:95vw;border:1px solid var(--border);">
+        <h3 style="margin:0 0 8px;"><i class="fas fa-file-import"></i> Importar Estudiantes desde CSV</h3>
+        <p style="font-size:.85rem;color:var(--text-2);margin-bottom:12px;">
+            El CSV debe tener cabecera con estas columnas (el nombre del ciclo debe coincidir exactamente):
+        </p>
+        <code style="font-size:.78rem;display:block;background:var(--bg-2);padding:10px;border-radius:6px;margin-bottom:20px;word-break:break-all;">
+            nombreEstudiante,emailEstudiante,dniEstudiante,telefonoEstudiante,direccionEstudiante,ciudadEstudiante,codigoPostalEstudiante,fechaNacimientoEstudiante,fechaAltaEstudiante,curso,nombreCiclo,observacionesEstudiante
+        </code>
+        <form action="../../../controladores/admin/estudiantes/importarCSV.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <div class="campo">
+                <label>Archivo CSV</label>
+                <input type="file" name="archivo_csv" accept=".csv,text/csv" required style="width:100%;">
+            </div>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <button type="submit" class="boton-primario" style="flex:1;"><i class="fas fa-upload"></i> Importar</button>
+                <button type="button" class="boton-secundario" onclick="document.getElementById('modal-import-est').style.display='none'">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <?php
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();

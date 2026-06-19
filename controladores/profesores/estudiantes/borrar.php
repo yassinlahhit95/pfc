@@ -1,12 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-if (empty($_SESSION['idProfesor'])) {
-    header("Location: ../../../vistas/login.php");
-    exit;
-}
-
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (!empty($_POST['idEstudiante'])) {
     $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
 
@@ -17,13 +18,15 @@ if (!empty($_POST['idEstudiante'])) {
         }
         $resultado = eliminarEstudiante($idEstudiante);
         if ($resultado) {
-            $_SESSION['exito'] = "Estudiante eliminado correctamente.";
+            $_SESSION['exito'] = "El estudiante ha sido eliminado correctamente.";
         } else {
             $_SESSION['errores'] = "No se pudo eliminar al estudiante.";
         }
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/profesores/estudiantes/lista.php");
 exit;
-?>

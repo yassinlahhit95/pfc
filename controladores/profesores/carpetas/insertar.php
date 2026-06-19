@@ -1,9 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
-if (empty($_SESSION['idProfesor'])) { header("Location: ../../../vistas/login.php"); exit; }
-
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarCarpeta'])) {
     $nombre      = trim($_POST['nombre'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
@@ -13,14 +17,18 @@ if (isset($_POST['guardarCarpeta'])) {
     $idProfesor  = $_SESSION['idProfesor'];
 
     if (empty($nombre) || $idCiclo < 1) {
-        $_SESSION['errores'] = "El nombre y el ciclo son obligatorios.";
+        $_SESSION['errores'] = "El nombre de la carpeta y el ciclo son campos obligatorios.";
     } else {
         if (insertarCarpeta($nombre, $descripcion, $color, $icono, $idProfesor, $idCiclo)) {
-            $_SESSION['exito'] = "Carpeta creada correctamente.";
+            $_SESSION['exito'] = "La carpeta ha sido creada correctamente.";
         } else {
             $_SESSION['errores'] = "No se pudo crear la carpeta.";
         }
     }
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/profesores/ejercicios/panel.php");
 exit;

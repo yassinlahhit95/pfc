@@ -34,14 +34,6 @@ include_once __DIR__ . "/../comunes/nav.php";
   <span class="actual"><?= Security::escapeHtml($tarea['titulo']) ?></span>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
 
 <!-- ENUNCIADO -->
 <div class="panel margen-arriba">

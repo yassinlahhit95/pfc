@@ -6,9 +6,9 @@ if (isset($_POST['idAnuncio'])) {
     $idAnuncio = (int)($_POST['idAnuncio'] ?? 0);
 
     if (eliminarAnuncio($idAnuncio)) {
-        $_SESSION['exito'] = "Anuncio eliminado correctamente.";
+        $_SESSION['exito'] = "El anuncio ha sido eliminado correctamente.";
     } else {
-        $_SESSION['errores'] = "No se ha podido eliminar el anuncio seleccionado.";
+        $_SESSION['errores'] = "Ocurrió un error al intentar eliminar el anuncio seleccionado.";
     }
 }
 

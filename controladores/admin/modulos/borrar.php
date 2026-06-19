@@ -1,20 +1,26 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['idModulo'])) {
-    $idModulo = (int) $_POST['idModulo'];
+    $idModulo = (int)$_POST['idModulo'];
     $con = obtenerConexion();
 
-    // buscamos los retos que tiene este modulo
+    // Obtener los retos vinculados al módulo antes de borrarlo
     $sql1 = "SELECT idReto FROM modulo_reto WHERE idModulo = ?";
     $resultado = mysqli_prepare($con, $sql1);
     mysqli_stmt_bind_param($resultado, "i", $idModulo);
     mysqli_stmt_execute($resultado);
     $res = mysqli_stmt_get_result($resultado);
     $idRetos = [];
-    while ($r = mysqli_fetch_assoc($res)) { $idRetos[] = (int) $r['idReto']; }
+    while ($r = mysqli_fetch_assoc($res)) { $idRetos[] = (int)$r['idReto']; }
 
     foreach ($idRetos as $idReto) {
         $sql2 = "DELETE FROM calificaciones_retos WHERE idReto = ?";
@@ -47,14 +53,14 @@ if (isset($_POST['idModulo'])) {
     $resultado = mysqli_prepare($con, $sql7);
     mysqli_stmt_bind_param($resultado, "i", $idModulo);
     if (mysqli_stmt_execute($resultado)) {
-        $_SESSION['exito'] = "Módulo eliminado.";
+        $_SESSION['exito'] = "El módulo ha sido eliminado correctamente.";
     } else {
-        $_SESSION['errores'] = "No se pudo eliminar el módulo.";
+        $_SESSION['errores'] = "Ocurrió un error al intentar eliminar el módulo.";
     }
-
-    
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-?>

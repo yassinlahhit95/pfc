@@ -1,14 +1,20 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $hayError = false;
 
 if (isset($_POST['guardarNotasReto'])) {
     $idReto = (int)($_POST['idReto'] ?? 0);
     $idCiclo = (int)($_POST['idCiclo'] ?? 0);
     $idModulo = (int)($_POST['idModulo'] ?? 0);
-    
+
     $listaIdsEstudiantes = $_POST['estudiantes'] ?? [];
     $listaNotas = $_POST['notas'] ?? [];
 
@@ -31,20 +37,22 @@ if (isset($_POST['guardarNotasReto'])) {
                 }
             }
         }
-        
+
         if ($hayError) break;
     }
 
     if ($hayError) {
-        $_SESSION['errores'] = "Error al procesar las notas. Deben estar entre 0 y 10.";
+        $_SESSION['errores'] = "Ocurrió un error al procesar las notas. Todas las notas deben ser valores numéricos comprendidos entre 0 y 10.";
     } else {
-        $_SESSION['exito'] = "Calificaciones del reto guardadas.";
+        $_SESSION['exito'] = "Las notas del reto han sido guardadas correctamente.";
     }
 
     header("Location: ../../../vistas/admin/academico/calificacionesRetos.php?idCiclo=$idCiclo&idModulo=$idModulo&idReto=$idReto");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/academico/calificacionesRetos.php");
 exit;
-?>

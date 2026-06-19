@@ -1,12 +1,17 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
-
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../include/Logger.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/estudiantes/aula/tareas.php");
     exit;
@@ -18,10 +23,11 @@ if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
     exit;
 }
 
-$idTarea = (int)($_POST['idTarea'] ?? 0);
+$idTarea   = (int)($_POST['idTarea'] ?? 0);
 $respuesta = Security::sanitize($_POST['respuesta'] ?? '');
 
-$tarea = obtenerTareaPorIdAula($idTarea);
+// Verificar que el estudiante pertenece al ciclo de la tarea (evita IDOR)
+$tarea           = obtenerTareaPorIdAula($idTarea);
 $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
 if (!$tarea || !$datosEstudiante || $datosEstudiante['idCiclo'] != $tarea['idCiclo']) {
     $_SESSION['errores'] = "No tienes acceso a esta tarea.";
@@ -35,9 +41,9 @@ if (!isset($_FILES['archivo']) || $_FILES['archivo']['size'] == 0) {
     exit;
 }
 
-$archivo = $_FILES['archivo'];
+$archivo    = $_FILES['archivo'];
 $permitidas = ['pdf', 'doc', 'docx', 'zip', 'rar', 'txt'];
-$extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+$extension  = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
 
 if (!in_array($extension, $permitidas)) {
     $_SESSION['errores'] = 'Tipo de archivo no permitido.';
@@ -51,8 +57,11 @@ if ($archivo['size'] > 10 * 1024 * 1024) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $extension;
-$ruta = __DIR__ . "/../../../public/uploads/aula/entregas/$nombreArchivo";
+$ruta          = __DIR__ . "/../../../public/uploads/aula/entregas/$nombreArchivo";
 
 if (!file_exists(dirname($ruta))) {
     mkdir(dirname($ruta), 0755, true);
@@ -70,8 +79,7 @@ if ($idEntrega) {
     $_SESSION['exito'] = 'Entrega registrada exitosamente';
     Logger::activity('ENTREGA_ENVIADA', $idEstudiante, ['idEntrega' => $idEntrega, 'idTarea' => $idTarea]);
 
-    // Notify teacher
-    $tarea = obtenerTareaPorIdAula($idTarea);
+    // Notificar al profesor
     insertarNotificacionAula($tarea['idProfesor'], 'profesor', 'ENTREGA_NUEVA', 'Nueva Entrega', 'Un estudiante ha entregado la tarea: ' . $tarea['titulo'], $idEntrega, 'ENTREGA');
 
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");
@@ -80,4 +88,3 @@ if ($idEntrega) {
     Logger::error('Error enviando entrega', ['estudiante' => $idEstudiante, 'tarea' => $idTarea]);
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");
 }
-?>

@@ -1,13 +1,13 @@
 <?php
-/**
- * Registrar evento de analytics
- * Recibe JSON POST con datos del evento
- */
-
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 session_start();
 require_once __DIR__ . "/../../modelos/aula.php";
 
-// Solo registrar si hay sesión activa
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['idEstudiante']) && empty($_SESSION['idProfesor'])) {
     http_response_code(401);
     exit;
@@ -17,6 +17,9 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!$data || !isset($data['accion'])) {
@@ -24,23 +27,24 @@ if (!$data || !isset($data['accion'])) {
     exit;
 }
 
-$idUsuario = $_SESSION['idEstudiante'] ?? $_SESSION['idProfesor'] ?? 0;
+$idUsuario   = $_SESSION['idEstudiante'] ?? $_SESSION['idProfesor'] ?? 0;
 $tipoUsuario = !empty($_SESSION['idEstudiante']) ? 'estudiante' : 'profesor';
-$accion = trim($data['accion']);
-$idModulo = intval($data['idModulo'] ?? 0);
-$metadatos = $data['metadatos'] ?? null;
+$accion      = trim($data['accion']);
+$idModulo    = intval($data['idModulo'] ?? 0);
+$metadatos   = $data['metadatos'] ?? null;
 
-// Validar acción (prevenir inyección)
+// Lista blanca de acciones permitidas (previene inyección de datos arbitrarios)
 $accionesPermitidas = ['descargar', 'subir', 'ver', 'entrega', 'busqueda', 'paginacion', 'tab_switch', 'modal_open', 'tema_change', 'session_end'];
 if (!in_array($accion, $accionesPermitidas)) {
     http_response_code(400);
     exit;
 }
 
-// Registrar en BD
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 $ok = registrarAnalytics($idUsuario, $tipoUsuario, $accion, $idModulo, $metadatos);
 
 http_response_code($ok ? 200 : 500);
 echo json_encode(['ok' => $ok]);
 exit;
-?>

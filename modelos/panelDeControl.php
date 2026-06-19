@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// CONTADORES PARA EL PANEL DE CONTROL
+// ══════════════════════════════════════════════════════════════════════
+
 function contarEstudiantes(): int {
     return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes")['total'] ?? 0);
 }

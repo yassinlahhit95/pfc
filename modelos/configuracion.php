@@ -1,35 +1,31 @@
 <?php
 require_once __DIR__ . '/conectar.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// CONSULTAS
+// ══════════════════════════════════════════════════════════════════════
+
 function obtenerConfiguracionCentro() {
     $con = obtenerConexion();
     $res = mysqli_query($con, "SELECT * FROM configuracion_centro WHERE idConfig = 1");
     $cfg = mysqli_fetch_assoc($res);
     return $cfg ?: [
-        'nombreCentro' => 'Centro de Formación Profesional',
-        'codigoCentro' => '', 'direccionCentro' => '', 'ciudadCentro' => '',
-        'cpCentro' => '', 'telefonoCentro' => '', 'emailCentro' => '',
-        'cursoEscolar' => date('Y') . '-' . (date('Y') + 1),
-        'logoCentro' => '', 'logoGobierno1' => '', 'logoGobierno2' => '',
-        'textoLegal' => '', 'nombreDirectorFirmante' => '',
-        'feature_prematricula' => 1,
-        'feature_chat' => 1,
-        'feature_inventario' => 1,
-        'feature_subida_tfg' => 1
+        'nombreCentro'            => 'Centro de Formación Profesional',
+        'codigoCentro'            => '', 'direccionCentro' => '', 'ciudadCentro' => '',
+        'cpCentro'                => '', 'telefonoCentro'  => '', 'emailCentro'  => '',
+        'cursoEscolar'            => date('Y') . '-' . (date('Y') + 1),
+        'logoCentro'              => '', 'logoGobierno1'   => '', 'logoGobierno2' => '',
+        'textoLegal'              => '', 'nombreDirectorFirmante' => '',
+        'feature_prematricula'    => 1,
+        'feature_chat'            => 1,
+        'feature_inventario'      => 1,
+        'feature_subida_tfg'      => 1
     ];
 }
 
-function actualizarFeatureToggle($feature, $estado) {
-    $con = obtenerConexion();
-    $featuresValidas = ['feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg'];
-    if (!in_array($feature, $featuresValidas)) return false;
-    
-    $sql = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";
-    $stmt = mysqli_prepare($con, $sql);
-    $val = ($estado == 1) ? 1 : 0;
-    mysqli_stmt_bind_param($stmt, 'i', $val);
-    return mysqli_stmt_execute($stmt);
-}
+// ══════════════════════════════════════════════════════════════════════
+// ACTUALIZACIONES
+// ══════════════════════════════════════════════════════════════════════
 
 function guardarConfiguracionCentro($d) {
     $con = obtenerConexion();
@@ -46,15 +42,33 @@ function guardarConfiguracionCentro($d) {
     return mysqli_stmt_execute($stmt);
 }
 
+// Solo acepta columnas de feature válidas para evitar inyección de nombre de columna.
+function actualizarFeatureToggle($feature, $estado) {
+    $con = obtenerConexion();
+    $featuresValidas = ['feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg'];
+    if (!in_array($feature, $featuresValidas)) return false;
+    $sql  = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";
+    $stmt = mysqli_prepare($con, $sql);
+    $val  = ($estado == 1) ? 1 : 0;
+    mysqli_stmt_bind_param($stmt, 'i', $val);
+    return mysqli_stmt_execute($stmt);
+}
+
+// Solo acepta columnas de logo válidas para evitar inyección de nombre de columna.
 function actualizarLogoCentro($campo, $ruta) {
     $con = obtenerConexion();
     if (!in_array($campo, ['logoCentro', 'logoGobierno1', 'logoGobierno2'])) return false;
-    $sql = "UPDATE configuracion_centro SET $campo = ? WHERE idConfig = 1";
+    $sql  = "UPDATE configuracion_centro SET $campo = ? WHERE idConfig = 1";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, 's', $ruta);
     return mysqli_stmt_execute($stmt);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════════════════════
+
+// Convierte un logo de disco a Data URI para incrustar en PDF sin rutas absolutas.
 function logoParaPdf($ruta) {
     if (empty($ruta)) return '';
     $path = __DIR__ . '/../public/uploads/configuracion/' . basename($ruta);

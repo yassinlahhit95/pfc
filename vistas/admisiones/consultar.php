@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/../../modelos/configuracion.php";
-$cfg_adm = obtenerConfiguracionCentro();
-if (!$cfg_adm['feature_prematricula']) {
+require_once __DIR__ . "/../../include/FeatureGuard.php";
+if (!FeatureGuard::check('feature_prematricula')) {
     die("<div style='font-family:sans-serif; text-align:center; padding:50px;'>
             <h2>Módulo de Admisiones Deshabilitado</h2>
             <p>La consulta de estado no está disponible en este momento.</p>

@@ -1,8 +1,14 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/Security.php";
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . "/../../../modelos/horarios.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['idAdmin']) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
 }
@@ -12,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idCiclo    = (int)($_POST['idCiclo'] ?? 0);
 $dia        = trim($_POST['dia'] ?? '');
 $horaInicio = trim($_POST['horaInicio'] ?? '');
@@ -22,6 +31,9 @@ if ($idCiclo <= 0 || !in_array($dia, $diasValidos, true) || $horaInicio === '') 
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 if (borrarCeldaHorario($idCiclo, $dia, $horaInicio . ':00')) {
     echo json_encode(['ok' => true, 'msg' => 'Asignación eliminada.']);
 } else {

@@ -1,9 +1,8 @@
 <?php
 require_once __DIR__ . "/../../modelos/ciclos.php";
-require_once __DIR__ . "/../../modelos/configuracion.php";
+require_once __DIR__ . "/../../include/FeatureGuard.php";
 
-$cfg_adm = obtenerConfiguracionCentro();
-if (!$cfg_adm['feature_prematricula']) {
+if (!FeatureGuard::check('feature_prematricula')) {
     die("<div style='font-family:sans-serif; text-align:center; padding:50px;'>
             <h2>Módulo de Admisiones Deshabilitado</h2>
             <p>El portal de pre-matrícula no está disponible en este momento. Por favor, contacte con el centro.</p>

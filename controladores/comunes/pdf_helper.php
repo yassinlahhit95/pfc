@@ -1,15 +1,18 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-/**
- * Genera un PDF de aceptación de pre-matrícula usando mPDF
- */
+// ══════════════════════════════════════════════════════════════════════
+// GENERACIÓN DE PDF
+// ══════════════════════════════════════════════════════════════════════
 function generarPDFAceptacion($datos) {
     try {
         $mpdf = new \Mpdf\Mpdf([
-            'margin_left' => 20,
-            'margin_right' => 20,
-            'margin_top' => 30,
+            'margin_left'   => 20,
+            'margin_right'  => 20,
+            'margin_top'    => 30,
             'margin_bottom' => 25,
             'margin_header' => 10,
             'margin_footer' => 10,
@@ -18,7 +21,7 @@ function generarPDFAceptacion($datos) {
         $mpdf->SetTitle("Formulario de Aceptación - AulaPro");
         $mpdf->SetAuthor("AulaPro Sistema Académico");
 
-        // Cabecera y Pie
+        // ── Cabecera y pie de página ──
         $header = '
         <table width="100%" style="border-bottom: 1px solid #000000; vertical-align: bottom; font-family: serif; font-size: 9pt; color: #000088;">
             <tr>
@@ -27,7 +30,7 @@ function generarPDFAceptacion($datos) {
                 <td width="33%" style="text-align: right;"><span style="font-weight: bold;">DOCUMENTO OFICIAL</span></td>
             </tr>
         </table>';
-        
+
         $footer = '
         <table width="100%" style="vertical-align: bottom; font-family: serif; font-size: 8pt; color: #000000; font-weight: bold; font-style: italic;">
             <tr>
@@ -105,7 +108,9 @@ function generarPDFAceptacion($datos) {
 
         $mpdf->WriteHTML($html);
 
-        // Crear carpeta si no existe
+        // ══════════════════════════════════════════════════════════════════════
+        // SALIDA
+        // ══════════════════════════════════════════════════════════════════════
         $destDir = __DIR__ . '/../../public/uploads/admisiones/documentos/';
         if (!is_dir($destDir)) mkdir($destDir, 0777, true);
 
@@ -113,7 +118,7 @@ function generarPDFAceptacion($datos) {
         $filePath = $destDir . $fileName;
 
         $mpdf->Output($filePath, 'F');
-        
+
         return 'public/uploads/admisiones/documentos/' . $fileName;
 
     } catch (\Exception $e) {
@@ -121,4 +126,3 @@ function generarPDFAceptacion($datos) {
         return false;
     }
 }
-?>

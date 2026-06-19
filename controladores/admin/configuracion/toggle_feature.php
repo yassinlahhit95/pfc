@@ -1,10 +1,16 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 
-// Block if SaaS platform has locked feature control
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
+// Bloquear si la plataforma SaaS ha bloqueado el control de funcionalidades
 if (FeatureGuard::isLocked()) {
     echo json_encode([
         'status'  => 'error',
@@ -18,7 +24,7 @@ $estado  = isset($_POST['estado']) ? (int)$_POST['estado'] : 0;
 
 if (actualizarFeatureToggle($feature, $estado)) {
     FeatureGuard::clearCache();
-    echo json_encode(['status' => 'success', 'message' => 'Configuración actualizada']);
+    echo json_encode(['status' => 'success', 'message' => 'La configuración de la funcionalidad ha sido actualizada correctamente.']);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Función no válida o error al actualizar']);
+    echo json_encode(['status' => 'error', 'message' => 'La característica especificada no es válida o se produjo un error al actualizar la configuración.']);
 }

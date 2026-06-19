@@ -1,14 +1,12 @@
 <?php
-/**
- * RateLimiter — limitación de peticiones por IP basada en base de datos.
- *
- * Pensado para endpoints PÚBLICOS (sin sesión) donde el rate-limit por sesión
- * de Security no aplica: pre-matrícula, consulta por DNI, formularios de contacto.
- *
- * Crea su propia tabla la primera vez (CREATE TABLE IF NOT EXISTS) para que
- * funcione en hosting compartido sin ejecutar migraciones a mano.
- */
+// Limitación de peticiones por IP para endpoints públicos (sin sesión):
+// pre-matrícula, consulta por DNI, formularios de contacto, etc.
+// Crea su tabla automáticamente la primera vez.
 class RateLimiter {
+
+    // ══════════════════════════════════════════════════════════════════════
+    // TABLA
+    // ══════════════════════════════════════════════════════════════════════
 
     private static $ensured = false;
 
@@ -27,11 +25,13 @@ class RateLimiter {
         self::$ensured = true;
     }
 
+    // ══════════════════════════════════════════════════════════════════════
+    // IP DEL CLIENTE
+    // ══════════════════════════════════════════════════════════════════════
+
     private static function clientIp(): string {
-        // HTTP_CF_CONNECTING_IP is only trustworthy when the request comes from
-        // a Cloudflare IP. Without that check an attacker could spoof the header
-        // to bypass rate-limiting. We trust it only when REMOTE_ADDR is a known
-        // Cloudflare range; otherwise fall back to REMOTE_ADDR directly.
+        // HTTP_CF_CONNECTING_IP solo es fiable si REMOTE_ADDR pertenece a Cloudflare.
+        // Sin esa comprobación, un atacante podría falsificar la cabecera para eludir el rate-limit.
         $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         if (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && self::isCloudflareIp($remote)) {
             $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
@@ -41,8 +41,8 @@ class RateLimiter {
         return substr($ip, 0, 45);
     }
 
+    // Rangos IPv4 de Cloudflare — actualizar periódicamente desde https://www.cloudflare.com/ips/.
     private static function isCloudflareIp(string $ip): bool {
-        // Cloudflare published IPv4 ranges (update periodically from https://www.cloudflare.com/ips-v4)
         $cfRanges = [
             '173.245.48.0/20','103.21.244.0/22','103.22.200.0/22','103.31.4.0/22',
             '141.101.64.0/18','108.162.192.0/18','190.93.240.0/20','188.114.96.0/20',
@@ -59,18 +59,14 @@ class RateLimiter {
         return false;
     }
 
-    /**
-     * Devuelve true si la petición está permitida; false si se superó el límite.
-     *
-     * @param mixed  $con           conexión mysqli
-     * @param string $scope         identificador del endpoint ('admisiones', etc.)
-     * @param int    $maxHits       peticiones permitidas por ventana
-     * @param int    $windowSeconds duración de la ventana
-     * @param int    $blockSeconds  bloqueo tras superar el límite
-     */
+    // ══════════════════════════════════════════════════════════════════════
+    // COMPROBACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Devuelve true si la petición está permitida; false si se superó el límite.
     public static function allow($con, string $scope, int $maxHits = 20,
                                  int $windowSeconds = 300, int $blockSeconds = 900): bool {
-        if (!$con) return true; // fail-open solo si no hay DB (no romper el sitio)
+        if (!$con) return true; // fail-open solo si no hay DB (evita romper el sitio)
         self::ensureTable($con);
 
         $ip  = self::clientIp();

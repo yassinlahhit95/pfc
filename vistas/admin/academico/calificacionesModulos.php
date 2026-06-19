@@ -130,7 +130,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo relleno">
             <label>Seleccione un Ciclo:</label>
             <select name="idCiclo" id="selectCicloMod" onchange="this.form.submit()">
-                <option value="">-Seleccionar Ciclo-</option>
+                <option value="">-- Seleccionar Ciclo --</option>
                 <?php foreach ($ciclosFiltrados as $ciclo) { ?>
                     <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                         [<?= Security::escapeHtml($ciclo['nombreNivel']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
@@ -142,7 +142,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo relleno">
             <label>Seleccione un Módulo:</label>
             <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
-                <option value="">-Seleccionar Módulo-</option>
+                <option value="">-- Seleccionar Módulo --</option>
                 <?php foreach ($listaModulos as $modulo) { ?>
                     <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
                         <?= Security::escapeHtml($modulo['nombreModulo']) ?>
@@ -153,14 +153,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
 
 <?php if (!empty($idModuloElegido)) { ?>
     <div class="glosario-bar">

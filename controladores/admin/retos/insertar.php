@@ -1,67 +1,72 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/retos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarReto'])) {
-    $nombreReto = trim($_POST['nombreReto']);
-    $horasReto = trim($_POST['horasReto']);
-    $fechaInicioReto = trim($_POST['fechaInicioReto']);
-    $fechaFinReto = trim($_POST['fechaFinReto']);
-    $idModulo = $_POST['modulosReto'] ?? '';
+    $nombre      = trim($_POST['nombreReto']);
+    $horas       = trim($_POST['horasReto']);
+    $fechaInicio = trim($_POST['fechaInicioReto']);
+    $fechaFin    = trim($_POST['fechaFinReto']);
+    $idModulo    = $_POST['modulosReto'] ?? '';
 
-    $listaDeErrores = [];
-
-    if (empty($nombreReto)) $listaDeErrores['nombreReto'] = "El nombre es obligatorio.";
-    if (empty($horasReto)) {
-        $listaDeErrores['horasReto'] = "Las horas son obligatorias.";
-    } else if (!is_numeric($horasReto)) {
-        $listaDeErrores['horasReto'] = "Las horas deben ser un número.";
+    $errores = [];
+    if (empty($nombre)) $errores['nombreReto'] = "El nombre del reto es un campo obligatorio.";
+    if (empty($horas)) {
+        $errores['horasReto'] = "Las horas del reto son un campo obligatorio.";
+    } elseif (!is_numeric($horas)) {
+        $errores['horasReto'] = "Las horas deben ser un valor numérico.";
     }
 
     $hoy = date('Y-m-d');
-    if (empty($fechaInicioReto)) {
-        $listaDeErrores['fechaInicioReto'] = "La fecha de inicio es obligatoria.";
-    } else if ($fechaInicioReto < $hoy) {
-        $listaDeErrores['fechaInicioReto'] = "La fecha no puede ser anterior a hoy.";
+    if (empty($fechaInicio)) {
+        $errores['fechaInicioReto'] = "La fecha de inicio es un campo obligatorio.";
+    } elseif ($fechaInicio < $hoy) {
+        $errores['fechaInicioReto'] = "La fecha de inicio no puede ser anterior a hoy.";
     }
-    if (empty($fechaFinReto)) {
-        $listaDeErrores['fechaFinReto'] = "La fecha de fin es obligatoria.";
-    } else if (!empty($fechaInicioReto) && $fechaFinReto < $fechaInicioReto) {
-        $listaDeErrores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
+    if (empty($fechaFin)) {
+        $errores['fechaFinReto'] = "La fecha de fin es un campo obligatorio.";
+    } elseif (!empty($fechaInicio) && $fechaFin < $fechaInicio) {
+        $errores['fechaFinReto'] = "La fecha de fin no puede ser anterior a la de inicio.";
     }
 
-    if (!empty($fechaInicioReto) && !empty($fechaFinReto) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicioReto <= $fechaFinReto) {
-        $fechaInicioObj = new DateTime($fechaInicioReto);
-        $fechaFinObj = new DateTime($fechaFinReto);
+    if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horas) && is_numeric($horas) && $fechaInicio <= $fechaFin) {
+        $fechaInicioObj = new DateTime($fechaInicio);
+        $fechaFinObj    = new DateTime($fechaFin);
         $diasLaborables = 0;
         $tempIter = clone $fechaInicioObj;
         while ($tempIter <= $fechaFinObj) {
             if ($tempIter->format('N') < 6) $diasLaborables++;
             $tempIter->modify('+1 day');
         }
-        $maxHorasPermitidas = $diasLaborables * 6;
-        if ($horasReto > $maxHorasPermitidas) {
-            $listaDeErrores['horasReto'] = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
+        $maxHoras = $diasLaborables * 6;
+        if ($horas > $maxHoras) {
+            $errores['horasReto'] = "Las horas ($horas h) superan el máximo permitido ($maxHoras h).";
         }
     }
 
     if (empty($idModulo) || !is_numeric($idModulo)) {
-        $listaDeErrores['modulosReto'] = "Debes seleccionar un módulo.";
-    } else if (is_numeric($horasReto)) {
+        $errores['modulosReto'] = "Debe seleccionar un módulo para el reto.";
+    } elseif (is_numeric($horas)) {
         $detalle = obtenerDetalleHorasModulo($idModulo);
-        if ($horasReto > $detalle['disponibles']) {
-            $listaDeErrores['modulosReto'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+        if ($horas > $detalle['disponibles']) {
+            $errores['modulosReto'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
         }
     }
 
-    if (!empty($listaDeErrores)) {
-        $_SESSION['errores'] = $listaDeErrores;
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_reto'] = $_POST;
         header("Location: ../../../vistas/admin/retos/agregarRetos.php");
         exit;
     }
 
-    if (insertarReto($nombreReto, $fechaInicioReto, $fechaFinReto, $horasReto, [$idModulo])) {
+    if (insertarReto($nombre, $fechaInicio, $fechaFin, $horas, [$idModulo])) {
         $idNuevoReto = mysqli_insert_id(obtenerConexion());
 
         if (!empty($_FILES['archivosReto']['name'][0])) {
@@ -81,15 +86,17 @@ if (isset($_POST['guardarReto'])) {
             }
         }
 
-        $_SESSION['exito'] = "Reto creado correctamente.";
+        $_SESSION['exito'] = "El reto ha sido creado correctamente.";
         header("Location: ../../../vistas/admin/retos/verRetos.php");
         exit;
     }
-    $_SESSION['errores'] = "No se pudo crear el reto en la base de datos.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar crear el reto en la base de datos.";
     header("Location: ../../../vistas/admin/retos/agregarRetos.php");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/retos/verRetos.php");
 exit;
-?>

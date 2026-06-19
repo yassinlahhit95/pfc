@@ -1,24 +1,16 @@
 <?php
-/**
- * SuspensionGuard — blocks access when the instance is suspended by the SaaS admin.
- * Include AFTER the role-auth check in EstudianteGuard, ProfesorGuard, TutorGuard.
- * Do NOT include in AdminGuard so directors can still log in.
- */
+// Bloquea el acceso cuando la instancia está suspendida por el administrador SaaS.
+// Incluir DESPUÉS de la comprobación de rol en EstudianteGuard, ProfesorGuard, TutorGuard.
+// NO incluir en AdminGuard para que los directores puedan seguir accediendo.
 
-// Cache in session for 5 minutes to avoid a DB hit on every page load
-if (!isset($_SESSION['_suspension_checked']) || $_SESSION['_suspension_checked'] < time() - 300) {
-    require_once __DIR__ . '/../modelos/conectar.php';
-    $con       = obtenerConexion();
-    $res       = mysqli_query($con, "SELECT instance_status, suspension_message FROM configuracion_centro WHERE idConfig = 1 LIMIT 1");
-    $cfg       = $res ? mysqli_fetch_assoc($res) : null;
-    $suspended = $cfg && ($cfg['instance_status'] ?? 'active') === 'suspended';
+require_once __DIR__ . '/FeatureGuard.php';
 
-    $_SESSION['_suspension_checked'] = time();
-    $_SESSION['_suspended']          = $suspended;
-    $_SESSION['_suspension_message'] = $cfg['suspension_message'] ?? '';
-}
+// Sincroniza con FeatureGuard, que gestiona la validación del token, el TTL de caché y fail-closed.
+$suspended = FeatureGuard::isSuspended();
+$_SESSION['_suspended']          = $suspended;
+$_SESSION['_suspension_message'] = FeatureGuard::getSuspensionMessage();
 
-if (!empty($_SESSION['_suspended'])) {
+if ($suspended) {
     require __DIR__ . '/../vistas/suspendido.php';
     exit;
 }

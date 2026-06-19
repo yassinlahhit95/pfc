@@ -90,7 +90,7 @@ try {
 
 // ── Parse action ───────────────────────────────────────────────────────────────
 $payload = $rawBody ? (json_decode($rawBody, true) ?? []) : [];
-$action  = $_GET['action'] ?? ($payload['action'] ?? '');
+$action  = ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($payload['action'])) ? $payload['action'] : ($_GET['action'] ?? '');
 
 // ── License token helper ────────────────────────────────────────────────────────
 function storeLicenseToken(PDO $pdo, string $token): bool {

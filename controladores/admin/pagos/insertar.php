@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarPago'])) {
     $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $tipoPago     = $_POST['tipoPago'];
@@ -12,19 +18,16 @@ if (isset($_POST['guardarPago'])) {
     $fechaLimite = date('Y') . '-06-30';
 
     $errores = '';
-
-    if (empty($tipoPago)) {
-        $errores = "Debes elegir un tipo de pago.";
-    }
+    if (empty($tipoPago)) $errores = "Debe elegir un tipo de pago.";
 
     if (empty($monto)) {
-        $errores = "La cantidad a cobrar es obligatoria.";
-    } else if (!is_numeric($monto) || $monto <= 0) {
+        $errores = "La cantidad a cobrar es un campo obligatorio.";
+    } elseif (!is_numeric($monto) || $monto <= 0) {
         $errores = "La cantidad debe ser un número positivo.";
     }
 
     if ($hoy > $fechaLimite) {
-        $_SESSION['errores'] = "Periodo de pagos terminado.";
+        $_SESSION['errores'] = "El periodo de registro de pagos ha finalizado.";
         header("Location: ../../../vistas/admin/pagos/agregarPagos.php?idEstudiante=$idEstudiante");
         exit;
     }
@@ -32,7 +35,7 @@ if (isset($_POST['guardarPago'])) {
     if (!$errores) {
         $estadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
         if ($monto > ($estadoFinanciero['restante'] + 0.05)) {
-            $errores = "La cantidad no puede superar el pendiente.";
+            $errores = "La cantidad no puede superar el importe pendiente del estudiante.";
         }
     }
 
@@ -51,14 +54,12 @@ if (isset($_POST['guardarPago'])) {
             $proximaFecha = $fechaLimite;
         }
 
-        $resultado = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha);
-
-        if ($resultado) {
-            $_SESSION['exito'] = "Pago registrado correctamente.";
+        if (insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha)) {
+            $_SESSION['exito'] = "El pago ha sido registrado correctamente.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;
         }
-        $_SESSION['errores'] = "Error al registrar el pago en la base de datos.";
+        $_SESSION['errores'] = "Ocurrió un error al registrar el pago en la base de datos.";
     } else {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_pago'] = $_POST;
@@ -68,6 +69,8 @@ if (isset($_POST['guardarPago'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
-?>

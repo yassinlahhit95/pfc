@@ -1,66 +1,73 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once "../../../modelos/profesores.php";
 
-if (isset($_POST['actualizarPerfil'])) {
-    $idProfesor = (int)$_SESSION['idProfesor'];
-    $nombre = Security::sanitize($_POST['nombreProfesor']);
-    $email = strtolower(trim($_POST['emailProfesor']));
-    $telefono = trim($_POST['telefonoProfesor']);
+if (!isset($_POST['actualizarPerfil'])) {
+    header("Location: ../../../vistas/profesores/perfil/ver.php");
+    exit;
+}
 
-    $passwordActual = trim($_POST['current_password'] ?? '');
-    $passwordNueva = trim($_POST['new_password'] ?? '');
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
+$idProfesor     = (int)$_SESSION['idProfesor'];
+$nombre         = Security::sanitize($_POST['nombreProfesor']);
+$email          = strtolower(trim($_POST['emailProfesor']));
+$telefono       = trim($_POST['telefonoProfesor']);
+$passwordActual = trim($_POST['current_password'] ?? '');
+$passwordNueva  = trim($_POST['new_password'] ?? '');
 
-    $errores = '';
+$errores = '';
 
-    if (empty($idProfesor)) {
-        header("Location: ../../../vistas/profesores/perfil/ver.php");
-        exit;
-    }
+if (empty($idProfesor)) {
+    header("Location: ../../../vistas/profesores/perfil/ver.php");
+    exit;
+}
 
-    if (empty($nombre)) $errores = "El nombre es obligatorio.";
-    if (empty($email)) $errores = "El correo es obligatorio.";
-    elseif (!Security::validateEmail($email)) $errores = "El formato del correo no es válido.";
-    if (!empty($telefono) && !Security::validatePhone($telefono)) $errores = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
+if (empty($nombre)) $errores = "El nombre es obligatorio.";
+if (empty($email)) $errores = "El correo es obligatorio.";
+elseif (!Security::validateEmail($email)) $errores = "El formato del correo no es válido.";
+if (!empty($telefono) && !Security::validatePhone($telefono)) $errores = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
 
-    if (!empty($passwordNueva)) {
-        if (empty($passwordActual)) {
-            $errores = "Ingresa la contraseña actual.";
-        } else {
-            $datosProfesor = obtenerProfesorPorId($idProfesor);
-            if (!$datosProfesor || !password_verify($passwordActual, $datosProfesor['password'])) {
-                $errores = "Contraseña actual incorrecta.";
-            } else if (strlen($passwordNueva) < 6) {
-                $errores = "Mínimo 6 caracteres.";
-            }
-        }
-    }
-
-    if ($errores) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_perfil'] = $_POST;
-        header("Location: ../../../vistas/profesores/perfil/editar.php");
-        exit;
-    }
-
-    if (!empty($passwordNueva)) {
-        actualizarPasswordProfesor($idProfesor, $passwordNueva);
-    }
-
-    $resultado = actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono);
-
-    if ($resultado) {
-        $_SESSION['exito'] = "Perfil actualizado correctamente.";
-        header("Location: ../../../vistas/profesores/perfil/ver.php");
-        exit;
+if (!empty($passwordNueva)) {
+    if (empty($passwordActual)) {
+        $errores = "Ingresa la contraseña actual.";
     } else {
-        $_SESSION['errores'] = "Error al actualizar los datos.";
-        $_SESSION['datos_perfil'] = $_POST;
-        header("Location: ../../../vistas/profesores/perfil/editar.php");
-        exit;
+        $datosProfesor = obtenerProfesorPorId($idProfesor);
+        if (!$datosProfesor || !password_verify($passwordActual, $datosProfesor['password'])) {
+            $errores = "Contraseña actual incorrecta.";
+        } else if (strlen($passwordNueva) < 6) {
+            $errores = "Mínimo 6 caracteres.";
+        }
     }
 }
 
-header("Location: ../../../vistas/profesores/perfil/ver.php");
-exit;
-?>
+if ($errores) {
+    $_SESSION['errores'] = $errores;
+    $_SESSION['datos_perfil'] = $_POST;
+    header("Location: ../../../vistas/profesores/perfil/editar.php");
+    exit;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
+if (!empty($passwordNueva)) {
+    actualizarPasswordProfesor($idProfesor, $passwordNueva);
+}
+
+$resultado = actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono);
+
+if ($resultado) {
+    $_SESSION['exito'] = "Perfil actualizado correctamente.";
+    header("Location: ../../../vistas/profesores/perfil/ver.php");
+    exit;
+} else {
+    $_SESSION['errores'] = "Error al actualizar los datos.";
+    $_SESSION['datos_perfil'] = $_POST;
+    header("Location: ../../../vistas/profesores/perfil/editar.php");
+    exit;
+}

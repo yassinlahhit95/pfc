@@ -1,19 +1,23 @@
 <?php
-/**
- * AccountLockout — bloqueo de fuerza bruta POR CUENTA (email), independiente de
- * la IP. Complementa el rate-limit por IP de validacion.php: frena ataques
- * distribuidos (botnet) que prueban contraseñas contra un único usuario.
- *
- * Crea su tabla automáticamente (hosting compartido sin migraciones manuales).
- */
+// Bloqueo por cuenta (email) para ataques de fuerza bruta distribuidos (botnet).
+// Complementa el rate-limit por IP de validacion.php.
 class AccountLockout {
 
+    // ══════════════════════════════════════════════════════════════════════
+    // CONFIGURACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
     const MAX_FAILS    = 8;    // fallos permitidos por ventana
-    const WINDOW       = 900;  // 15 min de ventana de conteo
-    const LOCK_SECONDS = 900;  // 15 min de bloqueo al superar el límite
+    const WINDOW       = 900;  // ventana de conteo: 15 min
+    const LOCK_SECONDS = 900;  // duración del bloqueo: 15 min
 
     private static $ensured = false;
 
+    // ══════════════════════════════════════════════════════════════════════
+    // TABLA
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Crea la tabla automáticamente (hosting compartido sin migraciones manuales).
     private static function ensureTable($con): void {
         if (self::$ensured) return;
         @mysqli_query($con, "CREATE TABLE IF NOT EXISTS account_lockout (
@@ -26,7 +30,11 @@ class AccountLockout {
         self::$ensured = true;
     }
 
-    /** ['locked'=>bool, 'minutes'=>int] */
+    // ══════════════════════════════════════════════════════════════════════
+    // CONSULTAS
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Devuelve ['locked' => bool, 'minutes' => int].
     public static function status($con, string $email): array {
         if (!$con) return ['locked' => false, 'minutes' => 0];
         self::ensureTable($con);
@@ -42,6 +50,10 @@ class AccountLockout {
         }
         return ['locked' => false, 'minutes' => 0];
     }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // OPERACIONES
+    // ══════════════════════════════════════════════════════════════════════
 
     public static function recordFailure($con, string $email): void {
         if (!$con) return;

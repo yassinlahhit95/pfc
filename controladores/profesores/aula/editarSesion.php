@@ -1,30 +1,34 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
-$idProfesor = $_SESSION['idProfesor'];
-
 require_once __DIR__ . "/../../../modelos/aula.php";
 
-$idSesion = (int)($_POST['idSesion'] ?? 0);
-$titulo = $_POST['titulo'] ?? '';
-$descripcion = $_POST['descripcion'] ?? '';
-$fechaSesion = $_POST['fechaSesion'] ?? '';
-$horaSesion = $_POST['horaSesion'] ?? '';
+$idProfesor = $_SESSION['idProfesor'];
+
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
+$idSesion      = (int)($_POST['idSesion'] ?? 0);
+$titulo        = $_POST['titulo'] ?? '';
+$descripcion   = $_POST['descripcion'] ?? '';
+$fechaSesion   = $_POST['fechaSesion'] ?? '';
+$horaSesion    = $_POST['horaSesion'] ?? '';
 $enlaceReunion = $_POST['enlaceReunion'] ?? '';
-$plataforma = $_POST['plataforma'] ?? '';
+$plataforma    = $_POST['plataforma'] ?? '';
 
 $errores = [];
-if (!$idSesion) $errores[] = "No se ha especificado la sesión.";
-if (!$titulo) $errores[] = "El título es obligatorio.";
+if (!$idSesion)    $errores[] = "No se ha especificado la sesión.";
+if (!$titulo)      $errores[] = "El título es obligatorio.";
 if (!$fechaSesion) $errores[] = "La fecha es obligatoria.";
-if (!$horaSesion) $errores[] = "La hora es obligatoria.";
+if (!$horaSesion)  $errores[] = "La hora es obligatoria.";
 
-// Validar fecha y hora
 if ($fechaSesion && $horaSesion) {
     $errFecha = validarFechaHoraSesion($fechaSesion, $horaSesion);
     if ($errFecha) $errores[] = $errFecha;
 }
 
-// Validar enlace de reunión
 if ($enlaceReunion) {
     $errEnlace = validarEnlaceReunion($enlaceReunion);
     if ($errEnlace) $errores[] = $errEnlace;
@@ -36,6 +40,9 @@ if ($errores) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $sesion = obtenerSesionPorId($idSesion);
 if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
     $_SESSION['errores'] = "No tienes permiso para editar esta sesión.";
@@ -43,10 +50,12 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $ok = actualizarSesionViva($idSesion, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma);
 
 if ($ok) {
-    // Notificar a estudiantes sobre cambios en la sesión
     notificarEstudiantesPorModulo(
         $sesion['idModulo'],
         'sesion_modificada',
@@ -56,10 +65,9 @@ if ($ok) {
         'sesion'
     );
 
-    $_SESSION['exito'] = "Sesión actualizada y se notificó a los estudiantes";
+    $_SESSION['exito'] = "Sesión actualizada y estudiantes notificados.";
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . $sesion['idModulo']);
 } else {
     $_SESSION['errores'] = "Error al actualizar la sesión. Inténtalo de nuevo.";
     header("Location: ../../../vistas/profesores/aula/modulo.php?id=" . $sesion['idModulo']);
 }
-?>

@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../config/Config.php';
 
@@ -11,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $_vendor = __DIR__ . '/../../../vendor/autoload.php';
 if (!file_exists($_vendor)) {
-    $_SESSION['errores'] = "Error interno del servidor. Contacta con el administrador del sistema.";
+    $_SESSION['errores'] = "Error interno del servidor al generar los boletines. Contacte con el soporte técnico.";
     header("Location: $_back"); exit;
 }
 
@@ -22,9 +25,12 @@ require_once __DIR__ . '/../../../modelos/calificaciones.php';
 require_once __DIR__ . '/../../../modelos/ciclos.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $_secret = Config::getInstance()->get('BOLETIN_SECRET');
 if (empty($_secret)) {
-    $_SESSION['errores'] = "Error de configuración del servidor. Contacta con el administrador.";
+    $_SESSION['errores'] = "Error de configuración de seguridad del servidor. Contacte con el administrador del sistema.";
     header("Location: $_back"); exit;
 }
 
@@ -33,12 +39,12 @@ $estudianteIds = $_POST['estudiantes'] ?? [];
 
 if (!$idCiclo) { header("Location: $_back"); exit; }
 
-$cfg    = obtenerConfiguracionCentro();
-$ciclo  = obtenerCicloPorId($idCiclo);
-$datos  = generarDatosBoletinCiclo($idCiclo);
+$cfg   = obtenerConfiguracionCentro();
+$ciclo = obtenerCicloPorId($idCiclo);
+$datos = generarDatosBoletinCiclo($idCiclo);
 
 if (empty($datos['estudiantes'])) {
-    $_SESSION['errores'] = "No hay estudiantes en este ciclo.";
+    $_SESSION['errores'] = "No se han encontrado estudiantes registrados en el ciclo formativo seleccionado para generar sus notas.";
     header("Location: $_back"); exit;
 }
 
@@ -50,12 +56,15 @@ if (!empty($estudianteIds)) {
 }
 
 if (empty($estudiantesAFiltro)) {
-    $_SESSION['errores'] = "No has seleccionado ningún estudiante válido.";
+    $_SESSION['errores'] = "No se ha seleccionado ningún estudiante válido para la expedición del boletín de notas.";
     header("Location: $_back"); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 foreach ($estudiantesAFiltro as &$est) {
-    // HMAC-SHA256: separator prevents id=1,ciclo=23 ≡ id=12,ciclo=3
+    // HMAC-SHA256: el separador "|" evita colisiones entre (id=1,ciclo=23) y (id=12,ciclo=3)
     $serialRaw = hash_hmac('sha256',
         ($est['idEstudiante'] ?? '') . '|' . ($ciclo['idCiclo'] ?? '') . '|' . date('Y'),
         $_secret
@@ -78,6 +87,9 @@ foreach ($estudiantesAFiltro as &$est) {
 }
 unset($est);
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 try {
     $reportService = new ReportService();
     $reportService->generateBoletines($cfg, $ciclo, $estudiantesAFiltro, $_base);
@@ -85,6 +97,6 @@ try {
     $reportService->stream($filename);
 } catch (\Throwable $e) {
     error_log('generarBoletin error: ' . $e->getMessage());
-    $_SESSION['errores'] = 'No se pudo generar el PDF. Inténtalo de nuevo.';
+    $_SESSION['errores'] = 'No fue posible generar el archivo PDF del boletín de notas. Por favor, inténtelo de nuevo.';
     header("Location: $_back"); exit;
 }

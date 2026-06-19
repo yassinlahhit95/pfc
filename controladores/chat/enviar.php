@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
@@ -12,6 +15,9 @@ function jsonErr(string $msg): never {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!empty($_SESSION['idAdmin'])) {
     $myRol = 'admin';    $myId = (int)$_SESSION['idAdmin'];
 } elseif (!empty($_SESSION['idProfesor'])) {
@@ -27,6 +33,9 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     jsonErr('Acción bloqueada.');
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('Método no permitido');
 if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) jsonErr('CSRF inválido');
 
@@ -37,9 +46,12 @@ if ($convId <= 0 || $contenido === '') jsonErr('Datos incompletos');
 $conv = chatConversacionPorId($convId);
 if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) jsonErr('No autorizado');
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $newId = chatInsertarMensaje($convId, $myRol, $myId, $contenido);
 
-// Notificación push al destinatario (no fatal si falla)
+// Notificación push al destinatario (no bloquea si falla)
 $destRol = ($conv['user_a_rol'] === $myRol && (int)$conv['user_a_id'] === $myId)
     ? $conv['user_b_rol'] : $conv['user_a_rol'];
 $destId  = ($conv['user_a_rol'] === $myRol && (int)$conv['user_a_id'] === $myId)
@@ -54,15 +66,18 @@ if ($destToken) {
     @enviarNotificacionFirebase($destToken, 'Nuevo mensaje de ' . $emisorNombre, $cuerpoPush);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 $msg = [
-    'id'           => $newId,
+    'id'              => $newId,
     'conversacion_id' => $convId,
-    'emisor_rol'   => $myRol,
-    'emisor_id'    => $myId,
-    'emisor_nombre'=> $emisorNombre,
-    'contenido'    => $contenido,
-    'fecha'        => date('Y-m-d H:i:s'),
-    'leido'        => 0,
+    'emisor_rol'      => $myRol,
+    'emisor_id'       => $myId,
+    'emisor_nombre'   => $emisorNombre,
+    'contenido'       => $contenido,
+    'fecha'           => date('Y-m-d H:i:s'),
+    'leido'           => 0,
 ];
 
 echo json_encode(['ok' => true, 'message' => $msg]);

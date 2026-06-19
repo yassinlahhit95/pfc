@@ -1,49 +1,54 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarEstudiante'])) {
-
-    $nombre = trim($_POST['nombreEstudiante']);
-    $email = trim($_POST['emailEstudiante']);
-    $dni = trim($_POST['dniEstudiante']);
-    $telefono = trim($_POST['telefonoEstudiante']);
+    $nombre          = trim($_POST['nombreEstudiante']);
+    $email           = trim($_POST['emailEstudiante']);
+    $dni             = trim($_POST['dniEstudiante']);
+    $telefono        = trim($_POST['telefonoEstudiante']);
     $fechaNacimiento = trim($_POST['fechaNacimientoEstudiante']);
-    $fechaAlta = trim($_POST['fechaAltaEstudiante']);
-    $direccion = trim($_POST['direccionEstudiante']);
-    $ciudad = trim($_POST['ciudadEstudiante']);
-    $codigoPostal = trim($_POST['codigoPostalEstudiante']);
-    $observaciones = trim($_POST['observacionesEstudiante']);
-    $idCiclo = (int)($_POST['idCiclo'] ?? 0);
+    $fechaAlta       = trim($_POST['fechaAltaEstudiante']);
+    $direccion       = trim($_POST['direccionEstudiante']);
+    $ciudad          = trim($_POST['ciudadEstudiante']);
+    $codigoPostal    = trim($_POST['codigoPostalEstudiante']);
+    $observaciones   = trim($_POST['observacionesEstudiante']);
+    $idCiclo         = (int)($_POST['idCiclo'] ?? 0);
     $cursosPermitidos = ['Grado Medio', 'Grado Superior', '1º', '2º'];
-    $curso = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
+    $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
 
     $avisos = [];
-    if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es obligatorio.";
+    if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es un campo obligatorio.";
     if (empty($email)) {
-        $avisos['emailEstudiante'] = "Email requerido";
+        $avisos['emailEstudiante'] = "El correo electrónico es un campo obligatorio.";
     } elseif (!Security::validateEmail($email)) {
-        $avisos['emailEstudiante'] = "El formato del email no es válido.";
+        $avisos['emailEstudiante'] = "El formato del correo electrónico no es válido.";
     }
-    if (empty($dni)) $avisos['dniEstudiante'] = "El DNI es obligatorio.";
+    if (empty($dni)) $avisos['dniEstudiante'] = "El Documento Nacional de Identidad (DNI) es un campo obligatorio.";
     if (empty($telefono)) {
-        $avisos['telefonoEstudiante'] = "El teléfono es obligatorio.";
+        $avisos['telefonoEstudiante'] = "El número de teléfono es un campo obligatorio.";
     } elseif (!Security::validatePhone($telefono)) {
-        $avisos['telefonoEstudiante'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
+        $avisos['telefonoEstudiante'] = "El número de teléfono introducido no es válido.";
     }
-    if (empty($fechaNacimiento)) $avisos['fechaNacimientoEstudiante'] = "La fecha de nacimiento es obligatoria.";
-    if (empty($direccion)) $avisos['direccionEstudiante'] = "Dirección requerida";
-    if (empty($ciudad)) $avisos['ciudadEstudiante'] = "La ciudad es obligatoria.";
+    if (empty($fechaNacimiento)) $avisos['fechaNacimientoEstudiante'] = "La fecha de nacimiento es un campo obligatorio.";
+    if (empty($direccion)) $avisos['direccionEstudiante'] = "La dirección es un campo obligatorio.";
+    if (empty($ciudad)) $avisos['ciudadEstudiante'] = "La ciudad es un campo obligatorio.";
     if (empty($codigoPostal)) {
-        $avisos['codigoPostalEstudiante'] = "El código postal es obligatorio.";
+        $avisos['codigoPostalEstudiante'] = "El código postal es un campo obligatorio.";
     } elseif (!is_numeric($codigoPostal)) {
-        $avisos['codigoPostalEstudiante'] = "Código postal no válido";
+        $avisos['codigoPostalEstudiante'] = "El código postal especificado no es válido.";
     }
-    if (empty($curso)) $avisos['curso'] = "Selecciona un grado";
-    if ($idCiclo <= 0) $avisos['idCiclo'] = "Selecciona un ciclo";
+    if (empty($curso)) $avisos['curso'] = "Debe seleccionar un grado formativo.";
+    if ($idCiclo <= 0) $avisos['idCiclo'] = "Debe seleccionar un ciclo formativo.";
 
     if (empty($avisos) && checkEstudianteExistente($dni, $email)) {
-        $avisos['dniEstudiante'] = "El DNI o Email ya están registrados.";
+        $avisos['dniEstudiante'] = "El DNI o correo electrónico especificados ya se encuentran registrados.";
     }
 
     if (!empty($avisos)) {
@@ -54,15 +59,17 @@ if (isset($_POST['guardarEstudiante'])) {
     }
 
     if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
-        $_SESSION['exito'] = mensajeExitoConCredenciales("Estudiante registrado correctamente.");
+        $_SESSION['exito'] = mensajeExitoConCredenciales("El estudiante ha sido registrado correctamente.");
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
         exit;
     }
-    $_SESSION['errores'] = "Hubo un problema al intentar guardar el estudiante en la base de datos.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar registrar al estudiante.";
     header("Location: ../../../vistas/admin/estudiantes/agregarEstudiantes.php");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
 exit;
-?>

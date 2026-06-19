@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . '/../../../config/Config.php';
 
@@ -21,7 +24,11 @@ require_once __DIR__ . '/../../../modelos/ciclos.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/estudiantes.php';
 
-// Derive idCiclo from the student's own session — no POST input needed
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
+
+// El idCiclo se obtiene siempre de la sesión (no se acepta input del formulario)
 $datosEst = obtenerEstudiantePorId((int)$_SESSION['idEstudiante']);
 $idCiclo  = (int)($datosEst['idCiclo'] ?? 0);
 if (!$idCiclo) {
@@ -35,8 +42,16 @@ $celdas  = listarHorarioPorCiclo($idCiclo);
 $franjas = obtenerFranjasHorario($idCiclo);
 $dias    = obtenerDiasHorario();
 
-$reportService = new ReportService();
-$reportService->generateHorario($cfg, $ciclo, $celdas, $franjas, $dias);
-
-$filename = 'horario_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
-$reportService->stream($filename);
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
+try {
+    $reportService = new ReportService();
+    $reportService->generateHorario($cfg, $ciclo, $celdas, $franjas, $dias);
+    $filename = 'horario_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
+    $reportService->stream($filename);
+} catch (\Throwable $e) {
+    error_log('generarHorario (estudiante): ' . $e->getMessage());
+    $_SESSION['errores'] = "No se pudo generar el horario en PDF. Inténtalo de nuevo.";
+    header("Location: $_back"); exit;
+}

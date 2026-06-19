@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
@@ -6,6 +9,9 @@ require_once __DIR__ . '/../../modelos/chat.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!empty($_SESSION['idAdmin'])) {
     $myRol = 'admin';
     $myId  = (int)$_SESSION['idAdmin'];
@@ -32,6 +38,9 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $back");
     exit;
@@ -56,9 +65,15 @@ if ($targetRol === $myRol && $targetId === $myId) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $convId = chatEncontrarOCrear($myRol, $myId, $targetRol, $targetId);
 
-$convUrl = (strpos($back, 'index.php') !== false) 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
+$convUrl = (strpos($back, 'index.php') !== false)
             ? str_replace('index.php', 'conversacion.php', $back)
             : str_replace('chat.php', 'conversacion.php', $back);
 header("Location: {$convUrl}?id=$convId");

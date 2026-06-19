@@ -1,12 +1,14 @@
 <?php
-/**
- * Cambio de contraseña obligatorio (primer acceso) o voluntario.
- * NO usa los Guards de rol porque debe ser accesible cuando
- * must_change_password está activo (los Guards lo bloquean).
- */
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
+// No usa Guards de rol: debe ser accesible cuando must_change_password está activo.
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 // Mapa rol → tabla / columna id (lista blanca; nunca viene del usuario)
 $map = [
     'idAdmin'      => ['directores',  'idDirector'],
@@ -34,6 +36,9 @@ $dashboards = [
     'idTutor'      => '../../vistas/tutores/inicio/dashboard.php',
 ];
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../../vistas/cambiar_password.php');
     exit;
@@ -61,6 +66,9 @@ if (!$politica['valid']) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $con  = obtenerConexion();
 $hash = Security::hashPassword($nueva);
 
@@ -71,9 +79,9 @@ mysqli_stmt_bind_param($stmt, "si", $hash, $idUsuario);
 
 if (mysqli_stmt_execute($stmt)) {
     unset($_SESSION['must_change_password']);
-    Security::touchPasswordChanged($con, $tabla, $idCol, $idUsuario); // invalida otras sesiones
-    Security::regenerateSession();              // nuevo SID tras cambio de credenciales
-    $_SESSION['_pwd_at'] = time() + 10;         // esta sesión sigue siendo válida
+    Security::touchPasswordChanged($con, $tabla, $idCol, $idUsuario);
+    Security::regenerateSession();
+    $_SESSION['_pwd_at'] = time() + 10;
     $_SESSION['_pwd_check'] = time();
     if (class_exists('Logger')) {
         Logger::activity('PASSWORD_CHANGED', $idUsuario, ['tabla' => $tabla]);

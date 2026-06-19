@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['marcarVisto'])) {
     if (!Security::validateCSRFToken()) {
         $_SESSION['errores'] = "Solicitud no válida o expirada.";
@@ -9,7 +15,7 @@ if (isset($_POST['marcarVisto'])) {
     }
     $idReclamacion = intval($_POST['idReclamacion'] ?? 0);
 
-    // Seguridad: solo puede marcar como leído un mensaje propio (evita IDOR)
+    // Solo puede marcar como leído un mensaje que le pertenezca (evita IDOR)
     if (!mensajePerteneceAEstudiante($idReclamacion, $_SESSION['idEstudiante'])) {
         $_SESSION['errores'] = "No tienes permiso sobre este mensaje.";
         header("Location: ../../../vistas/estudiantes/mensajes/lista.php"); exit;
@@ -24,5 +30,8 @@ if (isset($_POST['marcarVisto'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
 exit;

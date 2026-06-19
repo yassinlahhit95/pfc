@@ -1,26 +1,31 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idPrestamo = (int)($_POST['idPrestamo'] ?? $_GET['id'] ?? 0);
 
-$hayError = false;
-
 if ($idPrestamo <= 0) {
-    $_SESSION['errores'] = "Préstamo no encontrado.";
-    $hayError = true;
+    $_SESSION['errores'] = "El préstamo especificado no existe.";
+    header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
+    exit;
 }
 
-if (!$hayError) {
-    if (devolverPrestamo($idPrestamo)) {
-        $_SESSION['exito'] = "Préstamo devuelto.";
-    } else {
-        $_SESSION['errores'] = "No se pudo registrar la devolución.";
-    }
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
+if (devolverPrestamo($idPrestamo)) {
+    $_SESSION['exito'] = "La devolución del préstamo ha sido registrada correctamente.";
+} else {
+    $_SESSION['errores'] = "No se pudo registrar la devolución del préstamo.";
 }
 
 header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
 exit;
-?>

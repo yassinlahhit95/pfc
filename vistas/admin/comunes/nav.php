@@ -169,7 +169,7 @@ function _nav_active_admin($check) {
 
       <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_admin('tutores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-        <span class="nav-label">Tutores (Familias)</span>
+        <span class="nav-label">Sistema Parental</span>
         <?php if ($totalTutores_menu > 0) { ?><span class="nav-badge"><?= $totalTutores_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('tutores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>

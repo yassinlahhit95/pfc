@@ -17,13 +17,6 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="gestionAnuncios.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 
-<?php if (!empty($errores) && !is_array($errores)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');
-});
-</script>
-<?php endif; ?>
 
     <div class="panel">
         <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">

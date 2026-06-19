@@ -1,32 +1,34 @@
 <?php
-/**
- * Sistema centralizado de logging
- * Registra errores, accesos, actividades en archivos seguros
- */
-
 class Logger {
-    const LEVEL_ERROR = 'ERROR';
-    const LEVEL_WARNING = 'WARNING';
-    const LEVEL_INFO = 'INFO';
-    const LEVEL_DEBUG = 'DEBUG';
+
+    // ══════════════════════════════════════════════════════════════════════
+    // CONFIGURACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
+    const LEVEL_ERROR    = 'ERROR';
+    const LEVEL_WARNING  = 'WARNING';
+    const LEVEL_INFO     = 'INFO';
+    const LEVEL_DEBUG    = 'DEBUG';
     const LEVEL_ACTIVITY = 'ACTIVITY';
 
     private static $logDir = null;
     private static $isInitialized = false;
+
+    // ══════════════════════════════════════════════════════════════════════
+    // INICIALIZACIÓN
+    // ══════════════════════════════════════════════════════════════════════
 
     public static function init($logDirectory = null) {
         if (self::$isInitialized) {
             return;
         }
 
-        // Configurar directorio de logs
         if ($logDirectory === null) {
             $logDirectory = __DIR__ . '/../logs';
         }
 
         self::$logDir = $logDirectory;
 
-        // Crear directorio si no existe
         if (!file_exists(self::$logDir)) {
             mkdir(self::$logDir, 0755, true);
         }
@@ -34,98 +36,80 @@ class Logger {
         self::$isInitialized = true;
     }
 
-    /**
-     * Log de error
-     */
+    // ══════════════════════════════════════════════════════════════════════
+    // MÉTODOS PÚBLICOS
+    // ══════════════════════════════════════════════════════════════════════
+
     public static function error($message, $context = []) {
         self::log(self::LEVEL_ERROR, $message, $context, 'error.log');
     }
 
-    /**
-     * Log de advertencia
-     */
     public static function warning($message, $context = []) {
         self::log(self::LEVEL_WARNING, $message, $context, 'warning.log');
     }
 
-    /**
-     * Log de información
-     */
     public static function info($message, $context = []) {
         self::log(self::LEVEL_INFO, $message, $context, 'info.log');
     }
 
-    /**
-     * Log de debug
-     */
     public static function debug($message, $context = []) {
         self::log(self::LEVEL_DEBUG, $message, $context, 'debug.log');
     }
 
-    /**
-     * Log de actividad de usuario
-     */
     public static function activity($action, $userId = null, $details = []) {
         $context = array_merge(['user_id' => $userId], $details);
-        self::log(self::LEVEL_ACTIVITY, "Action: $action", $context, 'activity.log');
+        self::log(self::LEVEL_ACTIVITY, "Acción: $action", $context, 'activity.log');
     }
 
-    /**
-     * Log de acceso
-     */
     public static function access($path, $method = 'GET', $statusCode = 200, $userId = null) {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $ip        = $_SERVER['REMOTE_ADDR'] ?? 'desconocida';
         $userAgent = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 100);
 
         $message = "$method $path [$statusCode] - IP: $ip";
         $context = [
-            'ip' => $ip,
-            'method' => $method,
-            'path' => $path,
+            'ip'          => $ip,
+            'method'      => $method,
+            'path'        => $path,
             'status_code' => $statusCode,
-            'user_id' => $userId,
-            'user_agent' => $userAgent
+            'user_id'     => $userId,
+            'user_agent'  => $userAgent,
         ];
 
         self::log(self::LEVEL_INFO, $message, $context, 'access.log');
     }
 
-    /**
-     * Log de seguridad (intentos fallidos, etc)
-     */
     public static function security($event, $details = []) {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $ip      = $_SERVER['REMOTE_ADDR'] ?? 'desconocida';
         $context = array_merge(['ip' => $ip], $details);
-        self::log(self::LEVEL_WARNING, "Security Event: $event", $context, 'security.log');
+        self::log(self::LEVEL_WARNING, "Evento de seguridad: $event", $context, 'security.log');
     }
 
-    /**
-     * Función central de logging
-     */
+    // ══════════════════════════════════════════════════════════════════════
+    // ESCRITURA
+    // ══════════════════════════════════════════════════════════════════════
+
     private static function log($level, $message, $context = [], $filename = 'app.log') {
         if (!self::$isInitialized) {
             self::init();
         }
 
-        $filepath = self::$logDir . '/' . $filename;
-
-        // Formatear mensaje
-        $timestamp = date('Y-m-d H:i:s');
+        $filepath   = self::$logDir . '/' . $filename;
+        $timestamp  = date('Y-m-d H:i:s');
         $contextStr = !empty($context) ? ' | ' . json_encode($context) : '';
         $logMessage = "[$timestamp] [$level] $message$contextStr" . PHP_EOL;
 
-        // Escribir en archivo
         error_log($logMessage, 3, $filepath);
 
-        // Si es error crítico, también guardar en error.log del sistema
+        // Los errores críticos se duplican en critical.log para facilitar el diagnóstico
         if ($level === self::LEVEL_ERROR) {
             error_log($logMessage, 3, self::$logDir . '/critical.log');
         }
     }
 
-    /**
-     * Obtiene últimas líneas del log
-     */
+    // ══════════════════════════════════════════════════════════════════════
+    // UTILIDADES
+    // ══════════════════════════════════════════════════════════════════════
+
     public static function getTail($filename = 'error.log', $lines = 50) {
         if (!self::$isInitialized) {
             self::init();
@@ -153,9 +137,6 @@ class Logger {
         return $result;
     }
 
-    /**
-     * Limpia logs antiguos
-     */
     public static function cleanup($daysOld = 30) {
         if (!self::$isInitialized) {
             self::init();
@@ -171,6 +152,4 @@ class Logger {
     }
 }
 
-// Inicializar Logger
 Logger::init();
-?>

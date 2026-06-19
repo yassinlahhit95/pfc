@@ -1,12 +1,16 @@
 <?php
-/**
- * Activa MFA para el admin autenticado: comprueba el primer código TOTP,
- * guarda el secreto y genera códigos de respaldo (mostrados una sola vez).
- */
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
+// Activa MFA para el admin: verifica el primer código TOTP, guarda el secreto
+// y genera códigos de respaldo (mostrados una sola vez).
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
 require_once __DIR__ . '/../../modelos/directores.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN Y VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['idAdmin'])) {
     header('Location: ../../vistas/login.php');
     exit;
@@ -30,7 +34,10 @@ if ($secret === '' || !Totp::verify($secret, $code)) {
     exit;
 }
 
-// Generar 8 códigos de respaldo de un solo uso (se guardan hasheados)
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
+// 8 códigos de respaldo de un solo uso, almacenados hasheados
 $plain = []; $hashes = [];
 for ($i = 0; $i < 8; $i++) {
     $raw = strtoupper(bin2hex(random_bytes(4)));
@@ -45,7 +52,7 @@ if (!activarMfaDirector((int)$_SESSION['idAdmin'], $secret, json_encode($hashes)
 }
 
 unset($_SESSION['mfa_setup_secret'], $_SESSION['mfa_setup_required']);
-$_SESSION['mfa_backup_plain'] = $plain;   // mostrado una sola vez en la siguiente vista
+$_SESSION['mfa_backup_plain'] = $plain;
 Security::regenerateSession();
 header('Location: ../../vistas/auth/mfa_backup.php');
 exit;

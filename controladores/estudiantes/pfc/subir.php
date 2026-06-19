@@ -1,9 +1,15 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/configuracion.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['subirTFG'])) {
     $cfg = obtenerConfiguracionCentro();
     if (empty($cfg['feature_subida_tfg'])) {
@@ -15,12 +21,11 @@ if (isset($_POST['subirTFG'])) {
         header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
     }
 
-    // Seguridad: SIEMPRE el id de la sesión, nunca el del formulario (evita IDOR)
-    $idEstudiante = $_SESSION['idEstudiante'];
+    $idEstudiante = $_SESSION['idEstudiante']; // Siempre de la sesión (evita IDOR)
     $archivoTFG   = $_FILES['archivoTFG'] ?? null;
     $errores      = [];
 
-    // When post_max_size is exceeded PHP empties $_FILES entirely — catch it explicitly
+    // Cuando se supera post_max_size, PHP vacía $_FILES por completo — se detecta explícitamente
     if (empty($_FILES) && isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > 0) {
         $errores[] = "El archivo supera el tamaño máximo permitido (20 MB).";
     } elseif (!$archivoTFG || $archivoTFG['error'] === UPLOAD_ERR_NO_FILE) {
@@ -41,7 +46,7 @@ if (isset($_POST['subirTFG'])) {
     if (empty($errores)) {
         $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
         if (!$datosEstudiante) {
-            $_SESSION['errores'] = "Estudiante no válido.";
+            $_SESSION['errores'] = "No se encontró el estudiante en el sistema.";
             header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
         }
         $ext           = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
@@ -51,9 +56,9 @@ if (isset($_POST['subirTFG'])) {
 
         if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {
-                $_SESSION['exito'] = "TFG subido correctamente.";
+                $_SESSION['exito'] = "El TFG ha sido subido correctamente.";
             } else {
-                $_SESSION['errores'] = "Error al actualizar la base de datos.";
+                $_SESSION['errores'] = "El archivo fue guardado pero no se pudo actualizar la base de datos.";
             }
         } else {
             $_SESSION['errores'] = "Error al guardar el archivo en el servidor.";
@@ -66,5 +71,8 @@ if (isset($_POST['subirTFG'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/estudiantes/inicio/dashboard.php");
 exit;

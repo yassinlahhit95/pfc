@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
+// ══════════════════════════════════════════════════════════════════════
+//  CONSULTAS
+// ══════════════════════════════════════════════════════════════════════
+
 function listarTodosLosMensajes() {
     $con = obtenerConexion();
     $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor
@@ -34,6 +38,10 @@ function obtenerMensajePorId($idReclamacion) {
     return $mensaje;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+//  ACTUALIZACIONES
+// ══════════════════════════════════════════════════════════════════════
+
 function marcarMensajeComoLeido($idReclamacion) {
     $con = obtenerConexion();
     $sql = "UPDATE reclamaciones SET leido = 1, estadoReclamacion = 'atendido' WHERE idReclamacion = ?";
@@ -53,6 +61,10 @@ function responderMensaje($idReclamacion, $contenidoRespuesta) {
     
     return $resultado;
 }
+
+// ══════════════════════════════════════════════════════════════════════
+//  INSERCIONES
+// ══════════════════════════════════════════════════════════════════════
 
 function insertarNuevoMensaje($idEstudiante, $idProfesor, $asunto, $descripcion, $rolEmisor = 'estudiante') {
     $con = obtenerConexion();

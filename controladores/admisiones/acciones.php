@@ -1,28 +1,37 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 header('Content-Type: application/json');
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/RateLimiter.php";
 require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/ciclos.php";
 
-// Endpoint PÚBLICO: limitación por IP para frenar enumeración de DNIs y spam.
+// ══════════════════════════════════════════════════════════════════════
+// LÍMITE DE TASA
+// ══════════════════════════════════════════════════════════════════════
+// Endpoint público: limitación por IP para frenar enumeración de DNIs y spam
 if (!RateLimiter::allow(obtenerConexion(), 'admisiones_publico', 30, 300, 900)) {
     http_response_code(429);
-    echo json_encode(['status' => 'error', 'message' => 'Demasiadas peticiones. Inténtalo más tarde.']);
+    echo json_encode(['status' => 'error', 'message' => 'Se ha superado el límite de solicitudes. Por favor, inténtelo de nuevo más tarde.']);
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO POR ACCIÓN
+// ══════════════════════════════════════════════════════════════════════
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'check_dni':
         $dni = $_POST['dni'] ?? '';
         if (empty($dni)) {
-            echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            echo json_encode(['status' => 'error', 'message' => 'El Documento Nacional de Identidad (DNI) es obligatorio.']);
             break;
         }
         $registro = obtenerPreMatriculaPorDni($dni);
-        // Return only existence — never expose PII to unauthenticated callers.
+        // Solo devuelve existencia — nunca exponer datos personales a llamadas no autenticadas
         if ($registro) {
             echo json_encode(['status' => 'exists']);
         } else {
@@ -33,12 +42,12 @@ switch ($action) {
     case 'consultar_estado':
         $dni = $_POST['dni'] ?? '';
         if (empty($dni)) {
-            echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            echo json_encode(['status' => 'error', 'message' => 'El Documento Nacional de Identidad (DNI) es obligatorio.']);
             break;
         }
         $registro = obtenerPreMatriculaPorDni($dni);
         if ($registro) {
-            // Only non-sensitive status fields — no name, email, phone or tutor data.
+            // Solo campos de estado no sensibles — sin nombre, email, teléfono ni datos del tutor
             echo json_encode([
                 'status' => 'success',
                 'data' => [
@@ -48,7 +57,7 @@ switch ($action) {
                 ]
             ]);
         } else {
-            echo json_encode(['status' => 'not_found', 'message' => 'No se ha encontrado ninguna solicitud con ese DNI']);
+            echo json_encode(['status' => 'not_found', 'message' => 'No se ha encontrado ninguna solicitud asociada al DNI especificado.']);
         }
         break;
 
@@ -71,41 +80,40 @@ switch ($action) {
         ];
 
         if (empty($dni) || empty($nombre) || empty($apellidos) || empty($email) || $idCiclo <= 0 || empty($tutorData['nombre']) || empty($tutorData['dni'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Faltan campos obligatorios del alumno o del tutor']);
+            echo json_encode(['status' => 'error', 'message' => 'Por favor, cumplimente todos los campos obligatorios del estudiante y del tutor.']);
             break;
         }
 
         if (!Security::validateEmail($email)) {
-            echo json_encode(['status' => 'error', 'message' => 'El formato del correo electrónico no es válido.']);
+            echo json_encode(['status' => 'error', 'message' => 'El formato de la dirección de correo electrónico del estudiante no es válido.']);
             break;
         }
         if (!empty($tutorData['email']) && !Security::validateEmail($tutorData['email'])) {
-            echo json_encode(['status' => 'error', 'message' => 'El formato del correo del tutor no es válido.']);
+            echo json_encode(['status' => 'error', 'message' => 'El formato de la dirección de correo electrónico del tutor no es válido.']);
             break;
         }
         if (!empty($telefono) && !Security::validatePhone($telefono)) {
-            echo json_encode(['status' => 'error', 'message' => 'El formato del teléfono no es válido.']);
+            echo json_encode(['status' => 'error', 'message' => 'El formato del número de teléfono no es válido (debe contener entre 9 y 15 dígitos).']);
             break;
         }
 
         // Validar que no exista ya una solicitud con el mismo DNI o email
         if (obtenerPreMatriculaPorDni($dni)) {
-            echo json_encode(['status' => 'error', 'message' => 'Ya existe una solicitud registrada con este DNI.']);
+            echo json_encode(['status' => 'error', 'message' => 'Ya existe una solicitud de preinscripción registrada con este DNI.']);
             break;
         }
 
         if (obtenerPreMatriculaPorEmail($email)) {
-            echo json_encode(['status' => 'error', 'message' => 'Ya existe una solicitud registrada con este correo electrónico.']);
+            echo json_encode(['status' => 'error', 'message' => 'Ya existe una solicitud de preinscripción registrada con esta dirección de correo electrónico.']);
             break;
         }
 
         $id = crearPreMatricula($dni, $nombre, $apellidos, $email, $telefono, $idCiclo, $curso, $tutorData);
         if ($id) {
             $_SESSION['admisiones_id'] = $id;
-            // Generar PDF de confirmación de solicitud
+
             require_once __DIR__ . "/../comunes/pdf_helper.php";
-            
-            // Obtener nombre del ciclo para el PDF
+
             $con = obtenerConexion();
             $sqlC = "SELECT nombreCiclo FROM ciclos WHERE idCiclo = ?";
             $stC = mysqli_prepare($con, $sqlC);
@@ -113,7 +121,7 @@ switch ($action) {
             mysqli_stmt_execute($stC);
             $resC = mysqli_stmt_get_result($stC);
             $filaC = mysqli_fetch_assoc($resC);
-            
+
             $pdfData = [
                 'nombre' => $nombre,
                 'apellidos' => $apellidos,
@@ -134,7 +142,7 @@ switch ($action) {
 
             echo json_encode(['status' => 'success', 'idPreMatricula' => $id]);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error al guardar los datos']);
+            echo json_encode(['status' => 'error', 'message' => 'Ocurrió un error al guardar los datos de la solicitud. Por favor, inténtelo de nuevo.']);
         }
         break;
 
@@ -146,13 +154,13 @@ switch ($action) {
         $tipo = in_array($tipoRaw, $tiposPermitidos, true) ? $tipoRaw : 'OTRO';
 
         if ($idPreMatricula < 1 || empty($_FILES['archivo'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Faltan datos para la subida']);
+            echo json_encode(['status' => 'error', 'message' => 'No se han recibido los datos o el archivo requerido para la subida.']);
             break;
         }
 
-        // La solicitud debe existir: impide adjuntar ficheros a IDs arbitrarios.
+        // La solicitud debe existir: impide adjuntar ficheros a IDs arbitrarios
         if (!obtenerPreMatriculaPorId($idPreMatricula)) {
-            echo json_encode(['status' => 'error', 'message' => 'Solicitud no encontrada']);
+            echo json_encode(['status' => 'error', 'message' => 'La solicitud de preinscripción no fue encontrada.']);
             break;
         }
 
@@ -160,12 +168,12 @@ switch ($action) {
 
         // 1) Error de subida y tamaño máximo
         if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-            echo json_encode(['status' => 'error', 'message' => 'Error en la subida del archivo']);
+            echo json_encode(['status' => 'error', 'message' => 'Ocurrió un error durante la transferencia del archivo. Por favor, inténtelo de nuevo.']);
             break;
         }
         $maxBytes = 5 * 1024 * 1024; // 5 MB
         if ($file['size'] <= 0 || $file['size'] > $maxBytes) {
-            echo json_encode(['status' => 'error', 'message' => 'El archivo supera el tamaño permitido (5 MB)']);
+            echo json_encode(['status' => 'error', 'message' => 'El archivo supera el límite de tamaño permitido de 5 MB.']);
             break;
         }
 
@@ -178,14 +186,14 @@ switch ($action) {
         ];
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!isset($allowed[$ext])) {
-            echo json_encode(['status' => 'error', 'message' => 'Tipo de archivo no permitido. Solo JPG, PNG o PDF.']);
+            echo json_encode(['status' => 'error', 'message' => 'Formato de archivo no permitido. Únicamente se admiten archivos en formato JPG, PNG o PDF.']);
             break;
         }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $realMime = $finfo ? finfo_file($finfo, $file['tmp_name']) : '';
         if ($finfo) finfo_close($finfo);
         if ($realMime !== $allowed[$ext]) {
-            echo json_encode(['status' => 'error', 'message' => 'El contenido no coincide con la extensión del archivo.']);
+            echo json_encode(['status' => 'error', 'message' => 'El tipo de contenido del archivo no coincide con su extensión declarada.']);
             break;
         }
         $fh = fopen($file['tmp_name'], 'rb');
@@ -196,11 +204,11 @@ switch ($action) {
             (($ext === 'jpg' || $ext === 'jpeg') && strncmp($magic, "\xFF\xD8\xFF", 3) === 0) ||
             ($ext === 'png' && strncmp($magic, "\x89PNG\x0D\x0A\x1A\x0A", 8) === 0);
         if (!$okSignature) {
-            echo json_encode(['status' => 'error', 'message' => 'Archivo corrupto o no válido.']);
+            echo json_encode(['status' => 'error', 'message' => 'El archivo está dañado o no es un documento válido.']);
             break;
         }
 
-        // 3) Nombre aleatorio: sin datos del usuario en la ruta → sin path traversal ni sobrescritura.
+        // 3) Nombre aleatorio: sin datos del usuario en la ruta → sin path traversal ni sobrescritura
         $newName = 'adm_' . $idPreMatricula . '_' . $tipo . '_' . bin2hex(random_bytes(16)) . '.' . $ext;
         $destDir = __DIR__ . '/../../public/uploads/admisiones/';
         if (!is_dir($destDir)) { @mkdir($destDir, 0755, true); }
@@ -212,20 +220,20 @@ switch ($action) {
             registrarArchivoPreMatricula($idPreMatricula, $tipo, $nombreOriginalLimpio, "/public/uploads/admisiones/" . $newName);
             echo json_encode(['status' => 'success', 'filename' => $nombreOriginalLimpio]);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error al mover el archivo']);
+            echo json_encode(['status' => 'error', 'message' => 'No se pudo guardar el archivo en el servidor. Por favor, inténtelo de nuevo.']);
         }
         break;
 
     case 'finalize':
         $idPreMatricula = (int)($_POST['idPreMatricula'] ?? 0);
         if ($idPreMatricula <= 0) {
-            echo json_encode(['status' => 'error', 'message' => 'ID no proporcionado']);
+            echo json_encode(['status' => 'error', 'message' => 'El identificador de la solicitud no ha sido proporcionado.']);
             break;
         }
-        // Verify the caller owns this application (set during step1).
+        // Verificar que el solicitante es el propietario de esta solicitud (asignado en el paso 1)
         if (empty($_SESSION['admisiones_id']) || (int)$_SESSION['admisiones_id'] !== $idPreMatricula) {
             http_response_code(403);
-            echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
+            echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No dispone de los permisos necesarios para realizar esta acción.']);
             break;
         }
         actualizarEstadoPreMatricula($idPreMatricula, 'EN_REVISION');
@@ -234,7 +242,7 @@ switch ($action) {
         break;
 
     default:
-        echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
+        echo json_encode(['status' => 'error', 'message' => 'La operación solicitada no es válida.']);
         break;
 }
 ?>

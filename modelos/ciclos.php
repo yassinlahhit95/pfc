@@ -1,21 +1,22 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// devuelve todos los ciclos con su nivel (medio o superior)
+// ══════════════════════════════════════════════════════════════════════
+// CONSULTAS
+// ══════════════════════════════════════════════════════════════════════
+
 function listarTodosLosCiclos() {
     $con = obtenerConexion();
     $sql = "SELECT ciclos.*, niveles.nombreNivel
             FROM ciclos
             JOIN niveles ON ciclos.idNivel = niveles.idNivel
             ORDER BY ciclos.idCiclo ASC";
-
     $resultado = mysqli_query($con, $sql);
-    $listaCiclos = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaCiclos[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
-    
-    return $listaCiclos;
+    return $lista;
 }
 
 function listarCiclosDeProfesor($idProfesor) {
@@ -29,71 +30,12 @@ function listarCiclosDeProfesor($idProfesor) {
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $listaCiclos = [];
+    $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        $listaCiclos[] = $fila;
+        $lista[] = $fila;
     }
-    
-    return $listaCiclos;
+    return $lista;
 }
-
-function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = 0) {
-    $con = obtenerConexion();
-    $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?) AND idCiclo != ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $nombreCiclo, $abreviaturaCiclo, $idExcluir);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $existe = mysqli_num_rows($resultado) > 0;
-    
-    return $existe;
-}
-
-function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
-    $con = obtenerConexion();
-
-    $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssid", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo);
-    $resultado = mysqli_stmt_execute($stmt);
-
-    $idNuevoCiclo = mysqli_insert_id($con);
-
-    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    foreach ($listaIdsProfesores as $idProfesor) {
-        mysqli_stmt_bind_param($stmt, "ii", $idNuevoCiclo, $idProfesor);
-        $resultado = mysqli_stmt_execute($stmt);
-    }
-
-    
-    return $resultado;
-}
-
-function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
-    $con = obtenerConexion();
-
-    $sql = "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
-    $resultado = mysqli_stmt_execute($stmt);
-
-    $sql = "DELETE FROM ciclo_profesor WHERE idCiclo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    mysqli_stmt_execute($stmt);
-
-    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    foreach ($listaIdsProfesores as $idProfesor) {
-        mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idProfesor);
-        $resultado = mysqli_stmt_execute($stmt);
-    }
-
-    
-    return $resultado;
-}
-
 
 function obtenerCicloPorId($idCiclo) {
     $con = obtenerConexion();
@@ -102,9 +44,7 @@ function obtenerCicloPorId($idCiclo) {
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $datosCiclo = mysqli_fetch_assoc($resultado);
-
-    return $datosCiclo;
+    return mysqli_fetch_assoc($resultado);
 }
 
 function listarProfesoresDeUnCiclo($idCiclo) {
@@ -114,29 +54,84 @@ function listarProfesoresDeUnCiclo($idCiclo) {
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-    $listaIdsProfesores = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaIdsProfesores[] = $fila['idProfesor'];
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila['idProfesor'];
     }
-    
-    return $listaIdsProfesores;
+    return $lista;
 }
 
 function listarNombresTutoresCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT p.nombreProfesor 
-            FROM profesores p 
-            JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor 
+    $sql = "SELECT p.nombreProfesor
+            FROM profesores p
+            JOIN ciclo_profesor cp ON p.idProfesor = cp.idProfesor
             WHERE cp.idCiclo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $nombres = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
+    while ($fila = mysqli_fetch_assoc($resultado)) {
         $nombres[] = $fila['nombreProfesor'];
     }
-    
     return $nombres;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// INSERCIONES
+// ══════════════════════════════════════════════════════════════════════
+
+function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssid", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo);
+    mysqli_stmt_execute($stmt);
+    $idNuevoCiclo = mysqli_insert_id($con);
+    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    $resultado = false;
+    foreach ($listaIdsProfesores as $idProfesor) {
+        mysqli_stmt_bind_param($stmt, "ii", $idNuevoCiclo, $idProfesor);
+        $resultado = mysqli_stmt_execute($stmt);
+    }
+    return $resultado;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ACTUALIZACIONES
+// ══════════════════════════════════════════════════════════════════════
+
+function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
+    $con = obtenerConexion();
+    $sql = "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
+    $resultado = mysqli_stmt_execute($stmt);
+    $sql = "DELETE FROM ciclo_profesor WHERE idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    foreach ($listaIdsProfesores as $idProfesor) {
+        mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idProfesor);
+        $resultado = mysqli_stmt_execute($stmt);
+    }
+    return $resultado;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════════════════════
+
+function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = 0) {
+    $con = obtenerConexion();
+    $sql = "SELECT idCiclo FROM ciclos WHERE (nombreCiclo = ? OR abreviaturaCiclo = ?) AND idCiclo != ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $nombreCiclo, $abreviaturaCiclo, $idExcluir);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    return mysqli_num_rows($resultado) > 0;
+}

@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../config/Config.php';
 
@@ -10,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $_vendor = __DIR__ . '/../../../vendor/autoload.php';
 if (!file_exists($_vendor)) {
-    $_SESSION['errores'] = "Error: la carpeta vendor/ no está disponible en el servidor.";
+    $_SESSION['errores'] = "Error interno del servidor al generar el listado. Contacte con el soporte técnico.";
     header("Location: $_back"); exit;
 }
 
@@ -20,6 +23,9 @@ require_once __DIR__ . '/../../../modelos/estudiantes.php';
 require_once __DIR__ . '/../../../modelos/ciclos.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idCiclo       = (int)($_POST['idCiclo']   ?? 0);
 $estudianteIds = $_POST['estudiantes'] ?? [];
 $cfg           = obtenerConfiguracionCentro();
@@ -39,16 +45,20 @@ if (!empty($estudianteIds)) {
 }
 
 if (empty($estudiantes)) {
-    $_SESSION['errores'] = "No hay alumnos seleccionados.";
+    $_SESSION['errores'] = "No hay alumnos seleccionados para generar el listado.";
     header("Location: $_back"); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 try {
     $reportService = new ReportService();
     $reportService->generateListado($cfg, $ciclo, $estudiantes);
     $filename = 'listado_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
     $reportService->stream($filename);
 } catch (\Throwable $e) {
-    $_SESSION['errores'] = 'Error al generar el PDF: ' . $e->getMessage();
+    error_log('generarListado error: ' . $e->getMessage());
+    $_SESSION['errores'] = 'No fue posible generar el PDF del listado. Por favor, inténtelo de nuevo.';
     header("Location: $_back"); exit;
 }

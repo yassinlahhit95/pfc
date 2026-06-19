@@ -1,9 +1,22 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../include/Logger.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!isset($_POST['enviarEntrega'])) { header("Location: ../../../vistas/estudiantes/aula/index.php"); exit; }
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = "Solicitud inválida. Por favor, inténtalo de nuevo.";
+    header("Location: ../../../vistas/estudiantes/aula/index.php");
+    exit;
+}
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $idTarea      = intval($_POST['idTarea'] ?? 0);
@@ -11,7 +24,7 @@ $respuesta    = trim($_POST['respuesta'] ?? '');
 
 $tarea = obtenerTareaPorIdAula($idTarea);
 if (!$tarea || !$tarea['publicado']) {
-    $_SESSION['errores'] = "Tarea no disponible.";
+    $_SESSION['errores'] = "La tarea no está disponible.";
     header("Location: ../../../vistas/estudiantes/aula/index.php"); exit;
 }
 
@@ -26,6 +39,9 @@ if (empty($respuesta) && empty($_FILES['archivoEntrega']['name'])) {
     header("Location: ../../../vistas/estudiantes/aula/tarea.php?id=$idTarea"); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $archivoEntrega = null;
 if (!empty($_FILES['archivoEntrega']['name'])) {
     $archivo = $_FILES['archivoEntrega'];
@@ -44,21 +60,23 @@ if (!empty($_FILES['archivoEntrega']['name'])) {
     if (move_uploaded_file($archivo['tmp_name'], $dir . $nombreArchivo)) {
         $archivoEntrega = $nombreArchivo;
     } else {
-        $_SESSION['errores'] = "Error al guardar el archivo.";
+        $_SESSION['errores'] = "Error al guardar el archivo en el servidor.";
         header("Location: ../../../vistas/estudiantes/aula/tarea.php?id=$idTarea"); exit;
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 if (enviarEntregaAula($idTarea, $idEstudiante, $archivoEntrega, $respuesta)) {
-    $_SESSION['exito'] = "Entrega enviada correctamente.";
-    // Notificar al profesor
+    $_SESSION['exito'] = "La entrega ha sido enviada correctamente.";
+    Logger::activity('ENTREGA_ENVIADA', $idEstudiante, ['idTarea' => $idTarea]);
     insertarNotificacionAula(
         $tarea['idProfesor'], 'profesor', 'entrega_enviada',
         'Nueva entrega: ' . $tarea['titulo'],
         'Un estudiante ha enviado su entrega.',
         $idTarea, 'tarea'
     );
-    // Firebase push al profesor
     $fh = __DIR__ . "/../../firebase/firebase_helper.php";
     if (file_exists($fh)) {
         require_once $fh;

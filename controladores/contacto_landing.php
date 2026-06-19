@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -11,17 +14,24 @@ require_once __DIR__ . '/comunes/email_helper.php';
 require_once __DIR__ . '/../include/RateLimiter.php';
 require_once __DIR__ . '/../modelos/conectar.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// LÍMITE DE TASA
+// ══════════════════════════════════════════════════════════════════════
 if (!RateLimiter::allow(obtenerConexion(), 'contacto_landing', 5, 300, 900)) {
     http_response_code(429);
     echo json_encode(['ok' => false, 'msg' => 'Demasiadas solicitudes. Por favor, espera unos minutos.']);
     exit;
 }
 
+// Trampa para bots (honeypot)
 if (!empty($_POST['website'])) {
     echo json_encode(['ok' => true, 'msg' => '¡Mensaje enviado! Te responderemos en menos de 24h.']);
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $nombre  = trim($_POST['nombre']  ?? '');
 $email   = trim($_POST['email']   ?? '');
 $centro  = trim($_POST['centro']  ?? '');
@@ -41,6 +51,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO — ENVÍO DE EMAIL
+// ══════════════════════════════════════════════════════════════════════
 $h = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 
 $asunto = "Nueva consulta SaaS — " . $h($nombre) . " (" . $h($centro) . ")";

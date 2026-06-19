@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// ENVÍO DE CORREO ELECTRÓNICO VÍA BREVO API
+// ══════════════════════════════════════════════════════════════════════
 function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | Sistema Académico') {
     require_once __DIR__ . '/../../config/Config.php';
 
@@ -31,9 +34,9 @@ function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | S
         'Accept: application/json'
     ]);
 
-    $res = curl_exec($h);
+    $res  = curl_exec($h);
     $code = curl_getinfo($h, CURLINFO_HTTP_CODE);
-    $e = curl_error($h);
+    $e    = curl_error($h);
     curl_close($h);
 
     if ($e) {
@@ -48,4 +51,3 @@ function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | S
 
     return $code === 201 || $code === 200;
 }
-?>

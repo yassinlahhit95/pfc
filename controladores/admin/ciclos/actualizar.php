@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarCiclo'])) {
     $idCiclo = (int)($_POST['idCiclo'] ?? 0);
     $nombre = trim($_POST['nombreCiclo']);
@@ -10,11 +16,12 @@ if (isset($_POST['actualizarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 
+    // ── Validación ──
     $errores = '';
-    if (empty($nombre)) $errores = "Nombre obligatorio.";
-    elseif (empty($abreviatura)) $errores = "Abreviatura obligatoria.";
-    elseif (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un número válido.";
-    elseif (checkCicloExistente($nombre, $abreviatura, $idCiclo)) $errores = "El nombre o la abreviatura ya están en uso.";
+    if (empty($nombre)) $errores = "El nombre del ciclo formativo es un campo obligatorio.";
+    elseif (empty($abreviatura)) $errores = "La abreviatura del ciclo formativo es un campo obligatorio.";
+    elseif (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un valor numérico válido y no negativo.";
+    elseif (checkCicloExistente($nombre, $abreviatura, $idCiclo)) $errores = "El nombre o la abreviatura especificados ya se encuentran registrados en el sistema.";
 
     if ($errores) {
         $_SESSION['errores'] = $errores;
@@ -24,15 +31,17 @@ if (isset($_POST['actualizarCiclo'])) {
     }
 
     if (actualizarCicloExistente($idCiclo, $nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo)) {
-        $_SESSION['exito'] = "Ciclo actualizado correctamente.";
+        $_SESSION['exito'] = "El ciclo formativo ha sido actualizado correctamente.";
         header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
         exit;
     }
-    $_SESSION['errores'] = "No se realizaron cambios o no se pudo actualizar el ciclo en la base de datos.";
+    $_SESSION['errores'] = "No se detectaron cambios o no fue posible actualizar la información del ciclo formativo.";
     header("Location: ../../../vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $idCiclo);
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
-?>

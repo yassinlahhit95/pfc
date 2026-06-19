@@ -1,11 +1,13 @@
 <?php
 // Sirve un recurso del aula para visualización (inline) o descarga (attachment).
-// Registra el acceso cuando quien lo abre es un estudiante (control de lectura
-// y estadísticas de uso). Profesores y estudiantes autenticados con permiso.
+// Registra el acceso del estudiante para control de lectura y estadísticas de uso.
 session_start();
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../modelos/modulos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN Y PERMISOS
+// ══════════════════════════════════════════════════════════════════════
 $idArchivo = intval($_GET['id'] ?? 0);
 $modo      = ($_GET['modo'] ?? 'ver') === 'descarga' ? 'descarga' : 'ver';
 
@@ -17,7 +19,6 @@ if (!$archivo || $archivo['eliminado']) { http_response_code(404); exit('Archivo
 $modulo  = obtenerModuloPorId($archivo['idModulo']);
 $idCiclo = $modulo['idCiclo'] ?? 0;
 
-// ── Permisos ──────────────────────────────────────────────
 $autorizado = false;
 $esEstudiante = false;
 if (!empty($_SESSION['idProfesor'])) {
@@ -27,7 +28,7 @@ if (!empty($_SESSION['idProfesor'])) {
         $autorizado = true;
     }
 } elseif (!empty($_SESSION['idEstudiante'])) {
-    // El estudiante sólo recursos de su propio ciclo
+    // El estudiante solo puede acceder a recursos del ciclo en el que está matriculado
     require_once __DIR__ . "/../../modelos/estudiantes.php";
     $datos = obtenerEstudiantePorId($_SESSION['idEstudiante']);
     if ($datos && $datos['idCiclo'] == $idCiclo) { $autorizado = true; $esEstudiante = true; }
@@ -35,16 +36,19 @@ if (!empty($_SESSION['idProfesor'])) {
 if (!$autorizado) { http_response_code(403); exit('No tienes permiso para acceder a este recurso.'); }
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); exit('Acción bloqueada.'); }
 
-// ── Localizar el fichero físico ───────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $ruta = __DIR__ . "/../../public/uploads/aula/archivos/" . $archivo['nombreArchivo'];
 if (!file_exists($ruta)) { http_response_code(404); exit('El fichero ya no existe.'); }
 
-// ── Registrar acceso del estudiante ───────────────────────
 if ($esEstudiante) {
     registrarAccesoArchivoAula($idArchivo, $_SESSION['idEstudiante'], $modo === 'descarga' ? 'descarga' : 'vista');
 }
 
-// ── Cabeceras y envío ─────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 $mimes = [
     'pdf'  => 'application/pdf',
     'doc'  => 'application/msword',
@@ -61,15 +65,13 @@ $mimes = [
 $ext  = strtolower($archivo['extension']);
 $mime = $mimes[$ext] ?? 'application/octet-stream';
 
-// Sólo se pueden ver embebidos los formatos que el navegador soporta
-$inlineOk = in_array($ext, ['pdf','txt','csv','jpg','jpeg','png','gif','webp']);
+// Solo se pueden ver embebidos los formatos que el navegador soporta de forma nativa
+$inlineOk    = in_array($ext, ['pdf','txt','csv','jpg','jpeg','png','gif','webp']);
 $disposition = ($modo === 'ver' && $inlineOk) ? 'inline' : 'attachment';
-
-$nombreDescarga = $archivo['nombreOriginal'];
 
 header("Content-Type: $mime");
 header("Content-Length: " . filesize($ruta));
-header("Content-Disposition: $disposition; filename=\"" . rawurlencode($nombreDescarga) . "\"");
+header("Content-Disposition: $disposition; filename=\"" . rawurlencode($archivo['nombreOriginal']) . "\"");
 header("X-Content-Type-Options: nosniff");
 readfile($ruta);
 exit;

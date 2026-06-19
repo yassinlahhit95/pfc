@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
 $id         = intval($_POST['id'] ?? 0);              // carpeta a mover
 $destino    = intval($_POST['destino'] ?? 0) ?: null; // nuevo padre (0 = raíz)
@@ -12,7 +18,7 @@ if ($id > 0) {
     $carpeta = obtenerCarpetaAulaPorId($id);
     if ($carpeta && $carpeta['idProfesor'] == $idProfesor) {
         if (moverCarpetaAula($id, $destino)) {
-            $_SESSION['exito'] = "Carpeta movida.";
+            $_SESSION['exito'] = "La carpeta ha sido movida correctamente.";
         } else {
             $_SESSION['errores'] = "No se pudo mover la carpeta a ese destino.";
         }
@@ -20,6 +26,9 @@ if ($id > 0) {
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 $dest = "../../../vistas/profesores/aula/recursos.php?id=$idModulo";
 if ($regresar) $dest .= "&carpeta=$regresar";
 header("Location: $dest");

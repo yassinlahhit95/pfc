@@ -47,14 +47,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </a>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
 
 <div class="panel">
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">
@@ -117,6 +109,33 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
 
+        <!-- Tutor Status -->
+        <div class="panel" style="margin-top:25px;padding:20px;border:1px solid var(--border);background:var(--bg-2);">
+            <h4 style="margin:0 0 15px;"><i class="fas fa-star" style="color:#f59e0b;"></i> Permiso de Tutor de Ciclo</h4>
+            <p style="font-size:.85rem;color:var(--text-2);margin-bottom:15px;">
+                Si activas esta opción, el profesor actuará como administrador del ciclo asignado con acceso completo a sus estudiantes, notas, módulos y horario.
+            </p>
+            <div class="formulario" style="grid-template-columns:1fr 1fr;gap:15px;">
+                <div class="campo">
+                    <label class="check-item" style="cursor:pointer;">
+                        <input type="checkbox" id="esTutorCheck" name="esTutor" value="1" <?= !empty($profesor['esTutor']) ? 'checked' : '' ?> onchange="toggleCicloTutor(this)">
+                        <span><b>Este profesor es Tutor de Ciclo</b></span>
+                    </label>
+                </div>
+                <div class="campo" id="campo-ciclo-tutor" style="<?= empty($profesor['esTutor']) ? 'opacity:.4;pointer-events:none;' : '' ?>">
+                    <label for="idCicloTutor">Ciclo asignado como Tutor</label>
+                    <select id="idCicloTutor" name="idCicloTutor">
+                        <option value="">-- Seleccionar ciclo --</option>
+                        <?php foreach ($listaCiclos as $ciclo): ?>
+                            <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($profesor['idCicloTutor'] == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                                <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="cuadricula-secundaria" style="margin-top: 25px;">
             <div>
                 <h4 style="margin-bottom: 15px;"><i class="fas fa-layer-group"></i> 1. Seleccionar Ciclos</h4>
@@ -167,5 +186,18 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script src="../../../public/js/profesores-form.js"></script>
+<script>
+function toggleCicloTutor(cb) {
+    var campo = document.getElementById('campo-ciclo-tutor');
+    if (cb.checked) {
+        campo.style.opacity = '1';
+        campo.style.pointerEvents = 'auto';
+    } else {
+        campo.style.opacity = '.4';
+        campo.style.pointerEvents = 'none';
+        document.getElementById('idCicloTutor').value = '';
+    }
+}
+</script>
 
 <?php include '../comunes/footer.php'; ?>

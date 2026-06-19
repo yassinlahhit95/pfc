@@ -8,10 +8,10 @@ if (isset($_POST['idProfesor'])) {
 
     $idProfesorBorrar = (int)($_POST['idProfesor'] ?? 0);
     if (eliminarProfesor($idProfesorBorrar)) {
-        $_SESSION['exito'] = "Profesor eliminado.";
+        $_SESSION['exito'] = "El profesor ha sido eliminado correctamente.";
     } else {
         $hayError = true;
-        $_SESSION['errores'] = "Error al eliminar el profesor.";
+        $_SESSION['errores'] = "Ocurrió un error al intentar eliminar al profesor.";
     }
 }
 

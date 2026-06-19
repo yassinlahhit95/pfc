@@ -36,15 +36,6 @@ $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
-
 <div class="cuadricula-secundaria">
     <div class="caja direccion-columna espacio-grande relleno">
         <div class="panel">
@@ -110,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             <?php } else { ?>
                 <form method="POST" action="../../../controladores/estudiantes/aula/enviar_entrega.php" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                     <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
                     <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea) ?>">
 

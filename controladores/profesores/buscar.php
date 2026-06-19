@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (empty($_SESSION['idProfesor'])) { http_response_code(403); echo json_encode([]); exit; }
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); echo json_encode([]); exit; }
@@ -7,16 +10,22 @@ header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
 
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../modelos/conectar.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $q = trim(strip_tags($_GET['q'] ?? ''));
 if (mb_strlen($q) < 2 || mb_strlen($q) > 100) { echo json_encode([]); exit; }
 
 $idProfesor = (int)$_SESSION['idProfesor'];
-$qEsc = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $q);
-$like  = '%' . $qEsc . '%';
-$con   = obtenerConexion();
-$results = [];
+$qEsc       = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $q);
+$like       = '%' . $qEsc . '%';
+$con        = obtenerConexion();
+$results    = [];
 
 // Estudiantes asignados al profesor (por nombre o DNI)
 $stmt = mysqli_prepare($con,
@@ -101,4 +110,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     ];
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 echo json_encode($results, JSON_UNESCAPED_UNICODE);

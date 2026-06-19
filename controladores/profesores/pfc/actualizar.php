@@ -1,13 +1,17 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarTFG'])) {
     $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
-    $tituloTFG = trim($_POST['tituloTFG']);
-
-    $hayError = false;
+    $tituloTFG    = trim($_POST['tituloTFG']);
 
     if (empty($idEstudiante)) {
         header("Location: ../../../vistas/profesores/pfc/lista.php");
@@ -21,16 +25,13 @@ if (isset($_POST['actualizarTFG'])) {
     }
 
     if (empty($tituloTFG)) {
-        $_SESSION['errores'] = "El título del TFG es obligatorio.";
-        $hayError = true;
-    }
-
-    if (!$hayError) {
+        $_SESSION['errores'] = "El título del TFG es un campo obligatorio.";
+    } else {
         $resultado = actualizarDatosTFG($idEstudiante, $tituloTFG);
         if ($resultado) {
-            $_SESSION['exito'] = "Datos del TFG actualizados.";
+            $_SESSION['exito'] = "Los datos del TFG han sido actualizados correctamente.";
         } else {
-            $_SESSION['errores'] = "Error al actualizar el TFG.";
+            $_SESSION['errores'] = "No se pudo actualizar el TFG. Inténtalo de nuevo.";
         }
     }
 
@@ -38,6 +39,8 @@ if (isset($_POST['actualizarTFG'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/profesores/pfc/lista.php");
 exit;
-?>

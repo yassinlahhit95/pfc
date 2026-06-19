@@ -1,16 +1,13 @@
 <?php
 require_once __DIR__ . '/Security.php';
 
-/**
- * Genera credenciales temporales SEGURAS para una cuenta recién creada.
- *
- * Devuelve [hash, plain]:
- *   - el hash se guarda en la base de datos,
- *   - el plain se envía al usuario por email y se expone UNA vez al admin
- *     que crea la cuenta (vía $_SESSION) para que pueda comunicarlo.
- *
- * Sustituye la antigua contraseña fija '123456' (credencial por defecto débil).
- */
+// ══════════════════════════════════════════════════════════════════════
+// GENERACIÓN DE CREDENCIALES
+// ══════════════════════════════════════════════════════════════════════
+
+// Genera credenciales temporales seguras para una cuenta recién creada.
+// Devuelve [hash, plain]: hash se guarda en BD; plain se envía al usuario por email.
+// Sustituye la antigua contraseña fija '123456'.
 function generarCredencialesTemporales(string $email, string $nombre, string $rolLabel): array {
     $plain = Security::generateTempPassword(14);
     $hash  = password_hash($plain, PASSWORD_BCRYPT, ['cost' => 12]);
@@ -22,7 +19,7 @@ function generarCredencialesTemporales(string $email, string $nombre, string $ro
         'rol'      => $rolLabel,
     ];
 
-    // Envío por email — nunca bloquea la creación de la cuenta (p. ej. en local sin Brevo)
+    // El email nunca bloquea la creación de la cuenta (p. ej. en local sin Brevo)
     $helper = __DIR__ . '/../controladores/comunes/email_helper.php';
     if (is_file($helper)) {
         require_once $helper;
@@ -42,11 +39,12 @@ function generarCredencialesTemporales(string $email, string $nombre, string $ro
     return [$hash, $plain];
 }
 
-/**
- * Añade (una sola vez) la contraseña temporal recién generada a un mensaje de
- * éxito, para que el admin que crea la cuenta pueda comunicársela al usuario.
- * Consume $_SESSION['credenciales_generadas'].
- */
+// ══════════════════════════════════════════════════════════════════════
+// MENSAJES
+// ══════════════════════════════════════════════════════════════════════
+
+// Añade la contraseña temporal generada al mensaje de éxito (solo una vez).
+// Consume $_SESSION['credenciales_generadas'] para no volver a mostrarla.
 function mensajeExitoConCredenciales(string $baseMsg): string {
     if (session_status() === PHP_SESSION_NONE) @session_start();
     $cred = $_SESSION['credenciales_generadas'] ?? null;

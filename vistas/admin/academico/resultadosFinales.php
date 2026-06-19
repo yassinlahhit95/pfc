@@ -34,23 +34,41 @@ $seccion = 'resultados_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
+<style>
+.filtros-resultados {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+.filtros-resultados > form.relleno {
+    flex: 1 1 340px;
+    min-width: 0;
+}
+.filtros-resultados > form.relleno .caja.alinear-centro {
+    flex-wrap: wrap;
+}
+.filtros-resultados > form.btn-accion-resultados {
+    flex: 0 0 auto;
+}
+@media (max-width: 640px) {
+    .filtros-resultados { flex-direction: column; align-items: stretch; }
+    .filtros-resultados > form.relleno { flex: 1 1 100%; }
+    .filtros-resultados > form.btn-accion-resultados { width: 100%; }
+    .filtros-resultados .boton-primario { width: 100%; justify-content: center; }
+    .tabla-datos th, .tabla-datos td { padding: 10px 8px; font-size: 12px; }
+}
+</style>
+
 <div class="cabecera">
     <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
     <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
 
 <div class="panel">
-    <div class="caja alinear-centro espacio-grande">
-        <form method="GET" action="resultadosFinales.php" class="relleno caja alinear-centro">
+    <div class="filtros-resultados">
+        <form method="GET" action="resultadosFinales.php" class="relleno caja alinear-centro espacio-grande">
             <div class="campo relleno">
                 <label>Filtrar por Nivel:</label>
                 <select name="idNivel" onchange="this.form.submit()">
@@ -76,12 +94,12 @@ document.addEventListener('DOMContentLoaded', function() {
         </form>
 
         <?php if (!empty($idCicloElegidoParaVer) && !empty($listaDeDatosFinalesAMostrar)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" style="display:inline;">
+            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST" class="btn-accion-resultados">
                 <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <input type="submit" class="boton-primario" value="ENVIAR RESULTADOS POR EMAIL A TODOS">
             </form>
-            <form action="../../../controladores/admin/academico/exportarCalificaciones.php" method="POST" style="display:inline;margin-left:8px;">
+            <form action="../../../controladores/admin/academico/exportarCalificaciones.php" method="POST" class="btn-accion-resultados">
                 <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
                 <button type="submit" class="boton-primario" style="background:#16a34a;">
@@ -91,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <?php } ?>
     </div>
 </div>
+
 
 <?php if (!empty($idCicloElegidoParaVer)) { ?>
     <div class="panel margen-arriba">

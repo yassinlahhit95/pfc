@@ -1,8 +1,14 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../modelos/password_reset.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../vistas/login.php");
     exit;
@@ -38,6 +44,9 @@ if (!$validacion['valid']) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (!cambiarPasswordPorEmail($resetRow['email'], $resetRow['tipo_usuario'], $pass1)) {
     $_SESSION['reset_error'] = "No se pudo actualizar la contraseña. Inténtalo de nuevo.";
     header("Location: ../../vistas/auth/nueva_contrasena.php?token=" . urlencode($token));

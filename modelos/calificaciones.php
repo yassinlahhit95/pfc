@@ -5,6 +5,10 @@ require_once __DIR__ . "/estudiantes.php";
 require_once __DIR__ . "/retos.php";
 require_once __DIR__ . "/tfg.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// CONSULTAS
+// ══════════════════════════════════════════════════════════════════════
+
 function obtenerNotasModulo($idEstudiante, $idModulo)
 {
     $con = obtenerConexion();
@@ -29,16 +33,6 @@ function obtenerCalificacionPorId($idCalificacion)
     return $datos;
 }
 
-function eliminarCalificacion($idCalificacion)
-{
-    $con = obtenerConexion();
-    $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCalificacion);
-    $exito = mysqli_stmt_execute($stmt);
-    return $exito;
-}
-
 function listarCalificacionesPorEstudiante($idEstudiante)
 {
     $con = obtenerConexion();
@@ -56,6 +50,30 @@ function listarCalificacionesPorEstudiante($idEstudiante)
     }
     return $lista;
 }
+
+function listarCalificacionesPorModulo($idModulo)
+{
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev AS calificacion, cm.observaciones
+            FROM modulos mo
+            JOIN estudiantes e ON e.idCiclo = mo.idCiclo
+            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = mo.idModulo
+            WHERE mo.idModulo = ?
+            ORDER BY e.nombreEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    return $lista;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// INSERCIONES / ACTUALIZACIONES
+// ══════════════════════════════════════════════════════════════════════
 
 function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1final, $val2ev, $val2final, $observaciones)
 {
@@ -99,75 +117,23 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1fi
     return $exito;
 }
 
-function guardarBoletinLog($serial, $idEstudiante, $idCiclo, $nombreEstudiante, $nombreCiclo, $cursoEscolar)
+// ══════════════════════════════════════════════════════════════════════
+// ELIMINACIONES
+// ══════════════════════════════════════════════════════════════════════
+
+function eliminarCalificacion($idCalificacion)
 {
     $con = obtenerConexion();
-    $sql = "INSERT INTO boletines_log (serial, idEstudiante, idCiclo, nombreEstudiante, nombreCiclo, cursoEscolar)
-            VALUES (?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE fechaGeneracion = CURRENT_TIMESTAMP";
+    $sql = "DELETE FROM calificaciones_modulos WHERE idCalificacion = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "siisss", $serial, $idEstudiante, $idCiclo, $nombreEstudiante, $nombreCiclo, $cursoEscolar);
-    return mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "i", $idCalificacion);
+    $exito = mysqli_stmt_execute($stmt);
+    return $exito;
 }
 
-function verificarBoletinPorSerial($serial, $ip = '')
-{
-    $con = obtenerConexion();
-
-    $stmt = mysqli_prepare($con, "SELECT * FROM boletines_log WHERE serial = ?");
-    mysqli_stmt_bind_param($stmt, "s", $serial);
-    mysqli_stmt_execute($stmt);
-    $doc = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-
-    // Update scan counter on the found document
-    if ($doc) {
-        $upd = mysqli_prepare($con,
-            "UPDATE boletines_log SET scan_count = scan_count + 1, last_scan_at = NOW(), last_scan_ip = ? WHERE serial = ?");
-        mysqli_stmt_bind_param($upd, "ss", $ip, $serial);
-        mysqli_stmt_execute($upd);
-    }
-
-    // Always log the attempt for rate-limiting and audit
-    $log = mysqli_prepare($con,
-        "INSERT INTO verificaciones_log (serial_buscado, ip, resultado) VALUES (?, ?, ?)");
-    $found = $doc ? 1 : 0;
-    mysqli_stmt_bind_param($log, "ssi", $serial, $ip, $found);
-    mysqli_stmt_execute($log);
-
-    return $doc;
-}
-
-function contarIntentosVerificacion($ip, $minutos = 60)
-{
-    $con = obtenerConexion();
-    $stmt = mysqli_prepare($con,
-        "SELECT COUNT(*) FROM verificaciones_log WHERE ip = ? AND created_at >= NOW() - INTERVAL ? MINUTE");
-    mysqli_stmt_bind_param($stmt, "si", $ip, $minutos);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $total);
-    mysqli_stmt_fetch($stmt);
-    return (int)$total;
-}
-
-function listarCalificacionesPorModulo($idModulo)
-{
-    $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev AS calificacion, cm.observaciones
-            FROM modulos mo
-            JOIN estudiantes e ON e.idCiclo = mo.idCiclo
-            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = mo.idModulo
-            WHERE mo.idModulo = ?
-            ORDER BY e.nombreEstudiante ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idModulo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    return $lista;
-}
+// ══════════════════════════════════════════════════════════════════════
+// RESULTADOS FINALES
+// ══════════════════════════════════════════════════════════════════════
 
 function listarResultadosFinalesCiclo($idCiclo)
 {
@@ -264,7 +230,7 @@ function listarResultadosFinalesCiclo($idCiclo)
 
         foreach ($modulos as $idModulo => $modulo) {
             $notas = $allGrades[$idEstudiante][$idModulo] ?? null;
-            
+
             $nota1ev = isset($notas['nota_1ev']) ? floatval($notas['nota_1ev']) : null;
             $nota1final = isset($notas['nota_1final']) ? floatval($notas['nota_1final']) : null;
             $nota2ev = isset($notas['nota_2ev']) ? floatval($notas['nota_2ev']) : null;
@@ -336,15 +302,6 @@ function listarResultadosFinalesCiclo($idCiclo)
     return $resultados;
 }
 
-function calcularNotaDefinitiva($notaBase, $notaRecuperacion)
-{
-    if ($notaBase === null) return null;
-    if ($notaRecuperacion !== null && $notaRecuperacion > $notaBase) {
-        return $notaRecuperacion;
-    }
-    return $notaBase;
-}
-
 function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
 {
     $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
@@ -384,18 +341,10 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $nota2final = null;
 
         if ($notas) {
-            if ($notas['nota_1ev'] !== null) {
-                $nota1ev    = floatval($notas['nota_1ev']);
-            }
-            if ($notas['nota_1final'] !== null) {
-                $nota1final = floatval($notas['nota_1final']);
-            }
-            if ($notas['nota_2ev'] !== null) {
-                $nota2ev    = floatval($notas['nota_2ev']);
-            }
-            if ($notas['nota_2final'] !== null) {
-                $nota2final = floatval($notas['nota_2final']);
-            }
+            if ($notas['nota_1ev'] !== null)    $nota1ev    = floatval($notas['nota_1ev']);
+            if ($notas['nota_1final'] !== null)  $nota1final = floatval($notas['nota_1final']);
+            if ($notas['nota_2ev'] !== null)    $nota2ev    = floatval($notas['nota_2ev']);
+            if ($notas['nota_2final'] !== null)  $nota2final = floatval($notas['nota_2final']);
         }
 
         $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
@@ -404,19 +353,10 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $sumaEvaluaciones = 0;
         $evaluacionesConNota = 0;
 
-        if ($notaDefinitiva1 !== null) {
-            $sumaEvaluaciones += $notaDefinitiva1;
-            $evaluacionesConNota++;
-        }
-        if ($notaDefinitiva2 !== null) {
-            $sumaEvaluaciones += $notaDefinitiva2;
-            $evaluacionesConNota++;
-        }
+        if ($notaDefinitiva1 !== null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
+        if ($notaDefinitiva2 !== null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
 
-        $mediaExamenes = 0;
-        if ($evaluacionesConNota > 0) {
-            $mediaExamenes = $sumaEvaluaciones / $evaluacionesConNota;
-        }
+        $mediaExamenes = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
 
         $calificacionesRetos = listarCalificacionesRetoPorModulo($idModuloActual);
         $mediaRetos = 0;
@@ -483,6 +423,60 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     return $resumen;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// BOLETINES
+// ══════════════════════════════════════════════════════════════════════
+
+function guardarBoletinLog($serial, $idEstudiante, $idCiclo, $nombreEstudiante, $nombreCiclo, $cursoEscolar)
+{
+    $con = obtenerConexion();
+    $sql = "INSERT INTO boletines_log (serial, idEstudiante, idCiclo, nombreEstudiante, nombreCiclo, cursoEscolar)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE fechaGeneracion = CURRENT_TIMESTAMP";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "siisss", $serial, $idEstudiante, $idCiclo, $nombreEstudiante, $nombreCiclo, $cursoEscolar);
+    return mysqli_stmt_execute($stmt);
+}
+
+function verificarBoletinPorSerial($serial, $ip = '')
+{
+    $con = obtenerConexion();
+
+    $stmt = mysqli_prepare($con, "SELECT * FROM boletines_log WHERE serial = ?");
+    mysqli_stmt_bind_param($stmt, "s", $serial);
+    mysqli_stmt_execute($stmt);
+    $doc = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+    // Actualiza el contador de escaneos del documento encontrado
+    if ($doc) {
+        $upd = mysqli_prepare($con,
+            "UPDATE boletines_log SET scan_count = scan_count + 1, last_scan_at = NOW(), last_scan_ip = ? WHERE serial = ?");
+        mysqli_stmt_bind_param($upd, "ss", $ip, $serial);
+        mysqli_stmt_execute($upd);
+    }
+
+    // Registra siempre el intento para auditoría y control de acceso
+    $log = mysqli_prepare($con,
+        "INSERT INTO verificaciones_log (serial_buscado, ip, resultado) VALUES (?, ?, ?)");
+    $found = $doc ? 1 : 0;
+    mysqli_stmt_bind_param($log, "ssi", $serial, $ip, $found);
+    mysqli_stmt_execute($log);
+
+    return $doc;
+}
+
+function contarIntentosVerificacion($ip, $minutos = 60)
+{
+    $con = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT COUNT(*) FROM verificaciones_log WHERE ip = ? AND created_at >= NOW() - INTERVAL ? MINUTE");
+    mysqli_stmt_bind_param($stmt, "si", $ip, $minutos);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $total);
+    mysqli_stmt_fetch($stmt);
+    return (int)$total;
+}
+
 function generarDatosBoletinCiclo($idCiclo) {
     $con = obtenerConexion();
 
@@ -542,4 +536,18 @@ function generarDatosBoletinCiclo($idCiclo) {
     }
 
     return ['estudiantes' => $estudiantes, 'modulos' => $modulos];
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════════════════════
+
+// Devuelve la nota de recuperación si supera a la base; de lo contrario la base.
+function calcularNotaDefinitiva($notaBase, $notaRecuperacion)
+{
+    if ($notaBase === null) return null;
+    if ($notaRecuperacion !== null && $notaRecuperacion > $notaBase) {
+        return $notaRecuperacion;
+    }
+    return $notaBase;
 }

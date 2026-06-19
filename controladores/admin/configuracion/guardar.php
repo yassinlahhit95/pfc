@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $campos = ['nombreCentro','codigoCentro','direccionCentro','ciudadCentro',
            'cpCentro','telefonoCentro','emailCentro','cursoEscolar',
            'textoLegal','nombreDirectorFirmante'];
@@ -11,20 +17,23 @@ foreach ($campos as $c) {
 }
 
 if (empty($datos['nombreCentro'])) {
-    $_SESSION['errores'] = "El nombre del centro es obligatorio.";
+    $_SESSION['errores'] = "El nombre del centro educativo es un campo obligatorio.";
     header("Location: ../../../vistas/admin/configuracion/configuracion.php"); exit;
 }
 if ($datos['emailCentro'] && !Security::validateEmail($datos['emailCentro'])) {
-    $_SESSION['errores'] = "El email del centro no es válido.";
+    $_SESSION['errores'] = "La dirección de correo electrónico del centro educativo no es válida.";
     header("Location: ../../../vistas/admin/configuracion/configuracion.php"); exit;
 }
 if ($datos['telefonoCentro'] && !Security::validatePhone($datos['telefonoCentro'])) {
-    $_SESSION['errores'] = "El teléfono del centro no es válido.";
+    $_SESSION['errores'] = "El número de teléfono del centro educativo no es válido (debe contener entre 9 y 15 dígitos).";
     header("Location: ../../../vistas/admin/configuracion/configuracion.php"); exit;
 }
 
 guardarConfiguracionCentro($datos);
 
+// ══════════════════════════════════════════════════════════════════════
+// SUBIDA DE LOGOS
+// ══════════════════════════════════════════════════════════════════════
 $logoFields = ['logoCentro', 'logoGobierno1', 'logoGobierno2'];
 $uploadDir  = __DIR__ . '/../../../public/uploads/configuracion/';
 $mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];

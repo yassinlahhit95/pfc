@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// FRANJAS HORARIAS
+// ══════════════════════════════════════════════════════════════════════
+
 function _defaultFranjas() {
     return [
         ['inicio' => '08:00', 'fin' => '09:00', 'recreo' => false],
@@ -13,12 +17,12 @@ function _defaultFranjas() {
     ];
 }
 
+// Inserta las franjas predeterminadas para un ciclo si aún no tiene ninguna.
 function _seedDefaultFranjas($idCiclo) {
     $con  = obtenerConexion();
     $sql  = "INSERT IGNORE INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
     if (!$stmt) return;
-
     foreach (_defaultFranjas() as $f) {
         $rec = $f['recreo'] ? 1 : 0;
         mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $f['inicio'], $f['fin'], $rec);
@@ -27,20 +31,15 @@ function _seedDefaultFranjas($idCiclo) {
     mysqli_stmt_close($stmt);
 }
 
-/**
- * Franjas horarias de un ciclo. Si no hay personalizadas, usa las predeterminadas.
- * Pasa $idCiclo = 0 para obtener solo las predeterminadas sin tocar la BD.
- */
+// Devuelve las franjas del ciclo; si no tiene, siembra las predeterminadas.
 function obtenerFranjasHorario($idCiclo = 0) {
     if (!$idCiclo) return _defaultFranjas();
-
     $con  = obtenerConexion();
     $sql  = "SELECT horaInicio, horaFin, esReceso FROM horario_franjas WHERE idCiclo = ? ORDER BY horaInicio";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-
     $franjas = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $franjas[] = [
@@ -50,31 +49,29 @@ function obtenerFranjasHorario($idCiclo = 0) {
         ];
     }
     mysqli_stmt_close($stmt);
-
     if (empty($franjas)) {
         _seedDefaultFranjas($idCiclo);
         return _defaultFranjas();
     }
-
     return $franjas;
 }
 
 function agregarFranjaHorario($idCiclo, $inicio, $fin, $esReceso) {
-    _seedDefaultFranjas($idCiclo); // garantiza que los defaults ya están en BD
-    $con       = obtenerConexion();
-    $esRecInt  = $esReceso ? 1 : 0;
-    $sql       = "INSERT INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)
-                  ON DUPLICATE KEY UPDATE horaFin = VALUES(horaFin), esReceso = VALUES(esReceso)";
-    $stmt      = mysqli_prepare($con, $sql);
+    _seedDefaultFranjas($idCiclo);
+    $con      = obtenerConexion();
+    $esRecInt = $esReceso ? 1 : 0;
+    $sql      = "INSERT INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE horaFin = VALUES(horaFin), esReceso = VALUES(esReceso)";
+    $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $inicio, $fin, $esRecInt);
     $res = mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     return $res;
 }
 
+// Devuelve true si la franja tiene al menos una celda con módulo asignado.
 function tieneCeldasEnFranja($idCiclo, $inicio) {
     $con  = obtenerConexion();
-    // Solo contamos si realmente hay un módulo asignado (evita bloqueos por filas huérfanas o vacías)
     $stmt = mysqli_prepare($con, "SELECT COUNT(*) FROM horarios WHERE idCiclo = ? AND horaInicio = ? AND idModulo > 0");
     mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
     mysqli_stmt_execute($stmt);
@@ -84,53 +81,30 @@ function tieneCeldasEnFranja($idCiclo, $inicio) {
 }
 
 function eliminarFranjaHorario($idCiclo, $inicio) {
-    $con  = obtenerConexion();
-
-    // 1. Limpiar cualquier residuo en la tabla de asignaciones para esta franja en este ciclo
-    $stmt1 = mysqli_prepare($con, "DELETE FROM horarios WHERE idCiclo = ? AND horaInicio = ?");
-    mysqli_stmt_bind_param($stmt1, "is", $idCiclo, $inicio);
-    mysqli_stmt_execute($stmt1);
-    mysqli_stmt_close($stmt1);
-
-    // 2. Eliminar la franja en sí
-    $stmt2 = mysqli_prepare($con, "DELETE FROM horario_franjas WHERE idCiclo = ? AND horaInicio = ?");
-    mysqli_stmt_bind_param($stmt2, "is", $idCiclo, $inicio);
-    $res = mysqli_stmt_execute($stmt2);
-    mysqli_stmt_close($stmt2);
+    $con = obtenerConexion();
+    // 1. Limpiar asignaciones de la franja antes de eliminarla
+    $stmt = mysqli_prepare($con, "DELETE FROM horarios WHERE idCiclo = ? AND horaInicio = ?");
+    mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    // 2. Eliminar la franja
+    $stmt = mysqli_prepare($con, "DELETE FROM horario_franjas WHERE idCiclo = ? AND horaInicio = ?");
+    mysqli_stmt_bind_param($stmt, "is", $idCiclo, $inicio);
+    $res = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
     return $res;
 }
 
-/**
- * Dias laborables del horario.
- */
+// ══════════════════════════════════════════════════════════════════════
+// CONSULTAS DEL HORARIO
+// ══════════════════════════════════════════════════════════════════════
+
+// Devuelve los días laborables del horario.
 function obtenerDiasHorario() {
     return ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 }
 
-/**
- * Color estable para un modulo (paleta del proyecto). Usado por el panel y la tabla.
- */
-function horarioColorModulo($idModulo) {
-    $paleta = ['#667eea', '#0ea5e9', '#10b981', '#e482ae', '#5260b2', '#f59e0b', '#ef4444', '#14b8a6'];
-    return $paleta[((int)$idModulo) % count($paleta)];
-}
-
-/**
- * Iniciales (max 2 letras) de un texto, para el avatar de la tarjeta.
- */
-function horarioIniciales($texto) {
-    $palabras = preg_split('/\s+/', trim($texto));
-    $ini = '';
-    foreach ($palabras as $p) {
-        if ($p !== '' && strlen($ini) < 2) $ini .= mb_strtoupper(mb_substr($p, 0, 1));
-    }
-    return $ini ?: '?';
-}
-
-/**
- * Devuelve las celdas asignadas de un ciclo, indexadas por "Dia|HH:MM"
- * para que la vista pueda localizar cada celda en O(1).
- */
+// Devuelve las celdas asignadas de un ciclo, indexadas por "Dia|HH:MM".
 function listarHorarioPorCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT h.idHorario, h.diaSemana, h.horaInicio, h.horaFin,
@@ -146,7 +120,6 @@ function listarHorarioPorCiclo($idCiclo) {
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-
     $celdas = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $clave = $fila['diaSemana'] . '|' . substr($fila['horaInicio'], 0, 5);
@@ -156,10 +129,7 @@ function listarHorarioPorCiclo($idCiclo) {
     return $celdas;
 }
 
-/**
- * Pares modulo + profesor disponibles para un ciclo (tarjetas arrastrables del director).
- * Sale de modulo_profesor uniendo con los modulos de ese ciclo.
- */
+// Devuelve los pares módulo+profesor disponibles para un ciclo.
 function listarAsignacionesPorCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT m.idModulo, m.nombreModulo, p.idProfesor, p.nombreProfesor
@@ -172,7 +142,6 @@ function listarAsignacionesPorCiclo($idCiclo) {
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
-
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
@@ -181,10 +150,71 @@ function listarAsignacionesPorCiclo($idCiclo) {
     return $lista;
 }
 
-/**
- * Inserta o actualiza la asignacion de una celda (una por ciclo+dia+franja).
- * $idAula puede ser null (sin aula asignada todavia).
- */
+// Devuelve el conflicto si el aula ya está ocupada en esa franja por otro ciclo, o null si está libre.
+function aulaOcupadaPorOtro($idAula, $dia, $horaInicio, $idCicloActual) {
+    if (empty($idAula)) return null;
+    $con = obtenerConexion();
+    $sql = "SELECT h.idCiclo, c.nombreCiclo, c.abreviaturaCiclo, m.nombreModulo
+            FROM horarios h
+            JOIN ciclos c       ON h.idCiclo  = c.idCiclo
+            LEFT JOIN modulos m ON h.idModulo = m.idModulo
+            WHERE h.idAula = ? AND h.diaSemana = ? AND h.horaInicio = ? AND h.idCiclo <> ?
+            LIMIT 1";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "issi", $idAula, $dia, $horaInicio, $idCicloActual);
+    mysqli_stmt_execute($stmt);
+    $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
+    return $fila;
+}
+
+// Devuelve el conflicto si el profesor ya imparte en esa franja en otro ciclo, o null si está libre.
+function profesorOcupadoPorOtro($idProfesor, $dia, $horaInicio, $idCicloActual) {
+    if (empty($idProfesor)) return null;
+    $con = obtenerConexion();
+    $sql = "SELECT h.idCiclo, c.nombreCiclo, c.abreviaturaCiclo, m.nombreModulo
+            FROM horarios h
+            JOIN ciclos c       ON h.idCiclo  = c.idCiclo
+            LEFT JOIN modulos m ON h.idModulo = m.idModulo
+            WHERE h.idProfesor = ? AND h.diaSemana = ? AND h.horaInicio = ? AND h.idCiclo <> ?
+            LIMIT 1";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "issi", $idProfesor, $dia, $horaInicio, $idCicloActual);
+    mysqli_stmt_execute($stmt);
+    $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
+    return $fila;
+}
+
+// Devuelve la ocupación semanal de un aula concreta, indexada por "Dia|HH:MM".
+function listarOcupacionAula($idAula) {
+    $con = obtenerConexion();
+    $sql = "SELECT h.diaSemana, h.horaInicio, h.idModulo,
+                   c.nombreCiclo, c.abreviaturaCiclo,
+                   m.nombreModulo, p.nombreProfesor
+            FROM horarios h
+            JOIN ciclos c          ON h.idCiclo  = c.idCiclo
+            LEFT JOIN modulos m    ON h.idModulo = m.idModulo
+            LEFT JOIN profesores p ON h.idProfesor = p.idProfesor
+            WHERE h.idAula = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idAula);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $celdas = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $clave = $fila['diaSemana'] . '|' . substr($fila['horaInicio'], 0, 5);
+        $celdas[$clave] = $fila;
+    }
+    mysqli_stmt_close($stmt);
+    return $celdas;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// INSERCIONES / ACTUALIZACIONES
+// ══════════════════════════════════════════════════════════════════════
+
+// Inserta o actualiza la celda de una franja (una por ciclo+día+franja). $idAula puede ser null.
 function guardarCeldaHorario($idCiclo, $dia, $horaInicio, $horaFin, $idModulo, $idProfesor, $idAula = null) {
     $con = obtenerConexion();
     $sql = "INSERT INTO horarios (idCiclo, diaSemana, horaInicio, horaFin, idModulo, idProfesor, idAula)
@@ -201,80 +231,10 @@ function guardarCeldaHorario($idCiclo, $dia, $horaInicio, $horaFin, $idModulo, $
     return $res;
 }
 
-/**
- * Devuelve datos del conflicto si el AULA ya esta ocupada en esa franja por OTRO ciclo,
- * o null si esta libre. Se excluye la propia celda (mismo ciclo+dia+franja).
- */
-function aulaOcupadaPorOtro($idAula, $dia, $horaInicio, $idCicloActual) {
-    if (empty($idAula)) return null;
-    $con = obtenerConexion();
-    $sql = "SELECT h.idCiclo, c.nombreCiclo, c.abreviaturaCiclo, m.nombreModulo
-            FROM horarios h
-            JOIN ciclos c       ON h.idCiclo  = c.idCiclo
-            LEFT JOIN modulos m ON h.idModulo = m.idModulo
-            WHERE h.idAula = ? AND h.diaSemana = ? AND h.horaInicio = ? AND h.idCiclo <> ?
-            LIMIT 1";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "issi", $idAula, $dia, $horaInicio, $idCicloActual);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_stmt_close($stmt);
-    return $fila;
-}
+// ══════════════════════════════════════════════════════════════════════
+// ELIMINACIONES
+// ══════════════════════════════════════════════════════════════════════
 
-/**
- * Devuelve datos del conflicto si el PROFESOR ya imparte en esa franja en OTRO ciclo,
- * o null si esta libre. Se excluye la propia celda.
- */
-function profesorOcupadoPorOtro($idProfesor, $dia, $horaInicio, $idCicloActual) {
-    if (empty($idProfesor)) return null;
-    $con = obtenerConexion();
-    $sql = "SELECT h.idCiclo, c.nombreCiclo, c.abreviaturaCiclo, m.nombreModulo
-            FROM horarios h
-            JOIN ciclos c       ON h.idCiclo  = c.idCiclo
-            LEFT JOIN modulos m ON h.idModulo = m.idModulo
-            WHERE h.idProfesor = ? AND h.diaSemana = ? AND h.horaInicio = ? AND h.idCiclo <> ?
-            LIMIT 1";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "issi", $idProfesor, $dia, $horaInicio, $idCicloActual);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    mysqli_stmt_close($stmt);
-    return $fila;
-}
-
-/**
- * Ocupacion semanal de un aula concreta (todos los ciclos), indexada por "Dia|HH:MM".
- */
-function listarOcupacionAula($idAula) {
-    $con = obtenerConexion();
-    $sql = "SELECT h.diaSemana, h.horaInicio, h.idModulo,
-                   c.nombreCiclo, c.abreviaturaCiclo,
-                   m.nombreModulo, p.nombreProfesor
-            FROM horarios h
-            JOIN ciclos c          ON h.idCiclo  = c.idCiclo
-            LEFT JOIN modulos m    ON h.idModulo = m.idModulo
-            LEFT JOIN profesores p ON h.idProfesor = p.idProfesor
-            WHERE h.idAula = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idAula);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-
-    $celdas = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $clave = $fila['diaSemana'] . '|' . substr($fila['horaInicio'], 0, 5);
-        $celdas[$clave] = $fila;
-    }
-    mysqli_stmt_close($stmt);
-    return $celdas;
-}
-
-/**
- * Elimina la asignacion de una celda concreta.
- */
 function borrarCeldaHorario($idCiclo, $dia, $horaInicio) {
     $con = obtenerConexion();
     $sql = "DELETE FROM horarios WHERE idCiclo = ? AND diaSemana = ? AND horaInicio = ?";
@@ -283,4 +243,24 @@ function borrarCeldaHorario($idCiclo, $dia, $horaInicio) {
     $res = mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     return $res;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// UTILIDADES DE PRESENTACIÓN
+// ══════════════════════════════════════════════════════════════════════
+
+// Color estable por módulo basado en la paleta del proyecto.
+function horarioColorModulo($idModulo) {
+    $paleta = ['#667eea', '#0ea5e9', '#10b981', '#e482ae', '#5260b2', '#f59e0b', '#ef4444', '#14b8a6'];
+    return $paleta[((int)$idModulo) % count($paleta)];
+}
+
+// Iniciales de hasta 2 letras para el avatar de la tarjeta del horario.
+function horarioIniciales($texto) {
+    $palabras = preg_split('/\s+/', trim($texto));
+    $ini = '';
+    foreach ($palabras as $p) {
+        if ($p !== '' && strlen($ini) < 2) $ini .= mb_strtoupper(mb_substr($p, 0, 1));
+    }
+    return $ini ?: '?';
 }

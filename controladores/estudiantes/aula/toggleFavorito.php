@@ -1,7 +1,8 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/Security.php";
-// Marca / desmarca un recurso como favorito (#9). POST + CSRF.
-// Responde JSON si la petición es AJAX; si no, vuelve a la página de origen.
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -18,6 +19,9 @@ function responderFavorito($esAjax, $ok, $destino, $extra = []) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['idEstudiante']) || !empty($_SESSION['must_change_password'])) {
     responderFavorito($esAjax, false, "../../../vistas/login.php", ['error' => 'auth']);
 }
@@ -25,12 +29,15 @@ if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
     responderFavorito($esAjax, false, "../../../vistas/estudiantes/aula/recursos.php", ['error' => 'csrf']);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idEstudiante = $_SESSION['idEstudiante'];
 $idArchivo    = intval($_POST['idArchivo'] ?? 0);
-$origen       = $_POST['origen'] ?? 'recursos';   // recursos | favoritos
+$origen       = $_POST['origen'] ?? 'recursos';  // recursos | favoritos
 $idModulo     = intval($_POST['idModulo'] ?? 0);
 $carpeta      = intval($_POST['carpeta'] ?? 0);
-$favorito     = null;                             // nuevo estado: 1 = favorito, 0 = no
+$favorito     = null;                            // nuevo estado: 1 = favorito, 0 = no
 
 if ($idArchivo > 0) {
     // El archivo debe existir y pertenecer al ciclo del estudiante
@@ -41,7 +48,7 @@ if ($idArchivo > 0) {
     if ($archivo && $modulo && $modulo['idCiclo'] == ($datos['idCiclo'] ?? -1)) {
         if (esFavoritoAula($idEstudiante, $idArchivo)) {
             quitarFavoritoAula($idEstudiante, $idArchivo);
-            if (!$esAjax) $_SESSION['exito'] = "Recurso quitado de favoritos.";
+            if (!$esAjax) $_SESSION['exito'] = "Recurso eliminado de favoritos.";
             $favorito = 0;
         } else {
             marcarFavoritoAula($idEstudiante, $idArchivo);
@@ -53,7 +60,10 @@ if ($idArchivo > 0) {
     }
 }
 
-// Destino seguro (construido en el servidor, sin URLs arbitrarias)
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
+// Destino construido en el servidor para evitar redirecciones abiertas
 if ($origen === 'favoritos') {
     $destino = "../../../vistas/estudiantes/aula/favoritos.php";
 } else {

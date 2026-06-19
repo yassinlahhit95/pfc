@@ -110,9 +110,12 @@ CREATE TABLE `profesores` (
   `codigoPostalProfesor` varchar(10),
   `observacionesProfesor` text,
   `fcm_token` text,
+  `esTutor` tinyint(1) NOT NULL DEFAULT 0,
+  `idCicloTutor` int(11) DEFAULT NULL,
   PRIMARY KEY (`idProfesor`),
   UNIQUE KEY `uk_email_prof` (`emailProfesor`),
-  KEY `idx_prof_dni` (`dniProfesor`)
+  KEY `idx_prof_dni` (`dniProfesor`),
+  CONSTRAINT `fk_prof_ciclo_tutor` FOREIGN KEY (`idCicloTutor`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5. Estudiantes

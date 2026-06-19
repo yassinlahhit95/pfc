@@ -1,23 +1,29 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarModulo'])) {
-    $nombreNuevoModulo = trim($_POST['nombreModulo']);
-    $idCicloNuevoModulo = (int)($_POST['idCiclo'] ?? 0);
-    $horasMaximasNuevoModulo = trim($_POST['horasMaximas']);
+    $nombre       = trim($_POST['nombreModulo']);
+    $idCiclo      = (int)($_POST['idCiclo'] ?? 0);
+    $horasMaximas = trim($_POST['horasMaximas']);
 
     $avisos = [];
-    if (empty($nombreNuevoModulo)) $avisos['nombreModulo'] = "Nombre de módulo obligatorio.";
-    if (empty($idCicloNuevoModulo)) $avisos['idCiclo'] = "Seleccione un ciclo.";
-    if (empty($horasMaximasNuevoModulo)) {
-        $avisos['horasMaximas'] = "Horas máximas obligatorias.";
-    } elseif (!is_numeric($horasMaximasNuevoModulo)) {
-        $avisos['horasMaximas'] = "Las horas deben ser numéricas.";
+    if (empty($nombre))      $avisos['nombreModulo'] = "El nombre del módulo es un campo obligatorio.";
+    if (empty($idCiclo))     $avisos['idCiclo'] = "Debe seleccionar un ciclo formativo.";
+    if (empty($horasMaximas)) {
+        $avisos['horasMaximas'] = "Las horas máximas son un campo obligatorio.";
+    } elseif (!is_numeric($horasMaximas)) {
+        $avisos['horasMaximas'] = "Las horas deben ser un valor numérico.";
     }
 
-    if (empty($avisos) && checkModuloExistente($nombreNuevoModulo, $idCicloNuevoModulo)) {
-        $avisos['nombreModulo'] = "Este módulo ya existe en el ciclo seleccionado.";
+    if (empty($avisos) && checkModuloExistente($nombre, $idCiclo)) {
+        $avisos['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo seleccionado.";
     }
 
     if (!empty($avisos)) {
@@ -27,16 +33,18 @@ if (isset($_POST['guardarModulo'])) {
         exit;
     }
 
-    if (insertarModulo($nombreNuevoModulo, $idCicloNuevoModulo, $horasMaximasNuevoModulo)) {
-        $_SESSION['exito'] = "Módulo registrado.";
+    if (insertarModulo($nombre, $idCiclo, $horasMaximas)) {
+        $_SESSION['exito'] = "El módulo ha sido registrado correctamente.";
         header("Location: ../../../vistas/admin/modulos/verModulos.php");
         exit;
     }
-    $_SESSION['errores'] = "No se pudo registrar el módulo.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar registrar el módulo.";
     header("Location: ../../../vistas/admin/modulos/agregarModulos.php");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-?>

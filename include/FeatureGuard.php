@@ -1,27 +1,24 @@
 <?php
 require_once __DIR__ . '/LicenseToken.php';
 
-/**
- * FeatureGuard — server-side feature-flag enforcement backed by a signed license token.
- *
- * Trust hierarchy (high → low):
- *   1. Valid, non-expired license token  ← issued & signed by SaaS, cannot be forged
- *   2. Grace period (never synced + no token) ← fresh install before first heartbeat
- *   3. Expired / tampered token          ← FAIL CLOSED (treat as suspended)
- *
- * Uses SELECT * so the query never fails when optional columns are missing.
- * The session cache (5 min TTL) prevents a DB query on every request.
- */
+// Aplicación server-side de feature flags respaldada por un token de licencia firmado.
+// Jerarquía de confianza (alta → baja):
+//   1. Token válido y no expirado  ← emitido y firmado por el SaaS, no se puede falsificar
+//   2. Periodo de gracia (sin token y nunca sincronizado) ← instalación nueva
+//   3. Token expirado o manipulado ← FAIL CLOSED (tratado como suspendido)
 class FeatureGuard
 {
-    private const TTL          = 300;
+    private const TTL          = 300; // segundos de caché en sesión
     private const SESSION_TS   = '_fg_ts';
     private const SESSION_DATA = '_fg_data';
 
-    // ── Load / cache ──────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // CARGA Y CACHÉ
+    // ══════════════════════════════════════════════════════════════════════
 
     private static function load(): array
     {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         if (
             isset($_SESSION[self::SESSION_TS], $_SESSION[self::SESSION_DATA]) &&
             $_SESSION[self::SESSION_TS] > time() - self::TTL
@@ -32,7 +29,7 @@ class FeatureGuard
         require_once __DIR__ . '/../modelos/conectar.php';
         $con = obtenerConexion();
 
-        // SELECT * — never fails due to missing optional columns (license_token, etc.)
+        // SELECT * — nunca falla aunque falten columnas opcionales (license_token, etc.)
         $res = mysqli_query($con, 'SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1');
         $row = ($res ? mysqli_fetch_assoc($res) : null) ?? [];
 
@@ -44,19 +41,19 @@ class FeatureGuard
         return $data;
     }
 
-    /**
-     * Resolve effective state from a DB row.
-     *
-     * Priority:
-     *   A) Valid signed token  → trust token values exclusively
-     *   B) Grace period        → trust raw DB values (no token AND never synced)
-     *   C) No token / expired  → FAIL CLOSED
-     */
+    // ══════════════════════════════════════════════════════════════════════
+    // RESOLUCIÓN DEL ESTADO
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Prioridad:
+    //   A) Token válido firmado  → confiar exclusivamente en el token
+    //   B) Periodo de gracia    → confiar en los valores brutos de la BD
+    //   C) Sin token / expirado → FAIL CLOSED
     private static function resolve(array $row): array
     {
         $rawToken = $row['license_token'] ?? null;
 
-        // ── Path A: valid signed token ────────────────────────────────────────
+        // Camino A: token válido firmado
         if ($rawToken) {
             $payload = LicenseToken::verify($rawToken);
             if ($payload !== null) {
@@ -74,23 +71,21 @@ class FeatureGuard
                 ];
             }
 
-            // Token present but invalid/expired → fail closed immediately (no grace)
+            // Token presente pero inválido/expirado → fail closed inmediato (sin gracia)
             return self::suspendedState('Su licencia ha expirado. Contacte con el proveedor para renovarla.');
         }
 
-        // ── Path B: no token — grace period if NEVER licensed ─────────────────
-        // license_token_exp is only written by storeLicenseToken (heartbeat path).
-        // Other actions (set_message, lock_features, etc.) never touch it.
-        // If null → fresh install or pre-heartbeat → allow with raw DB values.
-        // If set → a heartbeat ran before but token is now gone → fail closed.
+        // Camino B: sin token — periodo de gracia si NUNCA se licenció
+        // license_token_exp solo lo escribe storeLicenseToken (ruta de heartbeat).
+        // Si es null → instalación nueva o pre-heartbeat → permitir con valores brutos de BD.
+        // Si está definido → un heartbeat corrió antes pero el token ya no está → fail closed.
         $hasEverBeenLicensed = !empty($row['license_token_exp'] ?? null);
 
         if ($hasEverBeenLicensed) {
-            // Heartbeat was sent before, but token is now missing/expired
             return self::suspendedState('Renovación de licencia requerida. Contacte con el proveedor.');
         }
 
-        // Fresh install (column doesn't exist yet) OR never synced → allow with raw DB values
+        // Instalación nueva (columna inexistente aún) o nunca sincronizada → valores brutos de BD
         return [
             'instance_status'      => $row['instance_status']     ?? 'active',
             'suspension_message'   => $row['suspension_message']  ?? '',
@@ -121,7 +116,9 @@ class FeatureGuard
         ];
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // API PÚBLICA
+    // ══════════════════════════════════════════════════════════════════════
 
     public static function check(string $feature): bool
     {

@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
 $idArchivo  = intval($_POST['idArchivo'] ?? 0);
 $idModulo   = intval($_POST['idModulo'] ?? 0);
@@ -12,6 +18,9 @@ if (!$archivo || $archivo['idProfesor'] != $idProfesor) {
     header("Location: ../../../vistas/profesores/aula/recursos.php?id=$idModulo"); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $permitidos = [
     'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt',
     'xls', 'xlsx', 'ods', 'csv',
@@ -29,6 +38,9 @@ $nombreOrig = $_FILES['archivo']['name'];
 $ext        = strtolower(pathinfo($nombreOrig, PATHINFO_EXTENSION));
 $tamanio    = $_FILES['archivo']['size'];
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (!in_array($ext, $permitidos)) {
     $_SESSION['errores'] = "Tipo de archivo no permitido ($ext).";
 } elseif ($tamanio > 20 * 1024 * 1024) {

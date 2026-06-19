@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 ob_start();
 session_start();
 require_once __DIR__ . "/../../modelos/directores.php";
@@ -9,11 +12,14 @@ require_once __DIR__ . "/../../modelos/tutores.php";
 ob_clean();
 header('Content-Type: application/json');
 
-$tokenFCM = $_REQUEST['token'] ?? '';
-$idUsuario = (int)($_REQUEST['userId'] ?? 0);
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
+$tokenFCM   = $_REQUEST['token']    ?? '';
+$idUsuario  = (int)($_REQUEST['userId']   ?? 0);
 $rolUsuario = $_REQUEST['userRole'] ?? '';
 
-// Verificar que la sesión coincide con la identidad reclamada antes de guardar el token FCM
+// Verifica que la sesión coincide con la identidad reclamada antes de guardar el token FCM
 $sessionOk = (
     ($rolUsuario === 'admin'      && !empty($_SESSION['idAdmin'])      && (int)$_SESSION['idAdmin']      === $idUsuario) ||
     ($rolUsuario === 'profesor'   && !empty($_SESSION['idProfesor'])   && (int)$_SESSION['idProfesor']   === $idUsuario) ||
@@ -26,6 +32,9 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (!empty($tokenFCM) && $idUsuario > 0 && !empty($rolUsuario) && $sessionOk) {
 
     $resultado = false;
@@ -45,12 +54,14 @@ if (!empty($tokenFCM) && $idUsuario > 0 && !empty($rolUsuario) && $sessionOk) {
             break;
     }
 
+    // ══════════════════════════════════════════════════════════════════════
+    // RESPUESTA
+    // ══════════════════════════════════════════════════════════════════════
     if ($resultado) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'No se pudo actualizar']);
+        echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el token.']);
     }
 } else {
-    echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
+    echo json_encode(['success' => false, 'error' => 'Datos incompletos o sesión no válida.']);
 }
-?>

@@ -16,20 +16,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>TUTORES Y FAMILIAS</h1>
-    <div class="acciones-cabecera">
-        <span class="texto-suave small me-3"><?= count($listaTutores) ?> familias registradas</span>
+    <h1>SISTEMA PARENTAL</h1>
+    <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;">
+        <span class="texto-suave small"><?= count($listaTutores) ?> familias registradas</span>
+        <a href="agregarTutor.php" class="boton-primario">
+            <i class="fas fa-plus"></i> AGREGAR FAMILIAR
+        </a>
     </div>
 </div>
 
-<?php if (!empty($errores) || !empty($exito)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errores)): ?>if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');<?php endif; ?>
-    <?php if (!empty($exito)): ?>if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');<?php endif; ?>
-});
-</script>
-<?php endif; ?>
 
 <div class="panel">
     <div class="contenedor-tabla">

@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarCiclo'])) {
     $nombre = trim($_POST['nombreCiclo']);
     $abreviatura = trim($_POST['abreviaturaCiclo']);
@@ -9,14 +15,15 @@ if (isset($_POST['guardarCiclo'])) {
     $precioCiclo = trim($_POST['precioCiclo']);
     $profesores = $_POST['profesores'] ?? [];
 
+    // ── Validación ──
     $errores = '';
-    if (empty($nombre)) $errores = "Nombre obligatorio.";
-    if (empty($abreviatura)) $errores = "Abreviatura obligatoria.";
-    if (empty($idNivelEducativo)) $errores = "Nivel obligatorio.";
-    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un número válido.";
+    if (empty($nombre)) $errores = "El nombre del ciclo formativo es un campo obligatorio.";
+    elseif (empty($abreviatura)) $errores = "La abreviatura del ciclo formativo es un campo obligatorio.";
+    elseif (empty($idNivelEducativo)) $errores = "El nivel educativo es un campo obligatorio.";
+    elseif (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un valor numérico válido y no negativo.";
 
     if (!$errores && checkCicloExistente($nombre, $abreviatura)) {
-        $errores = "El nombre o la abreviatura ya existen.";
+        $errores = "El nombre o la abreviatura especificados ya se encuentran registrados en el sistema.";
     }
 
     if ($errores) {
@@ -27,15 +34,17 @@ if (isset($_POST['guardarCiclo'])) {
     }
 
     if (insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo)) {
-        $_SESSION['exito'] = "Ciclo registrado correctamente.";
+        $_SESSION['exito'] = "El ciclo formativo ha sido registrado correctamente.";
         header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
         exit;
     }
-    $_SESSION['errores'] = "No se pudo registrar el ciclo en la base de datos.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar registrar el nuevo ciclo formativo.";
     header("Location: ../../../vistas/admin/ciclos/agregarCiclos.php");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
 exit;
-?>

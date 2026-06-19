@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/conectar.php';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════════════════════
 
+// Ordena los dos participantes de forma canónica para clave única de conversación.
 function chatNormalizar(string $rolA, int $idA, string $rolB, int $idB): array {
     $ka = $rolA . sprintf('%010d', $idA);
     $kb = $rolB . sprintf('%010d', $idB);
@@ -18,34 +21,32 @@ function chatNombreUsuario(string $rol, int $id): string {
             $st = mysqli_prepare($con, 'SELECT nombreDirector FROM directores WHERE idDirector = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
-            $r = mysqli_stmt_get_result($st);
-            $row = mysqli_fetch_assoc($r);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
             return $row['nombreDirector'] ?? 'Admin';
         case 'profesor':
             $st = mysqli_prepare($con, 'SELECT nombreProfesor FROM profesores WHERE idProfesor = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
-            $r = mysqli_stmt_get_result($st);
-            $row = mysqli_fetch_assoc($r);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
             return $row['nombreProfesor'] ?? 'Profesor';
         case 'tutor':
             $st = mysqli_prepare($con, 'SELECT nombreTutor FROM tutores WHERE idTutor = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
-            $r = mysqli_stmt_get_result($st);
-            $row = mysqli_fetch_assoc($r);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
             return $row['nombreTutor'] ?? 'Tutor';
         default:
             $st = mysqli_prepare($con, 'SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
-            $r = mysqli_stmt_get_result($st);
-            $row = mysqli_fetch_assoc($r);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
             return $row['nombreEstudiante'] ?? 'Estudiante';
     }
 }
 
-// ── Conversations ─────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// CONVERSACIONES
+// ══════════════════════════════════════════════════════════════════════
 
 function chatEncontrarOCrear(string $rolA, int $idA, string $rolB, int $idB): int {
     [$nRolA, $nIdA, $nRolB, $nIdB] = chatNormalizar($rolA, $idA, $rolB, $idB);
@@ -56,8 +57,7 @@ function chatEncontrarOCrear(string $rolA, int $idA, string $rolB, int $idB): in
          WHERE user_a_rol=? AND user_a_id=? AND user_b_rol=? AND user_b_id=?');
     mysqli_stmt_bind_param($st, 'sisi', $nRolA, $nIdA, $nRolB, $nIdB);
     mysqli_stmt_execute($st);
-    $r = mysqli_stmt_get_result($st);
-    $row = mysqli_fetch_assoc($r);
+    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
     if ($row) return (int)$row['id'];
 
     $st = mysqli_prepare($con,
@@ -113,7 +113,9 @@ function chatEsParticipante(array $conv, string $rol, int $id): bool {
         || ($conv['user_b_rol'] === $rol && (int)$conv['user_b_id'] === $id);
 }
 
-// ── Messages ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// MENSAJES
+// ══════════════════════════════════════════════════════════════════════
 
 function chatMensajes(int $convId, int $limit = 80): array {
     $con = obtenerConexion();
@@ -170,7 +172,9 @@ function chatMarcarLeidos(int $convId, string $lectoRol, int $lectoId): void {
     mysqli_stmt_execute($st);
 }
 
-// ── Contacts ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// CONTACTOS
+// ══════════════════════════════════════════════════════════════════════
 
 function chatContactosPosibles(string $rol, int $id): array {
     $con = obtenerConexion();
@@ -199,7 +203,7 @@ function chatContactosPosibles(string $rol, int $id): array {
         while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
 
     } elseif ($rol === 'tutor') {
-        // Profesores vinculados a sus hijos
+        // Profesores vinculados a los ciclos de sus estudiantes tutelados
         $sql = 'SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, "profesor" AS rol
                 FROM profesores p
                 JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
@@ -213,7 +217,6 @@ function chatContactosPosibles(string $rol, int $id): array {
         $r = mysqli_stmt_get_result($st);
         while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
 
-        // Administradores
         $r = mysqli_query($con,
             'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
              FROM directores ORDER BY nombreDirector');

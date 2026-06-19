@@ -1,30 +1,34 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$hayError = false;
-
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarProfesores'])) {
-    $idModuloAsignar = (int)($_POST['idModulo'] ?? 0);
-    $idProfesorAsignar = 0;
-    if (!empty($_POST['idProfesor'])) {
-        $idProfesorAsignar = (int)($_POST['idProfesor'] ?? 0);
-    }
-    limpiarProfesoresModulo($idModuloAsignar);
-    if ($idProfesorAsignar > 0) {
-        if (!asociarModuloProfesor($idModuloAsignar, $idProfesorAsignar)) {
-            $hayError = true;
-        }
+    $idModulo   = (int)($_POST['idModulo'] ?? 0);
+    $idProfesor = !empty($_POST['idProfesor']) ? (int)$_POST['idProfesor'] : 0;
+
+    limpiarProfesoresModulo($idModulo);
+
+    $hayError = false;
+    if ($idProfesor > 0 && !asociarModuloProfesor($idModulo, $idProfesor)) {
+        $hayError = true;
     }
 
     if (!$hayError) {
-        $_SESSION['exito'] = "Profesor asignado.";
+        $_SESSION['exito'] = "El profesor ha sido asignado al módulo correctamente.";
     } else {
         $_SESSION['errores'] = "No se pudo asignar el profesor al módulo.";
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;
-?>

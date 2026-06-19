@@ -5,11 +5,9 @@ function listarNiveles() {
     $con = obtenerConexion();
     $sql = "SELECT * FROM niveles ORDER BY idNivel ASC";
     $resultado = mysqli_query($con, $sql);
-
-    $listaNiveles = [];
-    while($fila = mysqli_fetch_assoc($resultado)) {
-        $listaNiveles[] = $fila;
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
     }
-    
-    return $listaNiveles;
+    return $lista;
 }

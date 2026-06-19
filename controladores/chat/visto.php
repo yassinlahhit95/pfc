@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
@@ -7,6 +10,9 @@ require_once __DIR__ . '/../../modelos/chat.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 header('Content-Type: application/json; charset=utf-8');
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!empty($_SESSION['idAdmin'])) {
     $myRol = 'admin';      $myId = (int)$_SESSION['idAdmin'];
 } elseif (!empty($_SESSION['idProfesor'])) {
@@ -22,6 +28,9 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     echo json_encode(['ok' => false]); exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $convId  = (int)($_GET['conv_id'] ?? 0);
 $afterId = (int)($_GET['after_id'] ?? 0);
 if ($convId <= 0) { echo json_encode(['ok' => false]); exit; }
@@ -41,4 +50,7 @@ mysqli_stmt_execute($st);
 $r   = mysqli_stmt_get_result($st);
 $row = mysqli_fetch_assoc($r);
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 echo json_encode(['ok' => true, 'max_seen_id' => (int)($row['max_seen_id'] ?? 0)]);

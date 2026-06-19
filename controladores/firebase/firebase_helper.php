@@ -1,8 +1,14 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/directores.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN JWT (OAuth 2.0 para FCM v1)
+// ══════════════════════════════════════════════════════════════════════
 function obtenerAccessToken() {
     static $accessTokenCache = null;
     if ($accessTokenCache !== null) return $accessTokenCache;
@@ -22,20 +28,20 @@ function obtenerAccessToken() {
         return null;
     }
 
-    $email = $datosJson['client_email'];
+    $email        = $datosJson['client_email'];
     $clavePrivada = $datosJson['private_key'];
 
-    $cabecera = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
-    $momentoActual = time();
-    $cuerpoCarga = json_encode([
-        'iss' => $email,
+    $cabecera       = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
+    $momentoActual  = time();
+    $cuerpoCarga    = json_encode([
+        'iss'   => $email,
         'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
-        'aud' => 'https://oauth2.googleapis.com/token',
-        'exp' => $momentoActual + 3600,
-        'iat' => $momentoActual
+        'aud'   => 'https://oauth2.googleapis.com/token',
+        'exp'   => $momentoActual + 3600,
+        'iat'   => $momentoActual
     ]);
 
-    $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($cabecera));
+    $base64UrlHeader  = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($cabecera));
     $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($cuerpoCarga));
 
     $firma = '';
@@ -49,31 +55,34 @@ function obtenerAccessToken() {
 
     $ch = curl_init();
     curl_setopt_array($ch, [
-        CURLOPT_URL => 'https://oauth2.googleapis.com/token',
-        CURLOPT_POST => true,
+        CURLOPT_URL            => 'https://oauth2.googleapis.com/token',
+        CURLOPT_POST           => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_SSL_VERIFYHOST => 2,
-        CURLOPT_POSTFIELDS => http_build_query([
+        CURLOPT_POSTFIELDS     => http_build_query([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            'assertion' => $jwt
+            'assertion'  => $jwt
         ])
     ]);
 
-    $resultado = curl_exec($ch);
-    $datosRespuesta = json_decode($resultado, true);
+    $resultado       = curl_exec($ch);
+    $datosRespuesta  = json_decode($resultado, true);
     curl_close($ch);
 
     $accessTokenCache = $datosRespuesta['access_token'] ?? null;
     return $accessTokenCache;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// ENVÍO DE NOTIFICACIONES PUSH
+// ══════════════════════════════════════════════════════════════════════
 function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     if (empty($token)) return false;
 
-    $config = Config::getInstance();
+    $config     = Config::getInstance();
     $idProyecto = $config->get('FIREBASE_PROJECT_ID', 'pfc1-5c23c');
-    $urlFCM = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
+    $urlFCM     = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
 
     $accessToken = obtenerAccessToken();
     if (!$accessToken) {
@@ -85,20 +94,20 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
 
     $cuerpoCarga = [
         'message' => [
-            'token' => $token,
+            'token'        => $token,
             'notification' => [
                 'title' => $titulo,
-                'body' => $mensaje,
+                'body'  => $mensaje,
                 'image' => $urlLogo
             ],
             'data' => [
                 'title' => $titulo,
-                'body' => $mensaje,
-                'type' => 'chat_message'
+                'body'  => $mensaje,
+                'type'  => 'chat_message'
             ],
             'webpush' => [
                 'notification' => [
-                    'icon' => $urlLogo,
+                    'icon'  => $urlLogo,
                     'badge' => $urlLogo
                 ]
             ]
@@ -113,18 +122,18 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
 
     $ch = curl_init();
     curl_setopt_array($ch, [
-        CURLOPT_URL => $urlFCM,
-        CURLOPT_POST => true,
-        CURLOPT_HTTPHEADER => $cabeceras,
+        CURLOPT_URL            => $urlFCM,
+        CURLOPT_POST           => true,
+        CURLOPT_HTTPHEADER     => $cabeceras,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_SSL_VERIFYHOST => 2,
-        CURLOPT_POSTFIELDS => $datosJson
+        CURLOPT_POSTFIELDS     => $datosJson
     ]);
 
     $resultadoEnvio = curl_exec($ch);
-    $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $errCurl = curl_error($ch);
+    $codigoHttp     = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $errCurl        = curl_error($ch);
     curl_close($ch);
 
     if ($errCurl) {
@@ -140,6 +149,9 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     return $resultadoEnvio;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════════════════════
 function obtenerTokenUsuario($idUsuario, $rolUsuario) {
     switch ($rolUsuario) {
         case 'estudiante':
@@ -151,4 +163,3 @@ function obtenerTokenUsuario($idUsuario, $rolUsuario) {
     }
     return null;
 }
-?>

@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . '/modelos/configuracion.php';
-$cfg_main = obtenerConfiguracionCentro();
-$is_prematricula_enabled = (isset($cfg_main['feature_prematricula']) && $cfg_main['feature_prematricula'] == 1);
+require_once __DIR__ . '/include/FeatureGuard.php';
+$is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
 ?>
 <!DOCTYPE html>
 <html lang="es">

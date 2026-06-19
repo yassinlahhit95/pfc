@@ -1,9 +1,14 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../include/ProfesorGuard.php";
-
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../include/Logger.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN Y VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -26,14 +31,12 @@ $enlaceReunion = $_POST['enlaceReunion'] ?? '';
 $plataforma = Security::sanitize($_POST['plataforma'] ?? '');
 
 $sesion = obtenerSesionPorId($idSesion);
-
 if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
 }
 
 $errores = [];
-
 if (empty($titulo)) $errores[] = 'El título es obligatorio.';
 if (empty($fechaSesion)) $errores[] = 'La fecha es obligatoria.';
 if (empty($horaSesion)) $errores[] = 'La hora es obligatoria.';
@@ -53,6 +56,9 @@ if (!empty($errores)) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO Y RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 $actualizado = actualizarSesionViva($idSesion, $titulo, $descripcion, $fechaSesion, $horaSesion, $enlaceReunion, $plataforma);
 
 if ($actualizado) {

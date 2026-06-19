@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
@@ -7,6 +10,9 @@ if (!isset($_POST['idReclamacion'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!Security::validateCSRFToken()) {
     $_SESSION['errores'] = "Solicitud no válida o expirada.";
     header("Location: ../../../vistas/profesores/mensajes/lista.php");
@@ -26,6 +32,9 @@ if (!mensajePerteneceAProfesor($idReclamacion, $_SESSION['idProfesor'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarRespuesta'])) {
     $respuesta = trim($_POST['respuesta'] ?? '');
     if ($respuesta === '') {

@@ -1,23 +1,30 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['enviarMensaje'])) {
     if (!Security::validateCSRFToken()) {
         $_SESSION['errores'] = "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.";
         header("Location: ../../../vistas/estudiantes/mensajes/agregar.php"); exit;
     }
-    $idEstudiante = $_SESSION['idEstudiante']; // SIEMPRE el de la sesión (no falsificable)
-    $idProfesor = (int)($_POST['idProfesor'] ?? 0);
-    $asunto = trim($_POST['asunto']);
-    $descripcion = trim($_POST['descripcion']);
-    $errores = '';
 
-    if (empty($asunto)) $errores = "El asunto es obligatorio.";
-    if (empty($descripcion)) $errores = "El mensaje es obligatorio.";
-    else if (strlen($descripcion) > 250) $errores = "Máximo 250 caracteres.";
+    $idEstudiante = $_SESSION['idEstudiante']; // Siempre de la sesión (no falsificable)
+    $idProfesor   = (int)($_POST['idProfesor'] ?? 0);
+    $asunto       = trim($_POST['asunto']);
+    $descripcion  = trim($_POST['descripcion']);
+    $errores      = '';
+
+    if (empty($asunto)) $errores = "El asunto del mensaje es un campo obligatorio.";
+    if (empty($descripcion)) $errores = "El contenido del mensaje es un campo obligatorio.";
+    elseif (strlen($descripcion) > 250) $errores = "El mensaje no puede superar los 250 caracteres.";
 
     if ($errores) {
         $_SESSION['errores'] = $errores;
@@ -37,17 +44,19 @@ if (isset($_POST['enviarMensaje'])) {
             foreach ($tokensDirectores as $token) enviarNotificacionFirebase($token, "Mensaje de Estudiante a Dirección: $asunto", $descripcion);
         }
 
-        $_SESSION['exito'] = "Mensaje enviado.";
+        $_SESSION['exito'] = "El mensaje ha sido enviado correctamente.";
         header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
         exit;
     } else {
-        $_SESSION['errores'] = "Error al guardar el mensaje.";
+        $_SESSION['errores'] = "No se pudo guardar el mensaje. Inténtalo de nuevo.";
         $_SESSION['datos_mensaje'] = $_POST;
         header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");
         exit;
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
 exit;
-?>

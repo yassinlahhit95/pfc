@@ -1,16 +1,26 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../include/ProfesorGuard.php';
+require_once __DIR__ . "/../../modelos/aula.php";
+require_once __DIR__ . "/../../include/Logger.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!isset($_SESSION['idProfesor'])) {
     header("Location: ../../vistas/login.php");
     exit;
 }
 
-require_once __DIR__ . "/../../modelos/aula.php";
-require_once __DIR__ . "/../../include/Logger.php";
-
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header("Location: ../../vistas/profesores/aula/sesiones.php"); exit; }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: ../../vistas/profesores/aula/sesiones.php"); exit;
+}
 $idSesion = (int)($_POST['id'] ?? 0);
 
 $sesion = obtenerSesionPorId($idSesion);
@@ -20,10 +30,11 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
     exit;
 }
 
-$borrado = borrarSesionViva($idSesion);
-
-if ($borrado) {
-    $_SESSION['exito'] = 'Sesión eliminada exitosamente';
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
+if (borrarSesionViva($idSesion)) {
+    $_SESSION['exito'] = 'La sesión ha sido eliminada correctamente.';
     Logger::activity('SESION_ELIMINADA', $idProfesor, ['idSesion' => $idSesion, 'titulo' => $sesion['titulo']]);
 } else {
     $_SESSION['errores'] = 'Error al eliminar la sesión. Inténtalo de nuevo.';
@@ -31,4 +42,3 @@ if ($borrado) {
 }
 
 header("Location: ../../vistas/profesores/aula/sesiones.php");
-?>

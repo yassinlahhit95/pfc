@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// trae todos los retos ordenados por id
+// ══════════════════════════════════════════════════════════════════════
+//  RETOS
+// ══════════════════════════════════════════════════════════════════════
+
 function listarRetos() {
     $con = obtenerConexion();
     $sql1 = "SELECT * FROM retos ORDER BY idReto ASC";
@@ -141,9 +144,10 @@ function obtenerRetoPorId($idReto) {
     return $reto;
 }
 
-/**
- * Registra un archivo para un reto
- */
+// ══════════════════════════════════════════════════════════════════════
+//  ARCHIVOS DE RETO
+// ══════════════════════════════════════════════════════════════════════
+
 function registrarArchivoReto($idReto, $nombre, $ruta, $tipo) {
     $con = obtenerConexion();
     $sql = "INSERT INTO reto_archivos (idReto, nombreArchivo, rutaArchivo, tipoArchivo) VALUES (?, ?, ?, ?)";
@@ -152,9 +156,6 @@ function registrarArchivoReto($idReto, $nombre, $ruta, $tipo) {
     return mysqli_stmt_execute($stmt);
 }
 
-/**
- * Obtiene los archivos de un reto
- */
 function obtenerArchivosReto($idReto) {
     $con = obtenerConexion();
     $sql = "SELECT * FROM reto_archivos WHERE idReto = ?";

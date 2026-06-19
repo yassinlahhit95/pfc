@@ -2,22 +2,27 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 class ReportService {
+
+    // ══════════════════════════════════════════════════════════════════════
+    // INICIALIZACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
     private $mpdf;
 
     public function __construct() {
-        // mPDF needs at least 128 MB; shared hosting often defaults to 64 MB
+        // mPDF necesita al menos 128 MB; el hosting compartido suele tener 64 MB por defecto
         $current = ini_get('memory_limit');
         if ((int)$current < 256) {
             @ini_set('memory_limit', '256M');
         }
-        // Extend execution time for large reports
+        // Ampliar tiempo de ejecución para informes grandes
         @set_time_limit(120);
 
         $this->initMpdf();
     }
 
     private function initMpdf() {
-        // Use system temp dir — always writable on any host
+        // Directorio temporal del sistema — siempre con permisos de escritura
         $tempDir = rtrim(sys_get_temp_dir(), '/\\') . '/mpdf_aulapro';
         if (!is_dir($tempDir)) {
             mkdir($tempDir, 0755, true);
@@ -38,6 +43,10 @@ class ReportService {
         $this->mpdf->SetTitle('AulaPro Report');
         $this->mpdf->SetAuthor('AulaPro System');
     }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // GENERACIÓN DE INFORMES
+    // ══════════════════════════════════════════════════════════════════════
 
     public function generateBoletines($cfg, $ciclo, $estudiantes, $baseUrl = '') {
         $first = true;
@@ -72,8 +81,12 @@ class ReportService {
         return $this->mpdf;
     }
 
+    // ══════════════════════════════════════════════════════════════════════
+    // SALIDA
+    // ══════════════════════════════════════════════════════════════════════
+
     public function stream($filename) {
-        // Clear any accidental output before sending the PDF binary
+        // Limpiar cualquier salida accidental antes de enviar el binario PDF
         if (ob_get_level()) ob_end_clean();
         $this->mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
     }

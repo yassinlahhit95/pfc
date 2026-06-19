@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
-// ── CARPETAS ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// CARPETAS
+// ══════════════════════════════════════════════════════════════════════
 
 function listarCarpetasPorProfesor($idProfesor) {
     $con = obtenerConexion();
@@ -14,10 +16,8 @@ function listarCarpetasPorProfesor($idProfesor) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
+    while ($f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) $lista[] = $f;
     return $lista;
 }
 
@@ -32,10 +32,8 @@ function listarCarpetasPorCiclo($idCiclo) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
+    while ($f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) $lista[] = $f;
     return $lista;
 }
 
@@ -45,10 +43,7 @@ function obtenerCarpetaPorId($idCarpeta) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($res);
-    
-    return $fila;
+    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 }
 
 function insertarCarpeta($nombre, $descripcion, $color, $icono, $idProfesor, $idCiclo) {
@@ -58,7 +53,6 @@ function insertarCarpeta($nombre, $descripcion, $color, $icono, $idProfesor, $id
     mysqli_stmt_bind_param($stmt, "ssssii", $nombre, $descripcion, $color, $icono, $idProfesor, $idCiclo);
     $ok = mysqli_stmt_execute($stmt);
     $id = mysqli_insert_id($con);
-    
     return $ok ? $id : false;
 }
 
@@ -67,12 +61,12 @@ function borrarCarpeta($idCarpeta) {
     $sql = "DELETE FROM carpetas_ejercicios WHERE idCarpeta = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
+    return mysqli_stmt_execute($stmt);
 }
 
-// ── EJERCICIOS ────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// EJERCICIOS
+// ══════════════════════════════════════════════════════════════════════
 
 function listarEjerciciosPorProfesor($idProfesor, $idCarpeta = 0) {
     $con = obtenerConexion();
@@ -96,10 +90,8 @@ function listarEjerciciosPorProfesor($idProfesor, $idCarpeta = 0) {
         mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     }
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
+    while ($f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) $lista[] = $f;
     return $lista;
 }
 
@@ -125,10 +117,8 @@ function listarEjerciciosPorCiclo($idCiclo, $idCarpeta = 0) {
         mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     }
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
+    while ($f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) $lista[] = $f;
     return $lista;
 }
 
@@ -142,16 +132,12 @@ function obtenerEjercicioPorId($idEjercicio) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEjercicio);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($res);
-    
-    return $fila;
+    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 }
 
 function insertarEjercicio($titulo, $descripcion, $idCarpeta, $idProfesor, $idCiclo, $fechaLimite, $archivoAdjunto) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO ejercicios (titulo, descripcion, idCarpeta, idProfesor, idCiclo, fechaLimite, archivoAdjunto)
-            VALUES (?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO ejercicios (titulo, descripcion, idCarpeta, idProfesor, idCiclo, fechaLimite, archivoAdjunto) VALUES (?,?,?,?,?,?,?)";
     $stmt = mysqli_prepare($con, $sql);
     $idCarp = $idCarpeta ?: null;
     $fecha  = $fechaLimite ?: null;
@@ -159,7 +145,6 @@ function insertarEjercicio($titulo, $descripcion, $idCarpeta, $idProfesor, $idCi
     mysqli_stmt_bind_param($stmt, "ssiisis", $titulo, $descripcion, $idCarp, $idProfesor, $idCiclo, $fecha, $arch);
     $ok = mysqli_stmt_execute($stmt);
     $id = mysqli_insert_id($con);
-    
     return $ok ? $id : false;
 }
 
@@ -170,9 +155,7 @@ function actualizarEjercicio($idEjercicio, $titulo, $descripcion, $idCarpeta, $f
     $idCarp = $idCarpeta ?: null;
     $fecha  = $fechaLimite ?: null;
     mysqli_stmt_bind_param($stmt, "ssissi", $titulo, $descripcion, $idCarp, $fecha, $publicado, $idEjercicio);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
+    return mysqli_stmt_execute($stmt);
 }
 
 function borrarEjercicio($idEjercicio) {
@@ -180,12 +163,12 @@ function borrarEjercicio($idEjercicio) {
     $sql = "DELETE FROM ejercicios WHERE idEjercicio = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEjercicio);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
+    return mysqli_stmt_execute($stmt);
 }
 
-// ── ENTREGAS ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// ENTREGAS
+// ══════════════════════════════════════════════════════════════════════
 
 function listarEntregasPorEjercicio($idEjercicio) {
     $con = obtenerConexion();
@@ -197,10 +180,8 @@ function listarEntregasPorEjercicio($idEjercicio) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEjercicio);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
-    
+    while ($f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) $lista[] = $f;
     return $lista;
 }
 
@@ -210,38 +191,31 @@ function obtenerEntregaPorEstudiante($idEjercicio, $idEstudiante) {
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idEjercicio, $idEstudiante);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($res);
-    
-    return $fila;
+    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 }
 
 function insertarOActualizarEntrega($idEjercicio, $idEstudiante, $respuesta, $archivoEntrega) {
     $con = obtenerConexion();
-    $existing = "SELECT idEntrega FROM entregas_ejercicios WHERE idEjercicio = ? AND idEstudiante = ?";
-    $s = mysqli_prepare($con, $existing);
+    $s = mysqli_prepare($con, "SELECT idEntrega FROM entregas_ejercicios WHERE idEjercicio = ? AND idEstudiante = ?");
     mysqli_stmt_bind_param($s, "ii", $idEjercicio, $idEstudiante);
     mysqli_stmt_execute($s);
     mysqli_stmt_store_result($s);
-
     if (mysqli_stmt_num_rows($s) > 0) {
         if ($archivoEntrega) {
-            $sql = "UPDATE entregas_ejercicios SET respuesta=?, archivoEntrega=?, fechaEntrega=NOW(), estado='entregado' WHERE idEjercicio=? AND idEstudiante=?";
+            $sql  = "UPDATE entregas_ejercicios SET respuesta=?, archivoEntrega=?, fechaEntrega=NOW(), estado='entregado' WHERE idEjercicio=? AND idEstudiante=?";
             $stmt = mysqli_prepare($con, $sql);
             mysqli_stmt_bind_param($stmt, "ssii", $respuesta, $archivoEntrega, $idEjercicio, $idEstudiante);
         } else {
-            $sql = "UPDATE entregas_ejercicios SET respuesta=?, fechaEntrega=NOW(), estado='entregado' WHERE idEjercicio=? AND idEstudiante=?";
+            $sql  = "UPDATE entregas_ejercicios SET respuesta=?, fechaEntrega=NOW(), estado='entregado' WHERE idEjercicio=? AND idEstudiante=?";
             $stmt = mysqli_prepare($con, $sql);
             mysqli_stmt_bind_param($stmt, "sii", $respuesta, $idEjercicio, $idEstudiante);
         }
     } else {
-        $sql = "INSERT INTO entregas_ejercicios (idEjercicio, idEstudiante, respuesta, archivoEntrega) VALUES (?,?,?,?)";
+        $sql  = "INSERT INTO entregas_ejercicios (idEjercicio, idEstudiante, respuesta, archivoEntrega) VALUES (?,?,?,?)";
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "iiss", $idEjercicio, $idEstudiante, $respuesta, $archivoEntrega);
     }
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
+    return mysqli_stmt_execute($stmt);
 }
 
 function calificarEntrega($idEjercicio, $idEstudiante, $nota, $comentario) {
@@ -249,8 +223,5 @@ function calificarEntrega($idEjercicio, $idEstudiante, $nota, $comentario) {
     $sql = "UPDATE entregas_ejercicios SET nota=?, comentarioProfesor=?, estado='calificado' WHERE idEjercicio=? AND idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "dsii", $nota, $comentario, $idEjercicio, $idEstudiante);
-    $ok = mysqli_stmt_execute($stmt);
-    
-    return $ok;
+    return mysqli_stmt_execute($stmt);
 }
-

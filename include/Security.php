@@ -1,22 +1,22 @@
 <?php
-/**
- * Clase de Seguridad - Manejo de CSRF, Rate Limiting, Validaciones
- */
-
 class Security {
-    const CSRF_TOKEN_LENGTH = 32;
+
+    // ══════════════════════════════════════════════════════════════════════
+    // SESIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
+    const CSRF_TOKEN_LENGTH    = 32;
     const CSRF_VALIDITY_SECONDS = 3600; // 1 hora
-    const RATE_LIMIT_ATTEMPTS = 5;
-    const RATE_LIMIT_WINDOW = 300; // 5 minutos
+    const RATE_LIMIT_ATTEMPTS  = 5;
+    const RATE_LIMIT_WINDOW    = 300;   // 5 minutos
 
     public static function initSession() {
         if (session_status() === PHP_SESSION_NONE) {
-            // Configurar cookie antes de iniciar la sesión.
             // El flag Secure solo se activa sobre HTTPS para no romper el entorno de desarrollo local.
             $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
                 || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 
-            @ini_set('session.use_strict_mode', '1');  // rechaza SIDs externos (previene session fixation)
+            @ini_set('session.use_strict_mode', '1'); // rechaza SIDs externos (previene session fixation)
             @ini_set('session.use_only_cookies', '1');
             @ini_set('session.cookie_httponly', '1');
             if ($secure) @ini_set('session.cookie_secure', '1');
@@ -37,12 +37,9 @@ class Security {
         self::enforceSessionSecurity();
     }
 
-    /**
-     * Defensa de sesión para usuarios autenticados:
-     * - Fingerprint de User-Agent (mitiga secuestro de sesión)
-     * - Caducidad por inactividad (idle timeout)
-     * No se aplica a visitantes anónimos para no romper el token CSRF del login.
-     */
+    // Defensa de sesión para usuarios autenticados:
+    // fingerprint de User-Agent (mitiga secuestro) + caducidad por inactividad.
+    // No aplica a visitantes anónimos para no romper el token CSRF del login.
     public static function enforceSessionSecurity() {
         $authKeys = ['idAdmin', 'idProfesor', 'idEstudiante', 'idTutor'];
         $isAuth = false;
@@ -60,7 +57,7 @@ class Security {
             return;
         }
 
-        // Invalidación tras cambio de contraseña (revalida como máximo cada 60s).
+        // Invalidación tras cambio de contraseña (revalida como máximo cada 60 s).
         // Si pwd_changed_at en BD es posterior al de esta sesión → sesión obsoleta.
         $roleMap = [
             'idAdmin'      => ['directores',  'idDirector'],
@@ -96,7 +93,7 @@ class Security {
             }
         }
 
-        // Idle timeout (segundos). Configurable vía SESSION_TIMEOUT en .env.
+        // Idle timeout configurable vía SESSION_TIMEOUT en .env.
         $timeout = 3600;
         if (class_exists('Config')) {
             $cfg = Config::getInstance();
@@ -110,8 +107,8 @@ class Security {
         $_SESSION['_last_activity'] = $now;
 
         // Cambio de contraseña obligatorio en el primer acceso.
-        // Solo redirigimos navegaciones a /vistas/ (los controladores los bloquean
-        // sus propios Guards). Exime la propia página de cambio para no crear bucles.
+        // Solo redirigimos navegaciones a /vistas/ (los controladores los bloquean sus propios Guards).
+        // Se excluye la propia página de cambio para no crear bucles.
         if (!empty($_SESSION['must_change_password'])) {
             $script = $_SERVER['SCRIPT_NAME'] ?? '';
             $esVista        = strpos($script, '/vistas/') !== false;
@@ -126,7 +123,6 @@ class Security {
                 exit;
             }
         }
-
     }
 
     public static function destroySession() {
@@ -139,39 +135,21 @@ class Security {
         @session_destroy();
     }
 
-    public static function generateTempPassword($length = 14) {
-        $upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-        $lower = 'abcdefghijkmnpqrstuvwxyz';
-        $dig   = '23456789';
-        $sym   = '!@#$%-_';
-        $all   = $upper . $lower . $dig . $sym;
-        $pwd  = $upper[random_int(0, strlen($upper) - 1)];
-        $pwd .= $lower[random_int(0, strlen($lower) - 1)];
-        $pwd .= $dig[random_int(0, strlen($dig) - 1)];
-        $pwd .= $sym[random_int(0, strlen($sym) - 1)];
-        for ($i = strlen($pwd); $i < $length; $i++) {
-            $pwd .= $all[random_int(0, strlen($all) - 1)];
-        }
-        return str_shuffle($pwd);
-    }
-
     // Solo invocar en login/logout: la regeneración periódica destruye el token CSRF
     // en hosting compartido (LiteSpeed/cPanel) incluso con el flag keep-old-data activo.
     public static function regenerateSession() {
-        $keep = ['csrf_token', 'csrf_token_time'];
-        $saved = [];
-        foreach ($keep as $k) {
-            if (isset($_SESSION[$k])) $saved[$k] = $_SESSION[$k];
-        }
+        $saved = $_SESSION;
         session_regenerate_id(true);
-        foreach ($saved as $k => $v) {
-            $_SESSION[$k] = $v;
-        }
+        $_SESSION = $saved;
     }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // CSRF
+    // ══════════════════════════════════════════════════════════════════════
 
     public static function generateCSRFToken() {
         if (!isset($_SESSION['csrf_token']) || !isset($_SESSION['csrf_token_time'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(self::CSRF_TOKEN_LENGTH));
+            $_SESSION['csrf_token']      = bin2hex(random_bytes(self::CSRF_TOKEN_LENGTH));
             $_SESSION['csrf_token_time'] = time();
         }
         return $_SESSION['csrf_token'];
@@ -199,15 +177,19 @@ class Security {
         return true;
     }
 
-    /** Rate limiting de login por sesión (por email). Complementa el límite de IP de validacion.php. */
+    // ══════════════════════════════════════════════════════════════════════
+    // RATE LIMITING DE LOGIN
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Rate limiting por sesión (por email). Complementa el límite de IP de validacion.php.
     public static function checkRateLimit($email, $maxAttempts = self::RATE_LIMIT_ATTEMPTS) {
         $attemptKey = 'rate_limit_' . md5($email);
 
         if (!isset($_SESSION[$attemptKey])) {
             $_SESSION[$attemptKey] = [
-                'attempts' => 0,
+                'attempts'      => 0,
                 'first_attempt' => time(),
-                'blocked_until' => null
+                'blocked_until' => null,
             ];
         }
 
@@ -217,22 +199,22 @@ class Security {
         if ($attempt['blocked_until'] !== null && $now < $attempt['blocked_until']) {
             $remainingTime = $attempt['blocked_until'] - $now;
             return [
-                'allowed' => false,
-                'message' => "Demasiados intentos. Intenta de nuevo en $remainingTime segundos.",
-                'remaining_time' => $remainingTime
+                'allowed'        => false,
+                'message'        => "Se ha superado el límite de intentos permitidos. Por favor, inténtelo de nuevo en $remainingTime segundos.",
+                'remaining_time' => $remainingTime,
             ];
         }
 
         if ($now - $attempt['first_attempt'] > self::RATE_LIMIT_WINDOW) {
-            $attempt['attempts'] = 0;
+            $attempt['attempts']      = 0;
             $attempt['first_attempt'] = $now;
             $attempt['blocked_until'] = null;
         }
 
         return [
-            'allowed' => true,
-            'attempts' => $attempt['attempts'],
-            'max_attempts' => $maxAttempts
+            'allowed'      => true,
+            'attempts'     => $attempt['attempts'],
+            'max_attempts' => $maxAttempts,
         ];
     }
 
@@ -241,9 +223,9 @@ class Security {
 
         if (!isset($_SESSION[$attemptKey])) {
             $_SESSION[$attemptKey] = [
-                'attempts' => 0,
+                'attempts'      => 0,
                 'first_attempt' => time(),
-                'blocked_until' => null
+                'blocked_until' => null,
             ];
         }
 
@@ -263,49 +245,32 @@ class Security {
         unset($_SESSION[$attemptKey]);
     }
 
-    public static function sanitize($input) {
-        if (is_array($input)) {
-            return array_map([self::class, 'sanitize'], $input);
+    // ══════════════════════════════════════════════════════════════════════
+    // CONTRASEÑAS
+    // ══════════════════════════════════════════════════════════════════════
+
+    public static function generateTempPassword($length = 14) {
+        $upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        $lower = 'abcdefghijkmnpqrstuvwxyz';
+        $dig   = '23456789';
+        $sym   = '!@#$%-_';
+        $all   = $upper . $lower . $dig . $sym;
+        $pwd  = $upper[random_int(0, strlen($upper) - 1)];
+        $pwd .= $lower[random_int(0, strlen($lower) - 1)];
+        $pwd .= $dig[random_int(0, strlen($dig) - 1)];
+        $pwd .= $sym[random_int(0, strlen($sym) - 1)];
+        for ($i = strlen($pwd); $i < $length; $i++) {
+            $pwd .= $all[random_int(0, strlen($all) - 1)];
         }
-        return trim(strip_tags($input));
-    }
-
-    public static function validateEmail($email) {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-    }
-
-    /**
-     * Valida contraseña (mínimo 8 caracteres, mayúscula, minúscula, número)
-     */
-    public static function validatePassword($password) {
-        if (strlen($password) < 8) {
-            return ['valid' => false, 'error' => 'La contraseña debe tener al menos 8 caracteres'];
-        }
-
-        if (!preg_match('/[A-Z]/', $password)) {
-            return ['valid' => false, 'error' => 'La contraseña debe contener al menos una mayúscula'];
-        }
-
-        if (!preg_match('/[a-z]/', $password)) {
-            return ['valid' => false, 'error' => 'La contraseña debe contener al menos una minúscula'];
-        }
-
-        if (!preg_match('/[0-9]/', $password)) {
-            return ['valid' => false, 'error' => 'La contraseña debe contener al menos un número'];
-        }
-
-        return ['valid' => true];
+        return str_shuffle($pwd);
     }
 
     public static function hashPassword($password) {
         return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
     }
 
-    /**
-     * Rehasha (a coste 12) la contraseña tras un login correcto si el hash
-     * almacenado usa un coste/algoritmo más débil. La tabla/columna se validan
-     * contra una lista blanca → seguro frente a inyección.
-     */
+    // Rehashea (a coste 12) la contraseña tras un login correcto si el hash almacenado usa un coste/algoritmo más débil.
+    // La tabla/columna se validan contra una lista blanca → seguro frente a inyección de nombre.
     public static function rehashOnLogin($con, string $tabla, string $idCol, $idVal, string $password, string $hashActual): void {
         $allow = [
             'directores'  => 'idDirector',
@@ -322,10 +287,8 @@ class Security {
         @mysqli_stmt_execute($stmt);
     }
 
-    /**
-     * Marca el instante de cambio de contraseña (invalida otras sesiones).
-     * Tolerante a que la columna pwd_changed_at no exista todavía (deploy seguro).
-     */
+    // Marca el instante de cambio de contraseña para invalidar otras sesiones activas.
+    // Tolerante a que la columna pwd_changed_at no exista todavía (deploy seguro).
     public static function touchPasswordChanged($con, string $tabla, string $whereCol, $whereVal): void {
         $allowTablas = ['directores', 'profesores', 'estudiantes', 'tutores'];
         $allowCols = ['idDirector', 'idProfesor', 'idEstudiante', 'idTutor',
@@ -349,32 +312,62 @@ class Security {
         return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => 12]);
     }
 
-    public static function escapeHtml($value) {
-        return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    // ══════════════════════════════════════════════════════════════════════
+    // VALIDACIONES
+    // ══════════════════════════════════════════════════════════════════════
+
+    public static function sanitize($input) {
+        if (is_array($input)) {
+            return array_map([self::class, 'sanitize'], $input);
+        }
+        return trim(strip_tags($input));
+    }
+
+    public static function validateEmail($email) {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    // Mínimo 8 caracteres, una mayúscula, una minúscula y un número.
+    public static function validatePassword($password) {
+        if (strlen($password) < 8) {
+            return ['valid' => false, 'error' => 'La contraseña debe tener al menos 8 caracteres'];
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            return ['valid' => false, 'error' => 'La contraseña debe contener al menos una mayúscula'];
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            return ['valid' => false, 'error' => 'La contraseña debe contener al menos una minúscula'];
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            return ['valid' => false, 'error' => 'La contraseña debe contener al menos un número'];
+        }
+        return ['valid' => true];
     }
 
     public static function validateDNI($dni) {
         $dni = strtoupper(trim($dni));
-
         if (!preg_match('/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/', $dni)) {
             return false;
         }
-
         $validLetters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-        $dniNumber = substr($dni, 0, 8);
-        $letter = substr($dni, 8, 1);
-        $expectedLetter = $validLetters[$dniNumber % 23];
-
-        return $letter === $expectedLetter;
+        $dniNumber    = substr($dni, 0, 8);
+        $letter       = substr($dni, 8, 1);
+        return $letter === $validLetters[$dniNumber % 23];
     }
 
-    /** Valida teléfono español: 9 dígitos comenzando por 6, 7, 8 o 9. */
+    // Valida teléfono español: 9 dígitos comenzando por 6, 7, 8 o 9.
     public static function validatePhone($phone) {
         $phone = str_replace([' ', '-', '.'], '', $phone);
         return preg_match('/^[6789][0-9]{8}$/', $phone) === 1;
     }
 
+    // ══════════════════════════════════════════════════════════════════════
+    // UTILIDADES
+    // ══════════════════════════════════════════════════════════════════════
+
+    public static function escapeHtml($value) {
+        return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    }
 }
 
 Security::initSession();
-?>

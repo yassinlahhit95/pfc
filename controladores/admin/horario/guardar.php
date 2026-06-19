@@ -1,8 +1,14 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/Security.php";
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . "/../../../modelos/horarios.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (empty($_SESSION['idAdmin']) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
 }
@@ -12,13 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 $idCiclo    = (int)($_POST['idCiclo'] ?? 0);
 $dia        = trim($_POST['dia'] ?? '');
 $horaInicio = trim($_POST['horaInicio'] ?? '');
 $idModulo   = (int)($_POST['idModulo'] ?? 0);
 $idProfesor = (int)($_POST['idProfesor'] ?? 0);
 $idAula     = (int)($_POST['idAula'] ?? 0);
-$idAula     = $idAula > 0 ? $idAula : null;   // 0 / vacio = sin aula
+$idAula     = $idAula > 0 ? $idAula : null;   // 0 / vacío = sin aula
 
 // Validar contra los valores permitidos (dia y franja reales)
 $diasValidos    = obtenerDiasHorario();
@@ -37,11 +46,13 @@ if ($idModulo <= 0 || $idProfesor <= 0) {
 }
 
 // Forzar la hora fin correcta de la franja (no fiarse del cliente)
-$horaFin   = $franjasValidas[$horaInicio];
-$horaSql   = $horaInicio . ':00';
+$horaFin = $franjasValidas[$horaInicio];
+$horaSql = $horaInicio . ':00';
 
-// Comprobacion de conflictos con mensaje claro (las claves UNIQUE de la BD
-// son la red de seguridad final).
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
+// Comprobación de conflictos previa al INSERT (las claves UNIQUE de la BD son la red de seguridad final)
 $confProf = profesorOcupadoPorOtro($idProfesor, $dia, $horaSql, $idCiclo);
 if ($confProf) {
     echo json_encode(['ok' => false, 'msg' => 'El profesor ya imparte a esa hora en ' .
@@ -55,6 +66,9 @@ if ($confAula) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 if (guardarCeldaHorario($idCiclo, $dia, $horaSql, $horaFin . ':00', $idModulo, $idProfesor, $idAula)) {
     echo json_encode(['ok' => true, 'msg' => 'Asignación guardada.']);
 } else {

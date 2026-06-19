@@ -1,10 +1,18 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
+// ══════════════════════════════════════════════════════════════════════
+//  UTILIDADES
+// ══════════════════════════════════════════════════════════════════════
+
 function _sqlCiclosDeProfesor() {
     return "(e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
           OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
 }
+
+// ══════════════════════════════════════════════════════════════════════
+//  CONSULTAS
+// ══════════════════════════════════════════════════════════════════════
 
 function obtenerTFGporEstudiante($idEstudiante) {
     $con = obtenerConexion();
@@ -17,6 +25,10 @@ function obtenerTFGporEstudiante($idEstudiante) {
     
     return $datosTFG;
 }
+
+// ══════════════════════════════════════════════════════════════════════
+//  ACTUALIZACIONES
+// ══════════════════════════════════════════════════════════════════════
 
 function actualizarTFG($idEstudiante, $nombreArchivo) {
     $con = obtenerConexion();

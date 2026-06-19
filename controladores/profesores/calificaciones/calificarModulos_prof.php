@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -8,29 +11,39 @@ if (!isset($_POST['guardarNotas'])) {
     exit;
 }
 
-$idModulo  = (int)trim($_POST['idModulo'] ?? 0);
-$idCiclo   = (int)trim($_POST['idCiclo']  ?? 0);
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN
+// ══════════════════════════════════════════════════════════════════════
+$idModulo = (int)trim($_POST['idModulo'] ?? 0);
+$idCiclo  = (int)trim($_POST['idCiclo']  ?? 0);
 
 if (!$idModulo || !in_array($_SESSION['idProfesor'], listarProfesoresDeModulo($idModulo))) {
     $_SESSION['errores'] = "No tienes permiso para calificar este módulo.";
     header("Location: ../../../vistas/profesores/calificaciones/lista.php");
     exit;
 }
-$listaIds  = $_POST['estudiantes']   ?? [];
+
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
+$listaIds    = $_POST['estudiantes']   ?? [];
 $lista1ev    = $_POST['notas_1ev']    ?? [];
 $lista1final = $_POST['notas_1final'] ?? [];
 $lista2ev    = $_POST['notas_2ev']    ?? [];
 $lista2final = $_POST['notas_2final'] ?? [];
 $listaObs    = $_POST['observaciones'] ?? [];
 
-$especiales = ['NP', 'EX', 'CO'];
-$validarVal = function($v) use ($especiales) {
+$especiales  = ['NP', 'EX', 'CO'];
+$validarVal  = function($v) use ($especiales) {
     $v = strtoupper(trim($v));
     if ($v === '') return true;
     if (in_array($v, $especiales)) return true;
     return is_numeric($v) && (float)$v >= 0 && (float)$v <= 10;
 };
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $hayError = false;
 for ($i = 0, $n = count($listaIds); $i < $n; $i++) {
     $v1ev    = trim($lista1ev[$i]    ?? '');
@@ -48,6 +61,9 @@ for ($i = 0, $n = count($listaIds); $i < $n; $i++) {
     if (!$ok) { $hayError = true; break; }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 if (!$hayError) {
     $_SESSION['exito'] = "Calificaciones guardadas correctamente.";
 } else {

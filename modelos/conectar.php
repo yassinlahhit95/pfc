@@ -4,39 +4,34 @@ require_once __DIR__ . '/../config/Config.php';
 // Zona horaria de España
 date_default_timezone_set('Europe/Madrid');
 
-/**
- * Obtiene la conexión a la base de datos (reutiliza la conexión existente)
- */
+// ══════════════════════════════════════════════════════════════════════
+// CONEXIÓN
+// ══════════════════════════════════════════════════════════════════════
+
+// Singleton de conexión mysqli — reutiliza la instancia durante toda la petición.
 function obtenerConexion() {
     static $conexion = null;
-
     if ($conexion !== null) {
         return $conexion;
     }
-
     $config = Config::getInstance();
     $host = $config->get('DB_HOST', 'localhost');
     $user = $config->get('DB_USER');
     $pass = $config->get('DB_PASS');
     $db   = $config->get('DB_NAME', 'aulapro');
-
     if (empty($user) || empty($pass)) {
-        die("Error: Credenciales de base de datos no configuradas.");
+        die("Error: credenciales de base de datos no configuradas.");
     }
-
     $conexion = @mysqli_connect($host, $user, $pass, $db);
-
     if (!$conexion) {
-        error_log("Database connection failed: " . mysqli_connect_error());
-        die("Error de conexión a la base de datos. Intente más tarde.");
+        error_log("Fallo al conectar a la BD: " . mysqli_connect_error());
+        die("Error de conexión a la base de datos. Inténtelo más tarde.");
     }
-
     mysqli_set_charset($conexion, "utf8mb4");
-
     return $conexion;
 }
 
-/** Ejecuta un SELECT preparado y devuelve la primera fila como array asociativo, o null. */
+// Ejecuta un SELECT preparado y devuelve la primera fila como array asociativo, o null.
 function dbFetchOne(string $sql, string $types = '', ...$params): ?array {
     $con  = obtenerConexion();
     $stmt = mysqli_prepare($con, $sql);
@@ -48,7 +43,11 @@ function dbFetchOne(string $sql, string $types = '', ...$params): ?array {
     return mysqli_fetch_assoc($res) ?: null;
 }
 
-// Lista blanca de tablas y sus columnas id para funciones FCM
+// ══════════════════════════════════════════════════════════════════════
+// TOKENS FCM
+// ══════════════════════════════════════════════════════════════════════
+
+// Lista blanca de tablas y su columna id para evitar inyección de nombre de columna.
 const FCM_TABLAS = [
     'estudiantes' => 'idEstudiante',
     'profesores'  => 'idProfesor',

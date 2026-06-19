@@ -1,4 +1,7 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 session_start();
 require_once __DIR__ . "/../include/Security.php";
 require_once __DIR__ . "/../include/BotGuard.php";
@@ -18,19 +21,21 @@ require_once __DIR__ . "/../modelos/estudiantes.php";
 require_once __DIR__ . "/../modelos/tutores.php";
 require_once __DIR__ . "/../modelos/conectar.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN PREVIA
+// ══════════════════════════════════════════════════════════════════════
 if (!isset($_POST["enviar"])) {
     header("Location: ../vistas/login.php");
     exit;
 }
 
-// Rechazar bots (honeypot + tiempo mínimo)
 if (!BotGuard::validate()) {
     header("Location: ../vistas/login.php");
     exit;
 }
 
 if (!Security::validateCSRFToken()) {
-    $_SESSION['errores'] = "Solicitud inválida. Por favor, intenta de nuevo.";
+    $_SESSION['errores'] = "La sesión ha expirado o la solicitud no es válida. Por favor, inténtelo de nuevo.";
     Logger::security('CSRF_TOKEN_VALIDATION_FAILED');
     header("Location: ../vistas/login.php");
     exit;
@@ -41,8 +46,8 @@ $pass  = trim($_POST["contrasena"]);
 
 if (empty($email) || empty($pass)) {
     $_SESSION['errores'] = empty($email) && empty($pass)
-        ? "El correo y la contraseña son obligatorios."
-        : (empty($email) ? "El correo electrónico es obligatorio." : "La contraseña es obligatoria.");
+        ? "El correo electrónico y la contraseña son campos obligatorios."
+        : (empty($email) ? "El correo electrónico es un campo obligatorio." : "La contraseña es un campo obligatorio.");
     $_SESSION['datos_login'] = $_POST;
     Logger::warning('LOGIN_MISSING_CREDENTIALS', ['email' => $email]);
     header("Location: ../vistas/login.php");
@@ -50,27 +55,28 @@ if (empty($email) || empty($pass)) {
 }
 
 if (!Security::validateEmail($email)) {
-    $_SESSION['errores'] = "El formato del correo no es válido.";
+    $_SESSION['errores'] = "El formato del correo electrónico introducido no es válido.";
     Logger::warning('LOGIN_INVALID_EMAIL', ['email' => $email]);
     header("Location: ../vistas/login.php");
     exit;
 }
 
-// Rate limiting por IP (DB) — no bypasseable sin sesión
+// ══════════════════════════════════════════════════════════════════════
+// LÍMITES DE TASA Y BLOQUEOS
+// ══════════════════════════════════════════════════════════════════════
 $ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 $con = obtenerConexion();
 $rowIp = dbFetchOne("SELECT intentos, bloqueado_hasta FROM login_intentos WHERE ip = ?", "s", $ip);
 if ($rowIp) {
     if ($rowIp['bloqueado_hasta'] && strtotime($rowIp['bloqueado_hasta']) > time()) {
         $espera = ceil((strtotime($rowIp['bloqueado_hasta']) - time()) / 60);
-        $_SESSION['errores'] = "Demasiados intentos. Inténtalo de nuevo en $espera minutos.";
+        $_SESSION['errores'] = "Se ha superado el límite de intentos permitidos. Por favor, inténtelo de nuevo en $espera minutos.";
         Logger::security('IP_RATE_LIMIT_EXCEEDED', ['ip' => $ip]);
         header("Location: ../vistas/login.php");
         exit;
     }
 }
 
-// Rate limiting por sesión (fallback para usuarios legítimos con intentos fallidos)
 $rateLimit = Security::checkRateLimit($email);
 if (!$rateLimit['allowed']) {
     $_SESSION['errores'] = $rateLimit['message'];
@@ -79,16 +85,16 @@ if (!$rateLimit['allowed']) {
     exit;
 }
 
-// Bloqueo por CUENTA (anti fuerza bruta distribuida, independiente de la IP)
+// Bloqueo por cuenta independiente de la IP (resistente a fuerza bruta distribuida)
 $lock = AccountLockout::status($con, $email);
 if ($lock['locked']) {
-    $_SESSION['errores'] = "Cuenta bloqueada temporalmente por seguridad. Inténtalo de nuevo en {$lock['minutes']} minutos.";
+    $_SESSION['errores'] = "Esta cuenta ha sido bloqueada temporalmente por motivos de seguridad. Por favor, inténtelo de nuevo en {$lock['minutes']} minutos.";
     Logger::security('ACCOUNT_LOCKED', ['email' => $email]);
     header("Location: ../vistas/login.php");
     exit;
 }
 
-// Helper: limpiar contadores (IP + cuenta) tras login exitoso
+// Limpia contadores de IP y cuenta tras login exitoso
 $clearIpAttempts = function() use ($con, $ip, $email) {
     $upd = mysqli_prepare($con, "UPDATE login_intentos SET intentos = 0, bloqueado_hasta = NULL WHERE ip = ?");
     mysqli_stmt_bind_param($upd, "s", $ip);
@@ -96,6 +102,9 @@ $clearIpAttempts = function() use ($con, $ip, $email) {
     AccountLockout::clear($con, $email);
 };
 
+// ══════════════════════════════════════════════════════════════════════
+// AUTENTICACIÓN POR ROL
+// ══════════════════════════════════════════════════════════════════════
 unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante'], $_SESSION['idTutor']);
 
 $admin = validarLoginDirector($email, $pass);
@@ -104,8 +113,7 @@ if ($admin) {
     $clearIpAttempts();
     Security::regenerateSession();
 
-    // Si el admin tiene MFA activo, NO concedemos la sesión todavía:
-    // exigimos el segundo factor (estado intermedio "mfa_pending").
+    // MFA activo: no conceder sesión todavía, exigir segundo factor (estado intermedio "mfa_pending")
     if (!empty($admin['mfa_enabled'])) {
         $_SESSION['mfa_pending'] = [
             'id'          => $admin['idDirector'],
@@ -164,10 +172,12 @@ if ($estu) {
     exit;
 }
 
-// Login fallido - Registrar intento (sesión + IP + cuenta en DB)
+// ══════════════════════════════════════════════════════════════════════
+// LOGIN FALLIDO — REGISTRAR INTENTO
+// ══════════════════════════════════════════════════════════════════════
 $failureResult = Security::recordFailedLogin($email);
 AccountLockout::recordFailure($con, $email);
-$_SESSION['errores'] = "El email o la contraseña no son correctos.";
+$_SESSION['errores'] = "El correo electrónico o la contraseña introducidos no son correctos.";
 $_SESSION['datos_login'] = ['usuario' => $email];
 
 if ($rowIp) {

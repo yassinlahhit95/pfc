@@ -1,20 +1,25 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarAnuncio'])) {
     $idAnuncio = (int)($_POST['idAnuncio'] ?? 0);
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
 
+    // ── Validación ──
     $listaErrores = [];
-
     if (empty($titulo)) {
-        $listaErrores['tituloAnuncio'] = "El título es obligatorio.";
+        $listaErrores['tituloAnuncio'] = "El título del anuncio es un campo obligatorio.";
     }
-
     if (empty($contenido)) {
-        $listaErrores['contenidoAnuncio'] = "El contenido es obligatorio.";
+        $listaErrores['contenidoAnuncio'] = "El contenido del anuncio es un campo obligatorio.";
     }
 
     if (empty($listaErrores)) {
@@ -25,12 +30,12 @@ if (isset($_POST['actualizarAnuncio'])) {
         $resultado = actualizarAnuncio($idAnuncio, $titulo, $contenido, $fechaExpiracion, $dirigidoA);
 
         if ($resultado) {
-            $_SESSION['exito'] = "Anuncio actualizado correctamente.";
+            $_SESSION['exito'] = "El anuncio ha sido actualizado correctamente.";
             header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
             exit;
         }
 
-        $_SESSION['errores'] = "Error al actualizar el anuncio.";
+        $_SESSION['errores'] = "Ocurrió un error al intentar actualizar el anuncio.";
     } else {
         $_SESSION['errores'] = $listaErrores;
         $_SESSION['datos_anuncio'] = $_POST;
@@ -40,6 +45,8 @@ if (isset($_POST['actualizarAnuncio'])) {
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
 exit;
-?>

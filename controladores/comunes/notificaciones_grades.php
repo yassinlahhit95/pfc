@@ -1,26 +1,29 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/email_helper.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../modelos/retos.php";
 require_once __DIR__ . "/../../modelos/tfg.php";
 
-// Función para montar el HTML de las notas que se mandan por correo.
-// El CSS va en linea para que se vea bien en el correo.
+// ══════════════════════════════════════════════════════════════════════
+// GENERACIÓN DE HTML PARA CORREOS
+// ══════════════════════════════════════════════════════════════════════
 function generarTablaNotasHTML($idEstudianteRecibido) {
-    // Pillamos los datos del alumno primero
     $datosEstudiante = obtenerEstudiantePorId($idEstudianteRecibido);
 
     if (empty($datosEstudiante)) {
         return false;
     }
 
-    // Buscamos todas sus notas en la bd
     $listaCalificaciones = listarCalificacionesPorEstudiante($idEstudianteRecibido);
 
     $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
-    $nombreCiclo = $datosEstudiante['nombreCiclo'];
+    $nombreCiclo      = $datosEstudiante['nombreCiclo'];
 
+    // El CSS va en línea para compatibilidad máxima con clientes de correo
     $contenidoCorreoHTML = "
     <div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;'>
         <h2 style='color: #2c3e50;'>" . $nombreEstudiante . "</h2>
@@ -39,74 +42,44 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
             </thead>
             <tbody>";
 
-    $sumaTotalNotasModulos = 0;
-    $contadorTotalModulos = 0;
-    $existeAlgundoSuspenso = false;
+    $sumaTotalNotasModulos  = 0;
+    $contadorTotalModulos   = 0;
+    $existeAlgundoSuspenso  = false;
 
-    // Empezamos a recorrer los módulos para rellenar la tabla
     foreach ($listaCalificaciones as $datosDelModulo) {
-        $nota1ev = null;
-        if (isset($datosDelModulo['nota_1ev']) && is_numeric($datosDelModulo['nota_1ev'])) {
-            $nota1ev = floatval($datosDelModulo['nota_1ev']);
-        }
+        $nota1ev = isset($datosDelModulo['nota_1ev']) && is_numeric($datosDelModulo['nota_1ev'])
+            ? floatval($datosDelModulo['nota_1ev']) : null;
+        $nota1final = isset($datosDelModulo['nota_1final']) && is_numeric($datosDelModulo['nota_1final'])
+            ? floatval($datosDelModulo['nota_1final']) : null;
+        $nota2ev = isset($datosDelModulo['nota_2ev']) && is_numeric($datosDelModulo['nota_2ev'])
+            ? floatval($datosDelModulo['nota_2ev']) : null;
+        $nota2final = isset($datosDelModulo['nota_2final']) && is_numeric($datosDelModulo['nota_2final'])
+            ? floatval($datosDelModulo['nota_2final']) : null;
 
-        $nota1final = null;
-        if (isset($datosDelModulo['nota_1final']) && is_numeric($datosDelModulo['nota_1final'])) {
-            $nota1final = floatval($datosDelModulo['nota_1final']);
-        }
+        $notaDefinitiva1 = $nota1final !== null ? max($nota1ev, $nota1final) : $nota1ev;
+        $notaDefinitiva2 = $nota2final !== null ? max($nota2ev, $nota2final) : $nota2ev;
 
-        $nota2ev = null;
-        if (isset($datosDelModulo['nota_2ev']) && is_numeric($datosDelModulo['nota_2ev'])) {
-            $nota2ev = floatval($datosDelModulo['nota_2ev']);
-        }
-
-        $nota2final = null;
-        if (isset($datosDelModulo['nota_2final']) && is_numeric($datosDelModulo['nota_2final'])) {
-            $nota2final = floatval($datosDelModulo['nota_2final']);
-        }
-
-        $notaDefinitiva1 = $nota1ev;
-        if ($nota1final !== null) {
-            $notaDefinitiva1 = max($nota1ev, $nota1final);
-        }
-
-        $notaDefinitiva2 = $nota2ev;
-        if ($nota2final !== null) {
-            $notaDefinitiva2 = max($nota2ev, $nota2final);
-        }
-
-        $sumaEvaluaciones = 0;
+        $sumaEvaluaciones   = 0;
         $evaluacionesConNota = 0;
-        if ($notaDefinitiva1 !== null) {
-            $sumaEvaluaciones += $notaDefinitiva1;
-            $evaluacionesConNota++;
-        }
-        if ($notaDefinitiva2 !== null) {
-            $sumaEvaluaciones += $notaDefinitiva2;
-            $evaluacionesConNota++;
-        }
+        if ($notaDefinitiva1 !== null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
+        if ($notaDefinitiva2 !== null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
 
-        $notaFinalDelModulo = 0;
-        if ($evaluacionesConNota > 0) {
-            $notaFinalDelModulo = $sumaEvaluaciones / $evaluacionesConNota;
-        }
+        $notaFinalDelModulo = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
 
         $textoDelEstado = "APROBADO";
         $colorDelEstado = "green";
         if ($notaFinalDelModulo < 5) {
-            $textoDelEstado = "SUSPENSO";
-            $colorDelEstado = "red";
+            $textoDelEstado        = "SUSPENSO";
+            $colorDelEstado        = "red";
             $existeAlgundoSuspenso = true;
         }
 
-        $sumaTotalNotasModulos = $sumaTotalNotasModulos + $notaFinalDelModulo;
+        $sumaTotalNotasModulos += $notaFinalDelModulo;
         $contadorTotalModulos++;
-
-        $nombreModulo = $datosDelModulo['nombreModulo'];
 
         $contenidoCorreoHTML .= "
                 <tr>
-                    <td style='padding: 10px; border: 1px solid #ddd;'>" . $nombreModulo . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>" . $datosDelModulo['nombreModulo'] . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_1ev'] . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_1final'] . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_2ev'] . "</td>
@@ -115,21 +88,16 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
                 </tr>";
     }
 
-    $promedioFinalModulos = 0;
-    if ($contadorTotalModulos > 0) {
-        $promedioFinalModulos = $sumaTotalNotasModulos / $contadorTotalModulos;
-    }
-
-    $promedioRetos = obtenerPromedioRetosEstudiante($idEstudianteRecibido);
-
-    $notaFinalCalculada = ($promedioFinalModulos * 0.75) + ($promedioRetos * 0.25);
-    $notaFinalFormateada = round($notaFinalCalculada, 2);
+    $promedioFinalModulos = $contadorTotalModulos > 0 ? $sumaTotalNotasModulos / $contadorTotalModulos : 0;
+    $promedioRetos        = obtenerPromedioRetosEstudiante($idEstudianteRecibido);
+    $notaFinalCalculada   = ($promedioFinalModulos * 0.75) + ($promedioRetos * 0.25);
+    $notaFinalFormateada  = round($notaFinalCalculada, 2);
 
     $estadoGlobalTexto = "APROBADO";
-    $colorGlobalTexto = "green";
+    $colorGlobalTexto  = "green";
     if ($notaFinalCalculada < 5 || $existeAlgundoSuspenso) {
         $estadoGlobalTexto = "SUSPENSO";
-        $colorGlobalTexto = "red";
+        $colorGlobalTexto  = "red";
     }
 
     $contenidoCorreoHTML .= "
@@ -147,63 +115,29 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
         <p style='font-size: 12px; color: #7f8c8d; margin-top: 20px;'>Este es un mensaje automático, por favor no respondas a este correo.</p>
     </div>";
 
-    $datosParaEnviar = [];
-    $datosParaEnviar['html'] = $contenidoCorreoHTML;
-    $datosParaEnviar['email'] = $datosEstudiante['emailEstudiante'];
-    $datosParaEnviar['nombre'] = $datosEstudiante['nombreEstudiante'];
-
-    return $datosParaEnviar;
+    return [
+        'html'   => $contenidoCorreoHTML,
+        'email'  => $datosEstudiante['emailEstudiante'],
+        'nombre' => $datosEstudiante['nombreEstudiante'],
+    ];
 }
 
-function enviarEmailNotasEstudiante($idEstudianteAEnviar) {
-    $datosFinales = generarTablaNotasHTML($idEstudianteAEnviar);
-    if (!empty($datosFinales)) {
-        $correoDestino = $datosFinales['email'];
-        $asuntoMensaje = "Tus Calificaciones Finales - PFC";
-        $cuerpoHTML = $datosFinales['html'];
-
-        return sendEmail($correoDestino, $asuntoMensaje, $cuerpoHTML);
-    }
-    return false;
-}
-
-function enviarEmailNotasClase($idDelCicloElegido) {
-    $listaEstudiantes = listarEstudiantesPorCiclo($idDelCicloElegido);
-
-    $contadorCorreosEnviados = 0;
-    foreach ($listaEstudiantes as $datosAlumnoIndividual) {
-        $idDeEsteAlumno = $datosAlumnoIndividual['idEstudiante'];
-        if (enviarEmailNotasEstudiante($idDeEsteAlumno)) {
-            $contadorCorreosEnviados++;
-        }
-    }
-
-    return $contadorCorreosEnviados;
-}
-
+// ══════════════════════════════════════════════════════════════════════
+// GENERACIÓN DE HTML PARA CALIFICACIÓN TFG
+// ══════════════════════════════════════════════════════════════════════
 function generarEmailCalificacionTFGHTML($idEstudiante) {
     $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
-
-    if (empty($datosEstudiante)) {
-        return false;
-    }
+    if (empty($datosEstudiante)) return false;
 
     $calificacion = obtenerCalificacionTFG($idEstudiante);
-
-    if (empty($calificacion)) {
-        return false;
-    }
+    if (empty($calificacion)) return false;
 
     $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
-    $nota = floatval($calificacion['nota']);
-    $observaciones = $calificacion['observaciones'];
+    $nota             = floatval($calificacion['nota']);
+    $observaciones    = $calificacion['observaciones'];
 
-    $estadoTexto = "APROBADO";
-    $colorEstado = "green";
-    if ($nota < 5) {
-        $estadoTexto = "SUSPENSO";
-        $colorEstado = "red";
-    }
+    $estadoTexto = $nota < 5 ? "SUSPENSO" : "APROBADO";
+    $colorEstado = $nota < 5 ? "red" : "green";
 
     $contenidoHTML = "
     <div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;'>
@@ -239,22 +173,39 @@ function generarEmailCalificacionTFGHTML($idEstudiante) {
         <p style='font-size: 12px; color: #7f8c8d; margin-top: 20px;'>Este es un mensaje automático, por favor no respondas a este correo.</p>
     </div>";
 
-    $datosParaEnviar = [];
-    $datosParaEnviar['html'] = $contenidoHTML;
-    $datosParaEnviar['email'] = $datosEstudiante['emailEstudiante'];
-    $datosParaEnviar['nombre'] = $datosEstudiante['nombreEstudiante'];
+    return [
+        'html'   => $contenidoHTML,
+        'email'  => $datosEstudiante['emailEstudiante'],
+        'nombre' => $datosEstudiante['nombreEstudiante'],
+    ];
+}
 
-    return $datosParaEnviar;
+// ══════════════════════════════════════════════════════════════════════
+// FUNCIONES DE ENVÍO
+// ══════════════════════════════════════════════════════════════════════
+function enviarEmailNotasEstudiante($idEstudianteAEnviar) {
+    $datosFinales = generarTablaNotasHTML($idEstudianteAEnviar);
+    if (!empty($datosFinales)) {
+        return sendEmail($datosFinales['email'], "Tus Calificaciones Finales - PFC", $datosFinales['html']);
+    }
+    return false;
+}
+
+function enviarEmailNotasClase($idDelCicloElegido) {
+    $listaEstudiantes = listarEstudiantesPorCiclo($idDelCicloElegido);
+    $contadorCorreosEnviados = 0;
+    foreach ($listaEstudiantes as $datosAlumno) {
+        if (enviarEmailNotasEstudiante($datosAlumno['idEstudiante'])) {
+            $contadorCorreosEnviados++;
+        }
+    }
+    return $contadorCorreosEnviados;
 }
 
 function enviarEmailCalificacionTFG($idEstudiante) {
     $datosFinales = generarEmailCalificacionTFGHTML($idEstudiante);
     if (!empty($datosFinales)) {
-        $correoDestino = $datosFinales['email'];
-        $asuntoMensaje = "Calificación de tu TFG - PFC";
-        $cuerpoHTML = $datosFinales['html'];
-        return sendEmail($correoDestino, $asuntoMensaje, $cuerpoHTML);
+        return sendEmail($datosFinales['email'], "Calificación de tu TFG - PFC", $datosFinales['html']);
     }
     return false;
 }
-?>

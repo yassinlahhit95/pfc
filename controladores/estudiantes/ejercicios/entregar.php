@@ -1,7 +1,13 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['entregar'])) {
     $idEjercicio  = intval($_POST['idEjercicio'] ?? 0);
     $respuesta    = trim($_POST['respuesta'] ?? '');
@@ -15,8 +21,8 @@ if (isset($_POST['entregar'])) {
 
     $archivoEntrega = null;
     if (!empty($_FILES['archivoEntrega']['name'])) {
-        $archivo = $_FILES['archivoEntrega'];
-        $ext = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+        $archivo    = $_FILES['archivoEntrega'];
+        $ext        = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
         $permitidos = ['pdf','doc','docx','txt','png','jpg','jpeg','zip'];
         if (!in_array($ext, $permitidos)) {
             $_SESSION['errores'] = "Tipo de archivo no permitido.";
@@ -38,12 +44,16 @@ if (isset($_POST['entregar'])) {
     }
 
     if (insertarOActualizarEntrega($idEjercicio, $idEstudiante, $respuesta, $archivoEntrega)) {
-        $_SESSION['exito'] = "Entrega realizada correctamente.";
+        $_SESSION['exito'] = "La entrega ha sido realizada correctamente.";
     } else {
         $_SESSION['errores'] = "No se pudo guardar la entrega.";
     }
     header("Location: ../../../vistas/estudiantes/ejercicios/ver.php?id=$idEjercicio");
     exit;
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/estudiantes/ejercicios/lista.php");
 exit;

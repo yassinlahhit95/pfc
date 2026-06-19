@@ -1,21 +1,28 @@
 <?php
-/**
- * TOTP (RFC 6238) autocontenido, sin dependencias.
- * Compatible con Google Authenticator, Microsoft Authenticator, Authy, etc.
- * SHA1 / 6 dígitos / periodo 30s (los valores que esperan esas apps).
- */
+// TOTP (RFC 6238) autocontenido, sin dependencias externas.
+// Compatible con Google Authenticator, Microsoft Authenticator, Authy, etc.
+// SHA1 / 6 dígitos / periodo 30 s — estándar de estas aplicaciones.
 class Totp {
+
+    // ══════════════════════════════════════════════════════════════════════
+    // CONFIGURACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
     const PERIOD = 30;
     const DIGITS = 6;
     const ALGO   = 'sha1';
     const B32MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
-    /** Secreto base32 (20 bytes aleatorios → 32 chars). */
+    // ══════════════════════════════════════════════════════════════════════
+    // GENERACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Secreto base32 (20 bytes aleatorios → 32 chars).
     public static function generateSecret(int $bytes = 20): string {
         return self::base32Encode(random_bytes($bytes));
     }
 
-    /** Código de 6 dígitos para un instante dado (con desplazamiento de pasos). */
+    // Código de 6 dígitos para un instante dado (con desplazamiento de pasos).
     public static function codeAt(string $secret, int $timestamp, int $stepOffset = 0): string {
         $key = self::base32Decode($secret);
         $counter = intdiv($timestamp, self::PERIOD) + $stepOffset;
@@ -30,26 +37,34 @@ class Totp {
         return str_pad((string)$code, self::DIGITS, '0', STR_PAD_LEFT);
     }
 
-    /** Verifica un código admitiendo ±$window pasos (clock drift). Constante en tiempo. */
+    // ══════════════════════════════════════════════════════════════════════
+    // VERIFICACIÓN
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Verifica un código admitiendo ±$window pasos (desfase de reloj).
+    // Recorre todas las ventanas sin short-circuit para no filtrar timing.
     public static function verify(string $secret, string $code, ?int $timestamp = null, int $window = 1): bool {
         $code = preg_replace('/\D/', '', $code);
         if (strlen($code) !== self::DIGITS) return false;
         $timestamp = $timestamp ?? time();
         $ok = false;
         for ($i = -$window; $i <= $window; $i++) {
-            // sin short-circuit: recorre todas las ventanas para no filtrar timing
             if (hash_equals(self::codeAt($secret, $timestamp, $i), $code)) $ok = true;
         }
         return $ok;
     }
 
-    /** URI otpauth:// para generar el QR de alta. */
+    // URI otpauth:// para generar el QR de alta en la app autenticadora.
     public static function provisioningUri(string $secret, string $label, string $issuer): string {
         return 'otpauth://totp/' . rawurlencode($issuer . ':' . $label)
             . '?secret=' . $secret
             . '&issuer=' . rawurlencode($issuer)
             . '&algorithm=SHA1&digits=' . self::DIGITS . '&period=' . self::PERIOD;
     }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // CODIFICACIÓN BASE32
+    // ══════════════════════════════════════════════════════════════════════
 
     public static function base32Encode(string $data): string {
         $out = ''; $buffer = 0; $bitsLeft = 0;

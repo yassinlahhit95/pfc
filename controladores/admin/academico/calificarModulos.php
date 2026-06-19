@@ -1,12 +1,18 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 $hayError = false;
 
 if (isset($_POST['guardarNotas'])) {
     if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "Solicitud no válida (CSRF).";
+        $_SESSION['errores'] = "La sesión ha expirado o la solicitud no es válida. Por favor, vuelva a intentarlo.";
         header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
         exit;
     }
@@ -47,14 +53,17 @@ if (isset($_POST['guardarNotas'])) {
     }
 
     if (!$hayError) {
-        $_SESSION['exito'] = "Calificaciones guardadas correctamente.";
+        $_SESSION['exito'] = "Las notas han sido guardadas correctamente.";
     } else {
-        $_SESSION['errores'] = "Error: los valores deben ser 0–10 o NP / EX / CO.";
+        $_SESSION['errores'] = "Error: las notas deben ser valores numéricos entre 0 y 10, o bien los códigos especiales NP, EX o CO.";
     }
 
     header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idCiclo={$idCiclo}&idModulo={$idModulo}");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
 exit;

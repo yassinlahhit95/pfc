@@ -1,8 +1,14 @@
 <?php
+// ══════════════════════════════════════════════════════════════════════
+// DEPENDENCIAS
+// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../controladores/firebase/firebase_helper.php";
 
+// ══════════════════════════════════════════════════════════════════════
+// VALIDACIÓN
+// ══════════════════════════════════════════════════════════════════════
 if (!isset($_POST['enviarRespuesta'])) {
     header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
     exit;
@@ -18,7 +24,7 @@ $idReclamacion = (int)($_POST['idReclamacion'] ?? 0);
 $respuesta     = trim($_POST['respuesta'] ?? '');
 
 if ($idReclamacion <= 0 || $respuesta === '') {
-    $_SESSION['errores'] = "El mensaje de respuesta no puede estar vacío.";
+    $_SESSION['errores'] = "El contenido de la respuesta no puede estar vacío.";
     header("Location: ../../../vistas/estudiantes/mensajes/detalles.php?id=$idReclamacion");
     exit;
 }
@@ -26,13 +32,16 @@ if ($idReclamacion <= 0 || $respuesta === '') {
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje || (int)$mensaje['idEstudiante'] !== (int)$_SESSION['idEstudiante']) {
-    $_SESSION['errores'] = "Acceso denegado.";
+    $_SESSION['errores'] = "No tienes permiso para responder a este mensaje.";
     header("Location: ../../../vistas/estudiantes/mensajes/lista.php");
     exit;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PROCESAMIENTO
+// ══════════════════════════════════════════════════════════════════════
 if (insertarRespuestaMensaje($idReclamacion, (int)$_SESSION['idEstudiante'], null, $respuesta, 'estudiante')) {
-    // Notificar al remitente vía FCM
+    // Notificar al destinatario original vía FCM
     if ($mensaje['emisor_rol'] === 'profesor' && !empty($mensaje['idProfesor'])) {
         $token = obtenerTokenUsuario($mensaje['idProfesor'], 'profesor');
         if ($token) {
@@ -46,10 +55,13 @@ if (insertarRespuestaMensaje($idReclamacion, (int)$_SESSION['idEstudiante'], nul
         }
     }
 
-    $_SESSION['exito'] = "Respuesta enviada correctamente.";
+    $_SESSION['exito'] = "La respuesta ha sido enviada correctamente.";
 } else {
-    $_SESSION['errores'] = "Error al enviar la respuesta.";
+    $_SESSION['errores'] = "No se pudo enviar la respuesta. Inténtalo de nuevo.";
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// RESPUESTA
+// ══════════════════════════════════════════════════════════════════════
 header("Location: ../../../vistas/estudiantes/mensajes/detalles.php?id=$idReclamacion");
 exit;

@@ -20,13 +20,6 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="panel.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<?php if (!empty($errores)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');
-});
-</script>
-<?php endif; ?>
 
 <div class="panel margen-arriba" style="max-width:720px;">
   <form action="../../../controladores/profesores/ejercicios/insertar.php" method="POST" enctype="multipart/form-data" class="formulario">
