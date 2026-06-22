@@ -4,8 +4,12 @@ require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 
-$idProfesor = $_SESSION['idProfesor'];
-$sesiones = listarSesionesPorProfesor($idProfesor);
+$idProfesor   = $_SESSION['idProfesor'];
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
+$sesiones = ($esTutor && $idCicloTutor)
+    ? listarSesionesPorCiclo($idCicloTutor)
+    : listarSesionesPorProfesor($idProfesor);
 
 usort($sesiones, function($a, $b) {
     return strtotime($b['fechaSesion'] . ' ' . $b['horaSesion']) - strtotime($a['fechaSesion'] . ' ' . $a['horaSesion']);

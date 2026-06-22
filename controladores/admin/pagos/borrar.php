@@ -1,19 +1,36 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+if (!FeatureGuard::check('feature_pagos')) { http_response_code(403); echo json_encode(['error' => 'Módulo desactivado']); exit; }
 require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
+
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+$ok = false; $msg = 'ID no especificado';
+
+if (!Security::validateCSRFToken(null, false)) {
+    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
+    header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php"); exit;
+}
 
 if (isset($_POST['idPago'])) {
     $idPago = (int)($_POST['idPago'] ?? 0);
-    
-    $resultado = eliminarPago($idPago);
-    
-    if ($resultado) {
-        $_SESSION['exito'] = "Pago eliminado.";
+    if (eliminarPago($idPago)) {
+        registrarAccion('borrar', 'pagos', $idPago);
+        $ok = true; $msg = "Pago eliminado.";
+        $_SESSION['exito'] = $msg;
     } else {
-        $_SESSION['errores'] = "No se pudo eliminar el pago.";
+        $msg = "No se pudo eliminar el pago.";
+        $_SESSION['errores'] = $msg;
     }
 }
 
+if ($isAjax) {
+    header('Content-Type: application/json');
+    unset($_SESSION['exito'], $_SESSION['errores']);
+    echo json_encode(['ok' => $ok, 'msg' => $msg]);
+    exit;
+}
 header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
 exit;
 ?>

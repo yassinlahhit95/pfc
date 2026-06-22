@@ -30,6 +30,7 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     echo json_encode(['ok' => true, 'unread' => 0]);
     exit;
 }
+session_write_close(); // release session lock before DB work
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO

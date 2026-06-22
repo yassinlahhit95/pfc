@@ -1,20 +1,26 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
-
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $idProfesor = (int)($_GET['idProfesor'] ?? 0);
-
-$profesor = obtenerProfesorPorId($idProfesor);
+$profesor   = obtenerProfesorPorId($idProfesor);
 
 if (!$profesor) {
     header("Location: verProfesores.php");
     exit;
 }
 
-$modulosProfesor = listarModulosDeProfesor($idProfesor);
+$modulosProfesor   = listarModulosDeProfesor($idProfesor);
 $ciclosTutorizados = listarCiclosTutorizadosProfesor($idProfesor);
+
+/* ── Avatar helpers ── */
+$_av_nombre    = $profesor['nombreProfesor'];
+$_av_partes    = explode(' ', trim($_av_nombre));
+$_av_iniciales = mb_strtoupper(mb_substr($_av_partes[0], 0, 1));
+if (count($_av_partes) > 1) $_av_iniciales .= mb_strtoupper(mb_substr($_av_partes[1], 0, 1));
+$_av_paleta = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
+$_av_color  = $_av_paleta[ord($_av_iniciales[0]) % count($_av_paleta)];
 
 $titulo_pagina = "AULAPRO | DETALLES PROFESOR";
 $seccion = 'profesores';
@@ -22,128 +28,140 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>FICHA DEL PROFESOR</h1>
-    <a href="../../../vistas/admin/profesores/verProfesores.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <div>
+        <h1>Ficha del Profesor</h1>
+        <p class="subtitulo-encabezado">Datos completos del docente</p>
+    </div>
 </div>
 
 <div class="panel">
-    <div class="titulo-tarjeta">
-        <h3>Información General</h3>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= $profesor['nombreProfesor'] ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Email</div>
-        <div class="valor-detalle"><?= $profesor['emailProfesor'] ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">DNI</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['dniProfesor'])) { ?>
-                <?= $profesor['dniProfesor'] ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
+    <div class="perfil-cabecera">
+        <div class="perfil-avatar" style="--av-color:<?= $_av_color ?>">
+            <?= Security::escapeHtml($_av_iniciales) ?>
+        </div>
+        <div class="perfil-info">
+            <div class="perfil-nombre"><?= Security::escapeHtml(mb_strtoupper($_av_nombre, 'UTF-8')) ?></div>
+            <div class="perfil-meta">
+                <i class="fas fa-chalkboard-teacher"></i> Profesor
+                <?php if (!empty($ciclosTutorizados)): ?>
+                    <span class="perfil-sep"></span>
+                    <span class="texto-estado morado">
+                        <i class="fas fa-user-tie"></i> Tutor
+                    </span>
+                <?php endif; ?>
+                <span class="perfil-sep"></span>
+                <i class="fas fa-envelope"></i>
+                <?= Security::escapeHtml($profesor['emailProfesor']) ?>
+            </div>
+        </div>
+        <div class="perfil-acciones">
+            <a href="modificarProfesores.php?idProfesor=<?= $idProfesor ?>" class="boton-primario">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="verProfesores.php" class="boton-secundario">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
         </div>
     </div>
 
-    <div class="fila-datos">
-        <div class="nombre-detalle">Teléfono</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['telefonoProfesor'])) { ?>
-                <?= $profesor['telefonoProfesor'] ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
-        </div>
-    </div>
+    <div class="detalle-grid">
 
-    <div class="fila-datos">
-        <div class="nombre-detalle">Fecha de Nacimiento</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['fechaNacimientoProfesor']) && $profesor['fechaNacimientoProfesor'] != '0000-00-00') { ?>
-                <?= date('d/m/Y', strtotime($profesor['fechaNacimientoProfesor'])) ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
-        </div>
-    </div>
+        <!-- Datos personales -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-id-card"></i> Datos Personales
+            </div>
 
-    <div class="fila-datos">
-        <div class="nombre-detalle">Fecha Alta</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['fechaAltaProfesor'])) { ?>
-                <?= date('d/m/Y', strtotime($profesor['fechaAltaProfesor'])) ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
+            <div class="detalle-fila">
+                <span class="detalle-label">DNI</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['dniProfesor'])
+                        ? Security::escapeHtml($profesor['dniProfesor'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Teléfono</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['telefonoProfesor'])
+                        ? Security::escapeHtml($profesor['telefonoProfesor'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Fecha de Nacimiento</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['fechaNacimientoProfesor']) && $profesor['fechaNacimientoProfesor'] !== '0000-00-00'
+                        ? date('d/m/Y', strtotime($profesor['fechaNacimientoProfesor']))
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Fecha de Alta</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['fechaAltaProfesor'])
+                        ? date('d/m/Y', strtotime($profesor['fechaAltaProfesor']))
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
         </div>
-    </div>
+
+        <!-- Dirección -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-map-marker-alt"></i> Dirección y Contacto
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Dirección</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['direccionProfesor'])
+                        ? Security::escapeHtml($profesor['direccionProfesor'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Ciudad</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['ciudadProfesor'])
+                        ? Security::escapeHtml($profesor['ciudadProfesor'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Código Postal</span>
+                <span class="detalle-valor">
+                    <?= !empty($profesor['codigoPostalProfesor'])
+                        ? Security::escapeHtml($profesor['codigoPostalProfesor'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-sticky-note"></i> Observaciones
+            </div>
+            <div class="detalle-valor" style="padding-top:4px;">
+                <?= !empty($profesor['observacionesProfesor'])
+                    ? nl2br(Security::escapeHtml($profesor['observacionesProfesor']))
+                    : '<span class="texto-suave">Sin observaciones registradas.</span>' ?>
+            </div>
+        </div>
+
+    </div><!-- /detalle-grid -->
 </div>
 
+<!-- Ciclos tutorizados -->
 <div class="panel margen-arriba">
     <div class="titulo-tarjeta">
-        <h3>Dirección y Contacto</h3>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Dirección</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['direccionProfesor'])) { ?>
-                <?= $profesor['direccionProfesor'] ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
-        </div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Ciudad</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['ciudadProfesor'])) { ?>
-                <?= $profesor['ciudadProfesor'] ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
-        </div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Código Postal</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['codigoPostalProfesor'])) { ?>
-                <?= $profesor['codigoPostalProfesor'] ?>
-            <?php } else { ?>
-                <span class="texto-suave">No especificado</span>
-            <?php } ?>
-        </div>
-    </div>
-</div>
-
-<div class="panel margen-arriba">
-    <div class="titulo-tarjeta">
-        <h3>Observaciones</h3>
-    </div>
-    <div class="fila-datos">
-        <div class="nombre-detalle">Observaciones</div>
-        <div class="valor-detalle">
-            <?php if (!empty($profesor['observacionesProfesor'])) { ?>
-                <?= $profesor['observacionesProfesor'] ?>
-            <?php } else { ?>
-                <span class="texto-suave">Sin observaciones.</span>
-            <?php } ?>
-        </div>
-    </div>
-</div>
-
-<div class="panel margen-arriba">
-    <div class="titulo-tarjeta">
-        <h3>Ciclos Tutorizados</h3>
+        <h3><i class="fas fa-user-tie" style="color:var(--accent);margin-right:6px;"></i> Ciclos Tutorizados</h3>
     </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
@@ -154,24 +172,25 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($ciclosTutorizados)) { ?>
+                <?php if (empty($ciclosTutorizados)): ?>
                     <tr><td colspan="2" class="vacio">No es tutor de ningún ciclo</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($ciclosTutorizados as $cicloItem) { ?>
+                <?php else: ?>
+                    <?php foreach ($ciclosTutorizados as $cicloItem): ?>
                     <tr>
-                        <td><b><?= $cicloItem['nombreCiclo'] ?></b></td>
-                        <td><?= $cicloItem['nombreNivel'] ?></td>
+                        <td><b><?= Security::escapeHtml($cicloItem['nombreCiclo']) ?></b></td>
+                        <td><span class="texto-estado azul"><?= Security::escapeHtml($cicloItem['nombreNivel']) ?></span></td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
+<!-- Módulos impartidos -->
 <div class="panel margen-arriba">
     <div class="titulo-tarjeta">
-        <h3>Módulos Impartidos</h3>
+        <h3><i class="fas fa-book-open" style="color:var(--accent);margin-right:6px;"></i> Módulos Impartidos</h3>
     </div>
     <div class="contenedor-tabla">
         <table class="tabla-datos">
@@ -182,16 +201,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($modulosProfesor)) { ?>
+                <?php if (empty($modulosProfesor)): ?>
                     <tr><td colspan="2" class="vacio">No tiene módulos asignados</td></tr>
-                <?php } else { ?>
-                    <?php foreach ($modulosProfesor as $moduloItem) { ?>
+                <?php else: ?>
+                    <?php foreach ($modulosProfesor as $moduloItem): ?>
                     <tr>
-                        <td><b><?= $moduloItem['nombreModulo'] ?></b></td>
-                        <td><span class="texto-estado azul"><?= $moduloItem['abreviaturaCiclo'] ?></span></td>
+                        <td><b><?= Security::escapeHtml($moduloItem['nombreModulo']) ?></b></td>
+                        <td><span class="texto-estado azul"><?= Security::escapeHtml($moduloItem['abreviaturaCiclo']) ?></span></td>
                     </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

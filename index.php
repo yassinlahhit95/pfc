@@ -47,8 +47,6 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
       <a class="access" href="vistas/login.php">Acceso</a>
       <?php if ($is_prematricula_enabled): ?>
         <a class="btn btn-primary" href="vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
-      <?php else: ?>
-        <a class="btn btn-primary" href="#empezar">Empezar gratis</a>
       <?php endif; ?>
       <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span></button>
     </div>
@@ -63,8 +61,6 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
   <a href="vistas/login.php">Acceso</a>
   <?php if ($is_prematricula_enabled): ?>
     <a class="btn btn-primary btn-block btn-lg" href="vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
-  <?php else: ?>
-    <a class="btn btn-primary btn-block btn-lg" href="#empezar">Empezar gratis</a>
   <?php endif; ?>
 </div>
 
@@ -86,14 +82,6 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
           <a class="btn btn-ghost btn-lg" href="vistas/admisiones/consultar.php">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             Consultar estado
-          </a>
-        <?php else: ?>
-          <a class="btn btn-primary btn-lg" href="#empezar">Empezar gratis
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a class="btn btn-ghost btn-lg" href="#roles">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            Ver la plataforma
           </a>
         <?php endif; ?>
       </div>
@@ -526,7 +514,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
       <span class="eyebrow"><span class="dot"></span>Preguntas frecuentes</span>
       <h2>Todo lo que quieres saber.</h2>
     </div>
-    <div class="faq" id="faq">
+    <div class="faq">
       <div class="qa"><button class="qa-q">¿Necesito instalar algo o saber de informática?<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="qa-a"><p>No, nada. AulaPro funciona en la nube: solo necesitas tu ordenador, tablet o móvil con internet. Nosotros nos encargamos de todo el mantenimiento, las copias de seguridad y la seguridad por ti.</p></div></div>
       <div class="qa"><button class="qa-q">¿Funciona en móvil y tablet?<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="qa-a"><p>Sí. La interfaz está totalmente adaptada a ordenador, tablet y móvil, con vistas optimizadas para cada rol (director, profesor y alumno).</p></div></div>
       <div class="qa"><button class="qa-q">¿Puedo migrar los datos de mi centro?<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="qa-a"><p>Por supuesto. Te ayudamos a importar alumnos, ciclos y módulos durante la puesta en marcha para que empieces sin trabajo extra.</p></div></div>
@@ -578,22 +566,38 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
 <!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="container">
-    <div class="foot-simple">
-      <div class="foot-brand">
+    <div class="foot-grid">
+      <div class="foot-brand foot-col">
         <a class="brand" href="#inicio"><svg class="logo"><use href="#ap-logo"/></svg>Aula<b style="color:var(--primary)">Pro</b></a>
-        <p>Gestión integral para centros de Formación Profesional.</p>
+        <p>La plataforma integral para centros de Formación Profesional en España. Admisión, notas, pagos y comunicación en un solo lugar.</p>
       </div>
-      <nav class="foot-links">
+      <div class="foot-col">
+        <h4>Plataforma</h4>
         <a href="#funciones">Funciones</a>
-        <a href="#roles">Plataforma</a>
+        <a href="#roles">Roles</a>
+        <a href="#ventajas">Ventajas</a>
         <a href="#precios">Precios</a>
-        <a href="#faq">FAQ</a>
+        <a href="#faq">Preguntas frecuentes</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="vistas/legal/aviso-legal.php">Aviso Legal</a>
+        <a href="vistas/legal/politica-de-privacidad.php">Privacidad</a>
+        <a href="vistas/legal/politica-de-cookies.php">Cookies</a>
+        <a href="vistas/legal/politica-de-gestion.php">Política de Gestión</a>
+      </div>
+      <div class="foot-col">
+        <h4>Acceso</h4>
+        <a href="vistas/login.php">Iniciar sesión</a>
+        <?php if ($is_prematricula_enabled): ?>
+        <a href="vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
+        <a href="vistas/admisiones/consultar.php">Consultar estado</a>
+        <?php endif; ?>
         <a href="#empezar">Contacto</a>
-        <a href="vistas/login.php">Acceso</a>
-      </nav>
+      </div>
     </div>
     <div class="foot-bot">
-      <span>© 2025/2026 AulaPro · Hecho en España</span>
+      <span>© <?= date('Y') ?> AulaPro · Hecho en España</span>
       <div class="socials">
         <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.3 8.3L23 22h-6.8l-5.3-6.9L4.8 22H1.7l7.8-8.9L1 2h7l4.8 6.3zm-2.4 18h1.9L7.6 4H5.6z"/></svg></a>
         <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5M3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C21.4 8.65 22 11 22 14.1V21h-4v-6.1c0-1.45-.03-3.3-2-3.3s-2.3 1.57-2.3 3.2V21h-4z"/></svg></a>

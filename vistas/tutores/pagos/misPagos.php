@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../include/TutorGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_pagos');
 $titulo_pagina = 'AulaPro Familias — Pagos y Recibos';
 $seccion       = 'pagos';
 include __DIR__ . '/../comunes/nav.php';

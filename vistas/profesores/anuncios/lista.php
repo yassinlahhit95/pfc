@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_anuncios');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;

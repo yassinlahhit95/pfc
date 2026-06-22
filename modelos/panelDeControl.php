@@ -74,3 +74,32 @@ function contarTFGsEntregados(): int {
         "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != '' AND archivoTFG IS NOT NULL"
     )['total'] ?? 0);
 }
+
+// Obtiene todos los contadores del nav de admin en una sola consulta (14 queries → 1).
+function obtenerContadoresNavAdmin(): array {
+    $con = obtenerConexion();
+    $res = mysqli_query($con,
+        "SELECT
+            (SELECT COUNT(*) FROM estudiantes)                                      AS total_estudiantes,
+            (SELECT COUNT(*) FROM profesores)                                       AS total_profesores,
+            (SELECT COUNT(*) FROM tutores)                                          AS total_tutores,
+            (SELECT COUNT(*) FROM directores)                                       AS total_directores,
+            (SELECT COUNT(*) FROM ciclos)                                           AS total_ciclos,
+            (SELECT COUNT(*) FROM modulos)                                          AS total_modulos,
+            (SELECT COUNT(*) FROM retos)                                            AS total_retos,
+            (SELECT COUNT(*) FROM anuncios)                                         AS total_anuncios,
+            (SELECT COUNT(*) FROM dispositivos)                                     AS total_inventario,
+            (SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso')      AS total_prestamos,
+            (SELECT COUNT(*) FROM pagos)                                            AS total_pagos,
+            (SELECT COUNT(*) FROM reclamaciones
+             WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL)
+                OR (emisor_rol = 'profesor'   AND idEstudiante IS NULL)
+                OR (emisor_rol = 'admin'))                                          AS total_mensajes,
+            (SELECT COUNT(*) FROM reclamaciones
+             WHERE leido = 0
+               AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL)
+                 OR (emisor_rol = 'profesor'   AND idEstudiante IS NULL)))          AS total_sin_leer"
+    );
+    $row = $res ? mysqli_fetch_assoc($res) : [];
+    return array_map('intval', $row ?: []);
+}

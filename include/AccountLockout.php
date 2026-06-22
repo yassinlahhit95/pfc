@@ -59,37 +59,43 @@ class AccountLockout {
         if (!$con) return;
         self::ensureTable($con);
         $email = strtolower(trim($email));
-        $now = time();
+        $now   = time();
 
-        $stmt = mysqli_prepare($con, "SELECT intentos, window_start FROM account_lockout WHERE email = ?");
-        mysqli_stmt_bind_param($stmt, "s", $email);
-        mysqli_stmt_execute($stmt);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_begin_transaction($con);
+        try {
+            $stmt = mysqli_prepare($con,
+                "SELECT intentos, window_start FROM account_lockout WHERE email = ? FOR UPDATE");
+            mysqli_stmt_bind_param($stmt, "s", $email);
+            mysqli_stmt_execute($stmt);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-        if (!$row) {
-            $ins = mysqli_prepare($con, "INSERT INTO account_lockout (email, intentos, window_start) VALUES (?, 1, ?)");
-            mysqli_stmt_bind_param($ins, "si", $email, $now);
-            @mysqli_stmt_execute($ins);
-            return;
-        }
-
-        if ($now - (int)$row['window_start'] > self::WINDOW) {
-            $upd = mysqli_prepare($con, "UPDATE account_lockout SET intentos = 1, window_start = ?, locked_until = NULL WHERE email = ?");
-            mysqli_stmt_bind_param($upd, "is", $now, $email);
-            @mysqli_stmt_execute($upd);
-            return;
-        }
-
-        $intentos = (int)$row['intentos'] + 1;
-        if ($intentos >= self::MAX_FAILS) {
-            $until = $now + self::LOCK_SECONDS;
-            $upd = mysqli_prepare($con, "UPDATE account_lockout SET intentos = ?, locked_until = ? WHERE email = ?");
-            mysqli_stmt_bind_param($upd, "iis", $intentos, $until, $email);
-            @mysqli_stmt_execute($upd);
-        } else {
-            $upd = mysqli_prepare($con, "UPDATE account_lockout SET intentos = ? WHERE email = ?");
-            mysqli_stmt_bind_param($upd, "is", $intentos, $email);
-            @mysqli_stmt_execute($upd);
+            if (!$row) {
+                $ins = mysqli_prepare($con,
+                    "INSERT INTO account_lockout (email, intentos, window_start) VALUES (?, 1, ?)");
+                mysqli_stmt_bind_param($ins, "si", $email, $now);
+                mysqli_stmt_execute($ins);
+            } elseif ($now - (int)$row['window_start'] > self::WINDOW) {
+                $upd = mysqli_prepare($con,
+                    "UPDATE account_lockout SET intentos = 1, window_start = ?, locked_until = NULL WHERE email = ?");
+                mysqli_stmt_bind_param($upd, "is", $now, $email);
+                mysqli_stmt_execute($upd);
+            } else {
+                $intentos = (int)$row['intentos'] + 1;
+                if ($intentos >= self::MAX_FAILS) {
+                    $until = $now + self::LOCK_SECONDS;
+                    $upd   = mysqli_prepare($con,
+                        "UPDATE account_lockout SET intentos = ?, locked_until = ? WHERE email = ?");
+                    mysqli_stmt_bind_param($upd, "iis", $intentos, $until, $email);
+                } else {
+                    $upd = mysqli_prepare($con,
+                        "UPDATE account_lockout SET intentos = ? WHERE email = ?");
+                    mysqli_stmt_bind_param($upd, "is", $intentos, $email);
+                }
+                mysqli_stmt_execute($upd);
+            }
+            mysqli_commit($con);
+        } catch (\Throwable $e) {
+            mysqli_rollback($con);
         }
     }
 

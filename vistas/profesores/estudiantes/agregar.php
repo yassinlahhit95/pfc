@@ -5,11 +5,18 @@ $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$idProfesor = $_SESSION['idProfesor'] ?? '';
+$idProfesor   = $_SESSION['idProfesor'] ?? '';
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$mis_ciclos = listarCiclosDeProfesor($idProfesor);
+if ($esTutor && $idCicloTutor) {
+    $cicloTutor = obtenerCicloPorId($idCicloTutor);
+    $mis_ciclos = $cicloTutor ? [$cicloTutor] : [];
+} else {
+    $mis_ciclos = listarCiclosDeProfesor($idProfesor);
+}
 
 $datos = $_SESSION['datos_estudiante'] ?? [];
 

@@ -4,11 +4,17 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarAula'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/aulas/gestionAulas.php");
+        exit;
+    }
     $idAula    = (int)($_POST['idAula'] ?? 0);
     $planta    = (int)($_POST['planta'] ?? -1);
     $numero    = (int)($_POST['numero'] ?? 0);
@@ -36,6 +42,7 @@ if (isset($_POST['actualizarAula'])) {
     }
 
     if (actualizarAula($idAula, $planta, $numero, $nombre, $tipo, $capacidad, $activa)) {
+        registrarAccion('actualizar', 'aulas', $idAula, "Planta $planta · Nº$numero · $tipo");
         $_SESSION['exito'] = "La información del aula ha sido actualizada correctamente.";
         header("Location: ../../../vistas/admin/aulas/gestionAulas.php");
         exit;

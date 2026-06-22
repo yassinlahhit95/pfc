@@ -6,15 +6,20 @@ require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idModulo     = intval($_GET['id'] ?? 0);
+$idModulo      = intval($_GET['id'] ?? 0);
 $carpetaActual = intval($_GET['carpeta'] ?? 0) ?: null;
+$esTutor       = !empty($_SESSION['esTutor']);
+$idCicloTutor  = (int)($_SESSION['idCicloTutor'] ?? 0);
 
-// Permiso: el profesor sólo puede acceder a módulos que imparte
-$misModulos = listarModulosDeProfesor($idProfesor);
-$idsMios    = array_column($misModulos, 'idModulo');
-if ($idModulo < 1 || !in_array($idModulo, $idsMios)) { header("Location: index.php"); exit; }
-
-$modulo = obtenerModuloPorId($idModulo);
+if ($esTutor && $idCicloTutor) {
+    $modulo = $idModulo > 0 ? obtenerModuloPorId($idModulo) : null;
+    if (!$modulo || (int)$modulo['idCiclo'] !== $idCicloTutor) { header("Location: index.php"); exit; }
+} else {
+    $misModulos = listarModulosDeProfesor($idProfesor);
+    $idsMios    = array_column($misModulos, 'idModulo');
+    if ($idModulo < 1 || !in_array($idModulo, $idsMios)) { header("Location: index.php"); exit; }
+    $modulo = obtenerModuloPorId($idModulo);
+}
 $idCiclo = $modulo['idCiclo'];
 
 // Carpeta actual (si navegamos dentro de una subcarpeta) y su validez

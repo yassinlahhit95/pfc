@@ -3,8 +3,11 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_mensajes');
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 require_once __DIR__ . "/../../firebase/firebase_helper.php";
 
 // ══════════════════════════════════════════════════════════════════════
@@ -60,6 +63,7 @@ if (isset($_POST['enviarMensaje'])) {
         }
 
         unset($_SESSION['datos_mensaje']);
+        registrarAccion('insertar_masivo', 'mensajes', null, "Ciclo #$idCicloMasivo · $asuntoMensaje");
         $_SESSION['exito'] = "Mensaje enviado a " . $mensajesEnviados . " estudiantes del ciclo.";
         header("Location: ../../../vistas/admin/mensajes/lista.php");
         exit;
@@ -78,6 +82,7 @@ if (isset($_POST['enviarMensaje'])) {
         }
 
         unset($_SESSION['datos_mensaje']);
+        registrarAccion('insertar', 'mensajes', null, $asuntoMensaje);
         $_SESSION['exito'] = "El mensaje oficial ha sido enviado correctamente.";
         header("Location: ../../../vistas/admin/mensajes/lista.php");
         exit;

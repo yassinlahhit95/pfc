@@ -77,6 +77,8 @@ CREATE TABLE `ciclos` (
   `abreviaturaCiclo` varchar(10) NOT NULL,
   `precioCiclo` decimal(10,2),
   `idNivel` int(11),
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `fechaArchivado` datetime DEFAULT NULL,
   PRIMARY KEY (`idCiclo`),
   KEY `idx_ciclo_nivel` (`idNivel`),
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
@@ -88,6 +90,8 @@ CREATE TABLE `modulos` (
   `nombreModulo` varchar(120) NOT NULL,
   `horasMaximas` int(11),
   `idCiclo` int(11) NOT NULL,
+  `cursoAnio` varchar(10) DEFAULT NULL,
+  `creditosECTS` int(3) DEFAULT NULL,
   PRIMARY KEY (`idModulo`),
   KEY `idx_modulo_ciclo` (`idCiclo`),
   CONSTRAINT `fk_modulos_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
@@ -136,6 +140,7 @@ CREATE TABLE `estudiantes` (
   `observacionesEstudiante` text,
   `idCiclo` int(11),
   `curso` enum('Grado Medio','Grado Superior'),
+  `anioEstudio` varchar(20) DEFAULT NULL,
   `archivoTFG` varchar(255),
   `tituloTFG` varchar(255),
   `fechaSubidaTFG` datetime,
@@ -808,6 +813,14 @@ CREATE TABLE `configuracion_centro` (
   `feature_chat` tinyint(1) NOT NULL DEFAULT 1,
   `feature_inventario` tinyint(1) NOT NULL DEFAULT 1,
   `feature_subida_tfg` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_anuncios` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_eventos` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_retos` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_mensajes` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_pagos` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_gastos` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_informes` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_horario` tinyint(1) NOT NULL DEFAULT 1,
   `instance_status` enum('active','suspended') NOT NULL DEFAULT 'active',
   `suspension_message` text DEFAULT NULL,
   `saas_lock_features` tinyint(1) NOT NULL DEFAULT 0,
@@ -876,6 +889,95 @@ CREATE TABLE `chat_mensajes` (
   CONSTRAINT `fk_chat_conv` FOREIGN KEY (`conversacion_id`) REFERENCES `chat_conversaciones` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `asistencias` (
+  `idAsistencia`  int(11) NOT NULL AUTO_INCREMENT,
+  `idEstudiante`  int(11) NOT NULL,
+  `idModulo`      int(11) NOT NULL,
+  `idProfesor`    int(11) DEFAULT NULL,
+  `fecha`         date NOT NULL,
+  `estado`        enum('presente','ausente','retraso','justificado') NOT NULL DEFAULT 'presente',
+  `observacion`   text DEFAULT NULL,
+  `fechaRegistro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idAsistencia`),
+  UNIQUE KEY `uq_asistencia` (`idEstudiante`, `idModulo`, `fecha`),
+  KEY `idx_asist_modulo_fecha` (`idModulo`, `fecha`),
+  KEY `idx_asist_estudiante` (`idEstudiante`),
+  CONSTRAINT `fk_asist_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `fk_asist_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_asist_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `log_acciones` (
+  `idLog`       int(11) NOT NULL AUTO_INCREMENT,
+  `idAdmin`     int(11) DEFAULT NULL,
+  `accion`      varchar(100) NOT NULL,
+  `tabla`       varchar(80) NOT NULL,
+  `idRegistro`  int(11) DEFAULT NULL,
+  `descripcion` varchar(255) DEFAULT NULL,
+  `ip`          varchar(45) DEFAULT NULL,
+  `fecha`       datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idLog`),
+  KEY `idx_log_fecha` (`fecha`),
+  KEY `idx_log_admin` (`idAdmin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `rgpd_eliminaciones` (
+  `id`           int(11) NOT NULL AUTO_INCREMENT,
+  `idAdmin`      int(11) DEFAULT NULL,
+  `entidad`      varchar(80) NOT NULL,
+  `idRegistro`   int(11) NOT NULL,
+  `descripcion`  varchar(255) DEFAULT NULL,
+  `motivo`       text DEFAULT NULL,
+  `datos_backup` longtext DEFAULT NULL,
+  `ip`           varchar(45) DEFAULT NULL,
+  `fecha`        datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_rgpd_fecha` (`fecha`),
+  CONSTRAINT `fk_rgpd_admin` FOREIGN KEY (`idAdmin`) REFERENCES `directores` (`idDirector`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `consentimientos` (
+  `id`           int(11) NOT NULL AUTO_INCREMENT,
+  `idEstudiante` int(11) DEFAULT NULL,
+  `idTutor`      int(11) DEFAULT NULL,
+  `tipo`         varchar(80) NOT NULL,
+  `ip`           varchar(45) DEFAULT NULL,
+  `userAgent`    varchar(255) DEFAULT NULL,
+  `texto`        text DEFAULT NULL,
+  `fecha`        datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_consentimiento_est` (`idEstudiante`),
+  CONSTRAINT `fk_cons_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `categorias_gasto` (
+  `idCategoria`      int(11) NOT NULL AUTO_INCREMENT,
+  `nombre`           varchar(100) NOT NULL,
+  `presupuestoAnual` decimal(10,2) DEFAULT 0.00,
+  `color`            varchar(20) DEFAULT '#6366f1',
+  `activo`           tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`idCategoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `gastos` (
+  `idGasto`             int(11) NOT NULL AUTO_INCREMENT,
+  `idCategoria`         int(11) NOT NULL,
+  `idCiclo`             int(11) DEFAULT NULL,
+  `concepto`            varchar(255) NOT NULL,
+  `importe`             decimal(10,2) NOT NULL,
+  `fecha`               date NOT NULL,
+  `tipoJustificante`    varchar(50) DEFAULT NULL,
+  `numeroReferencia`    varchar(100) DEFAULT NULL,
+  `archivoJustificante` varchar(255) DEFAULT NULL,
+  `observaciones`       text DEFAULT NULL,
+  `fechaRegistro`       datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idGasto`),
+  KEY `idx_gasto_fecha` (`fecha`),
+  KEY `idx_gasto_categoria` (`idCategoria`),
+  CONSTRAINT `fk_gasto_cat` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_gasto` (`idCategoria`),
+  CONSTRAINT `fk_gasto_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ── Datos iniciales ──────────────────────────────────────────
@@ -884,11 +986,16 @@ INSERT INTO `configuracion_centro`
   (`idConfig`, `nombreCentro`, `codigoCentro`, `direccionCentro`, `ciudadCentro`, `cpCentro`,
    `telefonoCentro`, `emailCentro`, `cursoEscolar`, `textoLegal`, `nombreDirectorFirmante`,
    `feature_prematricula`, `feature_chat`, `feature_inventario`, `feature_subida_tfg`,
+   `feature_anuncios`, `feature_eventos`, `feature_retos`, `feature_mensajes`,
+   `feature_pagos`, `feature_gastos`, `feature_informes`, `feature_horario`,
    `instance_status`, `suspension_message`, `saas_lock_features`, `saas_message`,
    `saas_message_type`, `saas_last_sync`, `license_token`, `license_token_exp`)
 VALUES
   (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '',
-   1, 1, 1, 1, 'active', NULL, 0, NULL, 'info', NULL, NULL, NULL);
+   1, 1, 1, 1,
+   1, 1, 1, 1,
+   1, 1, 1, 1,
+   'active', NULL, 0, NULL, 'info', NULL, NULL, NULL);
 
 INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES
 (1, 'Grado Medio'),

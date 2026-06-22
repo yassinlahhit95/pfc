@@ -7,6 +7,14 @@ header('Cache-Control: no-store');
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/reclamaciones.php';
 
+$role_id = $_SESSION['idAdmin'] ?? $_SESSION['idProfesor'] ?? $_SESSION['idEstudiante'] ?? null;
+if (!$role_id) {
+    http_response_code(403);
+    echo json_encode(['count' => 0]);
+    exit;
+}
+session_write_close(); // release session lock before DB work
+
 $count = 0;
 
 if (!empty($_SESSION['idAdmin'])) {

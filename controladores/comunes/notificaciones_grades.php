@@ -186,7 +186,10 @@ function generarEmailCalificacionTFGHTML($idEstudiante) {
 function enviarEmailNotasEstudiante($idEstudianteAEnviar) {
     $datosFinales = generarTablaNotasHTML($idEstudianteAEnviar);
     if (!empty($datosFinales)) {
-        return sendEmail($datosFinales['email'], "Tus Calificaciones Finales - PFC", $datosFinales['html']);
+        require_once __DIR__ . '/../../modelos/configuracion.php';
+        $cfg = obtenerConfiguracionCentro();
+        $nombreCentro = $cfg['nombreCentro'] ?? 'AulaPro';
+        return sendEmail($datosFinales['email'], "$nombreCentro | Tus Calificaciones Finales", $datosFinales['html']);
     }
     return false;
 }
@@ -202,10 +205,32 @@ function enviarEmailNotasClase($idDelCicloElegido) {
     return $contadorCorreosEnviados;
 }
 
+// Async variant: builds each email and inserts into cola_emails instead of sending inline.
+// The cron job (cron/procesar_cola_emails.php) picks them up and delivers them.
+function encolarEmailsNotasClase(int $idCiclo): int {
+    require_once __DIR__ . '/../../modelos/cola_emails.php';
+    require_once __DIR__ . '/../../modelos/configuracion.php';
+    $cfg = obtenerConfiguracionCentro();
+    $nombreCentro = $cfg['nombreCentro'] ?? 'AulaPro';
+    $listaEstudiantes = listarEstudiantesPorCiclo($idCiclo);
+    $encolados = 0;
+    foreach ($listaEstudiantes as $datosAlumno) {
+        $datos = generarTablaNotasHTML($datosAlumno['idEstudiante']);
+        if (!$datos) continue;
+        if (encolarEmail($datos['email'], $datos['nombre'], "$nombreCentro | Tus Calificaciones Finales", $datos['html'])) {
+            $encolados++;
+        }
+    }
+    return $encolados;
+}
+
 function enviarEmailCalificacionTFG($idEstudiante) {
     $datosFinales = generarEmailCalificacionTFGHTML($idEstudiante);
     if (!empty($datosFinales)) {
-        return sendEmail($datosFinales['email'], "Calificación de tu TFG - PFC", $datosFinales['html']);
+        require_once __DIR__ . '/../../modelos/configuracion.php';
+        $cfg = obtenerConfiguracionCentro();
+        $nombreCentro = $cfg['nombreCentro'] ?? 'AulaPro';
+        return sendEmail($datosFinales['email'], "$nombreCentro | Calificación de tu Proyecto Final TFG", $datosFinales['html']);
     }
     return false;
 }

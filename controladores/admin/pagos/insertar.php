@@ -3,12 +3,20 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_pagos');
 require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarPago'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/pagos/agregarPagos.php");
+        exit;
+    }
     $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $tipoPago     = $_POST['tipoPago'];
     $monto        = trim($_POST['monto']);
@@ -55,6 +63,7 @@ if (isset($_POST['guardarPago'])) {
         }
 
         if (insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha)) {
+            registrarAccion('insertar', 'pagos', null, "Estudiante #$idEstudiante · $monto€ · $tipoPago");
             $_SESSION['exito'] = "El pago ha sido registrado correctamente.";
             header("Location: ../../../vistas/admin/pagos/verPagosGeneral.php");
             exit;

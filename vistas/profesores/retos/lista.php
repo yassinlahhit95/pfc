@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_retos');
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -7,8 +9,12 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/retos.php";
 
-$idProfesor = $_SESSION['idProfesor'];
-$retos = listarRetosDeProfesor($idProfesor);
+$idProfesor   = $_SESSION['idProfesor'];
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
+$retos = ($esTutor && $idCicloTutor)
+    ? listarRetosPorCiclo($idCicloTutor)
+    : listarRetosDeProfesor($idProfesor);
 
 $tituloDelPagina = "AULAPRO | RETOS";
 $seccionActual   = 'retos';
@@ -77,7 +83,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <div class="recurso-menu">
                                         <a class="recurso-menu-item" href="editar.php?id=<?= (int)$reto['idReto'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                         <div class="recurso-menu-sep"></div>
-                                        <a class="recurso-menu-item peligro" href="borrarReto.php?id=<?= (int)$reto['idReto'] ?>"><i class="fas fa-trash"></i> Eliminar</a>
+                                        <a class="recurso-menu-item peligro" href="#"
+                                           data-modal-borrar
+                                           data-id="<?= (int)$reto['idReto'] ?>"
+                                           data-tipo="Reto"
+                                           data-nombre="<?= Security::escapeHtml($reto['nombreReto']) ?>"
+                                           data-url="/controladores/profesores/retos/borrar.php"
+                                           data-campo="idReto"><i class="fas fa-trash"></i> Eliminar</a>
                                     </div>
                                 </div>
                             </td>

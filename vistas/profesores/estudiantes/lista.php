@@ -5,13 +5,21 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$idProfesor = $_SESSION['idProfesor'] ?? '';
+$idProfesor   = $_SESSION['idProfesor'] ?? '';
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$estudiantes = listarEstudiantesDeProfesor($idProfesor);
-$listaDeCiclosParaFiltro = listarCiclosDeProfesor($idProfesor);
+if ($esTutor && $idCicloTutor) {
+    $estudiantes             = listarEstudiantesPorCiclo($idCicloTutor);
+    $cicloTutor              = obtenerCicloPorId($idCicloTutor);
+    $listaDeCiclosParaFiltro = $cicloTutor ? [$cicloTutor] : [];
+} else {
+    $estudiantes             = listarEstudiantesDeProfesor($idProfesor);
+    $listaDeCiclosParaFiltro = listarCiclosDeProfesor($idProfesor);
+}
 
 $tituloDelPagina = "AULAPRO | LISTA DE ESTUDIANTES";
 $seccionActual   = 'estudiantes';
@@ -60,7 +68,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <span class="texto-estado <?= Security::escapeHtml($est['idNivel'] == 1 ? 'azul' : 'verde') ?>">
                                     <?= Security::escapeHtml($est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?>
                                 </span>
-                                <span class="texto-estado gris"><?= Security::escapeHtml($est['curso']) ?></span>
                             </td>
                             <td class="texto-negrita"><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
                             <td><?= Security::escapeHtml($est['emailEstudiante']) ?></td>
@@ -73,7 +80,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <a class="recurso-menu-item" href="detalles.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-eye"></i> Ver perfil</a>
                                         <a class="recurso-menu-item" href="editar.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                         <div class="recurso-menu-sep"></div>
-                                        <a class="recurso-menu-item peligro" href="borrarEstudiante.php?id=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-trash"></i> Eliminar</a>
+                                        <a class="recurso-menu-item peligro" href="#"
+                                           data-modal-borrar
+                                           data-id="<?= (int)$est['idEstudiante'] ?>"
+                                           data-tipo="Estudiante"
+                                           data-nombre="<?= Security::escapeHtml($est['nombreEstudiante']) ?>"
+                                           data-url="/controladores/profesores/estudiantes/borrar.php"
+                                           data-campo="idEstudiante"><i class="fas fa-trash"></i> Eliminar</a>
                                     </div>
                                 </div>
                             </td>
@@ -90,3 +103,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaEstudiantesProf', 15);
+</script>

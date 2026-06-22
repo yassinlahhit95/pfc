@@ -2,27 +2,38 @@
  * Toast notification system.
  * Reads existing .mensaje-exito / .mensaje-error divs already rendered by PHP,
  * hides them, and shows animated auto-dismiss toasts instead.
- * No external dependencies.
+ * No external dependencies. Accepts types: 'success'|'ok' → green, 'error'|'err' → red, 'info'|'warning' → blue/amber.
  */
 (function () {
     'use strict';
 
-    var DURATION = 4500; // ms before auto-dismiss
+    var DURATION = 4500;
 
     var CSS = [
         '#toast-container{position:fixed;bottom:24px;right:24px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}',
-        '.toast{display:flex;align-items:center;gap:12px;min-width:280px;max-width:420px;padding:14px 18px;border-radius:12px;',
-        'box-shadow:0 4px 20px rgba(0,0,0,.18);font-size:.9rem;font-weight:500;pointer-events:all;',
-        'animation:toastIn .25s ease forwards;}',
+        '.toast{display:flex;align-items:flex-start;gap:12px;min-width:300px;max-width:420px;padding:14px 16px 20px;border-radius:14px;',
+        'box-shadow:0 8px 32px rgba(0,0,0,.14);font-size:.92rem;font-weight:500;pointer-events:all;position:relative;overflow:hidden;',
+        'animation:toastIn .32s cubic-bezier(.34,1.56,.64,1) forwards;}',
         '.toast-ok{background:#ecfdf5;color:#065f46;border:1.5px solid #6ee7b7;}',
         '.toast-err{background:#fef2f2;color:#991b1b;border:1.5px solid #fca5a5;}',
-        '.toast-icon{font-size:1.1rem;flex-shrink:0;}',
-        '.toast-msg{flex:1;line-height:1.4;}',
-        '.toast-close{background:none;border:none;cursor:pointer;font-size:1rem;opacity:.5;padding:0;line-height:1;flex-shrink:0;}',
+        '.toast-info{background:#eff6ff;color:#1e40af;border:1.5px solid #93c5fd;}',
+        '.toast-warn{background:#fffbeb;color:#92400e;border:1.5px solid #fcd34d;}',
+        '.toast-icon{font-size:1.15rem;flex-shrink:0;margin-top:1px;}',
+        '.toast-ok .toast-icon{color:#10b981;}',
+        '.toast-err .toast-icon{color:#ef4444;}',
+        '.toast-info .toast-icon{color:#3b82f6;}',
+        '.toast-warn .toast-icon{color:#f59e0b;}',
+        '.toast-msg{flex:1;line-height:1.45;}',
+        '.toast-close{background:none;border:none;cursor:pointer;font-size:.85rem;opacity:.4;padding:0;line-height:1;flex-shrink:0;margin-top:2px;color:inherit;}',
         '.toast-close:hover{opacity:1;}',
-        '.toast.removing{animation:toastOut .2s ease forwards;}',
-        '@keyframes toastIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}',
-        '@keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(40px);}}'
+        '.toast-bar{position:absolute;bottom:0;left:0;height:3px;border-radius:0 0 14px 14px;}',
+        '.toast-ok .toast-bar{background:#10b981;}',
+        '.toast-err .toast-bar{background:#ef4444;}',
+        '.toast-info .toast-bar{background:#3b82f6;}',
+        '.toast-warn .toast-bar{background:#f59e0b;}',
+        '.toast.removing{animation:toastOut .22s ease forwards;}',
+        '@keyframes toastIn{from{opacity:0;transform:translateX(50px) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}',
+        '@keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(50px);}}'
     ].join('');
 
     function injectCSS() {
@@ -43,19 +54,27 @@
 
     function dismiss(el) {
         el.classList.add('removing');
-        el.addEventListener('animationend', function () { el.remove(); });
+        el.addEventListener('animationend', function () { el.remove(); }, { once: true });
     }
 
     function showToast(message, type) {
+        var isOk   = (type === 'ok' || type === 'success');
+        var isInfo = (type === 'info');
+        var isWarn = (type === 'warning' || type === 'warn');
+        var cls    = isOk ? 'toast-ok' : isInfo ? 'toast-info' : isWarn ? 'toast-warn' : 'toast-err';
         var container = getOrCreateContainer();
         var toast = document.createElement('div');
-        toast.className = 'toast ' + (type === 'ok' ? 'toast-ok' : 'toast-err');
+        toast.className = 'toast ' + cls;
 
-        var icon = type === 'ok' ? '✓' : '✕';
+        var iconClass = isOk ? 'fa-check-circle' : isInfo ? 'fa-info-circle' : isWarn ? 'fa-exclamation-triangle' : 'fa-exclamation-circle';
         toast.innerHTML =
-            '<span class="toast-icon">' + icon + '</span>' +
+            '<i class="fas ' + iconClass + ' toast-icon"></i>' +
             '<span class="toast-msg">' + message + '</span>' +
-            '<button class="toast-close" aria-label="Cerrar">✕</button>';
+            '<button class="toast-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>' +
+            '<span class="toast-bar"></span>';
+
+        var bar = toast.querySelector('.toast-bar');
+        bar.style.cssText = 'width:100%;transition:width ' + DURATION + 'ms linear;';
 
         toast.querySelector('.toast-close').addEventListener('click', function () {
             dismiss(toast);
@@ -63,15 +82,22 @@
 
         container.appendChild(toast);
 
-        setTimeout(function () {
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () { bar.style.width = '0%'; });
+        });
+
+        var timer = setTimeout(function () {
             if (toast.parentNode) dismiss(toast);
         }, DURATION);
+
+        toast.querySelector('.toast-close').addEventListener('click', function () {
+            clearTimeout(timer);
+        });
     }
 
     function init() {
         injectCSS();
 
-        // Convert existing PHP flash message divs into toasts
         var selectors = [
             { sel: '.mensaje-exito', type: 'ok' },
             { sel: '.mensaje-error', type: 'err' }
@@ -81,7 +107,7 @@
             document.querySelectorAll(s.sel).forEach(function (el) {
                 var msg = el.textContent.trim();
                 if (!msg) return;
-                el.style.display = 'none'; // hide the inline div
+                el.style.display = 'none';
                 showToast(msg, s.type);
             });
         });
@@ -93,6 +119,5 @@
         init();
     }
 
-    // Expose for manual use: Toast.show('message', 'ok'|'err')
     window.Toast = { show: showToast };
 })();

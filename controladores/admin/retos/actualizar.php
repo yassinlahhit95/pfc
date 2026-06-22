@@ -3,12 +3,20 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarReto'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/retos/verRetos.php");
+        exit;
+    }
     $idReto      = (int)($_POST['idReto'] ?? 0);
     $nombre      = trim($_POST['nombreReto']);
     $horas       = trim($_POST['horasReto']);
@@ -65,6 +73,7 @@ if (isset($_POST['actualizarReto'])) {
     }
 
     if (actualizarReto($idReto, $nombre, $fechaInicio, $fechaFin, $horas, [$idModulo])) {
+        registrarAccion('actualizar', 'retos', $idReto, $nombre);
         if (!empty($_FILES['archivosReto']['name'][0])) {
             $uploadDir = __DIR__ . "/../../../public/uploads/retos/";
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);

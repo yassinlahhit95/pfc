@@ -79,10 +79,18 @@ include_once __DIR__ . "/../comunes/nav.php";
             <textarea id="observaciones" name="observaciones" rows="3"><?= Security::escapeHtml($calificacion['observaciones'] ?? '') ?></textarea>
         </div>
 
-        <div class="campo">
-            <label class="campo-checkbox" for="notificarEstudiante">
-                <input type="checkbox" id="notificarEstudiante" name="notificarEstudiante" value="1" checked>
-                <b>Notificar al estudiante (Email + Push)</b>
+        <div class="campo ancho-total">
+            <label class="notif-bloque">
+                <input type="checkbox" name="notificarEstudiante" value="1" checked>
+                <div class="notif-bloque-icono"><i class="fas fa-bell"></i></div>
+                <div class="notif-bloque-texto">
+                    <div class="notif-bloque-titulo">Notificar al estudiante</div>
+                    <div class="notif-bloque-canales">
+                        <span class="notif-canal"><i class="fas fa-envelope"></i> Email</span>
+                        <span class="notif-canal"><i class="fas fa-mobile-alt"></i> Push</span>
+                    </div>
+                </div>
+                <div class="notif-bloque-chk">✓</div>
             </label>
         </div>
 

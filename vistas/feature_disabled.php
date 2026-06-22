@@ -44,6 +44,13 @@ $labels  = [
     'feature_chat'         => 'Chat',
     'feature_inventario'   => 'Inventario',
     'feature_subida_tfg'   => 'Entrega de TFG',
+    'feature_anuncios'     => 'Anuncios',
+    'feature_eventos'      => 'Eventos',
+    'feature_retos'        => 'Retos',
+    'feature_mensajes'     => 'Mensajería',
+    'feature_pagos'        => 'Pagos',
+    'feature_gastos'       => 'Gastos',
+    'feature_informes'     => 'Informes PDF',
 ];
 $label = $labels[$feature] ?? $label;
 

@@ -4,14 +4,23 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarModulo'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/modulos/agregarModulos.php");
+        exit;
+    }
     $nombre       = trim($_POST['nombreModulo']);
     $idCiclo      = (int)($_POST['idCiclo'] ?? 0);
     $horasMaximas = trim($_POST['horasMaximas']);
+    $aniosPermitidos = ['1º', '2º'];
+    $cursoAnio    = in_array($_POST['cursoAnio'] ?? '', $aniosPermitidos, true) ? $_POST['cursoAnio'] : null;
+    $creditosECTS = is_numeric($_POST['creditosECTS'] ?? '') ? (int)$_POST['creditosECTS'] : null;
 
     $avisos = [];
     if (empty($nombre))      $avisos['nombreModulo'] = "El nombre del módulo es un campo obligatorio.";
@@ -33,7 +42,8 @@ if (isset($_POST['guardarModulo'])) {
         exit;
     }
 
-    if (insertarModulo($nombre, $idCiclo, $horasMaximas)) {
+    if (insertarModulo($nombre, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS)) {
+        registrarAccion('insertar', 'modulos', null, $nombre);
         $_SESSION['exito'] = "El módulo ha sido registrado correctamente.";
         header("Location: ../../../vistas/admin/modulos/verModulos.php");
         exit;

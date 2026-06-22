@@ -64,18 +64,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="cuadricula-secundaria" style="margin-top: 25px;">
-            <div>
-                <h4 class="margen-abajo">Asignar Tutores/Profesores</h4>
-                <div class="checks">
-                    <?php foreach ($listaProfesores as $prof) { ?>
-                        <label class="check-item">
-                            <input type="checkbox" name="profesores[]" value="<?= Security::escapeHtml($prof['idProfesor']) ?>"
-                                <?php if (isset($mapaProfesoresElegidos[$prof['idProfesor']])) { ?>checked<?php } ?>>
-                            <span><?= Security::escapeHtml($prof['nombreProfesor']) ?></span>
-                        </label>
-                    <?php } ?>
-                </div>
+        <div style="margin-top: 25px;">
+            <h4 class="margen-abajo">Asignar Tutores/Profesores</h4>
+            <div class="modulo-chips">
+                <?php foreach ($listaProfesores as $prof) { ?>
+                    <label class="modulo-chip">
+                        <input type="checkbox" name="profesores[]" value="<?= Security::escapeHtml($prof['idProfesor']) ?>"
+                            <?php if (isset($mapaProfesoresElegidos[$prof['idProfesor']])) { ?>checked<?php } ?>>
+                        <span><?= Security::escapeHtml($prof['nombreProfesor']) ?></span>
+                    </label>
+                <?php } ?>
             </div>
         </div>
 

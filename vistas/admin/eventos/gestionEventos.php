@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_eventos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -58,7 +60,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <div class="recurso-menu">
                                     <a class="recurso-menu-item" href="modificarEvento.php?idEvento=<?= Security::escapeHtml($evento['idEvento']) ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarEvento.php?id=<?= Security::escapeHtml($evento['idEvento']) ?>" onclick="return confirm('¿Eliminar este evento?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$evento['idEvento'] ?>"
+                                       data-tipo="Evento"
+                                       data-nombre="<?= Security::escapeHtml($evento['tituloEvento']) ?>"
+                                       data-url="/controladores/admin/eventos/borrar.php"
+                                       data-campo="idEvento"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -72,6 +80,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include '../comunes/footer.php'; ?>
 <script>
-iniciarPaginacion('tablaEventos', 10);
+iniciarPaginacion('tablaEventos', 15);
 </script>
 

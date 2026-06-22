@@ -7,11 +7,13 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/configuracion.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 
 $idProfesor = $_SESSION['idProfesor'];
 $tfgs = listarTFGsPorProfesor($idProfesor);
 $cfg = obtenerConfiguracionCentro();
 $entregaAbierta = (bool)($cfg['feature_subida_tfg'] ?? 1);
+$saasLocked = FeatureGuard::isLocked();
 
 $calificacionesTFG = [];
 foreach ($tfgs as $tfg) {
@@ -38,10 +40,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </div>
             </div>
         </div>
+        <?php if ($saasLocked): ?>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700;background:#f3f4f6;color:#6b7280;white-space:nowrap;"><i class="fas fa-lock"></i> <?= $entregaAbierta ? 'Activo' : 'Inactivo' ?></span>
+        <?php else: ?>
         <label class="switch">
             <input type="checkbox" id="toggle-subida-tfg" <?= $entregaAbierta ? 'checked' : '' ?>>
             <span class="slider round"></span>
         </label>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -126,31 +132,34 @@ function toggleFormCalificar(idFormulario) {
     $('#' + idFormulario).toggle();
 }
 
-document.getElementById('toggle-subida-tfg').addEventListener('change', function() {
-    var estado = this.checked ? 1 : 0;
-    var toggle = this;
-    fetch('../../../controladores/profesores/pfc/toggle_subida.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'estado=' + estado + '&csrf_token=<?= Security::generateCSRFToken() ?>'
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        if (data.status !== 'success') {
+const toggleEl = document.getElementById('toggle-subida-tfg');
+if (toggleEl) {
+    toggleEl.addEventListener('change', function() {
+        var estado = this.checked ? 1 : 0;
+        var toggle = this;
+        fetch('../../../controladores/profesores/pfc/toggle_subida.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'estado=' + estado + '&csrf_token=<?= Security::generateCSRFToken() ?>'
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.status !== 'success') {
+                toggle.checked = !toggle.checked;
+                Toast.show(data.message || 'No se pudo actualizar la configuración.', 'error');
+            } else {
+                var desc = toggle.closest('.feature-card').querySelector('.feature-desc');
+                desc.textContent = toggle.checked
+                    ? 'Los estudiantes pueden subir su TFG.'
+                    : 'La entrega está cerrada para los estudiantes.';
+            }
+        })
+        .catch(function() {
             toggle.checked = !toggle.checked;
-            Toast.show('No se pudo actualizar la configuración.', 'error');
-        } else {
-            var desc = toggle.closest('.feature-card').querySelector('.feature-desc');
-            desc.textContent = toggle.checked
-                ? 'Los estudiantes pueden subir su TFG.'
-                : 'La entrega está cerrada para los estudiantes.';
-        }
-    })
-    .catch(function() {
-        toggle.checked = !toggle.checked;
-        Toast.show('Error de red.', 'error');
+            Toast.show('Error de red.', 'error');
+        });
     });
-});
+}
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

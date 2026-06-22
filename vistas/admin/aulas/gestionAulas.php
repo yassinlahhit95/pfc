@@ -65,7 +65,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <a class="recurso-menu-item" href="ocupacionAula.php?aula=<?= Security::escapeHtml($aula['idAula']) ?>"><i class="fas fa-table"></i> Ver ocupación</a>
                                     <a class="recurso-menu-item" href="modificarAula.php?id=<?= Security::escapeHtml($aula['idAula']) ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarAula.php?id=<?= Security::escapeHtml($aula['idAula']) ?>" onclick="return confirm('¿Eliminar esta aula?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$aula['idAula'] ?>"
+                                       data-tipo="Aula"
+                                       data-nombre="<?= Security::escapeHtml($aula['nombreAula'] ?: 'Sin nombre') ?>"
+                                       data-url="/controladores/admin/aulas/borrar.php"
+                                       data-campo="idAula"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -79,5 +85,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include '../comunes/footer.php'; ?>
 <script>
-iniciarPaginacion('tablaAulas', 10);
+iniciarPaginacion('tablaAulas', 15);
 </script>

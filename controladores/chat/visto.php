@@ -27,6 +27,7 @@ if (!empty($_SESSION['idAdmin'])) {
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     echo json_encode(['ok' => false]); exit;
 }
+session_write_close(); // release session lock before DB work
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO

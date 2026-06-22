@@ -5,6 +5,7 @@
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/directores.php";
+require_once __DIR__ . "/../../include/CircuitBreaker.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN JWT (OAuth 2.0 para FCM v1)
@@ -80,6 +81,12 @@ function obtenerAccessToken() {
 function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     if (empty($token)) return false;
 
+    // Circuit breaker: don't hammer FCM/Google OAuth when they're returning errors.
+    if (CircuitBreaker::isOpen('fcm')) {
+        error_log("FCM circuit OPEN — push skipped for token " . substr($token, 0, 20));
+        return false;
+    }
+
     $config     = Config::getInstance();
     $idProyecto = $config->get('FIREBASE_PROJECT_ID', 'pfc1-5c23c');
     $urlFCM     = "https://fcm.googleapis.com/v1/projects/$idProyecto/messages:send";
@@ -87,6 +94,7 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
     $accessToken = obtenerAccessToken();
     if (!$accessToken) {
         error_log("FCM Error: No se pudo obtener el Access Token. Revisa service-account.json");
+        CircuitBreaker::recordFailure('fcm');
         return false;
     }
 
@@ -138,12 +146,16 @@ function enviarNotificacionFirebase($token, $titulo, $mensaje) {
 
     if ($errCurl) {
         error_log("FCM CURL Error: " . $errCurl);
+        CircuitBreaker::recordFailure('fcm');
+        return false;
     }
 
     if ($codigoHttp !== 200) {
         error_log("FCM API Error (HTTP $codigoHttp): " . $resultadoEnvio);
+        CircuitBreaker::recordFailure('fcm');
     } else {
         error_log("FCM Success: Notificación enviada correctamente al token: " . substr($token, 0, 20) . "...");
+        CircuitBreaker::recordSuccess('fcm');
     }
 
     return $resultadoEnvio;

@@ -88,13 +88,13 @@ function obtenerTokenFCMEstudiante($idEstudiante) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
+function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null) {
     $con = obtenerConexion();
     require_once __DIR__ . '/../include/credenciales.php';
     [$pass] = generarCredencialesTemporales($email, $nombre, 'Estudiante');
-    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso, anioEstudio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssssssssis", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
+    mysqli_stmt_bind_param($stmt, "sssssssssssiss", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $anioEstudio);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -102,11 +102,11 @@ function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio') {
+function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso = 'Grado Medio', $anioEstudio = null) {
     $con = obtenerConexion();
-    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=? WHERE idEstudiante=?";
+    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, fechaNacimientoEstudiante=?, dniEstudiante=?, fechaAltaEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=?, observacionesEstudiante=?, idCiclo=?, curso=?, anioEstudio=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssisi", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $id);
+    mysqli_stmt_bind_param($stmt, "ssssssssssissi", $nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $anioEstudio, $id);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -169,6 +169,16 @@ function validarLoginEstudiante($email, $password) {
 // ══════════════════════════════════════════════════════════════════════
 // UTILIDADES
 // ══════════════════════════════════════════════════════════════════════
+
+function estudiantePerteneceACiclo($idEstudiante, $idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT 1 FROM estudiantes WHERE idEstudiante = ? AND idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_num_rows($res) > 0;
+}
 
 function estudiantePerteneceAProfesor($idEstudiante, $idProfesor) {
     $con = obtenerConexion();

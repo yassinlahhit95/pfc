@@ -5,11 +5,17 @@
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['subirTFG'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
+        exit;
+    }
     $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
     $archivo      = $_FILES['archivoTFG'] ?? null;
     $errores      = [];
@@ -49,6 +55,7 @@ if (isset($_POST['subirTFG'])) {
 
         if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreAleatorio)) {
+                registrarAccion('subir_tfg', 'estudiantes', $idEstudiante);
                 $_SESSION['exito'] = "El TFG ha sido subido correctamente.";
                 header("Location: ../../../vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$idEstudiante");
                 exit;

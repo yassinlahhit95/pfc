@@ -145,7 +145,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <option value="">-- Seleccionar Módulo --</option>
                 <?php foreach ($listaModulos as $modulo) { ?>
                     <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($modulo['nombreModulo']) ?>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?><?= !empty($modulo['cursoAnio']) ? ' — ' . Security::escapeHtml($modulo['cursoAnio']) : '' ?>
                     </option>
                 <?php } ?>
             </select>
@@ -261,7 +261,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                                                value="<?= Security::escapeHtml($val) ?>"
                                                class="nota-input<?= $isCO ? ' is-co' : '' ?>"
                                                maxlength="4"
-                                               placeholder="0–10/NP/EX"
+                                               placeholder=""
+                                               autocomplete="off"
                                                <?= $isCO ? 'readonly' : '' ?>
                                                oninput="actualizarBadge(this)"
                                                onblur="validarNota(this)"

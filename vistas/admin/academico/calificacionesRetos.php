@@ -28,8 +28,12 @@ if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_c
 
 $listaRetos = $idCicloElegido ? listarRetosPorCiclo($idCicloElegido) : [];
 $listaEstudiantes = [];
+$cursoAnioReto = '';
 if ($idCicloElegido && $idRetoElegido) {
     $listaEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
+    foreach (listarModulosDeReto($idRetoElegido) as $_mr) {
+        if (!empty($_mr['cursoAnio'])) { $cursoAnioReto = $_mr['cursoAnio']; break; }
+    }
 }
 
 $titulo_pagina = "AULAPRO | NOTAS RETOS";
@@ -77,6 +81,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </option>
                 <?php } ?>
             </select>
+            <?php if ($cursoAnioReto): ?>
+            <p class="texto-suave" style="font-size:.8rem;margin-top:5px;"><i class="fas fa-layer-group"></i> Módulo de <strong><?= Security::escapeHtml($cursoAnioReto) ?></strong> año</p>
+            <?php endif; ?>
         </div>
 
 </form>

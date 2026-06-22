@@ -41,21 +41,21 @@ include_once "../comunes/nav.php";
         </div>
 
         <div class="campo">
-            <label for="telefonoProfesor">Numero de Telefono</label>
+            <label for="telefonoProfesor">Número de Teléfono</label>
             <input type="text" name="telefonoProfesor" id="telefonoProfesor" value="<?= Security::escapeHtml($datos['telefonoProfesor'] ?? $profesorActual['telefonoProfesor']) ?>">
         </div>
 
-        <div class="titulo-tarjeta" style="margin-top: 30px;"><h3>SEGURIDAD Y CONTRASEÑA</h3></div>
-        <p class="texto-suave" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
+        <div class="titulo-tarjeta" style="margin-top:10px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
+        <p class="texto-suave">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo">
             <label for="current_password">Contraseña Actual</label>
-            <input type="password" name="current_password" id="current_password">
+            <input type="password" name="current_password" id="current_password" placeholder="••••••••">
         </div>
 
         <div class="campo">
             <label for="new_password">Nueva Contraseña</label>
-            <input type="password" name="new_password" id="new_password">
+            <input type="password" name="new_password" id="new_password" placeholder="••••••••">
         </div>
 
         <div class="acciones">

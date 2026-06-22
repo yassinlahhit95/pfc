@@ -4,11 +4,17 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/aulas.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarAula'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/aulas/agregarAula.php");
+        exit;
+    }
     $planta    = (int)($_POST['planta'] ?? -1);
     $numero    = (int)($_POST['numero'] ?? 0);
     $nombre    = trim($_POST['nombreAula'] ?? '');
@@ -34,6 +40,7 @@ if (isset($_POST['guardarAula'])) {
     }
 
     if (insertarAula($planta, $numero, $nombre, $tipo, $capacidad, $activa)) {
+        registrarAccion('insertar', 'aulas', null, "Planta $planta · Nº$numero · $tipo");
         $_SESSION['exito'] = "El aula ha sido registrada correctamente.";
         header("Location: ../../../vistas/admin/aulas/gestionAulas.php");
         exit;

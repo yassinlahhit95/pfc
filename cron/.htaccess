@@ -1,0 +1,12 @@
+# Block all web access to cron scripts.
+# These must only run via CLI (crontab) or localhost server calls.
+<IfModule mod_authz_core.c>
+    <RequireAll>
+        Require local
+    </RequireAll>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+    Allow from 127.0.0.1 ::1
+</IfModule>

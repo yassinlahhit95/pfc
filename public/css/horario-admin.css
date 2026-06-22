@@ -74,6 +74,23 @@
     color: #ef4444;
     transform: scale(1.1);
 }
+.horario-quitar-franja.hqf-confirmar {
+    width: auto;
+    padding: 0 10px;
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #ef4444;
+    font-weight: 600;
+    font-size: .7rem;
+    gap: 4px;
+    transform: none;
+    animation: hqf-pulse .25s ease;
+}
+@keyframes hqf-pulse {
+    0%   { transform: scale(.9); }
+    60%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 
 /* ── Panel añadir franja ── */
 .hf-panel {

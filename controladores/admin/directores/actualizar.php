@@ -4,11 +4,17 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarDirector'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/directores/verDirectores.php");
+        exit;
+    }
     $idDirector      = (int)($_POST['idDirector'] ?? 0);
     $nombre          = trim($_POST['nombreDirector']);
     $email           = trim($_POST['emailDirector']);
@@ -51,6 +57,7 @@ if (isset($_POST['actualizarDirector'])) {
     }
 
     if (actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)) {
+        registrarAccion('actualizar', 'directores', $idDirector, $nombre);
         $_SESSION['exito'] = "El director ha sido actualizado correctamente.";
         header("Location: ../../../vistas/admin/directores/verDirectores.php");
         exit;

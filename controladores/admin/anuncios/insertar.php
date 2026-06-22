@@ -3,7 +3,10 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_anuncios');
 require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
@@ -13,6 +16,11 @@ require_once __DIR__ . "/../../firebase/firebase_helper.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarAnuncio'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/anuncios/agregarAnuncios.php");
+        exit;
+    }
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
     $dirigidoA = $_POST['dirigidoA'];
@@ -30,6 +38,7 @@ if (isset($_POST['guardarAnuncio'])) {
         $resultado = insertarAnuncio($titulo, $contenido, $dirigidoA);
 
         if ($resultado) {
+            registrarAccion('insertar', 'anuncios', null, $titulo);
             // ── Notificación push a dispositivos ──
             $tokens = [];
             if ($dirigidoA == 'estudiantes' || $dirigidoA == 'todos') {

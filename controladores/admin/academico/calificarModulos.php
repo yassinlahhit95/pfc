@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -53,6 +54,7 @@ if (isset($_POST['guardarNotas'])) {
     }
 
     if (!$hayError) {
+        registrarAccion('calificar_modulos', 'calificaciones_modulos', $idModulo, "Ciclo $idCiclo");
         $_SESSION['exito'] = "Las notas han sido guardadas correctamente.";
     } else {
         $_SESSION['errores'] = "Error: las notas deben ser valores numéricos entre 0 y 10, o bien los códigos especiales NP, EX o CO.";

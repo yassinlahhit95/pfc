@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_anuncios');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -34,21 +36,23 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
 
-        <div class="campo">
-            <label for="tituloAnuncio">Título del Anuncio</label>
-            <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= Security::escapeHtml($anuncio['tituloAnuncio']) ?>" class="<?= (is_array($errores) && isset($errores['tituloAnuncio'])) ? 'border-error' : '' ?>">
-            <?php if (is_array($errores) && isset($errores['tituloAnuncio'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['tituloAnuncio']) ?></span><?php endif; ?>
-        </div>
+        <div class="formulario">
+            <div class="campo">
+                <label for="tituloAnuncio">Título del Anuncio</label>
+                <input type="text" id="tituloAnuncio" name="tituloAnuncio" value="<?= Security::escapeHtml($anuncio['tituloAnuncio']) ?>" class="<?= (is_array($errores) && isset($errores['tituloAnuncio'])) ? 'border-error' : '' ?>">
+                <?php if (is_array($errores) && isset($errores['tituloAnuncio'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['tituloAnuncio']) ?></span><?php endif; ?>
+            </div>
 
-        <div class="campo margen-arriba">
-            <label for="contenidoAnuncio">Contenido del Anuncio</label>
-            <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" class="<?= (is_array($errores) && isset($errores['contenidoAnuncio'])) ? 'border-error' : '' ?>"><?= Security::escapeHtml($anuncio['contenidoAnuncio']) ?></textarea>
-            <?php if (is_array($errores) && isset($errores['contenidoAnuncio'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['contenidoAnuncio']) ?></span><?php endif; ?>
-        </div>
+            <div class="campo ancho-total">
+                <label for="contenidoAnuncio">Contenido del Anuncio</label>
+                <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" class="<?= (is_array($errores) && isset($errores['contenidoAnuncio'])) ? 'border-error' : '' ?>"><?= Security::escapeHtml($anuncio['contenidoAnuncio']) ?></textarea>
+                <?php if (is_array($errores) && isset($errores['contenidoAnuncio'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['contenidoAnuncio']) ?></span><?php endif; ?>
+            </div>
 
-        <div class="acciones">
-            <input type="submit" name="actualizarAnuncio" class="boton-primario" value="GUARDAR CAMBIOS">
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
+            <div class="acciones">
+                <input type="submit" name="actualizarAnuncio" class="boton-primario" value="GUARDAR CAMBIOS">
+                <input type="reset" class="boton-secundario" value="LIMPIAR">
+            </div>
         </div>
     </form>
 </div>

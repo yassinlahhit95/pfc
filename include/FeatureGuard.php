@@ -8,7 +8,9 @@ require_once __DIR__ . '/LicenseToken.php';
 //   3. Token expirado o manipulado ← FAIL CLOSED (tratado como suspendido)
 class FeatureGuard
 {
-    private const TTL          = 300; // segundos de caché en sesión
+    private const TTL          = 5;               // segundos de caché en sesión (fallback sin APCu)
+    private const APCU_TTL     = 60;              // segundos de caché APCu compartida entre workers
+    private const APCU_KEY     = 'aulapro_fg';    // clave APCu única por instancia
     private const SESSION_TS   = '_fg_ts';
     private const SESSION_DATA = '_fg_data';
 
@@ -19,6 +21,16 @@ class FeatureGuard
     private static function load(): array
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
+
+        // L1: APCu shared memory — 60 s TTL, visible to all PHP-FPM workers.
+        // When admin saves config, clearCache() deletes this key so the very
+        // next request from any user re-reads from DB and repopulates APCu.
+        if (function_exists('apcu_fetch')) {
+            $cached = apcu_fetch(self::APCU_KEY, $found);
+            if ($found && is_array($cached)) return $cached;
+        }
+
+        // L2: Per-user session cache — 5 s TTL, used when APCu is unavailable.
         if (
             isset($_SESSION[self::SESSION_TS], $_SESSION[self::SESSION_DATA]) &&
             $_SESSION[self::SESSION_TS] > time() - self::TTL
@@ -29,12 +41,17 @@ class FeatureGuard
         require_once __DIR__ . '/../modelos/conectar.php';
         $con = obtenerConexion();
 
-        // SELECT * — nunca falla aunque falten columnas opcionales (license_token, etc.)
-        $res = mysqli_query($con, 'SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1');
+        // SELECT * avoids breaking when optional columns (added by migrations) don't exist yet.
+        $res = mysqli_query($con,
+            'SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1');
         $row = ($res ? mysqli_fetch_assoc($res) : null) ?? [];
 
         $data = self::resolve($row);
 
+        // Write to both caches so the next request is served from APCu when available.
+        if (function_exists('apcu_store')) {
+            apcu_store(self::APCU_KEY, $data, self::APCU_TTL);
+        }
         $_SESSION[self::SESSION_TS]   = time();
         $_SESSION[self::SESSION_DATA] = $data;
 
@@ -54,19 +71,38 @@ class FeatureGuard
         $rawToken = $row['license_token'] ?? null;
 
         // Camino A: token válido firmado
+        // El token define el TECHO (qué funcionalidades tiene contratadas la licencia).
+        // El toggle de la BD define el SUELO (qué funcionalidades ha activado el admin dentro de lo licenciado).
+        // Una funcionalidad está activa solo si la licencia la permite Y el admin la tiene activada.
         if ($rawToken) {
             $payload = LicenseToken::verify($rawToken);
             if ($payload !== null) {
+                // tok_* = lo que permite la licencia (1 si la licencia lo incluye, 0 si no)
+                // db_*  = lo que el admin ha activado en configuración (puede desactivar lo que la licencia permite)
+                $feat = static function(string $key, array $payload, array $row): int {
+                    $licensedOn = (bool)($payload['features'][$key] ?? true);
+                    $adminOn    = (bool)((int)($row[$key] ?? 1));
+                    return (int)($licensedOn && $adminOn);
+                };
                 return [
                     'instance_status'      => $payload['status']   ?? 'active',
                     'suspension_message'   => $payload['susp_msg'] ?? '',
-                    'feature_prematricula' => (int)(bool)($payload['features']['feature_prematricula'] ?? true),
-                    'feature_chat'         => (int)(bool)($payload['features']['feature_chat']         ?? true),
-                    'feature_inventario'   => (int)(bool)($payload['features']['feature_inventario']   ?? true),
-                    'feature_subida_tfg'   => (int)(bool)($payload['features']['feature_subida_tfg']   ?? true),
+                    'feature_prematricula' => $feat('feature_prematricula', $payload, $row),
+                    'feature_chat'         => $feat('feature_chat',         $payload, $row),
+                    'feature_inventario'   => $feat('feature_inventario',   $payload, $row),
+                    'feature_subida_tfg'   => $feat('feature_subida_tfg',   $payload, $row),
+                    'feature_anuncios'     => $feat('feature_anuncios',     $payload, $row),
+                    'feature_eventos'      => $feat('feature_eventos',      $payload, $row),
+                    'feature_retos'        => $feat('feature_retos',        $payload, $row),
+                    'feature_mensajes'     => $feat('feature_mensajes',     $payload, $row),
+                    'feature_pagos'        => $feat('feature_pagos',        $payload, $row),
+                    'feature_gastos'       => $feat('feature_gastos',       $payload, $row),
+                    'feature_informes'     => $feat('feature_informes',     $payload, $row),
+                    'feature_horario'      => $feat('feature_horario',      $payload, $row),
                     'saas_lock_features'   => (int)(bool)($payload['lock']     ?? false),
                     'saas_message'         => $payload['msg']      ?? '',
                     'saas_message_type'    => $payload['msg_type'] ?? 'info',
+                    'sub_exp'              => isset($payload['sub_exp']) ? (int)$payload['sub_exp'] : null,
                     '_source'              => 'token',
                 ];
             }
@@ -93,9 +129,18 @@ class FeatureGuard
             'feature_chat'         => (int)($row['feature_chat']         ?? 1),
             'feature_inventario'   => (int)($row['feature_inventario']   ?? 1),
             'feature_subida_tfg'   => (int)($row['feature_subida_tfg']   ?? 1),
+            'feature_anuncios'     => (int)($row['feature_anuncios']     ?? 1),
+            'feature_eventos'      => (int)($row['feature_eventos']      ?? 1),
+            'feature_retos'        => (int)($row['feature_retos']        ?? 1),
+            'feature_mensajes'     => (int)($row['feature_mensajes']     ?? 1),
+            'feature_pagos'        => (int)($row['feature_pagos']        ?? 1),
+            'feature_gastos'       => (int)($row['feature_gastos']       ?? 1),
+            'feature_informes'     => (int)($row['feature_informes']     ?? 1),
+            'feature_horario'      => (int)($row['feature_horario']      ?? 1),
             'saas_lock_features'   => (int)($row['saas_lock_features']   ?? 0),
             'saas_message'         => $row['saas_message']      ?? '',
             'saas_message_type'    => $row['saas_message_type'] ?? 'info',
+            'sub_exp'              => null,
             '_source'              => 'grace',
         ];
     }
@@ -109,9 +154,17 @@ class FeatureGuard
             'feature_chat'         => 0,
             'feature_inventario'   => 0,
             'feature_subida_tfg'   => 0,
+            'feature_anuncios'     => 0,
+            'feature_eventos'      => 0,
+            'feature_retos'        => 0,
+            'feature_mensajes'     => 0,
+            'feature_pagos'        => 0,
+            'feature_gastos'       => 0,
+            'feature_informes'     => 0,
+            'feature_horario'      => 0,
             'saas_lock_features'   => 1,
-            'saas_message'         => $message,
-            'saas_message_type'    => 'error',
+            'saas_message'         => '',
+            'saas_message_type'    => 'info',
             '_source'              => 'fail_closed',
         ];
     }
@@ -174,6 +227,10 @@ class FeatureGuard
 
     public static function clearCache(): void
     {
+        // Clear APCu first — this immediately invalidates the cache for all workers.
+        if (function_exists('apcu_delete')) {
+            apcu_delete(self::APCU_KEY);
+        }
         unset($_SESSION[self::SESSION_TS], $_SESSION[self::SESSION_DATA]);
     }
 

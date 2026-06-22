@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -120,7 +122,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <div class="recurso-menu">
                                     <a class="recurso-menu-item" href="modificarRetos.php?idReto=<?= $reto['idReto'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarReto.php?id=<?= $reto['idReto'] ?>" onclick="return confirm('¿Eliminar este reto?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$reto['idReto'] ?>"
+                                       data-tipo="Reto"
+                                       data-nombre="<?= Security::escapeHtml($reto['nombreReto']) ?>"
+                                       data-url="/controladores/admin/retos/borrar.php"
+                                       data-campo="idReto"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -134,6 +142,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include '../comunes/footer.php'; ?>
 <script>
+iniciarPaginacion('tablaRetos', 15);
 function aplicarFiltrosRetos() {
     var idNivel = $('#selectFiltroNivel').val();
     var idCiclo = $('#selectFiltroCiclo').val();
@@ -148,6 +157,7 @@ function aplicarFiltrosRetos() {
             $fila.addClass('fila-filtro-oculta');
         }
     });
+    resetearPaginacion('tablaRetos');
 }
 </script>
 

@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_mensajes');
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -9,7 +11,8 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$tipo   = $_GET['tipoDestinatario'] ?? 'profesor';
+$tipo   = in_array($_GET['tipoDestinatario'] ?? '', ['profesor', 'estudiante'], true)
+          ? $_GET['tipoDestinatario'] : 'profesor';
 $idCiclo = (int)($_GET['idCiclo'] ?? 0);
 $listaDeCiclos = listarTodosLosCiclos();
 

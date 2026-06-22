@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_anuncios');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -54,7 +56,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         <a class="recurso-menu-item" href="detallesAnuncio.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>"><i class="fas fa-eye"></i> Ver detalles</a>
                                         <a class="recurso-menu-item" href="modificarAnuncios.php?idAnuncio=<?= $anuncio['idAnuncio'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                         <div class="recurso-menu-sep"></div>
-                                        <a class="recurso-menu-item peligro" href="borrarAnuncio.php?id=<?= $anuncio['idAnuncio'] ?>" onclick="return confirm('¿Eliminar este anuncio?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                        <a class="recurso-menu-item peligro" href="#"
+                                           data-modal-borrar
+                                           data-id="<?= (int)$anuncio['idAnuncio'] ?>"
+                                           data-tipo="Anuncio"
+                                           data-nombre="<?= Security::escapeHtml($anuncio['tituloAnuncio']) ?>"
+                                           data-url="/controladores/admin/anuncios/borrar.php"
+                                           data-campo="idAnuncio"><i class="fas fa-trash"></i> Eliminar</a>
                                     </div>
                                 </div>
                             </td>

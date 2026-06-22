@@ -155,7 +155,7 @@ class Security {
         return $_SESSION['csrf_token'];
     }
 
-    public static function validateCSRFToken($token = null) {
+    public static function validateCSRFToken($token = null, $rotate = true) {
         if (!isset($_SESSION['csrf_token'])) {
             return false;
         }
@@ -169,11 +169,14 @@ class Security {
 
         if (!isset($_SESSION['csrf_token_time'])
             || time() - $_SESSION['csrf_token_time'] > self::CSRF_VALIDITY_SECONDS) {
-            unset($_SESSION['csrf_token']);
-            unset($_SESSION['csrf_token_time']);
+            unset($_SESSION['csrf_token'], $_SESSION['csrf_token_time']);
             return false;
         }
 
+        if ($rotate) {
+            // Rotate: invalidate used token so each form submission gets a fresh one
+            unset($_SESSION['csrf_token'], $_SESSION['csrf_token_time']);
+        }
         return true;
     }
 
@@ -367,6 +370,15 @@ class Security {
 
     public static function escapeHtml($value) {
         return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (!function_exists('jsonResponse')) {
+    function jsonResponse(array $data): void {
+        if (ob_get_level() > 0) ob_clean();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
     }
 }
 

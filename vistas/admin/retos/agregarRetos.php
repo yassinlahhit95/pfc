@@ -1,12 +1,16 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 $todos_los_modulos = listarModulos();
+$listaCiclos = listarTodosLosCiclos();
 
 $datos = $_SESSION['datos_reto'] ?? [];
 
@@ -51,48 +55,107 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
         <div class="campo">
+            <label for="filtroCicloReto">Filtrar por Ciclo</label>
+            <select id="filtroCicloReto" onchange="filtrarModulosReto()">
+                <option value="">-- Todos los ciclos --</option>
+                <?php foreach ($listaCiclos as $c): ?>
+                    <option value="<?= (int)$c['idCiclo'] ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="campo">
             <label for="modulosReto">Módulo Asociado</label>
             <select name="modulosReto" id="modulosReto" class="<?= (is_array($errores) && isset($errores['modulosReto'])) ? 'border-error' : '' ?>">
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
-                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= ($datos['modulosReto'] ?? '') == $modulo['idModulo'] ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo']) ?>)
+                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>"
+                            data-ciclo="<?= (int)$modulo['idCiclo'] ?>"
+                            <?= ($datos['modulosReto'] ?? '') == $modulo['idModulo'] ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?>
+                        <?= !empty($modulo['cursoAnio']) ? ' (' . Security::escapeHtml($modulo['cursoAnio']) . ')' : '' ?>
+                        — <?= Security::escapeHtml($modulo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
             <?php if (is_array($errores) && isset($errores['modulosReto'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['modulosReto']) ?></span><?php endif; ?>
         </div>
 
-        <div class="campo">
-            <label for="archivosReto">Materiales / Guía del Reto (PDF o Imágenes)</label>
-            <div class="file-manager-premium">
-                <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" class="form-control mb-2">
-                <div class="upload-progress-container" id="progressWrapper">
-                    <div class="progress-bar-premium">
-                        <div class="progress-fill-premium" id="progressFill"></div>
-                    </div>
-                    <div class="progress-text-premium" id="progressText">0%</div>
+        <div class="campo ancho-total">
+            <label>Materiales / Guía del Reto <span class="texto-suave" style="font-weight:400;">(PDF o imágenes)</span></label>
+            <label for="archivosReto" class="boton-secundario" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:0;">
+                <i class="fas fa-paperclip"></i> Adjuntar archivos
+            </label>
+            <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*"
+                   style="position:absolute;opacity:0;width:0;height:0;" onchange="mostrarArchivosReto(this)">
+            <div class="archivo-reto-lista" id="listaArchivosReto"></div>
+            <div id="progressWrapper" style="display:none;margin-top:10px;">
+                <div style="height:6px;background:var(--border-2,#e2e8f0);border-radius:4px;overflow:hidden;">
+                    <div id="progressFill" style="height:100%;background:var(--accent,#4F46E5);width:0%;transition:width .3s;"></div>
                 </div>
+                <p id="progressText" class="texto-suave" style="font-size:.8rem;margin-top:4px;">0%</p>
             </div>
-            <small class="text-muted">Puedes seleccionar varios archivos a la vez.</small>
+            <p class="texto-suave" style="font-size:.8rem;margin-top:6px;">Múltiples archivos permitidos</p>
         </div>
 
         <div class="acciones">
             <button type="submit" name="guardarReto" class="boton-primario" id="btnGuardar">
                 <i class="fas fa-plus"></i> CREAR RETO
             </button>
-            <input type="reset" class="boton-secundario" value="LIMPIAR">
+            <input type="reset" class="boton-secundario" value="LIMPIAR" onclick="$('#listaArchivosReto').empty();">
         </div>
     </form>
 </div>
 
 <script>
-$(document).ready(function() {
+var _todosModulos = <?= json_encode(array_map(fn($m) => ['id' => (int)$m['idModulo'], 'ciclo' => (int)$m['idCiclo']], $todos_los_modulos)) ?>;
+
+function filtrarModulosReto() {
+    var idCiclo = parseInt($('#filtroCicloReto').val()) || 0;
+    var $sel = $('#modulosReto');
+    var currentVal = $sel.val();
+    $sel.find('option').each(function() {
+        if (!$(this).val()) return;
+        var optCiclo = parseInt($(this).data('ciclo')) || 0;
+        $(this).toggle(!idCiclo || optCiclo === idCiclo);
+    });
+    // Reset selection if the selected option is now hidden
+    if (idCiclo && $sel.find(':selected').val() && parseInt($sel.find(':selected').data('ciclo')) !== idCiclo) {
+        $sel.val('');
+    }
+}
+
+function mostrarArchivosReto(input) {
+    var $lista = $('#listaArchivosReto').empty();
+    Array.from(input.files).forEach(function(f) {
+        var icon = f.type === 'application/pdf' ? 'fa-file-pdf' : 'fa-file-image';
+        var size = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.ceil(f.size / 1024) + ' KB';
+        $lista.append(
+            '<div class="archivo-reto-item">' +
+            '<i class="fas ' + icon + '" style="color:var(--accent,#4F46E5);font-size:16px;flex-shrink:0;"></i>' +
+            '<span class="archivo-reto-nombre">' + $('<span>').text(f.name).html() + '</span>' +
+            '<span class="texto-suave" style="font-size:.75rem;white-space:nowrap;">' + size + '</span>' +
+            '</div>'
+        );
+    });
+}
+
+$(function() {
+    // Pre-select ciclo filter if a module was already selected (e.g. on validation error return)
+    var $selMod = $('#modulosReto');
+    var selCiclo = parseInt($selMod.find(':selected').data('ciclo')) || 0;
+    if (selCiclo) {
+        $('#filtroCicloReto').val(selCiclo);
+        filtrarModulosReto();
+        $selMod.val('<?= Security::escapeHtml($datos['modulosReto'] ?? '') ?>');
+    }
+
+    // AJAX upload with progress
     $('.formulario').on('submit', function(e) {
         if ($('#archivosReto').get(0).files.length === 0) return true;
 
         e.preventDefault();
-        const formData = new FormData(this);
+        var formData = new FormData(this);
         formData.append('guardarReto', '1');
 
         $('#progressWrapper').fadeIn();
@@ -101,11 +164,11 @@ $(document).ready(function() {
         $.ajax({
             xhr: function() {
                 var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (xhr.lengthComputable) {
-                        var percentComplete = Math.round((evt.loaded / evt.total) * 100);
-                        $('#progressFill').css('width', percentComplete + '%');
-                        $('#progressText').text(percentComplete + '%');
+                xhr.upload.addEventListener('progress', function(evt) {
+                    if (evt.lengthComputable) {
+                        var pct = Math.round((evt.loaded / evt.total) * 100);
+                        $('#progressFill').css('width', pct + '%');
+                        $('#progressText').text(pct + '%');
                     }
                 }, false);
                 return xhr;
@@ -115,11 +178,10 @@ $(document).ready(function() {
             data: formData,
             processData: false,
             contentType: false,
-            success: function() {
-                window.location.href = 'verRetos.php';
-            },
+            success: function() { window.location.href = 'verRetos.php'; },
             error: function() {
-                alert('Error al crear el reto');
+                if (window.Toast) Toast.show('Error al crear el reto', 'error');
+                else alert('Error al crear el reto');
                 $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-plus"></i> CREAR RETO');
             }
         });

@@ -51,7 +51,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <a class="recurso-menu-item" href="verDetallesDirectores.php?id=<?= (int)$director['idDirector'] ?>"><i class="fas fa-search"></i> Ver detalles</a>
                                     <a class="recurso-menu-item" href="modificarDirectores.php?idDirector=<?= (int)$director['idDirector'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarDirector.php?id=<?= (int)$director['idDirector'] ?>" onclick="return confirm('¿Eliminar este director?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$director['idDirector'] ?>"
+                                       data-tipo="Director"
+                                       data-nombre="<?= Security::escapeHtml($director['nombreDirector']) ?>"
+                                       data-url="/controladores/admin/directores/borrar.php"
+                                       data-campo="idDirector"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -64,4 +70,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaDirectores', 15);
+</script>
 

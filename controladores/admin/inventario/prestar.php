@@ -6,11 +6,17 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['registrarPrestamo'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/inventario/agregarPrestamo.php");
+        exit;
+    }
     $idArticulo    = (int)($_POST['idArticulo'] ?? 0);
     $idEstudiante  = (int)($_POST['idEstudiante'] ?? 0);
     $fechaPrestamo = trim($_POST['fechaPrestamo']);
@@ -22,6 +28,7 @@ if (isset($_POST['registrarPrestamo'])) {
 
     if (!$errores) {
         if (registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo)) {
+            registrarAccion('prestar', 'inventario', $idArticulo, "Estudiante #$idEstudiante");
             $_SESSION['exito'] = "El préstamo ha sido registrado correctamente.";
             header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
             exit;

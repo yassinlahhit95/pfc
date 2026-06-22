@@ -72,41 +72,54 @@ class RateLimiter {
         $ip  = self::clientIp();
         $now = time();
 
-        $stmt = mysqli_prepare($con, "SELECT hits, window_start, blocked_until FROM rate_limits WHERE scope = ? AND ip = ?");
-        mysqli_stmt_bind_param($stmt, "ss", $scope, $ip);
-        mysqli_stmt_execute($stmt);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        // Wrap in a transaction with SELECT FOR UPDATE to prevent concurrent requests
+        // from the same IP racing to INSERT the first row or miscounting hits.
+        mysqli_begin_transaction($con);
+        try {
+            $stmt = mysqli_prepare($con, "SELECT hits, window_start, blocked_until FROM rate_limits WHERE scope = ? AND ip = ? FOR UPDATE");
+            mysqli_stmt_bind_param($stmt, "ss", $scope, $ip);
+            mysqli_stmt_execute($stmt);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-        if (!$row) {
-            $ins = mysqli_prepare($con, "INSERT INTO rate_limits (scope, ip, hits, window_start) VALUES (?, ?, 1, ?)");
-            mysqli_stmt_bind_param($ins, "ssi", $scope, $ip, $now);
-            @mysqli_stmt_execute($ins);
+            if (!$row) {
+                $ins = mysqli_prepare($con, "INSERT INTO rate_limits (scope, ip, hits, window_start) VALUES (?, ?, 1, ?)");
+                mysqli_stmt_bind_param($ins, "ssi", $scope, $ip, $now);
+                mysqli_stmt_execute($ins);
+                mysqli_commit($con);
+                return true;
+            }
+
+            if (!empty($row['blocked_until']) && (int)$row['blocked_until'] > $now) {
+                mysqli_commit($con);
+                return false;
+            }
+
+            if ($now - (int)$row['window_start'] > $windowSeconds) {
+                $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = 1, window_start = ?, blocked_until = NULL WHERE scope = ? AND ip = ?");
+                mysqli_stmt_bind_param($upd, "iss", $now, $scope, $ip);
+                mysqli_stmt_execute($upd);
+                mysqli_commit($con);
+                return true;
+            }
+
+            $hits = (int)$row['hits'] + 1;
+            if ($hits > $maxHits) {
+                $until = $now + $blockSeconds;
+                $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = ?, blocked_until = ? WHERE scope = ? AND ip = ?");
+                mysqli_stmt_bind_param($upd, "iiss", $hits, $until, $scope, $ip);
+                mysqli_stmt_execute($upd);
+                mysqli_commit($con);
+                return false;
+            }
+
+            $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = ? WHERE scope = ? AND ip = ?");
+            mysqli_stmt_bind_param($upd, "iss", $hits, $scope, $ip);
+            mysqli_stmt_execute($upd);
+            mysqli_commit($con);
             return true;
+        } catch (\Throwable $e) {
+            mysqli_rollback($con);
+            return true; // fail-open: don't block legitimate users on DB error
         }
-
-        if (!empty($row['blocked_until']) && (int)$row['blocked_until'] > $now) {
-            return false;
-        }
-
-        if ($now - (int)$row['window_start'] > $windowSeconds) {
-            $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = 1, window_start = ?, blocked_until = NULL WHERE scope = ? AND ip = ?");
-            mysqli_stmt_bind_param($upd, "iss", $now, $scope, $ip);
-            @mysqli_stmt_execute($upd);
-            return true;
-        }
-
-        $hits = (int)$row['hits'] + 1;
-        if ($hits > $maxHits) {
-            $until = $now + $blockSeconds;
-            $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = ?, blocked_until = ? WHERE scope = ? AND ip = ?");
-            mysqli_stmt_bind_param($upd, "iiss", $hits, $until, $scope, $ip);
-            @mysqli_stmt_execute($upd);
-            return false;
-        }
-
-        $upd = mysqli_prepare($con, "UPDATE rate_limits SET hits = ? WHERE scope = ? AND ip = ?");
-        mysqli_stmt_bind_param($upd, "iss", $hits, $scope, $ip);
-        @mysqli_stmt_execute($upd);
-        return true;
     }
 }

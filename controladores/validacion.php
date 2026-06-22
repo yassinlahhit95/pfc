@@ -138,7 +138,9 @@ if ($profe) {
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();
-    $_SESSION['idProfesor'] = $profe['idProfesor'];
+    $_SESSION['idProfesor']   = $profe['idProfesor'];
+    $_SESSION['esTutor']      = !empty($profe['esTutor']) ? 1 : 0;
+    $_SESSION['idCicloTutor'] = (int)($profe['idCicloTutor'] ?? 0);
     $_SESSION['must_change_password'] = !empty($profe['must_change_password']);
     $_SESSION['_pwd_at'] = !empty($profe['pwd_changed_at']) ? strtotime($profe['pwd_changed_at']) : 0;
     Logger::activity('LOGIN_SUCCESS', $profe['idProfesor'], ['role' => 'profesor', 'email' => $email]);

@@ -5,6 +5,7 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/BotGuard.php";
+require_once __DIR__ . "/../../include/Logger.php";
 require_once __DIR__ . "/../../modelos/password_reset.php";
 require_once __DIR__ . "/../../controladores/comunes/email_helper.php";
 require_once __DIR__ . "/../../config/Config.php";
@@ -93,11 +94,13 @@ if ($reciente) {
 // Siempre mostrar respuesta genérica al final para evitar enumeración de usuarios
 $usuario = buscarUsuarioPorEmail($email);
 
-if (!$usuario && $config->get('APP_ENV') === 'development') {
-    error_log("PASSWORD RESET DEV: email '$email' no encontrado en ninguna tabla.");
-    $_SESSION['reset_error'] = "[DEV] Email '$email' no existe en la base de datos local.";
-    header("Location: ../../vistas/auth/solicitar_reset.php");
-    exit;
+if (!$usuario) {
+    Logger::warning("PASSWORD RESET: email '$email' no encontrado en ninguna tabla.");
+    if ($config->get('APP_ENV') === 'development') {
+        $_SESSION['reset_error'] = "[DEV] Email '$email' no existe en la base de datos local.";
+        header("Location: ../../vistas/auth/solicitar_reset.php");
+        exit;
+    }
 }
 
 if ($usuario) {
@@ -130,12 +133,14 @@ if ($usuario) {
 
     $sent = sendEmail($email, 'Restablecer contraseña — AulaPro', $html);
     if (!$sent) {
-        error_log("PASSWORD RESET: falló el envío de email a $email");
+        Logger::error("PASSWORD RESET: falló el envío de email a $email");
         if ($config->get('APP_ENV') === 'development') {
             $_SESSION['reset_error'] = "Error al enviar el email. Revisa los logs y la API key de Brevo.";
             header("Location: ../../vistas/auth/solicitar_reset.php");
             exit;
         }
+    } else {
+        Logger::info("PASSWORD RESET: enlace enviado con éxito a $email");
     }
 }
 

@@ -5,6 +5,7 @@
 require_once __DIR__ . "/../../../include/Security.php";
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . "/../../../modelos/horarios.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
@@ -70,6 +71,7 @@ if ($confAula) {
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
 if (guardarCeldaHorario($idCiclo, $dia, $horaSql, $horaFin . ':00', $idModulo, $idProfesor, $idAula)) {
+    registrarAccion('guardar', 'horario', $idCiclo, "$dia $horaInicio");
     echo json_encode(['ok' => true, 'msg' => 'Asignación guardada.']);
 } else {
     echo json_encode(['ok' => false, 'msg' => 'No se pudo guardar (posible solapamiento de aula o profesor).']);

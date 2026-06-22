@@ -177,7 +177,7 @@ function listarEvaluacionTFG($idCiclo = null) {
     $con = obtenerConexion();
 
     if ($idCiclo) {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, e.anioEstudio,
                        c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
@@ -187,7 +187,7 @@ function listarEvaluacionTFG($idCiclo = null) {
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     } else {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG,
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, e.anioEstudio,
                        c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo

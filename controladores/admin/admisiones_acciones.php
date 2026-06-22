@@ -6,6 +6,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../include/AdminGuard.php";
+require_once __DIR__ . "/../../modelos/log.php";
 
 $loginUrl = rtrim(Config::getInstance()->get('APP_URL', ''), '/') . '/vistas/login.php';
 $action = $_GET['action'] ?? '';
@@ -39,6 +40,7 @@ switch ($action) {
         $res = actualizarEstadoPreMatricula($id, $estado, $observaciones);
 
         if ($res) {
+            registrarAccion('update_status', 'admisiones', $id, $estado);
             $datos = obtenerPreMatriculaPorId($id);
             if ($datos) {
                 require_once __DIR__ . "/../comunes/email_helper.php";

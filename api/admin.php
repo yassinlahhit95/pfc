@@ -250,6 +250,7 @@ switch ($action) {
     // Renews the license token. token_exp is extended by SaaS.
     case 'heartbeat':
         if (!$licenseToken) apiError('Missing license_token in heartbeat.', 400);
+        if (!$licenseTokenStored) apiError('license_token column missing — run migration 003 on this AulaPro database.', 500);
         $stored = $licenseTokenStored; // already stored by the pre-switch block
         // Use SELECT * so the query works even if migration 003 columns don't exist yet
         $row = $pdo->query("SELECT * FROM configuracion_centro WHERE idConfig = 1 LIMIT 1")->fetch() ?: [];

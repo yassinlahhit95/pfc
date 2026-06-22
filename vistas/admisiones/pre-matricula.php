@@ -3,11 +3,8 @@ require_once __DIR__ . "/../../modelos/ciclos.php";
 require_once __DIR__ . "/../../include/FeatureGuard.php";
 
 if (!FeatureGuard::check('feature_prematricula')) {
-    die("<div style='font-family:sans-serif; text-align:center; padding:50px;'>
-            <h2>Módulo de Admisiones Deshabilitado</h2>
-            <p>El portal de pre-matrícula no está disponible en este momento. Por favor, contacte con el centro.</p>
-            <a href='/'>Volver al inicio</a>
-         </div>");
+    header('Location: /?admisiones=desactivado');
+    exit;
 }
 
 $ciclos = listarTodosLosCiclos();
@@ -159,7 +156,7 @@ $ciclos = listarTodosLosCiclos();
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="aceptoRGPD" required>
                                     <label class="form-check-label fw-bold" for="aceptoRGPD">
-                                        He leído y acepto la <a href="privacidad.php" target="_blank">Política de Privacidad</a> y el tratamiento de mis datos personales.
+                                        He leído y acepto la <a href="/vistas/legal/politica-de-privacidad.php" target="_blank">Política de Privacidad</a> y el tratamiento de mis datos personales.
                                     </label>
                                 </div>
                                 <p class="mt-2 mb-0" style="font-size: 0.75rem;">

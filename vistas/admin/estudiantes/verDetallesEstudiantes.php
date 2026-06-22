@@ -4,14 +4,29 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$idDelEstudiante = (int)($_GET['idEstudiante'] ?? 0);
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
 
+$idDelEstudiante = (int)($_GET['idEstudiante'] ?? 0);
 $estudiante = obtenerEstudiantePorId($idDelEstudiante);
 
 if (!$estudiante) {
-    header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
+    header("Location: verEstudiantes.php");
     exit;
 }
+
+/* ── Avatar helpers ── */
+$_av_nombre  = $estudiante['nombreEstudiante'];
+$_av_partes  = explode(' ', trim($_av_nombre));
+$_av_iniciales = mb_strtoupper(mb_substr($_av_partes[0], 0, 1));
+if (count($_av_partes) > 1) $_av_iniciales .= mb_strtoupper(mb_substr($_av_partes[1], 0, 1));
+$_av_paleta = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
+$_av_color  = $_av_paleta[ord($_av_iniciales[0]) % count($_av_paleta)];
+
+/* ── Chip: nivel ── */
+$_nivelLabel = $estudiante['curso'] === 'Grado Superior' ? 'Grado Superior' : 'Grado Medio';
+$_nivelClase = $estudiante['curso'] === 'Grado Superior' ? 'verde' : 'azul';
 
 $titulo_pagina = "AULAPRO | DETALLE DEL ESTUDIANTE";
 $seccion = 'estudiantes';
@@ -19,85 +34,194 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>FICHA DE ESTUDIANTE</h1>
-    <div class="acciones-pagina">
-        <a href="../../../vistas/admin/estudiantes/modificarEstudiantes.php?idEstudiante=<?= Security::escapeHtml($idDelEstudiante) ?>" class="boton-primario">
-            <i class="fas fa-edit"></i> Editar Datos
-        </a>
-        <a href="../../../vistas/admin/estudiantes/verEstudiantes.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
+    <div>
+        <h1>Ficha de Estudiante</h1>
+        <p class="subtitulo-encabezado">Datos completos del alumno registrado</p>
     </div>
 </div>
 
 <div class="panel">
-    <div class="titulo-tarjeta">
-        <h3>Información Personal</h3>
-    </div>
-    
-    <div class="fila-datos">
-        <div class="nombre-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Email</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['emailEstudiante']) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">DNI</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['dniEstudiante']) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Teléfono</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Ciclo Formativo</div>
-        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></span></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Fecha de Nacimiento</div>
-        <div class="valor-detalle"><?= date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante'])) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Ciudad / Dirección</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['direccionEstudiante']) . ", " . Security::escapeHtml($estudiante['ciudadEstudiante']) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Fecha de Alta</div>
-        <div class="valor-detalle"><?= date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante'])) ?></div>
-    </div>
-
-    <div class="fila-datos">
-        <div class="nombre-detalle">Observaciones</div>
-        <div class="valor-detalle"><?= !empty($estudiante['observacionesEstudiante']) ? Security::escapeHtml($estudiante['observacionesEstudiante']) : '<span class="texto-suave">Sin observaciones</span>' ?></div>
-    </div>
-</div>
-
-<div class="panel margen-arriba">
-    <div class="titulo-tarjeta">
-        <h3>Situación del TFG</h3>
-    </div>
-    <div class="caja alinear-centro espacio-entre-elementos">
-        <div>
-            <?php if (!empty($estudiante['archivoTFG'])) { ?>
-                <span class="indicador-estado activo-verde">Entregado</span>
-                <p class="texto-pequeno texto-suave" style="margin-top: 5px;">Subido el: <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?></p>
-            <?php } else { ?>
-                <span class="indicador-estado inactivo-rojo">No subido</span>
-            <?php } ?>
+    <div class="perfil-cabecera">
+        <div class="perfil-avatar" style="--av-color:<?= $_av_color ?>">
+            <?= Security::escapeHtml($_av_iniciales) ?>
+        </div>
+        <div class="perfil-info">
+            <div class="perfil-nombre"><?= Security::escapeHtml(mb_strtoupper($_av_nombre, 'UTF-8')) ?></div>
+            <div class="perfil-meta" style="flex-wrap:wrap;gap:6px 12px;">
+                <span class="texto-estado <?= $_nivelClase ?>"><?= Security::escapeHtml($_nivelLabel) ?></span>
+                <span class="perfil-sep"></span>
+                <span style="white-space:normal;word-break:break-word;">
+                    <i class="fas fa-graduation-cap"></i>
+                    <?= Security::escapeHtml($estudiante['nombreCiclo']) ?>
+                </span>
+                <span class="perfil-sep"></span>
+                <span style="word-break:break-all;">
+                    <i class="fas fa-envelope"></i>
+                    <?= Security::escapeHtml($estudiante['emailEstudiante']) ?>
+                </span>
+            </div>
+        </div>
+        <div class="perfil-acciones">
+            <a href="modificarEstudiantes.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-primario">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="/controladores/admin/rgpd/exportar.php?idEstudiante=<?= $idDelEstudiante ?>" class="boton-secundario" title="RGPD Art. 20 – Exportar datos personales">
+                <i class="fas fa-file-export"></i> Exportar datos
+            </a>
+            <a href="verEstudiantes.php" class="boton-secundario">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
         </div>
     </div>
+
+    <div class="detalle-grid">
+
+        <!-- Datos personales -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-id-card"></i> Datos Personales
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">DNI</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['dniEstudiante'])
+                        ? Security::escapeHtml($estudiante['dniEstudiante'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Teléfono</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['telefonoEstudiante'])
+                        ? Security::escapeHtml($estudiante['telefonoEstudiante'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Fecha de Nacimiento</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['fechaNacimientoEstudiante']) && $estudiante['fechaNacimientoEstudiante'] !== '0000-00-00'
+                        ? date('d/m/Y', strtotime($estudiante['fechaNacimientoEstudiante']))
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Fecha de Alta</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['fechaAltaEstudiante'])
+                        ? date('d/m/Y', strtotime($estudiante['fechaAltaEstudiante']))
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+        </div>
+
+        <!-- Dirección -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-map-marker-alt"></i> Dirección y Contacto
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Dirección</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['direccionEstudiante'])
+                        ? Security::escapeHtml($estudiante['direccionEstudiante'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Ciudad</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['ciudadEstudiante'])
+                        ? Security::escapeHtml($estudiante['ciudadEstudiante'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Código Postal</span>
+                <span class="detalle-valor">
+                    <?= !empty($estudiante['codigoPostalEstudiante'])
+                        ? Security::escapeHtml($estudiante['codigoPostalEstudiante'])
+                        : '<span class="texto-suave">No especificado</span>' ?>
+                </span>
+            </div>
+        </div>
+
+        <!-- Académico + TFG -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-university"></i> Información Académica
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Ciclo Formativo</span>
+                <span class="detalle-valor" style="word-break:break-word;">
+                    <?= Security::escapeHtml($estudiante['nombreCiclo']) ?>
+                </span>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">Nivel / Curso</span>
+                <span class="detalle-valor"><?= Security::escapeHtml($estudiante['curso']) ?></span>
+            </div>
+
+            <?php if (!empty($estudiante['anioEstudio'])): ?>
+            <div class="detalle-fila">
+                <span class="detalle-label">Año de Estudio</span>
+                <span class="detalle-valor">
+                    <span class="texto-estado azul"><?= Security::escapeHtml($estudiante['anioEstudio']) ?> año</span>
+                </span>
+            </div>
+            <?php endif; ?>
+
+            <div class="detalle-fila">
+                <span class="detalle-label">TFG</span>
+                <span class="detalle-valor">
+                    <?php if (!empty($estudiante['archivoTFG'])): ?>
+                        <span class="indicador-estado activo-verde"><i class="fas fa-check"></i> Entregado</span>
+                        <span class="texto-suave" style="display:block;margin-top:4px;font-size:12px;">
+                            Subido el <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?>
+                        </span>
+                        <a href="/public/uploads/pfc/<?= Security::escapeHtml($estudiante['archivoTFG']) ?>" target="_blank" class="boton-secundario" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:.82rem;padding:5px 12px;">
+                            <i class="fas fa-eye"></i> Ver PDF
+                        </a>
+                    <?php else: ?>
+                        <span class="indicador-estado inactivo-rojo"><i class="fas fa-times"></i> No subido</span>
+                    <?php endif; ?>
+                    <form action="../../../controladores/admin/estudiantes/subirTFG.php" method="POST" enctype="multipart/form-data" style="margin-top:10px;">
+                        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                        <input type="hidden" name="idEstudiante" value="<?= $idDelEstudiante ?>">
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                            <input type="file" name="archivoTFG" accept=".pdf,application/pdf" required style="font-size:.82rem;">
+                            <button type="submit" name="subirTFG" class="boton-primario" style="font-size:.82rem;padding:6px 14px;">
+                                <i class="fas fa-upload"></i> <?= !empty($estudiante['archivoTFG']) ? 'Reemplazar TFG' : 'Subir TFG' ?>
+                            </button>
+                        </div>
+                        <span class="texto-suave" style="font-size:.75rem;display:block;margin-top:4px;">Solo PDF · máx. 10 MB</span>
+                    </form>
+                </span>
+            </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="detalle-seccion">
+            <div class="detalle-seccion-titulo">
+                <i class="fas fa-sticky-note"></i> Observaciones
+            </div>
+            <div class="detalle-valor" style="padding-top:4px;">
+                <?= !empty($estudiante['observacionesEstudiante'])
+                    ? nl2br(Security::escapeHtml($estudiante['observacionesEstudiante']))
+                    : '<span class="texto-suave">Sin observaciones registradas.</span>' ?>
+            </div>
+        </div>
+
+    </div><!-- /detalle-grid -->
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-
-

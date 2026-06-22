@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../comunes/notificaciones_grades.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -19,15 +20,13 @@ if (isset($_REQUEST['idCiclo']) && !empty($_REQUEST['idCiclo'])) {
     if (empty($estudiantesEnCiclo)) {
         $_SESSION['errores'] = "No se han encontrado estudiantes matriculados en este ciclo formativo para efectuar el envío de notas.";
     } else {
-        $enviados = enviarEmailNotasClase($idCiclo);
+        $encolados = encolarEmailsNotasClase((int)$idCiclo);
 
-        if ($enviados > 0) {
-            $_SESSION['exito'] = "Se han enviado $enviados correos electrónicos con las notas correspondientes de manera satisfactoria.";
+        if ($encolados > 0) {
+            registrarAccion('enviar_notas_masivo', 'ciclos', (int)$idCiclo, "$encolados emails encolados");
+            $_SESSION['exito'] = "Se han encolado $encolados correos electrónicos. El envío se realizará automáticamente en los próximos minutos.";
         } else {
-            $ultimoError = $_SESSION['ultimo_error_email'] ?? 'Sin respuesta del servidor';
-            error_log('enviarNotasMasivo error: ' . $ultimoError);
-            unset($_SESSION['ultimo_error_email']);
-            $_SESSION['errores'] = "No se pudo efectuar el envío de los correos electrónicos. Por favor, verifique la configuración del servidor de correo saliente.";
+            $_SESSION['errores'] = "No se pudieron encolar los correos electrónicos. Por favor, verifique la configuración del servidor de correo saliente.";
         }
     }
 } else {

@@ -607,6 +607,24 @@ function listarSesionesPorModulo($idModulo) {
     return $lista;
 }
 
+function listarSesionesPorCiclo($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT s.*, m.nombreModulo, p.nombreProfesor,
+                   (SELECT COUNT(*) FROM aula_asistencia_sesion a WHERE a.idSesion = s.idSesion) AS totalAsistentes
+            FROM aula_sesiones_vivas s
+            JOIN modulos m    ON s.idModulo   = m.idModulo
+            JOIN profesores p ON s.idProfesor = p.idProfesor
+            WHERE m.idCiclo = ?
+            ORDER BY s.fechaSesion DESC, s.horaSesion DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    return $lista;
+}
+
 function listarSesionesPorProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT s.*, m.nombreModulo,

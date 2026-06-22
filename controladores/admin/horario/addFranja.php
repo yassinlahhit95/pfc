@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/Security.php';
 header('Content-Type: application/json');
+require_once __DIR__ . '/../../../modelos/log.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
@@ -56,4 +57,5 @@ if (in_array($inicio, $usedStarts)) {
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 $ok = agregarFranjaHorario($idCiclo, $inicio, $fin, $esReceso);
+if ($ok) registrarAccion('add_franja', 'horario', $idCiclo, "$inicio-$fin");
 echo json_encode(['ok' => (bool)$ok]);

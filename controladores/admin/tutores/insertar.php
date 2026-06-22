@@ -2,8 +2,14 @@
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../include/credenciales.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if (isset($_POST['guardarTutor'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/tutores/agregarTutor.php");
+        exit;
+    }
     $nombre    = trim($_POST['nombreTutor'] ?? '');
     $email     = trim($_POST['emailTutor'] ?? '');
     $dni       = trim($_POST['dniTutor'] ?? '');
@@ -29,6 +35,7 @@ if (isset($_POST['guardarTutor'])) {
 
     $idNuevo = insertarTutor($nombre, $email, $dni, $telefono);
     if ($idNuevo) {
+        registrarAccion('insertar', 'tutores', $idNuevo, $nombre);
         foreach ($estudiantesVinculados as $idEst) {
             $idEst = (int)$idEst;
             if ($idEst > 0) vincularEstudianteTutor($idEst, $idNuevo, $parentesco);

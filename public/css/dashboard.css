@@ -147,7 +147,8 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
   width: 4px; height: 22px; border-radius: 0 4px 4px 0; background: var(--accent);
 }
-.sidebar.collapsed .nav-label, .sidebar.collapsed .nav-badge { opacity: 0; width: 0; }
+.sidebar.collapsed .nav-label { opacity: 0; width: 0; }
+.sidebar.collapsed .nav-badge { opacity: 0; width: 0; margin: 0; }
 .sidebar.collapsed .nav-item { justify-content: center; }
 
 .upgrade-card {
@@ -364,12 +365,22 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   .searchbar kbd { display: none; }
   .hero-stats { width: 100%; }
   .stat { flex: 1; min-width: 0; }
+
+  /* Responsive header layout wrapping on mobile viewports */
+  .topbar { flex-wrap: wrap; gap: 10px; padding: 10px var(--pad); }
+  .topbar-user { display: none; }
+  .search-wrap { order: 3; flex: 1 1 100%; max-width: none; }
+  .topbar-actions { margin-left: auto; }
+
+  /* Dashboard grid: 2 cards per row on mobile */
+  .dash-grid { grid-template-columns: repeat(2, 1fr); }
+  .tile-label { font-size: 14px; }
+  .tile-desc { font-size: 12px; }
+  .tile { padding: 14px; gap: 10px; }
+  .tile-ico { width: 44px; height: 44px; border-radius: 12px; }
 }
 @media (max-width: 460px) {
-  .search-wrap { display: none !important; }
-  .searchbar { display: none; }
   .school-name { max-width: 120px; }
-  .topbar-user { display: none; }
 }
 
 /* ── PHP integration additions ───────────────────────────────────────── */
@@ -600,3 +611,24 @@ a.tile { text-decoration: none; color: inherit; display: flex; }
   background: color-mix(in oklab, var(--accent) 8%, transparent); transition: background .15s;
 }
 .notif-footer a:hover { background: color-mix(in oklab, var(--accent) 16%, transparent); }
+
+
+/* ── iOS safe-area: iPhone notch / home indicator ────────────────────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  /* Topbar: push content below the notch/Dynamic Island on iPhone */
+  .topbar {
+    padding-top: max(16px, calc(8px + env(safe-area-inset-top)));
+  }
+
+  /* Sidebar: prevent nav items from being hidden behind home indicator */
+  .sidebar {
+    padding-bottom: max(20px, calc(12px + env(safe-area-inset-bottom)));
+  }
+
+  /* Mobile overlay sidebar: also respect left safe area in landscape */
+  @media (max-width: 720px) {
+    .sidebar {
+      padding-left: max(16px, calc(10px + env(safe-area-inset-left)));
+    }
+  }
+}

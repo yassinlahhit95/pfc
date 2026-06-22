@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
@@ -68,15 +69,19 @@ function _nav_active_tutor($check) {
       <?php endforeach; ?>
 
       <span class="nav-section-title">GESTIÓN</span>
+      <?php if (FeatureGuard::check('feature_pagos')): ?>
       <a href="../pagos/misPagos.php" class="nav-item<?= _nav_active_tutor('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos y Recibos</span>
       </a>
+      <?php endif; ?>
 
+      <?php if (FeatureGuard::check('feature_chat')) { ?>
       <a href="../mensajes/chat.php" class="nav-item<?= _nav_active_tutor('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Mensajería Centro</span>
       </a>
+      <?php } ?>
     </nav>
 
     <nav class="sidebar-bottom-nav">

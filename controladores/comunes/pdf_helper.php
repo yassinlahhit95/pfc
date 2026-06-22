@@ -119,7 +119,7 @@ function generarPDFAceptacion($datos) {
 
         $mpdf->Output($filePath, 'F');
 
-        return 'public/uploads/admisiones/documentos/' . $fileName;
+        return '/public/uploads/admisiones/documentos/' . $fileName;
 
     } catch (\Exception $e) {
         error_log("Error generando PDF: " . $e->getMessage());

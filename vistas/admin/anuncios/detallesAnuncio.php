@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_anuncios');
 
 unset($_SESSION['exito'], $_SESSION['errores']);
 
@@ -57,7 +59,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-edit"></i> Editar Anuncio
         </a>
         
-        <a href="borrarAnuncio.php?id=<?= $idAnuncio ?>" class="boton-secundario color-error border-error">Eliminar</a>
+        <a href="#" class="boton-peligro"
+           data-modal-borrar
+           data-id="<?= (int)$idAnuncio ?>"
+           data-tipo="Anuncio"
+           data-nombre="<?= Security::escapeHtml($anuncio['tituloAnuncio']) ?>"
+           data-url="/controladores/admin/anuncios/borrar.php"
+           data-campo="idAnuncio"
+           data-redirect="gestionAnuncios.php">
+            <i class="fas fa-trash"></i> Eliminar
+        </a>
     </div>
 </div>
 

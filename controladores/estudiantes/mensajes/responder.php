@@ -3,6 +3,8 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_mensajes');
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../controladores/firebase/firebase_helper.php";
 

@@ -23,6 +23,7 @@ try {
     ))->build();
     $_qrSrc = 'data:image/png;base64,' . base64_encode($_qrResult->getString());
 } catch (\Throwable $e) {
+    error_log('[AulaPro] Boletin QR generation failed: ' . $e->getMessage());
     $_qrSrc = null;
 }
 ?>

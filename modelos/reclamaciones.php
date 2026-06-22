@@ -5,7 +5,7 @@ require_once __DIR__ . "/conectar.php";
 //  CONSULTAS
 // ══════════════════════════════════════════════════════════════════════
 
-function listarTodosLosMensajes() {
+function listarTodosLosMensajes(int $limite = 200, int $offset = 0) {
     $con = obtenerConexion();
     $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor
             FROM reclamaciones r
@@ -15,14 +15,18 @@ function listarTodosLosMensajes() {
               AND ((r.emisor_rol = 'estudiante' AND r.idProfesor IS NULL)
                OR (r.emisor_rol = 'profesor' AND r.idEstudiante IS NULL)
                OR (r.emisor_rol = 'admin'))
-            ORDER BY r.idReclamacion DESC";
+            ORDER BY r.idReclamacion DESC
+            LIMIT ? OFFSET ?";
 
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'ii', $limite, $offset);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $listaMensajes = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $listaMensajes[] = $fila;
     }
-    
+
     return $listaMensajes;
 }
 

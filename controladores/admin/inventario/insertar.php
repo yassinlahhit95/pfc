@@ -6,11 +6,17 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarArticulo'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/inventario/agregarArticulo.php");
+        exit;
+    }
     $nombre      = trim($_POST['nombreArticulo']);
     $numeroSerie = trim($_POST['numeroSerie']);
 
@@ -24,6 +30,7 @@ if (isset($_POST['guardarArticulo'])) {
 
     if (!$errores) {
         if (insertarArticulo($nombre, $numeroSerie)) {
+            registrarAccion('insertar', 'inventario', null, "$nombre · S/N:$numeroSerie");
             $_SESSION['exito'] = "El artículo ha sido añadido al inventario correctamente.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;

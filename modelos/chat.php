@@ -15,6 +15,9 @@ function chatNormalizar(string $rolA, int $idA, string $rolB, int $idB): array {
 }
 
 function chatNombreUsuario(string $rol, int $id): string {
+    static $cache = [];
+    $key = $rol . ':' . $id;
+    if (isset($cache[$key])) return $cache[$key];
     $con = obtenerConexion();
     switch ($rol) {
         case 'admin':
@@ -22,26 +25,63 @@ function chatNombreUsuario(string $rol, int $id): string {
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-            return $row['nombreDirector'] ?? 'Admin';
+            return $cache[$key] = ($row['nombreDirector'] ?? 'Admin');
         case 'profesor':
             $st = mysqli_prepare($con, 'SELECT nombreProfesor FROM profesores WHERE idProfesor = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-            return $row['nombreProfesor'] ?? 'Profesor';
+            return $cache[$key] = ($row['nombreProfesor'] ?? 'Profesor');
         case 'tutor':
             $st = mysqli_prepare($con, 'SELECT nombreTutor FROM tutores WHERE idTutor = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-            return $row['nombreTutor'] ?? 'Tutor';
+            return $cache[$key] = ($row['nombreTutor'] ?? 'Tutor');
         default:
             $st = mysqli_prepare($con, 'SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
             mysqli_stmt_execute($st);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-            return $row['nombreEstudiante'] ?? 'Estudiante';
+            return $cache[$key] = ($row['nombreEstudiante'] ?? 'Estudiante');
     }
+}
+
+// Batch-fetches names for an array of ['rol' => string, 'id' => int] pairs.
+// Returns a map of 'rol:id' => name — at most 4 queries regardless of set size.
+function chatBatchNombres(array $pairs): array {
+    if (!$pairs) return [];
+    $con = obtenerConexion();
+    $byRol = [];
+    foreach ($pairs as $p) {
+        $byRol[$p['rol']][$p['id']] = true;
+    }
+    $map = [
+        'admin'      => ['directores',  'idDirector',    'nombreDirector'],
+        'profesor'   => ['profesores',  'idProfesor',    'nombreProfesor'],
+        'tutor'      => ['tutores',     'idTutor',       'nombreTutor'],
+        'estudiante' => ['estudiantes', 'idEstudiante',  'nombreEstudiante'],
+    ];
+    $defaults = ['admin' => 'Admin', 'profesor' => 'Profesor', 'tutor' => 'Tutor', 'estudiante' => 'Estudiante'];
+    $names = [];
+    foreach ($byRol as $rol => $idSet) {
+        if (!isset($map[$rol])) continue;
+        [$tabla, $idCol, $nameCol] = $map[$rol];
+        $ids = array_keys($idSet);
+        $ph  = implode(',', array_fill(0, count($ids), '?'));
+        $types = str_repeat('i', count($ids));
+        $st = mysqli_prepare($con, "SELECT `$idCol`, `$nameCol` FROM `$tabla` WHERE `$idCol` IN ($ph)");
+        mysqli_stmt_bind_param($st, $types, ...$ids);
+        mysqli_stmt_execute($st);
+        foreach (mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC) as $row) {
+            $names[$rol . ':' . $row[$idCol]] = $row[$nameCol];
+        }
+        foreach ($ids as $id) {
+            $k = $rol . ':' . $id;
+            if (!isset($names[$k])) $names[$k] = $defaults[$rol] ?? '?';
+        }
+    }
+    return $names;
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -52,19 +92,24 @@ function chatEncontrarOCrear(string $rolA, int $idA, string $rolB, int $idB): in
     [$nRolA, $nIdA, $nRolB, $nIdB] = chatNormalizar($rolA, $idA, $rolB, $idB);
     $con = obtenerConexion();
 
+    // Atomic upsert: INSERT IGNORE avoids a race between two concurrent opens of the same conversation.
+    // LAST_INSERT_ID(id) makes LAST_INSERT_ID() return the existing row's id on duplicate.
     $st = mysqli_prepare($con,
-        'SELECT id FROM chat_conversaciones
-         WHERE user_a_rol=? AND user_a_id=? AND user_b_rol=? AND user_b_id=?');
+        'INSERT INTO chat_conversaciones (user_a_rol,user_a_id,user_b_rol,user_b_id)
+         VALUES (?,?,?,?)
+         ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)');
+    mysqli_stmt_bind_param($st, 'sisi', $nRolA, $nIdA, $nRolB, $nIdB);
+    mysqli_stmt_execute($st);
+    $newId = (int)mysqli_insert_id($con);
+    if ($newId > 0) return $newId;
+
+    // Fallback: row existed before the upsert (LAST_INSERT_ID stays 0 in older MySQL)
+    $st = mysqli_prepare($con,
+        'SELECT id FROM chat_conversaciones WHERE user_a_rol=? AND user_a_id=? AND user_b_rol=? AND user_b_id=?');
     mysqli_stmt_bind_param($st, 'sisi', $nRolA, $nIdA, $nRolB, $nIdB);
     mysqli_stmt_execute($st);
     $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
-    if ($row) return (int)$row['id'];
-
-    $st = mysqli_prepare($con,
-        'INSERT INTO chat_conversaciones (user_a_rol,user_a_id,user_b_rol,user_b_id) VALUES (?,?,?,?)');
-    mysqli_stmt_bind_param($st, 'sisi', $nRolA, $nIdA, $nRolB, $nIdB);
-    mysqli_stmt_execute($st);
-    return (int)mysqli_insert_id($con);
+    return (int)($row['id'] ?? 0);
 }
 
 function chatConversacionesDe(string $rol, int $id): array {
@@ -86,16 +131,21 @@ function chatConversacionesDe(string $rol, int $id): array {
     mysqli_stmt_execute($st);
     $rows = mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC);
 
+    $pairs = [];
     foreach ($rows as &$row) {
-        $otherRol = ($row['user_a_rol'] === $rol && (int)$row['user_a_id'] === $id)
-            ? $row['user_b_rol'] : $row['user_a_rol'];
-        $otherId = ($row['user_a_rol'] === $rol && (int)$row['user_a_id'] === $id)
-            ? (int)$row['user_b_id'] : (int)$row['user_a_id'];
-        $row['other_rol']    = $otherRol;
-        $row['other_id']     = $otherId;
-        $row['other_nombre'] = chatNombreUsuario($otherRol, $otherId);
+        $isA = ($row['user_a_rol'] === $rol && (int)$row['user_a_id'] === $id);
+        $row['other_rol'] = $isA ? $row['user_b_rol'] : $row['user_a_rol'];
+        $row['other_id']  = $isA ? (int)$row['user_b_id'] : (int)$row['user_a_id'];
         $row['unread_count'] = (int)$row['unread_count'];
+        $pairs[] = ['rol' => $row['other_rol'], 'id' => $row['other_id']];
     }
+    unset($row);
+
+    $names = chatBatchNombres($pairs);
+    foreach ($rows as &$row) {
+        $row['other_nombre'] = $names[$row['other_rol'] . ':' . $row['other_id']] ?? '?';
+    }
+    unset($row);
     return $rows;
 }
 
@@ -117,6 +167,15 @@ function chatEsParticipante(array $conv, string $rol, int $id): bool {
 // MENSAJES
 // ══════════════════════════════════════════════════════════════════════
 
+function _chatAttachNombres(array $rows): array {
+    $pairs = array_map(fn($r) => ['rol' => $r['emisor_rol'], 'id' => (int)$r['emisor_id']], $rows);
+    $names = chatBatchNombres($pairs);
+    foreach ($rows as &$row) {
+        $row['emisor_nombre'] = $names[$row['emisor_rol'] . ':' . $row['emisor_id']] ?? '?';
+    }
+    return $rows;
+}
+
 function chatMensajes(int $convId, int $limit = 80): array {
     $con = obtenerConexion();
     $st = mysqli_prepare($con,
@@ -124,11 +183,7 @@ function chatMensajes(int $convId, int $limit = 80): array {
          ORDER BY fecha ASC LIMIT ?');
     mysqli_stmt_bind_param($st, 'ii', $convId, $limit);
     mysqli_stmt_execute($st);
-    $rows = mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC);
-    foreach ($rows as &$row) {
-        $row['emisor_nombre'] = chatNombreUsuario($row['emisor_rol'], (int)$row['emisor_id']);
-    }
-    return $rows;
+    return _chatAttachNombres(mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC));
 }
 
 function chatMensajesDespuesDe(int $convId, int $afterId): array {
@@ -138,11 +193,7 @@ function chatMensajesDespuesDe(int $convId, int $afterId): array {
          ORDER BY fecha ASC LIMIT 100');
     mysqli_stmt_bind_param($st, 'ii', $convId, $afterId);
     mysqli_stmt_execute($st);
-    $rows = mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC);
-    foreach ($rows as &$row) {
-        $row['emisor_nombre'] = chatNombreUsuario($row['emisor_rol'], (int)$row['emisor_id']);
-    }
-    return $rows;
+    return _chatAttachNombres(mysqli_fetch_all(mysqli_stmt_get_result($st), MYSQLI_ASSOC));
 }
 
 function chatInsertarMensaje(int $convId, string $emisorRol, int $emisorId, string $contenido): int {
@@ -176,62 +227,78 @@ function chatMarcarLeidos(int $convId, string $lectoRol, int $lectoId): void {
 // CONTACTOS
 // ══════════════════════════════════════════════════════════════════════
 
-function chatContactosPosibles(string $rol, int $id): array {
-    $con = obtenerConexion();
+// $busqueda filters by name at the DB level, eliminating the PHP-side array_filter.
+// An empty string matches all rows (LIKE '%%').
+function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): array {
+    $con     = obtenerConexion();
     $results = [];
+    $like    = '%' . $busqueda . '%';
 
     if ($rol === 'admin') {
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idProfesor AS uid, nombreProfesor AS nombre, "profesor" AS rol
-             FROM profesores ORDER BY nombreProfesor');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idEstudiante AS uid, nombreEstudiante AS nombre, "estudiante" AS rol
-             FROM estudiantes ORDER BY nombreEstudiante');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
     } elseif ($rol === 'profesor') {
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idEstudiante AS uid, nombreEstudiante AS nombre, "estudiante" AS rol
-             FROM estudiantes ORDER BY nombreEstudiante');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
-             FROM directores ORDER BY nombreDirector');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
     } elseif ($rol === 'tutor') {
         // Profesores vinculados a los ciclos de sus estudiantes tutelados
-        $sql = 'SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, "profesor" AS rol
-                FROM profesores p
-                JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
-                JOIN modulos m ON mp.idModulo = m.idModulo
-                JOIN estudiantes e ON m.idCiclo = e.idCiclo
-                JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
-                WHERE et.idTutor = ?';
-        $st = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($st, 'i', $id);
+        $st = mysqli_prepare($con,
+            'SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, "profesor" AS rol
+             FROM profesores p
+             JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
+             JOIN modulos m ON mp.idModulo = m.idModulo
+             JOIN estudiantes e ON m.idCiclo = e.idCiclo
+             JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
+             WHERE et.idTutor = ? AND p.nombreProfesor LIKE ?');
+        mysqli_stmt_bind_param($st, 'is', $id, $like);
         mysqli_stmt_execute($st);
-        $r = mysqli_stmt_get_result($st);
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
-             FROM directores ORDER BY nombreDirector');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
     } else {
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idProfesor AS uid, nombreProfesor AS nombre, "profesor" AS rol
-             FROM profesores ORDER BY nombreProfesor');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
-        $r = mysqli_query($con,
+        $st = mysqli_prepare($con,
             'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
-             FROM directores ORDER BY nombreDirector');
-        while ($row = mysqli_fetch_assoc($r)) $results[] = $row;
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20');
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
     }
 
     return $results;

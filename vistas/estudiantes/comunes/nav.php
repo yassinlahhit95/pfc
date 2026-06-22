@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
@@ -89,12 +90,14 @@ function _nav_active_est($check) {
       <!-- MIS ESTUDIOS -->
       <span class="nav-section-title">MIS ESTUDIOS</span>
 
+      <?php if (FeatureGuard::check('feature_retos')): ?>
       <a href="../retos/lista.php" class="nav-item<?= _nav_active_est('retos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
         <span class="nav-label">Retos</span>
         <?php if ($totalRetos_menu > 0) { ?><span class="nav-badge"><?= $totalRetos_menu ?></span><?php } ?>
         <?php if (_nav_active_est('retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
       <a href="../calificaciones/lista.php" class="nav-item<?= (in_array($seccionActual ?? '', ['calificaciones', 'notas_retos', 'resultados_finales'])) ? ' active' : '' ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
@@ -102,11 +105,13 @@ function _nav_active_est($check) {
         <?php if (in_array($seccionActual ?? '', ['calificaciones', 'notas_retos', 'resultados_finales'])) { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <?php if (FeatureGuard::check('feature_subida_tfg')) { ?>
       <a href="../pfc/subir.php" class="nav-item<?= _nav_active_est('tfg') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
         <span class="nav-label">Mi TFG</span>
         <?php if (_nav_active_est('tfg') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php } ?>
 
       <a href="../horario/horario.php" class="nav-item<?= _nav_active_est('horario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
@@ -138,38 +143,48 @@ function _nav_active_est($check) {
       <!-- PORTAL -->
       <span class="nav-section-title">PORTAL</span>
 
+      <?php if (FeatureGuard::check('feature_anuncios')): ?>
       <a href="../anuncios/lista.php" class="nav-item<?= _nav_active_est('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label">Anuncios</span>
         <?php if ($totalAnuncios_menu > 0) { ?><span class="nav-badge"><?= $totalAnuncios_menu ?></span><?php } ?>
         <?php if (_nav_active_est('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
+      <?php if (FeatureGuard::check('feature_mensajes')): ?>
       <a href="../mensajes/lista.php" class="nav-item<?= _nav_active_est('reclamaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
         <span class="nav-label">Mensajería</span>
         <?php if ($totalMensajes_menu > 0) { ?><span class="nav-badge<?= ($totalSinLeer_menu > 0) ? ' nav-badge-alert' : '' ?>"><?= $totalMensajes_menu ?></span><?php } ?>
         <?php if (_nav_active_est('reclamaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
+      <?php if (FeatureGuard::check('feature_chat')) { ?>
       <a href="../chat/index.php" class="nav-item<?= _nav_active_est('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
         <?php if (_nav_active_est('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php } ?>
 
+      <?php if (FeatureGuard::check('feature_pagos')): ?>
       <a href="../pagos/lista.php" class="nav-item<?= _nav_active_est('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
         <?php if ($totalPagos_menu > 0) { ?><span class="nav-badge"><?= $totalPagos_menu ?></span><?php } ?>
         <?php if (_nav_active_est('pagos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
+      <?php if (FeatureGuard::check('feature_eventos')): ?>
       <a href="../eventos/lista.php" class="nav-item<?= _nav_active_est('eventos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>
         <span class="nav-label">Eventos</span>
         <?php if (_nav_active_est('eventos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
     </nav>
 

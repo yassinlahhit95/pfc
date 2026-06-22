@@ -20,6 +20,11 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <div class="cabecera">
     <h1>CONFIGURACIÓN DEL CENTRO</h1>
+    <div class="cabecera-acciones">
+        <button type="button" class="boton-primario" onclick="var f=document.getElementById('form-configuracion');f.requestSubmit?f.requestSubmit():f.submit()">
+            <i class="fas fa-save"></i> Actualizar
+        </button>
+    </div>
 </div>
 
 
@@ -108,6 +113,150 @@ include_once __DIR__ . '/../comunes/nav.php';
             </label>
             <?php endif; ?>
         </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-bullhorn feature-icon" style="color: #f43f5e;"></i>
+                <div>
+                    <div class="feature-label">Anuncios</div>
+                    <div class="feature-desc">Tablón de avisos y comunicados del centro</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_anuncios'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_anuncios" <?= ($cfg['feature_anuncios'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-calendar-days feature-icon" style="color: #0ea5e9;"></i>
+                <div>
+                    <div class="feature-label">Eventos</div>
+                    <div class="feature-desc">Calendario de eventos y actividades del centro</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_eventos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_eventos" <?= ($cfg['feature_eventos'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-trophy feature-icon" style="color: #f59e0b;"></i>
+                <div>
+                    <div class="feature-label">Retos</div>
+                    <div class="feature-desc">Desafíos y actividades académicas gamificadas</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_retos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_retos" <?= ($cfg['feature_retos'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-envelope feature-icon" style="color: #6366f1;"></i>
+                <div>
+                    <div class="feature-label">Mensajería</div>
+                    <div class="feature-desc">Sistema de reclamaciones y mensajes internos</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_mensajes'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_mensajes" <?= ($cfg['feature_mensajes'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-credit-card feature-icon" style="color: #10b981;"></i>
+                <div>
+                    <div class="feature-label">Pagos</div>
+                    <div class="feature-desc">Gestión de pagos y matrículas de estudiantes</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_pagos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_pagos" <?= ($cfg['feature_pagos'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-receipt feature-icon" style="color: #ef4444;"></i>
+                <div>
+                    <div class="feature-label">Gastos</div>
+                    <div class="feature-desc">Control de gastos y categorías del centro</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_gastos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_gastos" <?= ($cfg['feature_gastos'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-file-pdf feature-icon" style="color: #64748b;"></i>
+                <div>
+                    <div class="feature-label">Informes PDF</div>
+                    <div class="feature-desc">Generación de boletines, listados y horarios en PDF</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_informes'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_informes" <?= ($cfg['feature_informes'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
+
+        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
+            <div class="feature-info">
+                <i class="fas fa-calendar-alt feature-icon" style="color: #4f46e5;"></i>
+                <div>
+                    <div class="feature-label">Cuadro Horario</div>
+                    <div class="feature-desc">Gestión de horarios de clases y asignaciones</div>
+                </div>
+            </div>
+            <?php if ($saasLocked): ?>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_horario'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
+            <?php else: ?>
+            <label class="switch">
+                <input type="checkbox" class="toggle-feature" data-feature="feature_horario" <?= ($cfg['feature_horario'] ?? 1) ? 'checked' : '' ?>>
+                <span class="slider round"></span>
+            </label>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
 
@@ -139,7 +288,7 @@ include_once __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
-<form method="POST" action="../../../controladores/admin/configuracion/guardar.php" enctype="multipart/form-data">
+<form id="form-configuracion" method="POST" action="../../../controladores/admin/configuracion/guardar.php" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
     <div class="panel margen-abajo">
@@ -257,11 +406,13 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 <script>
 var saasLocked = <?= $saasLocked ? 'true' : 'false' ?>;
+var csrfToken = '<?= Security::generateCSRFToken() ?>';
 $(document).ready(function() {
     if (saasLocked) { $('.toggle-feature').prop('disabled', true); return; }
     $('.toggle-feature').on('change', function() {
         const feature = $(this).data('feature');
         const estado = $(this).is(':checked') ? 1 : 0;
+        const $toggle = $(this);
         const $card = $(this).closest('.feature-card');
 
         $card.css('opacity', '0.6').css('pointer-events', 'none');
@@ -269,18 +420,33 @@ $(document).ready(function() {
         $.ajax({
             url: '../../../controladores/admin/configuracion/toggle_feature.php',
             type: 'POST',
-            data: { 
-                feature: feature, 
+            dataType: 'json',
+            data: {
+                feature: feature,
                 estado: estado,
-                csrf_token: '<?= Security::generateCSRFToken() ?>'
+                csrf_token: csrfToken
             },
             success: function(res) {
                 $card.css('opacity', '1').css('pointer-events', 'all');
-                if (window.Toast) Toast.show(res.message, res.status === 'success' ? 'ok' : 'error');
+                if (res && res.new_csrf) {
+                    csrfToken = res.new_csrf;
+                    $('input[name="csrf_token"]').val(res.new_csrf);
+                }
+                if (!res || res.status !== 'success') {
+                    $toggle.prop('checked', !$toggle.prop('checked'));
+                    var msg = (res && res.message) ? res.message : (res && res.msg ? res.msg : 'Error al actualizar el módulo. Recarga la página.');
+                    if (window.Toast) Toast.show(msg, 'error');
+                } else {
+                    if (window.Toast) Toast.show(res.message || 'Configuración actualizada.', 'success');
+                }
             },
-            error: function() {
+            error: function(xhr) {
                 $card.css('opacity', '1').css('pointer-events', 'all');
-                if (window.Toast) Toast.show('Error de conexión', 'error');
+                $toggle.prop('checked', !$toggle.prop('checked'));
+                var msg = xhr.status === 500
+                    ? 'Error interno del servidor (500). Es posible que falten columnas en la base de datos. Contacta con soporte.'
+                    : 'Error de conexión (' + xhr.status + '). Verifica tu conexión e inténtalo de nuevo.';
+                if (window.Toast) Toast.show(msg, 'error');
             }
         });
     });

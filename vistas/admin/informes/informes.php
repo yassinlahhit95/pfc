@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_informes');
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);

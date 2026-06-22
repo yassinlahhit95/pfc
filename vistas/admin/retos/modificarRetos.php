@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -76,10 +78,15 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo">
-            <label for="archivosReto">Añadir Materiales (PDF o Imágenes)</label>
+            <label>Materiales del Reto</label>
             <div class="file-manager-premium">
-                <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" class="form-control mb-3">
-                
+                <label class="zona-subida" for="archivosReto">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Añadir PDF o imágenes</span>
+                    <small>Haz clic para seleccionar — múltiple selección permitida</small>
+                    <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" style="display:none">
+                </label>
+
                 <div class="upload-progress-container" id="progressWrapper">
                     <div class="progress-bar-premium">
                         <div class="progress-fill-premium" id="progressFill"></div>
@@ -87,31 +94,35 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <div class="progress-text-premium" id="progressText">0%</div>
                 </div>
 
-                <?php 
+                <?php
                 $archivosExistentes = obtenerArchivosReto($id_reto);
-                if (!empty($archivosExistentes)) {
-                    echo '<div class="mt-4">
-                            <label class="small text-muted fw-bold text-uppercase">Archivos cargados actualmente:</label>
-                            <div class="file-list-premium">';
-                    foreach ($archivosExistentes as $ae) {
-                        $isPdf = ($ae['tipoArchivo'] === 'pdf');
-                        $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
-                        echo "<div class='file-item-premium' id='file-{$ae['idArchivo']}'>
-                                <i class='fas {$icon} fa-lg'></i> 
-                                <div class='file-info-premium'>
-                                    <span class='file-name-premium' title='{$ae['nombreArchivo']}'>{$ae['nombreArchivo']}</span>
-                                    <span class='file-type-premium'>" . ($isPdf ? 'Documento PDF' : 'Imagen') . "</span>
-                                </div>
-                                <button type='button' class='file-delete-btn' onclick='borrarArchivoSmooth({$ae['idArchivo']}, {$id_reto})' title='Eliminar archivo'>
-                                   <i class='fas fa-times-circle'></i>
-                                </button>
-                              </div>";
-                    }
-                    echo '</div></div>';
-                }
+                if (!empty($archivosExistentes)):
                 ?>
+                <div class="archivos-cargados-wrap">
+                    <p class="archivos-cargados-titulo"><i class="fas fa-paperclip"></i> Archivos actuales</p>
+                    <div class="file-list-premium">
+                    <?php foreach ($archivosExistentes as $ae):
+                        $isPdf = ($ae['tipoArchivo'] === 'pdf');
+                        $icon  = $isPdf ? 'fa-file-pdf' : 'fa-image';
+                        $color = $isPdf ? '#e53e3e' : 'var(--accent)';
+                    ?>
+                        <div class="file-item-premium" id="file-<?= (int)$ae['idArchivo'] ?>">
+                            <i class="fas <?= $icon ?>" style="color:<?= $color ?>;font-size:1.3rem;flex-shrink:0;"></i>
+                            <div class="file-info-premium">
+                                <span class="file-name-premium" title="<?= Security::escapeHtml($ae['nombreArchivo']) ?>"><?= Security::escapeHtml($ae['nombreArchivo']) ?></span>
+                                <span class="file-type-premium"><?= $isPdf ? 'PDF' : 'Imagen' ?></span>
+                            </div>
+                            <button type="button" class="file-delete-btn"
+                                    onclick="borrarArchivoSmooth(<?= (int)$ae['idArchivo'] ?>, <?= $id_reto ?>)"
+                                    title="Eliminar archivo">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
+                        </div>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
-            <small class="text-muted d-block mt-2">Puedes seleccionar varios archivos. Se mostrará una barra de progreso al guardar.</small>
         </div>
 
         <div class="acciones">
@@ -125,33 +136,38 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 function borrarArchivoSmooth(idArchivo, idReto) {
-    if (!confirm('¿Estás seguro de que quieres eliminar este archivo?')) return;
-
     const $item = $('#file-' + idArchivo);
-    
-    $.ajax({
-        url: '../../../controladores/comunes/borrar_archivo_reto.php',
-        type: 'GET',
-        data: { id: idArchivo, idReto: idReto, ajax: 1 },
-        success: function(res) {
-            // Intentar parsear si no es objeto
-            const data = typeof res === 'string' ? JSON.parse(res) : res;
-            if (data.status === 'success') {
-                $item.addClass('removing');
-                setTimeout(() => $item.remove(), 400);
-            } else {
-                alert('Error: ' + data.message);
+    const $btn = $item.find('.file-delete-btn');
+
+    if ($btn.hasClass('confirming')) {
+        $btn.removeClass('confirming');
+        $.ajax({
+            url: '../../../controladores/comunes/borrar_archivo_reto.php',
+            type: 'GET',
+            data: { id: idArchivo, idReto: idReto, ajax: 1 },
+            success: function(res) {
+                const data = typeof res === 'string' ? JSON.parse(res) : res;
+                if (data.status === 'success') {
+                    $item.addClass('removing');
+                    setTimeout(() => $item.remove(), 400);
+                    if (window.Toast) Toast.show('Archivo eliminado', 'success');
+                } else {
+                    if (window.Toast) Toast.show('Error: ' + data.message, 'error');
+                }
+            },
+            error: function() {
+                if (window.Toast) Toast.show('Error de conexión al borrar el archivo', 'error');
             }
-        },
-        error: function() {
-            alert('Error de conexión al borrar el archivo');
-        }
-    });
+        });
+    } else {
+        $btn.addClass('confirming').attr('title', 'Haz clic de nuevo para confirmar');
+        setTimeout(() => $btn.removeClass('confirming').attr('title', 'Eliminar archivo'), 2500);
+    }
 }
 
 $(document).ready(function() {
     $('.formulario').on('submit', function(e) {
-        if ($('#archivosReto').get(0).files.length === 0) return true; // Si no hay archivos, envío normal
+        if ($('#archivosReto').get(0).files.length === 0) return true;
 
         e.preventDefault();
         const formData = new FormData(this);
@@ -164,10 +180,10 @@ $(document).ready(function() {
             xhr: function() {
                 var xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener("progress", function(evt) {
-                    if (xhr.lengthComputable) {
-                        var percentComplete = Math.round((evt.loaded / evt.total) * 100);
-                        $('#progressFill').css('width', percentComplete + '%');
-                        $('#progressText').text(percentComplete + '%');
+                    if (evt.lengthComputable) {
+                        var pct = Math.round((evt.loaded / evt.total) * 100);
+                        $('#progressFill').css('width', pct + '%');
+                        $('#progressText').text(pct + '%');
                     }
                 }, false);
                 return xhr;
@@ -177,13 +193,12 @@ $(document).ready(function() {
             data: formData,
             processData: false,
             contentType: false,
-            success: function(res) {
-                // Como el controlador redirige, capturamos si hay éxito
+            success: function() {
                 window.location.reload();
             },
             error: function() {
-                alert('Error al subir archivos');
-                $('#btnGuardar').prop('disabled', false).text('GUARDAR CAMBIOS');
+                if (window.Toast) Toast.show('Error al subir archivos', 'error');
+                $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-save"></i> GUARDAR CAMBIOS');
             }
         });
     });

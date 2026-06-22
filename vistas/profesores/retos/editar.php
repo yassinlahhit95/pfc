@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -16,8 +18,12 @@ if (!$reto) {
     exit;
 }
 
-$idProfesor = $_SESSION['idProfesor'];
-$misModulos = listarModulosDeProfesor($idProfesor);
+$idProfesor   = $_SESSION['idProfesor'];
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
+$misModulos   = ($esTutor && $idCicloTutor)
+    ? listarModulosDeCicloConNombre($idCicloTutor)
+    : listarModulosDeProfesor($idProfesor);
 
 $modulosAsociados = listarModulosDeReto($idReto);
 $mapaModulosAsociados = [];
@@ -61,57 +67,51 @@ include_once "../comunes/nav.php";
             </div>
         </div>
 
-        <div class="campo">
+        <div class="campo ancho-total">
             <label for="archivosReto">Añadir Materiales (PDF / Imágenes)</label>
-            <div class="file-manager-premium">
-                <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*" class="form-control mb-3">
-                
-                <div class="upload-progress-container" id="progressWrapper">
-                    <div class="progress-bar-premium">
-                        <div class="progress-fill-premium" id="progressFill"></div>
-                    </div>
-                    <div class="progress-text-premium" id="progressText">0%</div>
-                </div>
+            <input type="file" name="archivosReto[]" id="archivosReto" multiple accept=".pdf,image/*">
+            <p class="texto-suave" style="font-size:12px;margin-top:6px;">PDF o imágenes. Puede seleccionar varios archivos a la vez.</p>
 
-                <?php 
-                $archivosExistentes = obtenerArchivosReto($idReto);
-                if (!empty($archivosExistentes)) {
-                    echo '<div class="mt-4">
-                            <label class="small text-muted fw-bold text-uppercase">Archivos cargados actualmente:</label>
-                            <div class="file-list-premium">';
-                    foreach ($archivosExistentes as $ae) {
-                        $isPdf = ($ae['tipoArchivo'] === 'pdf');
-                        $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
-                        echo "<div class='file-item-premium' id='file-{$ae['idArchivo']}'>
-                                <i class='fas {$icon} fa-lg'></i> 
-                                <div class='file-info-premium'>
-                                    <span class='file-name-premium' title='{$ae['nombreArchivo']}'>{$ae['nombreArchivo']}</span>
-                                    <span class='file-type-premium'>" . ($isPdf ? 'Documento PDF' : 'Imagen') . "</span>
-                                </div>
-                                <button type='button' class='file-delete-btn' onclick='borrarArchivoSmooth({$ae['idArchivo']}, {$idReto})' title='Eliminar archivo'>
-                                   <i class='fas fa-times-circle'></i>
-                                </button>
-                              </div>";
-                    }
-                    echo '</div></div>';
-                }
-                ?>
+            <div id="progressWrapper" style="display:none;margin-top:10px;">
+                <div style="background:var(--border);border-radius:999px;height:6px;overflow:hidden;">
+                    <div id="progressFill" style="height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .2s;"></div>
+                </div>
+                <span class="texto-suave" id="progressText" style="font-size:12px;margin-top:4px;display:block;">0%</span>
             </div>
+
+            <?php $archivosExistentes = obtenerArchivosReto($idReto);
+            if (!empty($archivosExistentes)) { ?>
+                <div class="archivo-reto-lista">
+                    <?php foreach ($archivosExistentes as $ae) {
+                        $isPdf = ($ae['tipoArchivo'] === 'pdf'); ?>
+                    <div class="archivo-reto-item" id="file-<?= (int)$ae['idArchivo'] ?>">
+                        <i class="fas <?= $isPdf ? 'fa-file-pdf' : 'fa-image' ?>" style="font-size:18px;color:<?= $isPdf ? '#ef4444' : '#3b82f6' ?>;flex-shrink:0;"></i>
+                        <span class="archivo-reto-nombre" title="<?= Security::escapeHtml($ae['nombreArchivo']) ?>"><?= Security::escapeHtml($ae['nombreArchivo']) ?></span>
+                        <span class="texto-estado <?= $isPdf ? 'rojo' : 'azul' ?>"><?= $isPdf ? 'PDF' : 'Imagen' ?></span>
+                        <button type="button" class="boton-peligro btn-pequeno" onclick="borrarArchivoSmooth(<?= (int)$ae['idArchivo'] ?>, <?= (int)$idReto ?>)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
         </div>
 
-        <div class="campo">
+        <div class="campo ancho-total">
             <label>Asociar a Módulos</label>
-            <p class="texto-suave" style="margin-bottom: 10px;">Seleccione los modulos en los que se evaluare este reto.</p>
-            <div class="checks scroll-v200">
+            <p class="texto-suave" style="font-size:13px;margin-bottom:10px;">Seleccione los módulos en los que se evaluará este reto.</p>
+            <div class="modulo-chips">
                 <?php foreach ($misModulos as $mod) { ?>
-                    <label class="check-item" for="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>">
-                        <input type="checkbox" name="modulos[]" id="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>" value="<?= Security::escapeHtml($mod['idModulo'] ) ?>" 
-                            <?= Security::escapeHtml(isset($mapaModulosAsociados[$mod['idModulo']]) ? 'checked' : '') ?>>
-                        <span><?= Security::escapeHtml($mod['nombreModulo'] ) ?> (<?= Security::escapeHtml($mod['abreviaturaCiclo'] ) ?>)</span>
-                    </label>
+                <label class="modulo-chip">
+                    <input type="checkbox" name="modulos[]" value="<?= (int)$mod['idModulo'] ?>"
+                           <?= isset($mapaModulosAsociados[$mod['idModulo']]) ? 'checked' : '' ?>>
+                    <span>
+                        <?= Security::escapeHtml($mod['nombreModulo']) ?>
+                        <em>(<?= Security::escapeHtml($mod['abreviaturaCiclo']) ?>)</em>
+                    </span>
+                </label>
                 <?php } ?>
             </div>
-            
         </div>
 
         <div class="acciones" style="margin-top: 20px;">
@@ -128,7 +128,7 @@ function borrarArchivoSmooth(idArchivo, idReto) {
     if (!confirm('¿Estás seguro de que quieres eliminar este archivo?')) return;
 
     const $item = $('#file-' + idArchivo);
-    
+
     $.ajax({
         url: '../../../controladores/comunes/borrar_archivo_reto.php',
         type: 'GET',
@@ -139,11 +139,13 @@ function borrarArchivoSmooth(idArchivo, idReto) {
                 $item.addClass('removing');
                 setTimeout(() => $item.remove(), 400);
             } else {
-                alert('Error: ' + data.message);
+                if (window.Toast) Toast.show('Error: ' + data.message, 'error');
+                else alert('Error: ' + data.message);
             }
         },
         error: function() {
-            alert('Error de conexión');
+            if (window.Toast) Toast.show('Error de conexión', 'error');
+            else alert('Error de conexión');
         }
     });
 }

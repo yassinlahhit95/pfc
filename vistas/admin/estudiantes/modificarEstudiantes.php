@@ -16,6 +16,7 @@ if (!$estudiante) {
 }
 
 $datos_sesion = $_SESSION['datos_estudiante'] ?? null;
+unset($_SESSION['datos_estudiante']);
 if ($datos_sesion) {
     $estudiante = $datos_sesion + $estudiante;
 }
@@ -63,11 +64,19 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo">
+                <label for="anioEstudio">Año de estudio</label>
+                <select name="anioEstudio" id="anioEstudio">
+                    <option value="">-- Sin especificar --</option>
+                    <option value="1º" <?= (($estudiante['anioEstudio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
+                    <option value="2º" <?= (($estudiante['anioEstudio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
+                </select>
+            </div>
+
+            <div class="campo">
                 <label for="idCiclo">Ciclo Formativo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona un ciclo --</option>
                 </select>
-                
             </div>
 
             <div class="campo">
@@ -85,6 +94,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
                 <input type="date" id="fechaNacimientoEstudiante" name="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($estudiante['fechaNacimientoEstudiante']) ?>">
+                <input type="hidden" name="fechaAltaEstudiante" value="<?= Security::escapeHtml($estudiante['fechaAltaEstudiante'] ?? '') ?>">
             </div>
 
             <div class="campo ancho-total">
@@ -136,5 +146,3 @@ $(function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
-
-?>

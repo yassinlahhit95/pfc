@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
+
+if (!FeatureGuard::check('feature_subida_tfg')) {
+    $_SESSION['errores'] = "La entrega del TFG está cerrada en este momento.";
+    header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
+}
 
 // Seguridad: SIEMPRE el id de la sesión, nunca el del formulario (evita IDOR)
 $idEstudiante  = $_SESSION['idEstudiante'];

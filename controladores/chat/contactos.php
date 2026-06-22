@@ -26,18 +26,14 @@ if (!empty($_SESSION['idAdmin'])) {
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     echo json_encode(['ok' => false]); exit;
 }
+session_write_close(); // release session lock before DB work
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-$q = strtolower(trim($_GET['q'] ?? ''));
-$contacts = chatContactosPosibles($myRol, $myId);
-
-if ($q !== '') {
-    $contacts = array_values(array_filter($contacts, fn($c) =>
-        str_contains(strtolower($c['nombre']), $q)
-    ));
-}
+// Search is applied at the DB level inside chatContactosPosibles().
+$q        = trim($_GET['q'] ?? '');
+$contacts = chatContactosPosibles($myRol, $myId, $q);
 
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA

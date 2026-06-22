@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -45,7 +46,7 @@ function _nav_active_prof($check) {
 <html lang="es" data-theme="light" data-density="regular">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title><?= Security::escapeHtml($tituloDelPagina ?? 'AulaPro Profesor') ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -110,12 +111,14 @@ function _nav_active_prof($check) {
         <?php if (_nav_active_prof('modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <?php if (FeatureGuard::check('feature_retos')): ?>
       <a href="../retos/lista.php" class="nav-item<?= _nav_active_prof('retos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
         <span class="nav-label">Retos</span>
         <?php if ($totalRetos_menu > 0) { ?><span class="nav-badge"><?= $totalRetos_menu ?></span><?php } ?>
         <?php if (_nav_active_prof('retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
       <a href="../calificaciones/lista.php" class="nav-item<?= _nav_active_prof('calificaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
@@ -129,11 +132,13 @@ function _nav_active_prof($check) {
         <?php if (_nav_active_prof('notas_retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <?php if (FeatureGuard::check('feature_subida_tfg')) { ?>
       <a href="../calificaciones/tfg.php" class="nav-item<?= _nav_active_prof('notas_tfg') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
         <span class="nav-label">Notas TFG</span>
         <?php if (_nav_active_prof('notas_tfg') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php } ?>
 
       <a href="../academico/resultadosFinales.php" class="nav-item<?= _nav_active_prof('resultados_finales') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-11 11-2-2"/></svg></span>
@@ -145,6 +150,12 @@ function _nav_active_prof($check) {
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
         <span class="nav-label">Cuadro Horario</span>
         <?php if (_nav_active_prof('horario') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
+      <a href="../asistencias/registrar.php" class="nav-item<?= _nav_active_prof('asistencias') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+        <span class="nav-label">Asistencia</span>
+        <?php if (_nav_active_prof('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- AULA DIGITAL -->
@@ -165,30 +176,38 @@ function _nav_active_prof($check) {
       <!-- COMUNICACIÓN -->
       <span class="nav-section-title">COMUNICACIÓN</span>
 
+      <?php if (FeatureGuard::check('feature_anuncios')): ?>
       <a href="../anuncios/lista.php" class="nav-item<?= _nav_active_prof('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label">Anuncios</span>
         <?php if (_nav_active_prof('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
+      <?php if (FeatureGuard::check('feature_mensajes')): ?>
       <a href="../mensajes/lista.php" class="nav-item<?= _nav_active_prof('reclamaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
         <span class="nav-label">Mensajería</span>
         <?php if ($totalMensajes_menu > 0) { ?><span class="nav-badge<?= ($totalSinLeer_menu > 0) ? ' nav-badge-alert' : '' ?>"><?= $totalMensajes_menu ?></span><?php } ?>
         <?php if (_nav_active_prof('reclamaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
+      <?php if (FeatureGuard::check('feature_chat')) { ?>
       <a href="../chat/index.php" class="nav-item<?= _nav_active_prof('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
         <?php if (_nav_active_prof('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php } ?>
 
+      <?php if (FeatureGuard::check('feature_eventos')): ?>
       <a href="../eventos/lista.php" class="nav-item<?= _nav_active_prof('eventos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>
         <span class="nav-label">Eventos</span>
         <?php if (_nav_active_prof('eventos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
     </nav>
 
@@ -213,13 +232,17 @@ function _nav_active_prof($check) {
         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
       </button>
       <div class="topbar-user">
-        <span class="role-badge">PROFESOR</span>
+        <?php if (!empty($_SESSION['esTutor'])): ?>
+          <span class="role-badge" style="background:var(--accent);color:#fff;">TUTOR</span>
+        <?php else: ?>
+          <span class="role-badge">PROFESOR</span>
+        <?php endif; ?>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
       <div class="search-wrap">
         <label class="searchbar">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
-          <input id="search" placeholder="Buscar..." autocomplete="off"
+          <input id="search" placeholder="Buscar..." autocomplete="new-password"
                  data-url="../../../controladores/profesores/buscar.php" />
           <kbd>⌘K</kbd>
         </label>

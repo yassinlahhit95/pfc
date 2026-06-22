@@ -3,27 +3,44 @@ require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 $id = (int)($_GET['id'] ?? 0);
 require_once __DIR__ . '/../../../modelos/tfg.php';
 $registro = obtenerTFGporEstudiante($id);
-$tituloDelPagina = 'AULAPRO | CONFIRMAR';
+if (!$registro) { header("Location: lista.php"); exit; }
+$tituloDelPagina = 'AULAPRO | CONFIRMAR ELIMINACIÓN';
 $seccionActual = '';
 include __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
-    <h1>CONFIRMAR ELIMINACIÓN</h1>
+    <div><h1>Eliminar TFG</h1></div>
+    <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<div class="panel" style="max-width:500px;">
-    <p>Quieres eliminar el TFG de "<?= Security::escapeHtml($registro['nombreEstudiante'] ) ?>"!</p>
-    <div class="acciones" style="margin-top:20px;">
+<div class="panel panel-peligro" style="max-width:520px;">
+    <div class="peligro-header">
+        <div class="peligro-icono"><i class="fas fa-exclamation-triangle"></i></div>
+        <div>
+            <p class="peligro-titulo">Confirmar eliminación</p>
+            <p class="peligro-subtitulo">Estás a punto de eliminar el TFG del siguiente estudiante:</p>
+        </div>
+    </div>
+
+    <div class="peligro-registro">
+        <i class="fas fa-file-alt"></i>
+        <?= Security::escapeHtml($registro['nombreEstudiante']) ?>
+    </div>
+
+    <div class="peligro-aviso">
+        <i class="fas fa-exclamation-circle"></i>
+        El archivo del TFG será eliminado permanentemente y no se puede deshacer.
+    </div>
+
+    <div class="peligro-acciones">
+        <a href="lista.php" class="boton-secundario"><i class="fas fa-times"></i> Cancelar</a>
         <form method="POST" action="../../../controladores/profesores/pfc/borrar.php">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idEstudiante" value="<?= (int)$id ?>">
-            <button type="submit" class="boton-primario" style="background:#f87171;border-color:#f87171;min-width:160px;">Sí, eliminar</button>
+            <button type="submit" class="boton-peligro"><i class="fas fa-trash"></i> Sí, eliminar</button>
         </form>
-        <a href="lista.php" class="boton-secundario" style="min-width:160px;">Cancelar</a>
     </div>
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

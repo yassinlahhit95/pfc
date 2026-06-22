@@ -114,11 +114,10 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
-                    <tr class="fila-nivel-<?= $mapaCicloNivel[$estudianteIndividual['idCiclo']] ?? '' ?>">
+                    <tr class="fila-nivel-<?= (int)($estudianteIndividual['idNivel'] ?? 0) ?>">
                         <td><?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?></td>
                         <td>
                             <span class="texto-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
-                            <span class="texto-estado gris"><?= Security::escapeHtml($estudianteIndividual['curso']) ?></span>
                         </td>
                         <td><b><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>
@@ -130,7 +129,14 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                                     <a class="recurso-menu-item" href="verDetallesEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>"><i class="fas fa-id-card"></i> Ver detalles</a>
                                     <a class="recurso-menu-item" href="modificarEstudiantes.php?idEstudiante=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarEstudiante.php?id=<?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?>" onclick="return confirm('¿Eliminar este estudiante?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$estudianteIndividual['idEstudiante'] ?>"
+                                       data-tipo="Estudiante"
+                                       data-nombre="<?= Security::escapeHtml($estudianteIndividual['nombreEstudiante']) ?>"
+                                       data-extra="<?= Security::escapeHtml($estudianteIndividual['abreviaturaCiclo'] ?? $estudianteIndividual['nombreCiclo']) ?>"
+                                       data-url="/controladores/admin/estudiantes/borrar.php"
+                                       data-campo="idEstudiante"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>

@@ -4,24 +4,33 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarEstudiante'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/estudiantes/agregarEstudiantes.php");
+        exit;
+    }
+
     $nombre          = trim($_POST['nombreEstudiante']);
     $email           = trim($_POST['emailEstudiante']);
     $dni             = trim($_POST['dniEstudiante']);
     $telefono        = trim($_POST['telefonoEstudiante']);
     $fechaNacimiento = trim($_POST['fechaNacimientoEstudiante']);
-    $fechaAlta       = trim($_POST['fechaAltaEstudiante']);
+    $fechaAlta       = !empty($_POST['fechaAltaEstudiante']) ? trim($_POST['fechaAltaEstudiante']) : date('Y-m-d');
     $direccion       = trim($_POST['direccionEstudiante']);
     $ciudad          = trim($_POST['ciudadEstudiante']);
     $codigoPostal    = trim($_POST['codigoPostalEstudiante']);
     $observaciones   = trim($_POST['observacionesEstudiante']);
     $idCiclo         = (int)($_POST['idCiclo'] ?? 0);
-    $cursosPermitidos = ['Grado Medio', 'Grado Superior', '1º', '2º'];
+    $cursosPermitidos = ['Grado Medio', 'Grado Superior'];
     $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
+    $aniosPermitidos  = ['1º', '2º'];
+    $anioEstudio      = in_array($_POST['anioEstudio'] ?? '', $aniosPermitidos, true) ? $_POST['anioEstudio'] : null;
 
     $avisos = [];
     if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es un campo obligatorio.";
@@ -44,7 +53,7 @@ if (isset($_POST['guardarEstudiante'])) {
     } elseif (!is_numeric($codigoPostal)) {
         $avisos['codigoPostalEstudiante'] = "El código postal especificado no es válido.";
     }
-    if (empty($curso)) $avisos['curso'] = "Debe seleccionar un grado formativo.";
+    if (empty($curso)) $avisos['curso'] = "Debe seleccionar un nivel formativo.";
     if ($idCiclo <= 0) $avisos['idCiclo'] = "Debe seleccionar un ciclo formativo.";
 
     if (empty($avisos) && checkEstudianteExistente($dni, $email)) {
@@ -58,7 +67,8 @@ if (isset($_POST['guardarEstudiante'])) {
         exit;
     }
 
-    if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
+    if (insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio)) {
+        registrarAccion('insertar', 'estudiantes', null, $nombre);
         $_SESSION['exito'] = mensajeExitoConCredenciales("El estudiante ha sido registrado correctamente.");
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
         exit;

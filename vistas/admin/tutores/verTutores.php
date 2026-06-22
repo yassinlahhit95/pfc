@@ -51,8 +51,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <td><?= Security::escapeHtml($t['idTutor']) ?></td>
                         <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="ava-mini" style="background: var(--bg-2); color: var(--accent); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; border: 1px solid var(--border); font-size: 0.8rem;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:1px solid var(--border);flex-shrink:0;">
                                     <?= strtoupper(substr($t['nombreTutor'], 0, 1)) ?>
                                 </div>
                                 <b><?= strtoupper(Security::escapeHtml($t['nombreTutor'])) ?></b>
@@ -60,25 +60,33 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td><?= Security::escapeHtml($t['dniTutor']) ?></td>
                         <td>
-                            <div class="d-flex flex-column gap-1">
-                                <?php if (empty($hijos)): ?>
-                                    <span class="badge bg-light text-muted border">Sin vinculación</span>
-                                <?php else: ?>
+                            <?php if (empty($hijos)): ?>
+                                <span class="texto-estado gris">Sin vinculación</span>
+                            <?php else: ?>
+                                <div style="display:flex;flex-direction:column;gap:4px;">
                                     <?php foreach ($hijos as $h): ?>
-                                        <span class="small fw-medium"><i class="fas fa-child me-1 opacity-50"></i> <?= Security::escapeHtml($h['nombreEstudiante']) ?></span>
+                                        <span style="font-size:.83rem;"><i class="fas fa-user-graduate" style="opacity:.5;margin-right:4px;"></i><?= Security::escapeHtml($h['nombreEstudiante']) ?></span>
                                     <?php endforeach; ?>
-                                <?php endif; ?>
-                            </div>
+                                </div>
+                            <?php endif; ?>
                         </td>
                         <td><?= Security::escapeHtml($t['emailTutor']) ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="verDetallesTutor.php?id=<?= $t['idTutor'] ?>"><i class="fas fa-search"></i> Ver expediente</a>
-                                    <a class="recurso-menu-item" href="modificarTutor.php?id=<?= $t['idTutor'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <a class="recurso-menu-item" href="modificarTutor.php?idTutor=<?= (int)$t['idTutor'] ?>">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarTutor.php?id=<?= $t['idTutor'] ?>" onclick="return confirm('¿Eliminar este tutor? Se perderán las vinculaciones familiares.')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$t['idTutor'] ?>"
+                                       data-tipo="Tutor"
+                                       data-nombre="<?= Security::escapeHtml($t['nombreTutor']) ?>"
+                                       data-extra="<?= Security::escapeHtml($t['dniTutor']) ?>"
+                                       data-url="/controladores/admin/tutores/borrar.php"
+                                       data-campo="idTutor"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -92,5 +100,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include '../comunes/footer.php'; ?>
 <script>
-iniciarPaginacion('tablaTutores', 10);
+iniciarPaginacion('tablaTutores', 15);
 </script>

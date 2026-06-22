@@ -4,11 +4,17 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarCiclo'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/ciclos/agregarCiclos.php");
+        exit;
+    }
     $nombre = trim($_POST['nombreCiclo']);
     $abreviatura = trim($_POST['abreviaturaCiclo']);
     $idNivelEducativo = (int)($_POST['idNivel'] ?? 0);
@@ -34,6 +40,7 @@ if (isset($_POST['guardarCiclo'])) {
     }
 
     if (insertarNuevoCiclo($nombre, $abreviatura, $idNivelEducativo, $profesores, $precioCiclo)) {
+        registrarAccion('insertar', 'ciclos', null, "$nombre ($abreviatura)");
         $_SESSION['exito'] = "El ciclo formativo ha sido registrado correctamente.";
         header("Location: ../../../vistas/admin/ciclos/verCiclos.php");
         exit;

@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/Security.php';
 header('Content-Type: application/json');
+require_once __DIR__ . '/../../../modelos/log.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
@@ -39,4 +40,5 @@ if (tieneCeldasEnFranja($idCiclo, $horaSql)) {
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
 $ok = eliminarFranjaHorario($idCiclo, $horaSql);
+if ($ok) registrarAccion('remove_franja', 'horario', $idCiclo, $inicio);
 echo json_encode(['ok' => (bool)$ok]);

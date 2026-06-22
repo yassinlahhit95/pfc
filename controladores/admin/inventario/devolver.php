@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_inventario');
 require_once __DIR__ . "/../../../modelos/inventario.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -22,6 +23,7 @@ if ($idPrestamo <= 0) {
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
 if (devolverPrestamo($idPrestamo)) {
+    registrarAccion('devolver', 'inventario', $idPrestamo);
     $_SESSION['exito'] = "La devolución del préstamo ha sido registrada correctamente.";
 } else {
     $_SESSION['errores'] = "No se pudo registrar la devolución del préstamo.";

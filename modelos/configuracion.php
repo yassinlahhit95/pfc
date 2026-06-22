@@ -19,7 +19,15 @@ function obtenerConfiguracionCentro() {
         'feature_prematricula'    => 1,
         'feature_chat'            => 1,
         'feature_inventario'      => 1,
-        'feature_subida_tfg'      => 1
+        'feature_subida_tfg'      => 1,
+        'feature_anuncios'        => 1,
+        'feature_eventos'         => 1,
+        'feature_retos'           => 1,
+        'feature_mensajes'        => 1,
+        'feature_pagos'           => 1,
+        'feature_gastos'          => 1,
+        'feature_informes'        => 1,
+        'feature_horario'         => 1,
     ];
 }
 
@@ -39,19 +47,36 @@ function guardarConfiguracionCentro($d) {
         $d['ciudadCentro'], $d['cpCentro'], $d['telefonoCentro'],
         $d['emailCentro'], $d['cursoEscolar'], $d['textoLegal'],
         $d['nombreDirectorFirmante']);
-    return mysqli_stmt_execute($stmt);
+    $ok = mysqli_stmt_execute($stmt);
+    if ($ok && class_exists('FeatureGuard')) {
+        FeatureGuard::clearCache();
+    }
+    return $ok;
 }
 
 // Solo acepta columnas de feature válidas para evitar inyección de nombre de columna.
+// Devuelve true en éxito, o un string con el error MySQL en fallo.
 function actualizarFeatureToggle($feature, $estado) {
     $con = obtenerConexion();
-    $featuresValidas = ['feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg'];
-    if (!in_array($feature, $featuresValidas)) return false;
+    $featuresValidas = [
+        'feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg',
+        'feature_anuncios', 'feature_eventos', 'feature_retos', 'feature_mensajes',
+        'feature_pagos', 'feature_gastos', 'feature_informes', 'feature_horario',
+    ];
+    if (!in_array($feature, $featuresValidas)) return 'Funcionalidad no reconocida.';
     $sql  = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";
     $stmt = mysqli_prepare($con, $sql);
-    $val  = ($estado == 1) ? 1 : 0;
+    if ($stmt === false) {
+        return 'Error al preparar la consulta SQL: ' . mysqli_error($con)
+             . ' — Es posible que la columna "' . $feature . '" no exista en la base de datos. '
+             . 'Ejecuta la migración config/migrations/002_feature_flags.sql en producción.';
+    }
+    $val = ($estado == 1) ? 1 : 0;
     mysqli_stmt_bind_param($stmt, 'i', $val);
-    return mysqli_stmt_execute($stmt);
+    if (!mysqli_stmt_execute($stmt)) {
+        return 'Error al ejecutar la consulta SQL: ' . mysqli_stmt_error($stmt);
+    }
+    return true;
 }
 
 // Solo acepta columnas de logo válidas para evitar inyección de nombre de columna.

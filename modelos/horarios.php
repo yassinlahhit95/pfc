@@ -150,6 +150,56 @@ function listarAsignacionesPorCiclo($idCiclo) {
     return $lista;
 }
 
+// Devuelve todas las ocupaciones de aulas en todo el centro (para tutores).
+// Resultado: [ 'Lunes|08:00' => [ idAula => ['codigoAula'=>…,'nombreCiclo'=>…,'nombreModulo'=>…], … ], … ]
+// Devuelve las franjas horarias de un módulo en un día concreto (para asistencias).
+function listarClasesDeModuloPorDia(int $idModulo, string $diaSemana): array {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT h.horaInicio, h.horaFin,
+                a.codigoAula, a.nombreAula,
+                p.nombreProfesor
+         FROM   horarios h
+         LEFT JOIN aulas     a ON a.idAula     = h.idAula
+         LEFT JOIN profesores p ON p.idProfesor = h.idProfesor
+         WHERE  h.idModulo = ? AND h.diaSemana = ?
+         ORDER BY h.horaInicio");
+    if (!$stmt) return [];
+    mysqli_stmt_bind_param($stmt, "is", $idModulo, $diaSemana);
+    mysqli_stmt_execute($stmt);
+    $res  = mysqli_stmt_get_result($stmt);
+    if (!$res) return [];
+    $rows = [];
+    while ($r = mysqli_fetch_assoc($res)) {
+        $r['horaInicio'] = substr($r['horaInicio'], 0, 5);
+        $r['horaFin']    = substr($r['horaFin'],    0, 5);
+        $rows[] = $r;
+    }
+    mysqli_stmt_close($stmt);
+    return $rows;
+}
+
+function listarOcupacionAulasEscuela() {
+    $con = obtenerConexion();
+    $sql = "SELECT h.diaSemana, h.horaInicio, h.idAula,
+                   a.codigoAula, a.nombreAula,
+                   c.nombreCiclo, c.abreviaturaCiclo,
+                   m.nombreModulo
+            FROM horarios h
+            JOIN aulas a      ON h.idAula    = a.idAula
+            JOIN ciclos c     ON h.idCiclo   = c.idCiclo
+            LEFT JOIN modulos m ON h.idModulo = m.idModulo
+            WHERE h.idAula IS NOT NULL
+            ORDER BY h.diaSemana, h.horaInicio, a.codigoAula";
+    $resultado = mysqli_query($con, $sql);
+    $mapa = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $clave = $fila['diaSemana'] . '|' . substr($fila['horaInicio'], 0, 5);
+        $mapa[$clave][(int)$fila['idAula']] = $fila;
+    }
+    return $mapa;
+}
+
 // Devuelve el conflicto si el aula ya está ocupada en esa franja por otro ciclo, o null si está libre.
 function aulaOcupadaPorOtro($idAula, $dia, $horaInicio, $idCicloActual) {
     if (empty($idAula)) return null;

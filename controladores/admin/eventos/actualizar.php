@@ -3,12 +3,20 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_eventos');
 require_once __DIR__ . "/../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarEvento'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
+        exit;
+    }
     $idEvento        = (int)($_POST['idEvento'] ?? 0);
     $titulo          = trim($_POST['tituloEvento']);
     $descripcion     = trim($_POST['descripcionEvento']);
@@ -24,6 +32,7 @@ if (isset($_POST['actualizarEvento'])) {
 
     if (!$errores) {
         if (actualizarEvento($idEvento, $titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento)) {
+            registrarAccion('actualizar', 'eventos', $idEvento, $titulo);
             $_SESSION['exito'] = "El evento ha sido actualizado correctamente.";
             header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
             exit;

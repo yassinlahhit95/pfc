@@ -4,25 +4,34 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarEstudiante'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
+        exit;
+    }
+
     $idEstudiante    = (int)($_POST['idEstudiante'] ?? 0);
     $nombre          = trim($_POST['nombreEstudiante']);
     $email           = trim($_POST['emailEstudiante']);
     $dni             = trim($_POST['dniEstudiante']);
     $telefono        = trim($_POST['telefonoEstudiante']);
     $fechaNacimiento = trim($_POST['fechaNacimientoEstudiante']);
-    $fechaAlta       = trim($_POST['fechaAltaEstudiante']);
+    $fechaAlta       = !empty($_POST['fechaAltaEstudiante']) ? trim($_POST['fechaAltaEstudiante']) : '';
     $direccion       = trim($_POST['direccionEstudiante']);
     $ciudad          = trim($_POST['ciudadEstudiante']);
     $codigoPostal    = trim($_POST['codigoPostalEstudiante']);
     $observaciones   = trim($_POST['observacionesEstudiante']);
     $idCiclo         = (int)($_POST['idCiclo'] ?? 0);
-    $cursosPermitidos = ['Grado Medio', 'Grado Superior', '1º', '2º'];
+    $cursosPermitidos = ['Grado Medio', 'Grado Superior'];
     $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : 'Grado Medio';
+    $aniosPermitidos  = ['1º', '2º'];
+    $anioEstudio      = in_array($_POST['anioEstudio'] ?? '', $aniosPermitidos, true) ? $_POST['anioEstudio'] : null;
 
     if ($idEstudiante <= 0) {
         header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
@@ -52,7 +61,8 @@ if (isset($_POST['actualizarEstudiante'])) {
     }
 
     if (empty($errores)) {
-        if (actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso)) {
+        if (actualizarEstudiante($idEstudiante, $nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso, $anioEstudio)) {
+            registrarAccion('actualizar', 'estudiantes', $idEstudiante, $nombre);
             $_SESSION['exito'] = "La información del estudiante ha sido actualizada correctamente.";
             header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
             exit;

@@ -17,7 +17,15 @@ if (!isset($_POST['guardarNotas'])) {
 $idModulo = (int)trim($_POST['idModulo'] ?? 0);
 $idCiclo  = (int)trim($_POST['idCiclo']  ?? 0);
 
-if (!$idModulo || !in_array($_SESSION['idProfesor'], listarProfesoresDeModulo($idModulo))) {
+$_esTutor      = !empty($_SESSION['esTutor']);
+$_idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
+$_autorizado   = false;
+if ($_esTutor && $_idCicloTutor) {
+    $_autorizado = $idModulo && moduloPerteneceACiclo($idModulo, $_idCicloTutor);
+} else {
+    $_autorizado = $idModulo && in_array($_SESSION['idProfesor'], listarProfesoresDeModulo($idModulo));
+}
+if (!$_autorizado) {
     $_SESSION['errores'] = "No tienes permiso para calificar este módulo.";
     header("Location: ../../../vistas/profesores/calificaciones/lista.php");
     exit;

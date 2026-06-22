@@ -3,6 +3,8 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 require_once "../../../modelos/retos.php";
 
 if (!isset($_POST['insertarReto'])) {

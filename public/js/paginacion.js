@@ -2,13 +2,7 @@ var _paginaciones = {};
 
 function iniciarPaginacion(tablaId, filasPorPagina) {
     if ($('#' + tablaId).length === 0) return;
-    console.log('iniciando paginacion en:', tablaId, 'filas por pagina:', filasPorPagina);
-
-    _paginaciones[tablaId] = {
-        filasPorPagina: filasPorPagina,
-        paginaActual: 1
-    };
-
+    _paginaciones[tablaId] = { filasPorPagina: filasPorPagina, paginaActual: 1 };
     _mostrarPaginaTabla(tablaId, 1);
 }
 
@@ -16,12 +10,13 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var config = _paginaciones[tablaId];
     if (!config) return;
 
-    let filas = $('#' + tablaId + ' tbody tr').toArray();
-    let visibles = filas.filter(function(tr) {
+    var filas = $('#' + tablaId + ' tbody tr').toArray();
+    var visibles = filas.filter(function(tr) {
         return !$(tr).hasClass('fila-filtro-oculta');
     });
 
-    var total = Math.max(1, Math.ceil(visibles.length / config.filasPorPagina));
+    var totalFilas = visibles.length;
+    var total = Math.max(1, Math.ceil(totalFilas / config.filasPorPagina));
     if (pagina < 1) pagina = 1;
     if (pagina > total) pagina = total;
     config.paginaActual = pagina;
@@ -29,48 +24,65 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var inicio = (pagina - 1) * config.filasPorPagina;
     var fin = inicio + config.filasPorPagina;
 
+    $.each(filas, function(_, tr) { $(tr).hide(); });
     $.each(visibles, function(idx, tr) {
-        if (idx >= inicio && idx < fin) {
-            $(tr).show();
+        if (idx >= inicio && idx < fin) $(tr).show();
+    });
+
+    _renderControles(tablaId, pagina, total, totalFilas, inicio, fin);
+}
+
+function _renderControles(tablaId, pagina, total, totalFilas, inicio, fin) {
+    var ctId = 'paginacion-' + tablaId;
+    var $ct = $('#' + ctId);
+    if ($ct.length === 0) {
+        $ct = $('<div>').attr('id', ctId).addClass('paginacion-wrap');
+        $('#' + tablaId).parent().after($ct);
+    }
+
+    if (totalFilas === 0) { $ct.html(''); return; }
+
+    var desde = inicio + 1;
+    var hasta = Math.min(fin, totalFilas);
+    var info = '<span class="pag-info">Mostrando <b>' + desde + '–' + hasta + '</b> de <b>' + totalFilas + '</b> entradas</span>';
+
+    if (total <= 1) { $ct.html(info); return; }
+
+    var pg = '<div class="pag-pages">';
+    pg += '<button class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina - 1) + ')"' + (pagina === 1 ? ' disabled' : '') + '><i class="fas fa-chevron-left"></i></button>';
+
+    var nums = _buildPageNumbers(pagina, total);
+    $.each(nums, function(_, p) {
+        if (p === '...') {
+            pg += '<span class="pag-ellipsis">…</span>';
         } else {
-            $(tr).hide();
+            pg += '<button class="pag-btn' + (p === pagina ? ' activo' : '') + '" onclick="irAPagina(\'' + tablaId + '\',' + p + ')">' + p + '</button>';
         }
     });
 
-    _renderControles(tablaId, pagina, total);
+    pg += '<button class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina + 1) + ')"' + (pagina === total ? ' disabled' : '') + '><i class="fas fa-chevron-right"></i></button>';
+    pg += '</div>';
+
+    $ct.html(info + pg);
 }
 
-function _renderControles(tablaId, pagina, total) {
-    var ctId = 'paginacion-' + tablaId;
-    var $contenedor = $('#' + ctId);
-
-    if ($contenedor.length === 0) {
-        $contenedor = $('<div>').attr('id', ctId).addClass('paginacion-controles');
-        $('#' + tablaId).parent().after($contenedor);
+function _buildPageNumbers(current, total) {
+    if (total <= 7) {
+        var arr = [];
+        for (var i = 1; i <= total; i++) arr.push(i);
+        return arr;
     }
-
-    if (total <= 1) {
-        $contenedor.html('');
-        return;
-    }
-
-    let html = '';
-    html += '<button class="btn-pagina" onclick="irAPagina(\'' + tablaId + '\',' + (pagina - 1) + ')"';
-    if (pagina === 1) html += ' disabled';
-    html += '>&#8592; Anterior</button>';
-
-    var txt = 'Página ' + pagina + ' de ' + total;
-    html += '<span class="info-pagina">' + txt + '</span>';
-
-    html += '<button class="btn-pagina" onclick="irAPagina(\'' + tablaId + '\',' + (pagina + 1) + ')"';
-    if (pagina === total) html += ' disabled';
-    html += '>Siguiente &#8594;</button>';
-
-    $contenedor.html(html);
+    var pages = [1];
+    var start = Math.max(2, current - 1);
+    var end = Math.min(total - 1, current + 1);
+    if (start > 2) pages.push('...');
+    for (var i = start; i <= end; i++) pages.push(i);
+    if (end < total - 1) pages.push('...');
+    pages.push(total);
+    return pages;
 }
 
 function irAPagina(tablaId, pagina) {
-    console.log('ir a pagina:', pagina, 'en tabla:', tablaId);
     _mostrarPaginaTabla(tablaId, pagina);
 }
 

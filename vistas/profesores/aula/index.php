@@ -1,12 +1,19 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
-$idProfesor = $_SESSION['idProfesor'] ?? '';
+$idProfesor   = $_SESSION['idProfesor'] ?? '';
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$ciclos = listarCiclosDeProfesor($idProfesor);
+if ($esTutor && $idCicloTutor) {
+    $cicloTutor = obtenerCicloPorId($idCicloTutor);
+    $ciclos     = $cicloTutor ? [$cicloTutor] : [];
+} else {
+    $ciclos = listarCiclosDeProfesor($idProfesor);
+}
 
 $tituloDelPagina = "AULAPRO | RECURSOS";
 $seccionActual   = 'aula_recursos';
@@ -35,7 +42,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="aula-recursos-grid">
   <?php foreach ($ciclos as $c):
       $idc     = (int) $c['idCiclo'];
-      $modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idc);
+      $modulos = ($esTutor && $idCicloTutor)
+          ? listarModulosPorCiclo($idc)
+          : listarModulosDeProfesorPorCiclo($idProfesor, $idc);
       $usado   = obtenerUsoAlmacenamientoCicloAula($idc);
       $limite  = obtenerLimiteAlmacenamientoCicloAula($idc);
       $pct     = $limite > 0 ? min(100, round($usado / $limite * 100)) : 0;

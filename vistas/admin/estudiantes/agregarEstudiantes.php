@@ -9,6 +9,7 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 $todos_los_ciclos = listarTodosLosCiclos();
 
 $datos = $_SESSION['datos_estudiante'] ?? [];
+unset($_SESSION['datos_estudiante']);
 
 $titulo_pagina = "AULAPRO | NUEVO ESTUDIANTE";
 $seccion = 'estudiantes';
@@ -55,10 +56,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 
             </div>
 
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= Security::escapeHtml($datos['direccionEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
@@ -70,7 +71,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="codigoPostalEstudiante">Código Postal</label>
                 <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
-                
+            </div>
+
+            <div class="campo">
+                <label for="fechaAltaEstudiante">Fecha de Alta</label>
+                <input type="date" name="fechaAltaEstudiante" id="fechaAltaEstudiante" value="<?= Security::escapeHtml($datos['fechaAltaEstudiante'] ?? date('Y-m-d')) ?>">
             </div>
 
             <div class="campo">
@@ -80,7 +85,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
                     <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
                 </select>
-                
+            </div>
+
+            <div class="campo">
+                <label for="anioEstudio">Año de estudio</label>
+                <select name="anioEstudio" id="anioEstudio">
+                    <option value="">-- 1º o 2º año --</option>
+                    <option value="1º" <?= (($datos['anioEstudio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
+                    <option value="2º" <?= (($datos['anioEstudio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
+                </select>
             </div>
 
             <div class="campo">
@@ -88,7 +101,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
-                
+            </div>
+
+            <div class="campo ancho-total">
+                <label for="observacionesEstudiante">Observaciones</label>
+                <textarea name="observacionesEstudiante" id="observacionesEstudiante" rows="3"><?= Security::escapeHtml($datos['observacionesEstudiante'] ?? '') ?></textarea>
             </div>
         </div>
 

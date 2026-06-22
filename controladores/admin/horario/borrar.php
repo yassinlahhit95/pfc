@@ -35,6 +35,7 @@ if ($idCiclo <= 0 || !in_array($dia, $diasValidos, true) || $horaInicio === '') 
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
 if (borrarCeldaHorario($idCiclo, $dia, $horaInicio . ':00')) {
+    registrarAccion('borrar', 'horario', $idCiclo, "$dia $horaInicio");
     echo json_encode(['ok' => true, 'msg' => 'Asignación eliminada.']);
 } else {
     echo json_encode(['ok' => false, 'msg' => 'No se pudo eliminar la asignación.']);

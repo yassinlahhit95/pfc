@@ -8,8 +8,10 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
+require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $listaDeModulosActuales = listarModulos();
+$todos_los_profesores   = listarProfesores();
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
 
@@ -85,7 +87,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeModulosActuales as $moduloIndividual) {
-                        $nombresProfesores = listarNombresProfesoresDeModulo($moduloIndividual['idModulo']);
+                        $nombresProfesores   = listarNombresProfesoresDeModulo($moduloIndividual['idModulo']);
+                        $idsProfsModulo      = listarProfesoresDeModulo($moduloIndividual['idModulo']);
+                        $idProfesorActual    = !empty($idsProfsModulo) ? (int)$idsProfsModulo[0] : 0;
                     ?>
                     <tr>
                         <td><?= Security::escapeHtml($moduloIndividual['idModulo']) ?></td>
@@ -99,7 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                             <?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreCiclo'], 'UTF-8')) ?>
                         </td>
-                        <td>
+                        <td id="prof-cell-<?= (int)$moduloIndividual['idModulo'] ?>">
                             <?php if (empty($nombresProfesores)) { ?>
                                 <span class="texto-rojo texto-pequeno">
                                     <i class="fas fa-exclamation-triangle"></i> SIN PROFESOR
@@ -122,10 +126,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="asignarProfesorModulo.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"><i class="fas fa-chalkboard-teacher"></i> Asignar profesor</a>
+                                    <a class="recurso-menu-item" href="#"
+                                       data-modal-asignar-prof
+                                       data-id-modulo="<?= (int)$moduloIndividual['idModulo'] ?>"
+                                       data-nombre-modulo="<?= Security::escapeHtml($moduloIndividual['nombreModulo']) ?>"
+                                       data-profesor-actual="<?= $idProfesorActual ?>">
+                                       <i class="fas fa-chalkboard-teacher"></i> Asignar profesor</a>
                                     <a class="recurso-menu-item" href="modificarModulos.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarModulo.php?id=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>" onclick="return confirm('¿Eliminar este módulo?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$moduloIndividual['idModulo'] ?>"
+                                       data-tipo="Módulo"
+                                       data-nombre="<?= Security::escapeHtml($moduloIndividual['nombreModulo']) ?>"
+                                       data-url="/controladores/admin/modulos/borrar.php"
+                                       data-campo="idModulo"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -137,8 +152,37 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
+<!-- Modal: Asignar Profesor -->
+<div id="modal-asignar-prof" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal-caja">
+    <div class="modal-icono" style="background:linear-gradient(135deg,#f0f4ff,#e0e7ff)">
+      <i class="fas fa-chalkboard-teacher" style="color:var(--accent)"></i>
+    </div>
+    <h3 class="modal-titulo">Asignar Profesor</h3>
+    <p class="modal-subtitulo">Módulo: <strong id="ap-nombre-modulo"></strong></p>
+    <div style="margin:18px 0 4px;">
+      <label for="ap-select-profesor" style="display:block;font-size:13px;font-weight:600;color:var(--dim);margin-bottom:8px;">Profesor asignado</label>
+      <select id="ap-select-profesor" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-2);border-radius:8px;background:var(--surface);color:var(--text);font-size:14px;outline:none;">
+        <option value="">— Sin asignar —</option>
+        <?php foreach ($todos_los_profesores as $prof): ?>
+          <option value="<?= (int)$prof['idProfesor'] ?>">
+            <?= Security::escapeHtml($prof['nombreProfesor']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="modal-acciones">
+      <button id="ap-cancelar" class="boton-secundario"><i class="fas fa-times"></i> Cancelar</button>
+      <button id="ap-guardar" class="boton-primario"><i class="fas fa-save"></i> Guardar</button>
+    </div>
+    <input type="hidden" id="ap-id-modulo" value="">
+    <input type="hidden" name="ap_csrf" value="<?= Security::generateCSRFToken() ?>">
+  </div>
+</div>
+
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
+iniciarPaginacion('tablaModulos', 15);
 var _ciclosData = <?= json_encode(array_map(fn($c) => [
     'valor'    => strtoupper($c['nombreCiclo']),
     'label'    => '[' . $c['nombreNivel'] . '] ' . strtoupper($c['nombreCiclo']),
@@ -159,5 +203,93 @@ function cascadeCicloSelect(selectNivel) {
 
     $ciclo.val($ciclo.find('option[value="' + prev + '"]').length ? prev : '');
 }
+
+// ── Asignar profesor modal ────────────────────────────────────────────
+(function () {
+    var $modal    = $('#modal-asignar-prof');
+    var $select   = $('#ap-select-profesor');
+    var $idModulo = $('#ap-id-modulo');
+    var $nombre   = $('#ap-nombre-modulo');
+    var $guardar  = $('#ap-guardar');
+    var $cancelar = $('#ap-cancelar');
+    var targetProfCell = null;
+
+    function openModal($btn) {
+        var idMod    = $btn.data('id-modulo');
+        var nombre   = $btn.data('nombre-modulo') || '';
+        var profActual = parseInt($btn.data('profesor-actual')) || 0;
+
+        $idModulo.val(idMod);
+        $nombre.text(nombre);
+        $select.val(profActual || '');
+        targetProfCell = document.getElementById('prof-cell-' + idMod);
+
+        $modal.removeClass('modal-cerrando').addClass('modal-abierto');
+        setTimeout(function () { $select.focus(); }, 280);
+    }
+
+    function closeModal() {
+        $modal.addClass('modal-cerrando');
+        setTimeout(function () {
+            $modal.removeClass('modal-abierto modal-cerrando');
+            $guardar.prop('disabled', false).removeClass('cargando');
+        }, 180);
+    }
+
+    $(document).on('click', '[data-modal-asignar-prof]', function (e) {
+        e.preventDefault();
+        openModal($(this));
+    });
+
+    $cancelar.on('click', closeModal);
+
+    $modal.on('click', function (e) {
+        if ($(e.target).is($modal)) closeModal();
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $modal.hasClass('modal-abierto')) closeModal();
+    });
+
+    $guardar.on('click', function () {
+        if ($guardar.hasClass('cargando')) return;
+        $guardar.prop('disabled', true).addClass('cargando');
+
+        $.ajax({
+            url:     '/controladores/admin/modulos/actualizarProfesores.php',
+            type:    'POST',
+            data:    {
+                idModulo:   $idModulo.val(),
+                idProfesor: $select.val(),
+                csrf_token: $('[name="ap_csrf"]').val()
+            },
+            dataType: 'json',
+            headers:  { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .done(function (res) {
+            closeModal();
+            if (res && res.ok) {
+                if (window.Toast) Toast.show(res.msg, 'success');
+                if (targetProfCell) {
+                    var selectedText = $select.find('option:selected').text().trim();
+                    if (!$select.val()) {
+                        targetProfCell.innerHTML = '<span class="texto-rojo texto-pequeno"><i class="fas fa-exclamation-triangle"></i> SIN PROFESOR</span>';
+                    } else {
+                        targetProfCell.innerHTML = '<div class="texto-pequeno">' + selectedText.toUpperCase() + '</div>';
+                    }
+                    // Update the data attribute for future opens
+                    var $link = $('[data-modal-asignar-prof][data-id-modulo="' + $idModulo.val() + '"]');
+                    $link.data('profesor-actual', $select.val() || 0);
+                }
+            } else {
+                if (window.Toast) Toast.show((res && res.msg) ? res.msg : 'Error al asignar', 'error');
+            }
+        })
+        .fail(function () {
+            closeModal();
+            if (window.Toast) Toast.show('Error de conexión', 'error');
+        });
+    });
+}());
 </script>
 

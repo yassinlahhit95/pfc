@@ -55,7 +55,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <h4 style="margin:25px 0 15px;"><i class="fas fa-link"></i> Vincular con Estudiantes</h4>
 
-        <div class="formulario" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:15px;gap:12px;">
+        <div class="formulario" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-bottom:15px;gap:12px;">
             <div class="campo">
                 <label for="parentesco">Parentesco</label>
                 <select id="parentesco" name="parentesco">
@@ -81,6 +81,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php endforeach; ?>
                 </select>
             </div>
+            <div class="campo">
+                <label for="filtroAnio">Año de estudio</label>
+                <select id="filtroAnio" onchange="filtrarEstudiantes()">
+                    <option value="">— Todos los años —</option>
+                    <option value="1º">1º año</option>
+                    <option value="2º">2º año</option>
+                </select>
+            </div>
         </div>
 
         <div class="campo" style="margin-bottom:10px;">
@@ -97,6 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                            data-nombre="<?= strtolower(Security::escapeHtml($est['nombreEstudiante'])) ?>"
                            data-nivel="<?= Security::escapeHtml($est['idNivel']) ?>"
                            data-ciclo="<?= Security::escapeHtml($est['idCiclo']) ?>"
+                           data-anio="<?= Security::escapeHtml($est['anioEstudio'] ?? '') ?>"
                            style="display:flex;">
                         <input type="checkbox" name="estudiantes[]" value="<?= Security::escapeHtml($est['idEstudiante']) ?>"
                             <?= in_array($est['idEstudiante'], (array)($datos['estudiantes'] ?? [])) ? 'checked' : '' ?>>
@@ -105,6 +114,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <span class="texto-estado <?= $est['idNivel'] == 1 ? 'azul' : 'verde' ?>" style="font-size:.72rem;">
                                 <?= $est['idNivel'] == 1 ? 'G. Medio' : 'G. Superior' ?>
                             </span>
+                            <?php if (!empty($est['anioEstudio'])): ?>
+                                <span class="texto-estado gris" style="font-size:.72rem;"><?= Security::escapeHtml($est['anioEstudio']) ?></span>
+                            <?php endif; ?>
                             <small style="color:var(--text-2);"><?= Security::escapeHtml($est['nombreCiclo']) ?></small>
                         </span>
                     </label>
@@ -125,6 +137,7 @@ function filtrarEstudiantes() {
     var texto = document.getElementById('buscarEstudiante').value.toLowerCase().trim();
     var nivel = document.getElementById('filtroNivel').value;
     var ciclo = document.getElementById('filtroCiclo').value;
+    var anio  = document.getElementById('filtroAnio').value;
     var items = document.querySelectorAll('.est-item');
     var visibles = 0;
 
@@ -132,7 +145,8 @@ function filtrarEstudiantes() {
         var pasaNombre = !texto || el.dataset.nombre.indexOf(texto) !== -1;
         var pasaNivel  = !nivel  || el.dataset.nivel === nivel;
         var pasaCiclo  = !ciclo  || el.dataset.ciclo === ciclo;
-        var mostrar = pasaNombre && pasaNivel && pasaCiclo;
+        var pasaAnio   = !anio   || el.dataset.anio === anio;
+        var mostrar = pasaNombre && pasaNivel && pasaCiclo && pasaAnio;
         el.style.display = mostrar ? 'flex' : 'none';
         if (mostrar) visibles++;
     });

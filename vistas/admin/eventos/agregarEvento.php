@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_eventos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -46,7 +48,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 
             </div>
 
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="descripcionEvento">Descripción</label>
                 <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."><?= Security::escapeHtml($datos['descripcionEvento'] ?? '') ?></textarea>
             </div>

@@ -6,15 +6,26 @@ require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
+
 $idCiclo = intval($_GET['idCiclo'] ?? 0);
 if ($idCiclo < 1) { header("Location: index.php"); exit; }
 
-$ciclo   = null;
-$ciclos  = listarCiclosDeProfesor($idProfesor);
-foreach ($ciclos as $c) { if ($c['idCiclo'] == $idCiclo) { $ciclo = $c; break; } }
+$ciclo = null;
+if ($esTutor && $idCicloTutor) {
+    if ($idCiclo !== $idCicloTutor) { header("Location: index.php"); exit; }
+    require_once __DIR__ . "/../../../modelos/modulos.php";
+    $cicloObj = obtenerCicloPorId($idCicloTutor);
+    $ciclo    = $cicloObj ?: null;
+    $modulos  = $ciclo ? listarModulosDeCicloConNombre($idCicloTutor) : [];
+} else {
+    $ciclos = listarCiclosDeProfesor($idProfesor);
+    foreach ($ciclos as $c) { if ($c['idCiclo'] == $idCiclo) { $ciclo = $c; break; } }
+    if (!$ciclo) { header("Location: index.php"); exit; }
+    $modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
+}
 if (!$ciclo) { header("Location: index.php"); exit; }
-
-$modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
 
 $tituloDelPagina = "AULAPRO | " . strtoupper($ciclo['nombreCiclo']);
 $seccionActual   = 'aula_recursos';

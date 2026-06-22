@@ -1,4 +1,25 @@
-# Allow OPTIONS for CORS preflight (root restricts to GET POST HEAD)
+# Allow OPTIONS for CORS preflight (root .htaccess restricts to GET POST HEAD globally)
 <LimitExcept GET POST OPTIONS>
     Require all denied
 </LimitExcept>
+
+# CORS headers for the v1 mobile API
+# Native mobile apps don't need CORS, but a future PWA or web client will.
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With, X-API-Key, X-Timestamp, X-Signature"
+    Header always set Access-Control-Max-Age "86400"
+
+    # Respond immediately to OPTIONS preflight without hitting PHP
+    <If "%{REQUEST_METHOD} == 'OPTIONS'">
+        Header always set Content-Length "0"
+        Header always set Content-Type "text/plain"
+    </If>
+</IfModule>
+
+# Short cache for API JSON responses — clients should revalidate frequently
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>

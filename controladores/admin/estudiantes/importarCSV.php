@@ -8,6 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_FILES['archivo_csv'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/estudiantes/verEstudiantes.php");
+    exit;
+}
+
 $file = $_FILES['archivo_csv'];
 if ($file['error'] !== UPLOAD_ERR_OK) {
     $_SESSION['errores'] = "Error al subir el archivo CSV.";
@@ -60,7 +66,7 @@ while (($row = fgetcsv($handle)) !== false) {
     $tel      = trim($data['telefonoestudiante'] ?? $data['telefono'] ?? '');
     $dir      = trim($data['direccionestudiante'] ?? $data['direccion'] ?? '');
     $ciudad   = trim($data['ciudadestudiante'] ?? $data['ciudad'] ?? '');
-    $cp       = trim($data['codigopостalestudiante'] ?? $data['codigopostalestudiante'] ?? $data['cp'] ?? '');
+    $cp       = trim($data['codigopostalestudiante'] ?? $data['cp'] ?? '');
     $fNac     = trim($data['fechanacimientoestudiante'] ?? $data['fechanacimiento'] ?? '');
     $fAlta    = trim($data['fechaaltaestudiante'] ?? $data['fechaalta'] ?? date('Y-m-d'));
     $curso    = trim($data['curso'] ?? 'Grado Medio');

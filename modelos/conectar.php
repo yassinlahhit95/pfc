@@ -22,10 +22,13 @@ function obtenerConexion() {
     if (empty($user) || empty($pass)) {
         die("Error: credenciales de base de datos no configuradas.");
     }
-    $conexion = @mysqli_connect($host, $user, $pass, $db);
+    // Prefix 'p:' enables persistent connection pooling — PHP-FPM workers reuse
+    // existing connections instead of opening new ones under load.
+    $conexion = @mysqli_connect('p:' . $host, $user, $pass, $db);
     if (!$conexion) {
         error_log("Fallo al conectar a la BD: " . mysqli_connect_error());
-        die("Error de conexión a la base de datos. Inténtelo más tarde.");
+        http_response_code(503);
+        exit("Error de conexión a la base de datos. Inténtelo más tarde.");
     }
     mysqli_set_charset($conexion, "utf8mb4");
     return $conexion;

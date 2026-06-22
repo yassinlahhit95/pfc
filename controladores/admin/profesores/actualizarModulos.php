@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -22,6 +23,7 @@ if (isset($_POST['actualizarModulos'])) {
     }
 
     if (!$hayError) {
+        registrarAccion('actualizar_modulos', 'profesores', $idProfesor);
         $_SESSION['exito'] = "Los módulos del profesor han sido actualizados correctamente.";
     } else {
         $_SESSION['errores'] = "Ocurrió un error al intentar asignar los módulos al profesor.";

@@ -5,21 +5,30 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$idProfesor = $_SESSION['idProfesor'] ?? '';
+$idProfesor   = $_SESSION['idProfesor'] ?? '';
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
+$idCicloElegido  = (int)($_GET['idCiclo']  ?? 0);
 $idModuloElegido = (int)($_GET['idModulo'] ?? 0);
 
-$misCiclos  = listarCiclosDeProfesor($idProfesor);
-$misModulos = $idCicloElegido
-    ? listarModulosDeProfesorPorCiclo($idProfesor, $idCicloElegido)
-    : listarModulosDeProfesor($idProfesor);
+if ($esTutor && $idCicloTutor) {
+    $cicloTutor  = obtenerCicloPorId($idCicloTutor);
+    $misCiclos   = $cicloTutor ? [$cicloTutor] : [];
+    if (!$idCicloElegido) $idCicloElegido = $idCicloTutor;
+    $misModulos  = listarModulosDeCicloConNombre($idCicloTutor);
+} else {
+    $misCiclos  = listarCiclosDeProfesor($idProfesor);
+    $misModulos = $idCicloElegido
+        ? listarModulosDeProfesorPorCiclo($idProfesor, $idCicloElegido)
+        : listarModulosDeProfesor($idProfesor);
+}
 
-// Verify selected module belongs to this professor
+// Verify selected module belongs to this professor/tutor
 $listaEstudiantes = [];
 if ($idModuloElegido) {
     $esMio = (bool)array_filter($misModulos, fn($m) => (int)$m['idModulo'] === (int)$idModuloElegido);
@@ -74,9 +83,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="GET" action="lista.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
-            <label>Mis Ciclos:</label>
+            <label><?= $esTutor ? 'Ciclo:' : 'Mis Ciclos:' ?></label>
             <select name="idCiclo" onchange="this.form.submit()">
-                <option value="">-- Todos mis Ciclos --</option>
+                <?php if (!$esTutor): ?><option value="">-- Todos mis Ciclos --</option><?php endif; ?>
                 <?php foreach ($misCiclos as $c) { ?>
                     <option value="<?= (int)$c['idCiclo'] ?>" <?= ((string)$idCicloElegido === (string)$c['idCiclo']) ? 'selected' : '' ?>>
                         <?= Security::escapeHtml($c['nombreCiclo']) ?>
@@ -202,7 +211,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                                            value="<?= Security::escapeHtml($val) ?>"
                                            class="nota-input<?= $isCO ? ' is-co' : '' ?>"
                                            maxlength="4"
-                                           placeholder="0–10/NP/EX"
+                                           placeholder=""
+                                           autocomplete="off"
                                            <?= $isCO ? 'readonly' : '' ?>
                                            oninput="actualizarBadge(this)"
                                            onblur="validarNota(this)"

@@ -75,6 +75,30 @@ function insertarTutor($nombre, $email, $dni, $telefono) {
     return mysqli_insert_id($con);
 }
 
+function actualizarTutor(int $idTutor, string $nombre, string $email, string $dni, string $telefono): bool {
+    $con = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "UPDATE tutores SET nombreTutor=?, emailTutor=?, dniTutor=?, telefonoTutor=? WHERE idTutor=?");
+    mysqli_stmt_bind_param($stmt, "ssssi", $nombre, $email, $dni, $telefono, $idTutor);
+    return mysqli_stmt_execute($stmt);
+}
+
+function actualizarVinculacionesTutor(int $idTutor, array $idsEstudiantes, string $parentesco): void {
+    $con = obtenerConexion();
+    $del = mysqli_prepare($con, "DELETE FROM estudiante_tutor WHERE idTutor = ?");
+    mysqli_stmt_bind_param($del, "i", $idTutor);
+    mysqli_stmt_execute($del);
+    if (empty($idsEstudiantes)) return;
+    $ins = mysqli_prepare($con, "INSERT IGNORE INTO estudiante_tutor (idEstudiante, idTutor, parentesco) VALUES (?, ?, ?)");
+    foreach ($idsEstudiantes as $idEst) {
+        $idEst = (int)$idEst;
+        if ($idEst > 0) {
+            mysqli_stmt_bind_param($ins, "iis", $idEst, $idTutor, $parentesco);
+            mysqli_stmt_execute($ins);
+        }
+    }
+}
+
 function vincularEstudianteTutor($idEstudiante, $idTutor, $parentesco) {
     $con = obtenerConexion();
     $sql = "INSERT IGNORE INTO estudiante_tutor (idEstudiante, idTutor, parentesco) VALUES (?, ?, ?)";

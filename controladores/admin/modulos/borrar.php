@@ -5,6 +5,14 @@
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
+
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+if (!Security::validateCSRFToken(null, false)) {
+    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
+    header("Location: ../../../vistas/admin/modulos/verModulos.php"); exit;
+}
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -53,6 +61,7 @@ if (isset($_POST['idModulo'])) {
     $resultado = mysqli_prepare($con, $sql7);
     mysqli_stmt_bind_param($resultado, "i", $idModulo);
     if (mysqli_stmt_execute($resultado)) {
+        registrarAccion('borrar', 'modulos', $idModulo);
         $_SESSION['exito'] = "El módulo ha sido eliminado correctamente.";
     } else {
         $_SESSION['errores'] = "Ocurrió un error al intentar eliminar el módulo.";
@@ -62,5 +71,13 @@ if (isset($_POST['idModulo'])) {
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
+if ($isAjax) {
+    header('Content-Type: application/json');
+    $ok = empty($_SESSION['errores']);
+    $msg = $ok ? ($_SESSION['exito'] ?? 'Módulo eliminado correctamente') : (is_array($_SESSION['errores']) ? implode(', ', $_SESSION['errores']) : $_SESSION['errores']);
+    unset($_SESSION['exito'], $_SESSION['errores']);
+    echo json_encode(['ok' => $ok, 'msg' => $msg]);
+    exit;
+}
 header("Location: ../../../vistas/admin/modulos/verModulos.php");
 exit;

@@ -75,7 +75,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-desc">Expedientes y matrículas</span>
     </span>
     <span class="tile-foot">
-      <span class="tile-stat"><?= $totalEstudiantes ?> matriculados</span>
+      <span class="tile-stat"><?= $totalEstudiantes ?> matriculados · <?= $totalTFGs ?> TFGs</span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
@@ -108,6 +108,22 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
     <span class="tile-foot">
       <span class="tile-stat"><?= $totalTutores ?> registrados</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../ciclos/verCiclos.php" class="tile card-soft" style="--tint:#0284C7; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <?php if ($totalCiclos_menu > 0) { ?><span class="tile-badge"><?= $totalCiclos_menu ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Ciclos Formativos</span>
+      <span class="tile-desc">Programas académicos activos</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalCiclos_menu ?> ciclos · <?= $totalModulos_menu ?> módulos</span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
@@ -186,7 +202,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-desc">Comunicación interna</span>
     </span>
     <span class="tile-foot">
-      <span class="tile-stat"><?= $totalMensajes_menu ?? 0 ?> mensajes</span>
+      <span class="tile-stat"><?= $totalMensajes_menu ?? 0 ?> mensajes<?php if (($totalSinLeer_menu ?? 0) > 0): ?> · <span style="color:#ef4444;font-weight:800"><?= $totalSinLeer_menu ?> sin leer</span><?php endif; ?></span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
@@ -217,7 +233,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-desc">Recursos materiales</span>
     </span>
     <span class="tile-foot">
-      <span class="tile-stat"><?= $totalInventario_menu ?? 0 ?> artículos</span>
+      <span class="tile-stat"><?= $totalInventario_menu ?? 0 ?> artículos · <?= $totalPrestamos_menu ?? 0 ?> en préstamo</span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
@@ -237,7 +253,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
-  <a href="../admisiones/listado.php" class="tile card-soft" style="--tint:#4F46E5; text-decoration:none">
+  <a href="../admisiones/listado.php" class="tile card-soft" style="--tint:#7C3AED; text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">
       <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 5.9L11.8 16.1l-4.2-4.2"/></svg>

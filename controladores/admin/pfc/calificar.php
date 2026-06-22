@@ -9,6 +9,11 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['calificarTFG'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/academico/calificacionesTFG.php");
+        exit;
+    }
     $idEstudiante  = (int)($_POST['idEstudiante'] ?? 0);
     $nota          = str_replace(',', '.', trim($_POST['nota']));
     $observaciones = trim($_POST['observaciones']);

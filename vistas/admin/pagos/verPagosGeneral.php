@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_pagos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -112,7 +114,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <a class="recurso-menu-item" href="historialEstudiante.php?idEstudiante=<?= (int)$pagoIndividual['idEstudiante'] ?>"><i class="fas fa-history"></i> Historial</a>
                                     <a class="recurso-menu-item" href="modificarPagos.php?idPago=<?= (int)$pagoIndividual['idPago'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarPago.php?id=<?= (int)$pagoIndividual['idPago'] ?>" onclick="return confirm('¿Eliminar este pago?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$pagoIndividual['idPago'] ?>"
+                                       data-tipo="Pago"
+                                       data-nombre="<?= Security::escapeHtml($pagoIndividual['nombreEstudiante'] . ' — ' . $pagoIndividual['tipoPago'] . ' ' . number_format($pagoIndividual['monto'], 2) . ' €') ?>"
+                                       data-url="/controladores/admin/pagos/borrar.php"
+                                       data-campo="idPago"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -125,4 +133,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaPagos', 15);
+</script>
 

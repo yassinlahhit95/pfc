@@ -60,8 +60,21 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label for="horasMaximas">Horas Máximas</label>
-            <input type="text" name="horasMaximas" id="horasMaximas" value="<?= Security::escapeHtml($datos['horasMaximas'] ?? '') ?>">
-            
+            <input type="number" name="horasMaximas" id="horasMaximas" min="1" value="<?= Security::escapeHtml($datos['horasMaximas'] ?? '') ?>">
+        </div>
+
+        <div class="campo">
+            <label for="cursoAnio">Año del ciclo</label>
+            <select name="cursoAnio" id="cursoAnio">
+                <option value="">-- Sin especificar --</option>
+                <option value="1º" <?= (($datos['cursoAnio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
+                <option value="2º" <?= (($datos['cursoAnio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label for="creditosECTS">Créditos ECTS <span class="texto-suave" style="font-weight:400;">(RD 659/2023)</span></label>
+            <input type="number" name="creditosECTS" id="creditosECTS" min="1" max="30" value="<?= Security::escapeHtml($datos['creditosECTS'] ?? '') ?>" placeholder="Opcional">
         </div>
 
         <div class="acciones">

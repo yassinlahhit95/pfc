@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_mensajes');
 
 $id = (int)($_GET['id'] ?? 0);
 require_once __DIR__ . '/../../../modelos/reclamaciones.php';

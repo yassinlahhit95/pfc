@@ -5,7 +5,9 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$idProfesor = $_SESSION['idProfesor'] ?? '';
+$idProfesor   = $_SESSION['idProfesor'] ?? '';
+$esTutor      = !empty($_SESSION['esTutor']);
+$idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
@@ -14,10 +16,17 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
 $idRetoElegido  = (int)($_GET['idReto']  ?? 0);
 
-$listaCiclos  = listarCiclosDeProfesor($idProfesor);
-$listaRetos   = $idCicloElegido ? listarRetosPorCicloDeProfesor($idCicloElegido, $idProfesor) : [];
+if ($esTutor && $idCicloTutor) {
+    $cicloTutor  = obtenerCicloPorId($idCicloTutor);
+    $listaCiclos = $cicloTutor ? [$cicloTutor] : [];
+    if (!$idCicloElegido) $idCicloElegido = $idCicloTutor;
+    $listaRetos  = $idCicloElegido ? listarRetosPorCiclo($idCicloElegido) : [];
+} else {
+    $listaCiclos = listarCiclosDeProfesor($idProfesor);
+    $listaRetos  = $idCicloElegido ? listarRetosPorCicloDeProfesor($idCicloElegido, $idProfesor) : [];
+}
 
-// Authorization: verify the selected reto belongs to this professor's cycle
+// Authorization: verify the selected reto belongs to the accessible list
 $idRetoValido = false;
 if ($idRetoElegido && $idCicloElegido) {
     foreach ($listaRetos as $r) {

@@ -97,22 +97,28 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1fi
 
     $con = obtenerConexion();
 
-    $sql1 = "SELECT idCalificacion FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
+    // Single atomic upsert — eliminates the SELECT+INSERT/UPDATE race condition (TOCTOU).
+    // Requires UNIQUE KEY on (idEstudiante, idModulo) in calificaciones_modulos.
+    $sql1 = "INSERT INTO calificaciones_modulos
+                 (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final,
+                  estado_1ev, estado_1final, estado_2ev, estado_2final, observaciones)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+                 nota_1ev    = VALUES(nota_1ev),
+                 nota_1final = VALUES(nota_1final),
+                 nota_2ev    = VALUES(nota_2ev),
+                 nota_2final = VALUES(nota_2final),
+                 estado_1ev    = VALUES(estado_1ev),
+                 estado_1final = VALUES(estado_1final),
+                 estado_2ev    = VALUES(estado_2ev),
+                 estado_2final = VALUES(estado_2final),
+                 observaciones = VALUES(observaciones)";
     $stmt = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idModulo);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-
-    if (mysqli_num_rows($resultado) > 0) {
-        $sql1 = "UPDATE calificaciones_modulos SET nota_1ev=?, nota_1final=?, nota_2ev=?, nota_2final=?, estado_1ev=?, estado_1final=?, estado_2ev=?, estado_2final=?, observaciones=? WHERE idEstudiante=? AND idModulo=?";
-        $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "ddddsssssii", $nota1ev, $nota1final, $nota2ev, $nota2final, $est1ev, $est1final, $est2ev, $est2final, $observaciones, $idEstudiante, $idModulo);
-    } else {
-        $sql1 = "INSERT INTO calificaciones_modulos (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final, estado_1ev, estado_1final, estado_2ev, estado_2final, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_prepare($con, $sql1);
-        mysqli_stmt_bind_param($stmt, "iiddddsssss", $idEstudiante, $idModulo, $nota1ev, $nota1final, $nota2ev, $nota2final, $est1ev, $est1final, $est2ev, $est2final, $observaciones);
-    }
-
+    mysqli_stmt_bind_param($stmt, "iiddddsssss",
+        $idEstudiante, $idModulo,
+        $nota1ev, $nota1final, $nota2ev, $nota2final,
+        $est1ev, $est1final, $est2ev, $est2final,
+        $observaciones);
     $exito = mysqli_stmt_execute($stmt);
     return $exito;
 }
@@ -276,13 +282,20 @@ function listarResultadosFinalesCiclo($idCiclo)
         }
 
         if ($modulosConNotas > 0) {
-            $mediaModulos = $sumaModulos / $modulosConNotas;
-            $mediaRetosGlobal = $sumaRetos / $modulosConNotas;
-            $promedioGlobal = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+            $mediaModulos     = $sumaModulos / $modulosConNotas;
+            $mediaRetosGlobal = $sumaRetos   / $modulosConNotas;
+            $promedioGlobal   = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
 
-            $resumen['media_modulos'] = round($mediaModulos, 2);
-            $resumen['media_retos'] = round($mediaRetosGlobal, 2);
-            $resumen['promedio_global'] = round($promedioGlobal, 2);
+            // Incluir TFG/Proyecto en la media global si tiene nota numérica
+            $notaTFGnum = is_numeric($resumen['nota_tfg']) ? floatval($resumen['nota_tfg']) : null;
+            if ($notaTFGnum !== null) {
+                $promedioGlobal = ($promedioGlobal * $modulosConNotas + $notaTFGnum) / ($modulosConNotas + 1);
+                if ($notaTFGnum < 5) $resumen['tiene_suspensos'] = true;
+            }
+
+            $resumen['media_modulos']    = round($mediaModulos, 2);
+            $resumen['media_retos']      = round($mediaRetosGlobal, 2);
+            $resumen['promedio_global']  = round($promedioGlobal, 2);
             $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
 
             if ($resumen['tiene_suspensos']) {
@@ -291,9 +304,9 @@ function listarResultadosFinalesCiclo($idCiclo)
                 $resumen['estado_global'] = 'APROBADO';
             }
         } else {
-            $resumen['media_modulos'] = "-";
-            $resumen['media_retos'] = "-";
-            $resumen['promedio_global'] = "-";
+            $resumen['media_modulos']    = "-";
+            $resumen['media_retos']      = "-";
+            $resumen['promedio_global']  = "-";
             $resumen['calculo_completo'] = false;
         }
         $resultados[] = $resumen;
@@ -399,13 +412,20 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
     }
 
     if ($modulosConNotas > 0) {
-        $mediaModulos = $sumaModulos / $modulosConNotas;
-        $mediaRetosGlobal = $sumaRetos / $modulosConNotas;
-        $promedioGlobal = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+        $mediaModulos     = $sumaModulos / $modulosConNotas;
+        $mediaRetosGlobal = $sumaRetos   / $modulosConNotas;
+        $promedioGlobal   = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
 
-        $resumen['media_modulos'] = round($mediaModulos, 2);
-        $resumen['media_retos'] = round($mediaRetosGlobal, 2);
-        $resumen['promedio_global'] = round($promedioGlobal, 2);
+        // Incluir TFG/Proyecto en la media global si tiene nota numérica
+        $notaTFGnum = is_numeric($resumen['nota_tfg']) ? floatval($resumen['nota_tfg']) : null;
+        if ($notaTFGnum !== null) {
+            $promedioGlobal = ($promedioGlobal * $modulosConNotas + $notaTFGnum) / ($modulosConNotas + 1);
+            if ($notaTFGnum < 5) $resumen['tiene_suspensos'] = true;
+        }
+
+        $resumen['media_modulos']    = round($mediaModulos, 2);
+        $resumen['media_retos']      = round($mediaRetosGlobal, 2);
+        $resumen['promedio_global']  = round($promedioGlobal, 2);
         $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
 
         if ($resumen['tiene_suspensos']) {
@@ -414,9 +434,9 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
             $resumen['estado_global'] = 'APROBADO';
         }
     } else {
-        $resumen['media_modulos'] = "-";
-        $resumen['media_retos'] = "-";
-        $resumen['promedio_global'] = "-";
+        $resumen['media_modulos']    = "-";
+        $resumen['media_retos']      = "-";
+        $resumen['promedio_global']  = "-";
         $resumen['calculo_completo'] = false;
     }
 

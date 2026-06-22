@@ -75,7 +75,10 @@ window.AulaChat = (function () {
     let lastSeenId = 0;
     let hasPendingSeen = false;
     let pollTimer = null;
-    const POLL_MS = 3000;
+    let pollInterval = 3000;       // current adaptive interval (ms)
+    const POLL_MIN_MS  = 3000;    // fastest: active tab with recent messages
+    const POLL_MAX_MS  = 30000;   // slowest: idle or background
+    const POLL_HIDDEN_MS = 15000; // background tab base interval
 
     const el = {
         messages: () => document.getElementById('chat-messages'),
@@ -172,6 +175,13 @@ window.AulaChat = (function () {
             .catch(() => {});
     }
 
+    function schedulePoll() {
+        clearTimeout(pollTimer);
+        if (!cfg.convId) return;
+        const delay = document.hidden ? Math.max(pollInterval, POLL_HIDDEN_MS) : pollInterval;
+        pollTimer = setTimeout(fetchNew, delay);
+    }
+
     function fetchNew() {
         if (!cfg.convId) return;
         fetch(`${cfg.basePath}controladores/chat/mensajes.php?conv_id=${cfg.convId}&after_id=${lastMsgId}`)
@@ -185,10 +195,20 @@ window.AulaChat = (function () {
                         appendMsg(m);
                     });
                     if (gotIncoming) playSound('in');
+                    // Activity: reset to minimum interval
+                    pollInterval = POLL_MIN_MS;
+                } else {
+                    // No messages: gradually back off up to max
+                    pollInterval = Math.min(Math.round(pollInterval * 1.4), POLL_MAX_MS);
                 }
                 fetchSeen();
+                schedulePoll();
             })
-            .catch(() => {});
+            .catch(() => {
+                // Error: back off to avoid hammering an overloaded server
+                pollInterval = Math.min(pollInterval * 2, POLL_MAX_MS);
+                schedulePoll();
+            });
     }
 
     function sendMessage() {
@@ -244,16 +264,27 @@ window.AulaChat = (function () {
             setupInput();
 
             if (cfg.convId) {
-                clearInterval(pollTimer);
-                pollTimer = setInterval(fetchNew, POLL_MS);
+                pollInterval = POLL_MIN_MS;
+                schedulePoll();
+
+                // Catch up immediately when tab becomes visible again.
+                document.addEventListener('visibilitychange', function onVisChange() {
+                    if (!cfg.convId) { document.removeEventListener('visibilitychange', onVisChange); return; }
+                    if (!document.hidden) {
+                        pollInterval = POLL_MIN_MS;
+                        clearTimeout(pollTimer);
+                        fetchNew();
+                    }
+                });
             }
 
             // Focus automático al iniciar
             setTimeout(() => el.input()?.focus(), 200);
         },
         destroy() {
-            clearInterval(pollTimer);
+            clearTimeout(pollTimer);
             pollTimer = null;
+            cfg = {};
         },
     };
 })();

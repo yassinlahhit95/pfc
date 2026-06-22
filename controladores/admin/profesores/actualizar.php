@@ -4,11 +4,18 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarProfesor'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/profesores/verProfesores.php");
+        exit;
+    }
+
     $idProfesor      = (int)($_POST['idProfesor'] ?? 0);
     $nombre          = trim($_POST['nombreProfesor']);
     $email           = trim($_POST['emailProfesor']);
@@ -55,6 +62,7 @@ if (isset($_POST['actualizarProfesor'])) {
     }
 
     if (actualizarProfesor($idProfesor, $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones)) {
+        registrarAccion('actualizar', 'profesores', $idProfesor, $nombre);
         // Tutor status
         $esTutor = !empty($_POST['esTutor']) ? 1 : 0;
         $idCicloTutor = $esTutor ? (int)($_POST['idCicloTutor'] ?? 0) : 0;

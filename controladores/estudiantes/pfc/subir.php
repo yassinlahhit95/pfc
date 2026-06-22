@@ -3,6 +3,7 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/configuracion.php";
@@ -11,8 +12,7 @@ require_once __DIR__ . "/../../../modelos/configuracion.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['subirTFG'])) {
-    $cfg = obtenerConfiguracionCentro();
-    if (empty($cfg['feature_subida_tfg'])) {
+    if (!FeatureGuard::check('feature_subida_tfg')) {
         $_SESSION['errores'] = "La entrega del TFG está cerrada en este momento.";
         header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
     }

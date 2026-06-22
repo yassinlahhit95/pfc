@@ -4,10 +4,17 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
+require_once __DIR__ . '/../../../modelos/log.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/configuracion/configuracion.php");
+    exit;
+}
+
 $campos = ['nombreCentro','codigoCentro','direccionCentro','ciudadCentro',
            'cpCentro','telefonoCentro','emailCentro','cursoEscolar',
            'textoLegal','nombreDirectorFirmante'];
@@ -60,5 +67,6 @@ foreach ($logoFields as $field) {
     }
 }
 
+registrarAccion('actualizar', 'configuracion', null, 'Configuración del centro guardada');
 $_SESSION['exito'] = "Configuración guardada correctamente.";
 header("Location: ../../../vistas/admin/configuracion/configuracion.php");

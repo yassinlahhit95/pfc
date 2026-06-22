@@ -3,12 +3,20 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarReto'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/retos/agregarRetos.php");
+        exit;
+    }
     $nombre      = trim($_POST['nombreReto']);
     $horas       = trim($_POST['horasReto']);
     $fechaInicio = trim($_POST['fechaInicioReto']);
@@ -68,6 +76,7 @@ if (isset($_POST['guardarReto'])) {
 
     if (insertarReto($nombre, $fechaInicio, $fechaFin, $horas, [$idModulo])) {
         $idNuevoReto = mysqli_insert_id(obtenerConexion());
+        registrarAccion('insertar', 'retos', $idNuevoReto, $nombre);
 
         if (!empty($_FILES['archivosReto']['name'][0])) {
             $uploadDir = __DIR__ . "/../../../public/uploads/retos/";

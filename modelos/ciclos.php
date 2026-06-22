@@ -10,8 +10,26 @@ function listarTodosLosCiclos() {
     $sql = "SELECT ciclos.*, niveles.nombreNivel
             FROM ciclos
             JOIN niveles ON ciclos.idNivel = niveles.idNivel
+            WHERE ciclos.activo = 1
             ORDER BY ciclos.idCiclo ASC";
     $resultado = mysqli_query($con, $sql);
+    if (!$resultado) return [];
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila;
+    }
+    return $lista;
+}
+
+function listarCiclosArchivados() {
+    $con = obtenerConexion();
+    $sql = "SELECT ciclos.*, niveles.nombreNivel
+            FROM ciclos
+            JOIN niveles ON ciclos.idNivel = niveles.idNivel
+            WHERE ciclos.activo = 0
+            ORDER BY ciclos.fechaArchivado DESC";
+    $resultado = mysqli_query($con, $sql);
+    if (!$resultado) return [];
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
@@ -78,25 +96,54 @@ function listarNombresTutoresCiclo($idCiclo) {
     return $nombres;
 }
 
+function actualizarProfesoresDeCiclo($idCiclo, array $listaIdsProfesores) {
+    $con = obtenerConexion();
+    mysqli_begin_transaction($con);
+    try {
+        $stmt = mysqli_prepare($con, "DELETE FROM ciclo_profesor WHERE idCiclo = ?");
+        mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+        if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('delete ciclo_profesor');
+        if (!empty($listaIdsProfesores)) {
+            $stmt2 = mysqli_prepare($con, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)");
+            foreach ($listaIdsProfesores as $idProf) {
+                $idProf = (int)$idProf;
+                mysqli_stmt_bind_param($stmt2, "ii", $idCiclo, $idProf);
+                if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert ciclo_profesor');
+            }
+        }
+        mysqli_commit($con);
+        return true;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        return false;
+    }
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
 function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssid", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo);
-    mysqli_stmt_execute($stmt);
-    $idNuevoCiclo = mysqli_insert_id($con);
-    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    $resultado = false;
-    foreach ($listaIdsProfesores as $idProfesor) {
-        mysqli_stmt_bind_param($stmt, "ii", $idNuevoCiclo, $idProfesor);
-        $resultado = mysqli_stmt_execute($stmt);
+    mysqli_begin_transaction($con);
+    try {
+        $stmt = mysqli_prepare($con, "INSERT INTO ciclos (nombreCiclo, abreviaturaCiclo, idNivel, precioCiclo) VALUES (?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "ssid", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo);
+        if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('insert ciclo');
+        $idNuevoCiclo = mysqli_insert_id($con);
+        if (!empty($listaIdsProfesores)) {
+            $stmt2 = mysqli_prepare($con, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)");
+            foreach ($listaIdsProfesores as $idProfesor) {
+                mysqli_stmt_bind_param($stmt2, "ii", $idNuevoCiclo, (int)$idProfesor);
+                if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert ciclo_profesor');
+            }
+        }
+        mysqli_commit($con);
+        return true;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        return false;
     }
-    return $resultado;
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -105,21 +152,27 @@ function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIds
 
 function actualizarCicloExistente($idCiclo, $nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIdsProfesores, $precioCiclo) {
     $con = obtenerConexion();
-    $sql = "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
-    $resultado = mysqli_stmt_execute($stmt);
-    $sql = "DELETE FROM ciclo_profesor WHERE idCiclo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
-    mysqli_stmt_execute($stmt);
-    $sql = "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    foreach ($listaIdsProfesores as $idProfesor) {
-        mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idProfesor);
-        $resultado = mysqli_stmt_execute($stmt);
+    mysqli_begin_transaction($con);
+    try {
+        $stmt = mysqli_prepare($con, "UPDATE ciclos SET nombreCiclo=?, abreviaturaCiclo=?, idNivel=?, precioCiclo=? WHERE idCiclo=?");
+        mysqli_stmt_bind_param($stmt, "ssidi", $nombreCiclo, $abreviaturaCiclo, $idNivel, $precioCiclo, $idCiclo);
+        if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('update ciclo');
+        $stmt2 = mysqli_prepare($con, "DELETE FROM ciclo_profesor WHERE idCiclo = ?");
+        mysqli_stmt_bind_param($stmt2, "i", $idCiclo);
+        if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('delete ciclo_profesor');
+        if (!empty($listaIdsProfesores)) {
+            $stmt3 = mysqli_prepare($con, "INSERT INTO ciclo_profesor (idCiclo, idProfesor) VALUES (?, ?)");
+            foreach ($listaIdsProfesores as $idProfesor) {
+                mysqli_stmt_bind_param($stmt3, "ii", $idCiclo, (int)$idProfesor);
+                if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('insert ciclo_profesor');
+            }
+        }
+        mysqli_commit($con);
+        return true;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        return false;
     }
-    return $resultado;
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -134,4 +187,31 @@ function checkCicloExistente($nombreCiclo, $abreviaturaCiclo, $idExcluir = 0) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resultado) > 0;
+}
+
+function archivarCiclo($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "UPDATE ciclos SET activo = 0, fechaArchivado = NOW() WHERE idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    return mysqli_stmt_execute($stmt);
+}
+
+function restaurarCiclo($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "UPDATE ciclos SET activo = 1, fechaArchivado = NULL WHERE idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    return mysqli_stmt_execute($stmt);
+}
+
+function contarEstudiantesEnCiclo($idCiclo) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($res);
+    return (int)($row['total'] ?? 0);
 }

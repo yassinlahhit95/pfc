@@ -1,15 +1,25 @@
 <?php
+require_once __DIR__ . '/../../include/CircuitBreaker.php';
+
 // ══════════════════════════════════════════════════════════════════════
 // ENVÍO DE CORREO ELECTRÓNICO VÍA BREVO API
 // ══════════════════════════════════════════════════════════════════════
 function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | Sistema Académico') {
     require_once __DIR__ . '/../../config/Config.php';
+    require_once __DIR__ . '/../../include/Logger.php';
+
+    // Circuit breaker: stop hammering Brevo when it's down.
+    if (CircuitBreaker::isOpen('brevo')) {
+        Logger::error("Brevo circuit OPEN — email skipped", ['to' => $to]);
+        $_SESSION['ultimo_error_email'] = 'Servicio de correo temporalmente no disponible (circuit open)';
+        return false;
+    }
 
     $config = Config::getInstance();
     $key = $config->get('BREVO_API_KEY');
 
     if (empty($key)) {
-        error_log("ERROR: Falta la API Key de Brevo. Verifica tu archivo .env");
+        Logger::error("Falta la API Key de Brevo. Verifica tu archivo .env");
         $_SESSION['ultimo_error_email'] = "API Key de Brevo no configurada";
         return false;
     }
@@ -28,6 +38,7 @@ function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | S
     curl_setopt($h, CURLOPT_POST, true);
     curl_setopt($h, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($h, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($h, CURLOPT_TIMEOUT, 10);
     curl_setopt($h, CURLOPT_HTTPHEADER, [
         'api-key: ' . $key,
         'Content-Type: application/json',
@@ -40,14 +51,20 @@ function sendEmail($to, $subject, $htmlContent, $senderName = 'CFP - AulaPro | S
     curl_close($h);
 
     if ($e) {
-        error_log("Error Brevo CURL: " . $e);
+        Logger::error("Error Brevo CURL: " . $e, ['to' => $to]);
         $_SESSION['ultimo_error_email'] = "Error de conexión: " . $e;
+        CircuitBreaker::recordFailure('brevo');
+        return false;
     }
 
     if ($code !== 200 && $code !== 201) {
-        error_log("Brevo HTTP $code: " . $res);
-        $_SESSION['ultimo_error_email'] = "Error Brevo API";
+        Logger::error("Brevo HTTP $code: " . $res, ['to' => $to]);
+        $_SESSION['ultimo_error_email'] = "Error Brevo API (HTTP $code)";
+        CircuitBreaker::recordFailure('brevo');
+        return false;
     }
 
-    return $code === 201 || $code === 200;
+    CircuitBreaker::recordSuccess('brevo');
+    return true;
 }
+

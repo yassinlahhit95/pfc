@@ -1,7 +1,8 @@
 /**
- * Cuadro Horario - interacciones del director (CRUD por AJAX).
+ * Cuadro Horario - interacciones del director/tutor (CRUD por AJAX).
  * Todo encapsulado en el objeto Horario para no contaminar el ambito global.
  * Depende de jQuery (ya cargado en el nav) y de window.HORARIO_AULAS / HORARIO_END_SLOTS.
+ * Opcionalmente: window.HORARIO_CTRL_BASE para apuntar a controladores de profesor.
  */
 var Horario = (function () {
     var $app, idCiclo, csrf;
@@ -22,8 +23,17 @@ var Horario = (function () {
         return $('<div>').text(texto == null ? '' : texto).html();
     }
 
+    function notificar(msg, tipo) {
+        if (window.Toast) {
+            Toast.show(msg, tipo || 'error');
+        } else {
+            alert(msg);
+        }
+    }
+
     function rutaControlador(archivo) {
-        return '../../../controladores/admin/horario/' + archivo;
+        var base = window.HORARIO_CTRL_BASE || '../../../controladores/admin/horario/';
+        return base + archivo;
     }
 
     function construirSelectAula(idSeleccionada) {
@@ -69,11 +79,11 @@ var Horario = (function () {
             if (resp && resp.ok) {
                 pintarAsignada($celda, datos, idAula);
             } else {
-                alert(resp && resp.msg ? resp.msg : 'No se pudo guardar.');
+                notificar(resp && resp.msg ? resp.msg : 'No se pudo guardar.', 'error');
             }
         }).fail(function () {
             ocultarOverlay();
-            alert('Error de conexión al guardar.');
+            notificar('Error de conexión al guardar.', 'error');
         });
     }
 
@@ -94,11 +104,11 @@ var Horario = (function () {
             if (resp && resp.ok) {
                 $sel.data('prev', $sel.val());
             } else {
-                alert(resp && resp.msg ? resp.msg : 'No se pudo asignar el aula.');
+                notificar(resp && resp.msg ? resp.msg : 'No se pudo asignar el aula.', 'error');
                 $sel.val(previo);
             }
         }).fail(function () {
-            alert('Error de conexión al asignar el aula.');
+            notificar('Error de conexión al asignar el aula.', 'error');
             $sel.val(previo);
         });
     }
@@ -115,11 +125,11 @@ var Horario = (function () {
             if (resp && resp.ok) {
                 pintarVacia($celda);
             } else {
-                alert(resp && resp.msg ? resp.msg : 'No se pudo eliminar.');
+                notificar(resp && resp.msg ? resp.msg : 'No se pudo eliminar.', 'error');
             }
         }).fail(function () {
             ocultarOverlay();
-            alert('Error de conexión al eliminar.');
+            notificar('Error de conexión al eliminar.', 'error');
         });
     }
 
@@ -143,7 +153,6 @@ var Horario = (function () {
             $btn.prop('disabled', true);
             return;
         }
-        // Max fin = inicio + 60 min
         var parts = inicio.split(':');
         var h = parseInt(parts[0], 10), m = parseInt(parts[1], 10) + 60;
         h += Math.floor(m / 60); m = m % 60;
@@ -157,6 +166,51 @@ var Horario = (function () {
         });
         $fin.prop('disabled', false).val('');
         $btn.prop('disabled', true);
+    }
+
+    // ── Confirmación inline para el botón quitar-franja ──
+    function iniciarConfirmFranja($btn, inicio) {
+        if ($btn.hasClass('hqf-confirmar')) {
+            // Segunda pulsación → ejecutar
+            ejecutarEliminarFranja($btn, inicio);
+            return;
+        }
+        // Primera pulsación → pedir confirmación inline
+        $btn.addClass('hqf-confirmar').attr('title', 'Pulsa de nuevo para confirmar').html(
+            '<i class="fas fa-triangle-exclamation"></i> ¿Eliminar?'
+        );
+        // Cancelar si el usuario pulsa en otro sitio
+        $(document).one('click.hqf', function (e) {
+            if (!$(e.target).closest($btn).length) {
+                cancelarConfirmFranja($btn);
+            }
+        });
+    }
+
+    function cancelarConfirmFranja($btn) {
+        $btn.removeClass('hqf-confirmar').attr('title', 'Eliminar franja').html('<i class="fas fa-xmark"></i>');
+        $(document).off('click.hqf');
+    }
+
+    function ejecutarEliminarFranja($btn, inicio) {
+        $(document).off('click.hqf');
+        $btn.removeClass('hqf-confirmar').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+        $.post(rutaControlador('removeFranja.php'), {
+            csrf_token: csrf,
+            idCiclo:    idCiclo,
+            horaInicio: inicio
+        }, null, 'json').done(function (resp) {
+            if (resp && resp.ok) {
+                window.location.reload();
+            } else {
+                $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
+                notificar(resp && resp.msg ? resp.msg : 'No se pudo eliminar la franja.', 'error');
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
+            notificar('Error de conexión.', 'error');
+        });
     }
 
     function init() {
@@ -204,35 +258,17 @@ var Horario = (function () {
         $app.on('click', '.horario-quitar-franja', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var $btn = $(this);
+            var $btn   = $(this);
             var inicio = $btn.data('inicio');
             if (!inicio) return;
 
-            var $tr = $btn.closest('tr');
-            if ($tr.find('.horario-asignado').length > 0) {
-                alert('Esta franja tiene módulos asignados.\nElimínalos primero haciendo clic en x dentro de cada celda.');
+            var tieneAsignados = $btn.closest('tr').find('.horario-asignado').length > 0;
+            if (tieneAsignados) {
+                notificar('Esta franja tiene módulos asignados. Elimínalos primero haciendo clic en × dentro de cada celda.', 'error');
                 return;
             }
 
-            if (!confirm('¿Eliminar la franja ' + inicio + '?')) return;
-
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
-
-            $.post(rutaControlador('removeFranja.php'), {
-                csrf_token: csrf,
-                idCiclo:    idCiclo,
-                horaInicio: inicio
-            }, null, 'json').done(function (resp) {
-                if (resp && resp.ok) {
-                    window.location.reload();
-                } else {
-                    $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
-                    alert(resp && resp.msg ? resp.msg : 'No se pudo eliminar la franja.');
-                }
-            }).fail(function () {
-                $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
-                alert('Error de conexión.');
-            });
+            iniciarConfirmFranja($btn, inicio);
         });
 
         // ── Añadir nueva franja: Inicio select ──
@@ -250,7 +286,10 @@ var Horario = (function () {
             var inicio = $('#franjaInicio').val();
             var fin    = $('#franjaFin').val();
             var receso = $('#franjaReceso').is(':checked') ? 1 : 0;
-            if (!inicio || !fin) { alert('Selecciona la hora de inicio y fin.'); return; }
+            if (!inicio || !fin) {
+                notificar('Selecciona la hora de inicio y fin.', 'info');
+                return;
+            }
             var $btn = $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando…');
             mostrarOverlay('Añadiendo franja…');
             $.post(rutaControlador('addFranja.php'), {
@@ -265,12 +304,12 @@ var Horario = (function () {
                     window.location.reload();
                 } else {
                     $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
-                    alert(resp && resp.msg ? resp.msg : 'No se pudo agregar la franja.');
+                    notificar(resp && resp.msg ? resp.msg : 'No se pudo agregar la franja.', 'error');
                 }
             }).fail(function () {
                 ocultarOverlay();
                 $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
-                alert('Error de conexión.');
+                notificar('Error de conexión.', 'error');
             });
         });
 

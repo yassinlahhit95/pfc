@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_anuncios');
 
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
@@ -36,7 +38,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </select>
             </div>
 
-            <div class="campo">
+            <div class="campo ancho-total">
                 <label for="contenidoAnuncio">CONTENIDO DEL ANUNCIO</label>
                 <textarea id="contenidoAnuncio" name="contenidoAnuncio" rows="6" placeholder="Escriba aquí el mensaje..." class="<?= (is_array($errores) && isset($errores['contenidoAnuncio'])) ? 'border-error' : '' ?>"><?= Security::escapeHtml($datos['contenidoAnuncio'] ?? '') ?></textarea>
                 <?php if (is_array($errores) && isset($errores['contenidoAnuncio'])): ?><span class="error-campo"><?= Security::escapeHtml($errores['contenidoAnuncio']) ?></span><?php endif; ?>

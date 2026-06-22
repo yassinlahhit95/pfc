@@ -3,6 +3,8 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+FeatureGuard::requirePage('feature_retos');
 require_once "../../../modelos/retos.php";
 
 if (!isset($_POST['actualizarReto'])) {
@@ -62,7 +64,11 @@ if (empty($modulosSeleccionados)) {
     foreach ($modulosSeleccionados as $idModulo) {
         $detalle = obtenerDetalleHorasModulo($idModulo, $idReto);
         if ($horasReto > $detalle['disponibles']) {
-            $errores = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+            if ($detalle['disponibles'] < 0) {
+                $errores = "El módulo '{$detalle['nombreModulo']}' ya supera su capacidad ({$detalle['maximo']}h). Otros retos suman {$detalle['ocupadas']}h. Libere horas antes de continuar.";
+            } else {
+                $errores = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+            }
             break;
         }
     }
@@ -77,7 +83,12 @@ if ($errores) {
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-if (!retoPerteneceAProfesor($idReto, $_SESSION['idProfesor'])) {
+$_esTutor      = !empty($_SESSION['esTutor']);
+$_idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
+$_autorizado   = $_esTutor && $_idCicloTutor
+    ? retoPerteneceACiclo($idReto, $_idCicloTutor)
+    : retoPerteneceAProfesor($idReto, $_SESSION['idProfesor']);
+if (!$_autorizado) {
     $_SESSION['errores'] = "No tienes permiso sobre este reto.";
     header("Location: ../../../vistas/profesores/retos/lista.php");
     exit;

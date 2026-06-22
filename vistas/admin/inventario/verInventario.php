@@ -59,7 +59,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <div class="recurso-menu">
                                     <a class="recurso-menu-item" href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="borrarArticulo.php?id=<?= $art['idArticulo'] ?>" onclick="return confirm('¿Eliminar este artículo?')"><i class="fas fa-trash"></i> Eliminar</a>
+                                    <a class="recurso-menu-item peligro" href="#"
+                                       data-modal-borrar
+                                       data-id="<?= (int)$art['idArticulo'] ?>"
+                                       data-tipo="Artículo"
+                                       data-nombre="<?= Security::escapeHtml($art['nombreArticulo']) ?>"
+                                       data-url="/controladores/admin/inventario/borrar.php"
+                                       data-campo="idArticulo"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -72,4 +78,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaInventario', 15);
+</script>
 

@@ -4,11 +4,17 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarDirector'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/directores/agregarDirectores.php");
+        exit;
+    }
     $nombre         = trim($_POST['nombreDirector']);
     $email          = trim($_POST['emailDirector']);
     $dni            = trim($_POST['dniDirector']);
@@ -49,6 +55,7 @@ if (isset($_POST['guardarDirector'])) {
     }
 
     if (insertarDirector($nombre, $email, $dni, $telefono, $fechaAlta, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $observaciones)) {
+        registrarAccion('insertar', 'directores', null, $nombre);
         $_SESSION['exito'] = mensajeExitoConCredenciales("El director ha sido registrado correctamente.");
         header("Location: ../../../vistas/admin/directores/verDirectores.php");
         exit;

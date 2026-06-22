@@ -3,6 +3,8 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_mensajes');
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 // ══════════════════════════════════════════════════════════════════════

@@ -69,6 +69,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <tr>
                     <th>Estudiante</th>
                     <th>Ciclo</th>
+                    <th>Año</th>
                     <th>Estado</th>
                     <th>Fecha Subida</th>
                     <th>Archivo PDF</th>
@@ -79,13 +80,14 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($listaEvaluacion)) { ?>
                     <tr>
-                        <td colspan="7" class="vacio">No hay estudiantes registrados.</td>
+                        <td colspan="8" class="vacio">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaEvaluacion as $item) { ?>
                     <tr>
                         <td><?= Security::escapeHtml($item['nombreEstudiante']) ?></td>
                         <td><?= Security::escapeHtml($item['abreviaturaCiclo']) ?></td>
+                        <td><?= !empty($item['anioEstudio']) ? '<span class="texto-estado azul">' . Security::escapeHtml($item['anioEstudio']) . '</span>' : '<span class="texto-suave">—</span>' ?></td>
                         <td>
                             <?php if (!empty($item['archivoTFG'])) { ?>
                                 <span class="indicador-estado activo-verde">ENTREGADO</span>
