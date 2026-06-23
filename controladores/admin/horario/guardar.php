@@ -2,20 +2,13 @@
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/AdminGuard.php";
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . "/../../../modelos/horarios.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 
-// ══════════════════════════════════════════════════════════════════════
-// AUTENTICACIÓN
-// ══════════════════════════════════════════════════════════════════════
-if (empty($_SESSION['idAdmin']) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
-    http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
-    echo json_encode(['ok' => false, 'msg' => 'Solicitud no válida o expirada (CSRF).']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud no válida.']);
     exit;
 }
 

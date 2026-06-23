@@ -111,6 +111,8 @@
     var list  = qs("#search-results");
     if (!input || !list) return;
 
+    input.setAttribute('autocomplete', 'off');
+
     var rawUrl = input.dataset.url;
     if (!rawUrl) return;
     var url = resolveAppPath(rawUrl);

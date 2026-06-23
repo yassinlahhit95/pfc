@@ -26,14 +26,13 @@ $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
 $idProfesor   = $_SESSION['idProfesor']; // SIEMPRE el de la sesión (no falsificable)
 $asunto       = trim($_POST['asunto']);
 $descripcion  = trim($_POST['descripcion']);
-$errores      = '';
+$errores      = [];
 
-if (empty($idEstudiante)) $errores = "Debe seleccionar un destinatario.";
-if (empty($asunto))       $errores = "El asunto es obligatorio.";
-if (empty($descripcion))  $errores = "El mensaje no puede estar vacío.";
-else if (strlen($descripcion) > 250) $errores = "Máximo 250 caracteres.";
+if (empty($asunto))      $errores['asunto']      = "El asunto es obligatorio.";
+if (empty($descripcion)) $errores['descripcion'] = "El mensaje no puede estar vacío.";
+elseif (strlen($descripcion) > 250) $errores['descripcion'] = "Máximo 250 caracteres.";
 
-if ($errores) {
+if (!empty($errores)) {
     $_SESSION['errores'] = $errores;
     $_SESSION['datos_mensaje'] = $_POST;
     $urlRedireccion = "../../../vistas/profesores/mensajes/agregar.php";

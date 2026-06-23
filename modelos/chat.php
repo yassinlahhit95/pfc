@@ -236,69 +236,99 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
 
     if ($rol === 'admin') {
         $st = mysqli_prepare($con,
-            'SELECT idProfesor AS uid, nombreProfesor AS nombre, "profesor" AS rol
-             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200');
+            "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol
+             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
         $st = mysqli_prepare($con,
-            'SELECT idEstudiante AS uid, nombreEstudiante AS nombre, "estudiante" AS rol
-             FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200');
+            "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
+             FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
     } elseif ($rol === 'profesor') {
         $st = mysqli_prepare($con,
-            'SELECT idEstudiante AS uid, nombreEstudiante AS nombre, "estudiante" AS rol
-             FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200');
+            "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
+             FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
         $st = mysqli_prepare($con,
-            'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
-             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20');
+            "SELECT idDirector AS uid, nombreDirector AS nombre, 'admin' AS rol
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
     } elseif ($rol === 'tutor') {
-        // Profesores vinculados a los ciclos de sus estudiantes tutelados
         $st = mysqli_prepare($con,
-            'SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, "profesor" AS rol
+            "SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, 'profesor' AS rol
              FROM profesores p
              JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
              JOIN modulos m ON mp.idModulo = m.idModulo
              JOIN estudiantes e ON m.idCiclo = e.idCiclo
              JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
-             WHERE et.idTutor = ? AND p.nombreProfesor LIKE ?');
+             WHERE et.idTutor = ? AND p.nombreProfesor LIKE ?");
         mysqli_stmt_bind_param($st, 'is', $id, $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
         $st = mysqli_prepare($con,
-            'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
-             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20');
+            "SELECT idDirector AS uid, nombreDirector AS nombre, 'admin' AS rol
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
     } else {
+        // Estudiante: profesores de su ciclo, directores/admin, compañeros de ciclo
+        $stCiclo = mysqli_prepare($con, 'SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?');
+        mysqli_stmt_bind_param($stCiclo, 'i', $id);
+        mysqli_stmt_execute($stCiclo);
+        $rowCiclo = mysqli_fetch_assoc(mysqli_stmt_get_result($stCiclo));
+        $idCiclo  = (int)($rowCiclo['idCiclo'] ?? 0);
+
+        if ($idCiclo > 0) {
+            $st = mysqli_prepare($con,
+                "SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, 'profesor' AS rol
+                 FROM profesores p
+                 JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
+                 JOIN modulos m ON mp.idModulo = m.idModulo
+                 WHERE m.idCiclo = ? AND p.nombreProfesor LIKE ?
+                 ORDER BY p.nombreProfesor LIMIT 50");
+            mysqli_stmt_bind_param($st, 'is', $idCiclo, $like);
+            mysqli_stmt_execute($st);
+            while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        } else {
+            $st = mysqli_prepare($con,
+                "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol
+                 FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 50");
+            mysqli_stmt_bind_param($st, 's', $like);
+            mysqli_stmt_execute($st);
+            while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        }
+
         $st = mysqli_prepare($con,
-            'SELECT idProfesor AS uid, nombreProfesor AS nombre, "profesor" AS rol
-             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200');
+            "SELECT idDirector AS uid, nombreDirector AS nombre, 'admin' AS rol
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
 
-        $st = mysqli_prepare($con,
-            'SELECT idDirector AS uid, nombreDirector AS nombre, "admin" AS rol
-             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20');
-        mysqli_stmt_bind_param($st, 's', $like);
-        mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        if ($idCiclo > 0) {
+            $st = mysqli_prepare($con,
+                "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
+                 FROM estudiantes
+                 WHERE idCiclo = ? AND idEstudiante != ? AND nombreEstudiante LIKE ?
+                 ORDER BY nombreEstudiante LIMIT 100");
+            mysqli_stmt_bind_param($st, 'iis', $idCiclo, $id, $like);
+            mysqli_stmt_execute($st);
+            while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        }
     }
 
     return $results;

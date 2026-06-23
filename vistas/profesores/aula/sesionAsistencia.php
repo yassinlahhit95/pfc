@@ -24,7 +24,7 @@ $paginaActual = min($paginaActual, max(1, $totalPaginas));
 $offsetAsistencias = ($paginaActual - 1) * $itemsPorPagina;
 $asistencias = array_slice($asistenciasCompleta, $offsetAsistencias, $itemsPorPagina);
 
-$tituloDelPagina = "AULAPRO | Asistencia - " . htmlspecialchars($sesion['titulo']);
+$tituloDelPagina = "AULAPRO | Asistencia - " . Security::escapeHtml($sesion['titulo']);
 $seccionActual = 'aula';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>

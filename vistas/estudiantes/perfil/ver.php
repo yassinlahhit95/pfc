@@ -9,6 +9,10 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudiante = obtenerEstudiantePorId($idEstudiante);
+if (!$estudiante) {
+    header("Location: ../inicio/dashboard.php");
+    exit;
+}
 
 $tituloDelPagina = "AULAPRO | MI PERFIL";
 $seccionActual = 'perfil';

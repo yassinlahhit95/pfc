@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_inventario');
 
 $exito = $_SESSION['exito'] ?? '';
@@ -22,6 +23,7 @@ if (!empty($idCicloFiltro)) {
 }
 
 $datos = $_SESSION['datos_prestamo'] ?? [];
+unset($_SESSION['datos_prestamo']);
 
 $titulo_pagina = "AULAPRO | NUEVO PRÉSTAMO";
 $seccion = 'prestamos';
@@ -53,38 +55,38 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="form-cols">
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'idArticulo') ?>">
                 <label>Recurso (Solo disponibles)</label>
                 <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
                     <?php foreach ($articulos_disponibles as $art) { ?>
                         <?php if ($art['estado'] == 'disponible') { ?>
-                            <option value="<?= $art['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) ? 'selected' : '' ?>>
-                                <?= $art['nombreArticulo'] ?> (<?= $art['numeroSerie'] ?>)
+                            <option value="<?= (int)$art['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) ? 'selected' : '' ?>>
+                                <?= Security::escapeHtml($art['nombreArticulo']) ?> (<?= Security::escapeHtml($art['numeroSerie']) ?>)
                             </option>
                         <?php } ?>
                     <?php } ?>
                 </select>
-                
+                <?= fieldError($errores, 'idArticulo') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'idEstudiante') ?>">
                 <label>Estudiante</label>
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
                     <?php foreach ($todos_los_estudiantes as $est) { ?>
-                        <option value="<?= $est['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= $est['nombreEstudiante'] ?>
+                        <option value="<?= (int)$est['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($est['nombreEstudiante']) ?>
                         </option>
                     <?php } ?>
                 </select>
-                
+                <?= fieldError($errores, 'idEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaPrestamo') ?>">
                 <label>Fecha de Préstamo</label>
                 <input type="date" name="fechaPrestamo" value="<?= Security::escapeHtml($datos['fechaPrestamo'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'fechaPrestamo') ?>
             </div>
 
         </div>

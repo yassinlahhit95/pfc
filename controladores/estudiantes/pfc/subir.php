@@ -16,11 +16,6 @@ if (isset($_POST['subirTFG'])) {
         $_SESSION['errores'] = "La entrega del TFG está cerrada en este momento.";
         header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
     }
-    if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
-        $_SESSION['errores'] = "La sesión ha caducado. Recarga la página e inténtalo de nuevo.";
-        header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
-    }
-
     $idEstudiante = $_SESSION['idEstudiante']; // Siempre de la sesión (evita IDOR)
     $archivoTFG   = $_FILES['archivoTFG'] ?? null;
     $errores      = [];
@@ -36,7 +31,10 @@ if (isset($_POST['subirTFG'])) {
         $errores[] = "Error al subir el archivo, inténtalo de nuevo.";
     } else {
         $ext = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, ['pdf', 'doc', 'docx'])) {
+        $mimeAllowed = ['application/pdf', 'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        $mime = mime_content_type($archivoTFG['tmp_name']);
+        if (!in_array($ext, ['pdf', 'doc', 'docx']) || !in_array($mime, $mimeAllowed)) {
             $errores[] = "Solo se permiten archivos PDF o Word (.doc, .docx).";
         } elseif ($archivoTFG['size'] > 20 * 1024 * 1024) {
             $errores[] = "El archivo supera el tamaño máximo permitido (20 MB).";
@@ -53,6 +51,15 @@ if (isset($_POST['subirTFG'])) {
         $nombreLimpio  = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $datosEstudiante['nombreEstudiante']));
         $nombreArchivo = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . "." . $ext;
         $rutaDestino   = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
+
+        // Delete old file from disk before saving the new one
+        $tfgActual = obtenerTFGporEstudiante($idEstudiante);
+        if (!empty($tfgActual['archivoTFG'])) {
+            $rutaVieja = __DIR__ . "/../../../public/uploads/pfc/" . $tfgActual['archivoTFG'];
+            if (file_exists($rutaVieja)) {
+                unlink($rutaVieja);
+            }
+        }
 
         if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {

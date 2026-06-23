@@ -24,13 +24,13 @@ if (isset($_POST['actualizarEvento'])) {
     $horaEvento      = trim($_POST['horaEvento']);
     $ubicacionEvento = trim($_POST['ubicacionEvento']);
 
-    $errores = '';
-    if (empty($titulo))          $errores = "El título del evento es un campo obligatorio.";
-    if (empty($ubicacionEvento)) $errores = "La ubicación del evento es un campo obligatorio.";
-    if (empty($fechaEvento))     $errores = "La fecha del evento es un campo obligatorio.";
-    if (empty($horaEvento))      $errores = "La hora del evento es un campo obligatorio.";
+    $errores = [];
+    if (empty($titulo))          $errores['tituloEvento'] = "El título del evento es un campo obligatorio.";
+    if (empty($ubicacionEvento)) $errores['ubicacionEvento'] = "La ubicación del evento es un campo obligatorio.";
+    if (empty($fechaEvento))     $errores['fechaEvento'] = "La fecha del evento es un campo obligatorio.";
+    if (empty($horaEvento))      $errores['horaEvento'] = "La hora del evento es un campo obligatorio.";
 
-    if (!$errores) {
+    if (empty($errores)) {
         if (actualizarEvento($idEvento, $titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento)) {
             registrarAccion('actualizar', 'eventos', $idEvento, $titulo);
             $_SESSION['exito'] = "El evento ha sido actualizado correctamente.";

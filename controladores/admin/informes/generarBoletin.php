@@ -12,6 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: $_back"); exit;
+}
+
 $_vendor = __DIR__ . '/../../../vendor/autoload.php';
 if (!file_exists($_vendor)) {
     $_SESSION['errores'] = "Error interno del servidor al generar los boletines. Contacte con el soporte técnico.";

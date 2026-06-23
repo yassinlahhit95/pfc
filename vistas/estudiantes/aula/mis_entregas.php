@@ -38,6 +38,9 @@ if ($totalCalificadas > 0) {
     $promedio = round($sumNotas / $totalCalificadas, 1);
 }
 
+$exito   = $_SESSION['exito'] ?? null;   unset($_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
+
 $tituloDelPagina = 'AULAPRO | MIS ENTREGAS';
 $seccionActual = 'aula_entregas';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -47,6 +50,13 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1>MIS ENTREGAS</h1>
     <p class="texto-suave">Historial y calificaciones de tus entregas</p>
 </div>
+
+<?php if ($exito): ?>
+<div class="alerta alerta-exito" style="margin-bottom:var(--gap);"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?></div>
+<?php endif; ?>
+<?php if ($errores): ?>
+<div class="alerta alerta-error" style="margin-bottom:var(--gap);"><i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml(is_array($errores) ? implode(', ', $errores) : $errores) ?></div>
+<?php endif; ?>
 
 <div class="cuadricula-estadisticas">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul">
@@ -77,8 +87,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <p>Aún no tienes entregas registradas.</p>
     </div>
 <?php } else { ?>
-    <div class="tabla-responsiva">
-        <table class="tabla-contenido">
+    <div class="contenedor-tabla">
+        <table class="tabla-datos" id="tablaEntregas">
             <thead>
                 <tr>
                     <th>TAREA</th>

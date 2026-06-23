@@ -26,7 +26,7 @@ if (!empty($_SESSION['must_change_password'])) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken()) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuard) {
         header('Content-Type: application/json');
         echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.']);

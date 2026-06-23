@@ -14,6 +14,7 @@ public/uploads/
 
 # Logs
 logs/
+!logs/.htaccess
 *.log
 
 # Local dev docs (not for server)
@@ -24,3 +25,7 @@ docs/
 Thumbs.db
 .idea/
 .vscode/
+
+# Temp / test files
+*.tmp
+*.bak

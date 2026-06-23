@@ -25,7 +25,7 @@ if (isset($_POST['guardarNotasReto'])) {
     $listaNotas = $_POST['notas'] ?? [];
 
     for ($i = 0; $i < count($listaIdsEstudiantes); $i++) {
-        $idEstudiante = trim($listaIdsEstudiantes[$i]);
+        $idEstudiante = (int)$listaIdsEstudiantes[$i];
         $nota = trim($listaNotas[$i]);
 
         if (!empty($nota)) {

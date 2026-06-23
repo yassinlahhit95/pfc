@@ -6,6 +6,9 @@ require_once __DIR__ . "/../../../modelos/aula.php";
 
 $favoritos = listarFavoritosEstudianteAula($idEstudiante);
 
+$exito   = $_SESSION['exito'] ?? null;   unset($_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
+
 $tituloDelPagina = "AULAPRO | FAVORITOS";
 $seccionActual   = 'aula_favoritos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -18,6 +21,13 @@ include_once __DIR__ . "/../comunes/nav.php";
   </div>
   <a href="recursos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Recursos</a>
 </div>
+
+<?php if ($exito): ?>
+<div class="alerta alerta-exito" style="margin-bottom:var(--gap);"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?></div>
+<?php endif; ?>
+<?php if ($errores): ?>
+<div class="alerta alerta-error" style="margin-bottom:var(--gap);"><i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml(is_array($errores) ? implode(', ', $errores) : $errores) ?></div>
+<?php endif; ?>
 
 <?php if (empty($favoritos)): ?>
   <div class="recurso-vacio"><i class="fas fa-star"></i><p>Todavía no tienes recursos favoritos. Márcalos con la estrella ⭐ desde cualquier módulo.</p></div>

@@ -20,15 +20,15 @@ if (isset($_POST['guardarArticulo'])) {
     $nombre      = trim($_POST['nombreArticulo']);
     $numeroSerie = trim($_POST['numeroSerie']);
 
-    $errores = '';
-    if (empty($nombre))      $errores = "El nombre del artículo es un campo obligatorio.";
-    if (empty($numeroSerie)) $errores = "El número de serie es un campo obligatorio.";
+    $errores = [];
+    if (empty($nombre))      $errores['nombreArticulo'] = "El nombre del artículo es un campo obligatorio.";
+    if (empty($numeroSerie)) $errores['numeroSerie'] = "El número de serie es un campo obligatorio.";
 
-    if (!$errores && checkArticuloExistente($numeroSerie)) {
-        $errores = "Este número de serie ya está registrado en el inventario.";
+    if (empty($errores) && checkArticuloExistente($numeroSerie)) {
+        $errores['numeroSerie'] = "Este número de serie ya está registrado en el inventario.";
     }
 
-    if (!$errores) {
+    if (empty($errores)) {
         if (insertarArticulo($nombre, $numeroSerie)) {
             registrarAccion('insertar', 'inventario', null, "$nombre · S/N:$numeroSerie");
             $_SESSION['exito'] = "El artículo ha sido añadido al inventario correctamente.";

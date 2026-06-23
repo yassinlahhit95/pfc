@@ -295,7 +295,11 @@ window.ChatModal = (function () {
     let debounce = null;
 
     function roleLabel(rol) {
-        return rol === 'admin' ? 'Administrador' : rol === 'profesor' ? 'Profesor' : 'Estudiante';
+        if (rol === 'admin')      return 'Administrador';
+        if (rol === 'profesor')   return 'Profesor';
+        if (rol === 'tutor')      return 'Tutor';
+        if (rol === 'estudiante') return 'Compañero';
+        return rol;
     }
 
     function renderContacts(contacts) {

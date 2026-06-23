@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -26,51 +27,52 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/estudiantes/insertar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'nombreEstudiante') ?>">
                 <label for="nombreEstudiante">Nombre Completo</label>
                 <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'nombreEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'emailEstudiante') ?>">
                 <label for="emailEstudiante">Email</label>
                 <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'emailEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'dniEstudiante') ?>">
                 <label for="dniEstudiante">DNI</label>
                 <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= Security::escapeHtml($datos['dniEstudiante'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'dniEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'telefonoEstudiante') ?>">
                 <label for="telefonoEstudiante">Teléfono</label>
                 <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'telefonoEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaNacimientoEstudiante') ?>">
                 <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
                 <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($datos['fechaNacimientoEstudiante'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'fechaNacimientoEstudiante') ?>
             </div>
 
-            <div class="campo ancho-total">
+            <div class="campo ancho-total<?= fieldClass($errores, 'direccionEstudiante') ?>">
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= Security::escapeHtml($datos['direccionEstudiante'] ?? '') ?>">
-
+                <?= fieldError($errores, 'direccionEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'ciudadEstudiante') ?>">
                 <label for="ciudadEstudiante">Ciudad</label>
                 <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= Security::escapeHtml($datos['ciudadEstudiante'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'ciudadEstudiante') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'codigoPostalEstudiante') ?>">
                 <label for="codigoPostalEstudiante">Código Postal</label>
                 <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
+                <?= fieldError($errores, 'codigoPostalEstudiante') ?>
             </div>
 
             <div class="campo">
@@ -78,13 +80,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <input type="date" name="fechaAltaEstudiante" id="fechaAltaEstudiante" value="<?= Security::escapeHtml($datos['fechaAltaEstudiante'] ?? date('Y-m-d')) ?>">
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'curso') ?>">
                 <label for="curso">Nivel</label>
                 <select name="curso" id="curso" onchange="filtrarCiclos()">
                     <option value="">-- Selecciona un nivel --</option>
                     <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
                     <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
                 </select>
+                <?= fieldError($errores, 'curso') ?>
             </div>
 
             <div class="campo">
@@ -96,11 +99,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </select>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
                 <label for="idCiclo">Ciclo Formativo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
+                <?= fieldError($errores, 'idCiclo') ?>
             </div>
 
             <div class="campo ancho-total">

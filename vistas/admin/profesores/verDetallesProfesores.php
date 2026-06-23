@@ -216,4 +216,39 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
+<!-- Cambiar contraseña (director) -->
+<div class="panel" style="margin-top:16px;">
+    <div class="panel-titulo-seccion" style="cursor:pointer;" onclick="document.getElementById('form-cambiar-pass-prof').classList.toggle('oculto')">
+        <i class="fas fa-key"></i> Cambiar contraseña
+        <small style="margin-left:8px;color:var(--dim);font-weight:400;">Establecer nueva contraseña para este profesor</small>
+    </div>
+    <div id="form-cambiar-pass-prof" class="oculto" style="margin-top:16px;">
+        <div class="formulario" style="max-width:480px;">
+            <div class="campo ancho-total">
+                <label for="nueva-pass-prof">Nueva contraseña <small style="color:var(--dim)">(mín. 8 caracteres)</small></label>
+                <input type="password" id="nueva-pass-prof" minlength="8" autocomplete="new-password" placeholder="Nueva contraseña">
+            </div>
+            <div class="campo ancho-total">
+                <button type="button" class="boton-primario" onclick="cambiarPassProf()">
+                    <i class="fas fa-save"></i> Guardar contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include '../comunes/footer.php'; ?>
+<script>
+function cambiarPassProf() {
+    var pass = document.getElementById('nueva-pass-prof').value;
+    if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
+    fetch('/controladores/admin/usuarios/cambiarPassword.php', {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'csrf_token=<?= Security::generateCSRFToken() ?>&tipo=profesor&id=<?= $idProfesor ?>&nuevaPassword='+encodeURIComponent(pass)
+    }).then(r => r.json()).then(d => {
+        if (window.Toast) Toast.show(d.msg, d.ok ? 'success' : 'error');
+        if (d.ok) document.getElementById('nueva-pass-prof').value = '';
+    });
+}
+</script>

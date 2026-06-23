@@ -10,6 +10,11 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['actualizarModulos'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/profesores/verProfesores.php");
+        exit;
+    }
     $idProfesor = (int)($_POST['idProfesor'] ?? 0);
     $modulos    = $_POST['modulos'] ?? [];
 
@@ -17,7 +22,8 @@ if (isset($_POST['actualizarModulos'])) {
 
     $hayError = false;
     foreach ($modulos as $idModulo) {
-        if (!asociarModuloProfesor($idModulo, $idProfesor)) {
+        $idModulo = (int)$idModulo;
+        if ($idModulo <= 0 || !asociarModuloProfesor($idModulo, $idProfesor)) {
             $hayError = true;
         }
     }

@@ -77,7 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- Cabecera del mensaje -->
     <div class="msg-card" style="margin-bottom:var(--gap);">
         <div class="msg-card-head">
-            <div class="<?= $fromAva ?>"><?= $fromInit ?></div>
+            <div class="<?= $fromAva ?>"><?= Security::escapeHtml($fromInit) ?></div>
             <div class="msg-head-meta">
                 <div class="msg-head-subject"><?= Security::escapeHtml(strtoupper($mensaje['asunto'] ?? '')) ?></div>
                 <div class="msg-meta-row">
@@ -131,7 +131,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 $contenido = $item['descripcion'] ?? '';
             ?>
             <div class="msg-thread-row <?= $isMine ? 'mine' : '' ?>">
-                <div class="msg-thread-ava <?= $avaClass ?>"><?= $isMine ? 'YO' : $avaInit ?></div>
+                <div class="msg-thread-ava <?= $avaClass ?>"><?= $isMine ? 'YO' : Security::escapeHtml($avaInit) ?></div>
                 <div class="msg-thread-bubble-wrap">
                     <?php if (!$isMine): ?>
                     <div class="msg-thread-sender-name"><?= $senderLabel ?></div>
@@ -147,7 +147,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <form method="POST" action="../../../controladores/estudiantes/mensajes/responder.php" class="msg-thread-reply">
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
-            <textarea name="respuesta" placeholder="Escribe tu respuesta…" maxlength="1000" required></textarea>
+            <textarea name="respuesta" placeholder="Escribe tu respuesta…" maxlength="1000"></textarea>
             <button type="submit" name="enviarRespuesta" class="msg-thread-send" title="Enviar respuesta">
                 <i class="fas fa-paper-plane"></i>
             </button>

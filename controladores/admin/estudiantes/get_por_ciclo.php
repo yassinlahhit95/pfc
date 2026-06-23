@@ -1,25 +1,15 @@
 <?php
 // ══════════════════════════════════════════════════════════════════════
-// AUTENTICACIÓN
+// DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-session_start();
-header('Content-Type: application/json');
+require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../modelos/estudiantes.php';
 
-if (empty($_SESSION['idAdmin'])) {
-    http_response_code(403);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-}
-if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Acción bloqueada']);
-    exit;
-}
+header('Content-Type: application/json');
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../../modelos/estudiantes.php';
 
 $idCiclo = (int)($_GET['idCiclo'] ?? 0);
 

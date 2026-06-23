@@ -10,6 +10,11 @@ if (!$esTutor || !$idCicloTutor) {
 }
 
 if (isset($_POST['guardarModulo'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/modulos/agregar.php");
+        exit;
+    }
     $nombre = trim($_POST['nombreModulo'] ?? '');
     $horas  = (int)($_POST['horasMaximas'] ?? 0);
 

@@ -196,7 +196,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         $clave = $dia . '|' . $f['inicio'];
                                         if (isset($ocupacionEscuela[$clave][$idAula])) {
                                             $ocu = $ocupacionEscuela[$clave][$idAula];
-                                            $ocupadas[] = $f['inicio'] . ' ' . Security::escapeHtml($ocu['abreviaturaCiclo']);
+                                            $ocupadas[] = Security::escapeHtml($f['inicio']) . ' ' . Security::escapeHtml($ocu['abreviaturaCiclo']);
                                         }
                                     }
                                 ?>

@@ -1,16 +1,12 @@
 <?php
-require_once __DIR__ . '/../../../include/Security.php';
+require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../modelos/horarios.php';
 
-if (empty($_SESSION['idProfesor']) || empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
+if (empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
     http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
 }
 $idCicloTutor = (int)$_SESSION['idCicloTutor'];
-
-if (!Security::validateCSRFToken()) {
-    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida']); exit;
-}
 
 $idCiclo  = (int)($_POST['idCiclo']   ?? 0);
 $inicio   = trim($_POST['horaInicio'] ?? '');

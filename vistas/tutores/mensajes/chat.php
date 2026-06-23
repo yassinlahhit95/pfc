@@ -43,7 +43,7 @@ require_once __DIR__ . '/../comunes/nav.php';
         $preview  = mb_strimwidth($c['last_preview'] ?? '', 0, 40, '…');
         $time     = $c['last_message_at'] ? (new DateTime($c['last_message_at']))->format('H:i') : '';
       ?>
-        <a href="conversacion.php?id=<?= $c['id'] ?>" class="chat-conv-row">
+        <a href="conversacion.php?id=<?= (int)$c['id'] ?>" class="chat-conv-row">
           <div class="chat-ava <?= avaClass($c['other_rol']) ?>"><?= Security::escapeHtml($initials) ?></div>
           <div class="chat-conv-info">
             <div class="chat-conv-name"><?= Security::escapeHtml($c['other_nombre']) ?></div>

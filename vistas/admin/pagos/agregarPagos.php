@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_pagos');
 
 $exito = $_SESSION['exito'] ?? '';
@@ -68,8 +69,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idEstudiante" id="idEstudiante" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Estudiante --</option>
                 <?php foreach ($todos_los_estudiantes as $est) { ?>
-                    <option value="<?= $est['idEstudiante'] ?>" <?= ($idEstudianteElegido == $est['idEstudiante']) ? 'selected' : '' ?>>
-                        <?= $est['nombreEstudiante'] ?>
+                    <option value="<?= (int)$est['idEstudiante'] ?>" <?= ($idEstudianteElegido == $est['idEstudiante']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($est['nombreEstudiante']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -111,23 +112,23 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
             <input type="hidden" name="fechaPago" value="<?= $hoy ?>">
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'tipoPago') ?>">
                 <label for="tipoPago">Tipo de Pago</label>
                 <select name="tipoPago" id="tipoPago">
                     <option value="">-- Elegir --</option>
                     <option value="mensual" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'mensual') ? 'selected' : '' ?>>Mensual (10% del total)</option>
                     <option value="trimestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'trimestral') ? 'selected' : '' ?>>Trimestral (25% del total)</option>
                     <option value="semestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'semestral') ? 'selected' : '' ?>>Semestral (50% del total)</option>
-                    <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>     
+                    <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>
                 </select>
-                
+                <?= fieldError($errores, 'tipoPago') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'monto') ?>">
                 <label for="montoInput">Cantidad a Cobrar (€)</label>
-                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= $datos_pago['monto'] ?? '' ?>">
+                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= Security::escapeHtml($datos_pago['monto'] ?? '') ?>">
                 <span>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</span>
-                
+                <?= fieldError($errores, 'monto') ?>
             </div>
 
             <div class="acciones">

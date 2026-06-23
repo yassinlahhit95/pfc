@@ -149,14 +149,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 } elseif ($msg['emisor_rol'] === 'estudiante') {
                     $senderName = Security::escapeHtml($msg['nombreEstudiante'] ?? 'Alumno');
                     $avaClass   = 'inbox-ava-alumno';
-                    $avaInit    = mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2));
+                    $avaInit    = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2)));
                     $rtagClass  = 'rtag-alumno';
                     $rtagLabel  = 'Alumno';
                     $receiver   = '→ Dirección';
                 } else {
                     $senderName = Security::escapeHtml($msg['nombreProfesor'] ?? 'Profesor');
                     $avaClass   = 'inbox-ava-profe';
-                    $avaInit    = mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2));
+                    $avaInit    = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2)));
                     $rtagClass  = 'rtag-profe';
                     $rtagLabel  = 'Profe';
                     $receiver   = '→ Dirección';

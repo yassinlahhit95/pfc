@@ -24,12 +24,12 @@ if (isset($_POST['actualizarPago'])) {
     $fechaPago    = trim($_POST['fechaPago']);
     $proximaFecha = trim($_POST['fechaProximoPago']);
 
-    $errores = '';
-    if (empty($idEstudiante))          $errores = "Debe seleccionar un estudiante.";
-    if (empty($monto) || $monto <= 0)  $errores = "La cantidad debe ser un número positivo.";
-    if (empty($fechaPago))             $errores = "La fecha del pago es un campo obligatorio.";
+    $errores = [];
+    if (empty($idEstudiante))          $errores['idEstudiante'] = "Debe seleccionar un estudiante.";
+    if (empty($monto) || $monto <= 0)  $errores['cantidadPago'] = "La cantidad debe ser un número positivo.";
+    if (empty($fechaPago))             $errores['fechaPago'] = "La fecha del pago es un campo obligatorio.";
 
-    if (!$errores) {
+    if (empty($errores)) {
         if (actualizarPago($idPago, $idEstudiante, $monto, $tipoPago, $fechaPago, $proximaFecha)) {
             registrarAccion('actualizar', 'pagos', $idPago, "Estudiante #$idEstudiante · $monto€");
             $_SESSION['exito'] = "El pago ha sido actualizado correctamente.";

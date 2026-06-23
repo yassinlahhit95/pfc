@@ -16,7 +16,7 @@ function _sqlCiclosDeProfesor() {
 
 function obtenerTFGporEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT idEstudiante, nombreEstudiante, archivoTFG, fechaSubidaTFG FROM estudiantes WHERE idEstudiante = ?";
+    $sql = "SELECT idEstudiante, nombreEstudiante, archivoTFG, tituloTFG, fechaSubidaTFG FROM estudiantes WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
@@ -74,7 +74,7 @@ function contarTFGsDeProfesor($idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT COUNT(DISTINCT e.idEstudiante) as total
             FROM estudiantes e
-            WHERE e.archivoTFG != ''
+            WHERE (e.archivoTFG IS NOT NULL AND e.archivoTFG != '')
               AND " . _sqlCiclosDeProfesor();
 
     $stmt = mysqli_prepare($con, $sql);
@@ -95,7 +95,7 @@ function listarTFGsPorProfesor($idProfesor) {
     $sql = "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, c.nombreCiclo, c.idCiclo
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
-            WHERE e.archivoTFG != ''
+            WHERE (e.archivoTFG IS NOT NULL AND e.archivoTFG != '')
               AND " . _sqlCiclosDeProfesor() . "
             ORDER BY e.nombreEstudiante ASC";
 
@@ -125,26 +125,11 @@ function obtenerCalificacionTFG($idEstudiante) {
 
 function guardarCalificacionTFG($idEstudiante, $nota, $observaciones) {
     $con = obtenerConexion();
-
-    $sql = "SELECT idCalificacion FROM calificaciones_tfg WHERE idEstudiante = ?";
+    $sql = "INSERT INTO calificaciones_tfg (idEstudiante, nota, observaciones) VALUES (?, ?, ?) AS new_val
+            ON DUPLICATE KEY UPDATE nota = new_val.nota, observaciones = new_val.observaciones";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-
-    if (mysqli_num_rows($resultado) > 0) {
-        $sql = "UPDATE calificaciones_tfg SET nota = ?, observaciones = ? WHERE idEstudiante = ?";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "dsi", $nota, $observaciones, $idEstudiante);
-    } else {
-        $sql = "INSERT INTO calificaciones_tfg (idEstudiante, nota, observaciones) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "ids", $idEstudiante, $nota, $observaciones);
-    }
-
-    $exito = mysqli_stmt_execute($stmt);
-    
-    return $exito;
+    mysqli_stmt_bind_param($stmt, "ids", $idEstudiante, $nota, $observaciones);
+    return mysqli_stmt_execute($stmt);
 }
 
 function eliminarArchivoTFG($idEstudiante) {

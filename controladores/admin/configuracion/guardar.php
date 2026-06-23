@@ -1,14 +1,8 @@
 <?php
-// ══════════════════════════════════════════════════════════════════════
-// DEPENDENCIAS
-// ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 
-// ══════════════════════════════════════════════════════════════════════
-// PROCESAMIENTO
-// ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: ../../../vistas/admin/configuracion/configuracion.php");
@@ -23,33 +17,37 @@ foreach ($campos as $c) {
     $datos[$c] = trim($_POST[$c] ?? '');
 }
 
+// ── Validación de campos ────────────────────────────────────────────────
+$errores = [];
 if (empty($datos['nombreCentro'])) {
-    $_SESSION['errores'] = "El nombre del centro educativo es un campo obligatorio.";
-    header("Location: ../../../vistas/admin/configuracion/configuracion.php"); exit;
+    $errores['nombreCentro'] = "El nombre del centro educativo es un campo obligatorio.";
 }
-if ($datos['emailCentro'] && !Security::validateEmail($datos['emailCentro'])) {
-    $_SESSION['errores'] = "La dirección de correo electrónico del centro educativo no es válida.";
-    header("Location: ../../../vistas/admin/configuracion/configuracion.php"); exit;
+if (!empty($datos['emailCentro']) && !Security::validateEmail($datos['emailCentro'])) {
+    $errores['emailCentro'] = "La dirección de correo electrónico no es válida.";
 }
-if ($datos['telefonoCentro'] && !Security::validatePhone($datos['telefonoCentro'])) {
-    $_SESSION['errores'] = "El número de teléfono del centro educativo no es válido (debe contener entre 9 y 15 dígitos).";
-    header("Location: ../../../vistas/admin/configuracion/configuracion.php"); exit;
+if (!empty($datos['telefonoCentro']) && !Security::validatePhone($datos['telefonoCentro'])) {
+    $errores['telefonoCentro'] = "El número de teléfono no es válido (debe contener entre 9 y 15 dígitos).";
+}
+
+if (!empty($errores)) {
+    $_SESSION['errores']             = $errores;
+    $_SESSION['datos_configuracion'] = $_POST;
+    header("Location: ../../../vistas/admin/configuracion/configuracion.php");
+    exit;
 }
 
 guardarConfiguracionCentro($datos);
 
-// ══════════════════════════════════════════════════════════════════════
-// SUBIDA DE LOGOS
-// ══════════════════════════════════════════════════════════════════════
+// ── Subida y borrado de logos ───────────────────────────────────────────
 $logoFields = ['logoCentro', 'logoGobierno1', 'logoGobierno2'];
 $uploadDir  = __DIR__ . '/../../../public/uploads/configuracion/';
 $mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
 
 foreach ($logoFields as $field) {
     if (!empty($_POST['borrar_' . $field])) {
-        $cfg = obtenerConfiguracionCentro();
-        if (!empty($cfg[$field])) {
-            $ruta = $uploadDir . basename($cfg[$field]);
+        $cfgActual = obtenerConfiguracionCentro();
+        if (!empty($cfgActual[$field])) {
+            $ruta = $uploadDir . basename($cfgActual[$field]);
             if (is_file($ruta)) unlink($ruta);
         }
         actualizarLogoCentro($field, '');
@@ -70,3 +68,4 @@ foreach ($logoFields as $field) {
 registrarAccion('actualizar', 'configuracion', null, 'Configuración del centro guardada');
 $_SESSION['exito'] = "Configuración guardada correctamente.";
 header("Location: ../../../vistas/admin/configuracion/configuracion.php");
+exit;

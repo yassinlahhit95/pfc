@@ -7,6 +7,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_FILES['archivo_csv'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/profesores/verProfesores.php");
+    exit;
+}
+
 $file = $_FILES['archivo_csv'];
 if ($file['error'] !== UPLOAD_ERR_OK) {
     $_SESSION['errores'] = "Error al subir el archivo CSV.";

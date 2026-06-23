@@ -27,6 +27,10 @@ switch ($action) {
         break;
 
     case 'update_status':
+        if (!Security::validateCSRFToken()) {
+            echo json_encode(['status' => 'error', 'message' => 'Solicitud inválida.']);
+            break;
+        }
         $id = (int)($_POST['id'] ?? 0);
         $estadosPermitidos = ['EN_REVISION', 'ADMITIDO', 'RECHAZADO', 'SUBSANACION'];
         $estado = in_array($_POST['estado'] ?? '', $estadosPermitidos, true) ? $_POST['estado'] : '';
@@ -55,8 +59,9 @@ switch ($action) {
 
                     // Genera la parte local del email institucional: nombre.apellidos@aulapro.com
                     $cleanString = function(string $s): string {
-                        $s = str_replace(' ', '.', trim($s));
-                        $s = strtr(utf8_decode($s), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+                        $s = trim($s);
+                        $s = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $s) ?: $s;
+                        $s = preg_replace('/[^a-zA-Z0-9.]/', '', str_replace(' ', '.', $s));
                         return strtolower($s);
                     };
 

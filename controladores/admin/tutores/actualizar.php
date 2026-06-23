@@ -24,10 +24,18 @@ $estudiantes = isset($_POST['estudiantes']) && is_array($_POST['estudiantes'])
     ? $_POST['estudiantes'] : [];
 
 $errores = [];
-if ($idTutor <= 0)                              $errores[] = "Tutor no válido.";
-if (empty($nombre))                             $errores[] = "El nombre es obligatorio.";
-if (empty($email) || !Security::validateEmail($email)) $errores[] = "El correo electrónico no es válido.";
-if (empty($dni))                                $errores[] = "El DNI/NIE es obligatorio.";
+if ($idTutor <= 0) {
+    $_SESSION['errores'] = "Tutor no válido.";
+    header("Location: ../../../vistas/admin/tutores/verTutores.php");
+    exit;
+}
+if (empty($nombre))    $errores['nombreTutor'] = "El nombre es obligatorio.";
+if (empty($email)) {
+    $errores['emailTutor'] = "El correo electrónico es obligatorio.";
+} elseif (!Security::validateEmail($email)) {
+    $errores['emailTutor'] = "El formato del correo electrónico no es válido.";
+}
+if (empty($dni)) $errores['dniTutor'] = "El DNI/NIE es obligatorio.";
 
 if (empty($errores)) {
     $con = obtenerConexion();
@@ -36,12 +44,12 @@ if (empty($errores)) {
     mysqli_stmt_bind_param($chk, "ssi", $dni, $email, $idTutor);
     mysqli_stmt_execute($chk);
     if (mysqli_num_rows(mysqli_stmt_get_result($chk)) > 0) {
-        $errores[] = "Ya existe otro familiar con ese DNI o correo electrónico.";
+        $errores['dniTutor'] = "Ya existe otro familiar con ese DNI o correo electrónico.";
     }
 }
 
 if (!empty($errores)) {
-    $_SESSION['errores'] = implode(' ', $errores);
+    $_SESSION['errores'] = $errores;
     $_SESSION['datos_tutor'] = $_POST;
     header("Location: ../../../vistas/admin/tutores/modificarTutor.php?idTutor={$idTutor}");
     exit;

@@ -38,8 +38,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select id="selectFiltroNivel" onchange="aplicarFiltrosRetos()">
                 <option value="">-- Todos los Niveles --</option>
                 <?php foreach ($listaNiveles as $nivelFiltro) { ?>
-                    <option value="<?= $nivelFiltro['idNivel'] ?>">
-                        <?= $nivelFiltro['nombreNivel'] ?>
+                    <option value="<?= (int)$nivelFiltro['idNivel'] ?>">
+                        <?= Security::escapeHtml($nivelFiltro['nombreNivel']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -49,8 +49,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosRetos()">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= $cicloFiltro['idCiclo'] ?>">
-                        <?= $cicloFiltro['nombreCiclo'] ?>
+                    <option value="<?= (int)$cicloFiltro['idCiclo'] ?>">
+                        <?= Security::escapeHtml($cicloFiltro['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -78,13 +78,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($todos_los_retos as $reto) {
                         $modulos = listarModulosDeReto($reto['idReto']);
-                        $nombresModulos = array_column($modulos, 'nombreModulo');
+                        $nombresModulos = array_map(fn($m) => Security::escapeHtml($m['nombreModulo']), $modulos);
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
-                        $idCicloReto = !empty($modulos) ? $modulos[0]['idCiclo'] : '';
+                        $idCicloReto = !empty($modulos) ? (int)$modulos[0]['idCiclo'] : 0;
                         $archivos = obtenerArchivosReto($reto['idReto']);
                     ?>
-                    <tr class="fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= $mapaCicloNivel[$idCicloReto] ?? '' ?>">
-                        <td><b><?= $reto['nombreReto'] ?></b></td>
+                    <tr class="fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= (int)($mapaCicloNivel[$idCicloReto] ?? 0) ?>">
+                        <td><b><?= Security::escapeHtml($reto['nombreReto']) ?></b></td>
                         <td><?= $textoModulos ?></td>
                         <td>
                             <?php if (empty($archivos)): ?>
@@ -100,7 +100,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                             $isPdf = ($arch['tipoArchivo'] === 'pdf');
                                             $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
                                         ?>
-                                            <a href="../../../<?= $arch['rutaArchivo'] ?>" target="_blank" class="dropdown-file-item">
+                                            <a href="../../../<?= Security::escapeHtml(ltrim($arch['rutaArchivo'], '/')) ?>" target="_blank" class="dropdown-file-item">
                                                 <i class="fas <?= $icon ?>"></i>
                                                 <span class="text-truncate"><?= Security::escapeHtml($arch['nombreArchivo']) ?></span>
                                             </a>
@@ -113,9 +113,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 </div>
                             <?php endif; ?>
                         </td>
-                        <td><?= $reto['horasReto'] ?>h</td>
-                        <td><?= date('d/m/Y', strtotime($reto['fechaInicio'])) ?></td>
-                        <td><?= date('d/m/Y', strtotime($reto['fechaFin'])) ?></td>
+                        <td><?= (int)$reto['horasReto'] ?>h</td>
+                        <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaInicio']))) ?></td>
+                        <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaFin']))) ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>

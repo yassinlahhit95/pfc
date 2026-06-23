@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -32,19 +33,22 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h4 style="margin:0 0 20px;"><i class="fas fa-user"></i> Datos del Familiar / Tutor Legal</h4>
 
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'nombreTutor') ?>">
                 <label for="nombreTutor">Nombre Completo <span style="color:red;">*</span></label>
-                <input type="text" id="nombreTutor" name="nombreTutor" value="<?= Security::escapeHtml($datos['nombreTutor'] ?? '') ?>" required>
+                <input type="text" id="nombreTutor" name="nombreTutor" value="<?= Security::escapeHtml($datos['nombreTutor'] ?? '') ?>">
+                <?= fieldError($errores, 'nombreTutor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'emailTutor') ?>">
                 <label for="emailTutor">Correo Electrónico <span style="color:red;">*</span></label>
-                <input type="email" id="emailTutor" name="emailTutor" value="<?= Security::escapeHtml($datos['emailTutor'] ?? '') ?>" required>
+                <input type="email" id="emailTutor" name="emailTutor" value="<?= Security::escapeHtml($datos['emailTutor'] ?? '') ?>">
+                <?= fieldError($errores, 'emailTutor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'dniTutor') ?>">
                 <label for="dniTutor">DNI / NIE <span style="color:red;">*</span></label>
-                <input type="text" id="dniTutor" name="dniTutor" value="<?= Security::escapeHtml($datos['dniTutor'] ?? '') ?>" required>
+                <input type="text" id="dniTutor" name="dniTutor" value="<?= Security::escapeHtml($datos['dniTutor'] ?? '') ?>">
+                <?= fieldError($errores, 'dniTutor') ?>
             </div>
 
             <div class="campo">

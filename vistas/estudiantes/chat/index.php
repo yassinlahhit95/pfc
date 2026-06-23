@@ -1,6 +1,6 @@
 <?php
-$seccion      = 'chat';
-$titulo_pagina = 'Chat — Estudiante';
+$seccionActual   = 'chat';
+$tituloDelPagina = 'AulaPro | Chat';
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_chat');
@@ -66,7 +66,7 @@ require_once __DIR__ . '/../comunes/nav.php';
   <div class="chat-modal">
     <button class="chat-modal-close" id="chat-modal-close">&times;</button>
     <h3>Nueva conversación</h3>
-    <input type="text" class="chat-modal-search" id="chat-modal-search" placeholder="Buscar profesor…">
+    <input type="text" class="chat-modal-search" id="chat-modal-search" placeholder="Buscar contacto…">
     <div class="chat-contact-list" id="chat-contact-list"></div>
   </div>
 </div>

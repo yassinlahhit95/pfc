@@ -76,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                                 $isPdf = ($arch['tipoArchivo'] === 'pdf');
                                                 $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
                                             ?>
-                                                <a href="../../../<?= $arch['rutaArchivo'] ?>" target="_blank" class="dropdown-file-item">
+                                                <a href="../../../<?= Security::escapeHtml($arch['rutaArchivo']) ?>" target="_blank" class="dropdown-file-item">
                                                     <i class="fas <?= $icon ?>"></i>
                                                     <span class="text-truncate"><?= Security::escapeHtml($arch['nombreArchivo']) ?></span>
                                                 </a>

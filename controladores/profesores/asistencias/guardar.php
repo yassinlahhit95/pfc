@@ -4,6 +4,12 @@ require_once __DIR__ . "/../../../modelos/asistencias.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/asistencias/registrar.php");
+    exit;
+}
+
 $idProfesor   = (int)$_SESSION['idProfesor'];
 $esTutor      = !empty($_SESSION['esTutor']);
 $idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);

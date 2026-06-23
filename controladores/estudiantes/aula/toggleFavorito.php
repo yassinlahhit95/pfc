@@ -2,7 +2,7 @@
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . "/../../../include/Security.php";
+require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -17,16 +17,6 @@ function responderFavorito($esAjax, $ok, $destino, $extra = []) {
         header("Location: $destino");
     }
     exit;
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// AUTENTICACIÓN
-// ══════════════════════════════════════════════════════════════════════
-if (empty($_SESSION['idEstudiante']) || !empty($_SESSION['must_change_password'])) {
-    responderFavorito($esAjax, false, "../../../vistas/login.php", ['error' => 'auth']);
-}
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
-    responderFavorito($esAjax, false, "../../../vistas/estudiantes/aula/recursos.php", ['error' => 'csrf']);
 }
 
 // ══════════════════════════════════════════════════════════════════════

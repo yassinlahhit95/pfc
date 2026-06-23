@@ -67,6 +67,14 @@ function actualizarDirector($idDirector, $nombre, $email, $dni, $telefono, $fech
     return mysqli_stmt_execute($stmt);
 }
 
+function actualizarPasswordDirector($idDirector, $nuevaPassword) {
+    $con  = obtenerConexion();
+    $hash = password_hash($nuevaPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+    $stmt = mysqli_prepare($con, "UPDATE directores SET password=?, pwd_changed_at=NOW(), must_change_password=0 WHERE idDirector=?");
+    mysqli_stmt_bind_param($stmt, "si", $hash, $idDirector);
+    return mysqli_stmt_execute($stmt);
+}
+
 function actualizarTokenFCMDirector($idDirector, $nuevoToken) {
     return actualizarTokenFCM('directores', 'idDirector', $idDirector, $nuevoToken);
 }

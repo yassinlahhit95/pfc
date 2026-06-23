@@ -11,7 +11,7 @@ if (!FeatureGuard::check('feature_subida_tfg')) {
 // Seguridad: SIEMPRE el id de la sesión, nunca el del formulario (evita IDOR)
 $idEstudiante  = $_SESSION['idEstudiante'];
 $datosTFG      = obtenerTFGporEstudiante($idEstudiante);
-$nombreArchivo = $datosTFG['archivoTFG'] ?? '';
+$nombreArchivo = is_array($datosTFG) ? ($datosTFG['archivoTFG'] ?? '') : '';
 
 if (eliminarTFG($idEstudiante)) {
     $rutaArchivo = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;

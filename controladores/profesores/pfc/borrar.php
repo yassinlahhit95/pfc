@@ -4,6 +4,11 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 if (isset($_POST['idEstudiante'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/pfc/lista.php");
+        exit;
+    }
     $idEstudiante = (int)$_POST['idEstudiante'];
 
     if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {

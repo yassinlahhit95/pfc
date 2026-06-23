@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_inventario');
 
 $exito = $_SESSION['exito'] ?? '';
@@ -25,16 +26,16 @@ include_once __DIR__ . "/../comunes/nav.php";
         <form method="POST" action="../../../controladores/admin/inventario/insertar.php">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <div class="formulario">
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'nombreArticulo') ?>">
                     <label for="nombreArticulo">NOMBRE DEL ARTÍCULO</label>
                     <input type="text" name="nombreArticulo" id="nombreArticulo" value="<?= Security::escapeHtml($datos['nombreArticulo'] ?? '') ?>" placeholder="Ej: Portátil HP ProBook">
-                    
+                    <?= fieldError($errores, 'nombreArticulo') ?>
                 </div>
 
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'numeroSerie') ?>">
                     <label for="numeroSerie">NÚMERO DE SERIE</label>
                     <input type="text" name="numeroSerie" id="numeroSerie" value="<?= Security::escapeHtml($datos['numeroSerie'] ?? '') ?>" placeholder="Ej: SN-12345678">
-                    
+                    <?= fieldError($errores, 'numeroSerie') ?>
                 </div>
             </div>
 

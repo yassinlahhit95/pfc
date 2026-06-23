@@ -113,6 +113,42 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } ?>
 </div>
 
+<?php if (!empty($_SESSION['esTutor']) && !empty($_SESSION['idCicloTutor']) && $estudiante['idCiclo'] == $_SESSION['idCicloTutor']): ?>
+<!-- Cambiar contraseña (tutor de ciclo) -->
+<div class="panel" style="margin-top:16px;">
+    <div class="panel-titulo-seccion" style="cursor:pointer;" onclick="document.getElementById('form-cambiar-pass-tutor').classList.toggle('oculto')">
+        <i class="fas fa-key"></i> Cambiar contraseña del estudiante
+        <small style="margin-left:8px;color:var(--dim);font-weight:400;">(Tutor de Ciclo)</small>
+    </div>
+    <div id="form-cambiar-pass-tutor" class="oculto" style="margin-top:16px;">
+        <div class="formulario" style="max-width:480px;">
+            <div class="campo ancho-total">
+                <label for="nueva-pass-tutor">Nueva contraseña <small style="color:var(--dim)">(mín. 8 caracteres)</small></label>
+                <input type="password" id="nueva-pass-tutor" minlength="8" autocomplete="new-password" placeholder="Nueva contraseña">
+            </div>
+            <div class="campo ancho-total">
+                <button type="button" class="boton-primario" onclick="cambiarPassTutor()">
+                    <i class="fas fa-save"></i> Guardar contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function cambiarPassTutor() {
+    var pass = document.getElementById('nueva-pass-tutor').value;
+    if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
+    fetch('/controladores/profesores/tutor/cambiarPassword.php', {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'csrf_token=<?= Security::generateCSRFToken() ?>&id=<?= $idEstudiante ?>&nuevaPassword='+encodeURIComponent(pass)
+    }).then(r => r.json()).then(d => {
+        if (window.Toast) Toast.show(d.msg, d.ok ? 'success' : 'error');
+        if (d.ok) document.getElementById('nueva-pass-tutor').value = '';
+    });
+}
+</script>
+<?php endif; ?>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 

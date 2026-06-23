@@ -23,6 +23,12 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/academico/resultadosFinales.php");
+    exit;
+}
+
 $idCiclo = (int)($_POST['idCiclo'] ?? 0);
 if (!$idCiclo) {
     header("Location: ../../../vistas/admin/academico/resultadosFinales.php");

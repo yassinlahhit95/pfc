@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -48,10 +49,10 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idModulo" value="<?= $id_del_modulo ?>">
 
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'nombreModulo') ?>">
                 <label for="nombreModulo">Nombre del Módulo</label>
                 <input type="text" name="nombreModulo" id="nombreModulo" value="<?= Security::escapeHtml($modulo['nombreModulo']) ?>">
-                
+                <?= fieldError($errores, 'nombreModulo') ?>
             </div>
 
             <div class="campo">
@@ -63,17 +64,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </select>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
                 <label for="idCiclo">Ciclo Formativo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
-                
+                <?= fieldError($errores, 'idCiclo') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'horasMaximas') ?>">
                 <label for="horasMaximas">Horas Totales</label>
                 <input type="number" name="horasMaximas" id="horasMaximas" min="1" value="<?= Security::escapeHtml($modulo['horasMaximas']) ?>">
+                <?= fieldError($errores, 'horasMaximas') ?>
             </div>
 
             <div class="campo">

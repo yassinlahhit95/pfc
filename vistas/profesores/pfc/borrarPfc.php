@@ -1,7 +1,11 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
-$id = (int)($_GET['id'] ?? 0);
 require_once __DIR__ . '/../../../modelos/tfg.php';
+require_once __DIR__ . '/../../../modelos/estudiantes.php';
+$id = (int)($_GET['id'] ?? 0);
+if (!estudiantePerteneceAProfesor($id, $_SESSION['idProfesor'])) {
+    header("Location: lista.php"); exit;
+}
 $registro = obtenerTFGporEstudiante($id);
 if (!$registro) { header("Location: lista.php"); exit; }
 $tituloDelPagina = 'AULAPRO | CONFIRMAR ELIMINACIÓN';

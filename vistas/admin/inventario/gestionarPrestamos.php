@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaPrestamos">
             <thead>
                 <tr>
                     <th>Estudiante</th>
@@ -43,8 +43,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($todos_los_prestamos as $p) { ?>
                     <tr>
-                        <td><b><?= $p['nombreEstudiante'] ?></b></td>
-                        <td><?= $p['nombreArticulo'] ?></td>
+                        <td><b><?= Security::escapeHtml($p['nombreEstudiante']) ?></b></td>
+                        <td><?= Security::escapeHtml($p['nombreArticulo']) ?></td>
                         <td><?= date('d/m/Y', strtotime($p['fechaPrestamo'])) ?></td>
                         <td>
                             <?php if (!empty($p['fechaDevolucion'])) { ?>
@@ -59,7 +59,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
                             ?>
                             <span class="indicador-estado <?= $clase_estado ?>">
-                                <?= $p['estadoPrestamo'] ?>
+                                <?= Security::escapeHtml($p['estadoPrestamo']) ?>
                             </span>
                         </td>
                         <td>
@@ -88,4 +88,5 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>iniciarPaginacion('tablaPrestamos', 15);</script>
 

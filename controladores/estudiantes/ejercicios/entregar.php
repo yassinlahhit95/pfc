@@ -4,17 +4,27 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/EstudianteGuard.php';
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['entregar'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/estudiantes/ejercicios/lista.php");
+        exit;
+    }
     $idEjercicio  = intval($_POST['idEjercicio'] ?? 0);
     $respuesta    = trim($_POST['respuesta'] ?? '');
     $idEstudiante = $_SESSION['idEstudiante'];
 
-    $ej = obtenerEjercicioPorId($idEjercicio);
-    if (!$ej || !$ej['publicado']) {
+    $ej              = obtenerEjercicioPorId($idEjercicio);
+    $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+
+    // Reject if exercise doesn't exist, isn't published, or belongs to a different ciclo (IDOR guard)
+    if (!$ej || !$ej['publicado']
+        || (int)$ej['idCiclo'] !== (int)($datosEstudiante['idCiclo'] ?? -1)) {
         header("Location: ../../../vistas/estudiantes/ejercicios/lista.php");
         exit;
     }

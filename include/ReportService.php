@@ -73,7 +73,8 @@ class ReportService {
     }
 
     public function generateHorario($cfg, $ciclo, $celdas, $franjas, $dias) {
-        $this->mpdf->AddPage('L');
+        // Landscape with extra top margin for the 3-row header (accent + logos + info band)
+        $this->mpdf->AddPage('L', '', '', '', '', '', 56, 20, 4, 3);
         ob_start();
         include __DIR__ . '/../templates/pdf/horario.php';
         $html = ob_get_clean();

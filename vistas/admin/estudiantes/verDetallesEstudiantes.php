@@ -224,4 +224,39 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div><!-- /detalle-grid -->
 </div>
 
+<!-- Cambiar contraseña (director) -->
+<div class="panel margen-abajo" id="panel-cambiar-pass" style="margin-top:16px;">
+    <div class="panel-titulo-seccion" style="cursor:pointer;" onclick="document.getElementById('form-cambiar-pass').classList.toggle('oculto')">
+        <i class="fas fa-key"></i> Cambiar contraseña
+        <small style="margin-left:8px;color:var(--dim);font-weight:400;">Establecer nueva contraseña para este estudiante</small>
+    </div>
+    <div id="form-cambiar-pass" class="oculto" style="margin-top:16px;">
+        <div class="formulario" style="max-width:480px;">
+            <div class="campo ancho-total">
+                <label for="nueva-pass-est">Nueva contraseña <small style="color:var(--dim)">(mín. 8 caracteres)</small></label>
+                <input type="password" id="nueva-pass-est" minlength="8" autocomplete="new-password" placeholder="Nueva contraseña">
+            </div>
+            <div class="campo ancho-total">
+                <button type="button" class="boton-primario" onclick="cambiarPassUsuario('estudiante', <?= $idDelEstudiante ?>)">
+                    <i class="fas fa-save"></i> Guardar contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include '../comunes/footer.php'; ?>
+<script>
+function cambiarPassUsuario(tipo, id) {
+    var pass = document.getElementById('nueva-pass-est').value;
+    if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
+    fetch('/controladores/admin/usuarios/cambiarPassword.php', {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'csrf_token=<?= Security::generateCSRFToken() ?>&tipo='+tipo+'&id='+id+'&nuevaPassword='+encodeURIComponent(pass)
+    }).then(r => r.json()).then(d => {
+        if (window.Toast) Toast.show(d.msg, d.ok ? 'success' : 'error');
+        if (d.ok) document.getElementById('nueva-pass-est').value = '';
+    });
+}
+</script>

@@ -18,16 +18,20 @@ if (isset($_POST['guardarTutor'])) {
     $estudiantesVinculados = isset($_POST['estudiantes']) && is_array($_POST['estudiantes']) ? $_POST['estudiantes'] : [];
 
     $errores = [];
-    if (empty($nombre)) $errores[] = "El nombre es obligatorio.";
-    if (empty($email) || !Security::validateEmail($email)) $errores[] = "El correo electrónico no es válido.";
-    if (empty($dni)) $errores[] = "El DNI/NIE es obligatorio.";
+    if (empty($nombre)) $errores['nombreTutor'] = "El nombre es obligatorio.";
+    if (empty($email)) {
+        $errores['emailTutor'] = "El correo electrónico es obligatorio.";
+    } elseif (!Security::validateEmail($email)) {
+        $errores['emailTutor'] = "El formato del correo electrónico no es válido.";
+    }
+    if (empty($dni)) $errores['dniTutor'] = "El DNI/NIE es obligatorio.";
 
     if (empty($errores) && checkTutorExistente($dni, $email)) {
-        $errores[] = "Ya existe un familiar registrado con ese DNI o correo electrónico.";
+        $errores['dniTutor'] = "Ya existe un familiar registrado con ese DNI o correo electrónico.";
     }
 
     if (!empty($errores)) {
-        $_SESSION['errores'] = implode(' ', $errores);
+        $_SESSION['errores'] = $errores;
         $_SESSION['datos_tutor'] = $_POST;
         header("Location: ../../../vistas/admin/tutores/agregarTutor.php");
         exit;

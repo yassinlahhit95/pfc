@@ -12,10 +12,10 @@ $convId = (int)($_GET['id'] ?? 0);
 $myRol  = 'tutor';
 $myId   = (int)$_SESSION['idTutor'];
 
-$conv = chatObtenerConversacion($convId, $myRol, $myId);
-if (!$conv) { header('Location: chat.php'); exit; }
+$conv = chatConversacionPorId($convId);
+if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) { header('Location: chat.php'); exit; }
 
-$titulo_pagina = 'Chat con ' . $conv['other_nombre'];
+$titulo_pagina = 'Chat con ' . Security::escapeHtml($conv['other_nombre']);
 require_once __DIR__ . '/../comunes/nav.php';
 
 function avaClass($rol) {
@@ -41,7 +41,7 @@ function avaClass($rol) {
         $initials = strtoupper(substr($c['other_nombre'], 0, 1) . (strpos($c['other_nombre'], ' ') !== false ? substr(strstr($c['other_nombre'], ' '), 1, 1) : ''));
         $active   = ($c['id'] == $convId) ? ' active' : '';
       ?>
-        <a href="conversacion.php?id=<?= $c['id'] ?>" class="chat-conv-row<?= $active ?>">
+        <a href="conversacion.php?id=<?= (int)$c['id'] ?>" class="chat-conv-row<?= $active ?>">
           <div class="chat-ava <?= avaClass($c['other_rol']) ?>"><?= Security::escapeHtml($initials) ?></div>
           <div class="chat-conv-info">
             <div class="chat-conv-name"><?= Security::escapeHtml($c['other_nombre']) ?></div>
@@ -57,7 +57,7 @@ function avaClass($rol) {
     <div class="chat-main-head">
       <div class="chat-main-user">
         <div class="chat-ava <?= avaClass($conv['other_rol']) ?> small">
-            <?= strtoupper(substr($conv['other_nombre'], 0, 1)) ?>
+            <?= Security::escapeHtml(strtoupper(substr($conv['other_nombre'], 0, 1))) ?>
         </div>
         <div>
           <div class="chat-main-name"><?= Security::escapeHtml($conv['other_nombre']) ?></div>

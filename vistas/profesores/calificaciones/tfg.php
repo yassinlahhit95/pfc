@@ -14,8 +14,8 @@ $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
 $mis_ciclos = listarCiclosDeProfesor($idProfesor);
 $listaEvaluacion = listarEvaluacionTFGporProfesor($idProfesor, $idCicloElegido);
 
-$titulo_pagina = "AULAPRO | EVALUACIÓN TFG";
-$seccion = 'notas_tfg';
+$tituloDelPagina = "AULAPRO | EVALUACIÓN TFG";
+$seccionActual = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

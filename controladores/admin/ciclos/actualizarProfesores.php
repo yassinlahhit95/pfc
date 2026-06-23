@@ -5,6 +5,12 @@ require_once __DIR__ . "/../../../modelos/log.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
+if (!Security::validateCSRFToken()) {
+    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/ciclos/verCiclos.php"); exit;
+}
+
 $idCiclo       = (int)($_POST['idCiclo'] ?? 0);
 $idsProfesores = isset($_POST['idsProfesores']) && is_array($_POST['idsProfesores'])
     ? array_map('intval', array_filter($_POST['idsProfesores'], 'is_numeric'))

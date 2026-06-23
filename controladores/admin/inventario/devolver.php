@@ -11,7 +11,13 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-$idPrestamo = (int)($_POST['idPrestamo'] ?? $_GET['id'] ?? 0);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/inventario/gestionarPrestamos.php");
+    exit;
+}
+
+$idPrestamo = (int)($_POST['idPrestamo'] ?? 0);
 
 if ($idPrestamo <= 0) {
     $_SESSION['errores'] = "El préstamo especificado no existe.";

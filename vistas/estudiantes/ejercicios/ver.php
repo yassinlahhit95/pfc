@@ -1,16 +1,20 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
-$idEstudiante = $_SESSION['idEstudiante'] ?? '';
-
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
-$exito   = $_SESSION['exito'] ?? ''; unset($_SESSION['exito']);
-$errores = $_SESSION['errores'] ?? ''; unset($_SESSION['errores']);
+$idEstudiante    = (int)$_SESSION['idEstudiante'];
+$datosEstudiante = obtenerEstudiantePorId($idEstudiante);
+
+$exito   = $_SESSION['exito'] ?? null; unset($_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
 
 $idEjercicio = intval($_GET['id'] ?? 0);
 $ejercicio   = obtenerEjercicioPorId($idEjercicio);
 
-if (!$ejercicio || !$ejercicio['publicado']) {
+// Reject if exercise doesn't exist, isn't published, or belongs to a different ciclo (IDOR guard)
+if (!$ejercicio || !$ejercicio['publicado']
+    || (int)$ejercicio['idCiclo'] !== (int)($datosEstudiante['idCiclo'] ?? -1)) {
     header("Location: lista.php"); exit;
 }
 

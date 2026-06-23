@@ -26,13 +26,13 @@ if (isset($_POST['guardarAula'])) {
     $tiposValidos = ['teoria', 'laboratorio', 'taller', 'otro'];
 
     // ── Validación ──
-    $errores = '';
-    if ($planta < 0 || $planta > 5)            $errores = "La planta seleccionada debe estar comprendida entre 0 y 5.";
-    elseif ($numero < 1 || $numero > 99)       $errores = "El número de aula debe ser un valor numérico comprendido entre 1 y 99.";
-    elseif (!in_array($tipo, $tiposValidos))   $errores = "El tipo de aula seleccionado no es válido.";
-    elseif (checkAulaExistente($planta, $numero)) $errores = "Ya existe un aula registrada en la misma planta y con el mismo número.";
+    $errores = [];
+    if ($planta < 0 || $planta > 5)            $errores['planta'] = "La planta seleccionada debe estar comprendida entre 0 y 5.";
+    if ($numero < 1 || $numero > 99)           $errores['numero'] = "El número de aula debe ser un valor numérico comprendido entre 1 y 99.";
+    if (!in_array($tipo, $tiposValidos))       $errores['tipoAula'] = "El tipo de aula seleccionado no es válido.";
+    if (empty($errores) && checkAulaExistente($planta, $numero)) $errores['numero'] = "Ya existe un aula registrada en la misma planta y con el mismo número.";
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_aula'] = $_POST;
         header("Location: ../../../vistas/admin/aulas/agregarAula.php");

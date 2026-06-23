@@ -1,10 +1,15 @@
 <?php
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . '/../../../include/form_helpers.php';
 
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
+
+// Restore submitted values on validation error
+$datos = $_SESSION['datos_configuracion'] ?? [];
+unset($_SESSION['datos_configuracion']);
 
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/directores.php';
@@ -19,260 +24,87 @@ include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
 <div class="cabecera">
-    <h1>CONFIGURACIÓN DEL CENTRO</h1>
-    <div class="cabecera-acciones">
+    <div>
+        <h1><i class="fas fa-cog" style="margin-right:8px;opacity:.7;"></i>Configuración del Centro</h1>
+        <p class="subtitulo-encabezado">Ajusta los datos, logotipos y módulos de tu instancia</p>
+    </div>
+    <div class="acciones-pagina">
         <button type="button" class="boton-primario" onclick="var f=document.getElementById('form-configuracion');f.requestSubmit?f.requestSubmit():f.submit()">
-            <i class="fas fa-save"></i> Actualizar
+            <i class="fas fa-save"></i> Guardar cambios
         </button>
     </div>
 </div>
 
-
+<!-- ── Módulos y Funcionalidades ─────────────────────────────────────── -->
 <div class="panel margen-abajo">
-    <h3 class="panel-titulo">Módulos y Funcionalidades</h3>
+    <div class="panel-titulo-seccion">
+        <i class="fas fa-puzzle-piece"></i> Módulos y Funcionalidades
+    </div>
 
     <?php if ($saasLocked): ?>
-    <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:16px;background:#fef3c7;border:1px solid #fbbf24;border-radius:10px;font-size:.87rem;color:#92400e;">
-        <i class="fas fa-lock" style="font-size:1rem;"></i>
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:16px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;font-size:.87rem;color:var(--text);">
+        <i class="fas fa-lock" style="color:var(--accent);font-size:1rem;flex-shrink:0;"></i>
         <span><strong>Control bloqueado por la plataforma SaaS.</strong> Estos módulos están siendo gestionados centralmente y no se pueden modificar desde aquí.
-        <a href="../saas/estado.php" style="color:#b45309;font-weight:700;margin-left:6px;">Ver estado →</a></span>
+        <a href="../saas/estado.php" style="color:var(--accent);font-weight:700;margin-left:6px;">Ver estado →</a></span>
     </div>
     <?php else: ?>
-    <p class="texto-suave mb-4">Habilita o deshabilita módulos del sistema en tiempo real.</p>
+    <p class="texto-suave" style="margin-bottom:16px;">Habilita o deshabilita módulos del sistema en tiempo real.</p>
     <?php endif; ?>
 
     <div class="feature-toggle-grid">
+        <?php
+        $features = [
+            ['key' => 'feature_prematricula', 'icon' => 'fa-user-plus',     'color' => '#4f46e5', 'label' => 'Pre-matrícula',    'desc' => 'Portal de admisión pública'],
+            ['key' => 'feature_chat',         'icon' => 'fa-comments',      'color' => '#10b981', 'label' => 'Chat',              'desc' => 'Mensajería instantánea'],
+            ['key' => 'feature_inventario',   'icon' => 'fa-boxes',         'color' => '#f59e0b', 'label' => 'Inventario',        'desc' => 'Recursos y préstamos'],
+            ['key' => 'feature_subida_tfg',   'icon' => 'fa-file-upload',   'color' => '#8b5cf6', 'label' => 'Entrega de TFG',   'desc' => 'Subida del trabajo fin de grado'],
+            ['key' => 'feature_anuncios',     'icon' => 'fa-bullhorn',      'color' => '#f43f5e', 'label' => 'Anuncios',          'desc' => 'Tablón de avisos del centro'],
+            ['key' => 'feature_eventos',      'icon' => 'fa-calendar-days', 'color' => '#0ea5e9', 'label' => 'Eventos',           'desc' => 'Calendario de actividades'],
+            ['key' => 'feature_retos',        'icon' => 'fa-trophy',        'color' => '#f59e0b', 'label' => 'Retos',             'desc' => 'Actividades académicas gamificadas'],
+            ['key' => 'feature_mensajes',     'icon' => 'fa-envelope',      'color' => '#6366f1', 'label' => 'Mensajería',        'desc' => 'Reclamaciones y mensajes internos'],
+            ['key' => 'feature_pagos',        'icon' => 'fa-credit-card',   'color' => '#10b981', 'label' => 'Pagos',             'desc' => 'Gestión de pagos y matrículas'],
+            ['key' => 'feature_gastos',       'icon' => 'fa-receipt',       'color' => '#ef4444', 'label' => 'Gastos',            'desc' => 'Control de gastos del centro'],
+            ['key' => 'feature_informes',     'icon' => 'fa-file-pdf',      'color' => '#64748b', 'label' => 'Informes PDF',      'desc' => 'Boletines, listados y horarios'],
+            ['key' => 'feature_horario',      'icon' => 'fa-calendar-alt',  'color' => '#4f46e5', 'label' => 'Cuadro Horario',    'desc' => 'Horarios y asignaciones de clase'],
+        ];
+        foreach ($features as $feat):
+            $val = $cfg[$feat['key']] ?? 1;
+        ?>
         <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
             <div class="feature-info">
-                <i class="fas fa-user-plus feature-icon" style="color: #4f46e5;"></i>
+                <i class="fas <?= $feat['icon'] ?> feature-icon" style="color:<?= $feat['color'] ?>;"></i>
                 <div>
-                    <div class="feature-label">Pre-matrícula</div>
-                    <div class="feature-desc">Habilita el portal de admisión pública</div>
+                    <div class="feature-label"><?= $feat['label'] ?></div>
+                    <div class="feature-desc"><?= $feat['desc'] ?></div>
                 </div>
             </div>
             <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= $cfg['feature_prematricula'] ? 'Activo' : 'Inactivo' ?></span>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= $val ? 'Activo' : 'Inactivo' ?></span>
             <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_prematricula" <?= ($cfg['feature_prematricula'] ? 'checked' : '') ?>>
-                <span class="slider round"></span>
+            <label class="feature-switch">
+                <input type="checkbox" class="toggle-feature" data-feature="<?= $feat['key'] ?>" <?= $val ? 'checked' : '' ?>>
+                <span class="feature-track"></span>
             </label>
             <?php endif; ?>
         </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-comments feature-icon" style="color: #10b981;"></i>
-                <div>
-                    <div class="feature-label">Sistema de Chat</div>
-                    <div class="feature-desc">Mensajería instantánea entre usuarios</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= $cfg['feature_chat'] ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_chat" <?= ($cfg['feature_chat'] ? 'checked' : '') ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-boxes feature-icon" style="color: #f59e0b;"></i>
-                <div>
-                    <div class="feature-label">Inventario</div>
-                    <div class="feature-desc">Gestión de recursos y préstamos</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= $cfg['feature_inventario'] ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_inventario" <?= ($cfg['feature_inventario'] ? 'checked' : '') ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-file-upload feature-icon" style="color: #8b5cf6;"></i>
-                <div>
-                    <div class="feature-label">Entrega de TFG</div>
-                    <div class="feature-desc">Permite a los estudiantes subir su Trabajo Fin de Grado</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_subida_tfg'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_subida_tfg" <?= ($cfg['feature_subida_tfg'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-bullhorn feature-icon" style="color: #f43f5e;"></i>
-                <div>
-                    <div class="feature-label">Anuncios</div>
-                    <div class="feature-desc">Tablón de avisos y comunicados del centro</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_anuncios'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_anuncios" <?= ($cfg['feature_anuncios'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-calendar-days feature-icon" style="color: #0ea5e9;"></i>
-                <div>
-                    <div class="feature-label">Eventos</div>
-                    <div class="feature-desc">Calendario de eventos y actividades del centro</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_eventos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_eventos" <?= ($cfg['feature_eventos'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-trophy feature-icon" style="color: #f59e0b;"></i>
-                <div>
-                    <div class="feature-label">Retos</div>
-                    <div class="feature-desc">Desafíos y actividades académicas gamificadas</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_retos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_retos" <?= ($cfg['feature_retos'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-envelope feature-icon" style="color: #6366f1;"></i>
-                <div>
-                    <div class="feature-label">Mensajería</div>
-                    <div class="feature-desc">Sistema de reclamaciones y mensajes internos</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_mensajes'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_mensajes" <?= ($cfg['feature_mensajes'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-credit-card feature-icon" style="color: #10b981;"></i>
-                <div>
-                    <div class="feature-label">Pagos</div>
-                    <div class="feature-desc">Gestión de pagos y matrículas de estudiantes</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_pagos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_pagos" <?= ($cfg['feature_pagos'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-receipt feature-icon" style="color: #ef4444;"></i>
-                <div>
-                    <div class="feature-label">Gastos</div>
-                    <div class="feature-desc">Control de gastos y categorías del centro</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_gastos'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_gastos" <?= ($cfg['feature_gastos'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-file-pdf feature-icon" style="color: #64748b;"></i>
-                <div>
-                    <div class="feature-label">Informes PDF</div>
-                    <div class="feature-desc">Generación de boletines, listados y horarios en PDF</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_informes'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_informes" <?= ($cfg['feature_informes'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
-
-        <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
-            <div class="feature-info">
-                <i class="fas fa-calendar-alt feature-icon" style="color: #4f46e5;"></i>
-                <div>
-                    <div class="feature-label">Cuadro Horario</div>
-                    <div class="feature-desc">Gestión de horarios de clases y asignaciones</div>
-                </div>
-            </div>
-            <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= ($cfg['feature_horario'] ?? 1) ? 'Activo' : 'Inactivo' ?></span>
-            <?php else: ?>
-            <label class="switch">
-                <input type="checkbox" class="toggle-feature" data-feature="feature_horario" <?= ($cfg['feature_horario'] ?? 1) ? 'checked' : '' ?>>
-                <span class="slider round"></span>
-            </label>
-            <?php endif; ?>
-        </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
+<!-- ── Seguridad de la cuenta ────────────────────────────────────────── -->
 <div class="panel margen-abajo">
-    <h3 class="panel-titulo">Seguridad de la cuenta</h3>
-    <div class="feature-card" style="max-width:560px">
+    <div class="panel-titulo-seccion">
+        <i class="fas fa-shield-alt"></i> Seguridad de la Cuenta
+    </div>
+    <div class="feature-card" style="max-width:580px;">
         <div class="feature-info">
-            <i class="fas fa-shield-alt feature-icon" style="color:<?= $mfaActivo ? '#10b981' : '#6b7280' ?>;"></i>
+            <i class="fas fa-shield-alt feature-icon" style="color:<?= $mfaActivo ? '#10b981' : 'var(--mut)' ?>;"></i>
             <div>
                 <div class="feature-label">Verificación en dos pasos (2FA)</div>
                 <div class="feature-desc">
-                    <?php if ($mfaActivo): ?>
-                        Activa — tu cuenta está protegida con un autenticador TOTP.
-                    <?php else: ?>
-                        Inactiva — añade una segunda capa de seguridad a tu cuenta.
-                    <?php endif; ?>
+                    <?= $mfaActivo
+                        ? 'Activa — tu cuenta está protegida con un autenticador TOTP.'
+                        : 'Inactiva — añade una segunda capa de seguridad a tu cuenta.' ?>
                 </div>
             </div>
         </div>
@@ -288,167 +120,366 @@ include_once __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
-<form id="form-configuracion" method="POST" action="../../../controladores/admin/configuracion/guardar.php" enctype="multipart/form-data">
+<!-- ══════════════════════════════════════════════════════════════════
+     FORM: Datos del Centro + Logotipos
+     ══════════════════════════════════════════════════════════════════ -->
+<form id="form-configuracion" method="POST"
+      action="../../../controladores/admin/configuracion/guardar.php"
+      enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
+    <!-- ── Datos del Centro ───────────────────────────────────────── -->
     <div class="panel margen-abajo">
-        <h3 class="panel-titulo">Datos del Centro</h3>
-        <div class="caja caja-libre espacio-grande">
-            <div class="campo relleno">
-                <label>Nombre del Centro *</label>
-                <input type="text" name="nombreCentro" value="<?= Security::escapeHtml($cfg['nombreCentro']) ?>" required>
+        <div class="panel-titulo-seccion">
+            <i class="fas fa-building"></i> Datos del Centro
+        </div>
+
+        <div class="formulario">
+            <div class="campo ancho-total<?= fieldClass($errores, 'nombreCentro') ?>">
+                <label for="nombreCentro">Nombre del Centro *</label>
+                <input type="text" id="nombreCentro" name="nombreCentro"
+                       value="<?= Security::escapeHtml($datos['nombreCentro'] ?? $cfg['nombreCentro']) ?>">
+                <?= fieldError($errores, 'nombreCentro') ?>
             </div>
             <div class="campo">
-                <label>Código del Centro</label>
-                <input type="text" name="codigoCentro" value="<?= Security::escapeHtml($cfg['codigoCentro']) ?>">
+                <label for="codigoCentro">Código del Centro</label>
+                <input type="text" id="codigoCentro" name="codigoCentro"
+                       value="<?= Security::escapeHtml($datos['codigoCentro'] ?? $cfg['codigoCentro']) ?>"
+                       placeholder="Ej: 28001234">
             </div>
             <div class="campo">
-                <label>Curso Escolar</label>
-                <input type="text" name="cursoEscolar" value="<?= Security::escapeHtml($cfg['cursoEscolar']) ?>" placeholder="2024-2025">
+                <label for="cursoEscolar">Curso Escolar</label>
+                <input type="text" id="cursoEscolar" name="cursoEscolar"
+                       value="<?= Security::escapeHtml($datos['cursoEscolar'] ?? $cfg['cursoEscolar']) ?>"
+                       placeholder="2024-2025">
             </div>
-        </div>
-        <div class="caja caja-libre espacio-grande">
-            <div class="campo relleno">
-                <label>Dirección</label>
-                <input type="text" name="direccionCentro" value="<?= Security::escapeHtml($cfg['direccionCentro']) ?>">
-            </div>
-            <div class="campo">
-                <label>Ciudad</label>
-                <input type="text" name="ciudadCentro" value="<?= Security::escapeHtml($cfg['ciudadCentro']) ?>">
+            <div class="campo ancho-total">
+                <label for="direccionCentro">Dirección</label>
+                <input type="text" id="direccionCentro" name="direccionCentro"
+                       value="<?= Security::escapeHtml($datos['direccionCentro'] ?? $cfg['direccionCentro']) ?>"
+                       placeholder="Calle, número, etc.">
             </div>
             <div class="campo">
-                <label>Código Postal</label>
-                <input type="text" name="cpCentro" value="<?= Security::escapeHtml($cfg['cpCentro']) ?>">
+                <label for="ciudadCentro">Ciudad</label>
+                <input type="text" id="ciudadCentro" name="ciudadCentro"
+                       value="<?= Security::escapeHtml($datos['ciudadCentro'] ?? $cfg['ciudadCentro']) ?>">
             </div>
-        </div>
-        <div class="caja caja-libre espacio-grande">
-            <div class="campo relleno">
-                <label>Teléfono</label>
-                <input type="text" name="telefonoCentro" value="<?= Security::escapeHtml($cfg['telefonoCentro']) ?>">
+            <div class="campo">
+                <label for="cpCentro">Código Postal</label>
+                <input type="text" id="cpCentro" name="cpCentro"
+                       value="<?= Security::escapeHtml($datos['cpCentro'] ?? $cfg['cpCentro']) ?>"
+                       placeholder="28001">
             </div>
-            <div class="campo relleno">
-                <label>Email del Centro</label>
-                <input type="email" name="emailCentro" value="<?= Security::escapeHtml($cfg['emailCentro']) ?>">
+            <div class="campo<?= fieldClass($errores, 'telefonoCentro') ?>">
+                <label for="telefonoCentro">Teléfono</label>
+                <input type="tel" id="telefonoCentro" name="telefonoCentro"
+                       value="<?= Security::escapeHtml($datos['telefonoCentro'] ?? $cfg['telefonoCentro']) ?>"
+                       placeholder="912 345 678">
+                <?= fieldError($errores, 'telefonoCentro') ?>
             </div>
-        </div>
-        <div class="caja caja-libre espacio-grande">
-            <div class="campo relleno">
-                <label>Nombre Director/a Firmante</label>
-                <input type="text" name="nombreDirectorFirmante" value="<?= Security::escapeHtml($cfg['nombreDirectorFirmante']) ?>">
+            <div class="campo<?= fieldClass($errores, 'emailCentro') ?>">
+                <label for="emailCentro">Email del Centro</label>
+                <input type="email" id="emailCentro" name="emailCentro"
+                       value="<?= Security::escapeHtml($datos['emailCentro'] ?? $cfg['emailCentro']) ?>"
+                       placeholder="info@centro.es">
+                <?= fieldError($errores, 'emailCentro') ?>
             </div>
-        </div>
-        <div class="caja caja-libre espacio-grande">
-            <div class="campo relleno">
-                <label>Texto Legal / Pie de Documento</label>
-                <textarea name="textoLegal" rows="3" maxlength="1000"><?= Security::escapeHtml($cfg['textoLegal']) ?></textarea>
-                <small class="texto-suave">Máx. 1000 caracteres</small>
+            <div class="campo ancho-total">
+                <label for="nombreDirectorFirmante">Nombre del Director/a Firmante</label>
+                <input type="text" id="nombreDirectorFirmante" name="nombreDirectorFirmante"
+                       value="<?= Security::escapeHtml($datos['nombreDirectorFirmante'] ?? $cfg['nombreDirectorFirmante']) ?>"
+                       placeholder="Para boletines y documentos oficiales">
+            </div>
+            <div class="campo ancho-total">
+                <label for="textoLegal">Texto Legal / Pie de Documento</label>
+                <textarea id="textoLegal" name="textoLegal" rows="3" maxlength="1000"><?= Security::escapeHtml($datos['textoLegal'] ?? $cfg['textoLegal']) ?></textarea>
+                <small class="texto-suave">Aparece en el pie de boletines y otros documentos PDF · máx. 1000 caracteres</small>
             </div>
         </div>
     </div>
 
+    <!-- ── Logotipos ─────────────────────────────────────────────── -->
     <div class="panel margen-abajo">
-        <h3 class="panel-titulo">Logotipos (PNG/JPG, máx. 2MB)</h3>
-        <div class="caja caja-libre espacio-grande">
+        <div class="panel-titulo-seccion">
+            <i class="fas fa-image"></i> Logotipos
+        </div>
+        <p class="texto-suave" style="margin-bottom:20px;">
+            Se usan en los PDF (boletines, horarios) y en la cabecera de documentos oficiales. PNG, JPG o WEBP · máx. 2&nbsp;MB · se recomienda 200&nbsp;×&nbsp;80&nbsp;px en fondo blanco.
+        </p>
 
-            <?php foreach ([
-                'logoCentro'    => 'Logo del Centro (izquierda)',
-                'logoGobierno1' => 'Logo Gobierno / Ministerio (derecha)',
-                'logoGobierno2' => 'Logo Consejería / Junta (centro-derecha)',
-            ] as $field => $label): ?>
-            <div class="campo relleno cfg-logo-campo">
-                <label><?= $label ?></label>
-                <?php if (!empty($cfg[$field])): ?>
-                    <img src="../../../public/uploads/configuracion/<?= Security::escapeHtml(basename($cfg[$field])) ?>"
-                         alt="logo" class="cfg-logo-preview">
-                    <label class="cfg-logo-borrar">
-                        <input type="checkbox" name="borrar_<?= $field ?>" value="1">
-                        Eliminar logo actual
-                    </label>
+        <div class="formulario">
+            <?php
+            $logoConfig = [
+                'logoCentro'    => ['label' => 'Logo del Centro',                'desc' => 'Aparece en la parte izquierda de los documentos PDF'],
+                'logoGobierno1' => ['label' => 'Logo Gobierno / Ministerio',     'desc' => 'Aparece en la parte derecha de los documentos PDF'],
+                'logoGobierno2' => ['label' => 'Logo Consejería / Comunidad',    'desc' => 'Aparece como logo secundario en documentos con doble logo'],
+            ];
+            foreach ($logoConfig as $field => $meta):
+                $tieneActual = !empty($cfg[$field]);
+            ?>
+            <div class="campo">
+                <label><?= $meta['label'] ?></label>
+
+                <!-- Current logo preview -->
+                <?php if ($tieneActual): ?>
+                <div class="logo-actual" id="logo-actual-<?= $field ?>">
+                    <img src="/public/uploads/configuracion/<?= Security::escapeHtml(basename($cfg[$field])) ?>"
+                         alt="<?= $meta['label'] ?>" class="logo-preview-img">
+                    <button type="button" class="boton-peligro btn-xs"
+                            onclick="marcarBorrarLogo('<?= $field ?>')">
+                        <i class="fas fa-trash"></i> Eliminar logo
+                    </button>
+                </div>
                 <?php endif; ?>
-                <input type="file" name="<?= $field ?>" accept="image/png,image/jpeg,image/webp">
-                <small class="texto-suave">PNG, JPG o WEBP · máx. 2 MB · recomendado 200×80 px</small>
+
+                <!-- Hidden flag: sent as "1" when user clicks delete -->
+                <input type="hidden" name="borrar_<?= $field ?>" id="borrar_<?= $field ?>" value="">
+
+                <!-- Pending delete notice (hidden until user clicks delete) -->
+                <div id="pendiente-<?= $field ?>" class="logo-pendiente-borrar" style="display:none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Este logo se eliminará al guardar.
+                    <button type="button" class="enlace-boton" onclick="deshacerBorrar('<?= $field ?>')">
+                        Deshacer
+                    </button>
+                </div>
+
+                <!-- File input -->
+                <label class="logo-file-label" id="label-file-<?= $field ?>">
+                    <i class="fas fa-upload"></i>
+                    <?= $tieneActual ? 'Reemplazar logo' : 'Subir logo' ?>
+                    <input type="file" name="<?= $field ?>"
+                           accept="image/png,image/jpeg,image/webp"
+                           onchange="previewLogoSelect(this, '<?= $field ?>')">
+                </label>
+                <small class="texto-suave" style="margin-top:4px;display:block;"><?= $meta['desc'] ?></small>
+
+                <!-- New file preview (before save) -->
+                <div id="new-preview-<?= $field ?>" style="display:none;margin-top:8px;">
+                    <img id="new-preview-img-<?= $field ?>" src="" alt="preview" class="logo-preview-img" style="opacity:.8;">
+                    <small class="texto-suave" style="display:block;margin-top:4px;">
+                        <i class="fas fa-info-circle"></i> Vista previa — se guardará al hacer clic en "Guardar cambios"
+                    </small>
+                </div>
             </div>
             <?php endforeach; ?>
-
         </div>
     </div>
 
-    <div class="acciones">
+    <!-- ── Save button (bottom) ──────────────────────────────────── -->
+    <div class="acciones" style="margin-bottom:32px;">
         <button type="submit" class="boton-primario">
-            <i class="fas fa-save"></i> GUARDAR CONFIGURACIÓN
+            <i class="fas fa-save"></i> Guardar configuración
         </button>
     </div>
 </form>
 
 <style>
-.cfg-logo-preview { display:block; max-height:80px; max-width:200px; object-fit:contain; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; padding:4px; background:#f9fafb; }
-.cfg-logo-borrar { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; color:#dc2626; cursor:pointer; margin-bottom:6px; }
-.panel-titulo { font-size:.85rem; font-weight:700; letter-spacing:.05em; color:#6b7280; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid #e5e7eb; }
-.feature-toggle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
-.feature-card { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; transition: all 0.2s; }
-.feature-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.feature-info { display: flex; align-items: center; gap: 15px; }
-.feature-icon { font-size: 1.25rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f3f4f6; border-radius: 10px; }
-.feature-label { font-weight: 700; font-size: 0.95rem; color: #111827; }
-.feature-desc { font-size: 0.8rem; color: #6b7280; }
-.switch { position: relative; display: inline-block; width: 46px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: #4f46e5; }
-input:checked + .slider:before { transform: translateX(22px); }
-.feature-card-locked { opacity:.75; cursor:not-allowed; }
-.feature-card-locked:hover { border-color:#e5e7eb; box-shadow:none; }
-.lock-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:.8rem; font-weight:700; background:#f3f4f6; color:#6b7280; white-space:nowrap; }
+/* ── Feature toggle grid ─── */
+.feature-toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 12px;
+}
+.feature-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    gap: 12px;
+    transition: border-color .18s, box-shadow .18s;
+}
+.feature-card:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+.feature-card-locked { opacity: .72; pointer-events: none; }
+.feature-card-locked:hover { border-color: var(--border); box-shadow: none; }
+.feature-info { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+.feature-icon {
+    width: 38px; height: 38px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2); border-radius: 10px;
+    font-size: 1.1rem;
+}
+.feature-label { font-weight: 700; font-size: .9rem; color: var(--text); }
+.feature-desc  { font-size: .78rem; color: var(--mut); margin-top: 1px; }
+.lock-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: .78rem; font-weight: 700;
+    background: var(--surface-2); color: var(--dim);
+    white-space: nowrap; flex-shrink: 0;
+}
+
+/* Feature switch (reuse toggle from estilo.css structure but scoped) */
+.feature-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+.feature-switch input { opacity: 0; width: 0; height: 0; }
+.feature-track {
+    position: absolute; inset: 0;
+    background: var(--border-2, rgba(15,23,42,.18));
+    border-radius: 999px; cursor: pointer; transition: background .2s;
+}
+.feature-track::before {
+    content: '';
+    position: absolute; left: 3px; top: 3px;
+    width: 18px; height: 18px;
+    background: #fff; border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    transition: transform .2s;
+}
+.feature-switch input:checked + .feature-track { background: var(--accent); }
+.feature-switch input:checked + .feature-track::before { transform: translateX(20px); }
+
+/* ── Logo upload zone ─── */
+.logo-actual {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.logo-preview-img {
+    max-height: 64px;
+    max-width: 160px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.btn-xs {
+    padding: 5px 12px;
+    font-size: .78rem;
+    white-space: nowrap;
+}
+.logo-pendiente-borrar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    font-size: .83rem;
+    color: var(--rojo, #dc2626);
+    margin-bottom: 10px;
+}
+.logo-pendiente-borrar .enlace-boton {
+    background: none;
+    border: none;
+    color: var(--text);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: .83rem;
+    padding: 0;
+    margin-left: 4px;
+}
+.logo-file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border: 1.5px dashed var(--border-2);
+    border-radius: 8px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--dim);
+    cursor: pointer;
+    transition: border-color .18s, color .18s, background .18s;
+    background: var(--surface);
+}
+.logo-file-label:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--surface-2);
+}
+.logo-file-label input[type="file"] { display: none; }
 </style>
 
 <?php include '../comunes/footer.php'; ?>
-
 <script>
+// ── Feature toggles ────────────────────────────────────────────────────
 var saasLocked = <?= $saasLocked ? 'true' : 'false' ?>;
-var csrfToken = '<?= Security::generateCSRFToken() ?>';
-$(document).ready(function() {
-    if (saasLocked) { $('.toggle-feature').prop('disabled', true); return; }
-    $('.toggle-feature').on('change', function() {
-        const feature = $(this).data('feature');
-        const estado = $(this).is(':checked') ? 1 : 0;
-        const $toggle = $(this);
-        const $card = $(this).closest('.feature-card');
+var csrfToken  = '<?= Security::generateCSRFToken() ?>';
 
-        $card.css('opacity', '0.6').css('pointer-events', 'none');
+$(document).ready(function () {
+    if (saasLocked) {
+        $('.toggle-feature').prop('disabled', true);
+        return;
+    }
+    $('.toggle-feature').on('change', function () {
+        var feature  = $(this).data('feature');
+        var estado   = $(this).is(':checked') ? 1 : 0;
+        var $toggle  = $(this);
+        var $card    = $(this).closest('.feature-card');
+
+        $card.css({ opacity: '.6', pointerEvents: 'none' });
 
         $.ajax({
             url: '../../../controladores/admin/configuracion/toggle_feature.php',
             type: 'POST',
             dataType: 'json',
-            data: {
-                feature: feature,
-                estado: estado,
-                csrf_token: csrfToken
-            },
-            success: function(res) {
-                $card.css('opacity', '1').css('pointer-events', 'all');
+            data: { feature: feature, estado: estado, csrf_token: csrfToken },
+            success: function (res) {
+                $card.css({ opacity: '1', pointerEvents: 'all' });
                 if (res && res.new_csrf) {
                     csrfToken = res.new_csrf;
                     $('input[name="csrf_token"]').val(res.new_csrf);
                 }
                 if (!res || res.status !== 'success') {
                     $toggle.prop('checked', !$toggle.prop('checked'));
-                    var msg = (res && res.message) ? res.message : (res && res.msg ? res.msg : 'Error al actualizar el módulo. Recarga la página.');
+                    var msg = (res && (res.message || res.msg)) || 'Error al actualizar el módulo.';
                     if (window.Toast) Toast.show(msg, 'error');
                 } else {
-                    if (window.Toast) Toast.show(res.message || 'Configuración actualizada.', 'success');
+                    if (window.Toast) Toast.show(res.message || 'Módulo actualizado.', 'success');
                 }
             },
-            error: function(xhr) {
-                $card.css('opacity', '1').css('pointer-events', 'all');
+            error: function (xhr) {
+                $card.css({ opacity: '1', pointerEvents: 'all' });
                 $toggle.prop('checked', !$toggle.prop('checked'));
                 var msg = xhr.status === 500
-                    ? 'Error interno del servidor (500). Es posible que falten columnas en la base de datos. Contacta con soporte.'
-                    : 'Error de conexión (' + xhr.status + '). Verifica tu conexión e inténtalo de nuevo.';
+                    ? 'Error del servidor (500). Es posible que falte una columna en la BD.'
+                    : 'Error de conexión (' + xhr.status + ').';
                 if (window.Toast) Toast.show(msg, 'error');
             }
         });
     });
+});
+
+// ── Logo delete / undo ─────────────────────────────────────────────────
+function marcarBorrarLogo(field) {
+    document.getElementById('borrar_' + field).value = '1';
+    var actual = document.getElementById('logo-actual-' + field);
+    if (actual) actual.style.display = 'none';
+    document.getElementById('pendiente-' + field).style.display = 'flex';
+}
+function deshacerBorrar(field) {
+    document.getElementById('borrar_' + field).value = '';
+    var actual = document.getElementById('logo-actual-' + field);
+    if (actual) actual.style.display = 'flex';
+    document.getElementById('pendiente-' + field).style.display = 'none';
+}
+
+// ── Logo file preview before upload ───────────────────────────────────
+function previewLogoSelect(input, field) {
+    var wrap = document.getElementById('new-preview-' + field);
+    var img  = document.getElementById('new-preview-img-' + field);
+    if (!input.files || !input.files[0]) { wrap.style.display = 'none'; return; }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        img.src = e.target.result;
+        wrap.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+
+// ── Restore logo delete pending state after failed validation ──────────
+document.addEventListener('DOMContentLoaded', function () {
+    <?php foreach (['logoCentro','logoGobierno1','logoGobierno2'] as $f): ?>
+    <?php if (!empty($datos['borrar_' . $f])): ?>
+    marcarBorrarLogo('<?= $f ?>');
+    <?php endif; ?>
+    <?php endforeach; ?>
 });
 </script>

@@ -8,6 +8,12 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $idProfesor = $_SESSION['idProfesor'];
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/aula/modulos.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════

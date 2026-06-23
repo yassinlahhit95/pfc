@@ -10,6 +10,12 @@ if (!isset($_POST['guardarNotasReto'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/academico/calificacionesRetos.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════

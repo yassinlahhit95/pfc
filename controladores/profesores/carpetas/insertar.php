@@ -9,6 +9,11 @@ require_once __DIR__ . "/../../../modelos/ejercicios.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['guardarCarpeta'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/ejercicios/panel.php");
+        exit;
+    }
     $nombre      = trim($_POST['nombre'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
     $color       = trim($_POST['color'] ?? '#0ea5e9');

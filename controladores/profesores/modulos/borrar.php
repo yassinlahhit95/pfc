@@ -12,6 +12,11 @@ $esTutor      = !empty($_SESSION['esTutor']);
 $idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 if ($esTutor && $idCicloTutor && isset($_POST['idModulo'])) {
+    if (!Security::validateCSRFToken()) {
+        if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/modulos/lista.php"); exit;
+    }
     $idModulo = (int)$_POST['idModulo'];
     if ($idModulo && moduloPerteneceACiclo($idModulo, $idCicloTutor)) {
         $con = obtenerConexion();

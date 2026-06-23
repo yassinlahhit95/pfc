@@ -21,7 +21,7 @@ firebase.initializeApp({
 
 var messaging = firebase.messaging();
 
-var ICON = 'https://yassin.agency/public/imagenes/aulapro.png';
+var ICON = 'https://aulapro.yassin.agency/public/imagenes/aulapro.png';
 
 // Background / closed tab: Firebase does NOT auto-show a notification when
 // the page is not focused — we must call showNotification explicitly.

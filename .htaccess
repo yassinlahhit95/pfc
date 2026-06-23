@@ -60,6 +60,14 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule ^(config|include|modelos|templates|logs|vendor|security|cron)(/|$) - [F,L]
+
+    # Bloquear User-Agents típicos de bots maliciosos y scanners
+    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|python|nikto|winhttp|clshttp|loader) [NC]
+    RewriteRule .* - [F,L]
+
+    # Bloquear peticiones sin User-Agent (la mayoría de bots primitivos)
+    RewriteCond %{HTTP_USER_AGENT} ^-?$
+    RewriteRule .* - [F,L]
 </IfModule>
 
 # Páginas de error genéricas (sin revelar 403 vs 404)
@@ -118,24 +126,10 @@ upgrade-insecure-requests"
 # A smaller value here silently blocks large uploads with Apache 413 before PHP runs.
 LimitRequestBody 22020096
 
-# Bloquear User-Agents típicos de bots maliciosos y scanners
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|python|nikto|curl|scan|java|winhttp|clshttp|loader) [NC]
-    RewriteRule .* - [F,L]
-</IfModule>
-
 # Limitar métodos HTTP a los necesarios
 <LimitExcept GET POST HEAD>
     Require all denied
 </LimitExcept>
-
-# Bloquear peticiones sin User-Agent (la mayoría de bots primitivos)
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{HTTP_USER_AGENT} ^-?$
-    RewriteRule .* - [F,L]
-</IfModule>
 
 # Rate limiting con mod_evasive (si está instalado en producción)
 # En producción instalar: sudo apt install libapache2-mod-evasive

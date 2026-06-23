@@ -17,7 +17,7 @@ if ((empty($_SESSION['idAdmin']) && empty($_SESSION['idProfesor'])) || !empty($_
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-$idArchivo = $_GET['id'] ?? '';
+$idArchivo = (int)($_GET['id'] ?? 0);
 // Prevenir open redirect: rechazar cualquier URL con protocolo o relativa de protocolo
 $redirect = $_GET['redirect'] ?? '';
 if (empty($redirect) || preg_match('#^(https?:)?//#i', $redirect)) {
@@ -25,7 +25,7 @@ if (empty($redirect) || preg_match('#^(https?:)?//#i', $redirect)) {
 }
 $isAjax = (isset($_GET['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
 
-if (empty($idArchivo)) {
+if ($idArchivo <= 0) {
     if ($isAjax) {
         echo json_encode(['status' => 'error', 'message' => 'El identificador del archivo no ha sido proporcionado.']);
         exit;
@@ -50,7 +50,7 @@ if ($archivo && !empty($_SESSION['idProfesor']) && empty($_SESSION['idAdmin'])) 
     }
 }
 if ($archivo) {
-    $rutaFisica = "../../" . $archivo['rutaArchivo'];
+    $rutaFisica = __DIR__ . '/../../' . ltrim($archivo['rutaArchivo'], '/');
     if (file_exists($rutaFisica)) {
         unlink($rutaFisica);
     }

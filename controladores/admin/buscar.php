@@ -1,19 +1,13 @@
 <?php
 // ══════════════════════════════════════════════════════════════════════
-// AUTENTICACIÓN
+// DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-if (session_status() === PHP_SESSION_NONE) session_start();
-if (empty($_SESSION['idAdmin'])) { http_response_code(403); echo json_encode([]); exit; }
-if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) { http_response_code(403); echo json_encode([]); exit; }
+require_once __DIR__ . '/../../include/AdminGuard.php';
+require_once __DIR__ . '/../../modelos/conectar.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
-
-// ══════════════════════════════════════════════════════════════════════
-// DEPENDENCIAS
-// ══════════════════════════════════════════════════════════════════════
-require_once __DIR__ . '/../../modelos/conectar.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
@@ -46,7 +40,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'estudiante',
         'label' => $label,
-        'url'   => '../estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
+        'url'   => '/vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=' . (int)$row['idEstudiante'],
     ];
 }
 
@@ -66,7 +60,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'profesor',
         'label' => $label,
-        'url'   => '../profesores/verDetallesProfesores.php?idProfesor=' . (int)$row['idProfesor'],
+        'url'   => '/vistas/admin/profesores/verDetallesProfesores.php?idProfesor=' . (int)$row['idProfesor'],
     ];
 }
 
@@ -81,7 +75,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'reto',
         'label' => $row['nombreReto'],
-        'url'   => '../retos/modificarRetos.php?idReto=' . (int)$row['idReto'],
+        'url'   => '/vistas/admin/retos/modificarRetos.php?idReto=' . (int)$row['idReto'],
     ];
 }
 
@@ -97,12 +91,12 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'    => 'modulo',
         'label'   => $row['nombreModulo'] . ' — Editar',
-        'url'     => '../modulos/modificarModulos.php?idModulo=' . $id,
+        'url'     => '/vistas/admin/modulos/modificarModulos.php?idModulo=' . $id,
     ];
     $results[] = [
         'type'    => 'modulo-asignar',
         'label'   => $row['nombreModulo'] . ' — Asignar profesor',
-        'url'     => '../modulos/asignarProfesorModulo.php?idModulo=' . $id,
+        'url'     => '/vistas/admin/modulos/asignarProfesorModulo.php?idModulo=' . $id,
     ];
 }
 
@@ -117,7 +111,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'ciclo',
         'label' => $row['nombreCiclo'],
-        'url'   => '../ciclos/modificarCiclos.php?idCiclo=' . (int)$row['idCiclo'],
+        'url'   => '/vistas/admin/ciclos/modificarCiclos.php?idCiclo=' . (int)$row['idCiclo'],
     ];
 }
 
@@ -133,7 +127,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'anuncio',
         'label' => $row['titulo'],
-        'url'   => '../anuncios/gestionAnuncios.php',
+        'url'   => '/vistas/admin/anuncios/gestionAnuncios.php',
     ];
 }
 

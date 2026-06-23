@@ -25,13 +25,13 @@ if (isset($_POST['guardarPago'])) {
     $hoy         = date('Y-m-d');
     $fechaLimite = date('Y') . '-06-30';
 
-    $errores = '';
-    if (empty($tipoPago)) $errores = "Debe elegir un tipo de pago.";
+    $errores = [];
+    if (empty($tipoPago)) $errores['tipoPago'] = "Debe elegir un tipo de pago.";
 
     if (empty($monto)) {
-        $errores = "La cantidad a cobrar es un campo obligatorio.";
+        $errores['monto'] = "La cantidad a cobrar es un campo obligatorio.";
     } elseif (!is_numeric($monto) || $monto <= 0) {
-        $errores = "La cantidad debe ser un número positivo.";
+        $errores['monto'] = "La cantidad debe ser un número positivo.";
     }
 
     if ($hoy > $fechaLimite) {
@@ -40,14 +40,14 @@ if (isset($_POST['guardarPago'])) {
         exit;
     }
 
-    if (!$errores) {
+    if (empty($errores)) {
         $estadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
         if ($monto > ($estadoFinanciero['restante'] + 0.05)) {
-            $errores = "La cantidad no puede superar el importe pendiente del estudiante.";
+            $errores['monto'] = "La cantidad no puede superar el importe pendiente del estudiante.";
         }
     }
 
-    if (!$errores) {
+    if (empty($errores)) {
         if ($tipoPago == 'mensual') {
             $proximaFecha = date('Y-m-d', strtotime($fechaPago . ' + 1 month'));
         } elseif ($tipoPago == 'trimestral') {

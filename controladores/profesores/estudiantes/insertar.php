@@ -10,6 +10,12 @@ if (!isset($_POST['guardarEstudiante'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/estudiantes/agregar.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════

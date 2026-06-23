@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
@@ -24,6 +25,7 @@ if (isset($_SESSION['datos_reto'])) {
     $reto = $_SESSION['datos_reto'];
     $idModuloActual = $reto['modulosReto'] ?? '';
 }
+unset($_SESSION['datos_reto']);
 
 $todos_los_modulos = listarModulos();
 
@@ -43,29 +45,33 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReto" value="<?= $id_reto ?>">
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
                 <label for="nombreReto">Nombre del Reto</label>
-                <input type="text" name="nombreReto" id="nombreReto" value="<?= $reto['nombreReto'] ?>">
+                <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($reto['nombreReto'] ?? '') ?>">
+                <?= fieldError($errores, 'nombreReto') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
                 <label for="horasReto">Horas Totales Estimadas</label>
-                <input type="number" name="horasReto" id="horasReto" value="<?= $reto['horasReto'] ?>">
+                <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($reto['horasReto'] ?? '') ?>">
+                <?= fieldError($errores, 'horasReto') ?>
             </div>
 
             <div class="row">
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'fechaInicioReto') ?>">
                     <label for="fechaInicioReto">Fecha de Inicio</label>
-                    <input type="date" name="fechaInicioReto" id="fechaInicioReto" value="<?= $reto['fechaInicio'] ?>">
+                    <input type="date" name="fechaInicioReto" id="fechaInicioReto" value="<?= Security::escapeHtml($reto['fechaInicio'] ?? '') ?>">
+                    <?= fieldError($errores, 'fechaInicioReto') ?>
                 </div>
 
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'fechaFinReto') ?>">
                     <label for="fechaFinReto">Fecha de Fin</label>
-                    <input type="date" name="fechaFinReto" id="fechaFinReto" value="<?= $reto['fechaFin'] ?>">
+                    <input type="date" name="fechaFinReto" id="fechaFinReto" value="<?= Security::escapeHtml($reto['fechaFin'] ?? '') ?>">
+                    <?= fieldError($errores, 'fechaFinReto') ?>
                 </div>
             </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'modulosReto') ?>">
             <label for="modulosReto">Módulo Asociado</label>
             <select name="modulosReto" id="modulosReto">
                 <option value="">-- Selecciona un módulo --</option>
@@ -75,6 +81,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </option>
                 <?php } ?>
             </select>
+            <?= fieldError($errores, 'modulosReto') ?>
         </div>
 
         <div class="campo">

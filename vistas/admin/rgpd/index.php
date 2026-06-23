@@ -13,6 +13,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $eliminaciones = listarEliminacionesRGPD(20);
 $csrfToken     = Security::generateCSRFToken();
 
+$todosEstudiantes = listarEstudiantes();
+
 require_once __DIR__ . "/../comunes/nav.php";
 ?>
 
@@ -37,8 +39,18 @@ require_once __DIR__ . "/../comunes/nav.php";
     <form method="GET" action="../../../controladores/admin/rgpd/exportar.php" class="formulario" style="grid-template-columns:1fr auto;">
       <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
       <div class="campo">
-        <label for="exportar-id">ID de estudiante</label>
-        <input type="number" id="exportar-id" name="idEstudiante" min="1" placeholder="ej. 42" required>
+        <label for="exportar-select">Estudiante</label>
+        <select id="exportar-select" name="idEstudiante" required onchange="filtrarRGPD('exportar')">
+          <option value="">— Seleccionar estudiante —</option>
+          <?php foreach ($todosEstudiantes as $e): ?>
+          <option value="<?= (int)$e['idEstudiante'] ?>">
+            <?= Security::escapeHtml($e['nombreEstudiante']) ?>
+            <?= !empty($e['dniEstudiante']) ? '(' . Security::escapeHtml($e['dniEstudiante']) . ')' : '' ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+        <input type="text" id="exportar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('exportar')"
+               style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
       </div>
       <div class="campo" style="align-self:end;">
         <button type="submit" class="boton-primario">
@@ -60,8 +72,18 @@ require_once __DIR__ . "/../comunes/nav.php";
     <form id="form-rgpd-borrar" method="POST" action="../../../controladores/admin/rgpd/borrar.php" class="formulario">
       <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
       <div class="campo">
-        <label for="borrar-id">ID de estudiante</label>
-        <input type="number" id="borrar-id" name="idEstudiante" min="1" placeholder="ej. 42" required>
+        <label for="borrar-select">Estudiante</label>
+        <select id="borrar-select" name="idEstudiante" required onchange="filtrarRGPD('borrar')">
+          <option value="">— Seleccionar estudiante —</option>
+          <?php foreach ($todosEstudiantes as $e): ?>
+          <option value="<?= (int)$e['idEstudiante'] ?>">
+            <?= Security::escapeHtml($e['nombreEstudiante']) ?>
+            <?= !empty($e['dniEstudiante']) ? '(' . Security::escapeHtml($e['dniEstudiante']) . ')' : '' ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+        <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')"
+               style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
       </div>
       <div class="campo ancho-total">
         <label for="borrar-motivo">Motivo (obligatorio)</label>
@@ -151,6 +173,18 @@ require_once __DIR__ . "/../comunes/nav.php";
 <?php require_once __DIR__ . "/../comunes/footer.php"; ?>
 <script>
 (function () {
+    // Filter select options by search text
+    window.filtrarRGPD = function(prefix) {
+        var q    = (document.getElementById(prefix + '-buscar').value || '').toLowerCase();
+        var sel  = document.getElementById(prefix + '-select');
+        Array.from(sel.options).forEach(function(o) {
+            if (!o.value) return; // keep placeholder
+            o.hidden = q && o.text.toLowerCase().indexOf(q) === -1;
+        });
+        // Reset selection if current choice is hidden
+        if (sel.selectedOptions[0] && sel.selectedOptions[0].hidden) sel.value = '';
+    };
+
     // Confirm hard-delete
     $('#form-rgpd-borrar').on('submit', function (e) {
         var id = $('#borrar-id').val();

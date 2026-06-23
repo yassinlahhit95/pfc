@@ -16,6 +16,11 @@ $ok  = false;
 $msg = 'Datos no recibidos';
 
 if (isset($_POST['idModulo'])) {
+    if (!Security::validateCSRFToken()) {
+        if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/admin/modulos/verModulos.php"); exit;
+    }
     $idModulo   = (int)$_POST['idModulo'];
     $idProfesor = !empty($_POST['idProfesor']) ? (int)$_POST['idProfesor'] : 0;
 

@@ -107,7 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php endif; ?>
             </div>
             <div class="presupuesto-barra-wrap">
-                <div class="presupuesto-barra" style="width:<?= $pct ?>%;background:<?= $barColor ?>"></div>
+                <div class="presupuesto-barra" style="width:<?= $pct ?>%;background:<?= Security::escapeHtml($barColor) ?>"></div>
             </div>
             <div class="presupuesto-cat-nums">
                 <span><?= number_format($cat['gastado'], 2, ',', '.') ?> €</span>
@@ -210,7 +210,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $tipoClases = ['factura'=>'azul','ticket'=>'verde','recibo'=>'naranja','otro'=>'gris'];
                         $t = $g['tipoJustificante'];
                         ?>
-                        <span class="texto-estado <?= $tipoClases[$t] ?? 'gris' ?>"><?= $tipoLabels[$t] ?? $t ?></span>
+                        <span class="texto-estado <?= $tipoClases[$t] ?? 'gris' ?>"><?= $tipoLabels[$t] ?? Security::escapeHtml($t) ?></span>
                     </td>
                     <td><b><?= number_format($g['importe'], 2, ',', '.') ?> €</b></td>
                     <td>

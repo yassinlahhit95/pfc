@@ -12,6 +12,12 @@ if (!isset($_POST['actualizarReto'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/retos/lista.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
@@ -22,20 +28,20 @@ $fechaFin             = trim($_POST['fechaFin']);
 $horasReto            = trim($_POST['horasReto']);
 $modulosSeleccionados = $_POST['modulos'] ?? [];
 
-$errores = '';
+$errores = [];
 
 if (empty($idReto)) {
     header("Location: ../../../vistas/profesores/retos/lista.php");
     exit;
 }
 
-if (empty($nombreReto)) $errores = "El nombre es obligatorio.";
-if (empty($fechaInicio)) $errores = "Fecha de inicio requerida";
-if (empty($fechaFin)) $errores = "La fecha de fin es obligatoria.";
+if (empty($nombreReto))  $errores['nombreReto']  = "El nombre es obligatorio.";
+if (empty($fechaInicio)) $errores['fechaInicio'] = "La fecha de inicio es requerida.";
+if (empty($fechaFin))    $errores['fechaFin']    = "La fecha de fin es obligatoria.";
 if (empty($horasReto)) {
-    $errores = "Las horas son obligatorias.";
+    $errores['horasReto'] = "Las horas son obligatorias.";
 } elseif (!is_numeric($horasReto)) {
-    $errores = "Las horas deben ser un número";
+    $errores['horasReto'] = "Las horas deben ser un número.";
 }
 
 // Validar que las horas no superen el máximo según días laborables
@@ -54,28 +60,29 @@ if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horasReto) && is_numeri
 
     $maxHorasPermitidas = $diasLaborables * 6;
     if ($horasReto > $maxHorasPermitidas) {
-        $errores = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
+        $errores['horasReto'] = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
     }
 }
 
 if (empty($modulosSeleccionados)) {
-    $errores = "Al menos un módulo";
-} else if (is_numeric($horasReto)) {
+    $errores['modulos'] = "Selecciona al menos un módulo.";
+} elseif (is_numeric($horasReto)) {
     foreach ($modulosSeleccionados as $idModulo) {
         $detalle = obtenerDetalleHorasModulo($idModulo, $idReto);
         if ($horasReto > $detalle['disponibles']) {
             if ($detalle['disponibles'] < 0) {
-                $errores = "El módulo '{$detalle['nombreModulo']}' ya supera su capacidad ({$detalle['maximo']}h). Otros retos suman {$detalle['ocupadas']}h. Libere horas antes de continuar.";
+                $errores['modulos'] = "El módulo '{$detalle['nombreModulo']}' ya supera su capacidad ({$detalle['maximo']}h). Otros retos suman {$detalle['ocupadas']}h. Libere horas antes de continuar.";
             } else {
-                $errores = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
+                $errores['modulos'] = "El módulo '{$detalle['nombreModulo']}' solo tiene {$detalle['disponibles']}h disponibles (Total: {$detalle['maximo']}h, Ocupadas: {$detalle['ocupadas']}h).";
             }
             break;
         }
     }
 }
 
-if ($errores) {
+if (!empty($errores)) {
     $_SESSION['errores'] = $errores;
+    $_SESSION['datos_reto'] = $_POST;
     header("Location: ../../../vistas/profesores/retos/editar.php?id=$idReto");
     exit;
 }

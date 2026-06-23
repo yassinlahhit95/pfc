@@ -85,8 +85,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     ?>
                     <tr>
                         <td><b><?= Security::escapeHtml($r['nombreReto']) ?></b></td>
-                        <td><?= Security::escapeHtml($r['fechaInicio']) ?></td>
-                        <td><?= Security::escapeHtml($r['fechaFin']) ?></td>
+                        <td><?= !empty($r['fechaInicio']) ? date('d/m/Y', strtotime($r['fechaInicio'])) : '—' ?></td>
+                        <td><?= !empty($r['fechaFin']) ? date('d/m/Y', strtotime($r['fechaFin'])) : '—' ?></td>
                         <td class="texto-negrita <?= Security::escapeHtml($cls) ?>" style="font-size:1.05em;"><?= Security::escapeHtml($r['nota']) ?></td>
                     </tr>
                     <?php } ?>

@@ -46,7 +46,8 @@ $(document).ajaxError(function(event, xhr) {
 <?php
 $__err = $errores ?? null;
 $__ok  = $exito  ?? '';
-$__err_str = is_array($__err) ? implode(' ', array_filter($__err)) : ($__err ?: null);
+// Keyed array = inline field errors already shown in form — no toast
+$__err_str = is_string($__err) ? ($__err ?: null) : null;
 if ($__err_str || $__ok):
 ?>
 <script>

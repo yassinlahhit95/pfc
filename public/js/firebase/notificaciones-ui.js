@@ -15,19 +15,19 @@ export function avisoPush(t, m, tipo = 'info') {
     if (tipo === 'exito') icon = 'fa-check-circle';
     if (tipo === 'error') icon = 'fa-exclamation-triangle';
 
+    // Static structure via innerHTML is safe here — icon is hardcoded from tipo, not user input.
+    // Title and body are set via .textContent below to prevent XSS from FCM payload content.
     div.innerHTML = `
-        <div class="toast-icono">
-            <i class="fas ${icon}"></i>
-        </div>
+        <div class="toast-icono"><i class="fas ${icon}"></i></div>
         <div class="toast-contenido">
-            <div class="toast-titulo">${t}</div>
-            <div class="toast-mensaje">${m}</div>
+            <div class="toast-titulo"></div>
+            <div class="toast-mensaje"></div>
         </div>
         <button class="toast-cerrar" aria-label="Cerrar">&times;</button>
-        <div class="toast-progreso">
-            <div class="toast-progreso-barra"></div>
-        </div>
+        <div class="toast-progreso"><div class="toast-progreso-barra"></div></div>
     `;
+    div.querySelector('.toast-titulo').textContent = t;
+    div.querySelector('.toast-mensaje').textContent = m;
 
     c.appendChild(div);
 

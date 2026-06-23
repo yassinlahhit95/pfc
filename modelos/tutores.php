@@ -85,17 +85,24 @@ function actualizarTutor(int $idTutor, string $nombre, string $email, string $dn
 
 function actualizarVinculacionesTutor(int $idTutor, array $idsEstudiantes, string $parentesco): void {
     $con = obtenerConexion();
-    $del = mysqli_prepare($con, "DELETE FROM estudiante_tutor WHERE idTutor = ?");
-    mysqli_stmt_bind_param($del, "i", $idTutor);
-    mysqli_stmt_execute($del);
-    if (empty($idsEstudiantes)) return;
-    $ins = mysqli_prepare($con, "INSERT IGNORE INTO estudiante_tutor (idEstudiante, idTutor, parentesco) VALUES (?, ?, ?)");
-    foreach ($idsEstudiantes as $idEst) {
-        $idEst = (int)$idEst;
-        if ($idEst > 0) {
-            mysqli_stmt_bind_param($ins, "iis", $idEst, $idTutor, $parentesco);
-            mysqli_stmt_execute($ins);
+    mysqli_begin_transaction($con);
+    try {
+        $del = mysqli_prepare($con, "DELETE FROM estudiante_tutor WHERE idTutor = ?");
+        mysqli_stmt_bind_param($del, "i", $idTutor);
+        if (!mysqli_stmt_execute($del)) throw new \RuntimeException('delete estudiante_tutor');
+        if (!empty($idsEstudiantes)) {
+            $ins = mysqli_prepare($con, "INSERT IGNORE INTO estudiante_tutor (idEstudiante, idTutor, parentesco) VALUES (?, ?, ?)");
+            foreach ($idsEstudiantes as $idEst) {
+                $idEst = (int)$idEst;
+                if ($idEst > 0) {
+                    mysqli_stmt_bind_param($ins, "iis", $idEst, $idTutor, $parentesco);
+                    if (!mysqli_stmt_execute($ins)) throw new \RuntimeException('insert estudiante_tutor');
+                }
+            }
         }
+        mysqli_commit($con);
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
     }
 }
 

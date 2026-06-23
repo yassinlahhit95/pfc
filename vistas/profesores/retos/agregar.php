@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
@@ -8,6 +9,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_reto'] ?? [];
+unset($_SESSION['datos_reto']);
 
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
@@ -32,25 +34,29 @@ include_once "../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/profesores/retos/insertar.php" method="POST" class="formulario" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
             <label for="nombreReto">Nombre del Reto</label>
             <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($datos['nombreReto'] ?? '') ?>">
+            <?= fieldError($errores, 'nombreReto') ?>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
             <label for="horasReto">Horas Totales</label>
             <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($datos['horasReto'] ?? '') ?>">
+            <?= fieldError($errores, 'horasReto') ?>
         </div>
 
         <div class="row">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaInicio') ?>">
                 <label for="fechaInicio">Fecha Inicio</label>
                 <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($datos['fechaInicio'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaInicio') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaFin') ?>">
                 <label for="fechaFin">Fecha Fin</label>
                 <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($datos['fechaFin'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaFin') ?>
             </div>
         </div>
 
@@ -67,9 +73,10 @@ include_once "../comunes/nav.php";
             </div>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'modulos') ?>">
             <label>Asociar a Módulos</label>
             <p class="texto-suave" style="margin-bottom: 10px;">Seleccione los modulos en los que se evaluare este reto.</p>
+            <?= fieldError($errores, 'modulos') ?>
             <div class="checks scroll-v200">
                 <?php if (empty($misModulos)) { ?>
                     <p class="texto-rojo">No tiene modulos asignados. No puede crear retos.</p>
@@ -97,9 +104,6 @@ include_once "../comunes/nav.php";
 
 <script>
 $(document).ready(function() {
-    <?php if ($errores): ?>
-    if (window.Toast) Toast.show(<?= json_encode($errores) ?>, 'error');
-    <?php endif; ?>
     <?php if ($exito): ?>
     if (window.Toast) Toast.show(<?= json_encode($exito) ?>, 'success');
     <?php endif; ?>

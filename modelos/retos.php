@@ -55,23 +55,25 @@ function listarRetosDeProfesor($idProfesor) {
 
 function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos) {
     $con = obtenerConexion();
-    $sql1 = "INSERT INTO retos (nombreReto, fechaInicio, fechaFin, horasReto) VALUES (?, ?, ?, ?)";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "sssi", $nombreReto, $fechaInicio, $fechaFin, $horasReto);
-    $ok = mysqli_stmt_execute($resultado);
-
-    if ($ok) {
+    mysqli_begin_transaction($con);
+    try {
+        $stmt = mysqli_prepare($con, "INSERT INTO retos (nombreReto, fechaInicio, fechaFin, horasReto) VALUES (?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "sssi", $nombreReto, $fechaInicio, $fechaFin, $horasReto);
+        if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('insert reto');
         $idNuevoReto = mysqli_insert_id($con);
 
-        $sql2 = "INSERT INTO modulo_reto (idModulo, idReto) VALUES (?, ?)";
-        $resultado = mysqli_prepare($con, $sql2);
+        $stmt2 = mysqli_prepare($con, "INSERT INTO modulo_reto (idModulo, idReto) VALUES (?, ?)");
         foreach ($listaIdsModulos as $idModulo) {
-            mysqli_stmt_bind_param($resultado, "ii", $idModulo, $idNuevoReto);
-            $ok = mysqli_stmt_execute($resultado);
+            mysqli_stmt_bind_param($stmt2, "ii", $idModulo, $idNuevoReto);
+            if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert modulo_reto');
         }
+
+        mysqli_commit($con);
+        return true;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        return false;
     }
-    
-    return $ok;
 }
 
 function obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir = 0) {
@@ -109,27 +111,30 @@ function obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir = 0) {
 
 function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaIdsModulos = null) {
     $con = obtenerConexion();
-    $sql1 = "UPDATE retos SET nombreReto=?, fechaInicio=?, fechaFin=?, horasReto=? WHERE idReto=?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "sssii", $nombreReto, $fechaInicio, $fechaFin, $horasReto, $idReto);
-    $ok = mysqli_stmt_execute($resultado);
+    mysqli_begin_transaction($con);
+    try {
+        $stmt = mysqli_prepare($con, "UPDATE retos SET nombreReto=?, fechaInicio=?, fechaFin=?, horasReto=? WHERE idReto=?");
+        mysqli_stmt_bind_param($stmt, "sssii", $nombreReto, $fechaInicio, $fechaFin, $horasReto, $idReto);
+        if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException('update reto');
 
-    if ($ok && $listaIdsModulos != null) {
-        $sql2 = "DELETE FROM modulo_reto WHERE idReto = ?";
-        $resultado = mysqli_prepare($con, $sql2);
-        mysqli_stmt_bind_param($resultado, "i", $idReto);
-        mysqli_stmt_execute($resultado);
+        if ($listaIdsModulos !== null) {
+            $stmt2 = mysqli_prepare($con, "DELETE FROM modulo_reto WHERE idReto = ?");
+            mysqli_stmt_bind_param($stmt2, "i", $idReto);
+            if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('delete modulo_reto');
 
-        $sql3 = "INSERT INTO modulo_reto (idModulo, idReto) VALUES (?, ?)";
-        $resultado = mysqli_prepare($con, $sql3);
-        foreach ($listaIdsModulos as $idModulo) {
-            mysqli_stmt_bind_param($resultado, "ii", $idModulo, $idReto);
-            $ok = mysqli_stmt_execute($resultado);
+            $stmt3 = mysqli_prepare($con, "INSERT INTO modulo_reto (idModulo, idReto) VALUES (?, ?)");
+            foreach ($listaIdsModulos as $idModulo) {
+                mysqli_stmt_bind_param($stmt3, "ii", $idModulo, $idReto);
+                if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('insert modulo_reto');
+            }
         }
-    }
 
-    
-    return $ok;
+        mysqli_commit($con);
+        return true;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        return false;
+    }
 }
 
 function eliminarReto($idReto) {

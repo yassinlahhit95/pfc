@@ -72,7 +72,7 @@ $hijos = listarEstudiantesPorTutor($_SESSION['idTutor']);
                                 <?php foreach ($pagos as $p): ?>
                                     <tr>
                                         <td class="px-3"><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
-                                        <td>Pago cuota <?= $p['tipoPago'] ?></td>
+                                        <td>Pago cuota <?= Security::escapeHtml($p['tipoPago']) ?></td>
                                         <td class="fw-bold"><?= number_format($p['monto'], 2) ?> €</td>
                                         <td class="text-end px-3">
                                             <a href="#" class="btn btn-sm btn-outline-primary" title="Descargar Recibo (Próximamente)">

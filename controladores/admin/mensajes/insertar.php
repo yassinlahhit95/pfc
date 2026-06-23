@@ -29,15 +29,15 @@ if (isset($_POST['enviarMensaje'])) {
 
     $_SESSION['datos_mensaje'] = $_POST;
 
-    $errores = '';
+    $errores = [];
     $esMensajeMasivo = ($tipoDeDestinatario == 'estudiante' && !empty($idCicloMasivo));
     if (empty($idEstudianteDestino) && empty($idProfesorDestino) && !$esMensajeMasivo) {
-        $errores = "Debe seleccionar un destinatario específico.";
+        $errores['destinatario'] = "Debe seleccionar un destinatario específico.";
     }
-    if (empty($asuntoMensaje))      $errores = "El asunto del mensaje es un campo obligatorio.";
-    if (empty($descripcionMensaje)) $errores = "El contenido del mensaje no puede estar vacío.";
+    if (empty($asuntoMensaje))      $errores['asunto'] = "El asunto del mensaje es un campo obligatorio.";
+    if (empty($descripcionMensaje)) $errores['descripcion'] = "El contenido del mensaje no puede estar vacío.";
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $urlRedireccion = "../../../vistas/admin/mensajes/agregar.php?tipoDestinatario=" . $tipoDeDestinatario;
         if (!empty($idCicloMasivo)) {

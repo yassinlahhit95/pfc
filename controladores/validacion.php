@@ -19,6 +19,7 @@ require_once __DIR__ . "/../modelos/directores.php";
 require_once __DIR__ . "/../modelos/profesores.php";
 require_once __DIR__ . "/../modelos/estudiantes.php";
 require_once __DIR__ . "/../modelos/tutores.php";
+require_once __DIR__ . "/../modelos/secretarias.php";
 require_once __DIR__ . "/../modelos/conectar.php";
 
 // ══════════════════════════════════════════════════════════════════════
@@ -105,7 +106,7 @@ $clearIpAttempts = function() use ($con, $ip, $email) {
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN POR ROL
 // ══════════════════════════════════════════════════════════════════════
-unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante'], $_SESSION['idTutor']);
+unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante'], $_SESSION['idTutor'], $_SESSION['idSecretaria']);
 
 $admin = validarLoginDirector($email, $pass);
 if ($admin) {
@@ -158,6 +159,19 @@ if ($tutor) {
     $_SESSION['_pwd_at'] = !empty($tutor['pwd_changed_at']) ? strtotime($tutor['pwd_changed_at']) : 0;
     Logger::activity('LOGIN_SUCCESS', $tutor['idTutor'], ['role' => 'tutor', 'email' => $email]);
     header("Location: ../vistas/tutores/inicio/dashboard.php");
+    exit;
+}
+
+$secretaria = validarLoginSecretaria($email, $pass);
+if ($secretaria) {
+    Security::clearFailedLogins($email);
+    $clearIpAttempts();
+    Security::regenerateSession();
+    $_SESSION['idSecretaria'] = $secretaria['idSecretaria'];
+    $_SESSION['must_change_password'] = !empty($secretaria['must_change_password']);
+    $_SESSION['_pwd_at'] = !empty($secretaria['pwd_changed_at']) ? strtotime($secretaria['pwd_changed_at']) : 0;
+    Logger::activity('LOGIN_SUCCESS', $secretaria['idSecretaria'], ['role' => 'secretaria', 'email' => $email]);
+    header("Location: ../vistas/secretaria/inicio/dashboard.php");
     exit;
 }
 

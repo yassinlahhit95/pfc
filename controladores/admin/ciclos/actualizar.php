@@ -23,13 +23,13 @@ if (isset($_POST['actualizarCiclo'])) {
     $profesores = $_POST['profesores'] ?? [];
 
     // ── Validación ──
-    $errores = '';
-    if (empty($nombre)) $errores = "El nombre del ciclo formativo es un campo obligatorio.";
-    elseif (empty($abreviatura)) $errores = "La abreviatura del ciclo formativo es un campo obligatorio.";
-    elseif (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores = "El precio debe ser un valor numérico válido y no negativo.";
-    elseif (checkCicloExistente($nombre, $abreviatura, $idCiclo)) $errores = "El nombre o la abreviatura especificados ya se encuentran registrados en el sistema.";
+    $errores = [];
+    if (empty($nombre)) $errores['nombreCiclo'] = "El nombre del ciclo formativo es un campo obligatorio.";
+    if (empty($abreviatura)) $errores['abreviaturaCiclo'] = "La abreviatura del ciclo formativo es un campo obligatorio.";
+    if (!is_numeric($precioCiclo) || $precioCiclo < 0) $errores['precioCiclo'] = "El precio debe ser un valor numérico válido y no negativo.";
+    if (empty($errores) && checkCicloExistente($nombre, $abreviatura, $idCiclo)) $errores['nombreCiclo'] = "El nombre o la abreviatura especificados ya se encuentran registrados en el sistema.";
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_ciclos'] = $_POST;
         header("Location: ../../../vistas/admin/ciclos/modificarCiclos.php?idCiclo=" . $idCiclo);

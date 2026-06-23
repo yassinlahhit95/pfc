@@ -7,19 +7,17 @@ require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../include/Logger.php";
 
 // ══════════════════════════════════════════════════════════════════════
-// AUTENTICACIÓN
-// ══════════════════════════════════════════════════════════════════════
-if (!isset($_SESSION['idProfesor'])) {
-    header("Location: ../../vistas/login.php");
-    exit;
-}
-
-// ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 $idProfesor = $_SESSION['idProfesor'];
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../vistas/profesores/aula/sesiones.php"); exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../vistas/profesores/aula/sesiones.php");
+    exit;
 }
 $idSesion = (int)($_POST['id'] ?? 0);
 

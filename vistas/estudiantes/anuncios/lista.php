@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <span class="texto-suave"><i class="fas fa-calendar-alt"></i> <?= Security::escapeHtml(date('d/m/Y', strtotime($anuncio['fechaAnuncio']))) ?></span>
                 </div>
                 <div class="margen-arriba">
-                    <p style="line-height: 1.6;"><?= Security::escapeHtml(nl2br($anuncio['mensaje'])) ?></p>
+                    <p style="line-height: 1.6;"><?= nl2br(Security::escapeHtml($anuncio['mensaje'])) ?></p>
                 </div>
             </div>
         </div>

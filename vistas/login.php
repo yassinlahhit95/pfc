@@ -7,6 +7,7 @@ if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard
 if (isset($_SESSION['idProfesor']))   { header("Location: profesores/inicio/dashboard.php");  exit; }
 if (isset($_SESSION['idTutor']))      { header("Location: tutores/inicio/dashboard.php");     exit; }
 if (isset($_SESSION['idEstudiante'])) { header("Location: estudiantes/inicio/dashboard.php"); exit; }
+if (isset($_SESSION['idSecretaria'])) { header("Location: secretaria/inicio/dashboard.php"); exit; }
 
 $err    = $_SESSION['errores']   ?? null;
 $ok     = $_SESSION['reset_ok']  ?? null;
@@ -63,7 +64,7 @@ $csrfToken = Security::generateCSRFToken();
             <?php } ?>
             <?php if ($err) { ?>
             <div class="error-alerta">
-                <?= $err ?>
+                <?= Security::escapeHtml(is_array($err) ? implode(' ', $err) : $err) ?>
             </div>
             <?php } ?>
 

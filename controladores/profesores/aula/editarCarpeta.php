@@ -2,6 +2,12 @@
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/aula/recursos.php");
+    exit;
+}
+
 $idCarpeta  = intval($_POST['idCarpeta'] ?? 0);
 $nombre     = trim($_POST['nombre'] ?? '');
 $color      = trim($_POST['color'] ?? '#0ea5e9');

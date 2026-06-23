@@ -3,10 +3,16 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
-require_once "../../../modelos/profesores.php";
+require_once __DIR__ . '/../../../modelos/profesores.php';
 
 if (!isset($_POST['actualizarPerfil'])) {
     header("Location: ../../../vistas/profesores/perfil/ver.php");
+    exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/perfil/editar.php");
     exit;
 }
 
@@ -20,32 +26,32 @@ $telefono       = trim($_POST['telefonoProfesor']);
 $passwordActual = trim($_POST['current_password'] ?? '');
 $passwordNueva  = trim($_POST['new_password'] ?? '');
 
-$errores = '';
+$errores = [];
 
 if (empty($idProfesor)) {
     header("Location: ../../../vistas/profesores/perfil/ver.php");
     exit;
 }
 
-if (empty($nombre)) $errores = "El nombre es obligatorio.";
-if (empty($email)) $errores = "El correo es obligatorio.";
-elseif (!Security::validateEmail($email)) $errores = "El formato del correo no es válido.";
-if (!empty($telefono) && !Security::validatePhone($telefono)) $errores = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
+if (empty($nombre))                               $errores['nombreProfesor']   = "El nombre es obligatorio.";
+if (empty($email))                                $errores['emailProfesor']    = "El correo es obligatorio.";
+elseif (!Security::validateEmail($email))         $errores['emailProfesor']    = "El formato del correo no es válido.";
+if (!empty($telefono) && !Security::validatePhone($telefono)) $errores['telefonoProfesor'] = "El teléfono debe tener 9 dígitos y comenzar por 6, 7, 8 o 9.";
 
 if (!empty($passwordNueva)) {
     if (empty($passwordActual)) {
-        $errores = "Ingresa la contraseña actual.";
+        $errores['current_password'] = "Ingresa la contraseña actual.";
     } else {
         $datosProfesor = obtenerProfesorPorId($idProfesor);
         if (!$datosProfesor || !password_verify($passwordActual, $datosProfesor['password'])) {
-            $errores = "Contraseña actual incorrecta.";
-        } else if (strlen($passwordNueva) < 6) {
-            $errores = "Mínimo 6 caracteres.";
+            $errores['current_password'] = "Contraseña actual incorrecta.";
+        } elseif (strlen($passwordNueva) < 6) {
+            $errores['new_password'] = "Mínimo 6 caracteres.";
         }
     }
 }
 
-if ($errores) {
+if (!empty($errores)) {
     $_SESSION['errores'] = $errores;
     $_SESSION['datos_perfil'] = $_POST;
     header("Location: ../../../vistas/profesores/perfil/editar.php");

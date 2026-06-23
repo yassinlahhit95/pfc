@@ -2,6 +2,12 @@
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/aula/recursos.php");
+    exit;
+}
+
 $idArchivo = intval($_POST['id'] ?? 0);
 $idCarpeta = intval($_POST['carpeta'] ?? 0);    // destino (0 = raíz)
 $idModulo  = intval($_POST['modulo'] ?? 0);

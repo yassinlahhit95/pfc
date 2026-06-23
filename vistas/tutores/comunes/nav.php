@@ -118,7 +118,7 @@ function _nav_active_tutor($check) {
           $configFB = Config::getInstance();
       ?>
         <div id="firebase-user-data" 
-             data-user-id="<?= $_SESSION['idTutor'] ?>" 
+             data-user-id="<?= (int)$_SESSION['idTutor'] ?>"
              data-user-role="tutor" 
              data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
              data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"

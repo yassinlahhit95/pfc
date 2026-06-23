@@ -43,9 +43,9 @@ if (isset($_POST['guardarProfesor'])) {
     if (empty($direccion)) $errores['direccionProfesor'] = "La dirección es un campo obligatorio.";
     if (empty($ciudad)) $errores['ciudadProfesor'] = "La ciudad es un campo obligatorio.";
     if (empty($codigoPostal)) {
-        $errores['codigoPostalNuevoProfesor'] = "El código postal es un campo obligatorio.";
+        $errores['codigoPostalProfesor'] = "El código postal es un campo obligatorio.";
     } elseif (!is_numeric($codigoPostal)) {
-        $errores['codigoPostalNuevoProfesor'] = "El código postal debe ser un valor numérico.";
+        $errores['codigoPostalProfesor'] = "El código postal debe ser un valor numérico.";
     }
     if (empty($fechaNacimiento)) $errores['fechaNacimientoProfesor'] = "La fecha de nacimiento es un campo obligatorio.";
 

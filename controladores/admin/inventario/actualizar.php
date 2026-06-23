@@ -21,12 +21,12 @@ if (isset($_POST['actualizarArticulo'])) {
     $nombreArticulo = trim($_POST['nombreArticulo']);
     $numeroSerie    = trim($_POST['numeroSerie']);
 
-    $errores = '';
-    if (empty($nombreArticulo)) $errores = "El nombre del artículo es un campo obligatorio.";
-    elseif (empty($numeroSerie)) $errores = "El número de serie es un campo obligatorio.";
-    elseif (checkArticuloExistente($numeroSerie, $idArticulo)) $errores = "Este número de serie ya está registrado por otro artículo.";
+    $errores = [];
+    if (empty($nombreArticulo)) $errores['nombreArticulo'] = "El nombre del artículo es un campo obligatorio.";
+    if (empty($numeroSerie)) $errores['numeroSerie'] = "El número de serie es un campo obligatorio.";
+    if (empty($errores) && checkArticuloExistente($numeroSerie, $idArticulo)) $errores['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_inventario'] = $_POST;
     } else {

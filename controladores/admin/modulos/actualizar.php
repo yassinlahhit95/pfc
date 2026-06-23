@@ -23,20 +23,20 @@ if (isset($_POST['guardarModulo'])) {
     $cursoAnio    = in_array($_POST['cursoAnio'] ?? '', $aniosPermitidos, true) ? $_POST['cursoAnio'] : null;
     $creditosECTS = is_numeric($_POST['creditosECTS'] ?? '') ? (int)$_POST['creditosECTS'] : null;
 
-    $errores = '';
-    if (empty($nombre))      $errores = "El nombre del módulo es un campo obligatorio.";
-    if (empty($idCiclo))     $errores = "Debe seleccionar un ciclo formativo.";
+    $errores = [];
+    if (empty($nombre))      $errores['nombreModulo'] = "El nombre del módulo es un campo obligatorio.";
+    if (empty($idCiclo))     $errores['idCiclo'] = "Debe seleccionar un ciclo formativo.";
     if (empty($horasMaximas)) {
-        $errores = "Las horas totales del módulo son un campo obligatorio.";
+        $errores['horasMaximas'] = "Las horas totales del módulo son un campo obligatorio.";
     } elseif (!is_numeric($horasMaximas)) {
-        $errores = "Las horas deben ser un valor numérico.";
+        $errores['horasMaximas'] = "Las horas deben ser un valor numérico.";
     }
 
-    if (!$errores && checkModuloExistente($nombre, $idCiclo, $idModulo)) {
-        $errores = "Ya existe otro módulo con este nombre en el ciclo seleccionado.";
+    if (empty($errores) && checkModuloExistente($nombre, $idCiclo, $idModulo)) {
+        $errores['nombreModulo'] = "Ya existe otro módulo con este nombre en el ciclo seleccionado.";
     }
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_modulo'] = $_POST;
         header("Location: ../../../vistas/admin/modulos/modificarModulos.php?idModulo=$idModulo");

@@ -28,7 +28,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <div>
-        <h1>ASIGNAR MÓDULOS: <?= $profesor['nombreProfesor'] ?></h1>
+        <h1>ASIGNAR MÓDULOS: <?= Security::escapeHtml($profesor['nombreProfesor']) ?></h1>
     </div>
     <a href="verProfesores.php" class="boton-secundario">
         <i class="fas fa-arrow-left"></i> VOLVER

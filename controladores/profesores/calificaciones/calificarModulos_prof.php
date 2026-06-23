@@ -11,6 +11,12 @@ if (!isset($_POST['guardarNotas'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/calificaciones/lista.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════

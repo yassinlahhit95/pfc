@@ -42,22 +42,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } else { ?>
                     <?php foreach ($todos_los_articulos as $art) { ?>
                     <tr>
-                        <td><b><?= $art['nombreArticulo'] ?></b></td>
-                        <td><?= $art['numeroSerie'] ?></td>
+                        <td><b><?= Security::escapeHtml($art['nombreArticulo']) ?></b></td>
+                        <td><?= Security::escapeHtml($art['numeroSerie'] ?? '') ?></td>
                         <td>
                             <?php
                             $clase_estado = "activo-verde";
                             if ($art['estado'] != 'disponible') { $clase_estado = "inactivo-rojo"; }
                             ?>
                             <span class="indicador-estado <?= $clase_estado ?>">
-                                <?= $art['estado'] ?>
+                                <?= Security::escapeHtml($art['estado']) ?>
                             </span>
                         </td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="modificarArticulo.php?idArticulo=<?= $art['idArticulo'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <a class="recurso-menu-item" href="modificarArticulo.php?idArticulo=<?= (int)$art['idArticulo'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
                                     <a class="recurso-menu-item peligro" href="#"
                                        data-modal-borrar

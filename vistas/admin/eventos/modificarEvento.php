@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_eventos');
 
 $exito = $_SESSION['exito'] ?? '';
@@ -34,33 +35,33 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idEvento" value="<?= $idEvento ?>">
 
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
                 <label for="tituloEvento">Título del Evento</label>
-                <input type="text" name="tituloEvento" id="tituloEvento" value="<?= $datos['tituloEvento'] ?? $evento['tituloEvento'] ?? '' ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
-                
+                <input type="text" name="tituloEvento" id="tituloEvento" value="<?= Security::escapeHtml($datos['tituloEvento'] ?? $evento['tituloEvento'] ?? '') ?>" placeholder="Ej: Examen Final, Reunión de Profesores...">
+                <?= fieldError($errores, 'tituloEvento') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'ubicacionEvento') ?>">
                 <label for="ubicacionEvento">Ubicación</label>
-                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= $datos['ubicacionEvento'] ?? $evento['ubicacionEvento'] ?? '' ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
-                
+                <input type="text" name="ubicacionEvento" id="ubicacionEvento" value="<?= Security::escapeHtml($datos['ubicacionEvento'] ?? $evento['ubicacionEvento'] ?? '') ?>" placeholder="Ej: Salón de Actos, Biblioteca...">
+                <?= fieldError($errores, 'ubicacionEvento') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
                 <label for="fechaEvento">Fecha</label>
-                <input type="date" name="fechaEvento" id="fechaEvento" value="<?= $datos['fechaEvento'] ?? $evento['fechaEvento'] ?? '' ?>">
-                
+                <input type="date" name="fechaEvento" id="fechaEvento" value="<?= Security::escapeHtml($datos['fechaEvento'] ?? $evento['fechaEvento'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaEvento') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
                 <label for="horaEvento">Hora</label>
-                <input type="time" name="horaEvento" id="horaEvento" value="<?= $datos['horaEvento'] ?? date('H:i', strtotime($evento['horaEvento'] ?? 'now')) ?>">
-                
+                <input type="time" name="horaEvento" id="horaEvento" value="<?= Security::escapeHtml($datos['horaEvento'] ?? date('H:i', strtotime($evento['horaEvento'] ?? 'now'))) ?>">
+                <?= fieldError($errores, 'horaEvento') ?>
             </div>
 
             <div class="campo ancho-total">
                 <label for="descripcionEvento">Descripción</label>
-                <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."><?= $datos['descripcionEvento'] ?? $evento['descripcionEvento'] ?? '' ?></textarea>
+                <textarea name="descripcionEvento" id="descripcionEvento" rows="4" placeholder="Detalles del evento..."><?= Security::escapeHtml($datos['descripcionEvento'] ?? $evento['descripcionEvento'] ?? '') ?></textarea>
             </div>
         </div>
 

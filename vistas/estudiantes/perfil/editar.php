@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_perfil'] ?? [];
+unset($_SESSION['datos_perfil']);
 
 require_once "../../../modelos/estudiantes.php";
 
@@ -30,32 +32,37 @@ include_once "../comunes/nav.php";
 
         <div class="titulo-tarjeta"><h3>DATOS PERSONALES Y CONTACTO</h3></div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'nombreEstudiante') ?>">
             <label for="nombreEstudiante">Nombre Completo</label>
             <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? $estudianteActual['nombreEstudiante']) ?>">
+            <?= fieldError($errores, 'nombreEstudiante') ?>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'emailEstudiante') ?>">
             <label for="emailEstudiante">Correo Electronico</label>
             <input type="email" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? $estudianteActual['emailEstudiante']) ?>">
+            <?= fieldError($errores, 'emailEstudiante') ?>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'telefonoEstudiante') ?>">
             <label for="telefonoEstudiante">Numero de Telefono</label>
             <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? $estudianteActual['telefonoEstudiante']) ?>">
+            <?= fieldError($errores, 'telefonoEstudiante') ?>
         </div>
 
         <div class="titulo-tarjeta" style="margin-top: 30px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
         <p class="texto-suave" style="margin-bottom: 15px;">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'current_password') ?>">
             <label for="current_password">Contraseña Actual</label>
             <input type="password" name="current_password" id="current_password">
+            <?= fieldError($errores, 'current_password') ?>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'new_password') ?>">
             <label for="new_password">Nueva Contraseña</label>
             <input type="password" name="new_password" id="new_password">
+            <?= fieldError($errores, 'new_password') ?>
         </div>
 
         <div class="acciones">

@@ -1,4 +1,4 @@
-# Deny all web access — SQL migration files must not be publicly readable.
+# Block direct web access — templates are server-side includes only
 <IfModule mod_authz_core.c>
     Require all denied
 </IfModule>

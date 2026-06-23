@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito   = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -24,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="formulario">
             <div class="form-fila">
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'planta') ?>">
                     <label for="planta">Planta</label>
                     <select name="planta" id="planta">
                         <?php for ($p = 0; $p <= 5; $p++) { ?>
@@ -33,10 +34,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </option>
                         <?php } ?>
                     </select>
+                    <?= fieldError($errores, 'planta') ?>
                 </div>
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'numero') ?>">
                     <label for="numero">Número de aula (en la planta)</label>
                     <input type="number" name="numero" id="numero" min="1" max="99" value="<?= Security::escapeHtml($datos['numero'] ?? '') ?>" placeholder="Ej: 1">
+                    <?= fieldError($errores, 'numero') ?>
                 </div>
                 <div class="campo">
                     <label>Código resultante</label>

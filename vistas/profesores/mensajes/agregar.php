@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_mensajes');
 
 $exito   = $_SESSION['exito']   ?? '';
@@ -31,7 +32,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="ibtn ibtn-secondary"><i class="fas fa-arrow-left"></i> Volver al buzón</a>
 </div>
 
-<?php if ($errores): ?>
+<?php if (is_string($errores) && $errores): ?>
 <div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#dc2626;">
     <i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml($errores) ?>
     <button class="inbox-banner-close" style="color:#dc2626;" onclick="this.parentElement.remove()">×</button>
@@ -91,12 +92,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <input type="text" id="asunto" name="asunto" class="compose-input"
                        placeholder="Asunto del mensaje"
                        value="<?= Security::escapeHtml($datos['asunto'] ?? '') ?>">
+                <?= fieldError($errores, 'asunto') ?>
             </div>
 
             <div class="compose-field">
                 <label class="compose-label" for="descripcion">Mensaje</label>
                 <textarea id="descripcion" name="descripcion" class="compose-textarea" maxlength="1000"
                           placeholder="Escribe tu mensaje..."><?= Security::escapeHtml($datos['descripcion'] ?? '') ?></textarea>
+                <?= fieldError($errores, 'descripcion') ?>
             </div>
         </div>
 

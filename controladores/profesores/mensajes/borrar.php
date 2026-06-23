@@ -4,6 +4,12 @@ require_once __DIR__ . "/../../../include/FeatureGuard.php";
 FeatureGuard::requirePage('feature_mensajes');
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/mensajes/lista.php");
+    exit;
+}
+
 $idReclamacion = intval($_POST['idReclamacion'] ?? 0);
 
 // Seguridad: solo puede borrar mensajes dirigidos a este profesor (evita IDOR)

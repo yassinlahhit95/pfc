@@ -133,7 +133,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             $timeStr = (date('Y-m-d', $ts) === date('Y-m-d')) ? date('H:i', $ts) : date('d/m/Y', $ts);
         ?>
         <a href="detalles.php?id=<?= (int)$msg['idReclamacion'] ?>" class="inbox-row <?= $rowClass ?>">
-            <div class="inbox-ava <?= $avaClass ?>"><?= $avaInit ?></div>
+            <div class="inbox-ava <?= $avaClass ?>"><?= Security::escapeHtml($avaInit) ?></div>
             <div class="inbox-row-content">
                 <div class="inbox-row-top">
                     <span class="inbox-row-sender">

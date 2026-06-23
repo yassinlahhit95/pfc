@@ -21,12 +21,12 @@ if (isset($_POST['registrarPrestamo'])) {
     $idEstudiante  = (int)($_POST['idEstudiante'] ?? 0);
     $fechaPrestamo = trim($_POST['fechaPrestamo']);
 
-    $errores = '';
-    if (empty($idArticulo))   $errores = "Debe seleccionar un equipo del inventario.";
-    if (empty($idEstudiante)) $errores = "Debe seleccionar un estudiante.";
-    if (empty($fechaPrestamo)) $errores = "La fecha del préstamo es un campo obligatorio.";
+    $errores = [];
+    if (empty($idArticulo))    $errores['idArticulo'] = "Debe seleccionar un equipo del inventario.";
+    if (empty($idEstudiante))  $errores['idEstudiante'] = "Debe seleccionar un estudiante.";
+    if (empty($fechaPrestamo)) $errores['fechaPrestamo'] = "La fecha del préstamo es un campo obligatorio.";
 
-    if (!$errores) {
+    if (empty($errores)) {
         if (registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo)) {
             registrarAccion('prestar', 'inventario', $idArticulo, "Estudiante #$idEstudiante");
             $_SESSION['exito'] = "El préstamo ha sido registrado correctamente.";

@@ -338,8 +338,8 @@ function _nav_active_admin($check) {
       <div class="search-wrap">
         <label class="searchbar">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
-          <input id="search" placeholder="Buscar..." autocomplete="new-password"
-                 data-url="../../../controladores/admin/buscar.php" />
+          <input id="search" placeholder="Buscar..." autocomplete="off"
+                 spellcheck="false" data-url="../../../controladores/admin/buscar.php" />
           <kbd>⌘K</kbd>
         </label>
         <ul class="search-results" id="search-results" hidden></ul>
@@ -421,16 +421,16 @@ function _nav_active_admin($check) {
       <?php if (isset($_SESSION['idAdmin'])) {
           $configFB = Config::getInstance();
       ?>
-        <div id="firebase-user-data" 
-             data-user-id="<?= $_SESSION['idAdmin'] ?>" 
-             data-user-role="admin" 
-             data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
-             data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"
-             data-project-id="<?= $configFB->get('FIREBASE_PROJECT_ID') ?>"
-             data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
-             data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
-             data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
-             data-vapid-key="<?= $configFB->get('FIREBASE_VAPID_KEY') ?>"
+        <div id="firebase-user-data"
+             data-user-id="<?= (int)$_SESSION['idAdmin'] ?>"
+             data-user-role="admin"
+             data-api-key="<?= Security::escapeHtml($configFB->get('FIREBASE_API_KEY')) ?>"
+             data-auth-domain="<?= Security::escapeHtml($configFB->get('FIREBASE_AUTH_DOMAIN')) ?>"
+             data-project-id="<?= Security::escapeHtml($configFB->get('FIREBASE_PROJECT_ID')) ?>"
+             data-messaging-sender-id="<?= Security::escapeHtml($configFB->get('FIREBASE_MESSAGING_SENDER_ID')) ?>"
+             data-app-id="<?= Security::escapeHtml($configFB->get('FIREBASE_APP_ID')) ?>"
+             data-database-url="<?= Security::escapeHtml($configFB->get('FIREBASE_DATABASE_URL')) ?>"
+             data-vapid-key="<?= Security::escapeHtml($configFB->get('FIREBASE_VAPID_KEY')) ?>"
              class="oculto"></div>
         <script type="module">
             import { setupFirebase } from '../../../public/js/firebase/firebase.js';

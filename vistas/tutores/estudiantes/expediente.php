@@ -10,7 +10,8 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 $idEstudiante = (int)($_GET['id'] ?? 0);
 
 if (empty($idEstudiante)) {
-    die("Estudiante no especificado.");
+    header('Location: ../inicio/dashboard.php');
+    exit;
 }
 
 // Verificar que el estudiante pertenezca al tutor
@@ -26,7 +27,8 @@ foreach ($hijos as $h) {
 }
 
 if (!$esHijo) {
-    die("Acceso denegado. Este estudiante no está vinculado a su cuenta.");
+    header('Location: ../inicio/dashboard.php');
+    exit;
 }
 
 $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
@@ -45,7 +47,7 @@ $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
         <div class="tile-ico"><i class="fas fa-graduation-cap"></i></div>
         <div class="tile-body">
             <div class="tile-label">Media Global</div>
-            <div class="tile-desc"><?= $resultados['promedio_global'] ?></div>
+            <div class="tile-desc"><?= Security::escapeHtml($resultados['promedio_global']) ?></div>
         </div>
     </div>
     
@@ -53,7 +55,7 @@ $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
         <div class="tile-ico"><i class="fas fa-info-circle"></i></div>
         <div class="tile-body">
             <div class="tile-label">Estado Actual</div>
-            <div class="tile-desc"><?= $resultados['estado_global'] ?></div>
+            <div class="tile-desc"><?= Security::escapeHtml($resultados['estado_global']) ?></div>
         </div>
     </div>
 </div>
@@ -78,9 +80,9 @@ $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
                     <?php foreach ($resultados['detalles_modulos'] as $det): ?>
                         <tr>
                             <td class="px-4"><strong><?= Security::escapeHtml($det['nombreModulo']) ?></strong></td>
-                            <td class="text-center"><?= $det['media_retos'] ?></td>
-                            <td class="text-center"><?= $det['media_notas'] ?></td>
-                            <td class="text-center"><span class="badge bg-light text-dark border"><?= $det['nota_final'] ?></span></td>
+                            <td class="text-center"><?= Security::escapeHtml($det['media_retos']) ?></td>
+                            <td class="text-center"><?= Security::escapeHtml($det['media_notas']) ?></td>
+                            <td class="text-center"><span class="badge bg-light text-dark border"><?= Security::escapeHtml($det['nota_final']) ?></span></td>
                             <td class="text-end px-4">
                                 <?php
                                 $badgeClass = match($det['estado']) {
@@ -89,7 +91,7 @@ $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
                                     default => 'bg-light text-muted'
                                 };
                                 ?>
-                                <span class="badge-custom <?= $badgeClass ?>"><?= $det['estado'] ?></span>
+                                <span class="badge-custom <?= $badgeClass ?>"><?= Security::escapeHtml($det['estado']) ?></span>
                             </td>
                         </tr>
                     <?php endforeach; ?>

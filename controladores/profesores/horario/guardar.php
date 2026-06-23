@@ -1,15 +1,15 @@
 <?php
-require_once __DIR__ . '/../../../include/Security.php';
+require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../../../modelos/horarios.php';
 
-if (empty($_SESSION['idProfesor']) || empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
+if (empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
     http_response_code(403); echo json_encode(['ok' => false, 'msg' => 'Acceso denegado.']); exit;
 }
 $idCicloTutor = (int)$_SESSION['idCicloTutor'];
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
-    echo json_encode(['ok' => false, 'msg' => 'Solicitud no válida o expirada (CSRF).']); exit;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud no válida.']); exit;
 }
 
 $idCiclo    = (int)($_POST['idCiclo'] ?? 0);

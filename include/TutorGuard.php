@@ -13,7 +13,7 @@ if (!empty($_SESSION['must_change_password'])) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken()) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     require __DIR__ . '/../vistas/error.php';
     exit;
 }

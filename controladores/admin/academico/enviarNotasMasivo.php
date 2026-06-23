@@ -9,10 +9,20 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: ../../../vistas/admin/academico/resultadosFinales.php");
+    exit;
+}
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/academico/resultadosFinales.php");
+    exit;
+}
+
 $hayError = false;
 
-if (isset($_REQUEST['idCiclo']) && !empty($_REQUEST['idCiclo'])) {
-    $idCiclo = trim($_REQUEST['idCiclo']);
+if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
+    $idCiclo = trim($_POST['idCiclo']);
 
     require_once __DIR__ . "/../../../modelos/estudiantes.php";
     $estudiantesEnCiclo = listarEstudiantesPorCiclo($idCiclo);

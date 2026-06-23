@@ -13,22 +13,17 @@ require_once __DIR__ . "/../../firebase/firebase_helper.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['enviarMensaje'])) {
-    if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.";
-        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php"); exit;
-    }
-
     $idEstudiante = $_SESSION['idEstudiante']; // Siempre de la sesión (no falsificable)
     $idProfesor   = (int)($_POST['idProfesor'] ?? 0);
     $asunto       = trim($_POST['asunto']);
     $descripcion  = trim($_POST['descripcion']);
-    $errores      = '';
+    $errores = [];
 
-    if (empty($asunto)) $errores = "El asunto del mensaje es un campo obligatorio.";
-    if (empty($descripcion)) $errores = "El contenido del mensaje es un campo obligatorio.";
-    elseif (strlen($descripcion) > 250) $errores = "El mensaje no puede superar los 250 caracteres.";
+    if (empty($asunto)) $errores['asunto'] = "El asunto del mensaje es un campo obligatorio.";
+    if (empty($descripcion)) $errores['descripcion'] = "El contenido del mensaje es un campo obligatorio.";
+    elseif (strlen($descripcion) > 250) $errores['descripcion'] = "El mensaje no puede superar los 250 caracteres.";
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_mensaje'] = $_POST;
         header("Location: ../../../vistas/estudiantes/mensajes/agregar.php");

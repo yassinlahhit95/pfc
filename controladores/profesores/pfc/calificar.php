@@ -11,6 +11,12 @@ if (!isset($_POST['calificarTFG'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/pfc/lista.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════

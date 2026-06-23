@@ -1,11 +1,15 @@
 <?php
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_retos');
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
+
+$datosReto = $_SESSION['datos_reto'] ?? null;
+unset($_SESSION['datos_reto']);
 
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
@@ -29,6 +33,14 @@ $modulosAsociados = listarModulosDeReto($idReto);
 $mapaModulosAsociados = [];
 foreach ($modulosAsociados as $modAsociado) { $mapaModulosAsociados[$modAsociado['idModulo']] = true; }
 
+if ($datosReto) {
+    $reto = array_merge($reto, $datosReto);
+    if (isset($datosReto['modulos'])) {
+        $mapaModulosAsociados = [];
+        foreach ($datosReto['modulos'] as $idM) { $mapaModulosAsociados[$idM] = true; }
+    }
+}
+
 $tituloDelPagina = "AULAPRO | EDITAR RETO";
 $seccionActual = 'retos';
 include_once "../comunes/nav.php";
@@ -45,25 +57,29 @@ include_once "../comunes/nav.php";
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReto" value="<?= Security::escapeHtml($idReto ) ?>">
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
             <label for="nombreReto">Nombre del Reto</label>
-            <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($reto['nombreReto'] ) ?>">
+            <input type="text" name="nombreReto" id="nombreReto" value="<?= Security::escapeHtml($reto['nombreReto'] ?? '') ?>">
+            <?= fieldError($errores, 'nombreReto') ?>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'horasReto') ?>">
             <label for="horasReto">Horas Totales</label>
-            <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($reto['horasReto'] ) ?>">
+            <input type="number" name="horasReto" id="horasReto" value="<?= Security::escapeHtml($reto['horasReto'] ?? '') ?>">
+            <?= fieldError($errores, 'horasReto') ?>
         </div>
 
         <div class="row">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaInicio') ?>">
                 <label for="fechaInicio">Fecha Inicio</label>
-                <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($reto['fechaInicio'] ) ?>">
+                <input type="date" name="fechaInicio" id="fechaInicio" value="<?= Security::escapeHtml($reto['fechaInicio'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaInicio') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaFin') ?>">
                 <label for="fechaFin">Fecha Fin</label>
-                <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($reto['fechaFin'] ) ?>">
+                <input type="date" name="fechaFin" id="fechaFin" value="<?= Security::escapeHtml($reto['fechaFin'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaFin') ?>
             </div>
         </div>
 
@@ -85,7 +101,7 @@ include_once "../comunes/nav.php";
                     <?php foreach ($archivosExistentes as $ae) {
                         $isPdf = ($ae['tipoArchivo'] === 'pdf'); ?>
                     <div class="archivo-reto-item" id="file-<?= (int)$ae['idArchivo'] ?>">
-                        <i class="fas <?= $isPdf ? 'fa-file-pdf' : 'fa-image' ?>" style="font-size:18px;color:<?= $isPdf ? '#ef4444' : '#3b82f6' ?>;flex-shrink:0;"></i>
+                        <i class="fas <?= $isPdf ? 'fa-file-pdf' : 'fa-image' ?>" style="font-size:18px;color:<?= $isPdf ? 'var(--rojo, #ef4444)' : 'var(--accent, #3b82f6)' ?>;flex-shrink:0;"></i>
                         <span class="archivo-reto-nombre" title="<?= Security::escapeHtml($ae['nombreArchivo']) ?>"><?= Security::escapeHtml($ae['nombreArchivo']) ?></span>
                         <span class="texto-estado <?= $isPdf ? 'rojo' : 'azul' ?>"><?= $isPdf ? 'PDF' : 'Imagen' ?></span>
                         <button type="button" class="boton-peligro btn-pequeno" onclick="borrarArchivoSmooth(<?= (int)$ae['idArchivo'] ?>, <?= (int)$idReto ?>)">
@@ -97,9 +113,10 @@ include_once "../comunes/nav.php";
             <?php } ?>
         </div>
 
-        <div class="campo ancho-total">
+        <div class="campo<?= fieldClass($errores, 'modulos') ?> ancho-total">
             <label>Asociar a Módulos</label>
             <p class="texto-suave" style="font-size:13px;margin-bottom:10px;">Seleccione los módulos en los que se evaluará este reto.</p>
+            <?= fieldError($errores, 'modulos') ?>
             <div class="modulo-chips">
                 <?php foreach ($misModulos as $mod) { ?>
                 <label class="modulo-chip">

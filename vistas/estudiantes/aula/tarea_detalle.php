@@ -11,9 +11,12 @@ if (!$idTarea) {
     exit;
 }
 
-$tarea = obtenerTareaPorIdAula($idTarea);
+$tarea           = obtenerTareaPorIdAula($idTarea);
+$datosEstudiante = obtenerEstudiantePorId($idEstudiante);
 
-if (!$tarea || $tarea['publicada'] == 0) {
+// Reject if task doesn't exist, isn't published, or belongs to a different ciclo (IDOR guard)
+if (!$tarea || $tarea['publicado'] == 0
+    || (int)$datosEstudiante['idCiclo'] !== (int)$tarea['idCiclo']) {
     header("Location: tareas.php");
     exit;
 }
@@ -21,7 +24,10 @@ if (!$tarea || $tarea['publicada'] == 0) {
 $entrega = obtenerEntregaAula($idTarea, $idEstudiante);
 $csrfToken = Security::generateCSRFToken();
 
-$tituloDelPagina = 'AULAPRO | ' . htmlspecialchars($tarea['titulo']);
+$exito   = $_SESSION['exito'] ?? null;   unset($_SESSION['exito']);
+$errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
+
+$tituloDelPagina = 'AULAPRO | ' . Security::escapeHtml($tarea['titulo']);
 $seccionActual = 'aula_tareas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -31,10 +37,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <p class="texto-suave"><?= Security::escapeHtml($tarea['nombreModulo']) ?> - Prof. <?= Security::escapeHtml($tarea['nombreProfesor']) ?></p>
 </div>
 
-<?php
-$exito = $_SESSION['exito'] ?? '';
-$errores = $_SESSION['errores'] ?? null;
-unset($_SESSION['exito'], $_SESSION['errores']);
+<?php if ($exito): ?>
+<div class="alerta alerta-exito" style="margin-bottom:var(--gap);"><i class="fas fa-check-circle"></i> <?= Security::escapeHtml($exito) ?></div>
+<?php endif; ?>
+<?php if ($errores): ?>
+<div class="alerta alerta-error" style="margin-bottom:var(--gap);"><i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml(is_array($errores) ? implode(', ', $errores) : $errores) ?></div>
+<?php endif; ?>
 
 <div class="cuadricula-secundaria">
     <div class="caja direccion-columna espacio-grande relleno">
@@ -106,7 +114,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
                     <div class="grupo-formulario">
                         <label for="archivo">SUBIR ARCHIVO DE ENTREGA *</label>
-                        <input type="file" id="archivo" name="archivo" required accept=".pdf,.doc,.docx,.zip,.rar,.txt">
+                        <input type="file" id="archivo" name="archivo" accept=".pdf,.doc,.docx,.zip,.rar,.txt">
                         <span class="texto-pequeño texto-suave">Formatos: PDF, DOC, DOCX, ZIP, RAR, TXT (Máx: 10MB)</span>
                     </div>
 

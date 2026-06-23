@@ -11,6 +11,11 @@ $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (!empty($_POST['idEstudiante'])) {
+    if (!Security::validateCSRFToken()) {
+        if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit; }
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/estudiantes/lista.php"); exit;
+    }
     $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
 
     if ($idEstudiante > 0) {

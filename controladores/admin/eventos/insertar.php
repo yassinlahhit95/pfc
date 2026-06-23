@@ -23,13 +23,13 @@ if (isset($_POST['guardarEvento'])) {
     $horaEvento      = trim($_POST['horaEvento']);
     $ubicacionEvento = trim($_POST['ubicacionEvento']);
 
-    $errores = '';
-    if (empty($titulo))          $errores = "El título del evento es un campo obligatorio.";
-    if (empty($ubicacionEvento)) $errores = "La ubicación del evento es un campo obligatorio.";
-    if (empty($fechaEvento))     $errores = "La fecha del evento es un campo obligatorio.";
-    if (empty($horaEvento))      $errores = "La hora del evento es un campo obligatorio.";
+    $errores = [];
+    if (empty($titulo))          $errores['tituloEvento'] = "El título del evento es un campo obligatorio.";
+    if (empty($ubicacionEvento)) $errores['ubicacionEvento'] = "La ubicación del evento es un campo obligatorio.";
+    if (empty($fechaEvento))     $errores['fechaEvento'] = "La fecha del evento es un campo obligatorio.";
+    if (empty($horaEvento))      $errores['horaEvento'] = "La hora del evento es un campo obligatorio.";
 
-    if ($errores) {
+    if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_evento'] = $_POST;
         header("Location: ../../../vistas/admin/eventos/agregarEvento.php");

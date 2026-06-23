@@ -44,6 +44,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="valor-detalle">
             <?php if (!empty($estudiante['archivoTFG'])) { ?>
                 <span class="indicador-estado activo-verde">ENTREGADO</span>
+                <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($estudiante['archivoTFG']) ?>" target="_blank" class="boton-secundario" style="margin-left:10px;display:inline-flex;align-items:center;gap:6px;">
+                    <i class="fas fa-file-pdf"></i> Ver PDF
+                </a>
+                <?php if (!empty($estudiante['tituloTFG'])): ?>
+                    <span class="texto-suave" style="display:block;margin-top:4px;font-style:italic;"><?= Security::escapeHtml($estudiante['tituloTFG']) ?></span>
+                <?php endif; ?>
             <?php } else { ?>
                 <span class="indicador-estado inactivo-rojo">NO ENTREGADO</span>
             <?php } ?>

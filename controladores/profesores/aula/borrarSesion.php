@@ -7,6 +7,12 @@ $idProfesor = $_SESSION['idProfesor'];
 
 require_once __DIR__ . "/../../../modelos/aula.php";
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/aula/modulos.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════

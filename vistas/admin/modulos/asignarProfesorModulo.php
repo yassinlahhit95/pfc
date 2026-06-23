@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select name="idProfesor">
                 <option value="">-- Sin Profesor Asignado --</option>
                 <?php foreach ($todos_los_profesores as $prof) { ?>
-                    <option value="<?= $prof['idProfesor'] ?>" <?= ($prof['idProfesor'] == $idProfesorActual ? 'selected' : '') ?>>    
-                        <?= $prof['nombreProfesor'] ?>
+                    <option value="<?= (int)$prof['idProfesor'] ?>" <?= ($prof['idProfesor'] == $idProfesorActual ? 'selected' : '') ?>>
+                        <?= Security::escapeHtml($prof['nombreProfesor']) ?>
                     </option>
                 <?php } ?>
             </select>

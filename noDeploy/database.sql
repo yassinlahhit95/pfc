@@ -53,6 +53,7 @@ DROP TABLE IF EXISTS `pre_matricula_archivos`;
 DROP TABLE IF EXISTS `pre_matriculas`;
 DROP TABLE IF EXISTS `estudiante_tutor`;
 DROP TABLE IF EXISTS `tutores`;
+DROP TABLE IF EXISTS `secretarias`;
 DROP TABLE IF EXISTS `estudiantes`;
 DROP TABLE IF EXISTS `profesores`;
 DROP TABLE IF EXISTS `directores`;
@@ -193,7 +194,21 @@ CREATE TABLE `tutores` (
   UNIQUE KEY `uk_dni_tutor` (`dniTutor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 8. Relación Estudiante–Tutor
+-- 8. Secretarias
+CREATE TABLE `secretarias` (
+  `idSecretaria` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreSecretaria` varchar(100) NOT NULL,
+  `emailSecretaria` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT 1,
+  `pwd_changed_at` datetime DEFAULT NULL,
+  `activoSecretaria` tinyint(1) NOT NULL DEFAULT 1,
+  `token_fcm` text DEFAULT NULL,
+  PRIMARY KEY (`idSecretaria`),
+  UNIQUE KEY `uk_email_sec` (`emailSecretaria`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 9. Relación Estudiante–Tutor
 CREATE TABLE `estudiante_tutor` (
   `idEstudiante` int(11) NOT NULL,
   `idTutor` int(11) NOT NULL,
@@ -1002,8 +1017,12 @@ INSERT INTO `niveles` (`idNivel`, `nombreNivel`) VALUES
 (2, 'Grado Superior');
 
 -- Cuenta de arranque — contraseña: 123456. CAMBIA email y contraseña tras el primer login.
-INSERT INTO `directores` (`nombreDirector`, `emailDirector`, `password`, `dniDirector`)
-VALUES ('Administrador', 'admin@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '00000000T');
+INSERT INTO `directores` (`nombreDirector`, `emailDirector`, `password`, `dniDirector`, `must_change_password`)
+VALUES ('Administrador', 'admin@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '00000000T', 0);
+
+-- Secretaria de ejemplo (contraseña: 123456)
+INSERT INTO `secretarias` (`idSecretaria`, `nombreSecretaria`, `emailSecretaria`, `password`, `must_change_password`, `activoSecretaria`)
+VALUES (1, 'Ana Pérez García', 'secretaria@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, 1);
 
 INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `precioCiclo`, `idNivel`) VALUES
 (1, 'Desarrollo de Aplicaciones Web',            'DAW',  1200.00, 2),
@@ -1011,9 +1030,10 @@ INSERT INTO `ciclos` (`idCiclo`, `nombreCiclo`, `abreviaturaCiclo`, `precioCiclo
 (3, 'Sistemas Informáticos en Red',               'ASIR', 1200.00, 2);
 
 -- Profesores de ejemplo (contraseña: 123456)
-INSERT INTO `profesores` (`idProfesor`, `nombreProfesor`, `emailProfesor`, `password`, `telefonoProfesor`, `dniProfesor`, `fechaNacimientoProfesor`, `fechaAltaProfesor`, `direccionProfesor`, `ciudadProfesor`, `codigoPostalProfesor`) VALUES
-(1, 'Juan García Martínez',  'juan.garcia@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '612345678', '12345678A', '1980-05-15', '2023-09-01', 'Calle Principal 123',    'Madrid',    '28001'),
-(2, 'María López Rodríguez', 'maria.lopez@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '623456789', '87654321B', '1985-03-22', '2023-09-01', 'Avenida Principal 456', 'Barcelona', '08002');
+-- Juan es Tutor de Ciclo del ciclo 1 (DAW); María es Tutor de Ciclo del ciclo 2 (DAM)
+INSERT INTO `profesores` (`idProfesor`, `nombreProfesor`, `emailProfesor`, `password`, `must_change_password`, `telefonoProfesor`, `dniProfesor`, `fechaNacimientoProfesor`, `fechaAltaProfesor`, `direccionProfesor`, `ciudadProfesor`, `codigoPostalProfesor`, `esTutor`, `idCicloTutor`) VALUES
+(1, 'Juan García Martínez',  'juan.garcia@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '612345678', '12345678A', '1980-05-15', '2023-09-01', 'Calle Principal 123',    'Madrid',    '28001', 1, 1),
+(2, 'María López Rodríguez', 'maria.lopez@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '623456789', '87654321B', '1985-03-22', '2023-09-01', 'Avenida Principal 456', 'Barcelona', '08002', 1, 2);
 
 INSERT INTO `modulos` (`idModulo`, `nombreModulo`, `horasMaximas`, `idCiclo`) VALUES
 (1,  'Lenguajes de Marcas',                          42,  1),
@@ -1033,16 +1053,16 @@ INSERT INTO `modulos` (`idModulo`, `nombreModulo`, `horasMaximas`, `idCiclo`) VA
 (15, 'Seguridad Informática',                        105, 3);
 
 -- Estudiantes de ejemplo (contraseña: 123456)
-INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`, `password`, `dniEstudiante`, `fechaNacimientoEstudiante`, `fechaAltaEstudiante`, `idCiclo`, `curso`) VALUES
-(1, 'Carlos Sánchez López',      'carlos.sanchez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '11111111C', '2004-06-10', '2023-09-01', 1, 'Grado Superior'),
-(2, 'Laura Fernández García',    'laura.fernandez@aulapro.com',   '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '22222222D', '2004-08-22', '2023-09-01', 1, 'Grado Superior'),
-(3, 'Pablo Martínez Ruiz',       'pablo.martinez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '33333333E', '2005-01-18', '2023-09-01', 1, 'Grado Superior'),
-(4, 'Andrea Jiménez Torres',     'andrea.jimenez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '44444444F', '2004-07-14', '2023-09-01', 2, 'Grado Superior'),
-(5, 'David Moreno Pérez',        'david.moreno@aulapro.com',      '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '55555555G', '2005-02-28', '2023-09-01', 2, 'Grado Superior'),
-(6, 'Sofía González Blanco',     'sofia.gonzalez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '66666666H', '2004-11-05', '2023-09-01', 2, 'Grado Superior'),
-(7, 'Alejandro Ramírez Santos',  'alejandro.ramirez@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '77777777I', '2004-09-12', '2023-09-01', 3, 'Grado Superior'),
-(8, 'Cristina Díaz Muñoz',       'cristina.diaz@aulapro.com',     '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '88888888J', '2005-03-30', '2023-09-01', 3, 'Grado Superior'),
-(9, 'Roberto Vega Herrera',      'roberto.vega@aulapro.com',      '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', '99999999K', '2004-12-08', '2023-09-01', 3, 'Grado Superior');
+INSERT INTO `estudiantes` (`idEstudiante`, `nombreEstudiante`, `emailEstudiante`, `password`, `must_change_password`, `dniEstudiante`, `fechaNacimientoEstudiante`, `fechaAltaEstudiante`, `idCiclo`, `curso`) VALUES
+(1, 'Carlos Sánchez López',      'carlos.sanchez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '11111111C', '2004-06-10', '2023-09-01', 1, 'Grado Superior'),
+(2, 'Laura Fernández García',    'laura.fernandez@aulapro.com',   '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '22222222D', '2004-08-22', '2023-09-01', 1, 'Grado Superior'),
+(3, 'Pablo Martínez Ruiz',       'pablo.martinez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '33333333E', '2005-01-18', '2023-09-01', 1, 'Grado Superior'),
+(4, 'Andrea Jiménez Torres',     'andrea.jimenez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '44444444F', '2004-07-14', '2023-09-01', 2, 'Grado Superior'),
+(5, 'David Moreno Pérez',        'david.moreno@aulapro.com',      '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '55555555G', '2005-02-28', '2023-09-01', 2, 'Grado Superior'),
+(6, 'Sofía González Blanco',     'sofia.gonzalez@aulapro.com',    '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '66666666H', '2004-11-05', '2023-09-01', 2, 'Grado Superior'),
+(7, 'Alejandro Ramírez Santos',  'alejandro.ramirez@aulapro.com', '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '77777777I', '2004-09-12', '2023-09-01', 3, 'Grado Superior'),
+(8, 'Cristina Díaz Muñoz',       'cristina.diaz@aulapro.com',     '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '88888888J', '2005-03-30', '2023-09-01', 3, 'Grado Superior'),
+(9, 'Roberto Vega Herrera',      'roberto.vega@aulapro.com',      '$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu', 0, '99999999K', '2004-12-08', '2023-09-01', 3, 'Grado Superior');
 
 INSERT INTO `retos` (`idReto`, `nombreReto`, `fechaInicio`, `fechaFin`, `horasReto`) VALUES
 (1, 'Reto HTML y CSS',    '2026-02-01', '2026-02-28', 20),

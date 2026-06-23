@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -47,16 +48,16 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo) ?>">
         
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'nombreCiclo') ?>">
                 <label for="nombreCiclo">Nombre del Ciclo</label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" value="<?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'nombreCiclo') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'abreviaturaCiclo') ?>">
                 <label for="abreviaturaCiclo">Abreviatura</label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" maxlength="10" value="<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'abreviaturaCiclo') ?>
             </div>
 
             <div class="campo">
@@ -68,12 +69,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'precioCiclo') ?>">
                 <label for="precioCiclo">Precio Total del Ciclo (€)</label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= Security::escapeHtml($ciclo['precioCiclo'] ?? '') ?>">
+                <?= fieldError($errores, 'precioCiclo') ?>
             </div>
         </div>
 

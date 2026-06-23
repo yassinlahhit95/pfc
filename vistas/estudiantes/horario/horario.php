@@ -1,7 +1,11 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
-$idEstudiante = $_SESSION['idEstudiante'] ?? '';
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
+$idEstudiante = (int)$_SESSION['idEstudiante'];
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/horarios.php";

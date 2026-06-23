@@ -20,8 +20,8 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
 
     $listaCalificaciones = listarCalificacionesPorEstudiante($idEstudianteRecibido);
 
-    $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
-    $nombreCiclo      = $datosEstudiante['nombreCiclo'];
+    $nombreEstudiante = htmlspecialchars($datosEstudiante['nombreEstudiante'], ENT_QUOTES, 'UTF-8');
+    $nombreCiclo      = htmlspecialchars($datosEstudiante['nombreCiclo'] ?? '', ENT_QUOTES, 'UTF-8');
 
     // El CSS va en línea para compatibilidad máxima con clientes de correo
     $contenidoCorreoHTML = "
@@ -77,13 +77,14 @@ function generarTablaNotasHTML($idEstudianteRecibido) {
         $sumaTotalNotasModulos += $notaFinalDelModulo;
         $contadorTotalModulos++;
 
+        $nombreModuloEsc = htmlspecialchars($datosDelModulo['nombreModulo'], ENT_QUOTES, 'UTF-8');
         $contenidoCorreoHTML .= "
                 <tr>
-                    <td style='padding: 10px; border: 1px solid #ddd;'>" . $datosDelModulo['nombreModulo'] . "</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_1ev'] . "</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_1final'] . "</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_2ev'] . "</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . $datosDelModulo['nota_2final'] . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>" . $nombreModuloEsc . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . (float)$datosDelModulo['nota_1ev'] . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . (float)$datosDelModulo['nota_1final'] . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . (float)$datosDelModulo['nota_2ev'] . "</td>
+                    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>" . (float)$datosDelModulo['nota_2final'] . "</td>
                     <td style='padding: 10px; border: 1px solid #ddd; text-align: center; color: $colorDelEstado; font-weight: bold;'>" . $textoDelEstado . "</td>
                 </tr>";
     }
@@ -132,9 +133,9 @@ function generarEmailCalificacionTFGHTML($idEstudiante) {
     $calificacion = obtenerCalificacionTFG($idEstudiante);
     if (empty($calificacion)) return false;
 
-    $nombreEstudiante = $datosEstudiante['nombreEstudiante'];
+    $nombreEstudiante = htmlspecialchars($datosEstudiante['nombreEstudiante'], ENT_QUOTES, 'UTF-8');
     $nota             = floatval($calificacion['nota']);
-    $observaciones    = $calificacion['observaciones'];
+    $observaciones    = htmlspecialchars($calificacion['observaciones'] ?? '', ENT_QUOTES, 'UTF-8');
 
     $estadoTexto = $nota < 5 ? "SUSPENSO" : "APROBADO";
     $colorEstado = $nota < 5 ? "red" : "green";

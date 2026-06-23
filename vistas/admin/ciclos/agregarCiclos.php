@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -33,19 +34,19 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/ciclos/insertar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'nombreCiclo') ?>">
                 <label for="nombreCiclo">Nombre del Ciclo </label>
                 <input type="text" id="nombreCiclo" name="nombreCiclo" placeholder="Desarrollo de Aplicaciones Web" value="<?= Security::escapeHtml($datos['nombreCiclo'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'nombreCiclo') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'abreviaturaCiclo') ?>">
                 <label for="abreviaturaCiclo">Abreviatura </label>
                 <input type="text" id="abreviaturaCiclo" name="abreviaturaCiclo" placeholder="Ej: DAW, SMR, Bach..." maxlength="10" value="<?= Security::escapeHtml($datos['abreviaturaCiclo'] ?? '') ?>">
-                
+                <?= fieldError($errores, 'abreviaturaCiclo') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'idNivel') ?>">
                 <label for="idNivel">Nivel Formativo </label>
                 <select id="idNivel" name="idNivel">
                     <option value="">-- Seleccionar Nivel --</option>
@@ -55,12 +56,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </option>
                     <?php } ?>
                 </select>
-                
+                <?= fieldError($errores, 'idNivel') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'precioCiclo') ?>">
                 <label for="precioCiclo">Precio Total del Ciclo (€) </label>
                 <input type="number" id="precioCiclo" name="precioCiclo" step="0.01" value="<?= Security::escapeHtml($datos['precioCiclo'] ?? '1000.00') ?>">
+                <?= fieldError($errores, 'precioCiclo') ?>
             </div>
         </div>
 

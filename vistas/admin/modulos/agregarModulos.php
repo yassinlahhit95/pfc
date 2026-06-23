@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -35,10 +36,10 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form action="../../../controladores/admin/modulos/insertar.php" method="POST" class="formulario">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'nombreModulo') ?>">
             <label for="nombreModulo">Nombre del Módulo</label>
             <input type="text" name="nombreModulo" id="nombreModulo" value="<?= Security::escapeHtml($datos['nombreModulo'] ?? '') ?>">
-            
+            <?= fieldError($errores, 'nombreModulo') ?>
         </div>
 
         <div class="campo">
@@ -50,17 +51,18 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
             <label for="idCiclo">Ciclo Formativo Asociado</label>
             <select name="idCiclo" id="idCiclo">
                 <option value="">-- Selecciona primero un nivel --</option>
             </select>
-            
+            <?= fieldError($errores, 'idCiclo') ?>
         </div>
 
-        <div class="campo">
+        <div class="campo<?= fieldClass($errores, 'horasMaximas') ?>">
             <label for="horasMaximas">Horas Máximas</label>
             <input type="number" name="horasMaximas" id="horasMaximas" min="1" value="<?= Security::escapeHtml($datos['horasMaximas'] ?? '') ?>">
+            <?= fieldError($errores, 'horasMaximas') ?>
         </div>
 
         <div class="campo">

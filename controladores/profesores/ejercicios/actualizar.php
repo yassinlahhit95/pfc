@@ -10,6 +10,12 @@ if (!isset($_POST['actualizarEjercicio'])) {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/ejercicios/panel.php");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════

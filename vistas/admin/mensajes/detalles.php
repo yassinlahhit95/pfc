@@ -45,13 +45,13 @@ if ($msg['emisor_rol'] === 'admin') {
     }
 } elseif ($msg['emisor_rol'] === 'profesor') {
     $fromName = Security::escapeHtml($msg['nombreProfesor'] ?? '—');
-    $fromInit = mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2));
+    $fromInit = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2)));
     $fromAva  = 'msg-ava-lg inbox-ava-profe';
     $fromRtag = 'rtag-profe'; $fromRlabel = 'Profe';
     $toName   = 'Dirección (Admin)'; $toRtag = 'rtag-admin'; $toRlabel = 'Admin';
 } else {
     $fromName = Security::escapeHtml($msg['nombreEstudiante'] ?? '—');
-    $fromInit = mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2));
+    $fromInit = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2)));
     $fromAva  = 'msg-ava-lg inbox-ava-alumno';
     $fromRtag = 'rtag-alumno'; $fromRlabel = 'Alumno';
     $toName   = 'Dirección (Admin)'; $toRtag = 'rtag-admin'; $toRlabel = 'Admin';
@@ -133,11 +133,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                     $avaClass = 'ava-admin'; $avaInit = 'AD'; $senderLabel = 'Dirección';
                 } elseif ($item['emisor_rol'] === 'profesor') {
                     $avaClass    = 'ava-profe';
-                    $avaInit     = mb_strtoupper(mb_substr($item['nombreProfesor'] ?? 'P', 0, 2));
+                    $avaInit     = Security::escapeHtml(mb_strtoupper(mb_substr($item['nombreProfesor'] ?? 'P', 0, 2)));
                     $senderLabel = Security::escapeHtml($item['nombreProfesor'] ?? 'Profesor');
                 } else {
                     $avaClass    = 'ava-alumno';
-                    $avaInit     = mb_strtoupper(mb_substr($item['nombreEstudiante'] ?? 'A', 0, 2));
+                    $avaInit     = Security::escapeHtml(mb_strtoupper(mb_substr($item['nombreEstudiante'] ?? 'A', 0, 2)));
                     $senderLabel = Security::escapeHtml($item['nombreEstudiante'] ?? 'Alumno');
                 }
                 $timeStr   = date('d/m/Y H:i', strtotime($item['fecha']));

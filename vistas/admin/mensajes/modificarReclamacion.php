@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
 FeatureGuard::requirePage('feature_mensajes');
 
 $exito   = $_SESSION['exito']   ?? '';
@@ -62,10 +63,11 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="msg-respuesta-box">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'respuesta') ?>">
                 <label for="respuesta">Respuesta / Nota interna</label>
                 <textarea id="respuesta" name="respuesta" rows="5" class="ancho-total" maxlength="1000"
                           placeholder="Escribe tu respuesta..."><?= Security::escapeHtml($reclamacion['respuesta'] ?? '') ?></textarea>
+                <?= fieldError($errores, 'respuesta') ?>
             </div>
         </div>
 

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 
 $exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -54,48 +55,52 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($id_profesor) ?>">
         
         <div class="formulario">
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'nombreProfesor') ?>">
                 <label for="nombreProfesor">Nombre Completo</label>
                 <input type="text" id="nombreProfesor" name="nombreProfesor" value="<?= Security::escapeHtml($profesor['nombreProfesor']) ?>">
-                
+                <?= fieldError($errores, 'nombreProfesor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'emailProfesor') ?>">
                 <label for="emailProfesor">Email</label>
                 <input type="email" id="emailProfesor" name="emailProfesor" value="<?= Security::escapeHtml($profesor['emailProfesor']) ?>">
-                
+                <?= fieldError($errores, 'emailProfesor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'dniProfesor') ?>">
                 <label for="dniProfesor">DNI</label>
                 <input type="text" id="dniProfesor" name="dniProfesor" value="<?= Security::escapeHtml($profesor['dniProfesor']) ?>">
-                
+                <?= fieldError($errores, 'dniProfesor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'telefonoProfesor') ?>">
                 <label for="telefonoProfesor">Teléfono</label>
                 <input type="text" id="telefonoProfesor" name="telefonoProfesor" value="<?= Security::escapeHtml($profesor['telefonoProfesor']) ?>">
-                
+                <?= fieldError($errores, 'telefonoProfesor') ?>
             </div>
 
-            <div class="campo ancho-total">
+            <div class="campo ancho-total<?= fieldClass($errores, 'direccionProfesor') ?>">
                 <label for="direccionProfesor">Dirección</label>
                 <input type="text" id="direccionProfesor" name="direccionProfesor" value="<?= Security::escapeHtml($profesor['direccionProfesor']) ?>">
+                <?= fieldError($errores, 'direccionProfesor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'ciudadProfesor') ?>">
                 <label for="ciudadProfesor">Ciudad</label>
                 <input type="text" id="ciudadProfesor" name="ciudadProfesor" value="<?= Security::escapeHtml($profesor['ciudadProfesor']) ?>">
+                <?= fieldError($errores, 'ciudadProfesor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'codigoPostalProfesor') ?>">
                 <label for="codigoPostalProfesor">Código Postal</label>
                 <input type="text" id="codigoPostalProfesor" name="codigoPostalProfesor" value="<?= Security::escapeHtml($profesor['codigoPostalProfesor']) ?>">
+                <?= fieldError($errores, 'codigoPostalProfesor') ?>
             </div>
 
-            <div class="campo">
+            <div class="campo<?= fieldClass($errores, 'fechaNacimientoProfesor') ?>">
                 <label for="fechaNacimientoProfesor">Fecha de Nacimiento</label>
                 <input type="date" id="fechaNacimientoProfesor" name="fechaNacimientoProfesor" value="<?= Security::escapeHtml($profesor['fechaNacimientoProfesor']) ?>">
+                <?= fieldError($errores, 'fechaNacimientoProfesor') ?>
             </div>
 
             <div class="campo">
@@ -109,21 +114,31 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <!-- Tutor Status -->
-        <div class="panel" style="margin-top:25px;padding:20px;border:1px solid var(--border);background:var(--bg-2);">
-            <h4 style="margin:0 0 15px;"><i class="fas fa-star" style="color:#f59e0b;"></i> Permiso de Tutor de Ciclo</h4>
-            <p style="font-size:.85rem;color:var(--text-2);margin-bottom:15px;">
-                Si activas esta opción, el profesor actuará como administrador del ciclo asignado con acceso completo a sus estudiantes, notas, módulos y horario.
+        <!-- Tutor de Ciclo (profesor con rol especial, NO familia/padres) -->
+        <div class="panel" style="margin-top:25px;padding:20px;border:1px solid var(--border);background:var(--surface-2);">
+            <h4 style="margin:0 0 6px;"><i class="fas fa-user-shield" style="color:#f59e0b;"></i> Tutor de Ciclo</h4>
+            <p style="font-size:.82rem;color:var(--dim);margin-bottom:16px;">
+                El <strong>Tutor de Ciclo</strong> es un profesor con acceso especial sobre un ciclo: puede gestionar notas, horarios y cambiar contraseñas de sus estudiantes.
+                <em>Este rol no tiene relación con los tutores familiares (padres/madres).</em>
             </p>
-            <div class="formulario" style="grid-template-columns:1fr 1fr;gap:15px;">
+            <div class="formulario" style="grid-template-columns:1fr 1fr;gap:15px;align-items:start;">
                 <div class="campo">
-                    <label class="check-item" style="cursor:pointer;">
-                        <input type="checkbox" id="esTutorCheck" name="esTutor" value="1" <?= !empty($profesor['esTutor']) ? 'checked' : '' ?> onchange="toggleCicloTutor(this)">
-                        <span><b>Este profesor es Tutor de Ciclo</b></span>
-                    </label>
+                    <label style="font-size:.82rem;color:var(--dim);margin-bottom:6px;display:block;">Activar rol de Tutor de Ciclo</label>
+                    <div class="toggle-wrap">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="esTutorCheck" name="esTutor" value="1"
+                                   <?= !empty($profesor['esTutor']) ? 'checked' : '' ?>
+                                   onchange="toggleCicloTutor(this)">
+                            <span class="toggle-track"></span>
+                        </label>
+                        <span class="toggle-label">
+                            Este profesor es Tutor de Ciclo
+                            <small>Puede cambiar contraseñas de sus alumnos</small>
+                        </span>
+                    </div>
                 </div>
                 <div class="campo" id="campo-ciclo-tutor" style="<?= empty($profesor['esTutor']) ? 'opacity:.4;pointer-events:none;' : '' ?>">
-                    <label for="idCicloTutor">Ciclo asignado como Tutor</label>
+                    <label for="idCicloTutor">Ciclo asignado</label>
                     <select id="idCicloTutor" name="idCicloTutor">
                         <option value="">-- Seleccionar ciclo --</option>
                         <?php foreach ($listaCiclos as $ciclo): ?>

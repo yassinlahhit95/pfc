@@ -11,6 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: $_back"); exit;
 }
 
+// AdminGuard already validated with rotate=false; this second check must also not rotate,
+// otherwise generating the PDF (target="_blank") consumes the token and breaks the horario editor AJAX.
+if (!Security::validateCSRFToken(null, false)) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: $_back"); exit;
+}
+
 $_vendor = __DIR__ . '/../../../vendor/autoload.php';
 if (!file_exists($_vendor)) {
     $_SESSION['errores'] = "Error interno del servidor al generar el informe. Contacte con el soporte técnico.";

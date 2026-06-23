@@ -34,6 +34,14 @@ if (isset($_POST['guardarTFG'])) {
         } else {
             $nombreArchivoFinal = date('d-m-Y_H-i-s') . '_' . bin2hex(random_bytes(8)) . '.pdf';
             $rutaDestino = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivoFinal;
+            // Delete old file from disk before saving the new one
+            $tfgActual = obtenerTFGporEstudiante($idEstudiante);
+            if (!empty($tfgActual['archivoTFG'])) {
+                $rutaVieja = __DIR__ . "/../../../public/uploads/pfc/" . $tfgActual['archivoTFG'];
+                if (file_exists($rutaVieja)) {
+                    unlink($rutaVieja);
+                }
+            }
             if (!move_uploaded_file($archivoSubido['tmp_name'], $rutaDestino)) {
                 $hayError = true;
                 $_SESSION['errores'] = "Error al guardar el archivo en el servidor.";

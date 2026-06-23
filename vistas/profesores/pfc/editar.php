@@ -6,8 +6,12 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $idEstudiante = (int)($_GET['id'] ?? 0);
+if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {
+    header("Location: lista.php"); exit;
+}
 $datosTFG = obtenerTFGporEstudiante($idEstudiante);
 
 $tituloPagina = "Editar TFG - Portal Profesores";

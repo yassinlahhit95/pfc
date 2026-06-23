@@ -24,7 +24,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>HISTORIAL DE PAGOS: <?= $estudiante['nombreEstudiante'] ?></h1>
+    <h1>HISTORIAL DE PAGOS: <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></h1>
     <a href="verPagosGeneral.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 

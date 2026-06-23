@@ -8,6 +8,12 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/academico/calificacionesRetos.php");
+    exit;
+}
+
 $idEstudiante = (int)($_POST['idEstudiante'] ?? 0);
 $idReto       = (int)($_POST['idReto'] ?? 0);
 $idCiclo      = (int)($_POST['idCiclo'] ?? 0);

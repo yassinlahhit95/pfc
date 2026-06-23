@@ -36,7 +36,9 @@ if ($idReclamacion <= 0) {
 if (isset($_POST['guardarCambios'])) {
     $respuesta = trim($_POST['respuesta'] ?? '');
     if ($respuesta === '') {
-        $_SESSION['errores'] = "El contenido de la respuesta no puede estar vacío.";
+        $_SESSION['errores'] = ['respuesta' => "El contenido de la respuesta no puede estar vacío."];
+        header("Location: ../../../vistas/admin/mensajes/modificarReclamacion.php?idReclamacion=" . $idReclamacion);
+        exit;
     } elseif (insertarRespuestaMensaje($idReclamacion, null, null, $respuesta, 'admin')) {
         registrarAccion('responder', 'reclamaciones', $idReclamacion);
         $_SESSION['exito'] = "La respuesta ha sido enviada correctamente.";

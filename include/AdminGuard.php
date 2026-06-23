@@ -31,7 +31,7 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
 // para que pueda usar una comprobación no rotatoria (non-rotating) que permita toggles consecutivos.
 $isToggleFeature = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/controladores/admin/configuracion/toggle_feature.php') !== false;
 
-if (!$isToggleFeature && $_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken()) {
+if (!$isToggleFeature && $_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuard) {
         header('Content-Type: application/json');
         echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.']);

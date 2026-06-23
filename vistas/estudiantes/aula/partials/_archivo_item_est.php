@@ -1,7 +1,7 @@
 <?php
 // Partial: _archivo_item_est.php (estudiante - sin borrar)
 $ext  = $arch['extension'];
-$url  = '../../../public/uploads/aula/archivos/' . htmlspecialchars($arch['nombreArchivo'], ENT_QUOTES);
+$url  = '../../../public/uploads/aula/archivos/' . Security::escapeHtml($arch['nombreArchivo']);
 $iconClass = $ext === 'pdf' ? 'pdf' : ($ext === 'docx' ? 'docx' : 'txt');
 $faIcon    = $ext === 'pdf' ? 'fa-file-pdf' : ($ext === 'docx' ? 'fa-file-word' : 'fa-file-alt');
 $tamStr    = $arch['tamanio'] > 0

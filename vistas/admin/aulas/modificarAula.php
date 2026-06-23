@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
+require_once __DIR__ . "/../../../include/form_helpers.php";
 require_once __DIR__ . "/../../../modelos/aulas.php";
 
 $exito   = $_SESSION['exito'] ?? '';
@@ -34,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idAula" value="<?= (int)$aula['idAula'] ?>">
         <div class="formulario">
             <div class="form-fila">
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'planta') ?>">
                     <label for="planta">Planta</label>
                     <select name="planta" id="planta">
                         <?php for ($p = 0; $p <= 5; $p++) { ?>
@@ -43,10 +44,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </option>
                         <?php } ?>
                     </select>
+                    <?= fieldError($errores, 'planta') ?>
                 </div>
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'numero') ?>">
                     <label for="numero">Número de aula (en la planta)</label>
                     <input type="number" name="numero" id="numero" min="1" max="99" value="<?= Security::escapeHtml($datos['numero'] ?? '') ?>">
+                    <?= fieldError($errores, 'numero') ?>
                 </div>
                 <div class="campo">
                     <label>Código resultante</label>
@@ -60,7 +63,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="form-fila">
-                <div class="campo">
+                <div class="campo<?= fieldClass($errores, 'tipoAula') ?>">
                     <label for="tipoAula">Tipo</label>
                     <select name="tipoAula" id="tipoAula">
                         <?php
@@ -69,6 +72,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <option value="<?= $val ?>" <?= (($datos['tipoAula'] ?? 'teoria') == $val) ? 'selected' : '' ?>><?= $lbl ?></option>
                         <?php } ?>
                     </select>
+                    <?= fieldError($errores, 'tipoAula') ?>
                 </div>
                 <div class="campo">
                     <label for="capacidad">Capacidad (opcional)</label>
