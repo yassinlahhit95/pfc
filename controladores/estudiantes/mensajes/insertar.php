@@ -13,6 +13,10 @@ require_once __DIR__ . "/../../firebase/firebase_helper.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['enviarMensaje'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/estudiantes/mensajes/agregar.php"); exit;
+    }
     $idEstudiante = $_SESSION['idEstudiante']; // Siempre de la sesión (no falsificable)
     $idProfesor   = (int)($_POST['idProfesor'] ?? 0);
     $asunto       = trim($_POST['asunto']);

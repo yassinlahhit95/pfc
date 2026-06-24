@@ -1,10 +1,16 @@
 <?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/anuncios/agregarAnuncio.php");
     exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/anuncios/agregarAnuncio.php"); exit;
 }
 
 $titulo    = Security::sanitize($_POST['titulo'] ?? '');
@@ -27,6 +33,7 @@ if ($errores) {
 $ok = insertarAnuncio($titulo, $mensaje, $dirigidoA);
 
 if ($ok) {
+    registrarAccionSecretaria('insertar', 'anuncios', null, $titulo);
     $_SESSION['exito'] = "Aviso publicado correctamente.";
 } else {
     $_SESSION['errores'] = "Error al publicar el aviso.";

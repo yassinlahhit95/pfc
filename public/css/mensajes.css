@@ -250,7 +250,7 @@
 .inbox-empty p { font-size: 14px; font-weight: 600; }
 
 /* ── Detail view ───────────────────────────────────────────── */
-.msg-page { padding-bottom: 40px; }
+.msg-page { padding-bottom: max(40px, calc(40px + env(safe-area-inset-bottom))); }
 
 .msg-card {
   background: var(--surface);
@@ -632,7 +632,7 @@
 }
 .msg-thread-reply {
   border-top: 1px solid var(--border);
-  padding: 14px 16px 16px;
+  padding: 14px 16px max(16px, calc(16px + env(safe-area-inset-bottom)));
   display: flex;
   gap: 10px;
   align-items: flex-end;
@@ -673,6 +673,72 @@
   transition: opacity .15s;
 }
 .msg-thread-send:hover { opacity: .82; }
+
+/* ── Thread foot (time + editado + edit btn) ───────────────── */
+.msg-thread-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+.msg-thread-row.mine .msg-thread-foot { justify-content: flex-end; }
+
+.msg-editado-chip {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--mut);
+  letter-spacing: .03em;
+  opacity: .7;
+}
+
+.msg-edit-btn {
+  background: none;
+  border: none;
+  color: var(--mut);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity .15s, color .15s, background .15s;
+  line-height: 1;
+}
+.msg-thread-row:hover .msg-edit-btn { opacity: 1; }
+.msg-edit-btn:hover { color: var(--accent); background: color-mix(in oklab, var(--accent) 10%, transparent); }
+
+/* ── Inline edit form ──────────────────────────────────────── */
+.msg-thread-bubble.editing {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--accent) !important;
+  padding: 10px 12px !important;
+}
+.msg-edit-ta {
+  width: 100%;
+  min-height: 60px;
+  max-height: 200px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  display: block;
+  box-sizing: border-box;
+}
+.msg-edit-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+.msg-edit-actions .ibtn {
+  padding: 6px 14px;
+  font-size: 12px;
+}
 
 /* ── Visto button in list ──────────────────────────────────── */
 .inbox-row-outer {

@@ -11,21 +11,10 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 $datosAdmin_menu    = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreUsuario_menu = $datosAdmin_menu['nombreDirector'] ?? 'Administrador';
 
-// Single aggregate query replaces the previous 14 individual COUNT(*) queries.
-$_nav_counts = obtenerContadoresNavAdmin();
-$totalEstudiantes_menu = $_nav_counts['total_estudiantes'] ?? 0;
-$totalProfesores_menu  = $_nav_counts['total_profesores']  ?? 0;
-$totalTutores_menu     = $_nav_counts['total_tutores']     ?? 0;
-$totalDirectores_menu  = $_nav_counts['total_directores']  ?? 0;
-$totalPagos_menu       = $_nav_counts['total_pagos']       ?? 0;
-$totalAnuncios_menu    = $_nav_counts['total_anuncios']    ?? 0;
-$totalMensajes_menu    = $_nav_counts['total_mensajes']    ?? 0;
-$totalSinLeer_menu     = $_nav_counts['total_sin_leer']    ?? 0;
-$totalCiclos_menu      = $_nav_counts['total_ciclos']      ?? 0;
-$totalModulos_menu     = $_nav_counts['total_modulos']     ?? 0;
-$totalRetos_menu       = $_nav_counts['total_retos']       ?? 0;
-$totalInventario_menu  = $_nav_counts['total_inventario']  ?? 0;
-$totalPrestamos_menu   = $_nav_counts['total_prestamos']   ?? 0;
+$_nav_counts = obtenerContadoresNavAdmin((int)($_SESSION['idAdmin'] ?? 0));
+$totalSinLeer_menu              = $_nav_counts['total_sin_leer']              ?? 0;
+$totalAdmisionesPendientes_menu = $_nav_counts['total_admisiones_pendientes'] ?? 0;
+$totalChatNoLeidos_menu         = $_nav_counts['total_chat_no_leidos']        ?? 0;
 
 // Notification panel: recent unread messages for admin (max 3)
 $_notif_msgs_admin = [];
@@ -99,21 +88,18 @@ function _nav_active_admin($check) {
       <a href="../estudiantes/verEstudiantes.php" class="nav-item<?= _nav_active_admin('estudiantes') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Estudiantes</span>
-        <?php if ($totalEstudiantes_menu > 0) { ?><span class="nav-badge"><?= $totalEstudiantes_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('estudiantes') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../ciclos/verCiclos.php" class="nav-item<?= _nav_active_admin('ciclos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
         <span class="nav-label">Ciclos Formativos</span>
-        <?php if ($totalCiclos_menu > 0) { ?><span class="nav-badge"><?= $totalCiclos_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('ciclos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../modulos/verModulos.php" class="nav-item<?= _nav_active_admin('modulos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg></span>
         <span class="nav-label">Módulos</span>
-        <?php if ($totalModulos_menu > 0) { ?><span class="nav-badge"><?= $totalModulos_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
@@ -121,7 +107,6 @@ function _nav_active_admin($check) {
       <a href="../retos/verRetos.php" class="nav-item<?= _nav_active_admin('retos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
         <span class="nav-label">Retos</span>
-        <?php if ($totalRetos_menu > 0) { ?><span class="nav-badge"><?= $totalRetos_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('retos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
@@ -169,6 +154,7 @@ function _nav_active_admin($check) {
       <a href="../admisiones/listado.php" class="nav-item<?= _nav_active_admin('admisiones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
         <span class="nav-label">Admisiones</span>
+        <?php if ($totalAdmisionesPendientes_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalAdmisionesPendientes_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('admisiones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
@@ -178,22 +164,25 @@ function _nav_active_admin($check) {
       <a href="../directores/verDirectores.php" class="nav-item<?= _nav_active_admin('directores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
         <span class="nav-label">Directores</span>
-        <?php if ($totalDirectores_menu > 0) { ?><span class="nav-badge"><?= $totalDirectores_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('directores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../profesores/verProfesores.php" class="nav-item<?= _nav_active_admin('profesores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Profesores</span>
-        <?php if ($totalProfesores_menu > 0) { ?><span class="nav-badge"><?= $totalProfesores_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('profesores') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_admin('tutores') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav-label">Sistema Parental</span>
-        <?php if ($totalTutores_menu > 0) { ?><span class="nav-badge"><?= $totalTutores_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('tutores') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
+      <a href="../secretarias/verSecretarias.php" class="nav-item<?= _nav_active_admin('secretarias') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11v4M10 13h4"/></svg></span>
+        <span class="nav-label">Secretarias</span>
+        <?php if (_nav_active_admin('secretarias') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <!-- COMUNICACIÓN -->
@@ -203,7 +192,6 @@ function _nav_active_admin($check) {
       <a href="../anuncios/gestionAnuncios.php" class="nav-item<?= _nav_active_admin('anuncios') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="nav-label">Avisos</span>
-        <?php if ($totalAnuncios_menu > 0) { ?><span class="nav-badge"><?= $totalAnuncios_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
@@ -212,7 +200,7 @@ function _nav_active_admin($check) {
       <a href="../mensajes/lista.php" class="nav-item<?= _nav_active_admin('reclamaciones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
         <span class="nav-label">Mensajeria</span>
-        <?php if ($totalMensajes_menu > 0) { ?><span class="nav-badge<?= ($totalSinLeer_menu > 0) ? ' nav-badge-alert' : '' ?>"><?= $totalMensajes_menu ?></span><?php } ?>
+        <?php if ($totalSinLeer_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalSinLeer_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('reclamaciones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
@@ -221,6 +209,7 @@ function _nav_active_admin($check) {
       <a href="../chat/index.php" class="nav-item<?= _nav_active_admin('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
+        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
@@ -240,7 +229,6 @@ function _nav_active_admin($check) {
       <a href="../pagos/verPagosGeneral.php" class="nav-item<?= _nav_active_admin('pagos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
         <span class="nav-label">Pagos</span>
-        <?php if ($totalPagos_menu > 0) { ?><span class="nav-badge"><?= $totalPagos_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('pagos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
@@ -260,14 +248,12 @@ function _nav_active_admin($check) {
       <a href="../inventario/verInventario.php" class="nav-item<?= _nav_active_admin('inventario') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
         <span class="nav-label">Inventario</span>
-        <?php if ($totalInventario_menu > 0) { ?><span class="nav-badge"><?= $totalInventario_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('inventario') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
       <a href="../inventario/gestionarPrestamos.php" class="nav-item<?= _nav_active_admin('prestamos') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span>
         <span class="nav-label">Préstamos</span>
-        <?php if ($totalPrestamos_menu > 0) { ?><span class="nav-badge"><?= $totalPrestamos_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('prestamos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>

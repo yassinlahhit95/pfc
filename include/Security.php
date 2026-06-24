@@ -129,8 +129,19 @@ class Security {
         $_SESSION = [];
         if (ini_get('session.use_cookies')) {
             $p = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $p['path'] ?? '/', $p['domain'] ?? '', !empty($p['secure']), true);
+            if (PHP_VERSION_ID >= 70300) {
+                setcookie(session_name(), '', [
+                    'expires'  => time() - 42000,
+                    'path'     => $p['path']   ?? '/',
+                    'domain'   => $p['domain'] ?? '',
+                    'secure'   => !empty($p['secure']),
+                    'httponly' => true,
+                    'samesite' => $p['samesite'] ?? 'Lax',
+                ]);
+            } else {
+                setcookie(session_name(), '', time() - 42000,
+                    ($p['path'] ?? '/') . '; SameSite=Lax', $p['domain'] ?? '', !empty($p['secure']), true);
+            }
         }
         @session_destroy();
     }
@@ -367,6 +378,36 @@ class Security {
     // ══════════════════════════════════════════════════════════════════════
     // UTILIDADES
     // ══════════════════════════════════════════════════════════════════════
+
+    public static function getCountryFromIP($ip = null) {
+        if ($ip === null) {
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        }
+        
+        // 1. If using Cloudflare, this is instantly available and highly accurate
+        if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
+            return strtoupper($_SERVER['HTTP_CF_IPCOUNTRY']);
+        }
+        
+        // Localhost bypass
+        if ($ip === '127.0.0.1' || $ip === '::1' || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
+            return 'ES'; // Treat localhost as allowed (Spain) to prevent dev lockout
+        }
+
+        // 2. Fallback to free API (ip-api.com)
+        try {
+            $ctx = stream_context_create(['http' => ['timeout' => 2]]);
+            $json = @file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode", false, $ctx);
+            if ($json) {
+                $data = json_decode($json, true);
+                if (!empty($data['countryCode'])) {
+                    return strtoupper($data['countryCode']);
+                }
+            }
+        } catch (\Throwable $th) {}
+
+        return 'UNKNOWN';
+    }
 
     public static function escapeHtml($value) {
         return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');

@@ -28,6 +28,7 @@ function obtenerConfiguracionCentro() {
         'feature_gastos'          => 1,
         'feature_informes'        => 1,
         'feature_horario'         => 1,
+        'feature_geoblock_admin'  => 1,
     ];
 }
 
@@ -62,6 +63,7 @@ function actualizarFeatureToggle($feature, $estado) {
         'feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg',
         'feature_anuncios', 'feature_eventos', 'feature_retos', 'feature_mensajes',
         'feature_pagos', 'feature_gastos', 'feature_informes', 'feature_horario',
+        'feature_geoblock_admin'
     ];
     if (!in_array($feature, $featuresValidas)) return 'Funcionalidad no reconocida.';
     $sql  = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";

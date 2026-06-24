@@ -9,8 +9,15 @@ config/service-account.json
 # Dependencies
 vendor/
 
-# Uploads
+# Uploads — ignore content but track security .htaccess files
 public/uploads/
+!public/uploads/.htaccess
+!public/uploads/admisiones/.htaccess
+!public/uploads/justificantes/.htaccess
+!public/uploads/aula/.htaccess
+!public/uploads/pfc/.htaccess
+!public/uploads/retos/.htaccess
+!public/uploads/ejercicios/.htaccess
 
 # Logs
 logs/

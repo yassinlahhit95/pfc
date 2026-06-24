@@ -5,7 +5,8 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_retos');
-require_once "../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../include/upload_helpers.php";
 
 if (!isset($_POST['actualizarReto'])) {
     header("Location: ../../../vistas/profesores/retos/lista.php");
@@ -44,21 +45,8 @@ if (empty($horasReto)) {
     $errores['horasReto'] = "Las horas deben ser un número.";
 }
 
-// Validar que las horas no superen el máximo según días laborables
 if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horasReto) && is_numeric($horasReto) && $fechaInicio <= $fechaFin) {
-    $fechaInicioObj = new DateTime($fechaInicio);
-    $fechaFinObj    = new DateTime($fechaFin);
-    $diasLaborables = 0;
-
-    $tempIter = clone $fechaInicioObj;
-    while ($tempIter <= $fechaFinObj) {
-        if ($tempIter->format('N') < 6) {
-            $diasLaborables++;
-        }
-        $tempIter->modify('+1 day');
-    }
-
-    $maxHorasPermitidas = $diasLaborables * 6;
+    $maxHorasPermitidas = calcularMaxHorasLaborables($fechaInicio, $fechaFin);
     if ($horasReto > $maxHorasPermitidas) {
         $errores['horasReto'] = "Las horas ($horasReto h) superan el máximo permitido ($maxHorasPermitidas h).";
     }
@@ -103,22 +91,7 @@ if (!$_autorizado) {
 
 $resultado = actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasReto, $modulosSeleccionados);
 if ($resultado) {
-    if (!empty($_FILES['archivosReto']['name'][0])) {
-        $uploadDir = __DIR__ . "/../../../public/uploads/retos/";
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-        $permitidos = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'zip'];
-        foreach ($_FILES['archivosReto']['tmp_name'] as $key => $tmpName) {
-            if ($_FILES['archivosReto']['error'][$key] !== UPLOAD_ERR_OK) continue;
-            $fileName = $_FILES['archivosReto']['name'][$key];
-            $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            if (!in_array($fileExt, $permitidos)) continue;
-            $newFileName = bin2hex(random_bytes(8)) . '.' . $fileExt;
-            if (move_uploaded_file($tmpName, $uploadDir . $newFileName)) {
-                $tipo = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']) ? 'imagen' : 'pdf';
-                registrarArchivoReto($idReto, $fileName, "public/uploads/retos/" . $newFileName, $tipo);
-            }
-        }
-    }
+    procesarArchivosReto($idReto);
 
     $_SESSION['exito'] = "Reto actualizado correctamente.";
     header("Location: ../../../vistas/profesores/retos/lista.php");

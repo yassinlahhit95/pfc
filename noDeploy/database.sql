@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `aulas`;
 DROP TABLE IF EXISTS `account_lockout`;
 DROP TABLE IF EXISTS `rate_limits`;
 DROP TABLE IF EXISTS `login_intentos`;
+DROP TABLE IF EXISTS `cola_emails`;
 DROP TABLE IF EXISTS `auditoria`;
 DROP TABLE IF EXISTS `entregas_ejercicios`;
 DROP TABLE IF EXISTS `ejercicios`;
@@ -345,6 +346,8 @@ CREATE TABLE `reclamaciones` (
   `leido` tinyint(1) DEFAULT 0,
   `respuesta` text,
   `id_parent` int(11) DEFAULT NULL,
+  `editado` tinyint(1) NOT NULL DEFAULT 0,
+  `fecha_edicion` datetime DEFAULT NULL,
   PRIMARY KEY (`idReclamacion`),
   KEY `idx_rec_est`         (`idEstudiante`),
   KEY `idx_rec_prof`        (`idProfesor`),
@@ -546,7 +549,7 @@ CREATE TABLE `aula_notificaciones` (
   `idNotificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idUsuario` int(11) NOT NULL,
   `tipoUsuario` enum('profesor','estudiante','admin') NOT NULL,
-  `tipo` enum('archivo_subido','entrega_enviada','correccion','comentario') NOT NULL,
+  `tipo` enum('archivo_subido','entrega_enviada','correccion','comentario','sesion_nueva','sesion_modificada') NOT NULL,
   `titulo` varchar(150) NOT NULL,
   `mensaje` text DEFAULT NULL,
   `leida` tinyint(1) NOT NULL DEFAULT 0,
@@ -922,6 +925,21 @@ CREATE TABLE `asistencias` (
   CONSTRAINT `fk_asist_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `cola_emails` (
+  `id`                  int(11) NOT NULL AUTO_INCREMENT,
+  `destinatario_email`  varchar(255) NOT NULL,
+  `destinatario_nombre` varchar(150) NOT NULL,
+  `asunto`              varchar(255) NOT NULL,
+  `html_content`        longtext NOT NULL,
+  `estado`              enum('pendiente','enviado','fallido') NOT NULL DEFAULT 'pendiente',
+  `intentos`            tinyint(3) NOT NULL DEFAULT 0,
+  `ultimo_error`        text DEFAULT NULL,
+  `enviado_at`          datetime DEFAULT NULL,
+  `creado_at`           datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_cola_estado` (`estado`, `intentos`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `log_acciones` (
   `idLog`       int(11) NOT NULL AUTO_INCREMENT,
   `idAdmin`     int(11) DEFAULT NULL,
@@ -934,6 +952,20 @@ CREATE TABLE `log_acciones` (
   PRIMARY KEY (`idLog`),
   KEY `idx_log_fecha` (`fecha`),
   KEY `idx_log_admin` (`idAdmin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `log_secretaria_acciones` (
+  `id`           bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idSecretaria` int(11) DEFAULT NULL,
+  `accion`       varchar(100) NOT NULL,
+  `tabla`        varchar(80)  NOT NULL,
+  `idRegistro`   int(11) DEFAULT NULL,
+  `descripcion`  varchar(255) DEFAULT NULL,
+  `ip`           varchar(45)  DEFAULT NULL,
+  `fecha`        datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_lsa_secretaria` (`idSecretaria`),
+  KEY `idx_lsa_fecha`      (`fecha`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `rgpd_eliminaciones` (

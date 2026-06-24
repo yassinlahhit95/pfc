@@ -7,6 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/eventos/gestionEventos.php"); exit;
+}
+
 $idEvento    = (int)($_POST['idEvento'] ?? 0);
 $titulo      = Security::sanitize($_POST['tituloEvento'] ?? '');
 $descripcion = Security::sanitize($_POST['descripcionEvento'] ?? '');

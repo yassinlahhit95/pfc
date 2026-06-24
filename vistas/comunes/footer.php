@@ -57,6 +57,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php endif; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form').forEach(function(form) {
+        if (!form.querySelector('input[type="file"]')) return;
+        form.addEventListener('submit', function() {
+            var btn = form.querySelector('[type="submit"]');
+            if (!btn || btn.disabled) return;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+        });
+    });
+});
+</script>
 <footer style="text-align:center;padding:14px 24px;border-top:1px solid var(--border);margin-top:32px;">
     <nav style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;">
         <a href="/vistas/legal/aviso-legal.php" target="_blank" style="font-size:.78rem;color:var(--mut);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--mut)'">Aviso Legal</a>

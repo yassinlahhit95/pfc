@@ -80,7 +80,7 @@ if ($idEntrega) {
     Logger::activity('ENTREGA_ENVIADA', $idEstudiante, ['idEntrega' => $idEntrega, 'idTarea' => $idTarea]);
 
     // Notificar al profesor
-    insertarNotificacionAula($tarea['idProfesor'], 'profesor', 'ENTREGA_NUEVA', 'Nueva Entrega', 'Un estudiante ha entregado la tarea: ' . $tarea['titulo'], $idEntrega, 'ENTREGA');
+    insertarNotificacionAula($tarea['idProfesor'], 'profesor', 'entrega_enviada', 'Nueva Entrega', 'Un estudiante ha entregado la tarea: ' . $tarea['titulo'], $idEntrega, 'ENTREGA');
 
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");
 } else {

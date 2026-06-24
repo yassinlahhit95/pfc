@@ -7,6 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/inventario/gestionarPrestamos.php"); exit;
+}
+
 $idEstudiante  = (int)($_POST['idEstudiante'] ?? 0);
 $idArticulo    = (int)($_POST['idArticulo'] ?? 0);
 $fechaPrestamo = Security::sanitize($_POST['fechaPrestamo'] ?? '');

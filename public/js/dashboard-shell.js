@@ -317,8 +317,11 @@
     var collapseBtn = qs("#collapse");
     var sidebar = qs(".sidebar");
     if (collapseBtn && sidebar) {
+      if (state.sidebarCollapsed) sidebar.classList.add("collapsed");
       collapseBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("collapsed");
+        var nowCollapsed = sidebar.classList.toggle("collapsed");
+        state.sidebarCollapsed = nowCollapsed;
+        saveState();
       });
     }
 

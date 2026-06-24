@@ -10,6 +10,10 @@ if (!$esTutor || !$idCicloTutor) {
 }
 
 if (isset($_POST['actualizarModulo'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/modulos/lista.php"); exit;
+    }
     $idModulo = (int)($_POST['idModulo'] ?? 0);
     $nombre   = trim($_POST['nombreModulo'] ?? '');
     $horas    = (int)($_POST['horasMaximas'] ?? 0);

@@ -26,14 +26,23 @@ if (isset($_POST['guardarTutor'])) {
     }
     if (empty($dni)) $errores['dniTutor'] = "El DNI/NIE es obligatorio.";
 
-    if (empty($errores) && checkTutorExistente($dni, $email)) {
-        $errores['dniTutor'] = "Ya existe un familiar registrado con ese DNI o correo electrónico.";
-    }
-
     if (!empty($errores)) {
         $_SESSION['errores'] = $errores;
         $_SESSION['datos_tutor'] = $_POST;
         header("Location: ../../../vistas/admin/tutores/agregarTutor.php");
+        exit;
+    }
+
+    // If a tutor with the same DNI already exists, reuse them instead of creating a duplicate
+    $tutorExistente = obtenerTutorPorDni($dni);
+    if ($tutorExistente) {
+        $idExistente = (int)$tutorExistente['idTutor'];
+        foreach ($estudiantesVinculados as $idEst) {
+            $idEst = (int)$idEst;
+            if ($idEst > 0) vincularEstudianteTutor($idEst, $idExistente, $parentesco);
+        }
+        $_SESSION['exito'] = "El familiar ya estaba registrado (mismo DNI). Se han vinculado los nuevos estudiantes seleccionados.";
+        header("Location: ../../../vistas/admin/tutores/verTutores.php");
         exit;
     }
 

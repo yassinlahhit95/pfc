@@ -17,6 +17,10 @@ if ($idCiclo !== $idCicloTutor) {
     echo json_encode(['ok' => false, 'msg' => 'No tienes permiso para editar este ciclo.']); exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
+}
+
 if (!$idCiclo || !preg_match('/^\d{2}:\d{2}$/', $inicio) || !preg_match('/^\d{2}:\d{2}$/', $fin)) {
     echo json_encode(['ok' => false, 'msg' => 'Datos inválidos']); exit;
 }

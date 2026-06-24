@@ -240,14 +240,16 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
              FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
         $st = mysqli_prepare($con,
             "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
              FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
     } elseif ($rol === 'profesor') {
         $st = mysqli_prepare($con,
@@ -255,37 +257,37 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
              FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
         $st = mysqli_prepare($con,
             "SELECT idDirector AS uid, nombreDirector AS nombre, 'admin' AS rol
              FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
     } elseif ($rol === 'tutor') {
+        // Tutors can contact any professor at the school + directors
         $st = mysqli_prepare($con,
-            "SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, 'profesor' AS rol
-             FROM profesores p
-             JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
-             JOIN modulos m ON mp.idModulo = m.idModulo
-             JOIN estudiantes e ON m.idCiclo = e.idCiclo
-             JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
-             WHERE et.idTutor = ? AND p.nombreProfesor LIKE ?");
-        mysqli_stmt_bind_param($st, 'is', $id, $like);
+            "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol
+             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200");
+        mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
         $st = mysqli_prepare($con,
             "SELECT idDirector AS uid, nombreDirector AS nombre, 'admin' AS rol
              FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
     } else {
-        // Estudiante: profesores de su ciclo, directores/admin, compañeros de ciclo
+        // Estudiante: profesores del ciclo (via ciclo_profesor o modulo_profesor), directores, compañeros
         $stCiclo = mysqli_prepare($con, 'SELECT idCiclo FROM estudiantes WHERE idEstudiante = ?');
         mysqli_stmt_bind_param($stCiclo, 'i', $id);
         mysqli_stmt_execute($stCiclo);
@@ -296,20 +298,28 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
             $st = mysqli_prepare($con,
                 "SELECT DISTINCT p.idProfesor AS uid, p.nombreProfesor AS nombre, 'profesor' AS rol
                  FROM profesores p
-                 JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
-                 JOIN modulos m ON mp.idModulo = m.idModulo
-                 WHERE m.idCiclo = ? AND p.nombreProfesor LIKE ?
+                 WHERE p.idProfesor IN (
+                     SELECT mp.idProfesor FROM modulo_profesor mp
+                     JOIN modulos m ON mp.idModulo = m.idModulo WHERE m.idCiclo = ?
+                     UNION
+                     SELECT cp.idProfesor FROM ciclo_profesor cp WHERE cp.idCiclo = ?
+                 ) AND p.nombreProfesor LIKE ?
                  ORDER BY p.nombreProfesor LIMIT 50");
-            mysqli_stmt_bind_param($st, 'is', $idCiclo, $like);
+            mysqli_stmt_bind_param($st, 'iis', $idCiclo, $idCiclo, $like);
             mysqli_stmt_execute($st);
-            while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
-        } else {
+            $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
+        }
+
+        // Fallback: if no ciclo-specific professors found, show all professors
+        if (empty($results)) {
             $st = mysqli_prepare($con,
                 "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol
                  FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 50");
             mysqli_stmt_bind_param($st, 's', $like);
             mysqli_stmt_execute($st);
-            while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+            $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
         }
 
         $st = mysqli_prepare($con,
@@ -317,7 +327,8 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
              FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
-        while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
         if ($idCiclo > 0) {
             $st = mysqli_prepare($con,
@@ -327,7 +338,8 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
                  ORDER BY nombreEstudiante LIMIT 100");
             mysqli_stmt_bind_param($st, 'iis', $idCiclo, $id, $like);
             mysqli_stmt_execute($st);
-            while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($st))) $results[] = $row;
+            $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
         }
     }
 

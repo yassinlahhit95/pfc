@@ -53,7 +53,7 @@ if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
     foreach ($archivos as $arch) {
         $filePath = realpath(__DIR__ . "/../../" . ltrim($arch['rutaArchivo'], '/'));
         // Contención: solo se incluyen ficheros dentro de /public/uploads
-        if ($filePath && $baseDir && strpos($filePath, $baseDir) === 0 && is_file($filePath)) {
+        if ($filePath && $baseDir && strpos($filePath, $baseDir . DIRECTORY_SEPARATOR) === 0 && is_file($filePath)) {
             $zip->addFile($filePath, $arch['nombreArchivo']);
         }
     }

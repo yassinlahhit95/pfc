@@ -13,13 +13,11 @@ function contarProfesores(): int {
     return (int)(dbFetchOne("SELECT COUNT(*) as total FROM profesores")['total'] ?? 0);
 }
 
-function contarDirectores(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM directores")['total'] ?? 0);
+function contarSecretarias(): int {
+    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM secretarias")['total'] ?? 0);
 }
 
-function contarAnuncios(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM anuncios")['total'] ?? 0);
-}
+
 
 function contarCiclos(): int {
     return (int)(dbFetchOne("SELECT COUNT(*) as total FROM ciclos")['total'] ?? 0);
@@ -53,13 +51,7 @@ function contarRetos(): int {
     return (int)(dbFetchOne("SELECT COUNT(*) as total FROM retos")['total'] ?? 0);
 }
 
-function contarInventario(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM dispositivos")['total'] ?? 0);
-}
 
-function contarPrestamosActivos(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM prestamos WHERE estadoPrestamo = 'en curso'")['total'] ?? 0);
-}
 
 function obtenerTotalRecaudado(): float {
     return (float)(dbFetchOne("SELECT SUM(monto) as acumulado FROM pagos")['acumulado'] ?? 0);
@@ -75,9 +67,10 @@ function contarTFGsEntregados(): int {
     )['total'] ?? 0);
 }
 
-// Obtiene todos los contadores del nav de admin en una sola consulta (14 queries → 1).
-function obtenerContadoresNavAdmin(): array {
+// Obtiene todos los contadores del nav de admin en una sola consulta.
+function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
     $con = obtenerConexion();
+    $idAdmin = (int)$idAdmin;
     $res = mysqli_query($con,
         "SELECT
             (SELECT COUNT(*) FROM estudiantes)                                      AS total_estudiantes,
@@ -98,7 +91,14 @@ function obtenerContadoresNavAdmin(): array {
             (SELECT COUNT(*) FROM reclamaciones
              WHERE leido = 0
                AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL)
-                 OR (emisor_rol = 'profesor'   AND idEstudiante IS NULL)))          AS total_sin_leer"
+                 OR (emisor_rol = 'profesor'   AND idEstudiante IS NULL)))          AS total_sin_leer,
+            (SELECT COUNT(*) FROM pre_matriculas WHERE estado = 'PENDIENTE')        AS total_admisiones_pendientes,
+            (SELECT COUNT(*) FROM chat_mensajes m
+             JOIN chat_conversaciones c ON m.conversacion_id = c.id
+             WHERE m.leido = 0
+               AND NOT (m.emisor_rol = 'admin' AND m.emisor_id = {$idAdmin})
+               AND (  (c.user_a_rol = 'admin' AND c.user_a_id = {$idAdmin})
+                   OR (c.user_b_rol = 'admin' AND c.user_b_id = {$idAdmin})))      AS total_chat_no_leidos"
     );
     $row = $res ? mysqli_fetch_assoc($res) : [];
     return array_map('intval', $row ?: []);

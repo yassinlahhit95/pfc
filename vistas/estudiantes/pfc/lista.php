@@ -12,7 +12,7 @@ $tfg = obtenerTFGporEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MI TFG";
 $seccionActual = 'tfg';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 
 ?>
 

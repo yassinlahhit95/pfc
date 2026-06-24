@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../include/TutorGuard.php';
+require_once __DIR__ . '/../../../modelos/asistencias.php';
 $titulo_pagina = 'AulaPro Familias — Panel Principal';
 $seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
@@ -17,7 +18,11 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 </div>
 
 <div class="grid">
-  <?php foreach ($hijos as $hijo): ?>
+  <?php foreach ($hijos as $hijo):
+    $asist = contarResumenAsistencia((int)$hijo['idEstudiante']);
+    $totalDias = array_sum($asist);
+    $pctPresente = $totalDias > 0 ? round($asist['presente'] / $totalDias * 100) : 0;
+  ?>
     <a href="../estudiantes/expediente.php?id=<?= (int)$hijo['idEstudiante'] ?>" class="tile card-soft" style="--tint:#4F46E5; text-decoration:none">
       <span class="tile-sheen"></span>
       <span class="tile-ico">
@@ -26,6 +31,13 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-body">
         <span class="tile-label"><?= Security::escapeHtml($hijo['nombreEstudiante']) ?></span>
         <span class="tile-desc"><?= Security::escapeHtml($hijo['nombreCiclo']) ?></span>
+        <?php if ($totalDias > 0): ?>
+        <span class="tile-asist">
+          <span class="asist-dot asist-dot--<?= $asist['ausente'] > 0 ? 'warn' : 'ok' ?>"></span>
+          Asistencia: <?= $pctPresente ?>% &middot; <?= $asist['ausente'] ?> ausencia<?= $asist['ausente'] !== 1 ? 's' : '' ?>
+          <?php if ($asist['retraso'] > 0): ?>&middot; <?= $asist['retraso'] ?> retraso<?= $asist['retraso'] !== 1 ? 's' : '' ?><?php endif; ?>
+        </span>
+        <?php endif; ?>
       </span>
       <span class="tile-foot">
         <span class="tile-stat">Ver Expediente</span>
@@ -64,6 +76,25 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 </div>
+
+<style>
+.tile-asist {
+    display: block;
+    font-size: .75rem;
+    color: var(--dim);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.asist-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.asist-dot--ok   { background: #10b981; }
+.asist-dot--warn { background: #f59e0b; }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>

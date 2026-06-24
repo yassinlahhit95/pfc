@@ -39,6 +39,18 @@ if (isset($_POST['entregar'])) {
             header("Location: ../../../vistas/estudiantes/ejercicios/ver.php?id=$idEjercicio");
             exit;
         }
+        $mime = mime_content_type($archivo['tmp_name']);
+        $mimePermitidos = [
+            'application/pdf', 'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain', 'image/png', 'image/jpeg',
+            'application/zip', 'application/x-zip-compressed',
+        ];
+        if (!in_array($mime, $mimePermitidos)) {
+            $_SESSION['errores'] = "Tipo de archivo no permitido.";
+            header("Location: ../../../vistas/estudiantes/ejercicios/ver.php?id=$idEjercicio");
+            exit;
+        }
         $nombreArchivo = 'ENT_' . $idEstudiante . '_' . $idEjercicio . '_' . date('dmY_His') . '.' . $ext;
         $destino = __DIR__ . "/../../../public/uploads/ejercicios/entregas/" . $nombreArchivo;
         if (!is_dir(dirname($destino))) mkdir(dirname($destino), 0755, true);

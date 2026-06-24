@@ -3,9 +3,8 @@
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../config/Config.php';
+require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/firebase_helper.php';
-
-if (session_status() === PHP_SESSION_NONE) session_start();
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN

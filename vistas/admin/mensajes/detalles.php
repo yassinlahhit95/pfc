@@ -30,10 +30,10 @@ $hilo = obtenerHiloCompleto($idReclamacion);
 
 // Build header metadata
 if ($msg['emisor_rol'] === 'admin') {
-    $fromName = 'Dirección (Administración)';
+    $fromName = '';
     $fromAva  = 'msg-ava-lg inbox-ava-admin';
     $fromInit = 'AD';
-    $fromRtag = 'rtag-admin'; $fromRlabel = 'Admin';
+    $fromRtag = 'rtag-admin'; $fromRlabel = 'Dirección';
     if (!empty($msg['idEstudiante'])) {
         $toName = Security::escapeHtml($msg['nombreEstudiante'] ?? '—');
         $toRtag = 'rtag-alumno'; $toRlabel = 'Alumno';
@@ -48,13 +48,13 @@ if ($msg['emisor_rol'] === 'admin') {
     $fromInit = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2)));
     $fromAva  = 'msg-ava-lg inbox-ava-profe';
     $fromRtag = 'rtag-profe'; $fromRlabel = 'Profe';
-    $toName   = 'Dirección (Admin)'; $toRtag = 'rtag-admin'; $toRlabel = 'Admin';
+    $toName   = ''; $toRtag = 'rtag-admin'; $toRlabel = 'Dirección';
 } else {
     $fromName = Security::escapeHtml($msg['nombreEstudiante'] ?? '—');
     $fromInit = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2)));
     $fromAva  = 'msg-ava-lg inbox-ava-alumno';
     $fromRtag = 'rtag-alumno'; $fromRlabel = 'Alumno';
-    $toName   = 'Dirección (Admin)'; $toRtag = 'rtag-admin'; $toRlabel = 'Admin';
+    $toName   = ''; $toRtag = 'rtag-admin'; $toRlabel = 'Dirección';
 }
 
 $titulo_pagina = "AULAPRO | Mensaje";
@@ -69,7 +69,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="lista.php" class="ibtn ibtn-secondary">
             <i class="fas fa-arrow-left"></i> Volver al buzón
         </a>
-        <a href="borrarMensaje.php?id=<?= $idReclamacion ?>" class="ibtn ibtn-danger" style="margin-left:auto;">
+        <a href="#" class="ibtn ibtn-danger" style="margin-left:auto;"
+           data-modal-borrar
+           data-id="<?= $idReclamacion ?>"
+           data-tipo="Mensaje"
+           data-nombre="<?= Security::escapeHtml($msg['asunto'] ?? '—') ?>"
+           data-url="/controladores/admin/mensajes/borrar.php"
+           data-campo="idReclamacion"
+           data-redirect="/vistas/admin/mensajes/lista.php">
             <i class="fas fa-trash"></i> Eliminar
         </a>
     </div>
@@ -142,15 +149,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                 }
                 $timeStr   = date('d/m/Y H:i', strtotime($item['fecha']));
                 $contenido = $item['descripcion'] ?? '';
+                $esEditado = !empty($item['editado']);
             ?>
-            <div class="msg-thread-row <?= $isMine ? 'mine' : '' ?>">
+            <div class="msg-thread-row <?= $isMine ? 'mine' : '' ?>" data-msg-id="<?= (int)$item['idReclamacion'] ?>">
                 <div class="msg-thread-ava <?= $avaClass ?>"><?= $avaInit ?></div>
                 <div class="msg-thread-bubble-wrap">
                     <?php if (!$isMine): ?>
                     <div class="msg-thread-sender-name"><?= $senderLabel ?></div>
                     <?php endif; ?>
-                    <div class="msg-thread-bubble"><?= Security::escapeHtml($contenido) ?></div>
-                    <div class="msg-thread-time"><?= $timeStr ?></div>
+                    <div class="msg-thread-bubble" data-original="<?= Security::escapeHtml($contenido) ?>"><?= Security::escapeHtml($contenido) ?></div>
+                    <div class="msg-thread-foot">
+                        <span class="msg-thread-time"><?= $timeStr ?></span>
+                        <?php if ($esEditado): ?><span class="msg-editado-chip">Editado</span><?php endif; ?>
+                        <?php if ($isMine): ?>
+                        <button class="msg-edit-btn" data-msg-id="<?= (int)$item['idReclamacion'] ?>" title="Editar mensaje">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -172,6 +188,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include '../comunes/footer.php'; ?>
 <script src="../../../public/js/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/mensajes.js') ?>"></script>
 <script>
+window.MSG_EDIT_URL = '/controladores/admin/mensajes/editar.php';
 (function () {
     var body = document.getElementById('thread-body');
     if (body) body.scrollTop = body.scrollHeight;

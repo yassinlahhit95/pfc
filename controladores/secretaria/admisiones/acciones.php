@@ -5,6 +5,11 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 $action = $_GET['action'] ?? '';
 
 if ($action === 'update_status') {
+    if (!Security::validateCSRFToken()) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+        exit;
+    }
     $idPreMatricula = (int)($_POST['idPreMatricula'] ?? 0);
     $estado         = Security::sanitize($_POST['estado'] ?? '');
     $observaciones  = Security::sanitize($_POST['observaciones'] ?? '');

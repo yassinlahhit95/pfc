@@ -1,7 +1,7 @@
 <?php
 // Sirve un recurso del aula para visualización (inline) o descarga (attachment).
 // Registra el acceso del estudiante para control de lectura y estadísticas de uso.
-session_start();
+require_once __DIR__ . "/../../include/Security.php"; // enforces session fingerprint + idle timeout
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../modelos/modulos.php";
 
@@ -39,8 +39,13 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-$ruta = __DIR__ . "/../../public/uploads/aula/archivos/" . $archivo['nombreArchivo'];
-if (!file_exists($ruta)) { http_response_code(404); exit('El fichero ya no existe.'); }
+$uploadDir = realpath(__DIR__ . "/../../public/uploads/aula/archivos");
+$ruta      = ($uploadDir !== false)
+    ? realpath($uploadDir . DIRECTORY_SEPARATOR . $archivo['nombreArchivo'])
+    : false;
+if (!$ruta || !$uploadDir || strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0 || !is_file($ruta)) {
+    http_response_code(404); exit('El fichero ya no existe.');
+}
 
 if ($esEstudiante) {
     registrarAccesoArchivoAula($idArchivo, $_SESSION['idEstudiante'], $modo === 'descarga' ? 'descarga' : 'vista');

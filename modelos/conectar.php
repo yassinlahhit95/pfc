@@ -24,9 +24,14 @@ function obtenerConexion() {
     }
     // Prefix 'p:' enables persistent connection pooling — PHP-FPM workers reuse
     // existing connections instead of opening new ones under load.
-    $conexion = @mysqli_connect('p:' . $host, $user, $pass, $db);
+    try {
+        $conexion = @mysqli_connect('p:' . $host, $user, $pass, $db);
+    } catch (Exception $e) {
+        $conexion = false;
+    }
     if (!$conexion) {
-        error_log("Fallo al conectar a la BD: " . mysqli_connect_error());
+        $msg = isset($e) ? $e->getMessage() : mysqli_connect_error();
+        error_log("Fallo al conectar a la BD: " . $msg);
         http_response_code(503);
         exit("Error de conexión a la base de datos. Inténtelo más tarde.");
     }

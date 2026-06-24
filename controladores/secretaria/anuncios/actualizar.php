@@ -7,6 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/anuncios/gestionAnuncios.php"); exit;
+}
+
 $idAnuncio       = (int)($_POST['idAnuncio'] ?? 0);
 $titulo          = Security::sanitize($_POST['titulo'] ?? '');
 $mensaje         = Security::sanitize($_POST['mensaje'] ?? '');

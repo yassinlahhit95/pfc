@@ -1,10 +1,16 @@
 <?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/eventos/agregarEvento.php");
     exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/eventos/agregarEvento.php"); exit;
 }
 
 $titulo      = Security::sanitize($_POST['tituloEvento'] ?? '');
@@ -26,6 +32,7 @@ if ($errores) {
 $ok = insertarEvento($titulo, $descripcion, $fecha, $hora, $ubicacion);
 
 if ($ok) {
+    registrarAccionSecretaria('insertar', 'eventos', null, $titulo);
     $_SESSION['exito'] = "Evento creado correctamente.";
 } else {
     $_SESSION['errores'] = "Error al crear el evento.";

@@ -1,4 +1,8 @@
 /* ── Chat layout ─────────────────────────────────────────────────────────── */
+.content:has(> .chat-page) {
+  padding: 0;
+  overflow: hidden;
+}
 .chat-page {
   display: flex;
   height: calc(100vh - 72px);

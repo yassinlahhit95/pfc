@@ -7,6 +7,10 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../modelos/horarios.php';
 
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════

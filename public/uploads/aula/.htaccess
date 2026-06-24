@@ -1,0 +1,11 @@
+# Direct HTTP access to classroom files is DENIED.
+# Files are served exclusively through controladores/aula/verArchivo.php
+# which enforces session auth + IDOR checks.
+# PHP's readfile() is a filesystem op and is NOT subject to these Apache rules.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

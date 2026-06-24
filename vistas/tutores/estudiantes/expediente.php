@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/../../../include/TutorGuard.php';
+require_once __DIR__ . "/../../../modelos/calificaciones.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/asistencias.php";
 $titulo_pagina = 'AulaPro Familias — Expediente Académico';
 $seccion       = 'inicio';
 include __DIR__ . '/../comunes/nav.php';
-
-require_once __DIR__ . "/../../../modelos/calificaciones.php";
-require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $idEstudiante = (int)($_GET['id'] ?? 0);
 
@@ -14,13 +14,12 @@ if (empty($idEstudiante)) {
     exit;
 }
 
-// Verificar que el estudiante pertenezca al tutor
 $hijos = listarEstudiantesPorTutor($_SESSION['idTutor']);
-$esHijo = false;
+$esHijo    = false;
 $estudiante = null;
 foreach ($hijos as $h) {
-    if ($h['idEstudiante'] == $idEstudiante) {
-        $esHijo = true;
+    if ((int)$h['idEstudiante'] === $idEstudiante) {
+        $esHijo    = true;
         $estudiante = $h;
         break;
     }
@@ -32,79 +31,125 @@ if (!$esHijo) {
 }
 
 $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
+$asist      = contarResumenAsistencia($idEstudiante);
+$totalDias  = array_sum($asist);
+$pctPresente = $totalDias > 0 ? round($asist['presente'] / $totalDias * 100) : null;
+
+$estadoColor = match($resultados['estado_global']) {
+    'APROBADO'  => 'verde',
+    'SUSPENSO'  => 'rojo',
+    default     => 'naranja',
+};
 ?>
 
-<div class="hero">
-  <div class="hero-text">
-    <div class="eyebrow">Expediente de</div>
+<div class="cabecera">
+  <div>
     <h1><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></h1>
-    <p class="sub"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?> — <?= Security::escapeHtml($estudiante['curso']) ?></p>
+    <p style="color:var(--dim);margin:2px 0 0"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?><?php if (!empty($estudiante['curso'])): ?> &mdash; <?= Security::escapeHtml($estudiante['curso']) ?><?php endif; ?></p>
+  </div>
+  <a href="../inicio/dashboard.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
+</div>
+
+<!-- Stat tiles -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px">
+  <div class="panel" style="padding:18px 20px">
+    <div style="font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Media Global</div>
+    <div style="font-size:1.9rem;font-weight:700;color:var(--accent)"><?= Security::escapeHtml((string)$resultados['promedio_global']) ?></div>
+  </div>
+  <div class="panel" style="padding:18px 20px">
+    <div style="font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Estado</div>
+    <div style="margin-top:2px"><span class="texto-estado <?= $estadoColor ?>"><?= Security::escapeHtml($resultados['estado_global']) ?></span></div>
+    <div style="font-size:.75rem;color:var(--dim);margin-top:6px">APROBADO = todos los módulos con nota final ≥ 5</div>
+  </div>
+  <?php if ($totalDias > 0): ?>
+  <div class="panel" style="padding:18px 20px">
+    <div style="font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Asistencia</div>
+    <div style="font-size:1.9rem;font-weight:700;color:var(--accent)"><?= $pctPresente ?>%</div>
+    <div style="font-size:.75rem;color:var(--dim);margin-top:2px"><?= $asist['presente'] ?> presentes &middot; <?= $asist['ausente'] ?> ausencias<?php if ($asist['justificado']): ?> &middot; <?= $asist['justificado'] ?> justif.<?php endif; ?></div>
+  </div>
+  <?php endif; ?>
+</div>
+
+<!-- Calificaciones -->
+<div class="panel">
+  <div class="panel-titulo-seccion">Calificaciones por Módulo</div>
+  <?php if (empty($resultados['detalles_modulos'])): ?>
+    <div class="panel-vacio">
+      <div class="panel-vacio-icono"><i class="fas fa-graduation-cap"></i></div>
+      <div class="panel-vacio-titulo">Sin calificaciones</div>
+      <div class="panel-vacio-desc">Todavía no hay notas registradas para este estudiante.</div>
+    </div>
+  <?php else: ?>
+  <div class="contenedor-tabla">
+    <table class="tabla-datos" id="tablaCalificaciones">
+      <thead>
+        <tr>
+          <th>Módulo</th>
+          <th style="text-align:center">Media Retos</th>
+          <th style="text-align:center">Media Exámenes</th>
+          <th style="text-align:center">Nota Final</th>
+          <th style="text-align:right">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($resultados['detalles_modulos'] as $det): ?>
+          <tr>
+            <td><strong><?= Security::escapeHtml($det['nombreModulo']) ?></strong></td>
+            <td style="text-align:center"><?= Security::escapeHtml((string)$det['media_retos']) ?></td>
+            <td style="text-align:center"><?= Security::escapeHtml((string)$det['media_notas']) ?></td>
+            <td style="text-align:center"><strong><?= Security::escapeHtml((string)$det['nota_final']) ?></strong></td>
+            <td style="text-align:right">
+              <?php
+              $chip = match($det['estado']) {
+                  'Aprobado' => 'verde',
+                  'Suspenso' => 'rojo',
+                  default    => 'gris',
+              };
+              ?>
+              <span class="texto-estado <?= $chip ?>"><?= Security::escapeHtml($det['estado']) ?></span>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif; ?>
+</div>
+
+<!-- Asistencia detallada -->
+<?php if ($totalDias > 0): ?>
+<div class="panel" style="margin-top:16px">
+  <div class="panel-titulo-seccion">Resumen de Asistencia</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:4px 0 8px">
+    <?php
+    $chips = [
+        'presente'    => ['verde',   'Presentes'],
+        'ausente'     => ['rojo',    'Ausencias'],
+        'retraso'     => ['naranja', 'Retrasos'],
+        'justificado' => ['azul',    'Justificadas'],
+    ];
+    foreach ($chips as $key => [$color, $label]):
+      if (!$asist[$key]) continue;
+    ?>
+    <div style="background:var(--surface-2);border-radius:8px;padding:12px 16px">
+      <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em"><?= $label ?></div>
+      <div style="font-size:1.6rem;font-weight:700;margin-top:2px"><span class="texto-estado <?= $color ?>"><?= $asist[$key] ?></span></div>
+    </div>
+    <?php endforeach; ?>
   </div>
 </div>
+<?php endif; ?>
 
-<div class="grid">
-    <div class="tile card-tint" style="--tint: #4f46e5;">
-        <div class="tile-ico"><i class="fas fa-graduation-cap"></i></div>
-        <div class="tile-body">
-            <div class="tile-label">Media Global</div>
-            <div class="tile-desc"><?= Security::escapeHtml($resultados['promedio_global']) ?></div>
-        </div>
-    </div>
-    
-    <div class="tile card-tint" style="--tint: <?= ($resultados['estado_global'] === 'APROBADO' ? '#10b981' : '#f59e0b') ?>;">
-        <div class="tile-ico"><i class="fas fa-info-circle"></i></div>
-        <div class="tile-body">
-            <div class="tile-label">Estado Actual</div>
-            <div class="tile-desc"><?= Security::escapeHtml($resultados['estado_global']) ?></div>
-        </div>
-    </div>
+<?php if (!empty($resultados['nota_tfg'])): ?>
+<div class="panel" style="margin-top:16px">
+  <div class="panel-titulo-seccion">Proyecto Final (TFG)</div>
+  <div style="display:flex;align-items:center;gap:16px;padding:4px 0 8px">
+    <div style="font-size:2rem;font-weight:700;color:var(--accent)"><?= Security::escapeHtml((string)$resultados['nota_tfg']) ?></div>
+    <?php if (!empty($resultados['obs_tfg'])): ?>
+    <div style="color:var(--dim);font-size:.9rem"><?= Security::escapeHtml($resultados['obs_tfg']) ?></div>
+    <?php endif; ?>
+  </div>
 </div>
-
-<div class="dash-panel mt-4">
-    <div class="dash-panel-head">
-        <h3>Calificaciones por Módulo</h3>
-    </div>
-    <div class="dash-panel-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th class="px-4">Módulo</th>
-                        <th class="text-center">Media Retos</th>
-                        <th class="text-center">Media Exámenes</th>
-                        <th class="text-center">Nota Final</th>
-                        <th class="text-end px-4">Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($resultados['detalles_modulos'] as $det): ?>
-                        <tr>
-                            <td class="px-4"><strong><?= Security::escapeHtml($det['nombreModulo']) ?></strong></td>
-                            <td class="text-center"><?= Security::escapeHtml($det['media_retos']) ?></td>
-                            <td class="text-center"><?= Security::escapeHtml($det['media_notas']) ?></td>
-                            <td class="text-center"><span class="badge bg-light text-dark border"><?= Security::escapeHtml($det['nota_final']) ?></span></td>
-                            <td class="text-end px-4">
-                                <?php
-                                $badgeClass = match($det['estado']) {
-                                    'Aprobado' => 'bg-success-soft text-success-dark',
-                                    'Suspenso' => 'bg-danger-soft text-danger-dark',
-                                    default => 'bg-light text-muted'
-                                };
-                                ?>
-                                <span class="badge-custom <?= $badgeClass ?>"><?= Security::escapeHtml($det['estado']) ?></span>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<style>
-    .bg-success-soft { background-color: #ecfdf5; color: #065f46; }
-    .bg-danger-soft { background-color: #fef2f2; color: #991b1b; }
-    .badge-custom { padding: 0.35em 0.85em; font-size: 0.75rem; font-weight: 600; border-radius: 50rem; display: inline-flex; align-items: center; }
-</style>
+<?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

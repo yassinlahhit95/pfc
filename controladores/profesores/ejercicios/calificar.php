@@ -9,6 +9,10 @@ require_once __DIR__ . "/../../../modelos/ejercicios.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['calificar'])) {
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/profesores/ejercicios/panel.php"); exit;
+    }
     $idEjercicio  = intval($_POST['idEjercicio'] ?? 0);
     $idEstudiante = intval($_POST['idEstudiante'] ?? 0);
     $nota         = floatval(str_replace(',', '.', $_POST['nota'] ?? ''));

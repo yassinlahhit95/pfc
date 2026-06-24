@@ -10,10 +10,12 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
+require_once __DIR__ . "/../../../modelos/secretarias.php";
 
 $totalEstudiantes = contarEstudiantes();
 $totalProfesores  = contarProfesores();
 $totalTutores     = contarTutores();
+$totalSecretarias = contarSecretarias();
 $totalRetos       = contarRetos();
 $totalModulos     = contarModulos();
 $recaudado        = obtenerTotalRecaudado();
@@ -108,6 +110,22 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
     <span class="tile-foot">
       <span class="tile-stat"><?= $totalTutores ?> registrados</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+
+  <a href="../secretarias/verSecretarias.php" class="tile card-soft" style="--tint:#6366F1; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11v4M10 13h4"/></svg>
+      <?php if ($totalSecretarias > 0) { ?><span class="tile-badge"><?= $totalSecretarias ?></span><?php } ?>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Secretarias</span>
+      <span class="tile-desc">Personal administrativo</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat"><?= $totalSecretarias ?> registradas</span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>

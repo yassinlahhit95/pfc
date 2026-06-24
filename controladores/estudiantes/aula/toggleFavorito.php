@@ -9,6 +9,12 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 
 $esAjax = !empty($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
+if (!Security::validateCSRFToken()) {
+    if ($esAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false]); }
+    else { $_SESSION['errores'] = 'Solicitud inválida.'; header("Location: ../../../vistas/estudiantes/inicio/dashboard.php"); }
+    exit;
+}
+
 function responderFavorito($esAjax, $ok, $destino, $extra = []) {
     if ($esAjax) {
         header('Content-Type: application/json');

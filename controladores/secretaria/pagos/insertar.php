@@ -1,10 +1,16 @@
 <?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/pagos/agregarPago.php");
     exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/pagos/agregarPago.php"); exit;
 }
 
 $idEstudiante   = (int)($_POST['idEstudiante'] ?? 0);
@@ -28,6 +34,7 @@ if ($errores) {
 $ok = insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo ?: null);
 
 if ($ok) {
+    registrarAccionSecretaria('insertar', 'pagos', null, "$tipoPago — {$monto}€");
     $_SESSION['exito'] = "Pago registrado correctamente.";
 } else {
     $_SESSION['errores'] = "Error al registrar el pago.";

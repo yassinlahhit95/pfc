@@ -12,6 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud no válida.']); exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
+}
+
 $idCiclo    = (int)($_POST['idCiclo'] ?? 0);
 $dia        = trim($_POST['dia'] ?? '');
 $horaInicio = trim($_POST['horaInicio'] ?? '');

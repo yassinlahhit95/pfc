@@ -1,5 +1,11 @@
 var _paginaciones = {};
 
+(function() {
+    var s = document.createElement('style');
+    s.textContent = 'tr.pag-oculta{display:none}';
+    document.head.appendChild(s);
+})();
+
 function iniciarPaginacion(tablaId, filasPorPagina) {
     if ($('#' + tablaId).length === 0) return;
     _paginaciones[tablaId] = { filasPorPagina: filasPorPagina, paginaActual: 1 };
@@ -24,9 +30,9 @@ function _mostrarPaginaTabla(tablaId, pagina) {
     var inicio = (pagina - 1) * config.filasPorPagina;
     var fin = inicio + config.filasPorPagina;
 
-    $.each(filas, function(_, tr) { $(tr).hide(); });
+    $.each(filas, function(_, tr) { tr.classList.add('pag-oculta'); });
     $.each(visibles, function(idx, tr) {
-        if (idx >= inicio && idx < fin) $(tr).show();
+        if (idx >= inicio && idx < fin) tr.classList.remove('pag-oculta');
     });
 
     _renderControles(tablaId, pagina, total, totalFilas, inicio, fin);

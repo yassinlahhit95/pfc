@@ -114,15 +114,15 @@ function vincularEstudianteTutor($idEstudiante, $idTutor, $parentesco) {
     return mysqli_stmt_execute($stmt);
 }
 
-function checkTutorExistente($dni, $email) {
+function obtenerTutorPorDni(string $dni): ?array {
     $con = obtenerConexion();
-    $sql = "SELECT idTutor FROM tutores WHERE dniTutor = ? OR emailTutor = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $dni, $email);
+    $stmt = mysqli_prepare($con, "SELECT * FROM tutores WHERE dniTutor = ? LIMIT 1");
+    mysqli_stmt_bind_param($stmt, "s", $dni);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_num_rows($res) > 0;
+    return mysqli_fetch_assoc($res) ?: null;
 }
+
 
 /**
  * Cuenta el total de tutores en el sistema

@@ -51,7 +51,7 @@ Options -Indexes
 
 # Bloquear acceso directo a archivos sensibles (Apache 2.4)
 <IfModule mod_authz_core.c>
-    <FilesMatch "(\.env|\.user\.ini|composer\.(json|lock)|database\.sql|\.htpasswd|\.gitignore)$">
+    <FilesMatch "(\.env(.*)|\.user\.ini|composer\.(json|lock)|database\.sql|\.htpasswd|\.gitignore)$">
         Require all denied
     </FilesMatch>
 </IfModule>
@@ -94,8 +94,9 @@ ErrorDocument 500 /vistas/error.php
     Header always unset X-Powered-By
     Header always unset Server
 
-    # HSTS: activo solo bajo HTTPS
-    <If "%{HTTPS} == 'on'">
+    # HSTS: activo bajo HTTPS nativo o cuando Cloudflare indica HTTPS (Flexible SSL mode)
+    # X-Forwarded-Proto is safe to trust here because Cloudflare always overwrites it.
+    <If "%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'">
         Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
     </If>
 
@@ -106,17 +107,29 @@ ErrorDocument 500 /vistas/error.php
     Header always set X-Permitted-Cross-Domain-Policies "none"
 
     # CSP — permite self + recursos externos que usa la app (Firebase, Google Fonts, jQuery CDN)
-    # Elimina 'unsafe-inline' cuando migres los estilos/scripts inline a archivos externos.
+    #
+    # KNOWN LIMITATION — unsafe-inline in script-src and style-src:
+    #   'unsafe-inline' voids XSS protection. It is kept here because many PHP views emit
+    #   inline <script> and <style> blocks with server-side data.
+    #
+    # MIGRATION PATH — replace unsafe-inline with per-request nonces:
+    #   1. Security::initSession() generates a nonce: bin2hex(random_bytes(16))
+    #      and stores it in a static Security::$cspNonce property.
+    #   2. nav.php emits the CSP header via header() with 'nonce-{value}' instead of
+    #      'unsafe-inline', then removes this .htaccess CSP with Header always unset.
+    #   3. Every <script> and <style> tag in every view gets nonce="<?= Security::$cspNonce ?>".
+    #   Until that refactor is complete, the inline directives remain.
     Header always set Content-Security-Policy "\
 default-src 'self'; \
 base-uri 'self'; \
 object-src 'none'; \
 frame-ancestors 'none'; \
-img-src 'self' data: https:; \
+img-src 'self' data: https://aulapro.yassin.agency https://pfc.test https://lh3.googleusercontent.com https://firebasestorage.googleapis.com; \
 font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; \
 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; \
 script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://code.jquery.com https://cdn.jsdelivr.net; \
-connect-src 'self' https://*.googleapis.com wss://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebase.com https://www.gstatic.com https://api.brevo.com; \
+worker-src 'self' blob:; \
+connect-src 'self' https://fcmregistrations.googleapis.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com https://api.brevo.com; \
 form-action 'self'; \
 upgrade-insecure-requests"
 </IfModule>

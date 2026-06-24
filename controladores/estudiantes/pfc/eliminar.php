@@ -8,6 +8,11 @@ if (!FeatureGuard::check('feature_subida_tfg')) {
     header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
+}
+
 // Seguridad: SIEMPRE el id de la sesión, nunca el del formulario (evita IDOR)
 $idEstudiante  = $_SESSION['idEstudiante'];
 $datosTFG      = obtenerTFGporEstudiante($idEstudiante);

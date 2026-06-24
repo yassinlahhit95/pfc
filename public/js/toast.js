@@ -69,9 +69,10 @@
         var iconClass = isOk ? 'fa-check-circle' : isInfo ? 'fa-info-circle' : isWarn ? 'fa-exclamation-triangle' : 'fa-exclamation-circle';
         toast.innerHTML =
             '<i class="fas ' + iconClass + ' toast-icon"></i>' +
-            '<span class="toast-msg">' + message + '</span>' +
+            '<span class="toast-msg"></span>' +
             '<button class="toast-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>' +
             '<span class="toast-bar"></span>';
+        toast.querySelector('.toast-msg').textContent = message;
 
         var bar = toast.querySelector('.toast-bar');
         bar.style.cssText = 'width:100%;transition:width ' + DURATION + 'ms linear;';

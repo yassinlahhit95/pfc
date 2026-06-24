@@ -19,20 +19,6 @@ function listarProfesores() {
     return $lista;
 }
 
-function listarProfesoresTutores() {
-    $con = obtenerConexion();
-    $sql = "SELECT p.*, c.nombreCiclo AS nombreCicloTutor
-            FROM profesores p
-            LEFT JOIN ciclos c ON p.idCicloTutor = c.idCiclo
-            WHERE p.esTutor = 1
-            ORDER BY p.nombreProfesor ASC";
-    $resultado = mysqli_query($con, $sql);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $lista[] = $fila;
-    }
-    return $lista;
-}
 
 function obtenerProfesorPorId($id) {
     $con = obtenerConexion();
@@ -177,7 +163,7 @@ function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
 
 function actualizarPasswordProfesor($id, $pass) {
     $con = obtenerConexion();
-    $hash = password_hash($pass, PASSWORD_BCRYPT, ['cost' => 12]);
+    $hash = Security::hashPassword($pass);
     $sql = "UPDATE profesores SET password = ? WHERE idProfesor = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $hash, $id);

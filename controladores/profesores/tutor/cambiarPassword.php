@@ -8,6 +8,11 @@ if (empty($_SESSION['esTutor']) || empty($_SESSION['idCicloTutor'])) {
 }
 
 $idCicloTutor = (int)$_SESSION['idCicloTutor'];
+
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
+}
+
 $id   = (int)($_POST['id']   ?? 0);
 $pass = $_POST['nuevaPassword'] ?? '';
 

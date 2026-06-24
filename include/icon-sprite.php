@@ -1,7 +1,7 @@
 <?php
 // Sprite SVG de iconos de línea (estilo Lucide) para el sidebar.
 // Cada <symbol> usa viewBox 0 0 24 24; el trazo (stroke/fill) se define
-// en .ico dentro de public/css/sidebar.css. Uso: <svg class="ico"><use href="#ic-NOMBRE"/></svg>
+// Uso: <svg class="ico"><use href="#ic-NOMBRE"/></svg>
 if (!defined('ICON_SPRITE_LOADED')):
     define('ICON_SPRITE_LOADED', 1);
 ?>

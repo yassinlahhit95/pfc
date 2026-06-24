@@ -10,6 +10,10 @@ require_once __DIR__ . '/../../../modelos/horarios.php';
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
+}
+
 $idCiclo  = (int)($_POST['idCiclo']   ?? 0);
 $inicio   = trim($_POST['horaInicio'] ?? '');
 $fin      = trim($_POST['horaFin']    ?? '');

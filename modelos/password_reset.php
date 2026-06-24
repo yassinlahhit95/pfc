@@ -64,7 +64,7 @@ function marcarTokenUsado(string $token): void {
 
 function cambiarPasswordPorEmail(string $email, string $tipo, string $nuevaPassword): bool {
     $con  = obtenerConexion();
-    $hash = password_hash($nuevaPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+    $hash = Security::hashPassword($nuevaPassword);
     $map  = [
         'admin'      => ['directores', 'password', 'emailDirector'],
         'profesor'   => ['profesores',  'password', 'emailProfesor'],

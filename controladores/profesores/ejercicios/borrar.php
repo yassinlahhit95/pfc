@@ -4,6 +4,11 @@ require_once __DIR__ . "/../../../modelos/ejercicios.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header("Location: ../../../vistas/profesores/ejercicios/panel.php"); exit; }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/ejercicios/panel.php"); exit;
+}
+
 $idEjercicio = intval($_POST['id'] ?? 0);
 if ($idEjercicio > 0) {
     $ej = obtenerEjercicioPorId($idEjercicio);

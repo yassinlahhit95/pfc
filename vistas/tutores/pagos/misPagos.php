@@ -12,82 +12,78 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 $hijos = listarEstudiantesPorTutor($_SESSION['idTutor']);
 ?>
 
-<div class="hero">
-  <div class="hero-text">
-    <div class="eyebrow">Gestión Económica</div>
-    <h1>Mis <span>Pagos</span></h1>
-    <p class="sub">Consulte el estado financiero y los recibos de sus hijos matriculados.</p>
-  </div>
+<div class="cabecera">
+  <h1>Pagos y Recibos</h1>
 </div>
 
 <?php if (empty($hijos)): ?>
-    <div class="panel">
-        <p class="vacio">No hay estudiantes vinculados a su cuenta.</p>
+  <div class="panel">
+    <div class="panel-vacio">
+      <div class="panel-vacio-icono"><i class="fas fa-credit-card"></i></div>
+      <div class="panel-vacio-titulo">Sin estudiantes vinculados</div>
+      <div class="panel-vacio-desc">No hay estudiantes vinculados a su cuenta.</div>
     </div>
+  </div>
 <?php else: ?>
-    <?php foreach ($hijos as $hijo): 
-        $estadoFinan = obtenerEstadoFinancieroEstudiante($hijo['idEstudiante']);
-        $pagos = listarPagosPorEstudiante($hijo['idEstudiante']);
-    ?>
-        <div class="dash-panel mt-4">
-            <div class="dash-panel-head">
-                <h3><?= Security::escapeHtml($hijo['nombreEstudiante']) ?> <small class="text-muted">(<?= Security::escapeHtml($hijo['nombreCiclo']) ?>)</small></h3>
-            </div>
-            <div class="dash-panel-body">
-                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                    <div class="tile card-soft" style="--tint: #4f46e5; min-height: auto; padding: 15px;">
-                        <div class="tile-body">
-                            <div class="tile-label">Total del Ciclo</div>
-                            <div class="tile-desc"><?= number_format($estadoFinan['precioCiclo'], 2) ?> €</div>
-                        </div>
-                    </div>
-                    <div class="tile card-soft" style="--tint: #10b981; min-height: auto; padding: 15px;">
-                        <div class="tile-body">
-                            <div class="tile-label">Total Pagado</div>
-                            <div class="tile-desc"><?= number_format($estadoFinan['totalPagado'], 2) ?> €</div>
-                        </div>
-                    </div>
-                    <div class="tile card-soft" style="--tint: #ef4444; min-height: auto; padding: 15px;">
-                        <div class="tile-body">
-                            <div class="tile-label">Pendiente</div>
-                            <div class="tile-desc"><?= number_format($estadoFinan['restante'], 2) ?> €</div>
-                        </div>
-                    </div>
-                </div>
+  <?php foreach ($hijos as $hijo):
+    $estadoFinan = obtenerEstadoFinancieroEstudiante((int)$hijo['idEstudiante']);
+    $pagos       = listarPagosPorEstudiante((int)$hijo['idEstudiante']);
+    $pendiente   = max(0, $estadoFinan['restante']);
+  ?>
+  <div class="panel margen-abajo">
+    <div class="panel-titulo-seccion"><?= Security::escapeHtml($hijo['nombreEstudiante']) ?> &mdash; <span style="font-weight:400;color:var(--dim)"><?= Security::escapeHtml($hijo['nombreCiclo']) ?></span></div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="px-3">Fecha</th>
-                                <th>Concepto</th>
-                                <th>Monto</th>
-                                <th class="text-end px-3">Recibo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($pagos)): ?>
-                                <tr><td colspan="4" class="text-center py-3 text-muted">No se han registrado pagos todavía.</td></tr>
-                            <?php else: ?>
-                                <?php foreach ($pagos as $p): ?>
-                                    <tr>
-                                        <td class="px-3"><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
-                                        <td>Pago cuota <?= Security::escapeHtml($p['tipoPago']) ?></td>
-                                        <td class="fw-bold"><?= number_format($p['monto'], 2) ?> €</td>
-                                        <td class="text-end px-3">
-                                            <a href="#" class="btn btn-sm btn-outline-primary" title="Descargar Recibo (Próximamente)">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
+    <!-- Financial summary -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px">
+      <div style="background:var(--surface-2);border-radius:8px;padding:14px 16px">
+        <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Total ciclo actual</div>
+        <div style="font-size:1.4rem;font-weight:700;margin-top:4px"><?= number_format($estadoFinan['precioCiclo'], 2) ?> €</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:8px;padding:14px 16px">
+        <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Total pagado</div>
+        <div style="font-size:1.4rem;font-weight:700;margin-top:4px;color:#10b981"><?= number_format($estadoFinan['totalPagado'], 2) ?> €</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:8px;padding:14px 16px">
+        <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Pendiente</div>
+        <div style="font-size:1.4rem;font-weight:700;margin-top:4px;color:<?= $pendiente > 0 ? '#ef4444' : '#10b981' ?>"><?= number_format($pendiente, 2) ?> €</div>
+      </div>
+    </div>
+
+    <!-- Payment history table -->
+    <?php if (empty($pagos)): ?>
+      <div class="panel-vacio" style="padding:24px 0">
+        <div class="panel-vacio-icono"><i class="fas fa-receipt"></i></div>
+        <div class="panel-vacio-titulo">Sin pagos registrados</div>
+        <div class="panel-vacio-desc">No se han registrado pagos para este estudiante todavía.</div>
+      </div>
+    <?php else: ?>
+    <div class="contenedor-tabla">
+      <table class="tabla-datos" id="tablaPagos<?= (int)$hijo['idEstudiante'] ?>">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Concepto</th>
+            <th style="text-align:right">Importe</th>
+            <th style="text-align:right">Próx. vencimiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($pagos as $p): ?>
+            <tr>
+              <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
+              <td><?= Security::escapeHtml($p['tipoPago']) ?></td>
+              <td style="text-align:right;font-weight:600"><?= number_format((float)$p['monto'], 2) ?> €</td>
+              <td style="text-align:right;color:var(--dim)">
+                <?= !empty($p['fechaProximoPago']) ? date('d/m/Y', strtotime($p['fechaProximoPago'])) : '—' ?>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+    <?php endif; ?>
+  </div>
+  <?php endforeach; ?>
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

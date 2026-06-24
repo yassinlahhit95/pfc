@@ -155,18 +155,6 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
 /**
  * Records a consent event (terms acceptance, cookie consent, etc.)
  */
-function registrarConsentimiento(?int $idEstudiante, ?int $idTutor, string $tipo, string $ip, string $userAgent, string $texto = ''): void {
-    try {
-        $con = obtenerConexion();
-        $stmt = mysqli_prepare($con,
-            "INSERT INTO consentimientos (idEstudiante, idTutor, tipo, ip, userAgent, texto)
-             VALUES (?, ?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "iissss", $idEstudiante, $idTutor, $tipo, $ip, $userAgent, $texto);
-        mysqli_stmt_execute($stmt);
-    } catch (\Throwable $e) {
-        // Non-fatal
-    }
-}
 
 /**
  * Purges log_acciones entries older than $years years (LOPDGDD minimum: 3 years).

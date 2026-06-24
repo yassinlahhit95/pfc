@@ -2,10 +2,16 @@
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/estudiantes/agregarEstudiantes.php");
     exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/estudiantes/agregarEstudiantes.php"); exit;
 }
 
 $nombre         = Security::sanitize($_POST['nombre'] ?? '');
@@ -33,6 +39,7 @@ $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 $ok   = insertarEstudiante($nombre, $email, $hash, $idCiclo, $dni, $telefono, $direccion, $fechaNacimiento);
 
 if ($ok) {
+    registrarAccionSecretaria('insertar', 'estudiantes', null, $nombre);
     $_SESSION['exito'] = "Estudiante añadido correctamente.";
 } else {
     $_SESSION['errores'] = "Error al guardar el estudiante. El email puede estar en uso.";

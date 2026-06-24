@@ -120,7 +120,7 @@ function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
 
 function actualizarPasswordEstudiante($idEstudiante, $nuevaPassword) {
     $con = obtenerConexion();
-    $hash = password_hash($nuevaPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+    $hash = Security::hashPassword($nuevaPassword);
     $sql = "UPDATE estudiantes SET password = ? WHERE idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "si", $hash, $idEstudiante);

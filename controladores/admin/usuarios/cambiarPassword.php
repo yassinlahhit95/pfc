@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 header('Content-Type: application/json; charset=utf-8');
 
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']); exit;
+}
+
 $tipo = trim($_POST['tipo'] ?? '');
 $id   = (int)($_POST['id']   ?? 0);
 $pass = $_POST['nuevaPassword'] ?? '';

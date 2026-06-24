@@ -609,7 +609,6 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
 
 <!-- Script de carga dinámica de imágenes (basado en slots) -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="public/js/landing/image-slot.js"></script>
 <script src="public/js/landing/app.js"></script>
 
 </body>

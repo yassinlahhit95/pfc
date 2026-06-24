@@ -65,7 +65,7 @@ $idSesion = crearSesionViva($idModulo, $idProfesor, $titulo, $descripcion, $fech
 if ($idSesion) {
     $_SESSION['exito'] = 'Sesión viva creada exitosamente';
     Logger::activity('SESION_CREADA', $idProfesor, ['idSesion' => $idSesion, 'titulo' => $titulo]);
-    notificarEstudiantesPorModulo($idModulo, 'NUEVA_SESION', 'Nueva Sesión Viva', "Se ha programado una nueva sesión viva: $titulo el $fechaSesion a las $horaSesion", $idSesion, 'SESION');
+    notificarEstudiantesPorModulo($idModulo, 'sesion_nueva', 'Nueva Sesión Viva', "Se ha programado una nueva sesión viva: $titulo el $fechaSesion a las $horaSesion", $idSesion, 'SESION');
     header("Location: ../../vistas/profesores/aula/sesiones.php");
 } else {
     $_SESSION['errores'] = 'Error al crear la sesión. Inténtalo de nuevo.';

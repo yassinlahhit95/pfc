@@ -1,6 +1,20 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
+const HORAS_DIA_LABORAL = 6;
+
+function calcularMaxHorasLaborables(string $fechaInicio, string $fechaFin): int {
+    $ini = new DateTime($fechaInicio);
+    $fin = new DateTime($fechaFin);
+    $dias = 0;
+    $cur  = clone $ini;
+    while ($cur <= $fin) {
+        if ($cur->format('N') < 6) $dias++;
+        $cur->modify('+1 day');
+    }
+    return $dias * HORAS_DIA_LABORAL;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 //  RETOS
 // ══════════════════════════════════════════════════════════════════════

@@ -83,6 +83,14 @@ if (isset($_POST['actualizarReto'])) {
                 $fileName = $_FILES['archivosReto']['name'][$key];
                 $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                 if (!in_array($fileExt, $permitidos)) continue;
+                $mime = mime_content_type($tmpName);
+                $mimePermitidos = [
+                    'application/pdf', 'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'image/jpeg', 'image/png', 'image/gif',
+                    'application/zip', 'application/x-zip-compressed',
+                ];
+                if (!in_array($mime, $mimePermitidos)) continue;
                 $newFileName = bin2hex(random_bytes(8)) . '.' . $fileExt;
                 if (move_uploaded_file($tmpName, $uploadDir . $newFileName)) {
                     $tipo = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']) ? 'imagen' : 'pdf';

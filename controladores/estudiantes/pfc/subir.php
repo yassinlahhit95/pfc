@@ -16,6 +16,10 @@ if (isset($_POST['subirTFG'])) {
         $_SESSION['errores'] = "La entrega del TFG está cerrada en este momento.";
         header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
     }
+    if (!Security::validateCSRFToken()) {
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+        header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
+    }
     $idEstudiante = $_SESSION['idEstudiante']; // Siempre de la sesión (evita IDOR)
     $archivoTFG   = $_FILES['archivoTFG'] ?? null;
     $errores      = [];

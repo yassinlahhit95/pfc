@@ -48,6 +48,12 @@ $lineaNum   = 1;
 
 while (($row = fgetcsv($handle)) !== false) {
     $lineaNum++;
+    if ($lineaNum > 2001) {
+        $_SESSION['errores'] = "El CSV supera el límite de 2.000 filas. Divídelo en partes más pequeñas.";
+        fclose($handle);
+        header("Location: ../../../vistas/admin/profesores/verProfesores.php");
+        exit;
+    }
     if (count($row) < 2) continue;
     $data = array_combine($header, array_pad($row, count($header), ''));
 

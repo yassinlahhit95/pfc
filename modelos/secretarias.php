@@ -30,25 +30,11 @@ function obtenerSecretariaPorId($id) {
     return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
 }
 
-function listarSecretarias() {
-    $con  = obtenerConexion();
-    $res  = mysqli_query($con, "SELECT * FROM secretarias ORDER BY nombreSecretaria ASC");
-    $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) { $lista[] = $f; }
-    return $lista;
-}
 
 // ══════════════════════════════════════════════════════════════════════
 //  ESCRITURA
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarSecretaria($nombre, $email, $password) {
-    $con  = obtenerConexion();
-    $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-    $stmt = mysqli_prepare($con, "INSERT INTO secretarias (nombreSecretaria, emailSecretaria, password) VALUES (?, ?, ?)");
-    mysqli_stmt_bind_param($stmt, "sss", $nombre, $email, $hash);
-    return mysqli_stmt_execute($stmt) ? mysqli_insert_id($con) : false;
-}
 
 function actualizarSecretaria($id, $nombre, $email) {
     $con  = obtenerConexion();
@@ -59,15 +45,41 @@ function actualizarSecretaria($id, $nombre, $email) {
 
 function actualizarPasswordSecretaria($id, $password) {
     $con  = obtenerConexion();
-    $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    $hash = Security::hashPassword($password);
     $stmt = mysqli_prepare($con, "UPDATE secretarias SET password=?, pwd_changed_at=NOW(), must_change_password=0 WHERE idSecretaria=?");
     mysqli_stmt_bind_param($stmt, "si", $hash, $id);
     return mysqli_stmt_execute($stmt);
 }
 
-function actualizarTokenFCMSecretaria($id, $token) {
+function listarTodasLasSecretarias(): array {
+    $con = obtenerConexion();
+    $res = mysqli_query($con, "SELECT * FROM secretarias ORDER BY nombreSecretaria ASC");
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
+    return $lista;
+}
+
+function insertarSecretaria(string $nombre, string $email): int|false {
+    $con = obtenerConexion();
+    require_once __DIR__ . '/../include/credenciales.php';
+    [$hash] = generarCredencialesTemporales($email, $nombre, 'Secretaria');
+    $stmt = mysqli_prepare($con, "INSERT INTO secretarias (nombreSecretaria, emailSecretaria, password) VALUES (?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "sss", $nombre, $email, $hash);
+    if (mysqli_stmt_execute($stmt)) return mysqli_insert_id($con);
+    return false;
+}
+
+function eliminarSecretaria(int $id): bool {
     $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE secretarias SET token_fcm=? WHERE idSecretaria=?");
-    mysqli_stmt_bind_param($stmt, "si", $token, $id);
+    $stmt = mysqli_prepare($con, "DELETE FROM secretarias WHERE idSecretaria = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    return mysqli_stmt_execute($stmt) && mysqli_stmt_affected_rows($stmt) > 0;
+}
+
+function toggleActivoSecretaria(int $id, int $activo): bool {
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con, "UPDATE secretarias SET activoSecretaria = ? WHERE idSecretaria = ?");
+    mysqli_stmt_bind_param($stmt, "ii", $activo, $id);
     return mysqli_stmt_execute($stmt);
 }
+

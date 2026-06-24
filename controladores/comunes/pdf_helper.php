@@ -112,7 +112,7 @@ function generarPDFAceptacion($datos) {
         // SALIDA
         // ══════════════════════════════════════════════════════════════════════
         $destDir = __DIR__ . '/../../public/uploads/admisiones/documentos/';
-        if (!is_dir($destDir)) mkdir($destDir, 0777, true);
+        if (!is_dir($destDir)) mkdir($destDir, 0755, true);
 
         $fileName = 'aceptacion_' . preg_replace('/[^A-Za-z0-9]/', '', $datos['dni']) . '_' . time() . '.pdf';
         $filePath = $destDir . $fileName;

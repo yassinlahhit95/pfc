@@ -8,6 +8,12 @@ require_once __DIR__ . "/../../../modelos/aula.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/aula/recursos.php");
+    exit;
+}
+
 $idProfesor = $_SESSION['idProfesor'];
 $idModulo   = intval($_POST['idModulo'] ?? 0);
 $nombre     = trim($_POST['nombre'] ?? '');

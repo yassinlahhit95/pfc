@@ -110,6 +110,16 @@ unset($_SESSION['idAdmin'], $_SESSION['idProfesor'], $_SESSION['idEstudiante'], 
 
 $admin = validarLoginDirector($email, $pass);
 if ($admin) {
+    require_once __DIR__ . '/../include/FeatureGuard.php';
+    if (FeatureGuard::check('feature_geoblock_admin')) {
+        $country = Security::getCountryFromIP($ip);
+        if ($country !== 'ES') {
+            $_SESSION['errores'] = "Acceso denegado: Por motivos de seguridad, el panel de administración solo es accesible desde España.";
+            Logger::security('GEOBLOCK_ADMIN_BLOCKED', ['email' => $email, 'ip' => $ip, 'country' => $country, 'role' => 'admin']);
+            header("Location: ../vistas/login.php");
+            exit;
+        }
+    }
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();
@@ -164,6 +174,16 @@ if ($tutor) {
 
 $secretaria = validarLoginSecretaria($email, $pass);
 if ($secretaria) {
+    require_once __DIR__ . '/../include/FeatureGuard.php';
+    if (FeatureGuard::check('feature_geoblock_admin')) {
+        $country = Security::getCountryFromIP($ip);
+        if ($country !== 'ES') {
+            $_SESSION['errores'] = "Acceso denegado: Por motivos de seguridad, el panel de administración solo es accesible desde España.";
+            Logger::security('GEOBLOCK_ADMIN_BLOCKED', ['email' => $email, 'ip' => $ip, 'country' => $country, 'role' => 'secretaria']);
+            header("Location: ../vistas/login.php");
+            exit;
+        }
+    }
     Security::clearFailedLogins($email);
     $clearIpAttempts();
     Security::regenerateSession();

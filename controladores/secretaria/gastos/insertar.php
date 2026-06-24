@@ -7,6 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/gastos/agregarGasto.php"); exit;
+}
+
 $idCategoria      = (int)($_POST['idCategoria'] ?? 0);
 $idCiclo          = (int)($_POST['idCiclo'] ?? 0) ?: null;
 $concepto         = Security::sanitize($_POST['concepto'] ?? '');

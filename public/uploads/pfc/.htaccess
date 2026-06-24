@@ -1,0 +1,10 @@
+# Direct HTTP access to TFG/project files is DENIED.
+# Files are served exclusively through authenticated PHP endpoints.
+# PHP's readfile() is a filesystem op and is NOT subject to these Apache rules.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_retos');
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../include/upload_helpers.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -44,15 +45,7 @@ if (isset($_POST['guardarReto'])) {
     }
 
     if (!empty($fechaInicio) && !empty($fechaFin) && !empty($horas) && is_numeric($horas) && $fechaInicio <= $fechaFin) {
-        $fechaInicioObj = new DateTime($fechaInicio);
-        $fechaFinObj    = new DateTime($fechaFin);
-        $diasLaborables = 0;
-        $tempIter = clone $fechaInicioObj;
-        while ($tempIter <= $fechaFinObj) {
-            if ($tempIter->format('N') < 6) $diasLaborables++;
-            $tempIter->modify('+1 day');
-        }
-        $maxHoras = $diasLaborables * 6;
+        $maxHoras = calcularMaxHorasLaborables($fechaInicio, $fechaFin);
         if ($horas > $maxHoras) {
             $errores['horasReto'] = "Las horas ($horas h) superan el máximo permitido ($maxHoras h).";
         }
@@ -78,22 +71,7 @@ if (isset($_POST['guardarReto'])) {
         $idNuevoReto = mysqli_insert_id(obtenerConexion());
         registrarAccion('insertar', 'retos', $idNuevoReto, $nombre);
 
-        if (!empty($_FILES['archivosReto']['name'][0])) {
-            $uploadDir = __DIR__ . "/../../../public/uploads/retos/";
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $permitidos = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'gif', 'zip'];
-            foreach ($_FILES['archivosReto']['tmp_name'] as $key => $tmpName) {
-                if ($_FILES['archivosReto']['error'][$key] !== UPLOAD_ERR_OK) continue;
-                $fileName = $_FILES['archivosReto']['name'][$key];
-                $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                if (!in_array($fileExt, $permitidos)) continue;
-                $newFileName = bin2hex(random_bytes(8)) . '.' . $fileExt;
-                if (move_uploaded_file($tmpName, $uploadDir . $newFileName)) {
-                    $tipo = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']) ? 'imagen' : 'pdf';
-                    registrarArchivoReto($idNuevoReto, $fileName, "public/uploads/retos/" . $newFileName, $tipo);
-                }
-            }
-        }
+        procesarArchivosReto($idNuevoReto);
 
         $_SESSION['exito'] = "El reto ha sido creado correctamente.";
         header("Location: ../../../vistas/admin/retos/verRetos.php");

@@ -14,13 +14,6 @@ function listarCategorias() {
     return $lista;
 }
 
-function obtenerCategoriaPorId($id) {
-    $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM categorias_gasto WHERE idCategoria = ?");
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    mysqli_stmt_execute($stmt);
-    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-}
 
 function insertarCategoria($nombre, $presupuestoAnual, $color) {
     $con  = obtenerConexion();

@@ -95,14 +95,6 @@ function showSuccess(message) {
  setTimeout(() => successDiv.remove(), 5000);
  }
 }
-function downloadFile(url, filename) {
- const link = document.createElement('a');
- link.href = url;
- link.download = filename || 'descarga';
- document.body.appendChild(link);
- link.click();
- document.body.removeChild(link);
-}
 function copyToClipboard(text) {
  navigator.clipboard.writeText(text).then(() => {
  showSuccess('Copiado al portapapeles');
@@ -110,70 +102,11 @@ function copyToClipboard(text) {
  showError('Error al copiar');
  });
 }
-function formatDate(dateString) {
- const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
- return new Date(dateString).toLocaleDateString('es-ES', options);
-}
-function formatDateTime(dateString) {
- const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
- return new Date(dateString).toLocaleDateString('es-ES', options);
-}
-function enableRowSelection() {
- const checkboxes = document.querySelectorAll('input[type="checkbox"][data-row-check]');
- checkboxes.forEach(checkbox => {
- checkbox.addEventListener('change', function() {
- const row = this.closest('tr');
- if (this.checked) {
- row.classList.add('selected');
- } else {
- row.classList.remove('selected');
- }
- });
- });
-}
-function openModal(modalId) {
- const modal = document.getElementById(modalId);
- if (modal) {
- modal.classList.add('activo');
- document.body.style.overflow = 'hidden';
- }
-}
-function closeModal(modalId) {
- const modal = document.getElementById(modalId);
- if (modal) {
- modal.classList.remove('activo');
- document.body.style.overflow = 'auto';
- }
-}
-function confirmAction(message, onConfirm, onCancel) {
- if (window.confirm(message)) {
- onConfirm && onConfirm();
- } else {
- onCancel && onCancel();
- }
-}
-function setLoading(element, isLoading) {
- if (isLoading) {
- element.disabled = true;
- element.classList.add('loading');
- element.innerHTML = '<span class="spinner"></span> Procesando...';
- } else {
- element.disabled = false;
- element.classList.remove('loading');
- }
-}
+
 window.AulaDigital = {
- openModal,
- closeModal,
- confirm: confirmAction,
- setLoading,
  showError,
  showSuccess,
- downloadFile,
  copyToClipboard,
- formatDate,
- formatDateTime,
- enableRowSelection,
  isValidEmail,
  formatFileSize
 };

@@ -9,14 +9,14 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 $datos = $_SESSION['datos_perfil'] ?? [];
 unset($_SESSION['datos_perfil']);
 
-require_once "../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | EDITAR PERFIL";
 $seccionActual = 'perfil';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">

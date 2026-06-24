@@ -7,6 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/perfil/editar.php"); exit;
+}
+
 $idSecretaria = (int)$_SESSION['idSecretaria'];
 $nombre       = Security::sanitize($_POST['nombre'] ?? '');
 $email        = strtolower(trim($_POST['email'] ?? ''));

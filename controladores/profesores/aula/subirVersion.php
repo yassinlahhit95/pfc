@@ -53,7 +53,7 @@ if (!in_array($ext, $permitidos)) {
     $_SESSION['errores'] = "El archivo supera el límite de 20 MB.";
 } else {
     $dir = __DIR__ . "/../../../public/uploads/aula/archivos/";
-    if (!is_dir($dir)) mkdir($dir, 0777, true);
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
     $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
     if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir . $nombreArchivo)) {
         $nuevaVersion = actualizarArchivoConVersionAula($idArchivo, $nombreArchivo, $nombreOrig, $ext, $tamanio, $idProfesor);

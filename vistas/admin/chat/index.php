@@ -97,3 +97,4 @@ document.getElementById('sidebar-search')?.addEventListener('input', function() 
     });
 });
 </script>
+<?php require_once __DIR__ . '/../comunes/footer.php'; ?>

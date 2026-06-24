@@ -56,15 +56,6 @@ function marcarMensajeComoLeido($idReclamacion) {
     return $resultado;
 }
 
-function responderMensaje($idReclamacion, $contenidoRespuesta) {
-    $con = obtenerConexion();
-    $sql = "UPDATE reclamaciones SET respuesta = ?, estadoReclamacion = 'atendido', leido = 1 WHERE idReclamacion = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "si", $contenidoRespuesta, $idReclamacion);
-    $resultado = mysqli_stmt_execute($stmt);
-    
-    return $resultado;
-}
 
 // ══════════════════════════════════════════════════════════════════════
 //  INSERCIONES
@@ -126,6 +117,17 @@ function mensajePerteneceAProfesor($idReclamacion, $idProfesor) {
     return $m && (int)$m['idProfesor'] === (int)$idProfesor;
 }
 
+function editarMensaje(int $idReclamacion, string $contenido): bool {
+    $con  = obtenerConexion();
+    $ahora = date('Y-m-d H:i:s');
+    $st = mysqli_prepare($con,
+        'UPDATE reclamaciones SET descripcion = ?, editado = 1, fecha_edicion = ?
+         WHERE idReclamacion = ? AND emisor_rol = "admin"');
+    mysqli_stmt_bind_param($st, 'ssi', $contenido, $ahora, $idReclamacion);
+    mysqli_stmt_execute($st);
+    return mysqli_affected_rows($con) > 0;
+}
+
 function eliminarMensaje($idReclamacion) {
     $con = obtenerConexion();
     $sql = "DELETE FROM reclamaciones WHERE idReclamacion = ?";
@@ -150,17 +152,6 @@ function contarMensajesNoLeidosAdmin() {
     return intval($fila['total']);
 }
 
-function contarMensajesParaAdmin() {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones
-            WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL)
-               OR (emisor_rol = 'profesor' AND idEstudiante IS NULL)
-               OR (emisor_rol = 'admin')";
-    $resultado = mysqli_query($con, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    
-    return intval($fila['total']);
-}
 
 function contarMensajesNoLeidosProfesor($idProfesor) {
     $con = obtenerConexion();

@@ -1,10 +1,16 @@
 <?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/estudiantes/verEstudiantes.php");
     exit;
+}
+
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/secretaria/estudiantes/verEstudiantes.php"); exit;
 }
 
 $idEstudiante    = (int)($_POST['idEstudiante'] ?? 0);
@@ -31,6 +37,7 @@ if ($errores) {
 $ok = actualizarEstudiante($idEstudiante, $nombre, $email, $idCiclo, $dni, $telefono, $direccion, $fechaNacimiento);
 
 if ($ok) {
+    registrarAccionSecretaria('actualizar', 'estudiantes', $idEstudiante, $nombre);
     $_SESSION['exito'] = "Estudiante actualizado correctamente.";
 } else {
     $_SESSION['errores'] = "Error al actualizar el estudiante.";

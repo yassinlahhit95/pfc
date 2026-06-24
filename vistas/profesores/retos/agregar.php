@@ -22,7 +22,7 @@ foreach ($modulosElegidos as $idM) { $mapaModulosElegidos[$idM] = true; }
 
 $tituloDelPagina = "AULAPRO | NUEVO RETO";
 $seccionActual = 'retos';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">

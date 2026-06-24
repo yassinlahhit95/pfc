@@ -1,0 +1,9 @@
+# Direct HTTP access to exercise submission files is DENIED.
+# Files are served exclusively through authenticated PHP endpoints.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
