@@ -12,18 +12,27 @@ if (empty($_SESSION['idAdmin'])) {
         echo json_encode(['ok' => false, 'msg' => 'Sesión expirada. Por favor recarga la página.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/login.php');
     exit;
 }
 
 // Bloquear acciones hasta que se cambie la contraseña temporal o se configure MFA
-if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
+if (!empty($_SESSION['must_change_password'])) {
     if ($_isAjaxGuard) {
         header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'msg' => 'Debes completar la configuración de tu cuenta antes de continuar.']);
+        echo json_encode(['ok' => false, 'msg' => 'Debes cambiar tu contraseña antes de continuar.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/cambiar_password.php');
+    exit;
+}
+if (!empty($_SESSION['mfa_setup_required'])) {
+    if ($_isAjaxGuard) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => 'Debes configurar la autenticación en dos pasos.']);
+        exit;
+    }
+    header('Location: /vistas/auth/mfa_configurar.php');
     exit;
 }
 

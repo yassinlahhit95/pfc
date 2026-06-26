@@ -65,12 +65,6 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     <h1><?= Security::escapeHtml($saludo) ?>, <span><?= Security::escapeHtml($nombreProf) ?></span></h1>
     <p class="sub">Tu área docente — <b><?= count($listaEstudiantes) ?> estudiantes</b> · <b><?= count($listaModulos) ?> módulos</b> · <b><?= count($listaRetos) ?> retos</b></p>
   </div>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-k">Estudiantes</span><span class="stat-v"><?= count($listaEstudiantes) ?></span></div>
-    <div class="stat"><span class="stat-k">Módulos</span><span class="stat-v"><?= count($listaModulos) ?></span></div>
-    <div class="stat"><span class="stat-k">Retos</span><span class="stat-v"><?= count($listaRetos) ?></span></div>
-    <div class="stat"><span class="stat-k">Mensajes</span><span class="stat-v"><?= $mensajesPendientes ?></span></div>
-  </div>
 </section>
 
 <div class="section-head">

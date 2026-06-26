@@ -12,7 +12,9 @@ function listarTodosLosPagos() {
             JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
             ORDER BY idPago DESC";
-    $resultado = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $lista[] = $fila;
@@ -60,13 +62,15 @@ function obtenerEstadoFinancieroEstudiante($idEstudiante) {
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $pagado = floatval(mysqli_fetch_assoc($res)['totalPagado']);
+    $rowPago = mysqli_fetch_assoc($res);
+    $pagado = floatval($rowPago['totalPagado'] ?? 0);
     $sql = "SELECT c.precioCiclo FROM estudiantes e JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE e.idEstudiante = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $precio = floatval(mysqli_fetch_assoc($res)['precioCiclo']);
+    $rowCiclo = mysqli_fetch_assoc($res);
+    $precio = floatval($rowCiclo['precioCiclo'] ?? 0);
     return [
         'totalPagado' => $pagado,
         'precioCiclo' => $precio,

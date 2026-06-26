@@ -25,7 +25,7 @@ usort($todasLasTareas, function($a, $b) {
 });
 
 $tituloDelPagina = 'AULAPRO | TAREAS';
-$seccionActual = 'aula_tareas';
+$seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

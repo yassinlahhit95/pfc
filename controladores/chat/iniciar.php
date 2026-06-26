@@ -28,6 +28,10 @@ if (!empty($_SESSION['idAdmin'])) {
     $myRol = 'estudiante';
     $myId  = (int)$_SESSION['idEstudiante'];
     $back  = '../../vistas/estudiantes/chat/index.php';
+} elseif (!empty($_SESSION['idSecretaria'])) {
+    $myRol = 'secretaria';
+    $myId  = (int)$_SESSION['idSecretaria'];
+    $back  = '../../vistas/secretaria/mensajes/chat.php';
 } else {
     header('Location: ../../vistas/login.php');
     exit;
@@ -54,7 +58,7 @@ if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
 $targetRol = trim($_POST['target_rol'] ?? '');
 $targetId  = (int)($_POST['target_id'] ?? 0);
 
-$validRoles = ['admin', 'profesor', 'estudiante', 'tutor'];
+$validRoles = ['admin', 'profesor', 'estudiante', 'tutor', 'secretaria'];
 if (!in_array($targetRol, $validRoles, true) || $targetId <= 0) {
     header("Location: $back");
     exit;
@@ -73,6 +77,13 @@ $convId = chatEncontrarOCrear($myRol, $myId, $targetRol, $targetId);
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+       && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if ($isAjax) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['ok' => true, 'conv_id' => $convId]);
+    exit;
+}
 $convUrl = (strpos($back, 'index.php') !== false)
             ? str_replace('index.php', 'conversacion.php', $back)
             : str_replace('chat.php', 'conversacion.php', $back);

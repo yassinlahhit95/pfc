@@ -15,6 +15,7 @@ $map = [
     'idProfesor'   => ['profesores',  'idProfesor'],
     'idEstudiante' => ['estudiantes', 'idEstudiante'],
     'idTutor'      => ['tutores',     'idTutor'],
+    'idSecretaria' => ['secretarias', 'idSecretaria'],
 ];
 
 $sesKey = null;
@@ -34,6 +35,7 @@ $dashboards = [
     'idProfesor'   => '../../vistas/profesores/inicio/dashboard.php',
     'idEstudiante' => '../../vistas/estudiantes/inicio/dashboard.php',
     'idTutor'      => '../../vistas/tutores/inicio/dashboard.php',
+    'idSecretaria' => '../../vistas/secretaria/inicio/dashboard.php',
 ];
 
 // ══════════════════════════════════════════════════════════════════════

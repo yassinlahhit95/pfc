@@ -84,6 +84,7 @@ if ($idEntrega) {
 
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");
 } else {
+    @unlink($ruta); // el archivo fue movido pero el registro en BD falló — eliminar huérfano
     $_SESSION['errores'] = 'Error al registrar la entrega. Inténtalo de nuevo.';
     Logger::error('Error enviando entrega', ['estudiante' => $idEstudiante, 'tarea' => $idTarea]);
     header("Location: ../../../vistas/estudiantes/aula/tarea_detalle.php?id=$idTarea");

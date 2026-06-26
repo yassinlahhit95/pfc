@@ -1,4 +1,4 @@
-﻿#contenedor-notificaciones {
+#contenedor-notificaciones {
     position: fixed;
     top: 24px;
     right: 24px;
@@ -28,7 +28,6 @@
 .notificacion-toast.premium {
     background: color-mix(in oklab, var(--surface) 95%, transparent);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
 }
 
 .notificacion-toast::before {

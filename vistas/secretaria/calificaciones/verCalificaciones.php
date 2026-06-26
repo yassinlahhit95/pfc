@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -121,7 +121,7 @@ $seccion = 'calificaciones';
     <?php endif; ?>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 <?php if ($idModuloElegido): ?>
 <script>iniciarPaginacion('tablaCalificaciones', 20);</script>
 <?php endif; ?>

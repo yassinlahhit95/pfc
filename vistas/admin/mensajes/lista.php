@@ -64,16 +64,6 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h1>Buzón Central<?php if ($totalSinLeer > 0): ?> <span>(<?= $totalSinLeer ?> nuevos)</span><?php endif; ?></h1>
         <p class="sub">Comunicaciones de <b>estudiantes</b> y <b>profesores</b> con la dirección</p>
     </div>
-    <div class="hero-stats">
-        <div class="stat">
-            <span class="stat-k">Total</span>
-            <span class="stat-v"><?= $totalMensajes ?></span>
-        </div>
-        <div class="stat">
-            <span class="stat-k">Sin leer</span>
-            <span class="stat-v" style="color:<?= $totalSinLeer > 0 ? 'var(--accent)' : 'inherit' ?>"><?= $totalSinLeer ?></span>
-        </div>
-    </div>
 </section>
 
 <div class="inbox-wrap" data-mensajes-page="1">

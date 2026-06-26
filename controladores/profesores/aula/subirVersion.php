@@ -60,6 +60,7 @@ if (!in_array($ext, $permitidos)) {
         if ($nuevaVersion) {
             $_SESSION['exito'] = "Nueva versión (v$nuevaVersion) guardada.";
         } else {
+            @unlink($dir . $nombreArchivo); // el archivo fue movido pero el registro en BD falló — eliminar huérfano
             $_SESSION['errores'] = "No se pudo registrar la nueva versión.";
         }
     } else {

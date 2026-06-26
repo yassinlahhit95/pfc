@@ -18,9 +18,47 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>ANUNCIOS DEL SISTEMA</h1>
-    <a href="agregarAnuncios.php" class="boton-primario">
+    <button type="button" class="boton-primario" onclick="document.getElementById('modal-nuevo-anuncio').style.display='flex'">
         <i class="fas fa-plus"></i> NUEVO ANUNCIO
-    </a>
+    </button>
+</div>
+
+<!-- Modal nuevo anuncio -->
+<div id="modal-nuevo-anuncio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:var(--bg-1,var(--surface,#fff));border-radius:14px;padding:32px;width:560px;max-width:95vw;border:1px solid var(--border);box-shadow:var(--shadow-lg);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <h3 style="margin:0;"><i class="fas fa-bullhorn"></i> Nuevo Anuncio</h3>
+            <button type="button" onclick="document.getElementById('modal-nuevo-anuncio').style.display='none'"
+                    style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--dim);">&times;</button>
+        </div>
+        <form method="POST" action="../../../controladores/admin/anuncios/insertar.php" class="formulario">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <div class="campo ancho-total">
+                <label for="tituloAnuncioModal">TÍTULO DEL ANUNCIO</label>
+                <input type="text" id="tituloAnuncioModal" name="tituloAnuncio" required placeholder="Ej: Mantenimiento de la plataforma">
+            </div>
+            <div class="campo">
+                <label for="dirigidoAModal">DIRIGIDO A</label>
+                <select id="dirigidoAModal" name="dirigidoA">
+                    <option value="todos">Todos los usuarios</option>
+                    <option value="estudiantes">Solo Estudiantes</option>
+                    <option value="profesores">Solo Profesores</option>
+                </select>
+            </div>
+            <div class="campo ancho-total">
+                <label for="contenidoAnuncioModal">CONTENIDO</label>
+                <textarea id="contenidoAnuncioModal" name="contenidoAnuncio" rows="5" required placeholder="Escriba aquí el mensaje..."></textarea>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:8px;grid-column:1/-1;">
+                <button type="submit" name="guardarAnuncio" class="boton-primario" style="flex:1;">
+                    <i class="fas fa-paper-plane"></i> PUBLICAR ANUNCIO
+                </button>
+                <button type="button" class="boton-secundario" onclick="document.getElementById('modal-nuevo-anuncio').style.display='none'">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 

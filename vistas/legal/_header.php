@@ -11,7 +11,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
     <title><?= htmlspecialchars($legal_titulo ?? 'Información Legal') ?> — AulaPro</title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">

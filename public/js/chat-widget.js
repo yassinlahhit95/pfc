@@ -1,0 +1,482 @@
+/**
+ * AulaPro — Floating Chat Widget
+ * Self-contained IIFE. Exposes window.ChatWidget.init(cfg).
+ */
+(function () {
+  'use strict';
+
+  /* ── State ──────────────────────────────────────────────────────────────── */
+  let BASE       = '/';
+  let myRol      = null;
+  let myId       = 0;
+  let csrfToken  = '';
+
+  let isOpen        = false;
+  let currentView   = 'list';   // 'list' | 'conv' | 'contacts'
+  let currentConvId = 0;
+  let lastMsgId     = 0;
+  let lastDateLabel = '';
+  let pollTimer     = null;
+  let pollInterval  = 3000;
+  let contactTimer  = null;
+
+  /* ── Helpers ─────────────────────────────────────────────────────────────── */
+  const $ = id => document.getElementById(id);
+
+  function escHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function avaClass(rol) {
+    const map = {
+      admin:      'cw-ava cw-ava-admin',
+      profesor:   'cw-ava cw-ava-profesor',
+      estudiante: 'cw-ava cw-ava-alumno',
+      secretaria: 'cw-ava cw-ava-secretaria',
+      tutor:      'cw-ava cw-ava-tutor',
+    };
+    return map[rol] || 'cw-ava cw-ava-admin';
+  }
+
+  function avaInit(nombre) {
+    const parts = (nombre || '?').trim().split(/\s+/);
+    return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || '?';
+  }
+
+  function fmtTime(s) {
+    if (!s) return '';
+    const sp = s.indexOf(' ');
+    return sp >= 0 ? s.substring(sp + 1, sp + 6) : '';
+  }
+
+  function fmtDate(s) {
+    if (!s) return '';
+    const dateOnly = s.substring(0, 10);
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    if (dateOnly === today) return 'Hoy';
+    const yest = new Date(now);
+    yest.setDate(yest.getDate() - 1);
+    const yesterStr = `${yest.getFullYear()}-${pad(yest.getMonth() + 1)}-${pad(yest.getDate())}`;
+    if (dateOnly === yesterStr) return 'Ayer';
+    return dateOnly.split('-').reverse().join('/');
+  }
+
+  function roleLabel(rol) {
+    const map = { admin: 'Admin', profesor: 'Profesor', estudiante: 'Alumno', tutor: 'Tutor', secretaria: 'Secretaria' };
+    return map[rol] || rol;
+  }
+
+  function resolveUrl(path) {
+    if (path.startsWith('/') || path.startsWith('http')) return path;
+    const parts = location.pathname.split('/');
+    const vi = parts.indexOf('vistas');
+    const base = vi > -1 ? parts.slice(0, vi).join('/') : '';
+    return base + '/' + path.replace(/^(\.\.\/)+/, '');
+  }
+
+  /* ── Badge ───────────────────────────────────────────────────────────────── */
+  function updateBadge(n) {
+    const badge = $('cw-fab-badge');
+    if (!badge) return;
+    badge.textContent = n;
+    badge.hidden = n <= 0;
+  }
+
+  /* ── Window open/close ───────────────────────────────────────────────────── */
+  function toggleWindow() {
+    isOpen ? closeWindow() : openWindow();
+  }
+
+  function openWindow() {
+    isOpen = true;
+    const win = $('cw-window');
+    if (win) win.hidden = false;
+    const overlay = $('cw-overlay');
+    if (overlay) overlay.hidden = false;
+    $('cw-fab')?.classList.add('open');
+    if (currentView === 'list') loadConversations();
+  }
+
+  function closeWindow() {
+    isOpen = false;
+    const win = $('cw-window');
+    if (win) win.hidden = true;
+    const overlay = $('cw-overlay');
+    if (overlay) overlay.hidden = true;
+    $('cw-fab')?.classList.remove('open');
+    stopPoll();
+  }
+
+  /* ── Panels ──────────────────────────────────────────────────────────────── */
+  function showPanel(name) {
+    currentView = name;
+    ['list', 'conv', 'contacts'].forEach(v => {
+      const el = $('cw-' + v + '-panel');
+      if (el) el.hidden = (v !== name);
+    });
+  }
+
+  /* ── Conversation list ───────────────────────────────────────────────────── */
+  function loadConversations() {
+    const list = $('cw-list');
+    if (list) list.innerHTML = '<div class="cw-loading">Cargando…</div>';
+    fetch(resolveUrl(BASE + 'controladores/chat/conversaciones.php'), { credentials: 'same-origin' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) renderConversations(data.convs);
+        else if (list) list.innerHTML = '<div class="cw-empty">Error al cargar conversaciones</div>';
+      })
+      .catch(() => {
+        if (list) list.innerHTML = '<div class="cw-empty">Sin conexión</div>';
+      });
+  }
+
+  function renderConversations(convs) {
+    const list = $('cw-list');
+    if (!list) return;
+    if (!convs || !convs.length) {
+      list.innerHTML = '<div class="cw-empty">Sin conversaciones. Crea una nueva con el botón +</div>';
+      return;
+    }
+    list.innerHTML = '';
+    convs.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'cw-conv-row';
+
+      const ava = document.createElement('div');
+      ava.className = avaClass(c.other_rol);
+      ava.textContent = avaInit(c.other_nombre);
+
+      const info = document.createElement('div');
+      info.className = 'cw-conv-info';
+      info.innerHTML = `<div class="cw-conv-name">${escHtml(c.other_nombre)}</div>
+                        <div class="cw-conv-preview">${escHtml(c.last_preview)}</div>`;
+
+      const meta = document.createElement('div');
+      meta.className = 'cw-conv-meta';
+      meta.innerHTML = `<div class="cw-conv-time">${escHtml(fmtTime(c.last_at || ''))}</div>`;
+      if (c.unread > 0) {
+        meta.innerHTML += `<div class="cw-conv-badge">${c.unread}</div>`;
+      }
+
+      row.appendChild(ava);
+      row.appendChild(info);
+      row.appendChild(meta);
+      row.addEventListener('click', () => openConversation(c.id, c.other_nombre, c.other_rol));
+      list.appendChild(row);
+    });
+  }
+
+  /* ── Open a conversation ─────────────────────────────────────────────────── */
+  function openConversation(convId, name, rol) {
+    stopPoll();
+    currentConvId = convId;
+    lastMsgId     = 0;
+    lastDateLabel = '';
+
+    // Update header
+    const avaEl = $('cw-conv-ava');
+    if (avaEl) { avaEl.className = avaClass(rol); avaEl.textContent = avaInit(name); }
+    const nameEl = $('cw-conv-name');
+    if (nameEl) nameEl.textContent = name;
+    const roleEl = $('cw-conv-role');
+    if (roleEl) roleEl.textContent = roleLabel(rol);
+
+    // Clear + show loading
+    const msgBox = $('cw-messages');
+    if (msgBox) msgBox.innerHTML = '<div class="cw-loading">Cargando…</div>';
+
+    showPanel('conv');
+
+    fetch(resolveUrl(BASE + 'controladores/chat/mensajes.php') + '?conv_id=' + convId, { credentials: 'same-origin' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) renderMessages(data.messages, true);
+      })
+      .catch(() => {});
+
+    startPoll();
+
+    // Focus input
+    setTimeout(() => $('cw-input')?.focus(), 100);
+  }
+
+  /* ── Messages ────────────────────────────────────────────────────────────── */
+  function renderMessages(messages, initial) {
+    const box = $('cw-messages');
+    if (!box) return;
+    if (initial) { box.innerHTML = ''; lastDateLabel = ''; }
+    messages.forEach(msg => appendMsg(msg));
+    if (messages.length) {
+      lastMsgId = Math.max(lastMsgId, parseInt(messages[messages.length - 1].id));
+      scrollBottom(box);
+    }
+  }
+
+  function appendMsg(msg) {
+    const box = $('cw-messages');
+    if (!box) return;
+    const isMe = (msg.emisor_rol === myRol && parseInt(msg.emisor_id) === myId);
+
+    // Date separator
+    const dateLabel = fmtDate(msg.fecha);
+    if (dateLabel && dateLabel !== lastDateLabel) {
+      lastDateLabel = dateLabel;
+      const sep = document.createElement('div');
+      sep.className = 'cw-date-sep';
+      sep.textContent = dateLabel;
+      box.appendChild(sep);
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'cw-msg-wrap ' + (isMe ? 'out' : 'in');
+
+    const bubble = document.createElement('div');
+    bubble.className = 'cw-bubble';
+    bubble.textContent = msg.contenido;
+
+    const time = document.createElement('div');
+    time.className = 'cw-msg-time';
+    time.textContent = fmtTime(msg.fecha);
+
+    wrap.appendChild(bubble);
+    wrap.appendChild(time);
+    box.appendChild(wrap);
+
+    lastMsgId = Math.max(lastMsgId, parseInt(msg.id || 0));
+    scrollBottom(box);
+  }
+
+  function scrollBottom(box) {
+    if (box) box.scrollTop = box.scrollHeight;
+  }
+
+  /* ── Polling ─────────────────────────────────────────────────────────────── */
+  function startPoll() {
+    pollInterval = 3000;
+    schedulePoll();
+  }
+
+  function stopPoll() {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+
+  function schedulePoll() {
+    clearTimeout(pollTimer);
+    if (!currentConvId || !isOpen) return;
+    const delay = document.hidden ? Math.max(pollInterval, 15000) : pollInterval;
+    pollTimer = setTimeout(fetchNew, delay);
+  }
+
+  function fetchNew() {
+    if (!currentConvId) return;
+    const url = resolveUrl(BASE + 'controladores/chat/mensajes.php')
+              + '?conv_id=' + currentConvId + '&after_id=' + lastMsgId;
+    fetch(url, { credentials: 'same-origin' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok && data.messages.length) {
+          data.messages.forEach(m => appendMsg(m));
+          pollInterval = 3000;
+        } else {
+          pollInterval = Math.min(Math.round(pollInterval * 1.4), 30000);
+        }
+        schedulePoll();
+      })
+      .catch(() => {
+        pollInterval = Math.min(pollInterval * 2, 30000);
+        schedulePoll();
+      });
+  }
+
+  /* ── Send ────────────────────────────────────────────────────────────────── */
+  function sendMessage() {
+    const input = $('cw-input');
+    const text = (input?.value || '').trim();
+    if (!text || !currentConvId) return;
+    input.value = '';
+    input.style.height = '';
+
+    const fd = new FormData();
+    fd.append('csrf_token', csrfToken);
+    fd.append('conv_id',    currentConvId);
+    fd.append('contenido',  text);
+
+    fetch(resolveUrl(BASE + 'controladores/chat/enviar.php'), {
+      method: 'POST', body: fd, credentials: 'same-origin'
+    })
+      .then(r => r.json())
+      .then(data => { if (data.ok && data.message) appendMsg(data.message); })
+      .catch(() => {});
+  }
+
+  /* ── Contacts ────────────────────────────────────────────────────────────── */
+  function showContacts() {
+    showPanel('contacts');
+    const search = $('cw-contact-search');
+    if (search) { search.value = ''; search.focus(); }
+    loadContacts('');
+  }
+
+  function loadContacts(q) {
+    const list = $('cw-contacts');
+    if (list) list.innerHTML = '<div class="cw-loading">Buscando…</div>';
+    fetch(resolveUrl(BASE + 'controladores/chat/contactos.php') + '?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+      .then(r => r.json())
+      .then(data => { if (data.ok) renderContacts(data.contacts); })
+      .catch(() => {});
+  }
+
+  function renderContacts(contacts) {
+    const list = $('cw-contacts');
+    if (!list) return;
+    if (!contacts || !contacts.length) {
+      list.innerHTML = '<div class="cw-empty">Sin resultados</div>';
+      return;
+    }
+    list.innerHTML = '';
+    contacts.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'cw-contact-row';
+
+      const ava = document.createElement('div');
+      ava.className = avaClass(c.rol);
+      ava.textContent = avaInit(c.nombre);
+
+      const info = document.createElement('div');
+      info.innerHTML = `<div class="cw-contact-name">${escHtml(c.nombre)}</div>
+                        <div class="cw-contact-role">${roleLabel(c.rol)}</div>`;
+
+      row.appendChild(ava);
+      row.appendChild(info);
+      row.addEventListener('click', () => startConversation(c));
+      list.appendChild(row);
+    });
+  }
+
+  function startConversation(contact) {
+    const fd = new FormData();
+    fd.append('csrf_token', csrfToken);
+    fd.append('target_rol', contact.rol);
+    fd.append('target_id',  contact.uid);
+
+    const list = $('cw-contacts');
+    if (list) list.innerHTML = '<div class="cw-loading">Abriendo…</div>';
+
+    fetch(resolveUrl(BASE + 'controladores/chat/iniciar.php'), {
+      method: 'POST', body: fd, credentials: 'same-origin',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok && data.conv_id) {
+          openConversation(data.conv_id, contact.nombre, contact.rol);
+        }
+      })
+      .catch(() => {
+        if (list) list.innerHTML = '<div class="cw-empty">Error al iniciar chat</div>';
+      });
+  }
+
+  /* ── Boot ────────────────────────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    const fab = $('cw-fab');
+    if (!fab) return;
+
+    fab.addEventListener('click', toggleWindow);
+    $('cw-close')?.addEventListener('click', closeWindow);
+    $('cw-new')?.addEventListener('click', showContacts);
+
+    $('cw-back')?.addEventListener('click', () => {
+      stopPoll();
+      currentConvId = 0;
+      showPanel('list');
+      loadConversations();
+    });
+    $('cw-contacts-back')?.addEventListener('click', () => showPanel('list'));
+
+    $('cw-send')?.addEventListener('click', sendMessage);
+
+    const input = $('cw-input');
+    if (input) {
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+      input.addEventListener('input', () => {
+        input.style.height = '';
+        input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+      });
+    }
+
+    const search = $('cw-contact-search');
+    if (search) {
+      search.addEventListener('input', e => {
+        clearTimeout(contactTimer);
+        contactTimer = setTimeout(() => loadContacts(e.target.value), 300);
+      });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && isOpen && currentConvId) {
+        clearTimeout(pollTimer);
+        pollInterval = 3000;
+        fetchNew();
+      }
+    });
+
+    // Close on outside click (desktop) or overlay tap (mobile)
+    document.addEventListener('click', e => {
+      if (isOpen && !e.target.closest('#cw')) closeWindow();
+    });
+    $('cw-overlay')?.addEventListener('click', closeWindow);
+  });
+
+  /* ── Public API ──────────────────────────────────────────────────────────── */
+  window.ChatWidget = {
+    init(cfg) {
+      myRol      = cfg.myRol;
+      myId       = cfg.myId;
+      csrfToken  = cfg.csrfToken;
+      if (cfg.basePath) BASE = cfg.basePath;
+      updateBadge(parseInt(cfg.unreadCount || 0, 10));
+    },
+    updateBadge,
+
+    startWith(targetRol, targetId, nombre) {
+      if (!isOpen) openWindow();
+      const msgBox = $('cw-messages');
+      if (msgBox) msgBox.innerHTML = '<div class="cw-loading">Iniciando…</div>';
+      showPanel('conv');
+
+      const avaEl = $('cw-conv-ava');
+      if (avaEl) { avaEl.className = avaClass(targetRol); avaEl.textContent = avaInit(nombre); }
+      const nameEl = $('cw-conv-name');
+      if (nameEl) nameEl.textContent = nombre;
+      const roleEl = $('cw-conv-role');
+      if (roleEl) roleEl.textContent = roleLabel(targetRol);
+
+      const fd = new FormData();
+      fd.append('csrf_token', csrfToken);
+      fd.append('target_rol', targetRol);
+      fd.append('target_id',  targetId);
+
+      fetch(resolveUrl(BASE + 'controladores/chat/iniciar.php'), {
+        method: 'POST', body: fd, credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.ok && data.conv_id) openConversation(data.conv_id, nombre, targetRol);
+          else if (msgBox) msgBox.innerHTML = '<div class="cw-empty">No se pudo iniciar el chat</div>';
+        })
+        .catch(() => {
+          if (msgBox) msgBox.innerHTML = '<div class="cw-empty">Error de conexión</div>';
+        });
+    },
+  };
+})();

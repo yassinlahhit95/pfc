@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -23,7 +23,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
         <div class="campo<?= fieldClass($errores, 'titulo') ?>">
-            <label for="titulo">Título <span style="color:#ef4444">*</span></label>
+            <label for="titulo">Título <span style="color:var(--rojo,#ef4444)">*</span></label>
             <input type="text" name="titulo" id="titulo" maxlength="255"
                    placeholder="Título del anuncio"
                    value="<?= Security::escapeHtml($datos['titulo'] ?? '') ?>">
@@ -46,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo campo-ancho-total<?= fieldClass($errores, 'mensaje') ?>">
-            <label for="mensaje">Mensaje <span style="color:#ef4444">*</span></label>
+            <label for="mensaje">Mensaje <span style="color:var(--rojo,#ef4444)">*</span></label>
             <textarea name="mensaje" id="mensaje" rows="5"
                       placeholder="Contenido del anuncio..."><?= Security::escapeHtml($datos['mensaje'] ?? '') ?></textarea>
             <?= fieldError($errores, 'mensaje') ?>
@@ -59,4 +59,4 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

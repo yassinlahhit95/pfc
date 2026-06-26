@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../include/RateLimiter.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/configuracion.php";
@@ -14,6 +15,12 @@ require_once __DIR__ . "/../../../modelos/configuracion.php";
 if (isset($_POST['subirTFG'])) {
     if (!FeatureGuard::check('feature_subida_tfg')) {
         $_SESSION['errores'] = "La entrega del TFG está cerrada en este momento.";
+        header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
+    }
+    $idEstudianteRl = (int)$_SESSION['idEstudiante'];
+    $conRl = obtenerConexion();
+    if (!RateLimiter::allow($conRl, "tfg_upload:{$idEstudianteRl}", 5, 3600, 300)) {
+        $_SESSION['errores'] = "Has subido demasiados archivos en poco tiempo. Espera un momento e inténtalo de nuevo.";
         header("Location: ../../../vistas/estudiantes/pfc/subir.php"); exit;
     }
     if (!Security::validateCSRFToken()) {
@@ -56,20 +63,24 @@ if (isset($_POST['subirTFG'])) {
         $nombreArchivo = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . "." . $ext;
         $rutaDestino   = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
 
-        // Delete old file from disk before saving the new one
+        // Guardar ruta del archivo anterior ANTES de cualquier operación de escritura.
+        // El orden correcto es: mover nuevo → actualizar BD → borrar antiguo.
         $tfgActual = obtenerTFGporEstudiante($idEstudiante);
-        if (!empty($tfgActual['archivoTFG'])) {
-            $rutaVieja = __DIR__ . "/../../../public/uploads/pfc/" . $tfgActual['archivoTFG'];
-            if (file_exists($rutaVieja)) {
-                unlink($rutaVieja);
-            }
-        }
+        $rutaVieja = (!empty($tfgActual['archivoTFG']))
+            ? __DIR__ . "/../../../public/uploads/pfc/" . $tfgActual['archivoTFG']
+            : null;
 
         if (move_uploaded_file($archivoTFG['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreArchivo)) {
+                // BD actualizada correctamente — ahora es seguro eliminar el archivo anterior
+                if ($rutaVieja && file_exists($rutaVieja)) {
+                    @unlink($rutaVieja);
+                }
                 $_SESSION['exito'] = "El TFG ha sido subido correctamente.";
             } else {
-                $_SESSION['errores'] = "El archivo fue guardado pero no se pudo actualizar la base de datos.";
+                // Fallo en BD — el nuevo archivo es un huérfano, elimínarlo; el anterior sigue en BD
+                @unlink($rutaDestino);
+                $_SESSION['errores'] = "Error al actualizar la base de datos. El TFG anterior sigue activo.";
             }
         } else {
             $_SESSION['errores'] = "Error al guardar el archivo en el servidor.";

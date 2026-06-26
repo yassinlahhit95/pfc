@@ -1,6 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/Security.php';
+Security::initSession();
 
 $_isAjaxGuardEst = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
                && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
@@ -11,7 +11,7 @@ if (empty($_SESSION['idEstudiante'])) {
         echo json_encode(['ok' => false, 'msg' => 'Sesión expirada. Por favor recarga la página.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/login.php');
     exit;
 }
 
@@ -22,7 +22,7 @@ if (!empty($_SESSION['must_change_password'])) {
         echo json_encode(['ok' => false, 'msg' => 'Debes cambiar tu contraseña antes de continuar.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/cambiar_password.php');
     exit;
 }
 

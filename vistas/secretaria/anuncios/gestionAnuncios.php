@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -72,7 +72,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php endif; ?>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 filtrarTabla('filtroAnuncios', 'tablaAnuncios');
 iniciarPaginacion('tablaAnuncios', 15);

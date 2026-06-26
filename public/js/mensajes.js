@@ -98,6 +98,7 @@
                   '<button type="button" class="msg-edit-cancel ibtn ibtn-secondary"><i class="fas fa-times"></i> Cancelar</button>' +
                 '</div>';
             bubble.querySelector('.msg-edit-ta').focus();
+            setTimeout(function() { row.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
         });
 
         document.addEventListener('click', function (e) {
@@ -165,6 +166,25 @@
         });
     }
 
+    function playMsgSound() {
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            [[660, 0, 0.15], [880, 0.15, 0.15]].forEach(function (note) {
+                var osc  = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sine';
+                osc.frequency.value = note[0];
+                gain.gain.setValueAtTime(0, ctx.currentTime + note[1]);
+                gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + note[1] + 0.02);
+                gain.gain.linearRampToValueAtTime(0, ctx.currentTime + note[1] + note[2]);
+                osc.start(ctx.currentTime + note[1]);
+                osc.stop(ctx.currentTime + note[1] + note[2]);
+            });
+        } catch (e) {}
+    }
+
     function escHtmlMsg(s) {
         return String(s)
             .replace(/&/g, '&amp;')
@@ -182,4 +202,6 @@
             setInterval(poll, 30000);
         }
     });
+
+    window.playMsgSound = playMsgSound;
 })();

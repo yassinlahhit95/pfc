@@ -13,7 +13,7 @@ $carpetas   = listarCarpetasPorCiclo($idCiclo);
 $ejercicios = listarEjerciciosPorCiclo($idCiclo, $idCarpeta);
 
 $tituloDelPagina = "AULAPRO | MIS EJERCICIOS";
-$seccionActual   = 'ejercicios';
+$seccionActual   = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

@@ -24,7 +24,7 @@ $limite  = $ejercicio['fechaLimite'] ? new DateTime($ejercicio['fechaLimite']) :
 $tarde   = $limite && $limite < $hoy && !$entrega;
 
 $tituloDelPagina = "AULAPRO | " . mb_strtoupper($ejercicio['titulo'], 'UTF-8');
-$seccionActual   = 'ejercicios';
+$seccionActual   = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

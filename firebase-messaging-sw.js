@@ -41,13 +41,16 @@ messaging.onBackgroundMessage(function(payload) {
   });
 });
 
-// Clicking the notification focuses/opens the app
+// Clicking the notification focuses/opens the app (or a specific URL from the payload)
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
+  var target = (event.notification.data && event.notification.data.url) ? event.notification.data.url : '/';
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
-      if (list.length > 0) return list[0].focus();
-      return clients.openWindow('/');
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].url === target) return list[i].focus();
+      }
+      return clients.openWindow(target);
     })
   );
 });

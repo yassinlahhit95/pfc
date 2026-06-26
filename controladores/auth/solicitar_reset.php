@@ -34,7 +34,7 @@ if (!Security::validateCSRFToken()) {
 // LÍMITE DE TASA POR IP
 // ══════════════════════════════════════════════════════════════════════
 // Máximo 5 solicitudes por IP cada 10 minutos
-$ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+$ip  = Security::clientIp();
 $con = obtenerConexion();
 
 $row = dbFetchOne(

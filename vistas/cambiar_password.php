@@ -3,7 +3,8 @@ require_once __DIR__ . '/../include/Security.php';
 
 // Debe haber una sesión iniciada (cualquier rol)
 $autenticado = !empty($_SESSION['idAdmin']) || !empty($_SESSION['idProfesor'])
-            || !empty($_SESSION['idEstudiante']) || !empty($_SESSION['idTutor']);
+            || !empty($_SESSION['idEstudiante']) || !empty($_SESSION['idTutor'])
+            || !empty($_SESSION['idSecretaria']);
 if (!$autenticado) {
     header('Location: login.php');
     exit;
@@ -18,7 +19,7 @@ $csrf = Security::generateCSRFToken();
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Cambiar contraseña — AulaPro</title>
 <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <style>

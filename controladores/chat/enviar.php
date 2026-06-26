@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../../include/Security.php';
+require_once __DIR__ . '/../../include/RateLimiter.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/chat.php';
 
@@ -25,7 +26,9 @@ if (!empty($_SESSION['idAdmin'])) {
 } elseif (!empty($_SESSION['idTutor'])) {
     $myRol = 'tutor';    $myId = (int)$_SESSION['idTutor'];
 } elseif (!empty($_SESSION['idEstudiante'])) {
-    $myRol = 'estudiante'; $myId = (int)$_SESSION['idEstudiante'];
+    $myRol = 'estudiante';  $myId = (int)$_SESSION['idEstudiante'];
+} elseif (!empty($_SESSION['idSecretaria'])) {
+    $myRol = 'secretaria';  $myId = (int)$_SESSION['idSecretaria'];
 } else {
     jsonErr('Sin sesión');
 }
@@ -33,11 +36,16 @@ if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_req
     jsonErr('Acción bloqueada.');
 }
 
+$_con = obtenerConexion();
+if (!RateLimiter::allow($_con, "chat:{$myRol}:{$myId}", 30, 60, 120)) {
+    jsonErr('Demasiados mensajes seguidos. Espera un momento e inténtalo de nuevo.');
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('Método no permitido');
-if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) jsonErr('CSRF inválido');
+if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '', false)) jsonErr('CSRF inválido');
 
 $convId   = (int)($_POST['conv_id'] ?? 0);
 $contenido = trim($_POST['contenido'] ?? '');

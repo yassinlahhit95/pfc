@@ -107,8 +107,13 @@
 
   /* ── Search ──────────────────────────────────────────────────────────── */
   function initSearch() {
-    var input = qs("#search");
-    var list  = qs("#search-results");
+    var input = qs("#sys-search");
+    var list = qs("#search-results");
+    var wrapper = qs("#search-wrapper");
+    var trigger = qs(".mobile-search-trigger");
+    var backdrop = qs("#search-backdrop");
+    var closeBtn = qs("#search-close");
+
     if (!input || !list) return;
 
     input.setAttribute('autocomplete', 'off');
@@ -148,6 +153,30 @@
       list.removeAttribute("hidden");
     }
 
+    function openMobileSearch() {
+      document.body.classList.add("search-open");
+      document.body.style.overflow = "hidden"; // Prevent background scrolling
+      setTimeout(function() { input.focus(); }, 50);
+    }
+
+    function closeMobileSearch() {
+      document.body.classList.remove("search-open");
+      document.body.style.overflow = "";
+      clearResults();
+      input.value = "";
+    }
+
+    if (trigger) trigger.addEventListener("click", openMobileSearch);
+    if (closeBtn) closeBtn.addEventListener("click", closeMobileSearch);
+    if (backdrop) backdrop.addEventListener("click", closeMobileSearch);
+
+    input.addEventListener("focus", function () {
+      var q = input.value.trim();
+      if (q.length >= 2 && list.innerHTML !== "") {
+        list.removeAttribute("hidden");
+      }
+    });
+
     input.addEventListener("input", function () {
       clearTimeout(timer);
       var q = input.value.trim();
@@ -160,16 +189,26 @@
       }, 280);
     });
 
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { clearResults(); input.blur(); }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        if (document.body.classList.contains("search-open")) {
+          closeMobileSearch();
+        } else {
+          clearResults();
+          input.blur();
+        }
+      }
     });
 
+    // Close desktop search dropdown on click outside
     document.addEventListener("click", function (e) {
-      if (!e.target.closest(".search-wrap")) clearResults();
+      if (!document.body.classList.contains("search-open") && wrapper && !e.target.closest("#search-wrapper")) {
+        clearResults();
+      }
     });
   }
 
-  /* ── Notifications ────────────────────────────────────────────────────── */
+  /* ── Notifications ─────────────────────────────────────────────────────── */
   function initNotifications() {
     var btn   = qs("#notif-btn");
     var panel = qs("#notif-panel");
@@ -328,19 +367,34 @@
     /* Mobile menu button */
     var app = qs("#app");
     var menuBtn = qs("#menu");
+    var mobileCloseBtn = qs("#mobile-close");
+    
+    function closeMobileNav() {
+      if (app) app.classList.remove("nav-open");
+    }
+
     if (menuBtn && app) {
       menuBtn.addEventListener("click", function () {
         app.classList.toggle("nav-open");
       });
     }
 
+    if (mobileCloseBtn) {
+      mobileCloseBtn.addEventListener("click", closeMobileNav);
+    }
+
     /* Scrim click closes nav */
     var scrim = qs(".scrim");
-    if (scrim && app) {
-      scrim.addEventListener("click", function () {
-        app.classList.remove("nav-open");
-      });
+    if (scrim) {
+      scrim.addEventListener("click", closeMobileNav);
     }
+
+    /* Escape key / Android back closes nav */
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && app && app.classList.contains("nav-open")) {
+        closeMobileNav();
+      }
+    });
 
     /* Theme toggle */
     var themeBtn = qs("#theme");
@@ -358,7 +412,7 @@
     document.addEventListener("keydown", function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        var search = qs("#search");
+        var search = qs("#sys-search");
         if (search) search.focus();
       }
     });
@@ -393,8 +447,16 @@
       function poll() {
         if (!navigator.onLine) { schedule(INTERVAL); return; }
         fetch(POLL_URL, { credentials: 'same-origin' })
-          .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function(r) {
+            if (r.status === 401 || r.status === 403) {
+              clearTimeout(timer); // session expired — stop polling
+              return null;
+            }
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+          })
           .then(function(d) {
+            if (!d) return;
             errors = 0;
             var n    = parseInt(d.count || 0, 10);
             var prev = parseInt(dot.dataset.msgs || '0', 10);
@@ -438,5 +500,79 @@
 
   // Expose helper to global scope if needed
   window.resolveAppPath = resolveAppPath;
+
+  /* ── Auto-logout after inactivity ──────────────────────────────────────── */
+  (function initAutoLogout() {
+    var TOTAL_MS   = 45 * 60 * 1000; // 45 min total
+    var WARN_MS    = 5  * 60 * 1000; // warn with 5 min remaining
+    var warnTimer  = null;
+    var outTimer   = null;
+    var tickTimer  = null;
+    var warnEl     = null;
+    var warnDeadline = 0;
+
+    function clearWarn() {
+      clearInterval(tickTimer);
+      if (warnEl) { warnEl.remove(); warnEl = null; }
+    }
+
+    function reset() {
+      clearTimeout(warnTimer);
+      clearTimeout(outTimer);
+      clearWarn();
+      warnTimer = setTimeout(showWarn, TOTAL_MS - WARN_MS);
+      outTimer  = setTimeout(doLogout, TOTAL_MS);
+    }
+
+    function showWarn() {
+      warnDeadline = Date.now() + WARN_MS;
+      warnEl = document.createElement('div');
+      warnEl.id = 'autologout-bar';
+      warnEl.setAttribute('style',
+        'position:fixed;bottom:max(80px,calc(76px + env(safe-area-inset-bottom,0px)));' +
+        'left:50%;transform:translateX(-50%);' +
+        'background:var(--surface,#fff);border:1.5px solid #f59e0b;' +
+        'border-radius:16px;padding:14px 20px;z-index:99998;' +
+        'box-shadow:0 8px 32px rgba(0,0,0,.18);' +
+        'min-width:280px;max-width:min(90vw,400px);' +
+        'text-align:center;font-family:var(--font-ui,sans-serif);'
+      );
+      warnEl.innerHTML =
+        '<div style="font-size:.85rem;font-weight:700;color:#92400e;margin-bottom:6px;">' +
+          '<i class="fas fa-clock"></i> Sesión a punto de expirar</div>' +
+        '<div style="font-size:.8rem;color:var(--dim,#555);">' +
+          'La sesión se cerrará en <strong id="al-countdown">5:00</strong>.' +
+        '</div>' +
+        '<button id="al-keep" style="margin-top:10px;background:var(--accent,#4F46E5);color:#fff;' +
+          'border:none;border-radius:10px;padding:7px 20px;font-weight:700;cursor:pointer;font-size:.83rem;">' +
+          'Continuar sesión</button>';
+      document.body.appendChild(warnEl);
+
+      document.getElementById('al-keep').addEventListener('click', reset);
+
+      tickTimer = setInterval(function() {
+        var left = Math.max(0, warnDeadline - Date.now());
+        var el   = document.getElementById('al-countdown');
+        if (el) {
+          var m = Math.floor(left / 60000);
+          var s = Math.floor((left % 60000) / 1000);
+          el.textContent = m + ':' + (s < 10 ? '0' + s : s);
+        }
+        if (left === 0) clearInterval(tickTimer);
+      }, 1000);
+    }
+
+    function doLogout() {
+      clearWarn();
+      window.location.href = resolveAppPath('controladores/logout.php');
+    }
+
+    var actEvents = ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll', 'click'];
+    actEvents.forEach(function(ev) {
+      document.addEventListener(ev, reset, { passive: true, capture: true });
+    });
+
+    reset();
+  })();
 
 })();

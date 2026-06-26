@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
@@ -36,27 +36,27 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idGasto" value="<?= (int)$gasto['idGasto'] ?>">
 
         <div class="campo<?= fieldClass($errores, 'concepto') ?>">
-            <label for="concepto">Concepto <span style="color:#ef4444">*</span></label>
+            <label for="concepto">Concepto <span style="color:var(--rojo,#ef4444)">*</span></label>
             <input type="text" name="concepto" id="concepto" maxlength="255"
                    value="<?= $v('concepto') ?>">
             <?= fieldError($errores, 'concepto') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'importe') ?>">
-            <label for="importe">Importe (€) <span style="color:#ef4444">*</span></label>
+            <label for="importe">Importe (€) <span style="color:var(--rojo,#ef4444)">*</span></label>
             <input type="number" name="importe" id="importe" step="0.01" min="0.01"
                    value="<?= $v('importe') ?>">
             <?= fieldError($errores, 'importe') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'fecha') ?>">
-            <label for="fecha">Fecha del gasto <span style="color:#ef4444">*</span></label>
+            <label for="fecha">Fecha del gasto <span style="color:var(--rojo,#ef4444)">*</span></label>
             <input type="date" name="fecha" id="fecha" value="<?= $v('fecha') ?>">
             <?= fieldError($errores, 'fecha') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'idCategoria') ?>">
-            <label for="idCategoria">Categoría <span style="color:#ef4444">*</span></label>
+            <label for="idCategoria">Categoría <span style="color:var(--rojo,#ef4444)">*</span></label>
             <select name="idCategoria" id="idCategoria">
                 <option value="">— Selecciona —</option>
                 <?php
@@ -115,4 +115,4 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

@@ -10,17 +10,17 @@ $nombre = $secretaria['nombreSecretaria'] ?? 'Secretaria';
 
 $con = obtenerConexion();
 
-$r = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes WHERE activoEstudiante = 1");
-$totalEstudiantes = (int)(mysqli_fetch_assoc($r)['n'] ?? 0);
+$r = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
+$totalEstudiantes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
 $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado = 'PENDIENTE'");
-$admisionesPendientes = (int)(mysqli_fetch_assoc($r)['n'] ?? 0);
+$admisionesPendientes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
 $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido = 0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-$mensajesSinLeer = (int)(mysqli_fetch_assoc($r)['n'] ?? 0);
+$mensajesSinLeer = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
 $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM anuncios WHERE fechaExpiracion >= CURDATE()");
-$anunciosActivos = (int)(mysqli_fetch_assoc($r)['n'] ?? 0);
+$anunciosActivos = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
 $eventos = listarEventosProximos();
 $proximosEventos = array_slice($eventos, 0, 5);
@@ -51,7 +51,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
     </div>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#f59e0b;flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--naranja,#f59e0b);flex-shrink:0;">
             <i class="fas fa-clock"></i>
         </div>
         <div>
@@ -60,7 +60,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
     </div>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#ef4444;flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--rojo,#ef4444);flex-shrink:0;">
             <i class="fas fa-envelope"></i>
         </div>
         <div>
@@ -69,7 +69,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
     </div>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#10b981;flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--verde,#10b981);flex-shrink:0;">
             <i class="fas fa-bullhorn"></i>
         </div>
         <div>

@@ -6,9 +6,9 @@
     --adm-text:      #1e293b;
     --adm-muted:     #64748b;
     --adm-border:    #e2e8f0;
-    --adm-surface:   #ffffff;
+    --adm-surface:   #fff;
     --adm-bg:        #f8fafc;
-    --adm-ring:      rgba(79,70,229,.15);
+    --adm-ring:      rgb(79 70 229 / 15%);
 }
 
 /* ── Page container ── */
@@ -24,7 +24,7 @@
     border: 1px solid var(--adm-border);
     border-radius: 16px;
     padding: 36px 40px;
-    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    box-shadow: 0 4px 24px rgb(0 0 0 / 7%);
 }
 
 /* ── Step progress ── */
@@ -34,6 +34,7 @@
     margin-bottom: 40px;
     position: relative;
 }
+
 .asistente-steps::before {
     content: '';
     position: absolute;
@@ -44,6 +45,7 @@
     background: var(--adm-border);
     z-index: 1;
 }
+
 .step-item {
     position: relative;
     z-index: 2;
@@ -52,6 +54,7 @@
     align-items: center;
     flex: 1;
 }
+
 .step-number {
     width: 48px;
     height: 48px;
@@ -67,17 +70,20 @@
     margin-bottom: 8px;
     transition: all .25s;
 }
+
 .step-item.active .step-number {
     border-color: var(--adm-primary);
     background: var(--adm-primary);
     color: #fff;
     box-shadow: 0 0 0 5px var(--adm-ring);
 }
+
 .step-item.completed .step-number {
     border-color: var(--adm-success);
     background: var(--adm-success);
     color: #fff;
 }
+
 .step-label {
     font-size: .8rem;
     font-weight: 600;
@@ -106,11 +112,13 @@
     color: var(--adm-text);
     margin: 0 0 4px;
 }
+
 .form-section-desc {
     font-size: .82rem;
     color: var(--adm-muted);
     margin: 0 0 20px;
 }
+
 .form-section-sep {
     border: none;
     border-top: 1px solid var(--adm-border);
@@ -135,6 +143,7 @@
     color: var(--adm-text);
     margin-bottom: 6px;
 }
+
 .form-control,
 .form-select {
     width: 100%;
@@ -148,15 +157,16 @@
     transition: border-color .2s, box-shadow .2s;
     box-sizing: border-box;
 }
+
 .form-select {
     appearance: none;
-    -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 13px center;
     padding-right: 36px;
     cursor: pointer;
 }
+
 .form-control:focus,
 .form-select:focus {
     outline: none;
@@ -173,12 +183,14 @@
     font-size: .8rem;
     color: var(--adm-muted);
 }
+
 .politica-check {
     display: flex;
     align-items: flex-start;
     gap: 10px;
     margin-bottom: 10px;
 }
+
 .politica-check input[type="checkbox"] {
     width: 16px;
     height: 16px;
@@ -187,6 +199,7 @@
     accent-color: var(--adm-primary);
     cursor: pointer;
 }
+
 .politica-check label {
     font-size: .82rem;
     font-weight: 600;
@@ -208,23 +221,27 @@
     margin-bottom: 12px;
     gap: 12px;
 }
+
 .doc-item-info h5 {
     font-size: .9rem;
     font-weight: 600;
     color: var(--adm-text);
     margin: 0 0 3px;
 }
+
 .doc-item-info p {
     font-size: .78rem;
     color: var(--adm-muted);
     margin: 0;
 }
+
 .doc-item-actions {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-shrink: 0;
 }
+
 .upload-btn {
     display: inline-block;
     padding: 7px 14px;
@@ -239,6 +256,7 @@
     white-space: nowrap;
     user-select: none;
 }
+
 .upload-btn:hover {
     background: var(--adm-primary);
     color: #fff;
@@ -249,6 +267,7 @@ input[type="file"].file-input { display: none; }
 .status-loading { color: #0ea5e9; font-size: .82rem; font-weight: 500; }
 .status-ok      { color: #16a34a; font-size: .82rem; font-weight: 600; }
 .status-err     { color: #dc2626; font-size: .82rem; font-weight: 600; }
+
 /* Bootstrap compat aliases (used in admisiones.js) */
 .text-info    { color: #0ea5e9; font-size: .82rem; }
 .text-success { color: #16a34a; font-size: .82rem; font-weight: 600; }
@@ -275,6 +294,7 @@ input[type="file"].file-input { display: none; }
     overflow: hidden;
     margin-top: 16px;
 }
+
 .resumen-row {
     display: flex;
     gap: 12px;
@@ -282,6 +302,7 @@ input[type="file"].file-input { display: none; }
     border-bottom: 1px solid #f1f5f9;
 }
 .resumen-row:last-child { border-bottom: none; }
+
 .resumen-label {
     font-weight: 600;
     color: #475569;
@@ -289,6 +310,7 @@ input[type="file"].file-input { display: none; }
     min-width: 180px;
     flex-shrink: 0;
 }
+
 .resumen-val {
     color: var(--adm-text);
     font-size: .85rem;
@@ -303,6 +325,7 @@ input[type="file"].file-input { display: none; }
     padding-top: 20px;
     border-top: 1px solid var(--adm-border);
 }
+
 .btn-asistente {
     padding: 10px 24px;
     border-radius: 8px;
@@ -312,12 +335,14 @@ input[type="file"].file-input { display: none; }
     border: none;
     transition: all .2s;
 }
+
 .btn-primary-asistente {
     background: var(--adm-primary);
     color: #fff;
     margin-left: auto;
 }
 .btn-primary-asistente:hover { background: var(--adm-primary-d); transform: translateY(-1px); }
+
 .btn-secondary-asistente {
     background: var(--adm-bg);
     color: var(--adm-muted);
@@ -326,7 +351,7 @@ input[type="file"].file-input { display: none; }
 .btn-secondary-asistente:hover { background: var(--adm-border); color: var(--adm-text); }
 
 /* ── Responsive ── */
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .admisiones-main { padding: 24px 16px 60px; }
     .asistente-container { padding: 24px 18px; border-radius: 12px; }
     .asistente-steps { margin-bottom: 28px; }

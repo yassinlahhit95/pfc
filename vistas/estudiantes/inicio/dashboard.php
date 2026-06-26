@@ -60,12 +60,6 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     <h1><?= Security::escapeHtml($saludo) ?>, <span><?= Security::escapeHtml($nombreEst) ?></span></h1>
     <p class="sub"><?= Security::escapeHtml($nombreCiclo) ?> — <b><?= count($listaModulos) ?> módulos</b> · <b><?= count($listaRetos) ?> retos</b> · <b><?= $cantidadPagos ?> pagos</b></p>
   </div>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-k">Módulos</span><span class="stat-v"><?= count($listaModulos) ?></span></div>
-    <div class="stat"><span class="stat-k">Retos</span><span class="stat-v"><?= count($listaRetos) ?></span></div>
-    <div class="stat"><span class="stat-k">TFG</span><span class="stat-v"><?= Security::escapeHtml($tfgEstado) ?></span></div>
-    <div class="stat"><span class="stat-k">Pagos</span><span class="stat-v"><?= $cantidadPagos ?></span></div>
-  </div>
 </section>
 
 <div class="section-head">
@@ -298,7 +292,7 @@ foreach ($califRetos as $cr) {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g" crossorigin="anonymous"></script>
 <script>
 (function() {
     var optsBase = {

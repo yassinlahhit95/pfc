@@ -33,7 +33,8 @@
         '.toast-warn .toast-bar{background:#f59e0b;}',
         '.toast.removing{animation:toastOut .22s ease forwards;}',
         '@keyframes toastIn{from{opacity:0;transform:translateX(50px) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}',
-        '@keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(50px);}}'
+        '@keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(50px);}}',
+        '@media(max-width:700px){#toast-container{bottom:max(90px,calc(88px + env(safe-area-inset-bottom,0px)));right:12px;left:12px;align-items:stretch;}.toast{min-width:0;width:100%;}}'
     ].join('');
 
     function injectCSS() {
@@ -77,10 +78,6 @@
         var bar = toast.querySelector('.toast-bar');
         bar.style.cssText = 'width:100%;transition:width ' + DURATION + 'ms linear;';
 
-        toast.querySelector('.toast-close').addEventListener('click', function () {
-            dismiss(toast);
-        });
-
         container.appendChild(toast);
 
         requestAnimationFrame(function () {
@@ -93,6 +90,7 @@
 
         toast.querySelector('.toast-close').addEventListener('click', function () {
             clearTimeout(timer);
+            dismiss(toast);
         });
     }
 

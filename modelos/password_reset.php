@@ -13,6 +13,7 @@ function buscarUsuarioPorEmail(string $email): ?array {
         'profesor'   => ['profesores',  'emailProfesor',   'idProfesor'],
         'estudiante' => ['estudiantes', 'emailEstudiante', 'idEstudiante'],
         'tutor'      => ['tutores',     'emailTutor',      'idTutor'],
+        'secretaria' => ['secretarias', 'emailSecretaria', 'idSecretaria'],
     ];
     foreach ($tablas as $tipo => [$tabla, $campoEmail, $campoId]) {
         $row = dbFetchOne("SELECT * FROM `$tabla` WHERE `$campoEmail` = ?", "s", $email);
@@ -66,10 +67,11 @@ function cambiarPasswordPorEmail(string $email, string $tipo, string $nuevaPassw
     $con  = obtenerConexion();
     $hash = Security::hashPassword($nuevaPassword);
     $map  = [
-        'admin'      => ['directores', 'password', 'emailDirector'],
+        'admin'      => ['directores',  'password', 'emailDirector'],
         'profesor'   => ['profesores',  'password', 'emailProfesor'],
         'estudiante' => ['estudiantes', 'password', 'emailEstudiante'],
         'tutor'      => ['tutores',     'password', 'emailTutor'],
+        'secretaria' => ['secretarias', 'password', 'emailSecretaria'],
     ];
     if (!isset($map[$tipo])) return false;
     [$tabla, $campoPass, $campoEmail] = $map[$tipo];

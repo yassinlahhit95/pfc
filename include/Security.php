@@ -41,7 +41,7 @@ class Security {
     // fingerprint de User-Agent (mitiga secuestro) + caducidad por inactividad.
     // No aplica a visitantes anónimos para no romper el token CSRF del login.
     public static function enforceSessionSecurity() {
-        $authKeys = ['idAdmin', 'idProfesor', 'idEstudiante', 'idTutor'];
+        $authKeys = ['idAdmin', 'idProfesor', 'idEstudiante', 'idTutor', 'idSecretaria'];
         $isAuth = false;
         foreach ($authKeys as $k) {
             if (!empty($_SESSION[$k])) { $isAuth = true; break; }
@@ -51,10 +51,25 @@ class Security {
         // Fingerprint estable (User-Agent). No usamos IP para no expulsar a usuarios móviles.
         $fp = hash('sha256', $_SERVER['HTTP_USER_AGENT'] ?? '');
         if (!isset($_SESSION['_fp'])) {
+            // First request, store fingerprint
             $_SESSION['_fp'] = $fp;
+            $_SESSION['_fp_mismatch_time'] = 0;
         } elseif (!hash_equals($_SESSION['_fp'], $fp)) {
-            self::destroySession();
-            return;
+            // Allow a grace period of 2 minutes for fingerprint mismatches (e.g., after browser updates)
+            $now = time();
+            $lastMismatch = $_SESSION['_fp_mismatch_time'] ?? 0;
+            if ($lastMismatch === 0) {
+                // Record first mismatch timestamp
+                $_SESSION['_fp_mismatch_time'] = $now;
+            } elseif ($now - $lastMismatch > 120) {
+                // If mismatch persists beyond grace period, destroy session
+                self::destroySession();
+                return;
+            }
+            // Otherwise, keep session alive and will re‑check on next request
+        } else {
+            // Fingerprint matches, clear any previous mismatch record
+            $_SESSION['_fp_mismatch_time'] = 0;
         }
 
         // Invalidación tras cambio de contraseña (revalida como máximo cada 60 s).
@@ -64,6 +79,7 @@ class Security {
             'idProfesor'   => ['profesores',  'idProfesor'],
             'idEstudiante' => ['estudiantes', 'idEstudiante'],
             'idTutor'      => ['tutores',     'idTutor'],
+            'idSecretaria' => ['secretarias', 'idSecretaria'],
         ];
         if ((time() - (int)($_SESSION['_pwd_check'] ?? 0)) >= 60) {
             $_SESSION['_pwd_check'] = time();
@@ -291,6 +307,7 @@ class Security {
             'profesores'  => 'idProfesor',
             'estudiantes' => 'idEstudiante',
             'tutores'     => 'idTutor',
+            'secretarias' => 'idSecretaria',
         ];
         if (!isset($allow[$tabla]) || $allow[$tabla] !== $idCol) return;
         if (!self::passwordNeedsRehash($hashActual)) return;
@@ -304,9 +321,9 @@ class Security {
     // Marca el instante de cambio de contraseña para invalidar otras sesiones activas.
     // Tolerante a que la columna pwd_changed_at no exista todavía (deploy seguro).
     public static function touchPasswordChanged($con, string $tabla, string $whereCol, $whereVal): void {
-        $allowTablas = ['directores', 'profesores', 'estudiantes', 'tutores'];
-        $allowCols = ['idDirector', 'idProfesor', 'idEstudiante', 'idTutor',
-                      'emailDirector', 'emailProfesor', 'emailEstudiante', 'emailTutor'];
+        $allowTablas = ['directores', 'profesores', 'estudiantes', 'tutores', 'secretarias'];
+        $allowCols = ['idDirector', 'idProfesor', 'idEstudiante', 'idTutor', 'idSecretaria',
+                      'emailDirector', 'emailProfesor', 'emailEstudiante', 'emailTutor', 'emailSecretaria'];
         if (!in_array($tabla, $allowTablas, true) || !in_array($whereCol, $allowCols, true)) return;
         $type = (strncmp($whereCol, 'id', 2) === 0) ? 'i' : 's';
         try {
@@ -379,13 +396,42 @@ class Security {
     // UTILIDADES
     // ══════════════════════════════════════════════════════════════════════
 
+    // Returns the real client IP, honouring Cloudflare's CF-Connecting-IP header only
+    // when REMOTE_ADDR is a known Cloudflare egress IP (prevents header spoofing).
+    public static function clientIp(): string {
+        $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && self::isCloudflareIp($remote)) {
+            return substr($_SERVER['HTTP_CF_CONNECTING_IP'], 0, 45);
+        }
+        return substr($remote, 0, 45);
+    }
+
+    private static function isCloudflareIp(string $ip): bool {
+        static $cfRanges = [
+            '173.245.48.0/20','103.21.244.0/22','103.22.200.0/22','103.31.4.0/22',
+            '141.101.64.0/18','108.162.192.0/18','190.93.240.0/20','188.114.96.0/20',
+            '197.234.240.0/22','198.41.128.0/17','162.158.0.0/15','104.16.0.0/13',
+            '104.24.0.0/14','172.64.0.0/13','131.0.72.0/22',
+        ];
+        $ipLong = ip2long($ip);
+        if ($ipLong === false) return false;
+        foreach ($cfRanges as $range) {
+            [$net, $bits] = explode('/', $range);
+            $mask = ~((1 << (32 - (int)$bits)) - 1);
+            if ((ip2long($net) & $mask) === ($ipLong & $mask)) return true;
+        }
+        return false;
+    }
+
     public static function getCountryFromIP($ip = null) {
         if ($ip === null) {
-            $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $ip = self::clientIp();
         }
-        
-        // 1. If using Cloudflare, this is instantly available and highly accurate
-        if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
+
+        // CF-Connecting-IP is already resolved above in clientIp(); trust CF-IPCountry
+        // only when REMOTE_ADDR is a genuine Cloudflare IP (prevents header spoofing).
+        $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        if (!empty($_SERVER['HTTP_CF_IPCOUNTRY']) && self::isCloudflareIp($remote)) {
             return strtoupper($_SERVER['HTTP_CF_IPCOUNTRY']);
         }
         

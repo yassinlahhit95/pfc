@@ -48,7 +48,7 @@ foreach ($todosCiclos as $c) { if ($c['idCiclo'] == $modulo['idCiclo']) { $ciclo
 $colores = ['#0ea5e9','#8b5cf6','#10b981','#f59e0b','#ef4444','#ec4899','#0ea5e9','#14b8a6'];
 
 $tituloDelPagina = "AULAPRO | " . strtoupper($modulo['nombreModulo']);
-$seccionActual   = 'aula';
+$seccionActual   = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

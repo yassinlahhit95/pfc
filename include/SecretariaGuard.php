@@ -12,17 +12,17 @@ if (empty($_SESSION['idSecretaria'])) {
         echo json_encode(['ok' => false, 'msg' => 'Sesión expirada. Por favor recarga la página.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/login.php');
     exit;
 }
 
 if (!empty($_SESSION['must_change_password'])) {
     if ($_isAjaxGuardSec) {
         header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'msg' => 'Debes completar la configuración de tu cuenta antes de continuar.']);
+        echo json_encode(['ok' => false, 'msg' => 'Debes cambiar tu contraseña antes de continuar.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/cambiar_password.php');
     exit;
 }
 
@@ -35,3 +35,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, 
     require __DIR__ . '/../vistas/error.php';
     exit;
 }
+
+require_once __DIR__ . '/SuspensionGuard.php';

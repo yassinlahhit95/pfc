@@ -11,10 +11,10 @@ $nombreUsuario_menu = $_sec_datos['nombreSecretaria'] ?? 'Secretaria';
 // Badges
 $_con_sec = obtenerConexion();
 $_r = mysqli_query($_con_sec, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-$totalSinLeer_menu = (int)(mysqli_fetch_assoc($_r)['n'] ?? 0);
+$totalSinLeer_menu = $_r ? (int)(mysqli_fetch_assoc($_r)['n'] ?? 0) : 0;
 
 $_r2 = mysqli_query($_con_sec, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado='PENDIENTE'");
-$totalAdmisionesPendientes_menu = (int)(mysqli_fetch_assoc($_r2)['n'] ?? 0);
+$totalAdmisionesPendientes_menu = $_r2 ? (int)(mysqli_fetch_assoc($_r2)['n'] ?? 0) : 0;
 
 function _nav_active_sec($check) {
     global $seccion;
@@ -35,6 +35,7 @@ function _nav_active_sec($check) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script defer src="../../../public/js/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/menu-contextual.js') ?>"></script>
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
 </head>
 <body>
@@ -101,6 +102,14 @@ function _nav_active_sec($check) {
         <span class="nav-label">Mensajería</span>
         <?php if ($totalSinLeer_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalSinLeer_menu ?></span><?php } ?>
         <?php if (_nav_active_sec('mensajes') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
+
+      <?php if (FeatureGuard::check('feature_chat')): ?>
+      <a href="../mensajes/chat.php" class="nav-item<?= _nav_active_sec('chat') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="nav-label">Chat</span>
+        <?php if (_nav_active_sec('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
 
@@ -194,10 +203,6 @@ function _nav_active_sec($check) {
       <div class="topbar-actions">
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
-        </button>
-        <button class="avatar-btn" aria-label="Cuenta">
-          <span class="ava"><?= strtoupper(substr($nombreUsuario_menu, 0, 1)) . strtoupper(substr(explode(' ', trim($nombreUsuario_menu))[1] ?? '', 0, 1)) ?></span>
-          <span class="presence"></span>
         </button>
       </div>
     </header>

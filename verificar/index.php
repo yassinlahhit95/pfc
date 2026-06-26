@@ -27,7 +27,7 @@ $valido  = $doc !== null;
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Verificación de Documento — <?= htmlspecialchars($cfg['nombreCentro']) ?></title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }

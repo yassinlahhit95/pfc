@@ -17,6 +17,6 @@ require_once __DIR__ . '/../../../modelos/estudiantes.php';
 $ok = actualizarPasswordEstudiante($id, $pass);
 
 require_once __DIR__ . '/../../../modelos/log.php';
-if ($ok) registrarAccion('cambiar_password', 'estudiante', $id, 'Por secretaria');
+if ($ok) registrarAccionSecretaria('cambiar_password', 'estudiante', $id, 'Por secretaria');
 
 echo json_encode(['ok' => (bool)$ok, 'msg' => $ok ? 'Contraseña actualizada.' : 'Error al actualizar la contraseña.']);

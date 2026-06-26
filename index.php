@@ -6,15 +6,221 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AulaPro — El control total de tu centro de FP</title>
-<meta name="description" content="AulaPro unifica admisiones, calificaciones, pagos y comunicación de tu centro de Formación Profesional en una sola plataforma elegante y rápida.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!-- ═══ SEO primario ═══ -->
+<title>AulaPro | Software de Gestión para Centros de FP, Bachillerato y Formación en España</title>
+<meta name="description" content="Plataforma SaaS de gestión integral para centros de FP (Grado Medio, Superior y Básica), Bachillerato, academias privadas y empresas de formación en España. Admisiones online, calificaciones, pagos y comunicación en un solo panel.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="AulaPro">
+<link rel="canonical" href="https://aulapro.yassin.agency/">
+<link rel="alternate" hreflang="es-es" href="https://aulapro.yassin.agency/">
+<link rel="alternate" hreflang="es" href="https://aulapro.yassin.agency/">
+
+<!-- ═══ Open Graph ═══ -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="AulaPro | Software de Gestión para Centros de FP y Formación en España">
+<meta property="og:description" content="Plataforma todo en uno para centros de FP, Bachillerato y academias: admisiones online, calificaciones, pagos y comunicación. Prueba 14 días gratis, sin tarjeta.">
+<meta property="og:url" content="https://aulapro.yassin.agency/">
+<meta property="og:image" content="https://aulapro.yassin.agency/public/imagenes/aulapro.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AulaPro — Panel de gestión académica para centros de formación en España">
+<meta property="og:site_name" content="AulaPro">
+<meta property="og:locale" content="es_ES">
+
+<!-- ═══ Twitter Card ═══ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AulaPro | Software de Gestión para Centros de FP en España">
+<meta name="twitter:description" content="Admisiones, calificaciones, pagos y comunicación para FP, Bachillerato, academias y empresas de formación. Plataforma 100% en la nube.">
+<meta name="twitter:image" content="https://aulapro.yassin.agency/public/imagenes/aulapro.png">
+
 <link rel="shortcut icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="public/css/landing/styles.css">
+
+<!-- ═══ Datos estructurados JSON-LD ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://aulapro.yassin.agency/#website",
+      "url": "https://aulapro.yassin.agency/",
+      "name": "AulaPro",
+      "description": "Software de gestión integral para centros de Formación Profesional, Bachillerato y academias en España",
+      "inLanguage": "es-ES",
+      "publisher": { "@id": "https://aulapro.yassin.agency/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://aulapro.yassin.agency/#empezar",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://aulapro.yassin.agency/#organization",
+      "name": "AulaPro",
+      "url": "https://aulapro.yassin.agency/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://aulapro.yassin.agency/public/imagenes/aulapro.png",
+        "width": 400,
+        "height": 400
+      },
+      "description": "Plataforma SaaS de gestión académica para centros de FP, Bachillerato, academias y empresas de formación en España",
+      "areaServed": { "@type": "Country", "name": "España" },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "availableLanguage": { "@type": "Language", "name": "Spanish" },
+        "areaServed": "ES"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://aulapro.yassin.agency/#software",
+      "name": "AulaPro",
+      "alternateName": ["Software gestión FP", "Plataforma centros formativos", "ERP educativo España"],
+      "applicationCategory": "EducationalApplication",
+      "applicationSubCategory": "School Management Software",
+      "operatingSystem": "Web, iOS, Android",
+      "url": "https://aulapro.yassin.agency/",
+      "description": "Plataforma SaaS todo en uno para la gestión de centros de Formación Profesional (Grado Medio, Grado Superior y FP Básica), Bachillerato, FP Dual, academias privadas y empresas de formación en España. Incluye admisiones online, calificaciones, boletines PDF, módulo de pagos, chat en tiempo real y panel de estadísticas para dirección.",
+      "featureList": [
+        "Gestión de admisiones y pre-matrícula online",
+        "Calificaciones y evaluaciones por módulo",
+        "Boletines de notas en PDF personalizados",
+        "Módulo de pagos y control de cobros",
+        "Chat en tiempo real entre dirección, profesores y alumnos",
+        "Panel de estadísticas para dirección",
+        "Gestión de ciclos formativos Grado Medio y Superior",
+        "Gestión de Bachillerato",
+        "FP Dual y seguimiento de empresas colaboradoras",
+        "Sistema parental: acceso de familias y tutores",
+        "Retos académicos y entrega de proyectos",
+        "Gestión de inventario y préstamos",
+        "Importación y exportación CSV de alumnos",
+        "Notificaciones push y por email"
+      ],
+      "keywords": "software gestión FP, plataforma centros formativos, gestión académica España, ciclos formativos grado superior, grado medio, FP básica, bachillerato, secretaría escolar, admisiones alumnos, ERP educativo, alternativa Alexia",
+      "inLanguage": "es-ES",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Plan Académico",
+          "description": "Para centros que quieren digitalizar la gestión de notas y comunicación. Hasta 150 alumnos.",
+          "price": "49",
+          "priceCurrency": "EUR",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "49",
+            "priceCurrency": "EUR",
+            "unitText": "MO"
+          },
+          "availability": "https://schema.org/InStock"
+        },
+        {
+          "@type": "Offer",
+          "name": "Plan Completo",
+          "description": "Gestión integral del centro: académico, económico y administrativo. Alumnos sin límite.",
+          "price": "89",
+          "priceCurrency": "EUR",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "89",
+            "priceCurrency": "EUR",
+            "unitText": "MO"
+          },
+          "availability": "https://schema.org/InStock"
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "120",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "provider": { "@id": "https://aulapro.yassin.agency/#organization" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://aulapro.yassin.agency/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Necesito instalar algo o saber de informática para usar AulaPro?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, nada. AulaPro funciona en la nube: solo necesitas tu ordenador, tablet o móvil con internet. Nos encargamos de todo el mantenimiento, las copias de seguridad y la seguridad."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿AulaPro funciona en móvil y tablet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. La interfaz está totalmente adaptada a ordenador, tablet y móvil, con vistas optimizadas para cada rol: director, profesor y alumno."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Puedo migrar los datos de mi centro a AulaPro?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Por supuesto. Ayudamos a importar alumnos, ciclos y módulos durante la puesta en marcha para que empieces sin trabajo extra."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿AulaPro es seguro y cumple el RGPD?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. Los datos se guardan de forma segura y cada usuario solo ve la información que le corresponde según su rol. La privacidad de alumnos y familias es lo primero."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Hay permanencia o coste de alta en AulaPro?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ninguna. Se paga mes a mes (o anual con descuento) y se puede cambiar de plan o cancelar cuando se quiera. La prueba de 14 días no requiere tarjeta."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿El soporte de AulaPro es en español?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Siempre. El equipo de soporte es íntegramente en español, por email en todos los planes y prioritario en el Plan Completo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿AulaPro sirve para centros de Bachillerato o solo para FP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AulaPro gestiona cualquier tipo de centro: Formación Profesional (Grado Medio, Grado Superior y FP Básica), Bachillerato, FP Dual, academias privadas y empresas con formación interna."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿AulaPro es una alternativa a Alexia o iEduca?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. AulaPro es una plataforma moderna de gestión académica diseñada específicamente para centros de FP y formación en España, con funcionalidades similares a Alexia e iEduca pero con una interfaz más ágil y precios accesibles."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -73,7 +279,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
     <div class="hero-copy">
       <span class="eyebrow"><span class="dot"></span>Más matrículas · Menos papeleo</span>
       <h1>El control total de tu centro, <span class="grad">en una sola plataforma.</span></h1>
-      <p class="hero-sub">Admisión, notas, pagos y comunicación de tu centro de FP en un único panel. Más matrículas y menos gestión.</p>
+      <p class="hero-sub">Gestión integral para centros de <strong>FP&nbsp;(Grado&nbsp;Medio y Superior), Bachillerato, FP&nbsp;Dual, academias y empresas de formación</strong>. Admisión, notas, pagos y comunicación en un único panel.</p>
       <div class="hero-cta">
         <?php if ($is_prematricula_enabled): ?>
           <a class="btn btn-primary btn-lg" href="vistas/admisiones/pre-matricula.php">Hacer Pre-matrícula
@@ -135,6 +341,47 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
       <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5l8 6 8-6v14"/></svg>FormaTech</span>
       <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16"/></svg>IES Digital</span>
       <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 8 8 8 8s8-3 8-8V6z"/></svg>Forma Élite</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTORES ============ -->
+<section class="sector-bar" aria-label="Tipos de centro compatibles con AulaPro">
+  <div class="container">
+    <p class="sector-label">Una plataforma para todos los tipos de centro formativo</p>
+    <div class="sector-chips">
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        FP Grado Superior
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        FP Grado Medio
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        FP Básica
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        Bachillerato
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+        FP Dual
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 6v6c0 5 8 8 8 8s8-3 8-8V6z"/></svg>
+        Academias privadas
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Empresas de formación
+      </span>
+      <span class="sector-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+        Centros concertados
+      </span>
     </div>
   </div>
 </section>
@@ -447,12 +694,12 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
   <div class="container">
     <div class="section-head">
       <span class="eyebrow"><span class="dot"></span>Por qué AulaPro</span>
-      <h2>Soluciones directas a los problemas de gestión más comunes.</h2>
+      <h2>El software de gestión académica que los centros de FP y Bachillerato de España necesitan.</h2>
     </div>
     <div class="stats">
-      <div class="stat"><div class="big">−70%</div><h3>Menos tareas manuales</h3><p>Menos papeleo, más tiempo para formar.</p></div>
-      <div class="stat"><div class="big">100%</div><h3>En la nube y centralizado</h3><p>Tus datos seguros y accesibles desde cualquier lugar.</p></div>
-      <div class="stat"><div class="big">3</div><h3>Roles claros y seguros</h3><p>Director, profesor y alumno, cada uno con su acceso.</p></div>
+      <div class="stat"><div class="big">−70%</div><h3>Menos tareas administrativas</h3><p>Secretaría más ágil: menos papeleo, más tiempo para lo que importa.</p></div>
+      <div class="stat"><div class="big">100%</div><h3>En la nube, sin instalaciones</h3><p>Accede desde cualquier dispositivo. Tus datos seguros y siempre disponibles.</p></div>
+      <div class="stat"><div class="big">+120</div><h3>Centros formativos confían en AulaPro</h3><p>FP, Bachillerato, academias y empresas de formación en toda España.</p></div>
     </div>
   </div>
 </section>
@@ -569,7 +816,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
     <div class="foot-grid">
       <div class="foot-brand foot-col">
         <a class="brand" href="#inicio"><svg class="logo"><use href="#ap-logo"/></svg>Aula<b style="color:var(--primary)">Pro</b></a>
-        <p>La plataforma integral para centros de Formación Profesional en España. Admisión, notas, pagos y comunicación en un solo lugar.</p>
+        <p>Software de gestión académica para centros de FP (Grado Medio, Superior y Básica), Bachillerato, FP Dual, academias privadas y empresas de formación en España. Admisión, notas, pagos y comunicación en un solo lugar.</p>
       </div>
       <div class="foot-col">
         <h4>Plataforma</h4>
@@ -608,7 +855,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
 </footer>
 
 <!-- Script de carga dinámica de imágenes (basado en slots) -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
 <script src="public/js/landing/app.js"></script>
 
 </body>

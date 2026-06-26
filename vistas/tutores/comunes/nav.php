@@ -23,7 +23,7 @@ function _nav_active_tutor($check) {
 <html lang="es" data-theme="light" data-density="regular">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title><?= Security::escapeHtml($titulo_pagina ?? 'AulaPro Familias') ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -107,9 +107,6 @@ function _nav_active_tutor($check) {
       <div class="topbar-actions" style="margin-left: auto">
         <button class="icon-btn theme-btn" id="theme">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
-        </button>
-        <button class="avatar-btn">
-          <span class="ava" style="background: #10b981"><?= strtoupper(substr($nombreUsuario_menu, 0, 1)) ?></span>
         </button>
       </div>
     </header>

@@ -1,15 +1,15 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/Security.php';
+Security::initSession();
 
 if (empty($_SESSION['idTutor'])) {
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/login.php');
     exit;
 }
 
 // Bloquear acciones hasta que se cambie la contraseña temporal
 if (!empty($_SESSION['must_change_password'])) {
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/cambiar_password.php');
     exit;
 }
 

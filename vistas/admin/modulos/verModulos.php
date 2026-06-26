@@ -77,13 +77,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>CICLO FORMATIVO</th>
                     <th>PROFESORES ASIGNADOS</th>
                     <th>HORAS TOTALES</th>
+                    <th>ECTS</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
-                        <td colspan="7" class="vacio">No hay módulos registrados en el sistema.</td>
+                        <td colspan="8" class="vacio">No hay módulos registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeModulosActuales as $moduloIndividual) {
@@ -122,6 +123,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                         </td>
                         <td><?= Security::escapeHtml($moduloIndividual['horasMaximas']) ?> H</td>
+                        <td><?= !empty($moduloIndividual['creditosECTS']) ? Security::escapeHtml($moduloIndividual['creditosECTS']) : '<span class="texto-suave">—</span>' ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>

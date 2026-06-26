@@ -69,6 +69,23 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="lista.php" class="ibtn ibtn-secondary">
             <i class="fas fa-arrow-left"></i> Volver al buzón
         </a>
+        <?php if (($msg['emisor_rol'] !== 'admin') && FeatureGuard::check('feature_chat')): ?>
+        <?php
+            if ($msg['emisor_rol'] === 'profesor') {
+                $chatTargetRol  = 'profesor';
+                $chatTargetId   = (int)($msg['idProfesor'] ?? 0);
+                $chatTargetName = $msg['nombreProfesor'] ?? 'Profesor';
+            } else {
+                $chatTargetRol  = 'estudiante';
+                $chatTargetId   = (int)($msg['idEstudiante'] ?? 0);
+                $chatTargetName = $msg['nombreEstudiante'] ?? 'Alumno';
+            }
+        ?>
+        <button type="button" class="ibtn ibtn-primary"
+                onclick="if(window.ChatWidget)ChatWidget.startWith(<?= json_encode($chatTargetRol) ?>,<?= $chatTargetId ?>,<?= json_encode($chatTargetName) ?>)">
+            <i class="fas fa-comments"></i> Chat en vivo
+        </button>
+        <?php endif; ?>
         <a href="#" class="ibtn ibtn-danger" style="margin-left:auto;"
            data-modal-borrar
            data-id="<?= $idReclamacion ?>"
@@ -192,5 +209,81 @@ window.MSG_EDIT_URL = '/controladores/admin/mensajes/editar.php';
 (function () {
     var body = document.getElementById('thread-body');
     if (body) body.scrollTop = body.scrollHeight;
+    // Focus reply textarea on desktop only (mobile would trigger keyboard)
+    if (window.innerWidth >= 720) {
+        var ta = document.querySelector('.msg-thread-reply textarea');
+        if (ta) ta.focus();
+    }
+})();
+
+// AJAX reply form
+(function () {
+    var form = document.querySelector('.msg-thread-reply');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var ta  = form.querySelector('textarea[name="respuesta"]');
+        var text = (ta ? ta.value : '').trim();
+        if (!text) return;
+
+        var btn = form.querySelector('[name="guardarCambios"]');
+        if (btn) { btn.disabled = true; }
+
+        var fd = new FormData(form);
+        fd.append('guardarCambios', '1');
+
+        fetch(form.action, {
+            method:  'POST',
+            body:    fd,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin',
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            if (res && res.ok) {
+                // Play sound
+                if (typeof playMsgSound === 'function') playMsgSound();
+
+                // Append message to thread optimistically
+                var threadBody = document.getElementById('thread-body');
+                if (threadBody) {
+                    var now = new Date();
+                    var pad = function(n){ return String(n).padStart(2,'0'); };
+                    var timeStr = pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+                    var div = document.createElement('div');
+                    div.className = 'msg-thread-row mine';
+                    div.innerHTML =
+                        '<div class="msg-thread-ava ava-admin">AD</div>' +
+                        '<div class="msg-thread-bubble-wrap">' +
+                            '<div class="msg-thread-bubble" data-original="'+escHtml(text)+'">'+escHtml(text)+'</div>' +
+                            '<div class="msg-thread-foot">' +
+                                '<span class="msg-thread-time">'+escHtml(timeStr)+'</span>' +
+                                '<button class="msg-edit-btn" data-msg-id="" title="Editar mensaje"><i class="fas fa-pencil-alt"></i></button>' +
+                            '</div>' +
+                        '</div>';
+                    threadBody.appendChild(div);
+                    threadBody.scrollTop = threadBody.scrollHeight;
+                }
+
+                // Clear textarea
+                if (ta) ta.value = '';
+
+                if (window.Toast) Toast.show('Respuesta enviada', 'success');
+            } else {
+                if (window.Toast) Toast.show((res && res.msg) || 'Error al enviar', 'error');
+            }
+        })
+        .catch(function () {
+            if (window.Toast) Toast.show('Error de conexión', 'error');
+        })
+        .finally(function () {
+            if (btn) btn.disabled = false;
+        });
+    });
+
+    function escHtml(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
 })();
 </script>

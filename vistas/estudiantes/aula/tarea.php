@@ -22,7 +22,7 @@ $comentarios = $entrega ? listarComentariosPorEntregaAula($entrega['idEntrega'])
 $gravEstHash = md5(strtolower(trim($estudiante['emailEstudiante'] ?? '')));
 
 $tituloDelPagina = "AULAPRO | " . mb_strtoupper($tarea['titulo'], 'UTF-8');
-$seccionActual   = 'aula';
+$seccionActual   = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

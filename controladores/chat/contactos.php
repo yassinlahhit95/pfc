@@ -21,7 +21,9 @@ if (!empty($_SESSION['idAdmin'])) {
 } elseif (!empty($_SESSION['idTutor'])) {
     $myRol = 'tutor';      $myId = (int)$_SESSION['idTutor'];
 } elseif (!empty($_SESSION['idEstudiante'])) {
-    $myRol = 'estudiante'; $myId = (int)$_SESSION['idEstudiante'];
+    $myRol = 'estudiante';  $myId = (int)$_SESSION['idEstudiante'];
+} elseif (!empty($_SESSION['idSecretaria'])) {
+    $myRol = 'secretaria';  $myId = (int)$_SESSION['idSecretaria'];
 } else {
     echo json_encode(['ok' => false]); exit;
 }

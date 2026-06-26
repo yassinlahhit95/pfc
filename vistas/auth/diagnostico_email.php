@@ -1,7 +1,7 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . "/../../config/Config.php";
 require_once __DIR__ . "/../../include/Security.php";
+Security::initSession();
 require_once __DIR__ . "/../../controladores/comunes/email_helper.php";
 require_once __DIR__ . "/../../include/Logger.php";
 
@@ -59,6 +59,12 @@ $fbStatus = (empty($fbApiKey) || empty($fbProjectId) || empty($fbVapidKey)) ? "C
 // 4. Test de Búsqueda de Usuario por Email
 $searchEmailResult = "";
 $searchedEmail = $_POST['search_email'] ?? '';
+
+// CSRF protection for session-authenticated requests (API-key access skips this)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['idAdmin']) && !Security::validateCSRFToken()) {
+    die('Solicitud inválida. Recarga la página e inténtalo de nuevo.');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'search' && !empty($searchedEmail)) {
     require_once __DIR__ . "/../../modelos/password_reset.php";
     $searchEmail = trim($searchedEmail);
@@ -102,7 +108,7 @@ $warningLogs = Logger::getTail('warning.log', 20);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AulaPro — Diagnóstico Integrado</title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <style>
@@ -382,6 +388,7 @@ $warningLogs = Logger::getTail('warning.log', 20);
             </p>
             <form method="POST" style="margin-bottom: 1.5rem;">
                 <input type="hidden" name="action" value="search">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <div class="form-group">
                     <input type="email" name="search_email" placeholder="ejemplo@correo.com" value="<?= Security::escapeHtml($searchedEmail) ?>" required>
                 </div>
@@ -395,6 +402,7 @@ $warningLogs = Logger::getTail('warning.log', 20);
             </p>
             <form method="POST">
                 <input type="hidden" name="action" value="test_mail">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <div class="form-group">
                     <input type="email" name="test_email" placeholder="destinatario@correo.com" value="<?= Security::escapeHtml($testEmailVal) ?>" required>
                 </div>

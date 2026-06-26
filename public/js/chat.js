@@ -212,11 +212,14 @@ window.AulaChat = (function () {
     }
 
     function sendMessage() {
+        console.log('sendMessage invoked');
         const input = el.input();
         const text = (input?.value || '').trim();
         if (!text) return;
         input.value = '';
         input.style.height = '';
+        // Keep focus after sending
+        input.focus();
 
         const fd = new FormData();
         fd.append('csrf_token', cfg.csrfToken);
@@ -227,7 +230,13 @@ window.AulaChat = (function () {
         fetch(`${cfg.basePath}controladores/chat/enviar.php`, { method: 'POST', body: fd })
             .then(r => r.json())
             .then(data => {
-                if (data.ok) appendMsg(data.message);
+                if (data.ok) {
+                    appendMsg(data.message);
+                    // Reset polling to fast interval to fetch any new msgs
+                    pollInterval = POLL_MIN_MS;
+                    clearTimeout(pollTimer);
+                    fetchNew();
+                }
             })
             .catch(() => {});
     }
@@ -243,7 +252,7 @@ window.AulaChat = (function () {
             input.style.height = '';
             input.style.height = Math.min(input.scrollHeight, 120) + 'px';
         });
-        btn?.addEventListener('click', sendMessage);
+        if (btn) { btn.setAttribute('type', 'button'); btn.addEventListener('click', sendMessage); }
     }
 
     return {

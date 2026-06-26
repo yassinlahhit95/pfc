@@ -38,6 +38,12 @@ function chatNombreUsuario(string $rol, int $id): string {
             mysqli_stmt_execute($st);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
             return $cache[$key] = ($row['nombreTutor'] ?? 'Tutor');
+        case 'secretaria':
+            $st = mysqli_prepare($con, 'SELECT nombreSecretaria FROM secretarias WHERE idSecretaria = ?');
+            mysqli_stmt_bind_param($st, 'i', $id);
+            mysqli_stmt_execute($st);
+            $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));
+            return $cache[$key] = ($row['nombreSecretaria'] ?? 'Secretaria');
         default:
             $st = mysqli_prepare($con, 'SELECT nombreEstudiante FROM estudiantes WHERE idEstudiante = ?');
             mysqli_stmt_bind_param($st, 'i', $id);
@@ -61,8 +67,9 @@ function chatBatchNombres(array $pairs): array {
         'profesor'   => ['profesores',  'idProfesor',    'nombreProfesor'],
         'tutor'      => ['tutores',     'idTutor',       'nombreTutor'],
         'estudiante' => ['estudiantes', 'idEstudiante',  'nombreEstudiante'],
+        'secretaria' => ['secretarias', 'idSecretaria',  'nombreSecretaria'],
     ];
-    $defaults = ['admin' => 'Admin', 'profesor' => 'Profesor', 'tutor' => 'Tutor', 'estudiante' => 'Estudiante'];
+    $defaults = ['admin' => 'Admin', 'profesor' => 'Profesor', 'tutor' => 'Tutor', 'estudiante' => 'Estudiante', 'secretaria' => 'Secretaria'];
     $names = [];
     foreach ($byRol as $rol => $idSet) {
         if (!isset($map[$rol])) continue;
@@ -246,6 +253,31 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
         $st = mysqli_prepare($con,
             "SELECT idEstudiante AS uid, nombreEstudiante AS nombre, 'estudiante' AS rol
              FROM estudiantes WHERE nombreEstudiante LIKE ? ORDER BY nombreEstudiante LIMIT 200");
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
+
+        $st = mysqli_prepare($con,
+            "SELECT idSecretaria AS uid, nombreSecretaria AS nombre, 'secretaria' AS rol
+             FROM secretarias WHERE nombreSecretaria LIKE ? ORDER BY nombreSecretaria LIMIT 20");
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
+
+    } elseif ($rol === 'secretaria') {
+        $st = mysqli_prepare($con,
+            "SELECT idDirector AS uid, nombreDirector AS nombre, 'admin' AS rol
+             FROM directores WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 20");
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
+
+        $st = mysqli_prepare($con,
+            "SELECT idProfesor AS uid, nombreProfesor AS nombre, 'profesor' AS rol
+             FROM profesores WHERE nombreProfesor LIKE ? ORDER BY nombreProfesor LIMIT 200");
         mysqli_stmt_bind_param($st, 's', $like);
         mysqli_stmt_execute($st);
         $res = mysqli_stmt_get_result($st);

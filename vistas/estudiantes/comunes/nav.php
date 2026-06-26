@@ -46,7 +46,7 @@ function _nav_active_est($check) {
 <html lang="es" data-theme="light" data-density="regular">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title><?= Security::escapeHtml($tituloDelPagina ?? 'AulaPro Estudiante') ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -274,10 +274,6 @@ function _nav_active_est($check) {
           </div>
         </div><!-- /notif-wrap -->
 
-        <button class="avatar-btn" aria-label="Cuenta">
-          <span class="ava"><?= strtoupper(substr($nombreUsuario_menu, 0, 1)) . strtoupper(substr(explode(' ', trim($nombreUsuario_menu))[1] ?? '', 0, 1)) ?></span>
-          <span class="presence"></span>
-        </button>
       </div>
     </header>
     <div class="content">

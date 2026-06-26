@@ -5,8 +5,10 @@ require_once __DIR__ . "/../../../modelos/asistencias.php";
 $idCiclo      = (int)($_GET['idCiclo']    ?? 0) ?: null;
 $idModulo     = (int)($_GET['idModulo']   ?? 0) ?: null;
 $idEstudiante = (int)($_GET['idEstudiante'] ?? 0) ?: null;
-$fechaDesde   = $_GET['fechaDesde'] ?? null;
-$fechaHasta   = $_GET['fechaHasta'] ?? null;
+$rawDesde  = $_GET['fechaDesde'] ?? '';
+$rawHasta  = $_GET['fechaHasta'] ?? '';
+$fechaDesde = preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawDesde) ? $rawDesde : null;
+$fechaHasta = preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawHasta) ? $rawHasta : null;
 
 $asistencias = listarAsistenciasFiltradas($idCiclo, $idModulo, $idEstudiante, $fechaDesde, $fechaHasta);
 

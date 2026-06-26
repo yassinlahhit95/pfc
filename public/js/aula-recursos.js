@@ -206,7 +206,7 @@
         if (window.Toast) {
             window.Toast.show(msg, type);
         } else {
-            console.log('Toast:', msg);
+
         }
     },
 

@@ -51,6 +51,9 @@ function _nav_active_admin($check) {
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
+  <?php if (FeatureGuard::check('feature_chat')): ?>
+  <link rel="stylesheet" href="../../../public/css/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/chat-widget.css') ?>" />
+  <?php endif; ?>
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script defer src="../../../public/js/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/aula-digital.js') ?>"></script>
@@ -70,6 +73,9 @@ function _nav_active_admin($check) {
       <div class="brand-text"><strong>AulaPro</strong><small>Campus Suite</small></div>
       <button class="collapse-btn" id="collapse" aria-label="Contraer menú">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+      </button>
+      <button class="mobile-close-btn" id="mobile-close" aria-label="Cerrar menú">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
@@ -321,16 +327,27 @@ function _nav_active_admin($check) {
         <span class="role-badge">ADMIN</span>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
-      <div class="search-wrap">
-        <label class="searchbar">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
-          <input id="search" placeholder="Buscar..." autocomplete="off"
-                 spellcheck="false" data-url="../../../controladores/admin/buscar.php" />
-          <kbd>⌘K</kbd>
-        </label>
-        <ul class="search-results" id="search-results" hidden></ul>
-      </div>
       <div class="topbar-actions">
+        <!-- Mobile Trigger -->
+        <button class="icon-btn mobile-search-trigger" id="mobile-search-trigger" aria-label="Buscar">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+        </button>
+        <!-- Desktop Input / Mobile Modal -->
+        <div class="search-backdrop" id="search-backdrop" hidden></div>
+        <div class="search-wrapper" id="search-wrapper">
+          <label class="search-modal-bar">
+            <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+            <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..." 
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   data-url="../../../controladores/admin/buscar.php" />
+            <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+            <kbd class="search-kbd">⌘K</kbd>
+          </label>
+          <ul class="search-results" id="search-results" hidden></ul>
+        </div>
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>
@@ -361,12 +378,78 @@ function _nav_active_admin($check) {
             </div>
           </div>
         </div>
-        <button class="avatar-btn" aria-label="Cuenta">
-          <span class="ava"><?= strtoupper(substr($nombreUsuario_menu, 0, 1)) . strtoupper(substr(explode(' ', trim($nombreUsuario_menu))[1] ?? '', 0, 1)) ?></span>
-          <span class="presence"></span>
-        </button>
       </div>
     </header>
+
+    <?php if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'): ?>
+    <div id="cw" class="cw-wrap">
+      <div class="cw-overlay" id="cw-overlay" hidden></div>
+      <div class="cw-window" id="cw-window" hidden>
+        <div class="cw-head">
+          <h2 class="cw-head-title">Mensajes</h2>
+          <div class="cw-head-actions">
+            <button class="cw-btn-icon" id="cw-new" title="Nueva conversación">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <button class="cw-btn-icon" id="cw-close" title="Cerrar">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <!-- List panel -->
+        <div class="cw-panel" id="cw-list-panel">
+          <div class="cw-conv-list" id="cw-list"><div class="cw-loading">Cargando…</div></div>
+        </div>
+        <!-- Conversation panel -->
+        <div class="cw-panel" id="cw-conv-panel" hidden>
+          <div class="cw-conv-head">
+            <button class="cw-btn-icon" id="cw-back" title="Volver">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="cw-ava" id="cw-conv-ava"></div>
+            <div class="cw-conv-head-info">
+              <div class="cw-conv-head-name" id="cw-conv-name"></div>
+              <div class="cw-conv-head-role" id="cw-conv-role"></div>
+            </div>
+          </div>
+          <div class="cw-messages" id="cw-messages"></div>
+          <div class="cw-compose">
+            <textarea class="cw-input" id="cw-input" placeholder="Escribe un mensaje… (Enter para enviar)" rows="1"></textarea>
+            <button class="cw-send" id="cw-send" title="Enviar">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+        <!-- Contacts panel -->
+        <div class="cw-panel" id="cw-contacts-panel" hidden>
+          <div class="cw-conv-head">
+            <button class="cw-btn-icon" id="cw-contacts-back" title="Volver">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span style="font-weight:700;font-size:.9rem;flex:1">Nueva conversación</span>
+          </div>
+          <div class="cw-search-wrap">
+            <input class="cw-search-input" id="cw-contact-search" type="search" placeholder="Buscar persona…" autocomplete="off">
+          </div>
+          <div class="cw-contact-list" id="cw-contacts"></div>
+        </div>
+      </div>
+      <button class="cw-fab" id="cw-fab" aria-label="Abrir chat">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="cw-fab-badge" id="cw-fab-badge"<?= $totalChatNoLeidos_menu > 0 ? '' : ' hidden' ?>><?= (int)$totalChatNoLeidos_menu ?></span>
+      </button>
+    </div>
+    <script src="../../../public/js/chat-widget.js?v=<?= @filemtime(__DIR__.'/../../../public/js/chat-widget.js') ?>"></script>
+    <script>
+    ChatWidget.init({
+      myRol:       'admin',
+      myId:        <?= (int)$_SESSION['idAdmin'] ?>,
+      csrfToken:   '<?= Security::generateCSRFToken() ?>',
+      basePath:    '../../../',
+      unreadCount: <?= (int)$totalChatNoLeidos_menu ?>,
+    });
+    </script>
+    <?php endif; ?>
     <div class="content">
       <?php
       // SaaS platform message banner — shown on every admin page

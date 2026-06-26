@@ -1,0 +1,59 @@
+<?php
+require_once __DIR__ . '/include/FeatureGuard.php';
+header('Content-Type: application/xml; charset=utf-8');
+$base = 'https://aulapro.yassin.agency';
+$today = date('Y-m-d');
+echo '<?xml version="1.0" encoding="UTF-8"?>';
+?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Página principal -->
+  <url>
+    <loc><?= $base ?>/</loc>
+    <lastmod><?= $today ?></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es-es" href="<?= $base ?>/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="<?= $base ?>/"/>
+    <image:image>
+      <image:loc><?= $base ?>/public/imagenes/aulapro.png</image:loc>
+      <image:title>AulaPro — Software de gestión para centros de FP y Bachillerato en España</image:title>
+      <image:caption>Panel de gestión académica de AulaPro</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Páginas legales -->
+  <url>
+    <loc><?= $base ?>/vistas/legal/aviso-legal.php</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc><?= $base ?>/vistas/legal/politica-de-privacidad.php</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc><?= $base ?>/vistas/legal/politica-de-cookies.php</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <?php if (class_exists('FeatureGuard') && FeatureGuard::check('feature_prematricula')): ?>
+  <!-- Pre-matrícula (solo si el módulo está activo) -->
+  <url>
+    <loc><?= $base ?>/vistas/admisiones/pre-matricula.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc><?= $base ?>/vistas/admisiones/consultar.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <?php endif; ?>
+
+</urlset>

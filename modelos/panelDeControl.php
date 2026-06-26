@@ -61,6 +61,22 @@ function contarPagosRealizados(): int {
     return (int)(dbFetchOne("SELECT COUNT(*) as total FROM pagos")['total'] ?? 0);
 }
 
+function contarEstudiantesNuevos(int $dias = 7): int {
+    $row = dbFetchOne(
+        "SELECT COUNT(*) as total FROM estudiantes WHERE fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
+        "i", $dias
+    );
+    return (int)($row['total'] ?? 0);
+}
+
+function contarProfesoresNuevos(int $dias = 7): int {
+    $row = dbFetchOne(
+        "SELECT COUNT(*) as total FROM profesores WHERE fechaAltaProfesor >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
+        "i", $dias
+    );
+    return (int)($row['total'] ?? 0);
+}
+
 function contarTFGsEntregados(): int {
     return (int)(dbFetchOne(
         "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != '' AND archivoTFG IS NOT NULL"

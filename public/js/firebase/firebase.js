@@ -33,7 +33,6 @@ if (config && config.apiKey && config.appId) {
 
 export async function setupFirebase(id, rol) {
     if (!fcm) {
-        console.warn("Firebase Messaging not initialized. Check your configuration.");
         return;
     }
 
@@ -87,10 +86,10 @@ export async function setupFirebase(id, rol) {
             t = await getToken(fcm, tokenOpts);
         } catch (e) {
             if (e.name === 'AbortError') {
-                // Stale push subscription from a previous session/deploy — clear it and retry once
+                // Stale push subscription — clear and retry once
                 var sub = await sw.pushManager.getSubscription();
                 if (sub) await sub.unsubscribe();
-                t = await getToken(fcm, tokenOpts);
+                try { t = await getToken(fcm, tokenOpts); } catch (_) { return; }
             } else {
                 throw e;
             }
@@ -111,11 +110,13 @@ export async function setupFirebase(id, rol) {
             });
             var json = await res.json();
             if (json.success) {
-                console.log("Firebase Push: Token guardado correctamente.");
+
             }
         }
     } catch (e) {
-        console.warn("Firebase setup error:", e);
+        // Silently ignore push-service errors (transient browser/network issues)
+        if (e.name !== 'AbortError' && !String(e.message).includes('push service')) {
+        }
     }
 }
 

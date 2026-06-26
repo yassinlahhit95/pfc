@@ -60,7 +60,7 @@ foreach ($archivosPaginados as $arch) {
 }
 
 $tituloDelPagina = "AULAPRO | " . strtoupper($modulo['nombreModulo']);
-$seccionActual   = 'aula';
+$seccionActual   = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

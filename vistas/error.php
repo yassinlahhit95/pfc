@@ -19,7 +19,7 @@ $msg = $messages[$code] ?? $messages[404];
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AulaPro</title>
     <link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,7 +54,15 @@ $msg = $messages[$code] ?? $messages[404];
     <div class="icono"><?= $msg['icono'] ?></div>
     <p class="titulo"><?= $msg['titulo'] ?></p>
     <p class="descripcion"><?= $msg['descripcion'] ?></p>
-    <a href="/vistas/login.php" class="boton">Volver al inicio</a>
+    <?php
+    $homeUrl = '/vistas/login.php';
+    if (!empty($_SESSION['idAdmin']))      $homeUrl = '/vistas/admin/inicio/dashboard.php';
+    elseif (!empty($_SESSION['idProfesor']))   $homeUrl = '/vistas/profesores/inicio/panel.php';
+    elseif (!empty($_SESSION['idEstudiante'])) $homeUrl = '/vistas/estudiantes/inicio/dashboard.php';
+    elseif (!empty($_SESSION['idSecretaria'])) $homeUrl = '/vistas/secretaria/inicio/dashboard.php';
+    elseif (!empty($_SESSION['idTutor']))      $homeUrl = '/vistas/tutores/inicio/dashboard.php';
+    ?>
+    <a href="<?= htmlspecialchars($homeUrl) ?>" class="boton">Volver al inicio</a>
 </div>
 </body>
 </html>

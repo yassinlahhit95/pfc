@@ -279,10 +279,6 @@ function _nav_active_prof($check) {
             </div>
           </div>
         </div>
-        <button class="avatar-btn" aria-label="Cuenta">
-          <span class="ava"><?= strtoupper(substr($nombreUsuario_menu, 0, 1)) . strtoupper(substr(explode(' ', trim($nombreUsuario_menu))[1] ?? '', 0, 1)) ?></span>
-          <span class="presence"></span>
-        </button>
       </div>
     </header>
     <div class="content">

@@ -18,7 +18,7 @@ if (isset($_POST['actualizarAula'])) {
     $idAula    = (int)($_POST['idAula'] ?? 0);
     $planta    = (int)($_POST['planta'] ?? -1);
     $numero    = (int)($_POST['numero'] ?? 0);
-    $nombre    = trim($_POST['nombreAula'] ?? '');
+    $nombre    = strip_tags(trim($_POST['nombreAula'] ?? ''));
     $tipo      = $_POST['tipoAula'] ?? 'teoria';
     $capacidad = ($_POST['capacidad'] ?? '') !== '' ? (int)$_POST['capacidad'] : null;
     $activa    = isset($_POST['activa']) ? 1 : 0;

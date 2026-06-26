@@ -1,15 +1,29 @@
-<?php
+﻿<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
-$exito   = $_SESSION['exito']   ?? '';
+require_once __DIR__ . '/../../../include/FeatureGuard.php';
+require_once __DIR__ . "/../../../include/form_helpers.php";
+FeatureGuard::requirePage('feature_inventario');
+
+$exito = $_SESSION['exito'] ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/inventario.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
-require_once __DIR__ . "/../../../include/form_helpers.php";
+require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$articulos   = listarArticulos();
-$estudiantes = listarEstudiantes();
-$preselId    = (int)($_GET['id'] ?? 0);
+$articulos_disponibles = listarArticulos();
+$todos_los_ciclos = listarTodosLosCiclos();
+
+$idCicloFiltro = (int)($_GET['idCiclo'] ?? 0);
+
+if (!empty($idCicloFiltro)) {
+    $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloFiltro);
+} else {
+    $todos_los_estudiantes = listarEstudiantes();
+}
+
+$datos = $_SESSION['datos_prestamo'] ?? [];
+unset($_SESSION['datos_prestamo']);
 
 $titulo_pagina = "AULAPRO | NUEVO PRÉSTAMO";
 $seccion = 'prestamos';
@@ -17,55 +31,71 @@ include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
 <div class="cabecera">
-    <h1>NUEVO PRÉSTAMO</h1>
+    <h1>REGISTRAR NUEVO PRÉSTAMO</h1>
     <a href="gestionarPrestamos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
+
 <div class="panel">
-    <form method="POST" action="../../../controladores/secretaria/inventario/prestar.php" class="formulario">
-        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-
-        <div class="campo<?= fieldClass($errores, 'idArticulo') ?>">
-            <label for="idArticulo">Artículo <span style="color:#ef4444">*</span></label>
-            <select name="idArticulo" id="idArticulo">
-                <option value="">— Selecciona artículo —</option>
-                <?php foreach ($articulos as $art): ?>
-                <option value="<?= (int)$art['idArticulo'] ?>"
-                    <?= ($art['idArticulo'] == $preselId) ? 'selected' : '' ?>
-                    <?= (($art['estado'] ?? '') === 'prestado') ? 'disabled' : '' ?>>
-                    <?= Security::escapeHtml($art['nombreArticulo']) ?>
-                    <?= ($art['estado'] === 'prestado') ? ' (prestado)' : '' ?>
-                </option>
-                <?php endforeach; ?>
+    <form method="GET" action="agregarPrestamo.php" class="margen-abajo">
+        <div class="campo">
+            <label>Filtrar Estudiantes por Ciclo:</label>
+            <select name="idCiclo" onchange="this.form.submit()">
+                <option value="">-- Todos los ciclos --</option>
+                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                    <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
+                    </option>
+                <?php } ?>
             </select>
-            <?= fieldError($errores, 'idArticulo') ?>
         </div>
+    </form>
 
-        <div class="campo<?= fieldClass($errores, 'idEstudiante') ?>">
-            <label for="idEstudiante">Estudiante <span style="color:#ef4444">*</span></label>
-            <select name="idEstudiante" id="idEstudiante">
-                <option value="">— Selecciona estudiante —</option>
-                <?php foreach ($estudiantes as $est): ?>
-                <option value="<?= (int)$est['idEstudiante'] ?>">
-                    <?= Security::escapeHtml($est['nombreEstudiante']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-            <?= fieldError($errores, 'idEstudiante') ?>
-        </div>
+    <form method="POST" action="../../../controladores/secretaria/inventario/prestar.php">
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+        <div class="form-cols">
 
-        <div class="campo<?= fieldClass($errores, 'fechaPrestamo') ?>">
-            <label for="fechaPrestamo">Fecha de préstamo <span style="color:#ef4444">*</span></label>
-            <input type="date" name="fechaPrestamo" id="fechaPrestamo"
-                   value="<?= date('Y-m-d') ?>">
-            <?= fieldError($errores, 'fechaPrestamo') ?>
+            <div class="campo<?= fieldClass($errores, 'idArticulo') ?>">
+                <label>Recurso (Solo disponibles)</label>
+                <select name="idArticulo">
+                    <option value="">-- Seleccione un equipo --</option>
+                    <?php foreach ($articulos_disponibles as $art) { ?>
+                        <?php if ($art['estado'] == 'disponible') { ?>
+                            <option value="<?= (int)$art['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) ? 'selected' : '' ?>>
+                                <?= Security::escapeHtml($art['nombreArticulo']) ?> (<?= Security::escapeHtml($art['numeroSerie']) ?>)
+                            </option>
+                        <?php } ?>
+                    <?php } ?>
+                </select>
+                <?= fieldError($errores, 'idArticulo') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'idEstudiante') ?>">
+                <label>Estudiante</label>
+                <select name="idEstudiante">
+                    <option value="">-- Seleccione un estudiante --</option>
+                    <?php foreach ($todos_los_estudiantes as $est) { ?>
+                        <option value="<?= (int)$est['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($est['nombreEstudiante']) ?>
+                        </option>
+                    <?php } ?>
+                </select>
+                <?= fieldError($errores, 'idEstudiante') ?>
+            </div>
+
+            <div class="campo<?= fieldClass($errores, 'fechaPrestamo') ?>">
+                <label>Fecha de Préstamo</label>
+                <input type="date" name="fechaPrestamo" value="<?= Security::escapeHtml($datos['fechaPrestamo'] ?? '') ?>">
+                <?= fieldError($errores, 'fechaPrestamo') ?>
+            </div>
+
         </div>
 
         <div class="acciones">
-            <button type="submit" class="boton-primario"><i class="fas fa-save"></i> REGISTRAR PRÉSTAMO</button>
-            <a href="gestionarPrestamos.php" class="boton-secundario">Cancelar</a>
+            <input type="submit" name="registrarPrestamo" class="boton-primario" value="Registrar Préstamo">
+            <input type="reset" class="boton-secundario" value="Limpiar">
         </div>
     </form>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>

@@ -1,0 +1,41 @@
+# AulaPro — robots.txt
+# https://aulapro.yassin.agency/
+
+User-agent: *
+Allow: /
+Allow: /public/css/
+Allow: /public/js/landing/
+Allow: /public/imagenes/
+Allow: /vistas/admisiones/
+Allow: /vistas/legal/
+
+# Zonas privadas — sin indexar
+Disallow: /config/
+Disallow: /include/
+Disallow: /modelos/
+Disallow: /templates/
+Disallow: /logs/
+Disallow: /vendor/
+Disallow: /security/
+Disallow: /cron/
+Disallow: /api/
+Disallow: /controladores/
+Disallow: /noDeploy/
+Disallow: /verificar/
+Disallow: /public/uploads/
+
+# Vistas de usuarios autenticados
+Disallow: /vistas/admin/
+Disallow: /vistas/profesores/
+Disallow: /vistas/estudiantes/
+Disallow: /vistas/secretaria/
+Disallow: /vistas/tutor/
+Disallow: /vistas/login.php
+Disallow: /vistas/cambiar_password.php
+Disallow: /vistas/chat/
+
+# Archivos de prueba / temporales
+Disallow: /test_*.php
+
+# Mapa del sitio
+Sitemap: https://aulapro.yassin.agency/sitemap.xml

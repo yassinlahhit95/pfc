@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php endif; ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Disable submit on upload forms to prevent double-submit
     document.querySelectorAll('form').forEach(function(form) {
         if (!form.querySelector('input[type="file"]')) return;
         form.addEventListener('submit', function() {
@@ -68,8 +69,30 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
         });
     });
+
+    // Toggle .has-file class on .zona-subida when a file is selected
+    document.querySelectorAll('.zona-subida input[type="file"]').forEach(function(input) {
+        var zone = input.closest('.zona-subida');
+        if (!zone) return;
+        var nameEl = zone.querySelector('span');
+        var origText = nameEl ? nameEl.textContent : '';
+        input.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                zone.classList.add('has-file');
+                if (nameEl) {
+                    nameEl.textContent = this.files.length === 1
+                        ? this.files[0].name
+                        : this.files.length + ' archivos seleccionados';
+                }
+            } else {
+                zone.classList.remove('has-file');
+                if (nameEl) nameEl.textContent = origText;
+            }
+        });
+    });
 });
 </script>
+<?php if (($seccion ?? '') !== 'inicio' && ($seccionActual ?? '') !== 'inicio'): ?>
 <footer style="text-align:center;padding:14px 24px;border-top:1px solid var(--border);margin-top:32px;">
     <nav style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;">
         <a href="/vistas/legal/aviso-legal.php" target="_blank" style="font-size:.78rem;color:var(--mut);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--mut)'">Aviso Legal</a>
@@ -78,5 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <a href="/vistas/legal/politica-de-gestion.php" target="_blank" style="font-size:.78rem;color:var(--mut);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--mut)'">Política de Gestión</a>
     </nav>
 </footer>
+<?php endif; ?>
 </body>
 </html>

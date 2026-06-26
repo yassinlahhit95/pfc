@@ -49,7 +49,7 @@ if (empty($email) || empty($pass)) {
     $_SESSION['errores'] = empty($email) && empty($pass)
         ? "El correo electrónico y la contraseña son campos obligatorios."
         : (empty($email) ? "El correo electrónico es un campo obligatorio." : "La contraseña es un campo obligatorio.");
-    $_SESSION['datos_login'] = $_POST;
+    $_SESSION['datos_login'] = ['usuario' => $_POST['usuario'] ?? ''];
     Logger::warning('LOGIN_MISSING_CREDENTIALS', ['email' => $email]);
     header("Location: ../vistas/login.php");
     exit;
@@ -65,7 +65,7 @@ if (!Security::validateEmail($email)) {
 // ══════════════════════════════════════════════════════════════════════
 // LÍMITES DE TASA Y BLOQUEOS
 // ══════════════════════════════════════════════════════════════════════
-$ip  = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+$ip  = Security::clientIp();
 $con = obtenerConexion();
 $rowIp = dbFetchOne("SELECT intentos, bloqueado_hasta FROM login_intentos WHERE ip = ?", "s", $ip);
 if ($rowIp) {

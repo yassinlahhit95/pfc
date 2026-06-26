@@ -126,7 +126,7 @@ class AulaAnalytics {
         });
 
         // Log local para debugging
-        console.log('[Analytics]', accion, metadatos);
+
     }
 
     /**

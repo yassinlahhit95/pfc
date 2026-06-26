@@ -42,7 +42,7 @@ $exito   = $_SESSION['exito'] ?? null;   unset($_SESSION['exito']);
 $errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
 
 $tituloDelPagina = 'AULAPRO | MIS ENTREGAS';
-$seccionActual = 'aula_entregas';
+$seccionActual = 'aula_sesiones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

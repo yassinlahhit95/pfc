@@ -17,8 +17,9 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 $role = null;
 $uid  = null;
 
-if (!empty($_SESSION['idAdmin']))          { $role = 'admin';      $uid = (int)$_SESSION['idAdmin']; }
-elseif (!empty($_SESSION['idProfesor']))   { $role = 'profesor';   $uid = (int)$_SESSION['idProfesor']; }
+if (!empty($_SESSION['idAdmin']))            { $role = 'admin';      $uid = (int)$_SESSION['idAdmin']; }
+elseif (!empty($_SESSION['idSecretaria']))  { $role = 'admin';      $uid = (int)$_SESSION['idSecretaria']; }
+elseif (!empty($_SESSION['idProfesor']))    { $role = 'profesor';   $uid = (int)$_SESSION['idProfesor']; }
 elseif (!empty($_SESSION['idEstudiante'])) { $role = 'estudiante'; $uid = (int)$_SESSION['idEstudiante']; }
 
 if (!$role) {
