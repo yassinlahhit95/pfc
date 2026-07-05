@@ -1,0 +1,45 @@
+/* ══════════════════════════════════════════════════════════════════════
+   TEMA "VOCACIONAL" — campaña FP audaz
+   Hero oscuro con brillo cálido, acento intenso, titulares XXL, píldoras.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.tema-vocacional {
+  --lp-fuente-titulos: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  --lp-acento-2: color-mix(in srgb, var(--lp-acento) 60%, #f43f5e);
+  --lp-fondo-alt: #fff8f1;
+  --lp-acento-suave: color-mix(in srgb, var(--lp-acento) 11%, #ffffff);
+  --lp-borde: #f0e6dc;
+  --lp-radio: 22px;
+  --lp-radio-boton: 999px;
+  --lp-sombra: 0 1px 2px rgba(234, 88, 12, .05), 0 14px 36px rgba(234, 88, 12, .1);
+  --lp-sombra-hover: 0 2px 4px rgba(234, 88, 12, .06), 0 24px 56px rgba(234, 88, 12, .18);
+  --lp-footer-fondo: #180f0a;
+}
+
+/* Titulares contundentes de campaña */
+.tema-vocacional h1 { letter-spacing: -.01em; text-transform: uppercase; }
+.tema-vocacional .lp-sec-cabecera h2 { font-size: clamp(30px, 4.6vw, 48px); }
+
+/* Hero más alto, oscuro y cálido */
+.tema-vocacional .lp-hero {
+  padding: 150px 0 130px;
+  background: radial-gradient(1100px 520px at 15% -10%,
+              color-mix(in srgb, var(--lp-acento) 45%, #180f0a), #180f0a 62%);
+}
+.tema-vocacional .lp-hero-velo {
+  background: linear-gradient(100deg, rgba(16, 9, 5, .88) 25%, rgba(16, 9, 5, .45));
+}
+.tema-vocacional .lp-hero-texto .lp-eyebrow {
+  background: linear-gradient(135deg, var(--lp-acento), var(--lp-acento-2));
+  color: #fff; border-color: transparent;
+}
+
+/* Botones píldora con más presencia */
+.tema-vocacional .lp-boton-grande { padding: 17px 36px; font-size: 16px; }
+.tema-vocacional .lp-eyebrow { border-radius: 999px; }
+
+/* Cifras y CTA en cálido oscuro */
+.tema-vocacional .lp-cifras {
+  background: radial-gradient(900px 400px at 80% 120%,
+              color-mix(in srgb, var(--lp-acento) 52%, #180f0a), #180f0a) !important;
+}

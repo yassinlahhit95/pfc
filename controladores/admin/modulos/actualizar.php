@@ -22,6 +22,8 @@ if (isset($_POST['guardarModulo'])) {
     $aniosPermitidos = ['1º', '2º'];
     $cursoAnio    = in_array($_POST['cursoAnio'] ?? '', $aniosPermitidos, true) ? $_POST['cursoAnio'] : null;
     $creditosECTS = is_numeric($_POST['creditosECTS'] ?? '') ? (int)$_POST['creditosECTS'] : null;
+    $tiposPermitidos = ['Específico', 'Transversal', 'Proyecto', 'Empresa'];
+    $tipoModulo   = in_array($_POST['tipoModulo'] ?? '', $tiposPermitidos, true) ? $_POST['tipoModulo'] : 'Específico';
 
     $errores = [];
     if (empty($nombre))      $errores['nombreModulo'] = "El nombre del módulo es un campo obligatorio.";
@@ -43,7 +45,7 @@ if (isset($_POST['guardarModulo'])) {
         exit;
     }
 
-    if (actualizarModulo($idModulo, $nombre, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS)) {
+    if (actualizarModulo($idModulo, $nombre, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS, $tipoModulo)) {
         registrarAccion('actualizar', 'modulos', $idModulo, $nombre);
         $_SESSION['exito'] = "El módulo ha sido actualizado correctamente.";
         header("Location: ../../../vistas/admin/modulos/verModulos.php");

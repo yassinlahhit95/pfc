@@ -132,6 +132,42 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
+  <!-- F: FP Dual -->
+  <?php if (FeatureGuard::check('feature_fp_dual')): ?>
+  <a href="../fp_dual/verEmpresas.php" class="tile card-soft" style="--tint:#10b981; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">FP Dual</span>
+      <span class="tile-desc">Empresas colaboradoras</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Gestión de empresas</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+  <?php endif; ?>
+
+  <!-- E: RA / CE -->
+  <?php if (FeatureGuard::check('feature_ra_ce')): ?>
+  <a href="../modulos/verModulos.php" class="tile card-soft" style="--tint:#f43f5e; text-decoration:none">
+    <span class="tile-sheen"></span>
+    <span class="tile-ico">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    </span>
+    <span class="tile-body">
+      <span class="tile-label">Evaluación RA/CE</span>
+      <span class="tile-desc">Gestión LOMLOE</span>
+    </span>
+    <span class="tile-foot">
+      <span class="tile-stat">Seleccione un módulo</span>
+      <span class="tile-go"><?= $arrowSvg ?></span>
+    </span>
+  </a>
+  <?php endif; ?>
+
   <!-- C: Configuración -->
   <a href="../configuracion/configuracion.php" class="tile card-soft" style="--tint:#64748B; text-decoration:none">
     <span class="tile-sheen"></span>

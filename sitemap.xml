@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . '/include/FeatureGuard.php';
 header('Content-Type: application/xml; charset=utf-8');
-$base = 'https://aulapro.yassin.agency';
+// Base derivada del host de la instancia (cada centro tiene su dominio)
+$host = preg_replace('/[^a-z0-9.\-:]/i', '', $_SERVER['HTTP_HOST'] ?? 'localhost');
+$base = 'https://' . $host;
 $today = date('Y-m-d');
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
@@ -18,11 +20,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="es-es" href="<?= $base ?>/"/>
     <xhtml:link rel="alternate" hreflang="es" href="<?= $base ?>/"/>
-    <image:image>
-      <image:loc><?= $base ?>/public/imagenes/aulapro.png</image:loc>
-      <image:title>AulaPro — Software de gestión para centros de FP y Bachillerato en España</image:title>
-      <image:caption>Panel de gestión académica de AulaPro</image:caption>
-    </image:image>
   </url>
 
   <!-- Páginas legales -->

@@ -51,6 +51,7 @@ $etiquetas = [
     'feature_gastos'       => 'Gastos',
     'feature_informes'     => 'Informes PDF',
     'feature_horario'      => 'Cuadro Horario',
+    'feature_landing'      => 'Página Web Pública',
 ];
 $etiqueta = $etiquetas[$feature] ?? $feature;
 $accion   = $estado === 1 ? 'activado' : 'desactivado';

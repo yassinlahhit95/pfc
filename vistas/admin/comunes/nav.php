@@ -67,7 +67,17 @@ function _nav_active_admin($check) {
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
   </div>
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="main-sidebar">
+    <script>
+      try {
+        if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
+          var s = document.getElementById("main-sidebar");
+          s.classList.add("collapsed");
+          s.style.setProperty("transition", "none", "important");
+          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+        }
+      } catch (e) {}
+    </script>
     <div class="brand">
       <div class="brand-mark"><span></span></div>
       <div class="brand-text"><strong>AulaPro</strong><small>Campus Suite</small></div>
@@ -108,6 +118,22 @@ function _nav_active_admin($check) {
         <span class="nav-label">Módulos</span>
         <?php if (_nav_active_admin('modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+
+      <?php if (FeatureGuard::check('feature_ra_ce')): ?>
+      <a href="../modulos/verModulos.php" class="nav-item<?= _nav_active_admin('ra_ce') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+        <span class="nav-label">Eval. RA/CE</span>
+        <?php if (_nav_active_admin('ra_ce') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
+
+      <?php if (FeatureGuard::check('feature_fp_dual')): ?>
+      <a href="../fp_dual/verEmpresas.php" class="nav-item<?= _nav_active_admin('fp_dual') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span>
+        <span class="nav-label">FP Dual</span>
+        <?php if (_nav_active_admin('fp_dual') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
 
       <?php if (FeatureGuard::check('feature_retos')): ?>
       <a href="../retos/verRetos.php" class="nav-item<?= _nav_active_admin('retos') ?>">
@@ -283,6 +309,14 @@ function _nav_active_admin($check) {
 
       <!-- PLATAFORMA -->
       <span class="nav-section-title">PLATAFORMA</span>
+
+      <?php if (FeatureGuard::check('feature_landing')): ?>
+      <a href="../landing/builder.php" class="nav-item<?= _nav_active_admin('landing') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+        <span class="nav-label">Página Web</span>
+        <?php if (_nav_active_admin('landing') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
 
       <a href="../configuracion/configuracion.php" class="nav-item<?= _nav_active_admin('configuracion') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>

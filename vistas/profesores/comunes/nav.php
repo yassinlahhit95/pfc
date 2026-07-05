@@ -69,7 +69,17 @@ function _nav_active_prof($check) {
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
   </div>
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="main-sidebar">
+    <script>
+      try {
+        if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
+          var s = document.getElementById("main-sidebar");
+          s.classList.add("collapsed");
+          s.style.setProperty("transition", "none", "important");
+          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+        }
+      } catch (e) {}
+    </script>
     <div class="brand">
       <div class="brand-mark"><span></span></div>
       <div class="brand-text"><strong>AulaPro</strong><small>Campus Suite</small></div>

@@ -245,8 +245,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </table>
             </div>
             <?php if (!empty($listaEstudiantes)) { ?>
-                <div class="acciones">
+                <div class="acciones" style="display:flex; gap:10px; align-items:center;">
                     <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR TODAS LAS NOTAS">
+                    <?php if (FeatureGuard::check('feature_ra_ce')): ?>
+                    <a href="evaluarRA.php?idModulo=<?= (int)$idModuloElegido ?>" class="boton-secundario" style="background:#fef3c7; color:#92400e; border-color:#f59e0b;">
+                        <i class="fas fa-star-half-stroke"></i> EVALUAR RA / CE (LOMLOE)
+                    </a>
+                    <?php endif; ?>
                 </div>
             <?php } ?>
         </form>

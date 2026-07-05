@@ -143,11 +143,11 @@ function listarNombresProfesoresDeModulo($idModulo) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarModulo($nombreModulo, $idCiclo, $horasMaximas, $cursoAnio = null, $creditosECTS = null) {
+function insertarModulo($nombreModulo, $idCiclo, $horasMaximas, $cursoAnio = null, $creditosECTS = null, $tipoModulo = 'Específico') {
     $con = obtenerConexion();
-    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas, cursoAnio, creditosECTS) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO modulos (nombreModulo, idCiclo, horasMaximas, cursoAnio, creditosECTS, tipoModulo) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "siisi", $nombreModulo, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS);
+    mysqli_stmt_bind_param($stmt, "siisis", $nombreModulo, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS, $tipoModulo);
     if (mysqli_stmt_execute($stmt)) {
         return (int)mysqli_insert_id($con);
     }
@@ -158,11 +158,11 @@ function insertarModulo($nombreModulo, $idCiclo, $horasMaximas, $cursoAnio = nul
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas, $cursoAnio = null, $creditosECTS = null) {
+function actualizarModulo($idModulo, $nombreModulo, $idCiclo, $horasMaximas, $cursoAnio = null, $creditosECTS = null, $tipoModulo = 'Específico') {
     $con = obtenerConexion();
-    $sql = "UPDATE modulos SET nombreModulo=?, idCiclo=?, horasMaximas=?, cursoAnio=?, creditosECTS=? WHERE idModulo=?";
+    $sql = "UPDATE modulos SET nombreModulo=?, idCiclo=?, horasMaximas=?, cursoAnio=?, creditosECTS=?, tipoModulo=? WHERE idModulo=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "siiisi", $nombreModulo, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS, $idModulo);
+    mysqli_stmt_bind_param($stmt, "siisisi", $nombreModulo, $idCiclo, $horasMaximas, $cursoAnio, $creditosECTS, $tipoModulo, $idModulo);
     return mysqli_stmt_execute($stmt);
 }
 

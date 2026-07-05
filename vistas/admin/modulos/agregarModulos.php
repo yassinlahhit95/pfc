@@ -75,6 +75,16 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo">
+            <label for="tipoModulo">Tipo de Módulo</label>
+            <select name="tipoModulo" id="tipoModulo">
+                <option value="Específico" <?= (($datos['tipoModulo'] ?? '') == 'Específico') ? 'selected' : '' ?>>Específico del Ciclo</option>
+                <option value="Transversal" <?= (($datos['tipoModulo'] ?? '') == 'Transversal') ? 'selected' : '' ?>>Módulo Transversal (RD 659/2023)</option>
+                <option value="Proyecto" <?= (($datos['tipoModulo'] ?? '') == 'Proyecto') ? 'selected' : '' ?>>Proyecto Intermodular</option>
+                <option value="Empresa" <?= (($datos['tipoModulo'] ?? '') == 'Empresa') ? 'selected' : '' ?>>Estancia en Empresa</option>
+            </select>
+        </div>
+
+        <div class="campo">
             <label for="creditosECTS">Créditos ECTS <span class="texto-suave" style="font-weight:400;">(RD 659/2023)</span></label>
             <input type="number" name="creditosECTS" id="creditosECTS" min="1" max="30" value="<?= Security::escapeHtml($datos['creditosECTS'] ?? '') ?>" placeholder="Opcional">
         </div>

@@ -44,7 +44,17 @@ function _nav_active_tutor($check) {
     <span class="blob b2" style="background: rgba(59, 130, 246, 0.4)"></span>
   </div>
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="main-sidebar">
+    <script>
+      try {
+        if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
+          var s = document.getElementById("main-sidebar");
+          s.classList.add("collapsed");
+          s.style.setProperty("transition", "none", "important");
+          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+        }
+      } catch (e) {}
+    </script>
     <div class="brand">
       <div class="brand-mark" style="background: var(--accent)"><span></span></div>
       <div class="brand-text"><strong>AulaPro</strong><small>Portal Familias</small></div>

@@ -1132,3 +1132,92 @@ INSERT INTO `horarios` (`idCiclo`,`diaSemana`,`horaInicio`,`horaFin`,`idModulo`,
 (1,'Miércoles','12:30:00','13:30:00',5,1,3),
 (1,'Jueves',   '10:00:00','11:00:00',4,1,3),
 (1,'Viernes',  '13:30:00','14:30:00',5,1,3);
+
+-- ============================================================
+-- Migraciones a�adidas (RD 659/2023)
+-- ============================================================
+
+ALTER TABLE configuracion_centro ADD COLUMN feature_ra_ce TINYINT(1) DEFAULT 0;
+ALTER TABLE configuracion_centro ADD COLUMN feature_fp_dual TINYINT(1) DEFAULT 0;
+ALTER TABLE modulos ADD COLUMN tipoModulo ENUM('Específico', 'Transversal', 'Proyecto', 'Empresa') DEFAULT 'Específico';
+
+CREATE TABLE IF NOT EXISTS fp_empresas (
+    idEmpresa INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    cif VARCHAR(50),
+    direccion VARCHAR(255),
+    persona_contacto VARCHAR(255),
+    telefono VARCHAR(50),
+    email VARCHAR(255),
+    activo TINYINT(1) DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS fp_dual_asignaciones (
+    idAsignacion INT AUTO_INCREMENT PRIMARY KEY,
+    idEstudiante INT NOT NULL,
+    idEmpresa INT NOT NULL,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    horas_asignadas INT DEFAULT 0,
+    estado ENUM('Pendiente', 'En curso', 'Finalizado', 'Cancelado') DEFAULT 'Pendiente',
+    FOREIGN KEY (idEstudiante) REFERENCES estudiantes(idEstudiante) ON DELETE CASCADE,
+    FOREIGN KEY (idEmpresa) REFERENCES fp_empresas(idEmpresa) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS resultados_aprendizaje (
+    idRA INT AUTO_INCREMENT PRIMARY KEY,
+    idModulo INT NOT NULL,
+    codigo VARCHAR(20) NOT NULL,
+    descripcion TEXT,
+    porcentaje INT DEFAULT 0,
+    FOREIGN KEY (idModulo) REFERENCES modulos(idModulo) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS criterios_evaluacion (
+    idCE INT AUTO_INCREMENT PRIMARY KEY,
+    idRA INT NOT NULL,
+    codigo VARCHAR(20) NOT NULL,
+    descripcion TEXT,
+    FOREIGN KEY (idRA) REFERENCES resultados_aprendizaje(idRA) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS calificaciones_ce (
+    idCalificacionCE INT AUTO_INCREMENT PRIMARY KEY,
+    idEstudiante INT NOT NULL,
+    idCE INT NOT NULL,
+    nota DECIMAL(4,2),
+    FOREIGN KEY (idEstudiante) REFERENCES estudiantes(idEstudiante) ON DELETE CASCADE,
+    FOREIGN KEY (idCE) REFERENCES criterios_evaluacion(idCE) ON DELETE CASCADE,
+    UNIQUE KEY idx_estudiante_ce (idEstudiante, idCE)
+);
+
+
+-- ============================================================
+-- Landing page personalizable (plantillas + constructor) 2026-07-05
+-- ============================================================
+
+ALTER TABLE configuracion_centro ADD COLUMN feature_landing TINYINT(1) NOT NULL DEFAULT 1;
+
+CREATE TABLE IF NOT EXISTS landing_config (
+    idLanding     INT NOT NULL DEFAULT 1,
+    plantilla     VARCHAR(30) NOT NULL DEFAULT 'institucional',
+    ajustes       JSON NULL,
+    plantilla_pub VARCHAR(30) DEFAULT NULL,
+    ajustes_pub   JSON NULL,
+    publicadoEn   DATETIME DEFAULT NULL,
+    actualizadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (idLanding)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO landing_config (idLanding) VALUES (1);
+
+CREATE TABLE IF NOT EXISTS landing_secciones (
+    idSeccion INT NOT NULL AUTO_INCREMENT,
+    version   ENUM('draft','live') NOT NULL DEFAULT 'draft',
+    tipo      VARCHAR(40) NOT NULL,
+    orden     INT NOT NULL DEFAULT 0,
+    visible   TINYINT(1) NOT NULL DEFAULT 1,
+    contenido JSON NULL,
+    PRIMARY KEY (idSeccion),
+    KEY idx_landing_version_orden (version, orden)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

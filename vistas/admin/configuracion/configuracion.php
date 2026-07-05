@@ -67,6 +67,9 @@ include_once __DIR__ . '/../comunes/nav.php';
             ['key' => 'feature_informes',     'icon' => 'fa-file-pdf',      'color' => '#64748b', 'label' => 'Informes PDF',      'desc' => 'Boletines, listados y horarios'],
             ['key' => 'feature_horario',      'icon' => 'fa-calendar-alt',  'color' => '#4f46e5', 'label' => 'Cuadro Horario',    'desc' => 'Horarios y asignaciones de clase'],
             ['key' => 'feature_geoblock_admin','icon' => 'fa-globe-europe','color' => '#dc2626', 'label' => 'Geo-Block (España)','desc' => 'Bloquea el panel admin al extranjero'],
+            ['key' => 'feature_ra_ce',        'icon' => 'fa-star-half-stroke','color' => '#f59e0b', 'label' => 'Eval. LOMLOE (RA/CE)','desc' => 'Sistema avanzado de calificación por Resultados de Aprendizaje'],
+            ['key' => 'feature_fp_dual',      'icon' => 'fa-building',      'color' => '#10b981', 'label' => 'FP Dual / Empresas','desc' => 'Gestión de prácticas y estancias en centros de trabajo'],
+            ['key' => 'feature_landing',      'icon' => 'fa-globe',         'color' => '#0ea5e9', 'label' => 'Página Web Pública','desc' => 'Landing personalizable del centro con plantillas'],
         ];
         foreach ($features as $feat):
             $val = $cfg[$feat['key']] ?? 1;

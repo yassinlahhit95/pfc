@@ -1,0 +1,45 @@
+/* ══════════════════════════════════════════════════════════════════════
+   TEMA "CLÁSICO ACADÉMICO" — IES con trayectoria, lectura moderna
+   Serifa en titulares, verde botella, crema suave, detalles finos.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.tema-clasico {
+  --lp-fuente-titulos: 'Lora', Georgia, serif;
+  --lp-acento-2: color-mix(in srgb, var(--lp-acento) 62%, #14532d);
+  --lp-fondo: #fffdf9;
+  --lp-fondo-alt: #f6f5ef;
+  --lp-borde: #e5e2d6;
+  --lp-radio: 14px;
+  --lp-radio-boton: 10px;
+  --lp-sombra: 0 1px 2px rgba(20, 40, 28, .05), 0 10px 28px rgba(20, 40, 28, .07);
+  --lp-sombra-hover: 0 2px 4px rgba(20, 40, 28, .06), 0 18px 44px rgba(20, 40, 28, .12);
+  --lp-footer-fondo: #10251a;
+}
+
+/* Titulares serif elegantes */
+.tema-clasico h1, .tema-clasico h2, .tema-clasico h3 { font-weight: 600; letter-spacing: -.01em; }
+.tema-clasico .lp-eyebrow { letter-spacing: .14em; }
+
+/* Cabecera de sección con filete clásico bajo el título */
+.tema-clasico .lp-sec-cabecera h2 { position: relative; padding-bottom: 18px; }
+.tema-clasico .lp-sec-cabecera h2::after {
+  content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 90px; height: 1px; background: var(--lp-acento);
+  box-shadow: 0 4px 0 -1px var(--lp-acento);
+}
+
+/* Hero minimal sobrio sobre crema */
+.tema-clasico .lp-hero-minimal {
+  background: linear-gradient(180deg, var(--lp-fondo-alt), var(--lp-fondo));
+  border-bottom: 1px solid var(--lp-borde);
+}
+
+/* Nav sobre crema */
+.tema-clasico { --lp-nav-fondo: rgba(255, 253, 249, .82); }
+
+/* Cifras sobre verde botella */
+.tema-clasico .lp-cifras {
+  background: radial-gradient(900px 400px at 80% 120%,
+              color-mix(in srgb, var(--lp-acento) 45%, #10251a), #10251a) !important;
+}
+.tema-clasico .lp-cifra-numero { font-family: var(--lp-fuente-titulos); }

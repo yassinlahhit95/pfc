@@ -130,8 +130,21 @@ style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.clou
 script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://code.jquery.com https://cdn.jsdelivr.net; \
 worker-src 'self' blob:; \
 connect-src 'self' https://fcmregistrations.googleapis.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com https://firebaseinstallations.googleapis.com https://api.brevo.com; \
-form-action 'self'; \
-upgrade-insecure-requests"
+form-action 'self'"
+
+    # upgrade-insecure-requests solo bajo HTTPS: en local (http://pfc.test sin SSL)
+    # forzaría todos los assets a https:// y la página quedaría sin estilos.
+    <If "%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'">
+        Header always edit Content-Security-Policy "^(.*)$" "$1; upgrade-insecure-requests"
+    </If>
+
+    # Excepción para la previsualización del constructor de la landing:
+    # el builder del admin la carga en un <iframe> del mismo origen (?preview=1).
+    # El endpoint exige sesión de admin en PHP, así que relajar solo aquí es seguro.
+    <If "%{QUERY_STRING} =~ /(^|&)preview=1/">
+        Header always set X-Frame-Options "SAMEORIGIN"
+        Header always edit Content-Security-Policy "frame-ancestors 'none'" "frame-ancestors 'self'"
+    </If>
 </IfModule>
 
 # Interpretar sitemap.xml como PHP (genera XML dinámico)

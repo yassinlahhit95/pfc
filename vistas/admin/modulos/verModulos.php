@@ -97,7 +97,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td data-campo="nivel">
                             <span class="texto-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
                         </td>
-                        <td><b><?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8')) ?></b></td>
+                        <td>
+                            <b><?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8')) ?></b>
+                            <?php if (!empty($moduloIndividual['tipoModulo']) && $moduloIndividual['tipoModulo'] !== 'Específico'): ?>
+                                <span class="texto-pequeno" style="display:inline-block; margin-top:4px; padding:2px 6px; background:var(--surface-2); border:1px solid var(--border-2); border-radius:4px; color:var(--text-muted);">
+                                    <?= Security::escapeHtml($moduloIndividual['tipoModulo']) ?>
+                                </span>
+                            <?php endif; ?>
+                        </td>
                         <td data-campo="ciclo">
                             <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
                                 <b>[<?= Security::escapeHtml($moduloIndividual['abreviaturaCiclo']) ?>]</b>
@@ -134,7 +141,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                        data-nombre-modulo="<?= Security::escapeHtml($moduloIndividual['nombreModulo']) ?>"
                                        data-profesor-actual="<?= $idProfesorActual ?>">
                                        <i class="fas fa-chalkboard-teacher"></i> Asignar profesor</a>
-                                    <a class="recurso-menu-item" href="modificarModulos.php?idModulo=<?= Security::escapeHtml($moduloIndividual['idModulo']) ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    <a class="recurso-menu-item" href="modificarModulos.php?idModulo=<?= (int)$moduloIndividual['idModulo'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                    
+                                    <?php if (FeatureGuard::check('feature_ra_ce')): ?>
+                                    <div class="recurso-menu-sep"></div>
+                                    <a class="recurso-menu-item" style="color:var(--f59e0b);" href="../ra_ce/gestionarRA.php?idModulo=<?= (int)$moduloIndividual['idModulo'] ?>"><i class="fas fa-star-half-stroke"></i> Eval. RA/CE</a>
+                                    <?php endif; ?>
+
                                     <div class="recurso-menu-sep"></div>
                                     <a class="recurso-menu-item peligro" href="#"
                                        data-modal-borrar
