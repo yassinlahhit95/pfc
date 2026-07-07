@@ -15,9 +15,16 @@ if (isset($_POST['actualizarPerfil'])) {
         exit;
     }
     $idEstudiante = $_SESSION['idEstudiante'];
-    $nombre       = Security::sanitize($_POST['nombreEstudiante']);
-    $email        = strtolower(trim($_POST['emailEstudiante']));
-    $telefono     = trim($_POST['telefonoEstudiante']);
+    $nombre       = Security::sanitize($_POST['nombreEstudiante'] ?? '');
+    $email        = strtolower(trim($_POST['emailEstudiante'] ?? ''));
+    $telefono     = trim($_POST['telefonoEstudiante'] ?? '');
+
+    // New personal fields
+    $dni            = Security::sanitize($_POST['dniEstudiante'] ?? '');
+    $fechaNac       = Security::sanitize($_POST['fechaNacimientoEstudiante'] ?? '');
+    $direccion      = Security::sanitize($_POST['direccionEstudiante'] ?? '');
+    $ciudad         = Security::sanitize($_POST['ciudadEstudiante'] ?? '');
+    $codigoPostal   = Security::sanitize($_POST['codigoPostalEstudiante'] ?? '');
 
     $passwordActual = trim($_POST['current_password'] ?? '');
     $passwordNueva  = trim($_POST['new_password'] ?? '');
@@ -60,7 +67,17 @@ if (isset($_POST['actualizarPerfil'])) {
         actualizarPasswordEstudiante($idEstudiante, $passwordNueva);
     }
 
-    $resultado = actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono);
+    $resultado = actualizarPerfilEstudiante(
+        $idEstudiante,
+        $nombre,
+        $email,
+        $telefono,
+        $dni ?: null,
+        $fechaNac ?: null,
+        $direccion ?: null,
+        $ciudad ?: null,
+        $codigoPostal ?: null
+    );
 
     if ($resultado) {
         $_SESSION['exito'] = "El perfil ha sido actualizado correctamente.";

@@ -214,12 +214,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </td>
                     <td><b><?= number_format($g['importe'], 2, ',', '.') ?> €</b></td>
                     <td>
-                        <?php if (!empty($g['archivoJustificante'])): ?>
-                            <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($g['archivoJustificante']) ?>"
-                               target="_blank" rel="noopener" class="boton-secundario boton-pequeno">
-                                <i class="fas fa-file-alt"></i> Ver
-                            </a>
-                        <?php else: ?>
+                        <?php if (!empty($g['archivoJustificante'])): 
+                            $archivos = json_decode($g['archivoJustificante'], true);
+                            if (is_array($archivos)):
+                                foreach ($archivos as $i => $arch): ?>
+                                    <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($arch) ?>"
+                                       target="_blank" rel="noopener" class="boton-secundario boton-pequeno" style="margin-bottom:2px; display:inline-block;">
+                                        <i class="fas fa-file-alt"></i> Ver <?= count($archivos)>1 ? ($i+1) : '' ?>
+                                    </a>
+                                <?php endforeach;
+                            else: ?>
+                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($g['archivoJustificante']) ?>"
+                                   target="_blank" rel="noopener" class="boton-secundario boton-pequeno">
+                                    <i class="fas fa-file-alt"></i> Ver
+                                </a>
+                            <?php endif;
+                        else: ?>
                             <span class="texto-suave">Sin archivo</span>
                         <?php endif; ?>
                     </td>

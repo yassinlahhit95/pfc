@@ -50,7 +50,7 @@
         });
 
         $(document).on('keydown', function (e) {
-            if (e.key === 'Escape' && $modal.hasClass('modal-abierto')) close();
+            if (e.key === 'Escape' && $modal.hasClass('open')) close();
         });
 
         $pwInput.on('keydown', function (e) {
@@ -75,23 +75,25 @@
         if (config.requiresPassword) {
             $pwInput.val('');
             $pwWrap.show();
-            $modal.removeClass('modal-cerrando').addClass('modal-abierto');
+            $modal.show();
+            setTimeout(function () { $modal.addClass('open'); }, 10);
             setTimeout(function () { $pwInput.focus(); }, 280);
         } else {
             $pwWrap.hide();
             $pwInput.val('');
-            $modal.removeClass('modal-cerrando').addClass('modal-abierto');
+            $modal.show();
+            setTimeout(function () { $modal.addClass('open'); }, 10);
             setTimeout(function () { $confirmar.focus(); }, 280);
         }
     }
 
     function close() {
-        $modal.addClass('modal-cerrando');
+        $modal.removeClass('open');
         setTimeout(function () {
-            $modal.removeClass('modal-abierto modal-cerrando');
+            $modal.hide();
             $confirmar.prop('disabled', false).removeClass('cargando');
             $pwInput.val('');
-        }, 180);
+        }, 200);
     }
 
     function confirm() {

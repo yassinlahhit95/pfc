@@ -7,7 +7,10 @@ require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosMensajes(int $limite = 200, int $offset = 0) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor
+    $sql = "SELECT r.*, e.nombreEstudiante, p.nombreProfesor,
+                   (SELECT COUNT(*) FROM reclamaciones r2 
+                    WHERE (r2.idReclamacion = r.idReclamacion OR r2.id_parent = r.idReclamacion) 
+                      AND r2.leido = 0 AND r2.emisor_rol != 'admin') as unread_count
             FROM reclamaciones r
             LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante
             LEFT JOIN profesores p ON r.idProfesor = p.idProfesor
@@ -48,9 +51,21 @@ function obtenerMensajePorId($idReclamacion) {
 
 function marcarMensajeComoLeido($idReclamacion) {
     $con = obtenerConexion();
-    $sql = "UPDATE reclamaciones SET leido = 1, estadoReclamacion = 'atendido' WHERE idReclamacion = ?";
+    
+    // Buscar si es un mensaje hijo para obtener el id_parent
+    $sqlParent = "SELECT id_parent FROM reclamaciones WHERE idReclamacion = ?";
+    $stmtParent = mysqli_prepare($con, $sqlParent);
+    mysqli_stmt_bind_param($stmtParent, "i", $idReclamacion);
+    mysqli_stmt_execute($stmtParent);
+    $resParent = mysqli_stmt_get_result($stmtParent);
+    $fila = mysqli_fetch_assoc($resParent);
+    
+    $rootId = ($fila && $fila['id_parent']) ? (int)$fila['id_parent'] : (int)$idReclamacion;
+    
+    // Marcar el padre y todos los hijos como leídos
+    $sql = "UPDATE reclamaciones SET leido = 1, estadoReclamacion = 'atendido' WHERE idReclamacion = ? OR id_parent = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idReclamacion);
+    mysqli_stmt_bind_param($stmt, "ii", $rootId, $rootId);
     $resultado = mysqli_stmt_execute($stmt);
     
     return $resultado;

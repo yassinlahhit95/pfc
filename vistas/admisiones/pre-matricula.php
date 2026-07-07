@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../modelos/ciclos.php";
+require_once __DIR__ . "/../../modelos/configuracion.php";
 require_once __DIR__ . "/../../include/FeatureGuard.php";
 
 if (!FeatureGuard::check('feature_prematricula')) {
@@ -7,7 +8,9 @@ if (!FeatureGuard::check('feature_prematricula')) {
     exit;
 }
 
-$ciclos = listarTodosLosCiclos();
+$configCentro   = obtenerConfiguracionCentro();
+$filtrarNiveles = (int)($configCentro['prematricula_filtrar_niveles'] ?? 0);
+$ciclos         = listarTodosLosCiclos();
 
 $legal_titulo = 'Pre-Matrícula';
 $legal_pagina = 'prematricula';
@@ -71,12 +74,25 @@ require __DIR__ . '/../legal/_header.php';
                     <label class="form-label" for="telefono">Teléfono</label>
                     <input type="tel" id="telefono" class="form-control">
                 </div>
+                <?php if ($filtrarNiveles === 1): ?>
+                <div class="full" style="margin-top: 10px;">
+                    <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Filtrar por Nivel de Grado</span>
+                        <span class="text-muted" style="font-size:11px; font-weight:normal;">Selecciona para reducir la lista</span>
+                    </label>
+                    <div class="nivel-filter-tabs" style="display:flex; gap: 8px;">
+                        <button type="button" class="btn active-tab" data-filter="all" style="flex:1; padding: 7px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--accent); background: var(--accent); color: white; cursor: pointer; transition: all 0.2s;">Todos</button>
+                        <button type="button" class="btn" data-filter="medio" style="flex:1; padding: 7px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.2s;">Grado Medio</button>
+                        <button type="button" class="btn" data-filter="superior" style="flex:1; padding: 7px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.2s;">Grado Superior</button>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div>
                     <label class="form-label" for="idCiclo">Ciclo Formativo *</label>
                     <select id="idCiclo" class="form-select" required>
                         <option value="">Selecciona un ciclo…</option>
                         <?php foreach ($ciclos as $ciclo): ?>
-                        <option value="<?= (int)$ciclo['idCiclo'] ?>">
+                        <option value="<?= (int)$ciclo['idCiclo'] ?>" data-nivel="<?= htmlspecialchars(strtolower($ciclo['nombreNivel'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
                             <?= htmlspecialchars($ciclo['nombreCiclo'], ENT_QUOTES, 'UTF-8') ?>
                         </option>
                         <?php endforeach; ?>

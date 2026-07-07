@@ -11,6 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+
+
 $idSeccion = (int)($_POST['idSeccion'] ?? 0);
 $seccion   = $idSeccion > 0 ? obtenerSeccionPorId($idSeccion) : null;
 if (!$seccion) {

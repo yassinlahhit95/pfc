@@ -8,6 +8,7 @@ require_once __DIR__ . "/../../../modelos/tfg.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
+require_once __DIR__ . "/../../../modelos/chat.php";
 
 $idProfesor             = $_SESSION['idProfesor'];
 $datosProfesor_menu     = obtenerProfesorPorId($idProfesor);
@@ -21,6 +22,7 @@ $totalSinLeer_menu   = contarMensajesNoLeidosProfesor($idProfesor);
 $totalTfgs_menu      = contarTFGsDeProfesor($idProfesor);
 $totalModulos_menu   = count(listarModulosDeProfesor($idProfesor));
 $totalRetos_menu     = count(listarRetosDeProfesor($idProfesor));
+$totalChatNoLeidos_menu = chatContarNoLeidos('profesor', $idProfesor);
 
 // Notification panel: recent unread messages for profesor (max 3)
 $_notif_msgs_prof = [];
@@ -56,6 +58,9 @@ function _nav_active_prof($check) {
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
+  <?php if (FeatureGuard::check('feature_chat')): ?>
+  <link rel="stylesheet" href="../../../public/css/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/chat-widget.css') ?>" />
+  <?php endif; ?>
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -207,6 +212,7 @@ function _nav_active_prof($check) {
       <a href="../chat/index.php" class="nav-item<?= _nav_active_prof('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
+        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
         <?php if (_nav_active_prof('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php } ?>
@@ -291,6 +297,15 @@ function _nav_active_prof($check) {
         </div>
       </div>
     </header>
+
+    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
+        $cw_rol = 'profesor';
+        $cw_id = (int)$_SESSION['idProfesor'];
+        $cw_unreadCount = (int)$totalChatNoLeidos_menu;
+        $cw_basePath = '../../../';
+        include __DIR__ . '/../../comunes/chat_widget.php';
+    endif; ?>
+
     <div class="content">
       <?php if (isset($_SESSION['idProfesor'])) { 
           $configFB = Config::getInstance();

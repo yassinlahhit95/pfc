@@ -13,11 +13,11 @@ $idCicloTutor  = (int)($_SESSION['idCicloTutor'] ?? 0);
 
 if ($esTutor && $idCicloTutor) {
     $modulo = $idModulo > 0 ? obtenerModuloPorId($idModulo) : null;
-    if (!$modulo || (int)$modulo['idCiclo'] !== $idCicloTutor) { header("Location: index.php"); exit; }
+    if (!$modulo || (int)$modulo['idCiclo'] !== $idCicloTutor) { echo "<script>window.location.replace('index.php');</script>"; exit; }
 } else {
     $misModulos = listarModulosDeProfesor($idProfesor);
     $idsMios    = array_column($misModulos, 'idModulo');
-    if ($idModulo < 1 || !in_array($idModulo, $idsMios)) { header("Location: index.php"); exit; }
+    if ($idModulo < 1 || !in_array($idModulo, $idsMios)) { echo "<script>window.location.replace('index.php');</script>"; exit; }
     $modulo = obtenerModuloPorId($idModulo);
 }
 $idCiclo = $modulo['idCiclo'];
@@ -27,7 +27,7 @@ $ruta = [];
 if ($carpetaActual) {
     $carpetaInfo = obtenerCarpetaAulaPorId($carpetaActual);
     if (!$carpetaInfo || $carpetaInfo['idModulo'] != $idModulo || $carpetaInfo['eliminado']) {
-        header("Location: recursos.php?id=$idModulo"); exit;
+        echo "<script>window.location.replace('recursos.php?id=$idModulo');</script>"; exit;
     }
     $ruta = obtenerRutaCarpetaAula($carpetaActual);
 }

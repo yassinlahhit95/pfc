@@ -33,7 +33,7 @@ require_once __DIR__ . "/../comunes/nav.php";
   <div>
     <h1><i class="fas fa-clipboard-check"></i> Registro de Asistencias</h1>
   </div>
-  <a href="/controladores/admin/asistencias/exportarCSV.php?<?= http_build_query(array_filter([
+  <a href="../../../controladores/admin/asistencias/exportarCSV.php?<?= http_build_query(array_filter([
     'idCiclo' => $idCiclo, 'idModulo' => $idModulo, 'idEstudiante' => $idEstudiante,
     'fechaDesde' => $fechaDesde, 'fechaHasta' => $fechaHasta
   ])) ?>" class="boton-secundario">
@@ -43,6 +43,9 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-abajo">
   <form method="GET" action="" class="formulario" id="form-filtros-asistencias">
+    <?php if ($idEstudiante): ?>
+      <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+    <?php endif; ?>
     <div class="campo">
       <label>Ciclo</label>
       <select name="idCiclo" id="sel-ciclo-asist" onchange="this.form.submit()">
@@ -77,7 +80,7 @@ require_once __DIR__ . "/../comunes/nav.php";
     </div>
     <div class="campo" style="display:flex;align-items:flex-end;gap:8px;">
       <button type="submit" class="boton-primario"><i class="fas fa-search"></i> Filtrar</button>
-      <a href="verAsistencias.php" class="boton-secundario">Limpiar</a>
+      <a href="verAsistencias.php<?= $idEstudiante ? '?idEstudiante=' . $idEstudiante : '' ?>" class="boton-secundario">Limpiar</a>
     </div>
   </form>
 </div>
@@ -140,5 +143,7 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <?php require_once __DIR__ . "/../comunes/footer.php"; ?>
 <script>
-iniciarPaginacion('tablaAsistencias', 25);
+if (document.getElementById('tablaAsistencias')) {
+    iniciarPaginacion('tablaAsistencias', 25);
+}
 </script>

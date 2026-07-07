@@ -464,6 +464,18 @@
               dot.dataset.msgs = n;
               dot.removeAttribute('hidden');
             }
+            
+            var chatN = parseInt(d.chat_count || 0, 10);
+            var cwBadge = document.getElementById('cw-fab-badge');
+            if (cwBadge) {
+              cwBadge.textContent = chatN;
+              if (chatN > 0) {
+                cwBadge.removeAttribute('hidden');
+              } else {
+                cwBadge.setAttribute('hidden', '');
+              }
+            }
+
             schedule(INTERVAL);
           })
           .catch(function() {

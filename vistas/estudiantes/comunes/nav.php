@@ -115,7 +115,7 @@ function _nav_active_est($check) {
         <?php if (in_array($seccionActual ?? '', ['calificaciones', 'notas_retos', 'resultados_finales'])) { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_subida_tfg')) { ?>
+      <?php if (FeatureGuard::check('feature_subida_tfg') && ($datosEstudiante_menu['anioEstudio'] ?? '') !== '1º') { ?>
       <a href="../pfc/subir.php" class="nav-item<?= _nav_active_est('tfg') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
         <span class="nav-label">Mi TFG</span>
@@ -286,6 +286,16 @@ function _nav_active_est($check) {
 
       </div>
     </header>
+
+    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
+        require_once __DIR__ . "/../../../modelos/chat.php";
+        $cw_rol = 'estudiante';
+        $cw_id = (int)$_SESSION['idEstudiante'];
+        $cw_unreadCount = (int)chatContarNoLeidos('estudiante', $cw_id);
+        $cw_basePath = '../../../';
+        include __DIR__ . '/../../comunes/chat_widget.php';
+    endif; ?>
+
     <div class="content">
       <?php if (isset($_SESSION['idEstudiante'])) { 
           $configFB = Config::getInstance();

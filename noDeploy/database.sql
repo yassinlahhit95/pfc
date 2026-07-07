@@ -6,6 +6,13 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ── Limpiar tablas existentes ────────────────────────────────
+DROP TABLE IF EXISTS `gastos`;
+DROP TABLE IF EXISTS `categorias_gasto`;
+DROP TABLE IF EXISTS `consentimientos`;
+DROP TABLE IF EXISTS `rgpd_eliminaciones`;
+DROP TABLE IF EXISTS `log_secretaria_acciones`;
+DROP TABLE IF EXISTS `log_acciones`;
+DROP TABLE IF EXISTS `asistencias`;
 DROP TABLE IF EXISTS `chat_mensajes`;
 DROP TABLE IF EXISTS `chat_conversaciones`;
 DROP TABLE IF EXISTS `password_resets`;
@@ -255,8 +262,10 @@ CREATE TABLE `calificaciones_retos` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
   `idReto` int(11) NOT NULL,
+  `cursoEscolar` varchar(20) DEFAULT NULL,
   `nota` decimal(4,2) NOT NULL,
   PRIMARY KEY (`idCalificacion`),
+  UNIQUE KEY `uk_cal_reto_curso` (`idEstudiante`, `idReto`, `cursoEscolar`),
   KEY `idx_cal_reto_est`  (`idEstudiante`),
   KEY `idx_cal_reto_reto` (`idReto`),
   CONSTRAINT `fk_cr_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
@@ -268,6 +277,7 @@ CREATE TABLE `calificaciones_modulos` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
   `idModulo` int(11) NOT NULL,
+  `cursoEscolar` varchar(20) DEFAULT NULL,
   `nota_1ev`    decimal(4,2) DEFAULT NULL,
   `nota_1final` decimal(4,2) DEFAULT NULL,
   `nota_2ev`    decimal(4,2) DEFAULT NULL,
@@ -278,7 +288,7 @@ CREATE TABLE `calificaciones_modulos` (
   `estado_2final` varchar(2) DEFAULT NULL,
   `observaciones` text,
   PRIMARY KEY (`idCalificacion`),
-  UNIQUE KEY `uk_est_mod` (`idEstudiante`, `idModulo`),
+  UNIQUE KEY `uk_est_mod_curso` (`idEstudiante`, `idModulo`, `cursoEscolar`),
   KEY `idx_cm_est` (`idEstudiante`),
   KEY `idx_cm_mod` (`idModulo`),
   CONSTRAINT `fk_cm_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
@@ -289,10 +299,11 @@ CREATE TABLE `calificaciones_modulos` (
 CREATE TABLE `calificaciones_tfg` (
   `idCalificacion` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
+  `cursoEscolar` varchar(20) DEFAULT NULL,
   `nota` decimal(4,2) NOT NULL,
   `observaciones` text,
   PRIMARY KEY (`idCalificacion`),
-  UNIQUE KEY `uk_est_tfg` (`idEstudiante`),
+  UNIQUE KEY `uk_est_tfg_curso` (`idEstudiante`, `cursoEscolar`),
   CONSTRAINT `fk_ctfg_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -310,6 +321,7 @@ CREATE TABLE `dispositivos` (
 CREATE TABLE `prestamos` (
   `idPrestamo` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
+  `cursoEscolar` varchar(20) DEFAULT NULL,
   `numeroSerie` varchar(100) NOT NULL,
   `fechaPrestamo` date NOT NULL,
   `fechaDevolucion` date,
@@ -362,6 +374,7 @@ CREATE TABLE `reclamaciones` (
 CREATE TABLE `pagos` (
   `idPago` int(11) NOT NULL AUTO_INCREMENT,
   `idEstudiante` int(11) NOT NULL,
+  `cursoEscolar` varchar(20) DEFAULT NULL,
   `monto` decimal(10,2) NOT NULL,
   `fechaPago` date NOT NULL,
   `fechaProximoPago` date NOT NULL,
@@ -827,7 +840,7 @@ CREATE TABLE `configuracion_centro` (
   `logoGobierno2` varchar(255) DEFAULT NULL,
   `textoLegal` text DEFAULT NULL,
   `nombreDirectorFirmante` varchar(150) DEFAULT NULL,
-  `feature_prematricula` tinyint(1) NOT NULL DEFAULT 1,
+  `feature_prematricula` tinyint(1) NOT NULL DEFAULT 0,
   `feature_chat` tinyint(1) NOT NULL DEFAULT 1,
   `feature_inventario` tinyint(1) NOT NULL DEFAULT 1,
   `feature_subida_tfg` tinyint(1) NOT NULL DEFAULT 1,
@@ -847,6 +860,7 @@ CREATE TABLE `configuracion_centro` (
   `saas_last_sync` datetime DEFAULT NULL,
   `license_token` text DEFAULT NULL,
   `license_token_exp` datetime DEFAULT NULL,
+  `prematricula_filtrar_niveles` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`idConfig`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1039,7 +1053,7 @@ INSERT INTO `configuracion_centro`
    `saas_message_type`, `saas_last_sync`, `license_token`, `license_token_exp`)
 VALUES
   (1, 'Centro de Formación Profesional', '', '', '', '', '', '', '2025-2026', '', '',
-   1, 1, 1, 1,
+   0, 1, 1, 1,
    1, 1, 1, 1,
    1, 1, 1, 1,
    'active', NULL, 0, NULL, 'info', NULL, NULL, NULL);
@@ -1200,7 +1214,7 @@ ALTER TABLE configuracion_centro ADD COLUMN feature_landing TINYINT(1) NOT NULL 
 
 CREATE TABLE IF NOT EXISTS landing_config (
     idLanding     INT NOT NULL DEFAULT 1,
-    plantilla     VARCHAR(30) NOT NULL DEFAULT 'institucional',
+    plantilla     VARCHAR(30) DEFAULT NULL,
     ajustes       JSON NULL,
     plantilla_pub VARCHAR(30) DEFAULT NULL,
     ajustes_pub   JSON NULL,

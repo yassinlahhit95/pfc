@@ -47,6 +47,14 @@ include __DIR__ . '/../comunes/nav.php';
                 <?php endforeach; ?>
             </select>
         </div>
+        <div class="campo relleno">
+            <label for="selectFiltroAnio">FILTRAR POR AÑO:</label>
+            <select id="selectFiltroAnio" onchange="aplicarFiltrosEstudiantes()">
+                <option value="">-- Todos los Años --</option>
+                <option value="1º">1º Año</option>
+                <option value="2º">2º Año</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -59,6 +67,7 @@ include __DIR__ . '/../comunes/nav.php';
                     <th>NIVEL</th>
                     <th>NOMBRE COMPLETO</th>
                     <th>CORREO ELECTRÓNICO</th>
+                    <th>AÑO</th>
                     <th>CICLO ASIGNADO</th>
                     <th>ACCIONES</th>
                 </tr>
@@ -77,31 +86,16 @@ include __DIR__ . '/../comunes/nav.php';
                         </td>
                         <td><b><?= mb_strtoupper(Security::escapeHtml($e['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($e['emailEstudiante']) ?></td>
+                        <td><?= Security::escapeHtml($e['anioEstudio'] ?? '') ?></td>
                         <td><?= strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—')) ?></td>
                         <td>
-                            <div class="recurso-menu-wrap">
-                                <button type="button" class="recurso-menu-btn" title="Opciones">
-                                    <i class="fas fa-ellipsis-vertical"></i>
-                                </button>
-                                <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="verDetallesEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>">
-                                        <i class="fas fa-id-card"></i> Ver detalles
-                                    </a>
-                                    <a class="recurso-menu-item" href="modificarEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <div class="recurso-menu-sep"></div>
-                                    <a class="recurso-menu-item peligro" href="#"
-                                       data-modal-borrar
-                                       data-id="<?= (int)$e['idEstudiante'] ?>"
-                                       data-tipo="Estudiante"
-                                       data-nombre="<?= Security::escapeHtml($e['nombreEstudiante']) ?>"
-                                       data-extra="<?= Security::escapeHtml($e['abreviaturaCiclo'] ?? $e['nombreCiclo'] ?? '') ?>"
-                                       data-url="/controladores/admin/estudiantes/borrar.php"
-                                       data-campo="idEstudiante">
-                                        <i class="fas fa-trash"></i> Eliminar
-                                    </a>
-                                </div>
+                            <div style="display:flex;gap:6px;">
+                                <a href="verDetallesEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>" class="boton-secundario boton-pequeno" title="Ver detalles">
+                                    <i class="fas fa-id-card"></i>
+                                </a>
+                                <a href="modificarEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>" class="boton-primario boton-pequeno" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -117,12 +111,14 @@ include __DIR__ . '/../comunes/nav.php';
 function aplicarFiltrosEstudiantes() {
     var idNivel    = $('#selectFiltroNivel').val();
     var textoCiclo = $('#selectFiltroCiclo').val().toLowerCase();
+    var textoAnio  = $('#selectFiltroAnio').val().toLowerCase();
 
     $('#tablaEstudiantes tbody tr').each(function () {
         var $f = $(this);
         var pasaNivel = idNivel === '' || $f.hasClass('fila-nivel-' + idNivel);
-        var pasaCiclo = textoCiclo === '' || $f.find('td').eq(4).text().toLowerCase().indexOf(textoCiclo) !== -1;
-        $f.toggleClass('fila-filtro-oculta', !(pasaNivel && pasaCiclo));
+        var pasaCiclo = textoCiclo === '' || $f.find('td').eq(5).text().toLowerCase().indexOf(textoCiclo) !== -1;
+        var pasaAnio  = textoAnio === '' || $f.find('td').eq(4).text().toLowerCase().indexOf(textoAnio) !== -1;
+        $f.toggleClass('fila-filtro-oculta', !(pasaNivel && pasaCiclo && pasaAnio));
     });
 
     if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaEstudiantes');

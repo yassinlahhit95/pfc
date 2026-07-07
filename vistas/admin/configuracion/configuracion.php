@@ -55,6 +55,7 @@ include_once __DIR__ . '/../comunes/nav.php';
         <?php
         $features = [
             ['key' => 'feature_prematricula', 'icon' => 'fa-user-plus',     'color' => '#4f46e5', 'label' => 'Pre-matrícula',    'desc' => 'Portal de admisión pública'],
+            ['key' => 'prematricula_filtrar_niveles', 'icon' => 'fa-filter', 'color' => '#6366f1', 'label' => 'Filtro Nivel Pre-Matrícula', 'desc' => 'Filtro Grado Superior/Medio en admisiones'],
             ['key' => 'feature_chat',         'icon' => 'fa-comments',      'color' => '#10b981', 'label' => 'Chat',              'desc' => 'Mensajería instantánea'],
             ['key' => 'feature_inventario',   'icon' => 'fa-boxes',         'color' => '#f59e0b', 'label' => 'Inventario',        'desc' => 'Recursos y préstamos'],
             ['key' => 'feature_subida_tfg',   'icon' => 'fa-file-upload',   'color' => '#8b5cf6', 'label' => 'Entrega de TFG',   'desc' => 'Subida del trabajo fin de grado'],
@@ -227,7 +228,7 @@ include_once __DIR__ . '/../comunes/nav.php';
                 <!-- Current logo preview -->
                 <?php if ($tieneActual): ?>
                 <div class="logo-actual" id="logo-actual-<?= $field ?>">
-                    <img src="/public/uploads/configuracion/<?= Security::escapeHtml(basename($cfg[$field])) ?>"
+                    <img src="../../../public/uploads/configuracion/<?= Security::escapeHtml(basename($cfg[$field])) ?>"
                          alt="<?= $meta['label'] ?>" class="logo-preview-img">
                     <button type="button" class="boton-peligro btn-xs"
                             onclick="marcarBorrarLogo('<?= $field ?>')">

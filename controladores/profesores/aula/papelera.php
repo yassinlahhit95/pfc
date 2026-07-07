@@ -5,7 +5,10 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/aula.php";
 
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
 if (!Security::validateCSRFToken()) {
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'Solicitud inválida']); exit; }
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: ../../../vistas/profesores/aula/papelera.php");
     exit;
@@ -20,16 +23,18 @@ $tipo       = $_POST['tipo']     ?? '';   // archivo | carpeta
 $id         = intval($_POST['id'] ?? 0);
 $idModulo   = intval($_POST['idModulo'] ?? 0);
 
+$msgExito = '';
+
 if ($id > 0 && in_array($accion, ['restaurar','eliminar']) && in_array($tipo, ['archivo','carpeta'])) {
     if ($tipo === 'archivo') {
         $item = obtenerArchivoPorId($id);
         if ($item && $item['idProfesor'] == $idProfesor) {
             if ($accion === 'restaurar') {
                 restaurarArchivoAula($id);
-                $_SESSION['exito'] = "El archivo ha sido restaurado.";
+                $msgExito = "El archivo ha sido restaurado.";
             } else {
                 eliminarDefinitivoArchivoAula($id);
-                $_SESSION['exito'] = "El archivo ha sido eliminado definitivamente.";
+                $msgExito = "El archivo ha sido eliminado definitivamente.";
             }
         }
     } else {
@@ -37,10 +42,10 @@ if ($id > 0 && in_array($accion, ['restaurar','eliminar']) && in_array($tipo, ['
         if ($item && $item['idProfesor'] == $idProfesor) {
             if ($accion === 'restaurar') {
                 restaurarCarpetaAula($id);
-                $_SESSION['exito'] = "La carpeta ha sido restaurada.";
+                $msgExito = "La carpeta ha sido restaurada.";
             } else {
                 eliminarDefinitivoCarpetaAula($id);
-                $_SESSION['exito'] = "La carpeta ha sido eliminada definitivamente.";
+                $msgExito = "La carpeta ha sido eliminada definitivamente.";
             }
         }
     }
@@ -49,5 +54,12 @@ if ($id > 0 && in_array($accion, ['restaurar','eliminar']) && in_array($tipo, ['
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
+if ($msgExito) {
+    if ($isAjax) { echo json_encode(['ok'=>true,'msg'=>$msgExito]); exit; }
+    $_SESSION['exito'] = $msgExito;
+} else {
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'No se pudo procesar la solicitud']); exit; }
+}
+
 header("Location: ../../../vistas/profesores/aula/papelera.php?id=$idModulo");
 exit;

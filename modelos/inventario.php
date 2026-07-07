@@ -75,8 +75,12 @@ function registrarPrestamo($idEstudiante, $idArticulo, $fechaPrestamo) {
         if (!$fila) throw new \RuntimeException('dispositivo no disponible');
         $numeroSerie = $fila['numeroSerie'];
 
-        $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, 'en curso')");
-        mysqli_stmt_bind_param($stmt2, "iss", $idEstudiante, $numeroSerie, $fechaPrestamo);
+        require_once __DIR__ . '/configuracion.php';
+        $config = obtenerConfiguracion();
+        $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+
+        $stmt2 = mysqli_prepare($con, "INSERT INTO prestamos (idEstudiante, cursoEscolar, numeroSerie, fechaPrestamo, estadoPrestamo) VALUES (?, ?, ?, ?, 'en curso')");
+        mysqli_stmt_bind_param($stmt2, "isss", $idEstudiante, $cursoEscolar, $numeroSerie, $fechaPrestamo);
         if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert prestamos');
 
         $stmt3 = mysqli_prepare($con, "UPDATE dispositivos SET estadoDispositivo = 'prestado' WHERE idDispositivo = ?");

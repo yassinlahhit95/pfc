@@ -662,3 +662,91 @@
     opacity: 1;
   }
 }
+
+/* ── Dark Mode Overrides for Aula Digital ── */
+[data-theme="dark"] {
+  .tabla-contenido {
+    background: var(--surface);
+  }
+  .tabla-contenido thead {
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
+  }
+  .tabla-contenido th {
+    color: var(--text);
+  }
+  .tabla-contenido td {
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .tabla-contenido tbody tr:hover {
+    background: var(--bg-2, var(--bg));
+  }
+  .panel {
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .formulario-principal {
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .titulo-tarjeta {
+    border-bottom: 1px solid var(--border);
+  }
+  .titulo-tarjeta h3 {
+    color: var(--text);
+  }
+  .tarjeta-estadistica {
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .info-estadistica h3 {
+    color: var(--text);
+  }
+  .info-item h4 {
+    color: var(--text);
+  }
+  .info-aula-digital {
+    background: var(--bg);
+    border-color: var(--border);
+  }
+  .card-aula {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+  .card-contenido h3 {
+    color: var(--text);
+  }
+  .card-stats {
+    border-top: 1px solid var(--border);
+  }
+  
+  /* Horarios */
+  .horario-tabla-envoltura {
+    border-color: var(--border);
+  }
+  .horario-tabla {
+    background: var(--surface);
+  }
+  .horario-tabla th, .horario-tabla td {
+    border-color: var(--border);
+  }
+  .horario-tabla th {
+    background: var(--bg);
+    color: var(--text);
+  }
+  .horario-hora {
+    background: var(--bg);
+    color: var(--text-muted);
+  }
+  .horario-fila-recreo td {
+    background: var(--bg);
+  }
+  .horario-editable .horario-celda:hover {
+    background: var(--bg);
+  }
+  .horario-vacia {
+    border-color: var(--border);
+    color: var(--text-muted);
+  }
+}

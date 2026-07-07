@@ -187,19 +187,37 @@ require_once __DIR__ . "/../comunes/nav.php";
 
     // Confirm hard-delete
     $('#form-rgpd-borrar').on('submit', function (e) {
-        var id = $('#borrar-id').val();
+        var id = $('#borrar-select').val();
         var motivo = $('#borrar-motivo').val().trim();
         if (!id || !motivo) return;
-        if (!confirm('¿Eliminar PERMANENTEMENTE todos los datos del estudiante #' + id + '?\n\nEsta acción no se puede deshacer. Se guardará un registro de evidencia.')) {
+        
+        if (window.ModalConfirm) {
             e.preventDefault();
+            var $form = $(this);
+            ModalConfirm.prompt('¿Eliminar PERMANENTEMENTE todos los datos del estudiante #' + id + '?\n\nEsta acción no se puede deshacer. Se guardará un registro de evidencia.').then(function(res) {
+                if (res) $form[0].submit();
+            });
+        } else {
+            if (!confirm('¿Eliminar PERMANENTEMENTE todos los datos del estudiante #' + id + '?\n\nEsta acción no se puede deshacer. Se guardará un registro de evidencia.')) {
+                e.preventDefault();
+            }
         }
     });
 
     // Confirm log purge
     $('#form-purgar').on('submit', function (e) {
         var years = $(this).find('[name=years]').val();
-        if (!confirm('¿Eliminar todos los registros de log de más de ' + years + ' años? Esta acción no se puede deshacer.')) {
+        
+        if (window.ModalConfirm) {
             e.preventDefault();
+            var $form = $(this);
+            ModalConfirm.prompt('¿Eliminar todos los registros de log de más de ' + years + ' años? Esta acción no se puede deshacer.').then(function(res) {
+                if (res) $form[0].submit();
+            });
+        } else {
+            if (!confirm('¿Eliminar todos los registros de log de más de ' + years + ' años? Esta acción no se puede deshacer.')) {
+                e.preventDefault();
+            }
         }
     });
 

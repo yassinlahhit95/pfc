@@ -9,12 +9,18 @@ require_once __DIR__ . "/tfg.php";
 // CONSULTAS
 // ══════════════════════════════════════════════════════════════════════
 
-function obtenerNotasModulo($idEstudiante, $idModulo)
+function obtenerNotasModulo($idEstudiante, $idModulo, $cursoEscolar = null)
 {
+    if ($cursoEscolar === null) {
+        require_once __DIR__ . '/configuracion.php';
+        $config = obtenerConfiguracion();
+        $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+    }
+    
     $con = obtenerConexion();
-    $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
+    $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ? AND cursoEscolar = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idModulo);
+    mysqli_stmt_bind_param($stmt, "iis", $idEstudiante, $idModulo, $cursoEscolar);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $notas = mysqli_fetch_assoc($resultado);
@@ -33,15 +39,21 @@ function obtenerCalificacionPorId($idCalificacion)
     return $datos;
 }
 
-function listarCalificacionesPorEstudiante($idEstudiante)
+function listarCalificacionesPorEstudiante($idEstudiante, $cursoEscolar = null)
 {
+    if ($cursoEscolar === null) {
+        require_once __DIR__ . '/configuracion.php';
+        $config = obtenerConfiguracion();
+        $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+    }
+
     $con = obtenerConexion();
     $sql = "SELECT cm.*, m.nombreModulo
             FROM calificaciones_modulos cm
             JOIN modulos m ON cm.idModulo = m.idModulo
-            WHERE idEstudiante = ?";
+            WHERE idEstudiante = ? AND cm.cursoEscolar = ?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    mysqli_stmt_bind_param($stmt, "is", $idEstudiante, $cursoEscolar);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
@@ -53,15 +65,19 @@ function listarCalificacionesPorEstudiante($idEstudiante)
 
 function listarCalificacionesPorModulo($idModulo)
 {
+    require_once __DIR__ . '/configuracion.php';
+    $config = obtenerConfiguracion();
+    $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+
     $con = obtenerConexion();
-    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev AS calificacion, cm.observaciones
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, cm.nota_1ev, cm.nota_1final, cm.nota_2ev, cm.nota_2final, cm.observaciones
             FROM modulos mo
             JOIN estudiantes e ON e.idCiclo = mo.idCiclo
-            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = mo.idModulo
+            LEFT JOIN calificaciones_modulos cm ON e.idEstudiante = cm.idEstudiante AND cm.idModulo = mo.idModulo AND cm.cursoEscolar = ?
             WHERE mo.idModulo = ?
             ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_bind_param($stmt, "si", $cursoEscolar, $idModulo);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $lista = [];
@@ -95,14 +111,16 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1fi
     $nota2ev    = $p2ev['nota'];    $est2ev    = $p2ev['estado'];
     $nota2final = $p2final['nota']; $est2final = $p2final['estado'];
 
+    require_once __DIR__ . '/configuracion.php';
+    $config = obtenerConfiguracion();
+    $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+
     $con = obtenerConexion();
 
-    // Single atomic upsert — eliminates the SELECT+INSERT/UPDATE race condition (TOCTOU).
-    // Requires UNIQUE KEY on (idEstudiante, idModulo) in calificaciones_modulos.
     $sql1 = "INSERT INTO calificaciones_modulos
-                 (idEstudiante, idModulo, nota_1ev, nota_1final, nota_2ev, nota_2final,
+                 (idEstudiante, idModulo, cursoEscolar, nota_1ev, nota_1final, nota_2ev, nota_2final,
                   estado_1ev, estado_1final, estado_2ev, estado_2final, observaciones)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
              ON DUPLICATE KEY UPDATE
                  nota_1ev    = VALUES(nota_1ev),
                  nota_1final = VALUES(nota_1final),
@@ -114,8 +132,8 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1fi
                  estado_2final = VALUES(estado_2final),
                  observaciones = VALUES(observaciones)";
     $stmt = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($stmt, "iiddddsssss",
-        $idEstudiante, $idModulo,
+    mysqli_stmt_bind_param($stmt, "iisddddsssss",
+        $idEstudiante, $idModulo, $cursoEscolar,
         $nota1ev, $nota1final, $nota2ev, $nota2final,
         $est1ev, $est1final, $est2ev, $est2final,
         $observaciones);
@@ -141,8 +159,14 @@ function eliminarCalificacion($idCalificacion)
 // RESULTADOS FINALES
 // ══════════════════════════════════════════════════════════════════════
 
-function listarResultadosFinalesCiclo($idCiclo)
+function listarResultadosFinalesCiclo($idCiclo, $cursoEscolar = null)
 {
+    if ($cursoEscolar === null) {
+        require_once __DIR__ . '/configuracion.php';
+        $config = obtenerConfiguracion();
+        $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+    }
+
     $con = obtenerConexion();
 
     // 1. Obtener estudiantes
@@ -181,8 +205,8 @@ function listarResultadosFinalesCiclo($idCiclo)
     $tEst  = str_repeat('i', count($estudianteIds));
     $tMod  = str_repeat('i', count($moduloIds));
 
-    $stmtG = mysqli_prepare($con, "SELECT * FROM calificaciones_modulos WHERE idEstudiante IN ($phEst) AND idModulo IN ($phMod)");
-    mysqli_stmt_bind_param($stmtG, $tEst . $tMod, ...[...$estudianteIds, ...$moduloIds]);
+    $stmtG = mysqli_prepare($con, "SELECT * FROM calificaciones_modulos WHERE idEstudiante IN ($phEst) AND idModulo IN ($phMod) AND cursoEscolar = ?");
+    mysqli_stmt_bind_param($stmtG, $tEst . $tMod . "s", ...[...$estudianteIds, ...$moduloIds, $cursoEscolar]);
     mysqli_stmt_execute($stmtG);
     $resG = mysqli_stmt_get_result($stmtG);
     $allGrades = [];
@@ -222,6 +246,7 @@ function listarResultadosFinalesCiclo($idCiclo)
             'idEstudiante' => $idEstudiante,
             'nombreEstudiante' => $datosEstudiante['nombreEstudiante'],
             'nombreCiclo' => $datosEstudiante['nombreCiclo'],
+            'anioEstudio' => $datosEstudiante['anioEstudio'] ?? '-',
             'detalles_modulos' => [],
             'estado_global' => 'PENDIENTE',
             'tiene_suspensos' => false,
@@ -267,6 +292,7 @@ function listarResultadosFinalesCiclo($idCiclo)
             $detalle = [
                 'idModulo' => $idModulo,
                 'nombreModulo' => $modulo['nombreModulo'],
+                'cursoAnio' => $modulo['cursoAnio'],
                 'media_retos' => round($mediaRetos, 2),
                 'estado' => $estado,
                 'media_notas' => $evaluacionesConNota > 0 ? round($mediaExamenes, 2) : "-",
@@ -315,7 +341,7 @@ function listarResultadosFinalesCiclo($idCiclo)
     return $resultados;
 }
 
-function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
+function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null, $cursoEscolar = null)
 {
     $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
 
@@ -346,7 +372,7 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
 
     foreach ($listaModulos as $modulo) {
         $idModuloActual = $modulo['idModulo'];
-        $notas = obtenerNotasModulo($idEstudiante, $idModuloActual);
+        $notas = obtenerNotasModulo($idEstudiante, $idModuloActual, $cursoEscolar);
 
         $nota1ev    = null;
         $nota1final = null;
@@ -391,6 +417,7 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
         $detalle = [];
         $detalle['idModulo'] = $idModuloActual;
         $detalle['nombreModulo'] = $modulo['nombreModulo'];
+        $detalle['cursoAnio'] = $modulo['cursoAnio'] ?? 1;
         $detalle['media_retos'] = round($mediaRetos, 2);
         $detalle['estado'] = $estado;
 

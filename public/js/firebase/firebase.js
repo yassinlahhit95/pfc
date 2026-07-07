@@ -144,6 +144,9 @@ if (fcm) {
 
         avisoPush(t, m);
         bumpNotifDot();
+        
+        // Disparar evento para que otras partes de la UI (ej. lista de chats) puedan actualizarse
+        document.dispatchEvent(new CustomEvent('firebaseMessageReceived', { detail: p }));
     });
 }
 

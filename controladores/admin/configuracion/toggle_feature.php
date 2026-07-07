@@ -52,6 +52,7 @@ $etiquetas = [
     'feature_informes'     => 'Informes PDF',
     'feature_horario'      => 'Cuadro Horario',
     'feature_landing'      => 'Página Web Pública',
+    'prematricula_filtrar_niveles' => 'Filtrado de niveles en Pre-Matrícula',
 ];
 $etiqueta = $etiquetas[$feature] ?? $feature;
 $accion   = $estado === 1 ? 'activado' : 'desactivado';

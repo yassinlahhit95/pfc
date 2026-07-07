@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -27,6 +27,39 @@ $seccion = 'calificaciones';
         <i class="fas fa-print"></i> Imprimir
     </button>
     <?php endif; ?>
+</div>
+
+<div class="dashboard-grid" style="margin-bottom:24px;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));">
+    <a href="verCalificaciones.php" class="tile card-soft" style="--tint:#4F46E5; text-decoration:none">
+        <span class="tile-sheen"></span>
+        <span class="tile-ico">
+            <i class="fas fa-book" style="font-size:1.5rem"></i>
+        </span>
+        <span class="tile-body">
+            <span class="tile-title">Módulos</span>
+            <span class="tile-desc">Calificaciones ordinarias</span>
+        </span>
+    </a>
+    <a href="verRetos.php" class="tile card-soft" style="--tint:#10B981; text-decoration:none">
+        <span class="tile-sheen"></span>
+        <span class="tile-ico">
+            <i class="fas fa-flag" style="font-size:1.5rem"></i>
+        </span>
+        <span class="tile-body">
+            <span class="tile-title">Retos</span>
+            <span class="tile-desc">Evaluación por retos</span>
+        </span>
+    </a>
+    <a href="verTFG.php" class="tile card-soft" style="--tint:#F59E0B; text-decoration:none">
+        <span class="tile-sheen"></span>
+        <span class="tile-ico">
+            <i class="fas fa-graduation-cap" style="font-size:1.5rem"></i>
+        </span>
+        <span class="tile-body">
+            <span class="tile-title">TFG</span>
+            <span class="tile-desc">Trabajos de fin de grado</span>
+        </span>
+    </a>
 </div>
 
 <div class="panel margen-abajo">

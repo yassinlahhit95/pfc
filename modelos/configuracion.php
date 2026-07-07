@@ -32,6 +32,7 @@ function obtenerConfiguracionCentro() {
         'feature_ra_ce'           => 0,
         'feature_fp_dual'         => 0,
         'feature_landing'         => 1,
+        'prematricula_filtrar_niveles' => 0,
     ];
 }
 
@@ -60,13 +61,15 @@ function guardarConfiguracionCentro($d) {
 
 // Solo acepta columnas de feature válidas para evitar inyección de nombre de columna.
 // Devuelve true en éxito, o un string con el error MySQL en fallo.
+// Permite prematricula_filtrar_niveles además de los feature_ normales.
 function actualizarFeatureToggle($feature, $estado) {
     $con = obtenerConexion();
     $featuresValidas = [
         'feature_prematricula', 'feature_chat', 'feature_inventario', 'feature_subida_tfg',
         'feature_anuncios', 'feature_eventos', 'feature_retos', 'feature_mensajes',
         'feature_pagos', 'feature_gastos', 'feature_informes', 'feature_horario',
-        'feature_geoblock_admin', 'feature_ra_ce', 'feature_fp_dual', 'feature_landing'
+        'feature_geoblock_admin', 'feature_ra_ce', 'feature_fp_dual', 'feature_landing',
+        'prematricula_filtrar_niveles'
     ];
     if (!in_array($feature, $featuresValidas)) return 'Funcionalidad no reconocida.';
     $sql  = "UPDATE configuracion_centro SET $feature = ? WHERE idConfig = 1";

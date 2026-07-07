@@ -300,7 +300,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <a href="sesionAsistencia.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="btn-modern btn-primary-modern btn-small">
               <i class="fas fa-list"></i> Asistencia
             </a>
-            <a href="../../../controladores/profesores/aula/borrarSesion.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="btn-modern btn-danger-modern btn-small" title="Eliminar" onclick="return confirm('¿Eliminar esta sesión?')">
+            <a href="../../../controladores/profesores/aula/borrarSesion.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="btn-modern btn-danger-modern btn-small" title="Eliminar" data-ajax-confirm="¿Eliminar esta sesión?">
               <i class="fas fa-trash"></i>
             </a>
           </div>

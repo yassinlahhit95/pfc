@@ -1,0 +1,23 @@
+# ── landing-system/.htaccess ────────────────────────────────────────────────
+# Permite acceso público SOLO a las carpetas temas/ y assets/ (CSS/JS/imágenes).
+# Bloquea acceso directo a todos los archivos PHP del motor, plantillas y vistas.
+
+# Denegar acceso directo a PHP en engine/, plantillas/, secciones/, views/
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Permitir acceso a temas/ y assets/ (archivos estáticos)
+<Directory "temas">
+    Order Allow,Deny
+    Allow from all
+</Directory>
+
+<Directory "assets">
+    Order Allow,Deny
+    Allow from all
+</Directory>
+
+# Bloquear listados de directorios
+Options -Indexes

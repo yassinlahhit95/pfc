@@ -81,5 +81,9 @@ document.getElementById('sidebar-search')?.addEventListener('input', function() 
         row.style.display = name.includes(q) ? '' : 'none';
     });
 });
+
+document.addEventListener('firebaseMessageReceived', function() {
+    window.location.reload();
+});
 </script>
 <?php require_once __DIR__ . '/../comunes/footer.php'; ?>

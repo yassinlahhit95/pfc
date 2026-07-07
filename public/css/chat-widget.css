@@ -53,6 +53,9 @@
   box-shadow: 0 2px 8px rgb(239 68 68 / 40%);
   line-height: 1;
 }
+.cw-fab-badge[hidden] {
+  display: none !important;
+}
 
 /* ── Window ──────────────────────────────────────────────────────────────── */
 .cw-window {

@@ -49,8 +49,16 @@ $tipos     = landing_tipos();
 // Anclas del menú: secciones visibles cuyo tipo declara etiqueta de menú
 $menuAnclas = [];
 foreach ($secciones as $s) {
-    if (!empty($tipos[$s['tipo']]['menu']) && !isset($menuAnclas[$s['tipo']])) {
-        $menuAnclas[$s['tipo']] = $tipos[$s['tipo']]['menu'];
+    $contenido = json_decode($s['contenido'] ?? '{}', true) ?: [];
+    $navVisible = $contenido['navVisible'] ?? (!empty($tipos[$s['tipo']]['menu']) ? 'si' : 'no');
+    $navTexto   = $contenido['navTexto'] ?? ($tipos[$s['tipo']]['menu'] ?? '');
+
+    if ($navVisible === 'si' && !empty($navTexto) && !isset($menuAnclas[$s['tipo']])) {
+        $esSeparado = ($s['tipo'] === 'contacto' && ($contenido['modoVisualizacion'] ?? 'integrado') === 'separado');
+        $menuAnclas[$s['tipo']] = [
+            'texto' => $navTexto,
+            'separado' => $esSeparado
+        ];
     }
 }
 
@@ -60,6 +68,12 @@ include __DIR__ . '/vistas/landing/_nav.php';
 foreach ($secciones as $s) {
     if (!isset($tipos[$s['tipo']])) continue;
     $contenido = json_decode($s['contenido'] ?? '{}', true) ?: [];
+    
+    // Si la sección contacto está en modo separado, no la renderizamos aquí
+    if ($s['tipo'] === 'contacto' && ($contenido['modoVisualizacion'] ?? 'integrado') === 'separado') {
+        continue;
+    }
+    
     include __DIR__ . '/vistas/landing/secciones/' . $s['tipo'] . '.php';
 }
 

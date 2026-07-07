@@ -17,16 +17,28 @@ function registrarAccion(string $accion, string $tabla, ?int $idRegistro = null,
     }
 }
 
-// Requires log_secretaria_acciones table (see database.sql).
 function registrarAccionSecretaria(string $accion, string $tabla, ?int $idRegistro = null, string $descripcion = ''): void {
     try {
         $con          = obtenerConexion();
         $idSecretaria = isset($_SESSION['idSecretaria']) ? (int)$_SESSION['idSecretaria'] : null;
-        $ip           = $_SERVER['REMOTE_ADDR'] ?? null;
-        $stmt = mysqli_prepare($con,
-            "INSERT INTO log_secretaria_acciones (idSecretaria, accion, tabla, idRegistro, descripcion, ip)
-             VALUES (?, ?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "ississ", $idSecretaria, $accion, $tabla, $idRegistro, $descripcion, $ip);
+        
+        // Auto-create table if missing
+        mysqli_query($con, "CREATE TABLE IF NOT EXISTS `historial_secretarias` (
+          `idHistorial` int(11) NOT NULL AUTO_INCREMENT,
+          `idSecretaria` int(11) NOT NULL,
+          `accion` varchar(255) NOT NULL,
+          `entidad` varchar(100) NOT NULL,
+          `detalles` text,
+          `fecha` datetime DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`idHistorial`),
+          KEY `idx_secretaria` (`idSecretaria`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $detalles = $descripcion;
+        if ($idRegistro) $detalles = "ID: $idRegistro " . $detalles;
+        
+        $stmt = mysqli_prepare($con, "INSERT INTO historial_secretarias (idSecretaria, accion, entidad, detalles) VALUES (?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "isss", $idSecretaria, $accion, $tabla, $detalles);
         mysqli_stmt_execute($stmt);
     } catch (\Throwable $e) {}
 }
@@ -36,7 +48,7 @@ function listarHistorialSecretarias(?int $idSecretaria = null, int $limite = 300
     if ($idSecretaria) {
         $stmt = mysqli_prepare($con,
             "SELECT l.*, s.nombreSecretaria
-             FROM log_secretaria_acciones l
+             FROM historial_secretarias l
              LEFT JOIN secretarias s ON l.idSecretaria = s.idSecretaria
              WHERE l.idSecretaria = ?
              ORDER BY l.fecha DESC LIMIT ?");
@@ -44,7 +56,7 @@ function listarHistorialSecretarias(?int $idSecretaria = null, int $limite = 300
     } else {
         $stmt = mysqli_prepare($con,
             "SELECT l.*, s.nombreSecretaria
-             FROM log_secretaria_acciones l
+             FROM historial_secretarias l
              LEFT JOIN secretarias s ON l.idSecretaria = s.idSecretaria
              ORDER BY l.fecha DESC LIMIT ?");
         mysqli_stmt_bind_param($stmt, "i", $limite);

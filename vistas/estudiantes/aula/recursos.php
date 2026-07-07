@@ -61,13 +61,13 @@ if ($idModulo < 1) {
 
 // ── Vista 2: explorador de un módulo (sólo lectura) ──
 $modulo = obtenerModuloPorId($idModulo);
-if (!$modulo || $modulo['idCiclo'] != $idCiclo) { header("Location: recursos.php"); exit; }
+if (!$modulo || $modulo['idCiclo'] != $idCiclo) { echo "<script>window.location.replace('recursos.php');</script>"; exit; }
 
 $ruta = [];
 if ($carpetaActual) {
     $carpetaInfo = obtenerCarpetaAulaPorId($carpetaActual);
     if (!$carpetaInfo || $carpetaInfo['idModulo'] != $idModulo || $carpetaInfo['eliminado']) {
-        header("Location: recursos.php?id=$idModulo"); exit;
+        echo "<script>window.location.replace('recursos.php?id=$idModulo');</script>"; exit;
     }
     $ruta = obtenerRutaCarpetaAula($carpetaActual);
 }

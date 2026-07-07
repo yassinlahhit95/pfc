@@ -9,7 +9,18 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 $_serial = $estudiante['_serial'] ?? '';
 
 // Verification URL encoded in the QR
-$_verifyUrl = rtrim($baseUrl ?? '', '/') . '/verificar/?s=' . urlencode($_serial);
+// Prefer real HTTP_HOST to avoid localhost when APP_URL is not updated for production
+if (!empty($_SERVER['HTTP_HOST'])) {
+    $_scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $_host     = $_SERVER['HTTP_HOST'];
+    // Determine base path from APP_URL (keeps /pfc or similar sub-dir if any)
+    $_envBase  = rtrim($baseUrl ?? '', '/');
+    $_envPath  = parse_url($_envBase, PHP_URL_PATH) ?? '';
+    $_realBase = $_scheme . '://' . $_host . $_envPath;
+} else {
+    $_realBase = rtrim($baseUrl ?? '', '/');
+}
+$_verifyUrl = $_realBase . '/verificar/?s=' . urlencode($_serial);
 
 // Build QR PNG as base64 data URI
 try {
@@ -29,8 +40,8 @@ try {
 ?>
 <style>
     @page {
-        header: page-header;
-        footer: page-footer;
+        header: html_page-header;
+        footer: html_page-footer;
     }
     body { font-family: 'Roboto', sans-serif; color: #334155; }
     
@@ -216,6 +227,23 @@ try {
                     </div>
                 </td>
             </tr>
+            <tr style="background:#f8fafc;">
+                <td colspan="6" style="padding:8px 10px;">
+                    <table style="width:100%; font-size: 7.5pt; color: #334155; border-collapse: collapse;">
+                        <tr>
+                            <td style="color:#1e3a6e; font-weight:bold; white-space:nowrap; padding-right:10px;">GLOSARIO:</td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>SB</strong> Sobresaliente <span style="color:#64748b;">9–10</span></td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>NT</strong> Notable <span style="color:#64748b;">7–8</span></td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>BI</strong> Bien <span style="color:#64748b;">6</span></td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>SF</strong> Suficiente <span style="color:#64748b;">5</span></td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>IN</strong> Insuficiente <span style="color:#64748b;">1–4</span></td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>NP</strong> No Presentado</td>
+                            <td style="white-space:nowrap; padding-right:6px;"><strong>EX</strong> Exento</td>
+                            <td style="white-space:nowrap;"><strong>CO</strong> Convalidado</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </tbody>
     </table>
 
@@ -250,19 +278,4 @@ try {
         </tr>
     </table>
 
-    <div style="margin-top: 20px; padding: 8px 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
-        <table style="width:100%; font-size: 7.5pt; color: #334155; border-collapse: collapse;">
-            <tr>
-                <td style="color:#1e3a6e; font-weight:bold; white-space:nowrap; padding-right:10px;">GLOSARIO:</td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>SB</strong> Sobresaliente <span style="color:#64748b;">9–10</span></td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>NT</strong> Notable <span style="color:#64748b;">7–8</span></td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>BI</strong> Bien <span style="color:#64748b;">6</span></td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>SF</strong> Suficiente <span style="color:#64748b;">5</span></td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>IN</strong> Insuficiente <span style="color:#64748b;">1–4</span></td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>NP</strong> No Presentado</td>
-                <td style="white-space:nowrap; padding-right:6px;"><strong>EX</strong> Exento</td>
-                <td style="white-space:nowrap;"><strong>CO</strong> Convalidado</td>
-            </tr>
-        </table>
-    </div>
 </div>

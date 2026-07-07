@@ -42,10 +42,15 @@ if (isset($_POST['subirTFG'])) {
         $errores[] = "Error al subir el archivo, inténtalo de nuevo.";
     } else {
         $ext = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
-        $mimeAllowed = ['application/pdf', 'application/msword',
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        $mime = mime_content_type($archivoTFG['tmp_name']);
-        if (!in_array($ext, ['pdf', 'doc', 'docx']) || !in_array($mime, $mimeAllowed)) {
+        $mimeAllowed = [
+            'application/pdf', 
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/zip', 
+            'application/octet-stream'
+        ];
+        $mime = @mime_content_type($archivoTFG['tmp_name']);
+        if (!in_array($ext, ['pdf', 'doc', 'docx']) || ($mime && !in_array($mime, $mimeAllowed))) {
             $errores[] = "Solo se permiten archivos PDF o Word (.doc, .docx).";
         } elseif ($archivoTFG['size'] > 20 * 1024 * 1024) {
             $errores[] = "El archivo supera el tamaño máximo permitido (20 MB).";
@@ -61,7 +66,12 @@ if (isset($_POST['subirTFG'])) {
         $ext           = strtolower(pathinfo($archivoTFG['name'], PATHINFO_EXTENSION));
         $nombreLimpio  = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $datosEstudiante['nombreEstudiante']));
         $nombreArchivo = "TFG_" . $nombreLimpio . "_" . date('d-m-Y_H-i-s') . "." . $ext;
-        $rutaDestino   = __DIR__ . "/../../../public/uploads/pfc/" . $nombreArchivo;
+        
+        $directorioDestino = __DIR__ . "/../../../public/uploads/pfc/";
+        if (!is_dir($directorioDestino)) {
+            mkdir($directorioDestino, 0777, true);
+        }
+        $rutaDestino   = $directorioDestino . $nombreArchivo;
 
         // Guardar ruta del archivo anterior ANTES de cualquier operación de escritura.
         // El orden correcto es: mover nuevo → actualizar BD → borrar antiguo.

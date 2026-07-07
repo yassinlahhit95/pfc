@@ -1596,6 +1596,7 @@ ul { list-style-position: inside; }
   width: 260px;
   background: var(--surface, #fff);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 14px;
   box-shadow: var(--shadow-lg);
   padding: 12px;
@@ -1849,6 +1850,7 @@ ul { list-style-position: inside; }
   z-index: 9999;
   background: rgb(15 23 42 / 55%);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;

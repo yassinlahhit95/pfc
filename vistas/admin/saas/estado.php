@@ -120,6 +120,11 @@ $features = [
     'feature_pagos'        => ['Pagos',            'fa-credit-card',   '#10b981'],
     'feature_gastos'       => ['Gastos',           'fa-receipt',       '#ef4444'],
     'feature_informes'     => ['Informes PDF',     'fa-file-pdf',      '#64748b'],
+    'feature_horario'      => ['Cuadro Horario',   'fa-calendar-alt',  '#4f46e5'],
+    'feature_geoblock_admin'=>['Geo-Block (España)','fa-globe-europe', '#dc2626'],
+    'feature_ra_ce'        => ['Eval. LOMLOE',     'fa-star-half-stroke','#f59e0b'],
+    'feature_fp_dual'      => ['FP Dual',          'fa-building',      '#10b981'],
+    'feature_landing'      => ['Página Web Pública','fa-globe',         '#0ea5e9'],
 ];
 
 // License expiry — use subscription expiry from token (sub_exp), fall back to token expiry

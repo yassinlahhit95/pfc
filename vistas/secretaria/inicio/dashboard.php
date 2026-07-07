@@ -8,19 +8,31 @@ require_once __DIR__ . "/../../../modelos/anuncios.php";
 $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $nombre = $secretaria['nombreSecretaria'] ?? 'Secretaria';
 
-$con = obtenerConexion();
+$cacheKeyDash = 'secretaria_dashboard_stats_' . $_SESSION['idSecretaria'];
+if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time']) && (time() - $_SESSION[$cacheKeyDash . '_time'] < 60)) {
+    $stats = $_SESSION[$cacheKeyDash];
+    $totalEstudiantes = $stats['totalEstudiantes'];
+    $admisionesPendientes = $stats['admisionesPendientes'];
+    $mensajesSinLeer = $stats['mensajesSinLeer'];
+    $anunciosActivos = $stats['anunciosActivos'];
+} else {
+    $con = obtenerConexion();
 
-$r = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
-$totalEstudiantes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
+    $totalEstudiantes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
-$r = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado = 'PENDIENTE'");
-$admisionesPendientes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado = 'PENDIENTE'");
+    $admisionesPendientes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
-$r = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido = 0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-$mensajesSinLeer = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido = 0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
+    $mensajesSinLeer = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
 
-$r = mysqli_query($con, "SELECT COUNT(*) AS n FROM anuncios WHERE fechaExpiracion >= CURDATE()");
-$anunciosActivos = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM anuncios WHERE fechaExpiracion >= CURDATE()");
+    $anunciosActivos = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    
+    $_SESSION[$cacheKeyDash] = compact('totalEstudiantes', 'admisionesPendientes', 'mensajesSinLeer', 'anunciosActivos');
+    $_SESSION[$cacheKeyDash . '_time'] = time();
+}
 
 $eventos = listarEventosProximos();
 $proximosEventos = array_slice($eventos, 0, 5);
@@ -50,6 +62,7 @@ include __DIR__ . '/../comunes/nav.php';
             <div style="font-size:1.7rem;font-weight:700;line-height:1.1;color:var(--text);"><?= $totalEstudiantes ?></div>
         </div>
     </div>
+    <?php if (FeatureGuard::check('feature_prematricula')): ?>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
         <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--naranja,#f59e0b);flex-shrink:0;">
             <i class="fas fa-clock"></i>
@@ -59,6 +72,7 @@ include __DIR__ . '/../comunes/nav.php';
             <div style="font-size:1.7rem;font-weight:700;line-height:1.1;color:var(--text);"><?= $admisionesPendientes ?></div>
         </div>
     </div>
+    <?php endif; ?>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
         <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--rojo,#ef4444);flex-shrink:0;">
             <i class="fas fa-envelope"></i>
@@ -87,9 +101,11 @@ include __DIR__ . '/../comunes/nav.php';
             <a href="../estudiantes/verEstudiantes.php" class="boton-secundario" style="text-align:center;justify-content:center;">
                 <i class="fas fa-user-graduate"></i> Estudiantes
             </a>
+            <?php if (FeatureGuard::check('feature_prematricula')): ?>
             <a href="../admisiones/listado.php" class="boton-secundario" style="text-align:center;justify-content:center;">
                 <i class="fas fa-graduation-cap"></i> Admisiones
             </a>
+            <?php endif; ?>
             <a href="../pagos/verPagos.php" class="boton-secundario" style="text-align:center;justify-content:center;">
                 <i class="fas fa-euro-sign"></i> Pagos
             </a>

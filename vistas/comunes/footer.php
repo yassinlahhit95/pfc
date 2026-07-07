@@ -2,27 +2,34 @@
   </main>
 </div><!-- /app -->
 
-<div id="modal-borrar" class="modal-backdrop" role="dialog" aria-modal="true">
-  <div class="modal-caja">
-    <div class="modal-icono"><i class="fas fa-trash-alt"></i></div>
-    <h3 class="modal-titulo">Eliminar <span id="modal-borrar-tipo"></span></h3>
-    <p class="modal-subtitulo">Estás a punto de eliminar:</p>
-    <div class="modal-registro">
-      <i class="fas fa-tag"></i>
-      <span id="modal-borrar-nombre"></span>
-      <span id="modal-borrar-extra" class="modal-extra-badge" style="display:none"></span>
+<div id="modal-borrar" class="modal-confirm-overlay" role="dialog" aria-modal="true" style="display:none;">
+  <div class="modal-confirm-dialog">
+    <div class="modal-confirm-header">
+      <i class="fas fa-exclamation-triangle modal-confirm-icon" style="color: #ef4444;"></i>
+      <h3 id="modal-confirm-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Eliminar <span id="modal-borrar-tipo"></span></h3>
     </div>
-    <p class="modal-aviso"><i class="fas fa-exclamation-circle"></i> <span id="modal-borrar-aviso">Esta acción es permanente y no se puede deshacer.</span></p>
-    <div id="modal-password-wrap" style="display:none;margin-top:16px;">
-      <label for="modal-admin-password" class="modal-pw-label">
-        <i class="fas fa-lock"></i> Confirma tu contraseña para continuar
-      </label>
-      <input type="password" id="modal-admin-password" class="modal-pw-input"
-             placeholder="Contraseña de administrador" autocomplete="current-password">
+    <div class="modal-confirm-body">
+      <p>Estás a punto de eliminar:</p>
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin: 12px 0; color: #334155; font-weight: 600;">
+        <i class="fas fa-tag" style="margin-right: 8px; color: #64748b;"></i>
+        <span id="modal-borrar-nombre"></span>
+        <span id="modal-borrar-extra" class="modal-extra-badge" style="display:none"></span>
+      </div>
+      <p style="color: #ef4444; font-size: 0.9em; margin-bottom: 0;">
+        <i class="fas fa-exclamation-circle"></i> <span id="modal-borrar-aviso">Esta acción es permanente y no se puede deshacer.</span>
+      </p>
+      
+      <div id="modal-password-wrap" style="display:none; margin-top:16px;">
+        <label for="modal-admin-password" style="display: block; font-size: 0.9em; font-weight: 600; color: #475569; margin-bottom: 6px;">
+          <i class="fas fa-lock"></i> Confirma tu contraseña para continuar
+        </label>
+        <input type="password" id="modal-admin-password" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px;"
+               placeholder="Contraseña de administrador" autocomplete="current-password">
+      </div>
     </div>
-    <div class="modal-acciones">
-      <button id="modal-borrar-cancelar" class="boton-secundario"><i class="fas fa-times"></i> Cancelar</button>
-      <button id="modal-borrar-confirmar" class="boton-peligro"><i class="fas fa-trash"></i> Sí, eliminar</button>
+    <div class="modal-confirm-footer" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+      <button type="button" id="modal-borrar-cancelar" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: #f1f5f9; color: #475569;">Cancelar</button>
+      <button type="button" id="modal-borrar-confirmar" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: #ef4444; color: #fff;">Sí, eliminar</button>
     </div>
     <input type="hidden" name="modal_csrf" value="<?= Security::generateCSRFToken() ?>">
   </div>
@@ -42,6 +49,7 @@ $(document).ajaxError(function(event, xhr) {
 <script src="../../../public/js/filtros.js"></script>
 <script src="../../../public/js/paginacion.js"></script>
 <script src="../../../public/js/modal-borrar.js"></script>
+<script src="../../../public/js/modal-confirm.js"></script>
 <script src="../../../public/js/toast.js"></script>
 <?php
 $__err = $errores ?? null;
@@ -59,14 +67,27 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php endif; ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Disable submit on upload forms to prevent double-submit
     document.querySelectorAll('form').forEach(function(form) {
         if (!form.querySelector('input[type="file"]')) return;
         form.addEventListener('submit', function() {
             var btn = form.querySelector('[type="submit"]');
             if (!btn || btn.disabled) return;
+            
+            // Si el botón tiene 'name', creamos un input hidden para que no se pierda al hacer POST
+            if (btn.name) {
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = btn.name;
+                hidden.value = btn.value;
+                form.appendChild(hidden);
+            }
+            
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+            if (btn.tagName.toUpperCase() === 'BUTTON') {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+            } else {
+                btn.value = 'Subiendo...';
+            }
         });
     });
 

@@ -1,6 +1,20 @@
 <?php
 require_once __DIR__ . "/conectar.php";
 
+// ── Auto-migration: soft-delete columns ──────────────────────────────
+(function() {
+    $con = obtenerConexion();
+    $cols = [];
+    $r = mysqli_query($con, "SHOW COLUMNS FROM estudiantes");
+    while ($f = mysqli_fetch_assoc($r)) $cols[] = $f['Field'];
+    if (!in_array('eliminado', $cols)) {
+        mysqli_query($con, "ALTER TABLE estudiantes ADD COLUMN eliminado TINYINT(1) NOT NULL DEFAULT 0");
+    }
+    if (!in_array('fecha_eliminacion', $cols)) {
+        mysqli_query($con, "ALTER TABLE estudiantes ADD COLUMN fecha_eliminacion DATETIME NULL DEFAULT NULL");
+    }
+})();
+
 // ══════════════════════════════════════════════════════════════════════
 // CONSULTAS
 // ══════════════════════════════════════════════════════════════════════
@@ -10,6 +24,7 @@ function listarEstudiantes() {
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
             FROM estudiantes
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
+            WHERE (estudiantes.eliminado = 0 OR estudiantes.eliminado IS NULL)
             ORDER BY estudiantes.idEstudiante ASC";
     $res = mysqli_query($con, $sql);
     $rows = [];
@@ -110,11 +125,11 @@ function actualizarEstudiante($id, $nombre, $email, $tel, $fecha_nac, $dni, $fec
     return mysqli_stmt_execute($stmt);
 }
 
-function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono) {
+function actualizarPerfilEstudiante($idEstudiante, $nombre, $email, $telefono, $dni = null, $fechaNacimiento = null, $direccion = null, $ciudad = null, $codigoPostal = null) {
     $con = obtenerConexion();
-    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=? WHERE idEstudiante=?";
+    $sql = "UPDATE estudiantes SET nombreEstudiante=?, emailEstudiante=?, telefonoEstudiante=?, dniEstudiante=?, fechaNacimientoEstudiante=?, direccionEstudiante=?, ciudadEstudiante=?, codigoPostalEstudiante=? WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $telefono, $idEstudiante);
+    mysqli_stmt_bind_param($stmt, "ssssssssi", $nombre, $email, $telefono, $dni, $fechaNacimiento, $direccion, $ciudad, $codigoPostal, $idEstudiante);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -139,12 +154,40 @@ function actualizarTokenFCMEstudiante($idEstudiante, $nuevoToken) {
 // ELIMINACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function eliminarEstudiante($idEstudiante) {
+function softDeleteEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "DELETE FROM estudiantes WHERE idEstudiante = ?";
+    $sql = "UPDATE estudiantes SET eliminado=1, fecha_eliminacion=NOW() WHERE idEstudiante=?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     return mysqli_stmt_execute($stmt);
+}
+
+function restaurarEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "UPDATE estudiantes SET eliminado=0, fecha_eliminacion=NULL WHERE idEstudiante=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    return mysqli_stmt_execute($stmt);
+}
+
+function listarEstudiantesEliminados() {
+    $con = obtenerConexion();
+    $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo, ciclos.idNivel
+            FROM estudiantes
+            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
+            WHERE estudiantes.eliminado = 1
+            ORDER BY estudiantes.fecha_eliminacion DESC";
+    $res = mysqli_query($con, $sql);
+    $rows = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $rows[] = $fila;
+    }
+    return $rows;
+}
+
+// Legacy alias kept for backward compat (hard delete, used only if needed)
+function eliminarEstudiante($idEstudiante) {
+    return softDeleteEstudiante($idEstudiante);
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -201,4 +244,26 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resultado) > 0;
+}
+
+function obtenerCursosEscolaresEstudiante($idEstudiante) {
+    $con = obtenerConexion();
+    try {
+        $sql = "SELECT DISTINCT cursoEscolar FROM calificaciones_modulos WHERE idEstudiante = ? AND cursoEscolar IS NOT NULL ORDER BY cursoEscolar DESC";
+        $stmt = mysqli_prepare($con, $sql);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+            mysqli_stmt_execute($stmt);
+            $res = mysqli_stmt_get_result($stmt);
+            $lista = [];
+            while ($fila = mysqli_fetch_assoc($res)) {
+                $lista[] = $fila['cursoEscolar'];
+            }
+            if (!empty($lista)) return $lista;
+        }
+    } catch (\Throwable $e) {}
+    
+    require_once __DIR__ . '/configuracion.php';
+    $config = obtenerConfiguracion();
+    return [$config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1))];
 }

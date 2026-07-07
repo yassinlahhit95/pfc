@@ -48,7 +48,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="fila-datos">
             <div class="nombre-detalle">Archivo subido</div>
             <div class="valor-detalle">
-                <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($tfg['archivoTFG']) ?>" target="_blank" class="boton-secundario" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;">
+                <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($idEstudiante) ?>&modo=ver" target="_blank" class="boton-secundario" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;">
                     <i class="fas fa-file-pdf"></i> Ver mi TFG
                 </a>
                 <span class="texto-suave" style="display:block;">Entregado el <?= Security::escapeHtml(date('d/m/Y \a \l\a\s H:i', strtotime($tfg['fechaSubidaTFG']))) ?></span>
@@ -59,11 +59,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="nombre-detalle">Acciones</div>
             <div class="valor-detalle">
                 <div class="caja espacio-medio">
-                    <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($tfg['archivoTFG'] ) ?>" target="_blank" class="boton-secundario">DESCARGAR</a>
+                    <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($idEstudiante) ?>&modo=descarga" target="_blank" class="boton-secundario">DESCARGAR</a>
                     <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                         <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
-                        <input type="submit" name="borrarTFG" class="boton-secundario color-error" value="ELIMINAR" onclick="return confirm('¿Estás seguro de que deseas eliminar tu TFG? Esta acción no se puede deshacer.')">
+                        <input type="submit" name="borrarTFG" class="boton-secundario color-error" value="ELIMINAR" data-reload="true" data-ajax-confirm="¿Estás seguro de que deseas eliminar tu TFG? Esta acción no se puede deshacer.">
                     </form>
                 </div>
             </div>

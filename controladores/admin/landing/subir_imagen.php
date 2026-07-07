@@ -17,17 +17,25 @@ if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
 }
 
 $file = $_FILES['imagen'];
-if ($file['size'] > 2 * 1024 * 1024) {
+if ($file['size'] > 30 * 1024 * 1024) {
     ob_clean();
-    echo json_encode(['ok' => false, 'msg' => 'La imagen supera el máximo de 2 MB.']);
+    echo json_encode(['ok' => false, 'msg' => 'El archivo supera el máximo de 30 MB.']);
     exit;
 }
 
-$mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+$mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'video/mp4' => 'mp4'];
 $mime = mime_content_type($file['tmp_name']);
+
+if (!isset($mimeExtMap[$mime])) {
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if ($ext === 'mp4' && in_array($mime, ['application/octet-stream', 'video/quicktime', 'application/mp4', 'video/x-m4v'])) {
+        $mime = 'video/mp4';
+    }
+}
+
 if (!isset($mimeExtMap[$mime])) {
     ob_clean();
-    echo json_encode(['ok' => false, 'msg' => 'Formato no permitido. Usa JPG, PNG o WebP.']);
+    echo json_encode(['ok' => false, 'msg' => 'Formato no permitido. Usa JPG, PNG, WebP o MP4.']);
     exit;
 }
 

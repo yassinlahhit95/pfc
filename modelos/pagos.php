@@ -103,10 +103,14 @@ function contarPagosEstudiante($idEstudiante) {
 // ══════════════════════════════════════════════════════════════════════
 
 function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo) {
+    require_once __DIR__ . '/configuracion.php';
+    $config = obtenerConfiguracion();
+    $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+
     $con = obtenerConexion();
-    $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO pagos (idEstudiante, cursoEscolar, monto, tipoPago, fechaPago, fechaProximoPago) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "idsss", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo);
+    mysqli_stmt_bind_param($stmt, "isdsss", $idEstudiante, $cursoEscolar, $monto, $tipoPago, $fechaPago, $fechaProximo);
     return mysqli_stmt_execute($stmt);
 }
 

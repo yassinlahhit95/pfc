@@ -39,23 +39,104 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
   </defs>
 </svg>
 
+<!-- Overlay de fondo para el drawer móvil -->
+<div class="legal-nav-overlay" id="legal-nav-overlay" aria-hidden="true"></div>
+
 <header class="legal-topbar">
     <div class="legal-topbar-inner">
         <a href="/" class="legal-brand">
             <svg class="legal-brand-logo" viewBox="0 0 40 40"><use href="#ap-logo"/></svg>
             Aula<b>Pro</b>
         </a>
+        
+        <!-- Desktop Nav links -->
         <nav class="legal-nav-links">
             <a href="/vistas/legal/aviso-legal.php"<?= ($legal_pagina ?? '') === 'aviso-legal' ? ' class="activo"' : '' ?>>Aviso Legal</a>
             <a href="/vistas/legal/politica-de-privacidad.php"<?= ($legal_pagina ?? '') === 'privacidad' ? ' class="activo"' : '' ?>>Privacidad</a>
             <a href="/vistas/legal/politica-de-cookies.php"<?= ($legal_pagina ?? '') === 'cookies' ? ' class="activo"' : '' ?>>Cookies</a>
             <a href="/vistas/legal/politica-de-gestion.php"<?= ($legal_pagina ?? '') === 'gestion' ? ' class="activo"' : '' ?>>Política de Gestión</a>
         </nav>
+        
+        <!-- Desktop CTAs + Burger Button -->
         <div class="legal-nav-cta">
             <a class="legal-access" href="/vistas/login.php">Acceso</a>
             <?php if ($is_prematricula_enabled): ?>
             <a class="legal-btn-primary" href="/vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
             <?php endif; ?>
+            
+            <!-- Burger (visible only on mobile) -->
+            <button class="legal-nav-burger" id="legal-nav-burger" aria-label="Abrir menú" aria-expanded="false">
+                <span class="legal-nav-burger-line"></span>
+                <span class="legal-nav-burger-line"></span>
+                <span class="legal-nav-burger-line"></span>
+            </button>
         </div>
     </div>
 </header>
+
+<!-- Mobile slide-over drawer -->
+<nav class="legal-nav-movil" id="legal-nav-movil" aria-label="Menú móvil" aria-hidden="true">
+    <div class="legal-nav-movil-header">
+        <a href="/" class="legal-brand">
+            <svg class="legal-brand-logo" viewBox="0 0 40 40"><use href="#ap-logo"/></svg>
+            Aula<b>Pro</b>
+        </a>
+        <button class="legal-nav-movil-close" id="legal-nav-close" aria-label="Cerrar menú">
+            <i class="fas fa-xmark"></i>
+        </button>
+    </div>
+    
+    <div class="legal-nav-movil-links">
+        <a href="/vistas/legal/aviso-legal.php"<?= ($legal_pagina ?? '') === 'aviso-legal' ? ' class="activo"' : '' ?>><i class="fas fa-scale-balanced"></i> Aviso Legal</a>
+        <a href="/vistas/legal/politica-de-privacidad.php"<?= ($legal_pagina ?? '') === 'privacidad' ? ' class="activo"' : '' ?>><i class="fas fa-user-shield"></i> Privacidad</a>
+        <a href="/vistas/legal/politica-de-cookies.php"<?= ($legal_pagina ?? '') === 'cookies' ? ' class="activo"' : '' ?>><i class="fas fa-cookie-bite"></i> Cookies</a>
+        <a href="/vistas/legal/politica-de-gestion.php"<?= ($legal_pagina ?? '') === 'gestion' ? ' class="activo"' : '' ?>><i class="fas fa-briefcase"></i> Política de Gestión</a>
+    </div>
+    
+    <div class="legal-nav-movil-ctas">
+        <a href="/vistas/login.php" class="legal-access-btn"><i class="fas fa-sign-in-alt"></i> Acceso Plataforma</a>
+        <?php if ($is_prematricula_enabled): ?>
+        <a href="/vistas/admisiones/pre-matricula.php" class="legal-btn-primary"><i class="fas fa-file-signature"></i> Pre-matrícula online</a>
+        <?php endif; ?>
+    </div>
+</nav>
+
+<script>
+(function() {
+    var burger = document.getElementById('legal-nav-burger');
+    var drawer = document.getElementById('legal-nav-movil');
+    var overlay = document.getElementById('legal-nav-overlay');
+    var closeBtn = document.getElementById('legal-nav-close');
+    var isOpen = false;
+
+    if (!burger || !drawer || !overlay || !closeBtn) return;
+
+    function openMenu() {
+        isOpen = true;
+        drawer.classList.add('abierto');
+        overlay.classList.add('visible');
+        burger.classList.add('activo');
+        burger.setAttribute('aria-expanded', 'true');
+        drawer.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        isOpen = false;
+        drawer.classList.remove('abierto');
+        overlay.classList.remove('visible');
+        burger.classList.remove('activo');
+        burger.setAttribute('aria-expanded', 'false');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    burger.addEventListener('click', function() { isOpen ? closeMenu() : openMenu(); });
+    overlay.addEventListener('click', closeMenu);
+    closeBtn.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+})();
+</script>

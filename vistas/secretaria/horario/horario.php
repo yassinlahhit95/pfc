@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
 FeatureGuard::requirePage('feature_horario');
@@ -77,7 +77,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </select>
     </form>
     <?php if ($idCicloHorario) { ?>
-    <form method="POST" action="../../../controladores/secretaria/informes/generarHorario.php" target="_blank" style="display:inline;">
+    <form method="POST" action="../../../controladores/admin/informes/generarHorario.php" target="_blank" style="display:inline;">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idCiclo"    value="<?= (int)$idCicloHorario ?>">
         <button type="submit" class="btn-exportar-horario">
@@ -190,7 +190,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 window.HORARIO_AULAS     = <?= json_encode($aulasParaJs, JSON_UNESCAPED_UNICODE) ?>;
 window.HORARIO_END_SLOTS = <?= json_encode($endSlots) ?>;
-window.HORARIO_CTRL_BASE = '../../../controladores/secretaria/horario/';
 </script>
 <script src="../../../public/js/horario.js?v=<?= @filemtime(__DIR__."/../../../public/js/horario.js") ?>"></script>
-<?php include __DIR__ . '/../comunes/footer.php'; ?>
+<?php include '../comunes/footer.php'; ?>

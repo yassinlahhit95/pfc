@@ -100,14 +100,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= Security::escapeHtml($sesion['enlaceReunion']) ?>')">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <a href="../../../controladores/aula/enviar_sesion_brevo.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Enviar a estudiantes del ciclo" onclick="return confirm('¿Enviar el enlace de esta sesión a todos los estudiantes del ciclo?')">
+                        <a href="../../../controladores/aula/enviar_sesion_brevo.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Enviar a estudiantes del ciclo" data-ajax-confirm="¿Enviar el enlace de esta sesión a todos los estudiantes del ciclo?">
                             <i class="fas fa-envelope"></i>
                         </a>
                         <a href="editar.php?id=<?= Security::escapeHtml($sesion['idSesion']) ?>" class="boton-secundario btn-pequeno" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form method="POST" action="../../../controladores/aula/borrar_sesion.php"
-                              onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta sesión?')" style="display:inline;margin:0;">
+                              data-ajax-confirm="¿Estás seguro de que deseas eliminar esta sesión?" style="display:inline;margin:0;">
                             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                             <input type="hidden" name="id" value="<?= Security::escapeHtml($sesion['idSesion']) ?>">
                             <button type="submit" class="boton-peligro btn-pequeno" title="Eliminar">

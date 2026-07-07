@@ -66,23 +66,33 @@ if (!$gastoActual) {
 
 // ── File upload (optional replacement) ─────────────────────────────
 $nombreArchivo = $gastoActual['archivoJustificante'];
-if (!empty($_FILES['archivoJustificante']['name'])) {
-    $archivo = $_FILES['archivoJustificante'];
+$nombresArchivos = [];
+if (!empty($_FILES['archivoJustificante']['name'][0])) {
+    $archivos = $_FILES['archivoJustificante'];
+    $totalArchivos = count($archivos['name']);
+    
+    for ($i = 0; $i < $totalArchivos; $i++) {
+        if ($archivos['error'][$i] !== UPLOAD_ERR_OK) {
+            if ($archivos['error'][$i] !== UPLOAD_ERR_NO_FILE) {
+                $errores[] = "Error al subir el archivo {$archivos['name'][$i]} (código: {$archivos['error'][$i]}).";
+            }
+            continue;
+        }
+        
+        if ($archivos['size'][$i] > 8 * 1024 * 1024) {
+            $errores[] = "El archivo {$archivos['name'][$i]} supera el límite de 8 MB.";
+            continue;
+        }
 
-    if ($archivo['error'] !== UPLOAD_ERR_OK) {
-        $errores[] = "Error al subir el archivo (código: {$archivo['error']}).";
-    } elseif ($archivo['size'] > 8 * 1024 * 1024) {
-        $errores[] = "El archivo supera el límite de 8 MB.";
-    } else {
         $mimePermitidos = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime  = finfo_file($finfo, $archivo['tmp_name']);
+        $mime  = finfo_file($finfo, $archivos['tmp_name'][$i]);
         finfo_close($finfo);
 
         if (!in_array($mime, $mimePermitidos, true)) {
-            $errores[] = "Tipo de archivo no permitido. Acepta: PDF, JPG, PNG, WebP.";
+            $errores[] = "Tipo de archivo no permitido para {$archivos['name'][$i]}. Acepta: PDF, JPG, PNG, WebP.";
         } else {
-            $ext         = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivo['name'], PATHINFO_EXTENSION);
+            $ext         = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
             $ext         = preg_replace('/[^a-z0-9]/', '', strtolower($ext));
             $nuevoNombre = bin2hex(random_bytes(16)) . '.' . $ext;
             $directorio  = __DIR__ . "/../../../public/uploads/justificantes/";
@@ -91,15 +101,27 @@ if (!empty($_FILES['archivoJustificante']['name'])) {
                 mkdir($directorio, 0755, true);
             }
 
-            if (move_uploaded_file($archivo['tmp_name'], $directorio . $nuevoNombre)) {
-                if ($nombreArchivo && file_exists($directorio . $nombreArchivo)) {
-                    @unlink($directorio . $nombreArchivo);
-                }
-                $nombreArchivo = $nuevoNombre;
+            if (move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nuevoNombre)) {
+                $nombresArchivos[] = $nuevoNombre;
             } else {
-                $errores[] = "No se pudo guardar el archivo en el servidor.";
+                $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";
             }
         }
+    }
+    
+    // If we successfully uploaded new files, replace the old ones
+    if (!empty($nombresArchivos) && empty($errores)) {
+        if ($nombreArchivo) {
+            $viejos = json_decode($nombreArchivo, true);
+            if (is_array($viejos)) {
+                foreach ($viejos as $v) {
+                    if (file_exists($directorio . $v)) { @unlink($directorio . $v); }
+                }
+            } else {
+                if (file_exists($directorio . $nombreArchivo)) { @unlink($directorio . $nombreArchivo); }
+            }
+        }
+        $nombreArchivo = json_encode($nombresArchivos);
     }
 }
 

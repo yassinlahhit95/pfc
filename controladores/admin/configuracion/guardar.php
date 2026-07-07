@@ -4,6 +4,11 @@ require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
+    if (isset($_POST['onboarding'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+        exit;
+    }
     $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
     header("Location: ../../../vistas/admin/configuracion/configuracion.php");
     exit;
@@ -30,6 +35,11 @@ if (!empty($datos['telefonoCentro']) && !Security::validatePhone($datos['telefon
 }
 
 if (!empty($errores)) {
+    if (isset($_POST['onboarding'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => implode(', ', $errores)]);
+        exit;
+    }
     $_SESSION['errores']             = $errores;
     $_SESSION['datos_configuracion'] = $_POST;
     header("Location: ../../../vistas/admin/configuracion/configuracion.php");
@@ -60,12 +70,22 @@ foreach ($logoFields as $field) {
     if (!isset($mimeExtMap[$mime])) continue;
     $ext      = $mimeExtMap[$mime];
     $filename = $field . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+    
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    
     if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
         actualizarLogoCentro($field, $filename);
     }
 }
 
 registrarAccion('actualizar', 'configuracion', null, 'Configuración del centro guardada');
+if (isset($_POST['onboarding'])) {
+    header('Content-Type: application/json');
+    echo json_encode(['ok' => true, 'msg' => 'Configuración guardada correctamente.']);
+    exit;
+}
 $_SESSION['exito'] = "Configuración guardada correctamente.";
 header("Location: ../../../vistas/admin/configuracion/configuracion.php");
 exit;

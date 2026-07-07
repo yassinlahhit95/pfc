@@ -22,7 +22,10 @@ require_once __DIR__ . "/../../include/Logger.php";
 $idProfesor = $_SESSION['idProfesor'];
 $idSesion = (int)($_GET['id'] ?? 0);
 
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
 if (!$idSesion) {
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'ID de sesión no válido']); exit; }
     $_SESSION['errores'] = 'ID de sesión no válido.';
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
@@ -31,6 +34,7 @@ if (!$idSesion) {
 $sesion = obtenerSesionPorId($idSesion);
 
 if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'No tienes permiso']); exit; }
     $_SESSION['errores'] = 'No tienes permiso para enviar esta sesión.';
     Logger::warning('Intento no autorizado de enviar sesión', ['profesor' => $idProfesor, 'sesion' => $idSesion]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
@@ -39,6 +43,7 @@ if (!$sesion || $sesion['idProfesor'] != $idProfesor) {
 
 $modulo = obtenerModuloPorId($sesion['idModulo']);
 if (!$modulo) {
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'No se encontró el módulo']); exit; }
     $_SESSION['errores'] = 'No se encontró el módulo asociado.';
     Logger::error('Módulo no encontrado', ['modulo' => $sesion['idModulo']]);
     header("Location: ../../vistas/profesores/aula/sesiones.php");
@@ -49,6 +54,7 @@ $idCiclo = $modulo['idCiclo'];
 $estudiantes = listarEstudiantesPorCiclo($idCiclo);
 
 if (empty($estudiantes)) {
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>'No hay estudiantes en este ciclo']); exit; }
     $_SESSION['errores'] = 'No hay estudiantes en este ciclo.';
     header("Location: ../../vistas/profesores/aula/sesiones.php");
     exit;
@@ -167,20 +173,27 @@ Logger::activity('SESION_ENVIADA', $idProfesor, [
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
 if ($enviados > 0) {
-    $_SESSION['exito'] = "✅ Sesión enviada a $enviados estudiante" . ($enviados != 1 ? 's' : '');
+    $msg = "✅ Sesión enviada a $enviados estudiante" . ($enviados != 1 ? 's' : '');
     if (!empty($errores)) {
-        $_SESSION['exito'] .= " ⚠️ Error con: " . implode(', ', $errores);
+        $msg .= " ⚠️ Error con: " . implode(', ', $errores);
     }
     if (!empty($emailsInvalidos)) {
-        $_SESSION['exito'] .= " ℹ️ Sin email: " . implode(', ', $emailsInvalidos);
+        $msg .= " ℹ️ Sin email: " . implode(', ', $emailsInvalidos);
     }
+    
+    if ($isAjax) { echo json_encode(['ok'=>true,'msg'=>$msg]); exit; }
+    $_SESSION['exito'] = $msg;
 } else {
     if (!empty($emailsInvalidos)) {
-        $_SESSION['errores'] = 'Los estudiantes de este ciclo no tienen email registrado.';
+        $msg = 'Los estudiantes de este ciclo no tienen email registrado.';
     } else {
-        $_SESSION['errores'] = 'Error al enviar los correos. Inténtalo de nuevo o contacta con soporte.';
+        $msg = 'Error al enviar los correos. Inténtalo de nuevo o contacta con soporte.';
     }
+    if ($isAjax) { echo json_encode(['ok'=>false,'msg'=>$msg]); exit; }
+    $_SESSION['errores'] = $msg;
 }
 
 header("Location: ../../vistas/profesores/aula/sesiones.php");

@@ -11,6 +11,23 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $idDeEsteEstudiante = $_SESSION['idEstudiante'];
 $listaMisPagos = listarPagosPorEstudiante($idDeEsteEstudiante);
+// Extraer cursos escolares distintos
+$cursosDisponibles = [];
+foreach ($listaMisPagos as $pago) {
+    $c = $pago['cursoEscolar'] ?? 'Desconocido';
+    if (!in_array($c, $cursosDisponibles)) $cursosDisponibles[] = $c;
+}
+if (empty($cursosDisponibles)) {
+    require_once __DIR__ . '/../../../modelos/configuracion.php';
+    $config = obtenerConfiguracion();
+    $cursosDisponibles[] = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
+}
+$cursoSeleccionado = $_GET['cursoEscolar'] ?? $cursosDisponibles[0];
+
+// Filtrar pagos por curso seleccionado
+$pagosFiltrados = array_filter($listaMisPagos, function($p) use ($cursoSeleccionado) {
+    return ($p['cursoEscolar'] ?? 'Desconocido') === $cursoSeleccionado;
+});
 $datosEstadoFinanciero = obtenerEstadoFinancieroEstudiante($idDeEsteEstudiante);
 
 $tituloDelPagina = "AULAPRO | MIS PAGOS";
@@ -18,9 +35,21 @@ $seccionActual = 'pagos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="cabecera">
-    <h1>MIS PAGOS</h1>
-    <p class="subtitulo">Consulta tu historial de pagos y estado financiero</p>
+<div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-end;">
+    <div>
+        <h1>MIS PAGOS</h1>
+        <p class="subtitulo">Consulta tu historial de pagos y estado financiero</p>
+    </div>
+    <div class="filtro-curso">
+        <form action="" method="GET" style="display:flex; align-items:center; gap:10px;">
+            <label for="cursoEscolar" style="font-weight:600; color:var(--text-color);">Curso Escolar:</label>
+            <select name="cursoEscolar" id="cursoEscolar" onchange="this.form.submit()" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border-2); background:var(--bg-card); color:var(--text-color); outline:none;">
+                <?php foreach ($cursosDisponibles as $curso) { ?>
+                    <option value="<?= Security::escapeHtml($curso) ?>" <?= $curso === $cursoSeleccionado ? 'selected' : '' ?>><?= Security::escapeHtml($curso) ?></option>
+                <?php } ?>
+            </select>
+        </form>
+    </div>
 </div>
 
 
@@ -61,12 +90,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($listaMisPagos)) { ?>
+                <?php if (empty($pagosFiltrados)) { ?>
                     <tr>
-                        <td colspan="4" class="vacio">No hay pagos registrados en su historial.</td>
+                        <td colspan="4" class="vacio">No hay pagos registrados en su historial para este curso.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaMisPagos as $pagoIndividual) { ?>
+                    <?php foreach ($pagosFiltrados as $pagoIndividual) { ?>
                     <tr>
                         <td><?= Security::escapeHtml(date('d/m/Y', strtotime($pagoIndividual['fechaPago']))) ?></td>
                         <td>

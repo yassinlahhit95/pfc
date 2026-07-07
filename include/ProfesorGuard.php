@@ -22,7 +22,7 @@ if (!empty($_SESSION['must_change_password'])) {
         echo json_encode(['ok' => false, 'msg' => 'Debes cambiar tu contraseña antes de continuar.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/cambiar_password.php');
     exit;
 }
 

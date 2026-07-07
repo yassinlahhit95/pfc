@@ -120,6 +120,16 @@ function _nav_active_tutor($check) {
         </button>
       </div>
     </header>
+
+    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
+        require_once __DIR__ . "/../../../modelos/chat.php";
+        $cw_rol = 'tutor';
+        $cw_id = (int)$_SESSION['idTutor'];
+        $cw_unreadCount = (int)chatContarNoLeidos('tutor', $cw_id);
+        $cw_basePath = '../../../';
+        include __DIR__ . '/../../comunes/chat_widget.php';
+    endif; ?>
+
     <div class="content">
       <?php 
           $configFB = Config::getInstance();

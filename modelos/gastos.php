@@ -150,8 +150,17 @@ function borrarGasto($idGasto) {
     mysqli_stmt_bind_param($stmt2, "i", $idGasto);
     if (mysqli_stmt_execute($stmt2)) {
         if ($archivo) {
-            $ruta = __DIR__ . "/../public/uploads/justificantes/" . $archivo;
-            if (file_exists($ruta)) { @unlink($ruta); }
+            $archivos = json_decode($archivo, true);
+            if (is_array($archivos)) {
+                foreach ($archivos as $a) {
+                    $ruta = __DIR__ . "/../public/uploads/justificantes/" . $a;
+                    if (file_exists($ruta)) { @unlink($ruta); }
+                }
+            } else {
+                // Backward compatibility
+                $ruta = __DIR__ . "/../public/uploads/justificantes/" . $archivo;
+                if (file_exists($ruta)) { @unlink($ruta); }
+            }
         }
         return true;
     }

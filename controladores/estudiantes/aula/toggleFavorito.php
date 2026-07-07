@@ -29,7 +29,7 @@ function responderFavorito($esAjax, $ok, $destino, $extra = []) {
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 $idEstudiante = $_SESSION['idEstudiante'];
-$idArchivo    = intval($_POST['idArchivo'] ?? 0);
+$idArchivo    = intval($_POST['idArchivo'] ?? $_POST['id'] ?? 0);
 $origen       = $_POST['origen'] ?? 'recursos';  // recursos | favoritos
 $idModulo     = intval($_POST['idModulo'] ?? 0);
 $carpeta      = intval($_POST['carpeta'] ?? 0);

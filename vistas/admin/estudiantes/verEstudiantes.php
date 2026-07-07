@@ -91,6 +91,14 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                 <?php } ?>
             </select>
         </div>
+        <div class="campo relleno">
+            <label for="selectFiltroAnio">FILTRAR POR AÑO:</label>
+            <select id="selectFiltroAnio" onchange="aplicarFiltrosEstudiantes()">
+                <option value="">-- Todos los Años --</option>
+                <option value="1º">1º Año</option>
+                <option value="2º">2º Año</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -104,17 +112,18 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                     <th>NOMBRE COMPLETO</th>
                     <th>CORREO ELECTRÓNICO</th>
                     <th>CICLO ASIGNADO</th>
+                    <th>AÑO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($listaDeEstudiantesActuales)) { ?>
                     <tr>
-                        <td colspan="6" class="vacio">No hay estudiantes registrados en el sistema.</td>
+                        <td colspan="7" class="vacio">No hay estudiantes registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeEstudiantesActuales as $estudianteIndividual) { ?>
-                    <tr class="fila-nivel-<?= (int)($estudianteIndividual['idNivel'] ?? 0) ?>">
+                    <tr class="fila-nivel-<?= (int)($estudianteIndividual['idNivel'] ?? 0) ?>" data-anio="<?= Security::escapeHtml($estudianteIndividual['anioEstudio'] ?? '') ?>">
                         <td><?= Security::escapeHtml($estudianteIndividual['idEstudiante']) ?></td>
                         <td>
                             <span class="texto-estado <?= $estudianteIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $estudianteIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
@@ -122,6 +131,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                         <td><b><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>
                         <td><?= strtoupper(Security::escapeHtml($estudianteIndividual['nombreCiclo'])) ?></td>
+                        <td><?= Security::escapeHtml($estudianteIndividual['anioEstudio'] ?? '-') ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
@@ -153,13 +163,18 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
 function aplicarFiltrosEstudiantes() {
     var idNivel = $('#selectFiltroNivel').val();
     var textoCiclo = $('#selectFiltroCiclo').val().toLowerCase();
+    var textoAnio = $('#selectFiltroAnio').val();
 
     $('#tablaEstudiantes tbody tr').each(function() {
         var $fila = $(this);
+        if ($fila.find('.vacio').length > 0) return; // Ignore empty state row
+        
         var pasaNivel = idNivel === '' || $fila.hasClass('fila-nivel-' + idNivel);
         var textoCelda = $fila.find('td').eq(4).text().toLowerCase();
         var pasaCiclo = textoCiclo === '' || textoCelda.indexOf(textoCiclo) !== -1;
-        if (pasaNivel && pasaCiclo) {
+        var pasaAnio = textoAnio === '' || $fila.data('anio') === textoAnio;
+
+        if (pasaNivel && pasaCiclo && pasaAnio) {
             $fila.removeClass('fila-filtro-oculta');
         } else {
             $fila.addClass('fila-filtro-oculta');

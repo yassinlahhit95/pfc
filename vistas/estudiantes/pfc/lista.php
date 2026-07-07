@@ -32,7 +32,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div style="margin-top: 5px;">
                 <?php if (!empty($tfg['archivoTFG'])) { ?>
                     <div class="caja alinear-centro espacio-grande">
-                        <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($tfg['archivoTFG'] ) ?>" target="_blank" class="boton-secundario">
+                        <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="boton-secundario">
                             <i class="fas fa-download"></i> Descargar TFG (PDF)
                         </a>
                         <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
@@ -64,6 +64,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
 
 
 

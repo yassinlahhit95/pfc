@@ -64,7 +64,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
-            <form action="../../../controladores/admin/academico/enviarNotasMasivo.php" method="POST">
+            <form action="../../../controladores/profesores/academico/enviarNotasMasivo.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo_elegido) ?>">
                 <input type="submit" class="boton-primario" value="NOTIFICAR A TODOS">

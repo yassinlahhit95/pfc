@@ -25,6 +25,7 @@ if (!file_exists($_vendor)) {
 
 require_once $_vendor;
 require_once __DIR__ . '/../../../config/Config.php';
+require_once __DIR__ . '/../../../modelos/conectar.php';
 require_once __DIR__ . '/../../../include/ReportService.php';
 require_once __DIR__ . '/../../../modelos/calificaciones.php';
 require_once __DIR__ . '/../../../modelos/ciclos.php';

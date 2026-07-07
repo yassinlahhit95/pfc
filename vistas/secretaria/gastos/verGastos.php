@@ -31,7 +31,14 @@ include __DIR__ . '/../comunes/nav.php';
         <h1>GASTOS DEL CENTRO</h1>
         <p class="subtitulo-encabezado">Seguimiento de gastos y presupuesto anual</p>
     </div>
-    <a href="agregarGasto.php" class="boton-primario"><i class="fas fa-plus"></i> Nuevo Gasto</a>
+    <div class="acciones-pagina">
+        <a href="categorias.php" class="boton-secundario">
+            <i class="fas fa-tags"></i> Categorías
+        </a>
+        <a href="agregarGasto.php" class="boton-primario">
+            <i class="fas fa-plus"></i> Nuevo Gasto
+        </a>
+    </div>
 </div>
 
 <!-- ── KPI cards ── -->
@@ -204,12 +211,22 @@ include __DIR__ . '/../comunes/nav.php';
                     </td>
                     <td><b><?= number_format((float)$g['importe'], 2, ',', '.') ?> €</b></td>
                     <td>
-                        <?php if (!empty($g['archivoJustificante'])): ?>
-                            <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($g['archivoJustificante']) ?>"
-                               target="_blank" rel="noopener" class="boton-secundario boton-pequeno">
-                                <i class="fas fa-file-alt"></i> Ver
-                            </a>
-                        <?php else: ?>
+                        <?php if (!empty($g['archivoJustificante'])): 
+                            $archivos = json_decode($g['archivoJustificante'], true);
+                            if (is_array($archivos)):
+                                foreach ($archivos as $i => $arch): ?>
+                                    <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($arch) ?>"
+                                       target="_blank" rel="noopener" class="boton-secundario boton-pequeno" style="margin-bottom:2px; display:inline-block;">
+                                        <i class="fas fa-file-alt"></i> Ver <?= count($archivos)>1 ? ($i+1) : '' ?>
+                                    </a>
+                                <?php endforeach;
+                            else: ?>
+                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($g['archivoJustificante']) ?>"
+                                   target="_blank" rel="noopener" class="boton-secundario boton-pequeno">
+                                    <i class="fas fa-file-alt"></i> Ver
+                                </a>
+                            <?php endif;
+                        else: ?>
                             <span class="texto-suave">Sin archivo</span>
                         <?php endif; ?>
                     </td>
@@ -226,7 +243,7 @@ include __DIR__ . '/../comunes/nav.php';
                                    data-id="<?= (int)$g['idGasto'] ?>"
                                    data-tipo="Gasto"
                                    data-nombre="<?= Security::escapeHtml($g['concepto']) ?>"
-                                   data-url="/controladores/admin/gastos/borrar.php"
+                                   data-url="/controladores/secretaria/gastos/borrar.php"
                                    data-campo="idGasto"
                                    data-aviso="Se eliminará el gasto y su justificante adjunto.">
                                     <i class="fas fa-trash"></i> Eliminar

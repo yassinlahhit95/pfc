@@ -35,7 +35,7 @@ function botonesPapelera($tipo, $id, $idModulo) {
       <input type="hidden" name="id" value="'.$id.'"><input type="hidden" name="idModulo" value="'.$idModulo.'">
       <button class="recurso-btn-ico" title="Restaurar"><i class="fas fa-rotate-left"></i></button>
     </form>
-    <form method="POST" action="'.$c.'" style="display:inline" onsubmit="return confirm(\'Eliminar definitivamente. Esta acción no se puede deshacer. ¿Continuar?\')">
+    <form method="POST" action="'.$c.'" style="display:inline" data-ajax-confirm="Eliminar definitivamente. Esta acción no se puede deshacer. ¿Continuar?">
       <input type="hidden" name="csrf_token" value="'.$token.'">
       <input type="hidden" name="accion" value="eliminar"><input type="hidden" name="tipo" value="'.$tipo.'">
       <input type="hidden" name="id" value="'.$id.'"><input type="hidden" name="idModulo" value="'.$idModulo.'">

@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="GET" action="calificacionesTFG.php" class="caja alinear-centro espacio-grande caja-libre">
         <div class="campo relleno">
             <label>Filtrar por Nivel:</label>
-            <select name="idNivel" onchange="this.form.submit()">
+            <select name="idNivel" onchange="document.getElementById('selectCicloTFG').value=''; this.form.submit()">
                 <option value="">-- Todos los Niveles --</option>
                 <?php foreach ($listaNiveles as $n) { ?>
                     <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
@@ -104,7 +104,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <?php if (!empty($item['archivoTFG'])) { ?>
-                                <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($item['archivoTFG']) ?>" target="_blank" class="btn-accion btn-ver">
+                                <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($item['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="btn-accion btn-ver">
                                     <i class="fas fa-file-pdf"></i> Descargar
                                 </a>
                             <?php } else { ?>
@@ -135,3 +135,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <?php include '../comunes/footer.php'; ?>
+

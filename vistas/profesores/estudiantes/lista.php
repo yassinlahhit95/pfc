@@ -32,16 +32,25 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 
-<div class="panel margen-abajo">
-    <div class="campo">
+<div class="panel margen-abajo" style="display:flex; gap:20px; flex-wrap:wrap;">
+    <div class="campo" style="flex:1; min-width:200px;">
         <label for="selectFiltroCicloProf">FILTRAR POR CICLO:</label>
-        <select id="selectFiltroCicloProf" onchange="filtrarTabla('selectFiltroCicloProf', 'tablaEstudiantesProf')">
+        <select id="selectFiltroCicloProf" onchange="aplicarFiltrosProf()">
             <option value="">-- Todos los Ciclos --</option>
             <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
                 <option value="<?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>">
                     <?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>
                 </option>
             <?php } ?>
+        </select>
+    </div>
+    
+    <div class="campo" style="flex:1; min-width:200px;">
+        <label for="selectFiltroAnioProf">FILTRAR POR AÑO:</label>
+        <select id="selectFiltroAnioProf" onchange="aplicarFiltrosProf()">
+            <option value="">-- Todos los Años --</option>
+            <option value="1º">1º Año</option>
+            <option value="2º">2º Año</option>
         </select>
     </div>
 </div>
@@ -56,6 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Nombre</th>
                     <th>Email</th>
                     <th>DNI</th>
+                    <th>Año</th>
                     <th>Ciclo</th>
                     <th style="text-align:right;width:60px;"></th>
                 </tr>
@@ -72,6 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <td class="texto-negrita"><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
                             <td><?= Security::escapeHtml($est['emailEstudiante']) ?></td>
                             <td><?= Security::escapeHtml($est['dniEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($est['anioEstudio'] ?? '') ?></td>
                             <td><?= Security::escapeHtml($est['nombreCiclo']) ?></td>
                             <td style="text-align:right;">
                                 <div class="recurso-menu-wrap">
@@ -94,7 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php } ?>
                 <?php } else { ?>
                     <tr>
-                        <td colspan="6" class="vacio">No hay estudiantes registrados.</td>
+                        <td colspan="7" class="vacio">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -105,4 +116,33 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 iniciarPaginacion('tablaEstudiantesProf', 15);
+
+function aplicarFiltrosProf() {
+    let inputCiclo = document.getElementById("selectFiltroCicloProf").value.toUpperCase();
+    let inputAnio = document.getElementById("selectFiltroAnioProf").value.toUpperCase();
+    
+    let table = document.getElementById("tablaEstudiantesProf");
+    let tr = table.getElementsByTagName("tr");
+    
+    let rowsMostrados = 0;
+    
+    for (let i = 1; i < tr.length; i++) {
+        let tdCiclo = tr[i].getElementsByTagName("td")[5]; // Index 5 is Ciclo now
+        let tdAnio = tr[i].getElementsByTagName("td")[4];  // Index 4 is Año now
+        if (tdCiclo && tdAnio) {
+            let txtCiclo = tdCiclo.textContent || tdCiclo.innerText;
+            let txtAnio = tdAnio.textContent || tdAnio.innerText;
+            
+            let matchCiclo = (inputCiclo === "" || txtCiclo.toUpperCase().indexOf(inputCiclo) > -1);
+            let matchAnio = (inputAnio === "" || txtAnio.toUpperCase().indexOf(inputAnio) > -1);
+            
+            if (matchCiclo && matchAnio) {
+                tr[i].style.display = "";
+                rowsMostrados++;
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
 </script>

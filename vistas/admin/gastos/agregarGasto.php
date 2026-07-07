@@ -91,12 +91,18 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Justificante <span class="texto-suave">(PDF o imagen, máx. 8 MB)</span></label>
             <label class="zona-subida" for="archivoJustificante">
                 <i class="fas fa-file-upload"></i>
-                <span>Adjuntar factura, ticket o recibo</span>
-                <small>PDF, JPG, PNG — opcional</small>
-                <input type="file" name="archivoJustificante" id="archivoJustificante"
-                       accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none">
+                <span>Adjuntar facturas, tickets o recibos</span>
+                <small>PDF, JPG, PNG — puedes seleccionar varios</small>
+                <input type="file" name="archivoJustificante[]" id="archivoJustificante"
+                       accept=".pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none">
             </label>
-            <small id="archivo-seleccionado" class="texto-suave"></small>
+            <ul id="lista-archivos" style="list-style: none; padding: 0; margin: 10px 0; font-size: 0.9em; color: var(--text-mut);"></ul>
+            <div id="upload-progress-container" style="display: none; margin-top: 10px;">
+                <div style="background: #e2e8f0; border-radius: 4px; overflow: hidden; height: 8px;">
+                    <div id="upload-progress-bar" style="background: var(--primary); width: 0%; height: 100%; transition: width 0.2s ease;"></div>
+                </div>
+                <small id="upload-progress-text" style="color: var(--text-mut); display: block; margin-top: 4px; text-align: center;">0%</small>
+            </div>
         </div>
 
         <div class="campo campo-ancho-total">
@@ -117,18 +123,35 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include '../comunes/footer.php'; ?>
 <script>
 document.getElementById('archivoJustificante').addEventListener('change', function () {
-    var label = document.getElementById('archivo-seleccionado');
-    label.textContent = this.files.length ? this.files[0].name : '';
+    var lista = document.getElementById('lista-archivos');
+    lista.innerHTML = '';
+    if (this.files.length > 0) {
+        Array.from(this.files).forEach(file => {
+            var li = document.createElement('li');
+            li.innerHTML = '<i class="fas fa-file-alt" style="margin-right: 6px;"></i>' + file.name;
+            lista.appendChild(li);
+        });
+    }
 });
 
 (function () {
     var form = document.querySelector('form');
     var btn  = form.querySelector('button[type="submit"]');
+    var progressContainer = document.getElementById('upload-progress-container');
+    var progressBar = document.getElementById('upload-progress-bar');
+    var progressText = document.getElementById('upload-progress-text');
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         btn.disabled = true;
         btn.classList.add('cargando');
+        
+        var hasFiles = document.getElementById('archivoJustificante').files.length > 0;
+        if (hasFiles) {
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+        }
 
         $.ajax({
             url:         form.action,
@@ -136,7 +159,20 @@ document.getElementById('archivoJustificante').addEventListener('change', functi
             data:        new FormData(form),
             processData: false,
             contentType: false,
-            headers:     { 'X-Requested-With': 'XMLHttpRequest' }
+            headers:     { 'X-Requested-With': 'XMLHttpRequest' },
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                if (hasFiles) {
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                            progressBar.style.width = percentComplete + '%';
+                            progressText.textContent = percentComplete + '%';
+                        }
+                    }, false);
+                }
+                return xhr;
+            }
         })
         .done(function (res) {
             btn.disabled = false;
@@ -146,11 +182,13 @@ document.getElementById('archivoJustificante').addEventListener('change', functi
                 setTimeout(function () { location.href = 'verGastos.php'; }, 800);
             } else {
                 if (window.Toast) Toast.show((res && res.msg) ? res.msg : 'Error al guardar', 'error');
+                progressContainer.style.display = 'none';
             }
         })
         .fail(function () {
             btn.disabled = false;
             btn.classList.remove('cargando');
+            progressContainer.style.display = 'none';
             if (window.Toast) Toast.show('Error de conexión', 'error');
         });
     });

@@ -1,7 +1,14 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
-
 require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/landing.php";
+
+$landingCfg = obtenerLandingConfig();
+if (empty($landingCfg['plantilla'])) {
+    header("Location: ../landing/onboarding.php");
+    exit;
+}
+
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
@@ -13,18 +20,42 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/chat.php";
 
-$totalEstudiantes = contarEstudiantes();
-$totalProfesores  = contarProfesores();
-$totalTutores     = contarTutores();
-$totalSecretarias = contarSecretarias();
-$totalRetos       = contarRetos();
-$totalModulos     = contarModulos();
-$totalCiclos      = contarCiclos();
-$recaudado        = obtenerTotalRecaudado();
-$totalCobros      = contarPagosRealizados();
-$totalTFGs        = contarTFGsEntregados();
-$nuevosEstudiantes = contarEstudiantesNuevos(7);
-$nuevosProfesores  = contarProfesoresNuevos(7);
+$cacheKeyDash = 'admin_dashboard_stats_' . $_SESSION['idAdmin'];
+if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time']) && (time() - $_SESSION[$cacheKeyDash . '_time'] < 60)) {
+    $stats = $_SESSION[$cacheKeyDash];
+    $totalEstudiantes = $stats['totalEstudiantes'];
+    $totalProfesores  = $stats['totalProfesores'];
+    $totalTutores     = $stats['totalTutores'];
+    $totalSecretarias = $stats['totalSecretarias'];
+    $totalRetos       = $stats['totalRetos'];
+    $totalModulos     = $stats['totalModulos'];
+    $totalCiclos      = $stats['totalCiclos'];
+    $recaudado        = $stats['recaudado'];
+    $totalCobros      = $stats['totalCobros'];
+    $totalTFGs        = $stats['totalTFGs'];
+    $nuevosEstudiantes = $stats['nuevosEstudiantes'];
+    $nuevosProfesores  = $stats['nuevosProfesores'];
+} else {
+    $totalEstudiantes = contarEstudiantes();
+    $totalProfesores  = contarProfesores();
+    $totalTutores     = contarTutores();
+    $totalSecretarias = contarSecretarias();
+    $totalRetos       = contarRetos();
+    $totalModulos     = contarModulos();
+    $totalCiclos      = contarCiclos();
+    $recaudado        = obtenerTotalRecaudado();
+    $totalCobros      = contarPagosRealizados();
+    $totalTFGs        = contarTFGsEntregados();
+    $nuevosEstudiantes = contarEstudiantesNuevos(7);
+    $nuevosProfesores  = contarProfesoresNuevos(7);
+    
+    $_SESSION[$cacheKeyDash] = compact(
+        'totalEstudiantes', 'totalProfesores', 'totalTutores', 'totalSecretarias', 
+        'totalRetos', 'totalModulos', 'totalCiclos', 'recaudado', 'totalCobros', 
+        'totalTFGs', 'nuevosEstudiantes', 'nuevosProfesores'
+    );
+    $_SESSION[$cacheKeyDash . '_time'] = time();
+}
 
 $adminInfo   = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
@@ -100,6 +131,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 <section class="dash-grid">
 
   <!-- A: Admisiones -->
+  <?php if (FeatureGuard::check('feature_prematricula')): ?>
   <a href="../admisiones/listado.php" class="tile card-soft" style="--tint:#7C3AED; text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">
@@ -115,6 +147,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
+  <?php endif; ?>
 
   <!-- C: Ciclos Formativos -->
   <a href="../ciclos/verCiclos.php" class="tile card-soft" style="--tint:#0284C7; text-decoration:none">

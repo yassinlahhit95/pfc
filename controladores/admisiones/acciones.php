@@ -84,6 +84,14 @@ switch ($action) {
             break;
         }
 
+        if (!Security::validateDNI($dni)) {
+            echo json_encode(['status' => 'error', 'message' => 'El formato del DNI/NIE del estudiante no es válido.']);
+            break;
+        }
+        if (!Security::validateDNI($tutorData['dni'])) {
+            echo json_encode(['status' => 'error', 'message' => 'El formato del DNI/NIE del tutor no es válido.']);
+            break;
+        }
         if (!Security::validateEmail($email)) {
             echo json_encode(['status' => 'error', 'message' => 'El formato de la dirección de correo electrónico del estudiante no es válido.']);
             break;

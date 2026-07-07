@@ -83,3 +83,47 @@ function toggleActivoSecretaria(int $id, int $activo): bool {
     return mysqli_stmt_execute($stmt);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+//  HISTORIAL / LOGS
+// ══════════════════════════════════════════════════════════════════════
+
+if (!function_exists('registrarAccionSecretaria')) {
+    function registrarAccionSecretaria($idSecretaria, $accion, $entidad, $detalles = '') {
+        $con = obtenerConexion();
+        // Auto-create table if missing
+        mysqli_query($con, "CREATE TABLE IF NOT EXISTS `historial_secretarias` (
+          `idHistorial` int(11) NOT NULL AUTO_INCREMENT,
+          `idSecretaria` int(11) NOT NULL,
+          `accion` varchar(255) NOT NULL,
+          `entidad` varchar(100) NOT NULL,
+          `detalles` text,
+          `fecha` datetime DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`idHistorial`),
+          KEY `idx_secretaria` (`idSecretaria`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $stmt = mysqli_prepare($con, "INSERT INTO historial_secretarias (idSecretaria, accion, entidad, detalles) VALUES (?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "isss", $idSecretaria, $accion, $entidad, $detalles);
+        return mysqli_stmt_execute($stmt);
+    }
+}
+
+if (!function_exists('listarHistorialSecretarias')) {
+    function listarHistorialSecretarias($limite = 100) {
+        $con = obtenerConexion();
+        $sql = "SELECT h.*, s.nombreSecretaria 
+                FROM historial_secretarias h 
+                LEFT JOIN secretarias s ON h.idSecretaria = s.idSecretaria 
+                ORDER BY h.fecha DESC LIMIT ?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $limite);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $lista = [];
+        while ($fila = mysqli_fetch_assoc($res)) {
+            $lista[] = $fila;
+        }
+        return $lista;
+    }
+}
+

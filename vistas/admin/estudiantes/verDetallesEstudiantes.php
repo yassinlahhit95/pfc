@@ -188,7 +188,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <span class="texto-suave" style="display:block;margin-top:4px;font-size:12px;">
                             Subido el <?= date('d/m/Y H:i', strtotime($estudiante['fechaSubidaTFG'])) ?>
                         </span>
-                        <a href="/public/uploads/pfc/<?= Security::escapeHtml($estudiante['archivoTFG']) ?>" target="_blank" class="boton-secundario" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:.82rem;padding:5px 12px;">
+                        <a href="/controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($estudiante['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="boton-secundario" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:.82rem;padding:5px 12px;">
                             <i class="fas fa-eye"></i> Ver PDF
                         </a>
                     <?php else: ?>
@@ -260,3 +260,4 @@ function cambiarPassUsuario(tipo, id) {
     });
 }
 </script>
+

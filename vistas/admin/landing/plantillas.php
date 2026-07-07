@@ -11,6 +11,10 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $landingCfg = obtenerLandingConfig();
+if (empty($landingCfg['plantilla'])) {
+    header("Location: onboarding.php");
+    exit;
+}
 $plantillas = landing_plantillas();
 
 $titulo_pagina = "AULAPRO | PLANTILLAS DE LA WEB";

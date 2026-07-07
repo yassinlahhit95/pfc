@@ -22,6 +22,8 @@ $tipoJustificante = Security::sanitize($_POST['tipoJustificante'] ?? '');
 $numeroReferencia = Security::sanitize($_POST['numeroReferencia'] ?? '');
 $observaciones    = Security::sanitize($_POST['observaciones'] ?? '');
 
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
 $errores = [];
 if ($idGasto <= 0)     $errores[] = "Gasto no válido.";
 if ($idCategoria <= 0) $errores[] = "Debes seleccionar una categoría.";
@@ -30,20 +32,112 @@ if ($importe <= 0)     $errores[] = "El importe debe ser mayor que 0.";
 if (empty($fecha))     $errores[] = "La fecha es obligatoria.";
 
 if ($errores) {
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => implode(' ', $errores)]);
+        exit;
+    }
     $_SESSION['errores'] = $errores;
-    header("Location: ../../../vistas/secretaria/gastos/modificarGasto.php?id=$idGasto");
+    header("Location: ../../../vistas/secretaria/gastos/modificarGasto.php?idGasto=$idGasto");
     exit;
 }
 
 $gastoActual = obtenerGastoPorId($idGasto);
-$archivoActual = $gastoActual['archivoJustificante'] ?? '';
+if (!$gastoActual) {
+    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Gasto no encontrado.']); exit; }
+    $_SESSION['errores'] = "Gasto no encontrado.";
+    header("Location: ../../../vistas/secretaria/gastos/verGastos.php");
+    exit;
+}
+
+$nombreArchivo = $gastoActual['archivoJustificante'];
+$nombresArchivos = [];
+if (!empty($_FILES['archivoJustificante']['name'][0])) {
+    $archivos = $_FILES['archivoJustificante'];
+    $totalArchivos = count($archivos['name']);
+    
+    for ($i = 0; $i < $totalArchivos; $i++) {
+        if ($archivos['error'][$i] !== UPLOAD_ERR_OK) {
+            if ($archivos['error'][$i] !== UPLOAD_ERR_NO_FILE) {
+                $errores[] = "Error al subir el archivo {$archivos['name'][$i]} (código: {$archivos['error'][$i]}).";
+            }
+            continue;
+        }
+        
+        if ($archivos['size'][$i] > 8 * 1024 * 1024) {
+            $errores[] = "El archivo {$archivos['name'][$i]} supera el límite de 8 MB.";
+            continue;
+        }
+
+        $mimePermitidos = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = finfo_file($finfo, $archivos['tmp_name'][$i]);
+        finfo_close($finfo);
+
+        if (!in_array($mime, $mimePermitidos, true)) {
+            $errores[] = "Tipo de archivo no permitido para {$archivos['name'][$i]}. Acepta: PDF, JPG, PNG, WebP.";
+        } else {
+            $ext         = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
+            $ext         = preg_replace('/[^a-z0-9]/', '', strtolower($ext));
+            $nuevoNombre = bin2hex(random_bytes(16)) . '.' . $ext;
+            $directorio  = __DIR__ . "/../../../public/uploads/justificantes/";
+
+            if (!is_dir($directorio)) {
+                mkdir($directorio, 0755, true);
+            }
+
+            if (move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nuevoNombre)) {
+                $nombresArchivos[] = $nuevoNombre;
+            } else {
+                $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";
+            }
+        }
+    }
+    
+    if (!empty($nombresArchivos) && empty($errores)) {
+        if ($nombreArchivo) {
+            $viejos = json_decode($nombreArchivo, true);
+            if (is_array($viejos)) {
+                foreach ($viejos as $v) {
+                    if (file_exists($directorio . $v)) { @unlink($directorio . $v); }
+                }
+            } else {
+                if (file_exists($directorio . $nombreArchivo)) { @unlink($directorio . $nombreArchivo); }
+            }
+        }
+        $nombreArchivo = json_encode($nombresArchivos);
+    }
+}
+
+if (!empty($errores)) {
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => implode(' ', $errores)]);
+        exit;
+    }
+    $_SESSION['errores'] = implode(' ', $errores);
+    header("Location: ../../../vistas/secretaria/gastos/modificarGasto.php?idGasto=$idGasto");
+    exit;
+}
 
 $ok = actualizarGasto($idGasto, $idCategoria, $idCiclo, $concepto, $importe, $fecha,
-                      $tipoJustificante, $numeroReferencia, $archivoActual, $observaciones);
+                      $tipoJustificante, $numeroReferencia, $nombreArchivo, $observaciones);
 
 if ($ok) {
+    require_once __DIR__ . '/../../../modelos/log.php';
+    registrarAccionSecretaria('actualizar', 'gastos', $idGasto, "Concepto: $concepto");
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true, 'msg' => 'Gasto actualizado correctamente.']);
+        exit;
+    }
     $_SESSION['exito'] = "Gasto actualizado correctamente.";
 } else {
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => 'Error al actualizar el gasto.']);
+        exit;
+    }
     $_SESSION['errores'] = "Error al actualizar el gasto.";
 }
 header("Location: ../../../vistas/secretaria/gastos/verGastos.php");

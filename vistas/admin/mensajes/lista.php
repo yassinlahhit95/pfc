@@ -20,7 +20,7 @@ if (!in_array($folder, $allowed)) $folder = 'todo';
 
 $listaDeMensajes = array_filter($todosMensajes, function($m) use ($folder) {
     switch ($folder) {
-        case 'nuevos':     return !$m['leido'] && $m['emisor_rol'] !== 'admin';
+        case 'nuevos':     return $m['unread_count'] > 0;
         case 'alumnos':    return $m['emisor_rol'] === 'estudiante';
         case 'profesores': return $m['emisor_rol'] === 'profesor';
         case 'enviados':   return $m['emisor_rol'] === 'admin';
@@ -124,7 +124,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         <?php else: ?>
             <?php foreach ($listaDeMensajes as $msg):
-                $esNuevo = !$msg['leido'] && $msg['emisor_rol'] !== 'admin';
+                $esNuevo = $msg['unread_count'] > 0;
 
                 if ($msg['emisor_rol'] === 'admin') {
                     $senderName = 'Dirección (Admin)';
@@ -180,6 +180,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <form method="POST" action="../../../controladores/admin/mensajes/marcar_visto.php">
                         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                         <input type="hidden" name="idReclamacion" value="<?= (int)$msg['idReclamacion'] ?>">
+                        <input type="hidden" name="folder" value="<?= htmlspecialchars($folder) ?>">
                         <button type="submit" name="marcarVisto" class="inbox-visto-btn">
                             <i class="fas fa-check"></i> Visto
                         </button>

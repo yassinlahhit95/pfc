@@ -100,6 +100,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
+  <?php if (FeatureGuard::check('feature_subida_tfg') && ($datosEstudiante['anioEstudio'] ?? '') !== '1º'): ?>
   <a href="../pfc/subir.php" class="tile card-soft" style="--tint:#D946EF; text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">
@@ -114,6 +115,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
+  <?php endif; ?>
 
   <a href="../horario/horario.php" class="tile card-soft" style="--tint:#4F46E5; text-decoration:none">
     <span class="tile-sheen"></span>

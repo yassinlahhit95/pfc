@@ -86,10 +86,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </td>
                             <td>
                                 <div class="botones-accion">
-                                    <a href="../../../public/uploads/pfc/<?= Security::escapeHtml($tfg['archivoTFG'] ) ?>" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
-                                    <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>')">
-                                        <i class="fas fa-star"></i>
-                                    </button>
+                                      <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="btn-accion btn-ver"><i class="fas fa-download"></i></a>
+                                      <button type="button" class="btn-accion btn-editar" onclick="toggleFormCalificar('form-<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>')">
+                                          <i class="fas fa-star"></i>
+                                      </button>
                                     <a href="borrarPfc.php?id=<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>" class="btn-accion btn-eliminar"><i class="fas fa-trash"></i></a>
                                 </div>
 

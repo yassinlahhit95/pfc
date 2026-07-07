@@ -128,7 +128,7 @@ class FeatureGuard
         return [
             'instance_status'      => $row['instance_status']     ?? 'active',
             'suspension_message'   => $row['suspension_message']  ?? '',
-            'feature_prematricula' => (int)($row['feature_prematricula'] ?? 1),
+            'feature_prematricula' => (int)($row['feature_prematricula'] ?? 0),
             'feature_chat'         => (int)($row['feature_chat']         ?? 1),
             'feature_inventario'   => (int)($row['feature_inventario']   ?? 1),
             'feature_subida_tfg'   => (int)($row['feature_subida_tfg']   ?? 1),

@@ -183,12 +183,14 @@ function _nav_active_admin($check) {
         <?php if (_nav_active_admin('asistencias') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <?php if (FeatureGuard::check('feature_prematricula')): ?>
       <a href="../admisiones/listado.php" class="nav-item<?= _nav_active_admin('admisiones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
         <span class="nav-label">Admisiones</span>
         <?php if ($totalAdmisionesPendientes_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalAdmisionesPendientes_menu ?></span><?php } ?>
         <?php if (_nav_active_admin('admisiones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
       <!-- PERSONAL -->
       <span class="nav-section-title">PERSONAL</span>
@@ -415,75 +417,13 @@ function _nav_active_admin($check) {
       </div>
     </header>
 
-    <?php if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'): ?>
-    <div id="cw" class="cw-wrap">
-      <div class="cw-overlay" id="cw-overlay" hidden></div>
-      <div class="cw-window" id="cw-window" hidden>
-        <div class="cw-head">
-          <h2 class="cw-head-title">Mensajes</h2>
-          <div class="cw-head-actions">
-            <button class="cw-btn-icon" id="cw-new" title="Nueva conversación">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
-            <button class="cw-btn-icon" id="cw-close" title="Cerrar">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-        </div>
-        <!-- List panel -->
-        <div class="cw-panel" id="cw-list-panel">
-          <div class="cw-conv-list" id="cw-list"><div class="cw-loading">Cargando…</div></div>
-        </div>
-        <!-- Conversation panel -->
-        <div class="cw-panel" id="cw-conv-panel" hidden>
-          <div class="cw-conv-head">
-            <button class="cw-btn-icon" id="cw-back" title="Volver">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <div class="cw-ava" id="cw-conv-ava"></div>
-            <div class="cw-conv-head-info">
-              <div class="cw-conv-head-name" id="cw-conv-name"></div>
-              <div class="cw-conv-head-role" id="cw-conv-role"></div>
-            </div>
-          </div>
-          <div class="cw-messages" id="cw-messages"></div>
-          <div class="cw-compose">
-            <textarea class="cw-input" id="cw-input" placeholder="Escribe un mensaje… (Enter para enviar)" rows="1"></textarea>
-            <button class="cw-send" id="cw-send" title="Enviar">
-              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-          </div>
-        </div>
-        <!-- Contacts panel -->
-        <div class="cw-panel" id="cw-contacts-panel" hidden>
-          <div class="cw-conv-head">
-            <button class="cw-btn-icon" id="cw-contacts-back" title="Volver">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <span style="font-weight:700;font-size:.9rem;flex:1">Nueva conversación</span>
-          </div>
-          <div class="cw-search-wrap">
-            <input class="cw-search-input" id="cw-contact-search" type="search" placeholder="Buscar persona…" autocomplete="off">
-          </div>
-          <div class="cw-contact-list" id="cw-contacts"></div>
-        </div>
-      </div>
-      <button class="cw-fab" id="cw-fab" aria-label="Abrir chat">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span class="cw-fab-badge" id="cw-fab-badge"<?= $totalChatNoLeidos_menu > 0 ? '' : ' hidden' ?>><?= (int)$totalChatNoLeidos_menu ?></span>
-      </button>
-    </div>
-    <script src="../../../public/js/chat-widget.js?v=<?= @filemtime(__DIR__.'/../../../public/js/chat-widget.js') ?>"></script>
-    <script>
-    ChatWidget.init({
-      myRol:       'admin',
-      myId:        <?= (int)$_SESSION['idAdmin'] ?>,
-      csrfToken:   '<?= Security::generateCSRFToken() ?>',
-      basePath:    '../../../',
-      unreadCount: <?= (int)$totalChatNoLeidos_menu ?>,
-    });
-    </script>
-    <?php endif; ?>
+    <?php if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
+        $cw_rol = 'admin';
+        $cw_id = (int)$_SESSION['idAdmin'];
+        $cw_unreadCount = (int)$totalChatNoLeidos_menu;
+        $cw_basePath = '../../../';
+        include __DIR__ . '/../../comunes/chat_widget.php';
+    endif; ?>
     <div class="content">
       <?php
       // SaaS platform message banner — shown on every admin page

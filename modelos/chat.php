@@ -170,6 +170,22 @@ function chatEsParticipante(array $conv, string $rol, int $id): bool {
         || ($conv['user_b_rol'] === $rol && (int)$conv['user_b_id'] === $id);
 }
 
+function chatContarNoLeidos(string $rol, int $id): int {
+    $con = obtenerConexion();
+    $st = mysqli_prepare($con,
+        'SELECT COUNT(*) AS total FROM chat_mensajes m
+         JOIN chat_conversaciones c ON m.conversacion_id = c.id
+         WHERE m.leido = 0
+           AND NOT (m.emisor_rol = ? AND m.emisor_id = ?)
+           AND (  (c.user_a_rol = ? AND c.user_a_id = ?)
+               OR (c.user_b_rol = ? AND c.user_b_id = ?))');
+    mysqli_stmt_bind_param($st, 'sisisisi', $rol, $id, $rol, $id, $rol, $id);
+    mysqli_stmt_execute($st);
+    $r = mysqli_stmt_get_result($st);
+    $row = mysqli_fetch_assoc($r);
+    return (int)($row['total'] ?? 0);
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // MENSAJES
 // ══════════════════════════════════════════════════════════════════════

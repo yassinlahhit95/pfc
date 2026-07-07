@@ -12,6 +12,10 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $landingCfg = obtenerLandingConfig();
+if (empty($landingCfg['plantilla'])) {
+    header("Location: onboarding.php");
+    exit;
+}
 $borrador   = listarSeccionesLanding('draft');
 $publicadas = listarSeccionesLanding('live');
 $tipos      = landing_tipos();
@@ -104,16 +108,9 @@ include_once __DIR__ . '/../comunes/nav.php';
                         <button type="button" class="lb-item-btn lb-editar" title="Editar contenido">
                             <i class="fas fa-pen"></i>
                         </button>
-                        <a class="lb-item-btn lb-item-btn-peligro" href="#" title="Eliminar"
-                           data-modal-borrar
-                           data-id="<?= (int)$f['idSeccion'] ?>"
-                           data-tipo="Sección"
-                           data-nombre="<?= Security::escapeHtml($t['nombre']) ?>"
-                           data-url="/controladores/admin/landing/borrar_seccion.php"
-                           data-campo="idSeccion"
-                           data-redirect="builder.php">
-                           <i class="fas fa-trash"></i>
-                        </a>
+                        <button type="button" class="lb-item-btn lb-item-btn-peligro lb-borrar-seccion" title="Eliminar" data-nombre="<?= Security::escapeHtml($t['nombre']) ?>">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </span>
                 </li>
                 <?php endforeach; ?>

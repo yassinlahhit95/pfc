@@ -85,6 +85,11 @@ function contarTFGsEntregados(): int {
 
 // Obtiene todos los contadores del nav de admin en una sola consulta.
 function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
+    $cacheKey = 'nav_admin_counts_' . $idAdmin;
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time'] < 2)) {
+        return $_SESSION[$cacheKey];
+    }
+    
     $con = obtenerConexion();
     $idAdmin = (int)$idAdmin;
     $res = mysqli_query($con,
@@ -117,5 +122,10 @@ function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
                    OR (c.user_b_rol = 'admin' AND c.user_b_id = {$idAdmin})))      AS total_chat_no_leidos"
     );
     $row = $res ? mysqli_fetch_assoc($res) : [];
-    return array_map('intval', $row ?: []);
+    $data = array_map('intval', $row ?: []);
+    
+    $_SESSION[$cacheKey] = $data;
+    $_SESSION[$cacheKey . '_time'] = time();
+    
+    return $data;
 }

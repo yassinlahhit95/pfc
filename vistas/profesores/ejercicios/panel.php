@@ -67,7 +67,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php if ($carpetaActual && $carpetaActual['idProfesor'] == $idProfesor): ?>
     <div style="padding:10px 14px;border-top:1px solid #f1f5f9;">
       <form method="POST" action="../../../controladores/profesores/carpetas/borrar.php"
-            onsubmit="return confirm('¿Eliminar carpeta y sus ejercicios asociados?')" style="margin:0;">
+            data-ajax-confirm="¿Eliminar carpeta y sus ejercicios asociados?" style="margin:0;">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="id" value="<?= Security::escapeHtml($idCarpetaActiva) ?>">
         <button type="submit" class="texto-suave" style="background:none;border:none;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;gap:6px;color:#ef4444;padding:0;">
@@ -134,7 +134,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-inbox"></i> Entregas
           </a>
           <form method="POST" action="../../../controladores/profesores/ejercicios/borrar.php"
-                onsubmit="return confirm('¿Eliminar este ejercicio y todas sus entregas?')" style="margin:0;">
+                data-ajax-confirm="¿Eliminar este ejercicio y todas sus entregas?" style="margin:0;">
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="id" value="<?= Security::escapeHtml($ej['idEjercicio']) ?>">
             <button type="submit" class="btn-accion btn-eliminar" title="Eliminar">

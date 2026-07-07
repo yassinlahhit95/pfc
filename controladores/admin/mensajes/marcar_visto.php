@@ -10,13 +10,17 @@ require_once __DIR__ . "/../../../include/Logger.php";
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (!isset($_POST['marcarVisto'])) {
-    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    $f = $_POST['folder'] ?? '';
+    $q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
+    header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
     exit;
 }
 
 if (!Security::validateCSRFToken()) {
     $_SESSION['errores'] = "Solicitud no válida o expirada.";
-    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    $f = $_POST['folder'] ?? '';
+    $q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
+    header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
     exit;
 }
 
@@ -27,7 +31,9 @@ $idReclamacion = (int)($_POST['idReclamacion'] ?? 0);
 // ══════════════════════════════════════════════════════════════════════
 if ($idReclamacion <= 0 || !obtenerMensajePorId($idReclamacion)) {
     $_SESSION['errores'] = "El mensaje no existe o ya fue eliminado.";
-    header("Location: ../../../vistas/admin/mensajes/lista.php");
+    $f = $_POST['folder'] ?? '';
+    $q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
+    header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
     exit;
 }
 
@@ -38,5 +44,7 @@ if (marcarMensajeComoLeido($idReclamacion)) {
     $_SESSION['errores'] = "No se pudo marcar el mensaje como visto.";
 }
 
-header("Location: ../../../vistas/admin/mensajes/lista.php");
+$f = $_POST['folder'] ?? '';
+$q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
+header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
 exit;

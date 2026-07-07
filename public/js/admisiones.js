@@ -2,6 +2,49 @@ $(document).ready(function() {
     let currentStep = 1;
     let idPreMatricula = null;
 
+    // Filtrado de ciclos por nivel (Grado Medio / Superior)
+    const cycleSelect = $('#idCiclo');
+    if (cycleSelect.length) {
+        const allCycleOptions = cycleSelect.find('option').clone();
+        
+        $('.nivel-filter-tabs button').click(function() {
+            $('.nivel-filter-tabs button').removeClass('active-tab').css({
+                'background': 'var(--surface)',
+                'color': 'var(--text-muted)',
+                'border-color': 'var(--border)'
+            });
+            $(this).addClass('active-tab').css({
+                'background': 'var(--accent)',
+                'color': 'white',
+                'border-color': 'var(--accent)'
+            });
+            
+            const filter = $(this).data('filter');
+            cycleSelect.empty();
+            
+            allCycleOptions.each(function() {
+                const opt = $(this);
+                if (!opt.val()) {
+                    cycleSelect.append(opt.clone());
+                    return;
+                }
+                const nivel = opt.data('nivel') || '';
+                let show = false;
+                if (filter === 'all') {
+                    show = true;
+                } else if (filter === 'medio' && nivel.includes('medio')) {
+                    show = true;
+                } else if (filter === 'superior' && nivel.includes('superior')) {
+                    show = true;
+                }
+                
+                if (show) {
+                    cycleSelect.append(opt.clone());
+                }
+            });
+        });
+    }
+
     // Navegación del Asistente
     function showStep(step) {
         $('.step-content').removeClass('active');
@@ -77,11 +120,16 @@ $(document).ready(function() {
             return;
         }
 
+        const btn = $('.btn-next');
+        const originalText = btn.html();
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+
         $.ajax({
             url: '../../controladores/admisiones/acciones.php?action=step1',
             type: 'POST',
             data: formData,
             success: function(response) {
+                btn.prop('disabled', false).html(originalText);
                 if (response.status === 'success') {
                     idPreMatricula = response.idPreMatricula;
                     currentStep++;
@@ -91,6 +139,7 @@ $(document).ready(function() {
                 }
             },
             error: function() {
+                btn.prop('disabled', false).html(originalText);
                 Swal.fire('Error', 'Error de conexión con el servidor', 'error');
             }
         });
@@ -111,7 +160,7 @@ $(document).ready(function() {
 
         // Mostrar loading
         const statusEl = $(`.file-status[data-tipo="${tipo}"]`);
-        statusEl.html('<span class="text-info">Subiendo...</span>');
+        statusEl.html('<span class="text-info"><i class="fas fa-spinner fa-spin"></i> Subiendo...</span>');
 
         $.ajax({
             url: '../../controladores/admisiones/acciones.php?action=upload',
@@ -140,28 +189,31 @@ $(document).ready(function() {
     }
 
     function finalizarAsistente() {
+        const btn = $('.btn-next');
+        const originalText = btn.html();
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Enviando...');
+
         $.ajax({
             url: '../../controladores/admisiones/acciones.php?action=finalize',
             type: 'POST',
             data: { idPreMatricula: idPreMatricula },
             success: function(response) {
+                btn.prop('disabled', false).html(originalText);
                 if (response.status === 'success') {
                     Swal.fire({
                         title: '¡Solicitud Enviada!',
-                        text: 'Tu solicitud de pre-matrícula ha sido registrada correctamente. Revisaremos tu documentación en breve.',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonText: 'Nueva Solicitud',
-                        cancelButtonText: 'Volver al Inicio',
-                        reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.reload();
-                        } else {
-                            window.location.href = '/';
-                        }
+                        text: 'Tu solicitud de pre-matrícula se ha registrado correctamente. Recibirás respuesta en breve.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '/';
                     });
+                } else {
+                    Swal.fire('Error', response.message || 'Error al finalizar', 'error');
                 }
+            },
+            error: function() {
+                btn.prop('disabled', false).html(originalText);
+                Swal.fire('Error', 'Error de conexión con el servidor', 'error');
             }
         });
     }

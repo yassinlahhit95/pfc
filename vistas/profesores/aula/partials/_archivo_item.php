@@ -35,7 +35,7 @@ $tamStr    = $arch['tamanio'] > 0
       <i class="fas fa-folder-arrow-down"></i>
     </button>
     <form method="POST" action="../../../controladores/profesores/aula/borrarArchivo.php"
-          style="display:inline" onsubmit="return confirm('¿Eliminar este archivo?')">
+          style="display:inline" data-ajax-confirm="¿Eliminar este archivo?">
       <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
       <input type="hidden" name="id" value="<?= Security::escapeHtml($arch['idArchivo'] ) ?>">
       <input type="hidden" name="modulo" value="<?= Security::escapeHtml($arch['idModulo'] ) ?>">

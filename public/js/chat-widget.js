@@ -108,7 +108,7 @@
     const overlay = $('cw-overlay');
     if (overlay) overlay.hidden = true;
     $('cw-fab')?.classList.remove('open');
-    stopPoll();
+    // We intentionally don't stop poll here, we just change interval/endpoint in fetchNew
   }
 
   /* ── Panels ──────────────────────────────────────────────────────────────── */
@@ -247,7 +247,12 @@
     wrap.appendChild(time);
     box.appendChild(wrap);
 
-    lastMsgId = Math.max(lastMsgId, parseInt(msg.id || 0));
+    const msgId = parseInt(msg.id || 0);
+    if (!isMe && lastMsgId > 0 && msgId > lastMsgId) {
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    }
+
+    lastMsgId = Math.max(lastMsgId, msgId);
     scrollBottom(box);
   }
 
@@ -268,30 +273,73 @@
 
   function schedulePoll() {
     clearTimeout(pollTimer);
-    if (!currentConvId || !isOpen) return;
     const delay = document.hidden ? Math.max(pollInterval, 15000) : pollInterval;
     pollTimer = setTimeout(fetchNew, delay);
   }
 
   function fetchNew() {
-    if (!currentConvId) return;
-    const url = resolveUrl(BASE + 'controladores/chat/mensajes.php')
-              + '?conv_id=' + currentConvId + '&after_id=' + lastMsgId;
-    fetch(url, { credentials: 'same-origin' })
-      .then(r => r.json())
-      .then(data => {
-        if (data.ok && data.messages.length) {
-          data.messages.forEach(m => appendMsg(m));
-          pollInterval = 3000;
-        } else {
-          pollInterval = Math.min(Math.round(pollInterval * 1.4), 30000);
-        }
-        schedulePoll();
-      })
-      .catch(() => {
-        pollInterval = Math.min(pollInterval * 2, 30000);
-        schedulePoll();
-      });
+    if (isOpen && currentConvId > 0 && currentView === 'conv') {
+      const url = resolveUrl(BASE + 'controladores/chat/mensajes.php')
+                + '?conv_id=' + currentConvId + '&after_id=' + lastMsgId;
+      fetch(url, { credentials: 'same-origin' })
+        .then(r => r.json())
+        .then(data => {
+          if (data.ok && data.messages.length) {
+            data.messages.forEach(m => appendMsg(m));
+            pollInterval = 3000;
+          } else {
+            pollInterval = Math.min(Math.round(pollInterval * 1.4), 30000);
+          }
+          schedulePoll();
+        })
+        .catch(() => {
+          pollInterval = Math.min(pollInterval * 2, 30000);
+          schedulePoll();
+        });
+    } else {
+      // Poll conversation list to update badges and list view dynamically
+      const url = resolveUrl(BASE + 'controladores/chat/conversaciones.php');
+      fetch(url, { credentials: 'same-origin' })
+        .then(r => r.json())
+        .then(data => {
+          if (data.ok) {
+            if (isOpen && currentView === 'list') {
+              // Instead of showing a loading state, silently render list
+              renderConversations(data.convs);
+            }
+            let unread = 0;
+            data.convs.forEach(c => { unread += (parseInt(c.unread) || 0); });
+            
+            const currentBadgeStr = $('cw-fab-badge')?.textContent || '0';
+            const currentBadge = parseInt(currentBadgeStr, 10) || 0;
+            if (currentBadge < unread && navigator.vibrate) {
+               navigator.vibrate([200, 100, 200]);
+            }
+            updateBadge(unread);
+            
+            // Also update the sidebar badge if it exists
+            const navBadge = document.querySelector('.nav-item[href*="chat"] .nav-badge-alert');
+            if (navBadge) {
+               if (unread > 0) { navBadge.textContent = unread; navBadge.style.display = ''; }
+               else { navBadge.style.display = 'none'; }
+            } else if (unread > 0) {
+               const navItem = document.querySelector('.nav-item[href*="chat"]');
+               if (navItem) {
+                  const b = document.createElement('span');
+                  b.className = 'nav-badge nav-badge-alert';
+                  b.textContent = unread;
+                  navItem.insertBefore(b, navItem.querySelector('.nav-rail'));
+               }
+            }
+            pollInterval = Math.min(Math.round(pollInterval * 1.4), 30000);
+          }
+          schedulePoll();
+        })
+        .catch(() => {
+          pollInterval = Math.min(pollInterval * 2, 30000);
+          schedulePoll();
+        });
+    }
   }
 
   /* ── Send ────────────────────────────────────────────────────────────────── */
@@ -393,7 +441,6 @@
     $('cw-new')?.addEventListener('click', showContacts);
 
     $('cw-back')?.addEventListener('click', () => {
-      stopPoll();
       currentConvId = 0;
       showPanel('list');
       loadConversations();
@@ -422,7 +469,7 @@
     }
 
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && isOpen && currentConvId) {
+      if (!document.hidden) {
         clearTimeout(pollTimer);
         pollInterval = 3000;
         fetchNew();
@@ -444,6 +491,7 @@
       csrfToken  = cfg.csrfToken;
       if (cfg.basePath) BASE = cfg.basePath;
       updateBadge(parseInt(cfg.unreadCount || 0, 10));
+      startPoll(); // Start background polling immediately
     },
     updateBadge,
 

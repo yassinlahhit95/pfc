@@ -39,24 +39,33 @@ if (empty($fecha) || !strtotime($fecha))        { $errores[] = "La fecha no es v
 if (!in_array($tipoJust, $tiposValidos, true))  { $tipoJust = 'otro'; }
 
 // ── File upload (optional justificante) ────────────────────────────
-$nombreArchivo = null;
-if (!empty($_FILES['archivoJustificante']['name'])) {
-    $archivo = $_FILES['archivoJustificante'];
+$nombresArchivos = [];
+if (!empty($_FILES['archivoJustificante']['name'][0])) {
+    $archivos = $_FILES['archivoJustificante'];
+    $totalArchivos = count($archivos['name']);
+    
+    for ($i = 0; $i < $totalArchivos; $i++) {
+        if ($archivos['error'][$i] !== UPLOAD_ERR_OK) {
+            if ($archivos['error'][$i] !== UPLOAD_ERR_NO_FILE) {
+                $errores[] = "Error al subir el archivo {$archivos['name'][$i]} (código: {$archivos['error'][$i]}).";
+            }
+            continue;
+        }
+        
+        if ($archivos['size'][$i] > 8 * 1024 * 1024) {
+            $errores[] = "El archivo {$archivos['name'][$i]} supera el límite de 8 MB.";
+            continue;
+        }
 
-    if ($archivo['error'] !== UPLOAD_ERR_OK) {
-        $errores[] = "Error al subir el archivo (código: {$archivo['error']}).";
-    } elseif ($archivo['size'] > 8 * 1024 * 1024) {
-        $errores[] = "El archivo supera el límite de 8 MB.";
-    } else {
         $mimePermitidos = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime  = finfo_file($finfo, $archivo['tmp_name']);
+        $mime  = finfo_file($finfo, $archivos['tmp_name'][$i]);
         finfo_close($finfo);
 
         if (!in_array($mime, $mimePermitidos, true)) {
-            $errores[] = "Tipo de archivo no permitido. Acepta: PDF, JPG, PNG, WebP.";
+            $errores[] = "Tipo de archivo no permitido para {$archivos['name'][$i]}. Acepta: PDF, JPG, PNG, WebP.";
         } else {
-            $ext           = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivo['name'], PATHINFO_EXTENSION);
+            $ext           = $mime === 'application/pdf' ? 'pdf' : pathinfo($archivos['name'][$i], PATHINFO_EXTENSION);
             $ext           = preg_replace('/[^a-z0-9]/', '', strtolower($ext));
             $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $ext;
             $directorio    = __DIR__ . "/../../../public/uploads/justificantes/";
@@ -65,13 +74,15 @@ if (!empty($_FILES['archivoJustificante']['name'])) {
                 mkdir($directorio, 0755, true);
             }
 
-            if (!move_uploaded_file($archivo['tmp_name'], $directorio . $nombreArchivo)) {
-                $errores[] = "No se pudo guardar el archivo en el servidor.";
-                $nombreArchivo = null;
+            if (!move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nombreArchivo)) {
+                $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";
+            } else {
+                $nombresArchivos[] = $nombreArchivo;
             }
         }
     }
 }
+$archivoGuardar = !empty($nombresArchivos) ? json_encode($nombresArchivos) : null;
 
 if (!empty($errores)) {
     if ($isAjax) {
@@ -85,7 +96,7 @@ if (!empty($errores)) {
 }
 
 $resultado = insertarGasto($idCategoria, $idCiclo, $concepto, $importe, $fecha,
-                            $tipoJust, $numRef ?: null, $nombreArchivo, $observ ?: null);
+                            $tipoJust, $numRef ?: null, $archivoGuardar, $observ ?: null);
 
 if ($resultado) {
     registrarAccion('insertar', 'gastos', (int)$resultado, $concepto);
@@ -96,8 +107,10 @@ if ($resultado) {
     }
     $_SESSION['exito'] = "Gasto registrado correctamente.";
 } else {
-    if ($nombreArchivo) {
-        @unlink(__DIR__ . "/../../../public/uploads/justificantes/" . $nombreArchivo);
+    if (!empty($nombresArchivos)) {
+        foreach ($nombresArchivos as $na) {
+            @unlink(__DIR__ . "/../../../public/uploads/justificantes/" . $na);
+        }
     }
     if ($isAjax) {
         header('Content-Type: application/json');

@@ -142,29 +142,34 @@ include_once "../comunes/nav.php";
 
 <script>
 function borrarArchivoSmooth(idArchivo, idReto) {
-    if (!confirm('¿Estás seguro de que quieres eliminar este archivo?')) return;
+    if (window.ModalConfirm) {
+        ModalConfirm.prompt('¿Estás seguro de que quieres eliminar este archivo?').then(function(confirmed) {
+            if (confirmed) executeDelete();
+        });
+    } else {
+        if (confirm('¿Estás seguro de que quieres eliminar este archivo?')) executeDelete();
+    }
 
-    const $item = $('#file-' + idArchivo);
-
-    $.ajax({
-        url: '../../../controladores/comunes/borrar_archivo_reto.php',
-        type: 'GET',
-        data: { id: idArchivo, idReto: idReto, ajax: 1 },
-        success: function(res) {
-            const data = typeof res === 'string' ? JSON.parse(res) : res;
-            if (data.status === 'success') {
-                $item.addClass('removing');
-                setTimeout(() => $item.remove(), 400);
-            } else {
-                if (window.Toast) Toast.show('Error: ' + data.message, 'error');
-                else alert('Error: ' + data.message);
+    function executeDelete() {
+        const $item = $('#file-' + idArchivo);
+        $.ajax({
+            url: '../../../controladores/comunes/borrar_archivo_reto.php',
+            type: 'GET',
+            data: { id: idArchivo, idReto: idReto, ajax: 1 },
+            success: function(res) {
+                const data = typeof res === 'string' ? JSON.parse(res) : res;
+                if (data.status === 'success') {
+                    $item.addClass('removing');
+                    setTimeout(() => $item.remove(), 400);
+                } else {
+                    if (window.Toast) Toast.show('Error: ' + data.message, 'error');
+                }
+            },
+            error: function() {
+                if (window.Toast) Toast.show('Error de conexión', 'error');
             }
-        },
-        error: function() {
-            if (window.Toast) Toast.show('Error de conexión', 'error');
-            else alert('Error de conexión');
-        }
-    });
+        });
+    }
 }
 
 $(document).ready(function() {

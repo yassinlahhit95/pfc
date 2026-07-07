@@ -84,6 +84,100 @@ while ($row = mysqli_fetch_assoc($res)) {
     ];
 }
 
+// ── Estudiantes (del mismo ciclo) ──
+if ($idCiclo > 0) {
+    $stmt = mysqli_prepare($con,
+        "SELECT idEstudiante, nombreEstudiante, dniEstudiante FROM estudiantes
+         WHERE idCiclo = ? AND idEstudiante != ? AND (nombreEstudiante LIKE ? OR dniEstudiante LIKE ?)
+         ORDER BY nombreEstudiante LIMIT 3");
+    mysqli_stmt_bind_param($stmt, 'iiss', $idCiclo, $idEstudiante, $like, $like);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_assoc($res)) {
+        $label = $row['nombreEstudiante'];
+        if (!empty($row['dniEstudiante']) && stripos($row['dniEstudiante'], $q) !== false) {
+            $label .= ' (' . $row['dniEstudiante'] . ')';
+        }
+        $results[] = [
+            'type'  => 'estudiante',
+            'label' => $label,
+            'url'   => '../chat/index.php', // Assuming direct chat access
+        ];
+    }
+}
+
+// ── Profesores (de su ciclo) ──
+if ($idCiclo > 0) {
+    $stmt = mysqli_prepare($con,
+        "SELECT DISTINCT p.idProfesor, p.nombreProfesor, p.dniProfesor 
+         FROM profesores p
+         JOIN modulo_profesor mp ON p.idProfesor = mp.idProfesor
+         JOIN modulos m ON mp.idModulo = m.idModulo
+         WHERE m.idCiclo = ? AND (p.nombreProfesor LIKE ? OR p.dniProfesor LIKE ?)
+         ORDER BY p.nombreProfesor LIMIT 3");
+    mysqli_stmt_bind_param($stmt, 'iss', $idCiclo, $like, $like);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_assoc($res)) {
+        $label = $row['nombreProfesor'];
+        $results[] = [
+            'type'  => 'profesor',
+            'label' => $label,
+            'url'   => '../chat/index.php',
+        ];
+    }
+}
+
+// ── Directores ──
+$stmt = mysqli_prepare($con,
+    "SELECT idDirector, nombreDirector FROM directores
+     WHERE nombreDirector LIKE ? ORDER BY nombreDirector LIMIT 2");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'director',
+        'label' => $row['nombreDirector'],
+        'url'   => '../chat/index.php',
+    ];
+}
+
+// ── Secretarias ──
+$stmt = mysqli_prepare($con,
+    "SELECT idSecretaria, nombreSecretaria FROM secretarias
+     WHERE nombreSecretaria LIKE ? ORDER BY nombreSecretaria LIMIT 2");
+mysqli_stmt_bind_param($stmt, 's', $like);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($res)) {
+    $results[] = [
+        'type'  => 'secretaria',
+        'label' => $row['nombreSecretaria'],
+        'url'   => '../chat/index.php',
+    ];
+}
+
+// ── Archivos (recursos.php) de su ciclo ──
+if ($idCiclo > 0) {
+    $stmt = mysqli_prepare($con,
+        "SELECT a.idArchivo, a.nombre, a.idModulo, m.nombreModulo
+         FROM aula_archivos a
+         JOIN modulos m ON a.idModulo = m.idModulo
+         WHERE m.idCiclo = ? AND a.eliminado = 0 AND a.nombre LIKE ?
+         ORDER BY a.fechaSubida DESC LIMIT 3");
+    mysqli_stmt_bind_param($stmt, 'is', $idCiclo, $like);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_assoc($res)) {
+        $results[] = [
+            'type'  => 'archivo',
+            'label' => $row['nombre'] . ' ('. $row['nombreModulo'] .')',
+            'url'   => '../aula/recursos.php?id=' . (int)$row['idModulo'],
+        ];
+    }
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA
 // ══════════════════════════════════════════════════════════════════════

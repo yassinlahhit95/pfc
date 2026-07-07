@@ -110,10 +110,10 @@ class Security {
         }
 
         // Idle timeout configurable vía SESSION_TIMEOUT en .env.
-        $timeout = 3600;
+        $timeout = 14400;
         if (class_exists('Config')) {
             $cfg = Config::getInstance();
-            $timeout = max(300, (int)$cfg->getInteger('SESSION_TIMEOUT', 3600));
+            $timeout = max(300, (int)$cfg->getInteger('SESSION_TIMEOUT', 14400));
         }
         $now = time();
         if (isset($_SESSION['_last_activity']) && ($now - $_SESSION['_last_activity']) > $timeout) {
@@ -377,12 +377,19 @@ class Security {
 
     public static function validateDNI($dni) {
         $dni = strtoupper(trim($dni));
-        if (!preg_match('/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/', $dni)) {
+        if (!preg_match('/^[XYZ0-9][0-9]{7}[A-Z]$/', $dni)) {
             return false;
         }
+        $nieMap = ['X' => '0', 'Y' => '1', 'Z' => '2'];
+        $firstChar = substr($dni, 0, 1);
+        if (isset($nieMap[$firstChar])) {
+            $calcStr = $nieMap[$firstChar] . substr($dni, 1, 7);
+        } else {
+            $calcStr = substr($dni, 0, 8);
+        }
         $validLetters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-        $dniNumber    = substr($dni, 0, 8);
-        $letter       = substr($dni, 8, 1);
+        $dniNumber    = (int)$calcStr;
+        $letter       = substr($dni, -1);
         return $letter === $validLetters[$dniNumber % 23];
     }
 
@@ -442,7 +449,7 @@ class Security {
 
         // 2. Fallback to free API (ip-api.com)
         try {
-            $ctx = stream_context_create(['http' => ['timeout' => 2]]);
+            $ctx = stream_context_create(['http' => ['timeout' => 0.4]]);
             $json = @file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode", false, $ctx);
             if ($json) {
                 $data = json_decode($json, true);
@@ -452,7 +459,8 @@ class Security {
             }
         } catch (\Throwable $th) {}
 
-        return 'UNKNOWN';
+        // Fallback to 'ES' to prevent locking out the admin if the free API is rate-limiting the server's public IP
+        return 'ES';
     }
 
     public static function escapeHtml($value) {

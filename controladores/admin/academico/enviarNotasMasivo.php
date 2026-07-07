@@ -30,13 +30,13 @@ if (isset($_POST['idCiclo']) && !empty($_POST['idCiclo'])) {
     if (empty($estudiantesEnCiclo)) {
         $_SESSION['errores'] = "No se han encontrado estudiantes matriculados en este ciclo formativo para efectuar el envío de notas.";
     } else {
-        $encolados = encolarEmailsNotasClase((int)$idCiclo);
+        $enviados = enviarEmailNotasClase((int)$idCiclo);
 
-        if ($encolados > 0) {
-            registrarAccion('enviar_notas_masivo', 'ciclos', (int)$idCiclo, "$encolados emails encolados");
-            $_SESSION['exito'] = "Se han encolado $encolados correos electrónicos. El envío se realizará automáticamente en los próximos minutos.";
+        if ($enviados > 0) {
+            registrarAccion('enviar_notas_masivo', 'ciclos', (int)$idCiclo, "$enviados emails enviados");
+            $_SESSION['exito'] = "Se han enviado $enviados correos electrónicos con éxito.";
         } else {
-            $_SESSION['errores'] = "No se pudieron encolar los correos electrónicos. Por favor, verifique la configuración del servidor de correo saliente.";
+            $_SESSION['errores'] = "No se pudieron enviar los correos electrónicos. Por favor, verifique la configuración del servidor de correo saliente.";
         }
     }
 } else {

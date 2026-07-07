@@ -36,11 +36,12 @@ if (!empty($_SESSION['mfa_setup_required'])) {
     exit;
 }
 
-// Para la ruta específica de toggle_feature.php, delegamos la validación CSRF al controlador
-// para que pueda usar una comprobación no rotatoria (non-rotating) que permita toggles consecutivos.
+// Para la ruta específica de toggle_feature.php y los controladores de la landing, delegamos/exceptuamos
+// la validación estricta de CSRF para evitar conflictos de sesión con el iframe de previsualización.
 $isToggleFeature = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/controladores/admin/configuracion/toggle_feature.php') !== false;
+$isLanding       = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/controladores/admin/landing/') !== false;
 
-if (!$isToggleFeature && $_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
+if (!$isToggleFeature && !$isLanding && $_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuard) {
         header('Content-Type: application/json');
         echo json_encode(['ok' => false, 'msg' => 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.']);

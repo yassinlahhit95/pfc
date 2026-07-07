@@ -32,9 +32,13 @@ function _nav_active_sec($check) {
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
+  <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
+  <link rel="stylesheet" href="../../../public/css/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/chat-widget.css') ?>" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script defer src="../../../public/js/aula-digital.js?v=<?= @filemtime(__DIR__.'/../../../public/js/aula-digital.js') ?>"></script>
   <script defer src="../../../public/js/menu-contextual.js?v=<?= @filemtime(__DIR__.'/../../../public/js/menu-contextual.js') ?>"></script>
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
 </head>
@@ -79,12 +83,20 @@ function _nav_active_sec($check) {
         <?php if (_nav_active_sec('estudiantes') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../estudiantes/papelera.php" class="nav-item<?= _nav_active_sec('papelera') ?>" title="Papelera de estudiantes">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></span>
+        <span class="nav-label">Papelera</span>
+        <?php if (_nav_active_sec('papelera') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
+      <?php if (FeatureGuard::check('feature_prematricula')): ?>
       <a href="../admisiones/listado.php" class="nav-item<?= _nav_active_sec('admisiones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
         <span class="nav-label">Admisiones</span>
         <?php if ($totalAdmisionesPendientes_menu > 0) { ?><span class="nav-badge"><?= $totalAdmisionesPendientes_menu ?></span><?php } ?>
         <?php if (_nav_active_sec('admisiones') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <?php endif; ?>
 
       <span class="nav-section-title">FINANZAS</span>
 
@@ -216,4 +228,14 @@ function _nav_active_sec($check) {
         </button>
       </div>
     </header>
+
+    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
+        require_once __DIR__ . "/../../../modelos/chat.php";
+        $cw_rol = 'secretaria';
+        $cw_id = (int)$_SESSION['idSecretaria'];
+        $cw_unreadCount = (int)chatContarNoLeidos('secretaria', $cw_id);
+        $cw_basePath = '../../../';
+        include __DIR__ . '/../../comunes/chat_widget.php';
+    endif; ?>
+
     <div class="content">

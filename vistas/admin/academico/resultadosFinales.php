@@ -118,6 +118,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <thead>
                     <tr>
                         <th>Estudiante</th>
+                        <th>Año</th>
                         <th>Media Global Módulos (75%)</th>
                         <th>Media Global Retos (25%)</th>
                         <th>Nota TFG</th>
@@ -127,7 +128,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </thead>
                 <tbody>
                     <?php if (empty($listaDeDatosFinalesAMostrar)) { ?>
-                        <tr><td colspan="6" class="vacio">No hay estudiantes en este ciclo</td></tr>
+                        <tr><td colspan="7" class="vacio">No hay estudiantes en este ciclo</td></tr>
                     <?php } else { ?>
                         <?php foreach ($listaDeDatosFinalesAMostrar as $fila) { 
                             $claseDelColor = "texto-rojo";
@@ -136,6 +137,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         ?>
                         <tr>
                             <td><?= Security::escapeHtml($fila['nombreEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($fila['anioEstudio'] ?? '-') ?></td>
                             <td><?= Security::escapeHtml($fila['media_modulos']) ?></td>
                             <td><?= Security::escapeHtml($fila['media_retos']) ?></td>
                             <td class="color-primario texto-negrita"><?= Security::escapeHtml($fila['nota_tfg'] ?? ' ') ?></td>
