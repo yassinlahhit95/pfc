@@ -99,6 +99,9 @@
     if (overlay) overlay.hidden = false;
     $('cw-fab')?.classList.add('open');
     if (currentView === 'list') loadConversations();
+    // El sondeo en segundo plano puede estar a 30s: al abrir volvemos al ritmo rápido
+    pollInterval = 3000;
+    schedulePoll();
   }
 
   function closeWindow() {
@@ -273,7 +276,14 @@
 
   function schedulePoll() {
     clearTimeout(pollTimer);
-    const delay = document.hidden ? Math.max(pollInterval, 15000) : pollInterval;
+    let delay = pollInterval;
+    if (document.hidden) {
+      delay = Math.max(pollInterval, 15000);
+    } else if (isOpen && currentView === 'conv' && currentConvId > 0) {
+      delay = Math.min(pollInterval, 6000);  // conversación abierta y visible: casi tiempo real
+    } else if (isOpen) {
+      delay = Math.min(pollInterval, 10000); // lista abierta: refresco frecuente
+    }
     pollTimer = setTimeout(fetchNew, delay);
   }
 
@@ -431,8 +441,36 @@
       });
   }
 
+  /* ── Keyboard Adjustments for Mobile (iOS & Android) ───────────────────── */
+  function adjustForKeyboard() {
+    const win = $('cw-window');
+    if (!win || win.hidden) return;
+
+    if (window.innerWidth > 600) {
+      win.style.bottom = '';
+      win.style.top = '';
+      win.style.height = '';
+      return;
+    }
+
+    if (window.visualViewport) {
+      const vv = window.visualViewport;
+      const keyboardHeight = window.innerHeight - vv.height;
+
+      if (keyboardHeight > 100) {
+        win.style.bottom = (keyboardHeight + 8) + 'px';
+        win.style.height = (vv.height - 80) + 'px';
+        win.style.top = 'auto';
+      } else {
+        win.style.bottom = '';
+        win.style.top = '';
+        win.style.height = '';
+      }
+    }
+  }
+
   /* ── Boot ────────────────────────────────────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', function () {
+  function boot() {
     const fab = $('cw-fab');
     if (!fab) return;
 
@@ -458,6 +496,12 @@
         input.style.height = '';
         input.style.height = Math.min(input.scrollHeight, 100) + 'px';
       });
+      input.addEventListener('focus', () => {
+        setTimeout(adjustForKeyboard, 300);
+      });
+      input.addEventListener('blur', () => {
+        setTimeout(adjustForKeyboard, 300);
+      });
     }
 
     const search = $('cw-contact-search');
@@ -476,12 +520,23 @@
       }
     });
 
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', adjustForKeyboard);
+      window.visualViewport.addEventListener('scroll', adjustForKeyboard);
+    }
+
     // Close on outside click (desktop) or overlay tap (mobile)
     document.addEventListener('click', e => {
       if (isOpen && !e.target.closest('#cw')) closeWindow();
     });
     $('cw-overlay')?.addEventListener('click', closeWindow);
-  });
+  }
+
+  if (document.readyState !== 'loading') {
+    boot();
+  } else {
+    document.addEventListener('DOMContentLoaded', boot);
+  }
 
   /* ── Public API ──────────────────────────────────────────────────────────── */
   window.ChatWidget = {

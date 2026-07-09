@@ -33,8 +33,21 @@ $datosCentro = [
     'nombreDirectorFirmante'  => trim($_POST['nombreDirectorFirmante'] ?? '')
 ];
 
+$errores = [];
 if (empty($datosCentro['nombreCentro'])) {
-    echo json_encode(['ok' => false, 'msg' => 'El nombre del centro es obligatorio.']);
+    $errores['nombreCentro'] = 'El nombre del centro es obligatorio.';
+}
+if (empty($datosCentro['emailCentro'])) {
+    $errores['emailCentro'] = 'El correo es obligatorio.';
+} elseif (!filter_var($datosCentro['emailCentro'], FILTER_VALIDATE_EMAIL)) {
+    $errores['emailCentro'] = 'El correo electrónico no es válido.';
+}
+if (empty($datosCentro['telefonoCentro'])) {
+    $errores['telefonoCentro'] = 'El teléfono es obligatorio.';
+}
+
+if (!empty($errores)) {
+    echo json_encode(['ok' => false, 'errores' => $errores]);
     exit;
 }
 

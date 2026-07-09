@@ -41,7 +41,7 @@ $hijos = listarEstudiantesPorTutor($_SESSION['idTutor']);
       </div>
       <div style="background:var(--surface-2);border-radius:8px;padding:14px 16px">
         <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Total pagado</div>
-        <div style="font-size:1.4rem;font-weight:700;margin-top:4px;color:#10b981"><?= number_format($estadoFinan['totalPagado'], 2) ?> €</div>
+        <div style="font-size:1.4rem;font-weight:700;margin-top:4px;color:var(--verde)"><?= number_format($estadoFinan['totalPagado'], 2) ?> €</div>
       </div>
       <div style="background:var(--surface-2);border-radius:8px;padding:14px 16px">
         <div style="font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Pendiente</div>

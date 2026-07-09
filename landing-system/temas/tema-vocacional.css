@@ -3,19 +3,22 @@
    Píldoras gruesas, sombras de alto contraste, mallas radiantes.
    ══════════════════════════════════════════════════════════════════════ */
 
+/* Identidad: radios enormes, píldoras y neumorfismo de campaña.
+   El acento (naranja) lo fija el config → el selector de color funciona y
+   los tintes derivan del acento, así el tema no contradice su propio color. */
 .tema-vocacional {
   --lp-fuente-titulos: 'Sora', 'Plus Jakarta Sans', sans-serif;
-  --lp-acento: #e11d48; /* Rosa fuerte / Carmesí */
-  --lp-acento-2: #f43f5e;
-  --lp-acento-suave: #ffe4e6;
-  --lp-fondo: #ffffff;
-  --lp-fondo-alt: #fff1f2;
-  --lp-borde: #fecdd3;
   --lp-radio: 32px; /* Radios súper grandes estilo app móvil */
   --lp-radio-boton: 999px;
+  --lp-footer-fondo: #0a0a0b;
+}
+
+/* Paleta clara + neumorfismo (solo modo claro; en oscuro manda base.css) */
+html:not([data-theme="dark"]) .tema-vocacional {
+  --lp-fondo-alt: color-mix(in srgb, var(--lp-acento) 6%, #ffffff);
+  --lp-borde:     color-mix(in srgb, var(--lp-acento) 22%, #ffffff);
   --lp-sombra: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
   --lp-sombra-hover: 10px 10px 30px #d9d9d9, -10px -10px 30px #ffffff;
-  --lp-footer-fondo: #0a0a0b;
 }
 
 /* Titulares contundentes de campaña */
@@ -30,7 +33,7 @@
 }
 .tema-vocacional .lp-hero {
   padding: 160px 0 140px;
-  background: linear-gradient(-45deg, #0a0a0b, #1c1114, #3a101b, #0a0a0b);
+  background: linear-gradient(-45deg, #0a0a0b, color-mix(in srgb, var(--lp-acento) 12%, #0a0a0b), color-mix(in srgb, var(--lp-acento) 26%, #0a0a0b), #0a0a0b);
   background-size: 400% 400%;
   animation: meshGradient 15s ease infinite;
 }
@@ -39,7 +42,7 @@
 }
 .tema-vocacional .lp-hero-texto .lp-eyebrow {
   background: linear-gradient(135deg, var(--lp-acento), var(--lp-acento-2));
-  color: #fff; border: none; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
+  color: #fff; border: none; box-shadow: 0 8px 20px color-mix(in srgb, var(--lp-acento) 40%, transparent);
 }
 
 /* Tarjetas estilo neumorfismo suave */
@@ -58,9 +61,9 @@
 .tema-vocacional .lp-boton-grande { padding: 20px 42px; font-size: 17px; font-weight: 800; }
 .tema-vocacional .lp-boton-primario {
   background: var(--lp-acento);
-  box-shadow: 0 10px 25px rgba(225, 29, 72, 0.4);
+  box-shadow: 0 10px 25px color-mix(in srgb, var(--lp-acento) 40%, transparent);
 }
-.tema-vocacional .lp-boton-primario:hover { box-shadow: 0 15px 35px rgba(225, 29, 72, 0.6); transform: translateY(-4px); }
+.tema-vocacional .lp-boton-primario:hover { box-shadow: 0 15px 35px color-mix(in srgb, var(--lp-acento) 60%, transparent); transform: translateY(-4px); }
 
 /* Cifras impactantes */
 .tema-vocacional .lp-cifras {

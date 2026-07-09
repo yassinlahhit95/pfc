@@ -140,11 +140,20 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo relleno">
+            <label>Filtrar por Curso:</label>
+            <select id="filtroCursoModulo" onchange="filtrarModulosPorCurso()">
+                <option value="">-- Ambos Cursos --</option>
+                <option value="1º">1º Año</option>
+                <option value="2º">2º Año</option>
+            </select>
+        </div>
+
+        <div class="campo relleno">
             <label>Seleccione un Módulo:</label>
-            <select name="idModulo" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
+            <select name="idModulo" id="selectModuloFinal" onchange="this.form.submit()" <?= empty($idCicloElegido) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar Módulo --</option>
                 <?php foreach ($listaModulos as $modulo) { ?>
-                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
+                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" data-curso="<?= Security::escapeHtml($modulo['cursoAnio'] ?? '') ?>" <?= ($idModuloElegido == $modulo['idModulo']) ? 'selected' : '' ?>>
                         <?= Security::escapeHtml($modulo['nombreModulo']) ?><?= !empty($modulo['cursoAnio']) ? ' — ' . Security::escapeHtml($modulo['cursoAnio']) : '' ?>
                     </option>
                 <?php } ?>
@@ -152,6 +161,24 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
     </form>
 </div>
+<script>
+function filtrarModulosPorCurso() {
+    var curso = document.getElementById('filtroCursoModulo').value;
+    var select = document.getElementById('selectModuloFinal');
+    var options = select.options;
+    var hasVisibleSelected = false;
+    for (var i = 1; i < options.length; i++) {
+        var opt = options[i];
+        var optCurso = opt.getAttribute('data-curso');
+        var show = curso === '' || optCurso === curso;
+        opt.style.display = show ? '' : 'none';
+        if (show && opt.selected) hasVisibleSelected = true;
+    }
+    if (select.value && !hasVisibleSelected) {
+        select.value = '';
+    }
+}
+</script>
 
 
 <?php if (!empty($idModuloElegido)) { ?>

@@ -39,8 +39,9 @@ function listarEstudiantesDeProfesor($idProfesor) {
     $sql = "SELECT DISTINCT e.*, c.nombreCiclo, c.abreviaturaCiclo, c.idNivel
             FROM estudiantes e
             JOIN ciclos c ON e.idCiclo = c.idCiclo
-            WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)
+            WHERE (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))
+              AND e.eliminado = 0
             ORDER BY e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
@@ -58,7 +59,7 @@ function listarEstudiantesPorCiclo($idCiclo) {
     $sql = "SELECT estudiantes.*, ciclos.nombreCiclo, ciclos.abreviaturaCiclo
             FROM estudiantes
             JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
-            WHERE estudiantes.idCiclo = ?
+            WHERE estudiantes.idCiclo = ? AND estudiantes.eliminado = 0
             ORDER BY estudiantes.idEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
@@ -86,7 +87,7 @@ function obtenerEstudiantePorId($idEstudiante) {
 
 function obtenerTokensEstudiantes() {
     $con = obtenerConexion();
-    $sql = "SELECT fcm_token FROM estudiantes WHERE fcm_token IS NOT NULL AND fcm_token != ''";
+    $sql = "SELECT fcm_token FROM estudiantes WHERE fcm_token IS NOT NULL AND fcm_token != '' AND eliminado = 0";
     $resultado = mysqli_query($con, $sql);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
@@ -109,7 +110,7 @@ function insertarEstudiante($nombre, $email, $tel, $fecha_nac, $dni, $fecha_alta
     [$pass] = generarCredencialesTemporales($email, $nombre, 'Estudiante');
     $sql = "INSERT INTO estudiantes (nombreEstudiante, emailEstudiante, password, telefonoEstudiante, fechaNacimientoEstudiante, dniEstudiante, fechaAltaEstudiante, direccionEstudiante, ciudadEstudiante, codigoPostalEstudiante, observacionesEstudiante, idCiclo, curso, anioEstudio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssssssssiss", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $anioEstudio);
+    mysqli_stmt_bind_param($stmt, "ssssssssssisss", $nombre, $email, $pass, $tel, $fecha_nac, $dni, $fecha_alta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso, $anioEstudio);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -196,7 +197,7 @@ function eliminarEstudiante($idEstudiante) {
 
 function validarLoginEstudiante($email, $password) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ?";
+    $sql = "SELECT * FROM estudiantes WHERE emailEstudiante = ? AND eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
@@ -215,7 +216,7 @@ function validarLoginEstudiante($email, $password) {
 
 function estudiantePerteneceACiclo($idEstudiante, $idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT 1 FROM estudiantes WHERE idEstudiante = ? AND idCiclo = ?";
+    $sql = "SELECT 1 FROM estudiantes WHERE idEstudiante = ? AND idCiclo = ? AND eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -226,7 +227,7 @@ function estudiantePerteneceACiclo($idEstudiante, $idCiclo) {
 function estudiantePerteneceAProfesor($idEstudiante, $idProfesor) {
     $con = obtenerConexion();
     $sql = "SELECT 1 FROM estudiantes e
-            WHERE e.idEstudiante = ?
+            WHERE e.idEstudiante = ? AND e.eliminado = 0
             AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
               OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
     $stmt = mysqli_prepare($con, $sql);
@@ -247,23 +248,7 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
 }
 
 function obtenerCursosEscolaresEstudiante($idEstudiante) {
-    $con = obtenerConexion();
-    try {
-        $sql = "SELECT DISTINCT cursoEscolar FROM calificaciones_modulos WHERE idEstudiante = ? AND cursoEscolar IS NOT NULL ORDER BY cursoEscolar DESC";
-        $stmt = mysqli_prepare($con, $sql);
-        if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-            mysqli_stmt_execute($stmt);
-            $res = mysqli_stmt_get_result($stmt);
-            $lista = [];
-            while ($fila = mysqli_fetch_assoc($res)) {
-                $lista[] = $fila['cursoEscolar'];
-            }
-            if (!empty($lista)) return $lista;
-        }
-    } catch (\Throwable $e) {}
-    
     require_once __DIR__ . '/configuracion.php';
-    $config = obtenerConfiguracion();
+    $config = obtenerConfiguracionCentro();
     return [$config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1))];
 }

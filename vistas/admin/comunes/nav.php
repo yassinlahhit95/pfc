@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
@@ -318,6 +319,11 @@ function _nav_active_admin($check) {
         <span class="nav-label">Página Web</span>
         <?php if (_nav_active_admin('landing') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <a href="../blog/gestionBlog.php" class="nav-item<?= _nav_active_admin('blog') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span>
+        <span class="nav-label">Blog</span>
+        <?php if (_nav_active_admin('blog') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
       <?php endif; ?>
 
       <a href="../configuracion/configuracion.php" class="nav-item<?= _nav_active_admin('configuracion') ?>">
@@ -417,6 +423,18 @@ function _nav_active_admin($check) {
       </div>
     </header>
 
+    <?php
+    $mesActual = date('m');
+    if ($mesActual === '06') {
+        $diasRestantes = 30 - (int)date('d');
+        if ($diasRestantes >= 0) {
+            echo '<div style="background-color: var(--rojo-suave, #fee2e2); color: var(--rojo); padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid var(--rojo-borde, #fecaca);">';
+            echo '<i class="fas fa-clock"></i> ¡Atención! Quedan ' . $diasRestantes . ' días para el fin del periodo de pagos (30 de junio).';
+            echo '</div>';
+        }
+    }
+    ?>
+
     <?php if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         $cw_rol = 'admin';
         $cw_id = (int)$_SESSION['idAdmin'];
@@ -435,11 +453,11 @@ function _nav_active_admin($check) {
           if (FeatureGuard::isSuspended()) {
               $__suspMsg = FeatureGuard::getSuspensionMessage() ?: 'Esta instancia ha sido suspendida por la plataforma SaaS. Contacta con el proveedor.';
               echo '<div style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.92);display:flex;align-items:center;justify-content:center;padding:24px;">';
-              echo '<div style="max-width:520px;width:100%;background:#fff;border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">';
+              echo '<div style="max-width:520px;width:100%;background:var(--surface);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">';
               echo '<div style="font-size:3rem;margin-bottom:12px;">🔒</div>';
-              echo '<h2 style="margin:0 0 12px;color:#dc2626;font-size:1.4rem;">Acceso Suspendido</h2>';
-              echo '<p style="color:#374151;font-size:.95rem;line-height:1.6;margin:0 0 24px;">' . htmlspecialchars($__suspMsg, ENT_QUOTES) . '</p>';
-              echo '<a href="/vistas/admin/saas/estado.php" style="display:inline-block;padding:10px 22px;background:#6366f1;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:.9rem;">Ver estado de la plataforma</a>';
+              echo '<h2 style="margin:0 0 12px;color:var(--rojo);font-size:1.4rem;">Acceso Suspendido</h2>';
+              echo '<p style="color:var(--text);font-size:.95rem;line-height:1.6;margin:0 0 24px;">' . htmlspecialchars($__suspMsg, ENT_QUOTES) . '</p>';
+              echo '<a href="/vistas/admin/saas/estado.php" style="display:inline-block;padding:10px 22px;background:var(--accent);color:var(--accent-ink);text-decoration:none;border-radius:8px;font-weight:600;font-size:.9rem;">Ver estado de la plataforma</a>';
               echo '</div></div>';
           }
           $_saas_nav_msg  = FeatureGuard::getMessage();
@@ -455,7 +473,7 @@ function _nav_active_admin($check) {
               [$__c,$__bg,$__bd,$__icon] = $__colors[$_saas_nav_type] ?? $__colors['info'];
               echo '<div style="margin-bottom:16px;padding:12px 18px;border-radius:10px;background:'.$__bg.';border:1px solid '.$__bd.';display:flex;align-items:center;gap:12px;">';
               echo '<span style="font-size:1.25rem;line-height:1;">'.$__icon.'</span>';
-              echo '<div style="flex:1;"><span style="font-weight:700;color:'.$__c.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:#374151;">'.htmlspecialchars($_saas_nav_msg, ENT_QUOTES).'</span></div>';
+              echo '<div style="flex:1;"><span style="font-weight:700;color:'.$__c.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:var(--text);">'.htmlspecialchars($_saas_nav_msg, ENT_QUOTES).'</span></div>';
               echo '<a href="../saas/estado.php" style="font-size:.8rem;color:'.$__c.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
               echo '</div>';
           }

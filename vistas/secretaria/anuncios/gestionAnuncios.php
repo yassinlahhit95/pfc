@@ -18,8 +18,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel margen-abajo">
-    <div class="filtros">
-        <input type="text" id="filtroAnuncios" class="filtro-input" placeholder="Buscar anuncio...">
+    <div class="formulario">
+        <div class="campo">
+            <label for="filtroAnuncios">BUSCAR</label>
+            <input type="text" id="filtroAnuncios" placeholder="Buscar por título, destinatario o fecha..." autocomplete="off">
+        </div>
     </div>
 </div>
 
@@ -61,6 +64,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <a class="recurso-menu-item" href="modificarAnuncio.php?id=<?= (int)$an['idAnuncio'] ?>">
                                     <i class="fas fa-pen"></i> Editar
                                 </a>
+                                <div class="recurso-menu-sep"></div>
+                                <a class="recurso-menu-item peligro" href="#"
+                                   data-modal-borrar
+                                   data-id="<?= (int)$an['idAnuncio'] ?>"
+                                   data-tipo="Anuncio"
+                                   data-nombre="<?= Security::escapeHtml($an['titulo']) ?>"
+                                   data-url="/controladores/secretaria/anuncios/borrar.php"
+                                   data-campo="idAnuncio">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </a>
                             </div>
                         </div>
                     </td>
@@ -74,6 +87,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
-filtrarTabla('filtroAnuncios', 'tablaAnuncios');
 iniciarPaginacion('tablaAnuncios', 15);
+// Filtrado en vivo: se ejecuta en cada pulsación
+document.getElementById('filtroAnuncios').addEventListener('input', function () {
+    filtrarTabla('filtroAnuncios', 'tablaAnuncios');
+});
 </script>

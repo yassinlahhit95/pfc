@@ -64,14 +64,14 @@ $csrfToken = Security::generateCSRFToken();
                 <div class="campo-grupo">
                     <label>Nueva contraseña</label>
                     <div class="campo-password">
-                        <input type="password" id="pass1" name="password" placeholder="••••••••" required minlength="8">
+                        <input type="password" id="pass1" name="password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
                         <button type="button" class="ojo-boton" onclick="togglePass('pass1',this)">Ver</button>
                     </div>
                 </div>
                 <div class="campo-grupo">
                     <label>Repetir contraseña</label>
                     <div class="campo-password">
-                        <input type="password" id="pass2" name="password2" placeholder="••••••••" required minlength="8">
+                        <input type="password" id="pass2" name="password2" placeholder="••••••••" required minlength="8" autocomplete="new-password">
                         <button type="button" class="ojo-boton" onclick="togglePass('pass2',this)">Ver</button>
                     </div>
                 </div>

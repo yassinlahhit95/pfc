@@ -3,18 +3,11 @@
    Serifa en titulares, texturas ricas, bordes dobles, verde esmeralda.
    ══════════════════════════════════════════════════════════════════════ */
 
+/* Identidad del tema: solo tokens independientes del modo claro/oscuro.
+   El acento lo fija el config (colorAcento) inyectado en :root, así el
+   selector de color del builder sigue funcionando. */
 .tema-clasico {
   --lp-fuente-titulos: 'Lora', Georgia, serif;
-  --lp-acento: #0d4732; /* Verde esmeralda oscuro */
-  --lp-acento-2: #216e4e;
-  --lp-acento-suave: #e6eee9;
-  --lp-fondo: #fcfbf9; /* Crema muy suave */
-  --lp-fondo-alt: #f4f2ea;
-  --lp-borde: #ded8cd;
-  --lp-texto: #2a2a2a;
-  --lp-texto-suave: #5c5a56;
-  --lp-nav-texto: #111;
-  --lp-nav-fondo: rgba(252, 251, 249, 0.9);
   --lp-radio: 8px; /* Menos redondeado para estilo clásico */
   --lp-radio-boton: 4px;
   --lp-sombra: 0 4px 12px rgba(13, 71, 50, 0.05);
@@ -22,8 +15,20 @@
   --lp-footer-fondo: #0a291d;
 }
 
+/* Paleta clara "papel crema" propia del tema. En modo oscuro NO se aplica,
+   de modo que los tokens de base.css [data-theme="dark"] mandan. */
+html:not([data-theme="dark"]) .tema-clasico {
+  --lp-fondo: #fcfbf9; /* Crema muy suave */
+  --lp-fondo-alt: #f4f2ea;
+  --lp-borde: #ded8cd;
+  --lp-texto: #2a2a2a;
+  --lp-texto-suave: #5c5a56;
+  --lp-nav-texto: #111;
+  --lp-nav-fondo: rgba(252, 251, 249, 0.9);
+}
+
 /* Textura sutil en el fondo global */
-.tema-clasico body {
+.tema-clasico {
   background-image: radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
   background-size: 20px 20px;
 }

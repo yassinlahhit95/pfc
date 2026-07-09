@@ -172,7 +172,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php endif; ?>
                     </div>
                     <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($estudiante['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="boton-secundario btn-animado" style="border-radius: 20px; background:var(--bg-body);">
-                        <i class="fas fa-file-pdf" style="color: #ef4444;"></i> Ver PDF
+                        <i class="fas fa-file-pdf" style="color: var(--rojo);"></i> Ver PDF
                     </a>
                 </div>
             <?php } else { ?>

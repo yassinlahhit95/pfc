@@ -53,9 +53,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:1px solid var(--border);flex-shrink:0;">
-                                    <?= strtoupper(substr($t['nombreTutor'], 0, 1)) ?>
+                                    <?= mb_strtoupper(mb_substr($t['nombreTutor'], 0, 1), 'UTF-8') ?>
                                 </div>
-                                <b><?= strtoupper(Security::escapeHtml($t['nombreTutor'])) ?></b>
+                                <b><?= mb_strtoupper(Security::escapeHtml($t['nombreTutor']), 'UTF-8') ?></b>
                             </div>
                         </td>
                         <td><?= Security::escapeHtml($t['dniTutor']) ?></td>
@@ -78,6 +78,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <a class="recurso-menu-item" href="modificarTutor.php?idTutor=<?= (int)$t['idTutor'] ?>">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
+                                    <a class="recurso-menu-item" href="#"
+                                       onclick="restablecerPasswordTutor(<?= (int)$t['idTutor'] ?>, '<?= Security::escapeHtml(addslashes($t['nombreTutor'])) ?>'); return false;">
+                                        <i class="fas fa-key"></i> Restablecer contraseña
+                                    </a>
                                     <div class="recurso-menu-sep"></div>
                                     <a class="recurso-menu-item peligro" href="#"
                                        data-modal-borrar
@@ -99,6 +103,23 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+
+<form id="form-reset-tutor" method="POST" action="../../../controladores/admin/tutores/restablecer_password.php" hidden>
+    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+    <input type="hidden" name="idTutor" id="reset-tutor-id" value="">
+</form>
+
 <script>
 iniciarPaginacion('tablaTutores', 15);
+
+function restablecerPasswordTutor(idTutor, nombre) {
+    var pedir = window.ModalConfirm
+        ? ModalConfirm.prompt('Se generará una contraseña temporal para «' + nombre + '» y se le enviará por email. Deberá cambiarla en su primer acceso. ¿Continuar?', 'Restablecer contraseña')
+        : Promise.resolve(confirm('¿Restablecer la contraseña de ' + nombre + '?'));
+    pedir.then(function (ok) {
+        if (!ok) return;
+        document.getElementById('reset-tutor-id').value = idTutor;
+        document.getElementById('form-reset-tutor').submit();
+    });
+}
 </script>

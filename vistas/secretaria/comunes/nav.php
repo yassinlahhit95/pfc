@@ -89,6 +89,12 @@ function _nav_active_sec($check) {
         <?php if (_nav_active_sec('papelera') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../tutores/verTutores.php" class="nav-item<?= _nav_active_sec('tutores') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="nav-label">Sistema Parental</span>
+        <?php if (_nav_active_sec('tutores') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
       <?php if (FeatureGuard::check('feature_prematricula')): ?>
       <a href="../admisiones/listado.php" class="nav-item<?= _nav_active_sec('admisiones') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
@@ -213,23 +219,47 @@ function _nav_active_sec($check) {
         <span class="role-badge">SECRETARIA</span>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
-      <div class="search-wrap">
-        <label class="searchbar">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
-          <input id="search" placeholder="Buscar..." autocomplete="new-password"
-                 data-url="../../../controladores/admin/buscar.php" />
-          <kbd>⌘K</kbd>
-        </label>
-        <ul class="search-results" id="search-results" hidden></ul>
-      </div>
       <div class="topbar-actions">
+        <!-- Mobile Trigger -->
+        <button class="icon-btn mobile-search-trigger" id="mobile-search-trigger" aria-label="Buscar">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+        </button>
+        <!-- Desktop Input / Mobile Modal -->
+        <div class="search-backdrop" id="search-backdrop" hidden></div>
+        <div class="search-wrapper" id="search-wrapper">
+          <label class="search-modal-bar">
+            <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+            <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   data-url="../../../controladores/secretaria/buscar.php" />
+            <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+            <kbd class="search-kbd">⌘K</kbd>
+          </label>
+          <ul class="search-results" id="search-results" hidden></ul>
+        </div>
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>
       </div>
     </header>
 
-    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
+    <?php
+    $mesActual = date('m');
+    if ($mesActual === '06') {
+        $diasRestantes = 30 - (int)date('d');
+        if ($diasRestantes >= 0) {
+            echo '<div style="background-color: var(--rojo-suave, #fee2e2); color: var(--rojo); padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid var(--rojo-borde, #fecaca);">';
+            echo '<i class="fas fa-clock"></i> ¡Atención! Quedan ' . $diasRestantes . ' días para el fin del periodo de pagos (30 de junio).';
+            echo '</div>';
+        }
+    }
+    ?>
+
+    <?php // Las vistas de secretaría definen $seccion (no $seccionActual)
+    if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         require_once __DIR__ . "/../../../modelos/chat.php";
         $cw_rol = 'secretaria';
         $cw_id = (int)$_SESSION['idSecretaria'];

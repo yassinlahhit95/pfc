@@ -12,7 +12,7 @@ if (!$mostrarFormulario && !$mostrarMapa) {
     $gridClass = 'lp-contacto-grid lp-contacto-mapa-form';
 }
 ?>
-<section class="lp-sec lp-contacto" id="contacto">
+<section class="lp-sec lp-contacto" id="contacto"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     
     <div class="lp-sec-cabecera lp-anim">
@@ -107,3 +107,7 @@ if (!$mostrarFormulario && !$mostrarMapa) {
     </div>
   </div>
 </section>
+
+
+
+

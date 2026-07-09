@@ -1,17 +1,14 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
-require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
 $datosTutor_menu        = obtenerTutorPorId($_SESSION['idTutor']);
 $nombreUsuario_menu     = $datosTutor_menu['nombreTutor'] ?? 'Tutor';
 $estudiantes_menu       = listarEstudiantesPorTutor($_SESSION['idTutor']);
 $totalEstudiantes_menu  = count($estudiantes_menu);
-
-// Notificaciones (mensajería para tutor)
-$totalSinLeer_menu = 0; // Por ahora 0, implementar conteo para tutor si es necesario
 
 // Active-state helper
 function _nav_active_tutor($check) {
@@ -78,6 +75,23 @@ function _nav_active_tutor($check) {
         </a>
       <?php endforeach; ?>
 
+      <span class="nav-section-title">CENTRO</span>
+      <?php if (FeatureGuard::check('feature_anuncios')): ?>
+      <a href="../anuncios/lista.php" class="nav-item<?= _nav_active_tutor('anuncios') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+        <span class="nav-label">Anuncios</span>
+        <?php if (_nav_active_tutor('anuncios') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
+
+      <?php if (FeatureGuard::check('feature_eventos')): ?>
+      <a href="../eventos/lista.php" class="nav-item<?= _nav_active_tutor('eventos') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <span class="nav-label">Eventos</span>
+        <?php if (_nav_active_tutor('eventos') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
+
       <span class="nav-section-title">GESTIÓN</span>
       <?php if (FeatureGuard::check('feature_pagos')): ?>
       <a href="../pagos/misPagos.php" class="nav-item<?= _nav_active_tutor('pagos') ?>">
@@ -95,6 +109,10 @@ function _nav_active_tutor($check) {
     </nav>
 
     <nav class="sidebar-bottom-nav">
+      <a href="../../cambiar_password.php" class="nav-item">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <span class="nav-label">Cambiar Contraseña</span>
+      </a>
       <a href="../../../controladores/logout.php" class="nav-item nav-item-logout">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></span>
         <span class="nav-label">Cerrar Sesión</span>
@@ -110,7 +128,7 @@ function _nav_active_tutor($check) {
         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
       </button>
       <div class="topbar-user">
-        <span class="role-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">FAMILIA</span>
+        <span class="role-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--verde);">FAMILIA</span>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
       

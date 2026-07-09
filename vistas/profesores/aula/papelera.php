@@ -60,7 +60,7 @@ function botonesPapelera($tipo, $id, $idModulo) {
 <?php else: ?>
 
   <?php if (!empty($papelera['carpetas'])): ?>
-  <h3 style="margin-top:18px;font-size:.95rem;color:#475569;">Carpetas</h3>
+  <h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);">Carpetas</h3>
   <table class="recurso-lista">
     <thead><tr><th>Nombre</th><th>Eliminada</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>
@@ -76,7 +76,7 @@ function botonesPapelera($tipo, $id, $idModulo) {
   <?php endif; ?>
 
   <?php if (!empty($papelera['archivos'])): ?>
-  <h3 style="margin-top:18px;font-size:.95rem;color:#475569;">Archivos</h3>
+  <h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);">Archivos</h3>
   <table class="recurso-lista">
     <thead><tr><th>Nombre</th><th>Carpeta</th><th>Eliminado</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>

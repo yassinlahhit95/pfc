@@ -33,9 +33,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php if (is_string($errores) && $errores): ?>
-<div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#dc2626;">
+<div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:var(--rojo);">
     <i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml($errores) ?>
-    <button class="inbox-banner-close" style="color:#dc2626;" onclick="this.parentElement.remove()">×</button>
+    <button class="inbox-banner-close" style="color:var(--rojo);" onclick="this.parentElement.remove()">×</button>
 </div>
 <?php endif; ?>
 <?php if ($exito): ?>

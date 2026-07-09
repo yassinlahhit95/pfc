@@ -6,7 +6,7 @@ return [
     'nombre'      => 'Clásico académico',
     'descripcion' => 'Estilo académico tradicional: tipografía con serifa, verde botella y maquetación sobria. Transmite trayectoria y seriedad.',
     'thumbnail'   => 'plantilla-clasico.svg',
-    'colorAcento' => '#166534',
+    'colorAcento' => '#0d4732',
     'secciones'   => [
         ['tipo' => 'hero', 'contenido' => [
             'variante'  => 'minimal',
@@ -14,12 +14,13 @@ return [
             'titulo'    => 'Excelencia académica y compromiso con el empleo',
             'subtitulo' => 'Un centro con trayectoria, profesorado estable y resultados contrastados en inserción laboral.',
         ]],
-        ['tipo' => 'porque_elegirnos'],
+        ['tipo' => 'porque_elegirnos', 'contenido' => ['variante' => 'grid']],
         ['tipo' => 'oferta_formativa'],
         ['tipo' => 'instalaciones'],
-        ['tipo' => 'fp_dual'],
-        ['tipo' => 'testimonios'],
-        ['tipo' => 'faq'],
+        ['tipo' => 'fp_dual', 'contenido' => ['variante' => 'split']],
+        ['tipo' => 'testimonios', 'contenido' => ['variante' => 'grid']],
+        ['tipo' => 'faq', 'contenido' => ['variante' => 'lista']],
+        ['tipo' => 'prematricula_cta', 'contenido' => ['variante' => 'centrado']],
         ['tipo' => 'contacto'],
     ],
 ];

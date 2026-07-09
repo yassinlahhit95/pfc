@@ -41,7 +41,7 @@ function listarEstudiantesPorTutor($idTutor) {
             FROM estudiantes e 
             JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante 
             JOIN ciclos c ON e.idCiclo = c.idCiclo
-            WHERE et.idTutor = ?";
+            WHERE et.idTutor = ? AND e.eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idTutor);
     mysqli_stmt_execute($stmt);
@@ -49,6 +49,17 @@ function listarEstudiantesPorTutor($idTutor) {
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
+    }
+    return $lista;
+}
+
+function obtenerTokensTutores() {
+    $con = obtenerConexion();
+    $sql = "SELECT fcm_token FROM tutores WHERE fcm_token IS NOT NULL AND fcm_token != ''";
+    $resultado = mysqli_query($con, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $lista[] = $fila['fcm_token'];
     }
     return $lista;
 }
@@ -73,6 +84,22 @@ function insertarTutor($nombre, $email, $dni, $telefono) {
     mysqli_stmt_bind_param($stmt, "sssss", $nombre, $email, $pass, $dni, $telefono);
     mysqli_stmt_execute($stmt);
     return mysqli_insert_id($con);
+}
+
+// Restablece la contraseña del tutor: genera una temporal (se envía por email
+// y se muestra una única vez en el mensaje de éxito) y obliga a cambiarla al entrar.
+function restablecerPasswordTutor(int $idTutor): bool {
+    $tutor = obtenerTutorPorId($idTutor);
+    if (!$tutor) return false;
+
+    require_once __DIR__ . '/../include/credenciales.php';
+    [$hash] = generarCredencialesTemporales($tutor['emailTutor'], $tutor['nombreTutor'], 'Tutor');
+
+    $con  = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "UPDATE tutores SET password = ?, must_change_password = 1, pwd_changed_at = NULL WHERE idTutor = ?");
+    mysqli_stmt_bind_param($stmt, "si", $hash, $idTutor);
+    return mysqli_stmt_execute($stmt);
 }
 
 function actualizarTutor(int $idTutor, string $nombre, string $email, string $dni, string $telefono): bool {

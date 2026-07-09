@@ -12,114 +12,260 @@ $idCiclo = $estudianteActual['idCiclo'] ?? 0;
 $listaModulos = listarModulosPorCiclo($idCiclo);
 $todasLasTareas = [];
 
-foreach ($listaModulos as $modulo) {
-    $tareas = listarTareasPorModuloAula($modulo['idModulo']);
-    foreach ($tareas as $tarea) {
-        $tarea['nombreModulo'] = $modulo['nombreModulo'];
-        $todasLasTareas[] = $tarea;
+// Get all tasks and check entregas efficiently
+$db = obtenerConexion();
+$sql = "
+    SELECT t.*, m.nombreModulo, p.nombreProfesor, ent.idEntrega, ent.nota, k.estado AS kanban_estado
+    FROM aula_tareas t
+    JOIN modulos m ON t.idModulo = m.idModulo
+    JOIN profesores p ON t.idProfesor = p.idProfesor
+    LEFT JOIN aula_entregas ent ON t.idTarea = ent.idTarea AND ent.idEstudiante = ?
+    LEFT JOIN aula_kanban_estado k ON t.idTarea = k.idTarea AND k.idEstudiante = ?
+    WHERE m.idCiclo = ? AND t.publicado = 1
+    ORDER BY t.fechaCreacion DESC
+";
+$stmt = mysqli_prepare($db, $sql);
+mysqli_stmt_bind_param($stmt, "iii", $idEstudiante, $idEstudiante, $idCiclo);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+
+$tareas = [];
+if ($res) {
+    while ($row = mysqli_fetch_assoc($res)) {
+        $tareas[] = $row;
     }
 }
 
-usort($todasLasTareas, function($a, $b) {
-    return strtotime($b['fechaCreacion']) - strtotime($a['fechaCreacion']);
-});
+$colDisponibles = [];
+$colProgreso = [];
+$colEntregadas = [];
+$colCalificadas = [];
+
+foreach ($tareas as $t) {
+    if ($t['idEntrega']) {
+        if ($t['nota'] !== null) {
+            $colCalificadas[] = $t;
+        } else {
+            $colEntregadas[] = $t;
+        }
+    } else {
+        if ($t['kanban_estado'] === 'progress') {
+            $colProgreso[] = $t;
+        } else {
+            $colDisponibles[] = $t;
+        }
+    }
+}
 
 $tituloDelPagina = 'AULAPRO | TAREAS';
-$seccionActual = 'aula_sesiones';
+$seccionActual = 'aula_tareas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="cabecera">
-    <h1>TAREAS</h1>
-    <p class="texto-suave">Tareas pendientes y completadas de tus módulos</p>
+<style>
+.kanban-board {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+.kanban-col {
+    background: var(--surface-2);
+    border-radius: 12px;
+    padding: 16px;
+    width: 300px;
+    min-width: 300px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.kanban-col h3 {
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.kanban-card {
+    background:var(--surface);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--border);
+}
+.kanban-card:active {
+    cursor: grabbing;
+}
+.kanban-card.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+.kanban-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    color: var(--text);
+}
+.kanban-card .mod {
+    font-size: 0.75rem;
+    color: var(--azul);
+    background: var(--azul-suave);
+    padding: 2px 8px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+.kanban-card p {
+    font-size: 0.85rem;
+    color: var(--dim);
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+.kanban-card .btn {
+    display: block;
+    text-align: center;
+    background: var(--surface-2);
+    color: var(--dim);
+    border: 1px solid var(--border);
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.kanban-card .btn:hover {
+    background: var(--border);
+    color: var(--text);
+}
+.kanban-col.drag-over {
+    background: var(--border);
+    border: 2px dashed var(--mut);
+}
+</style>
+
+<div class="cabecera" style="margin-bottom:24px;">
+    <h1><i class="fas fa-tasks"></i> TABLERO DE TAREAS</h1>
+    <p class="texto-suave" style="margin-top:4px;">Arrastra las tareas de "Pendientes" a "En Progreso" para organizarte mejor.</p>
 </div>
 
-<?php
-$tareasPendientes = array_filter($todasLasTareas, function($t) { return $t['publicada'] == 1; });
-$tareasNoPublicadas = array_filter($todasLasTareas, function($t) { return $t['publicada'] == 0; });
-?>
-
-<?php if (empty($tareasPendientes) && empty($tareasNoPublicadas)) { ?>
-    <div class="alerta-info">
-        <i class="fas fa-info-circle"></i>
-        <p>No hay tareas disponibles en tus módulos.</p>
+<div class="kanban-board">
+    <!-- COLUMNA: PENDIENTES -->
+    <div class="kanban-col" id="col-todo" data-status="todo">
+        <h3>Pendientes <span class="badge badge-azul"><?= count($colDisponibles) ?></span></h3>
+        <?php foreach($colDisponibles as $t): ?>
+            <div class="kanban-card" draggable="true" data-id="<?= $t['idTarea'] ?>">
+                <span class="mod"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
+                <p><?= Security::escapeHtml(substr(strip_tags($t['descripcion']), 0, 80)) ?>...</p>
+                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Ver detalles</a>
+            </div>
+        <?php endforeach; ?>
     </div>
-<?php } else { ?>
 
-    <?php if (!empty($tareasPendientes)) { ?>
-    <div style="margin-bottom: 40px;">
-        <h2 style="margin-bottom: 20px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
-            <i class="fas fa-tasks"></i> TAREAS DISPONIBLES
-        </h2>
-
-        <div class="tabla-responsiva">
-            <table class="tabla-contenido">
-                <thead>
-                    <tr>
-                        <th>TAREA</th>
-                        <th>MÓDULO</th>
-                        <th>PROFESOR</th>
-                        <th>DESCRIPCIÓN</th>
-                        <th>ESTADO</th>
-                        <th>ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($tareasPendientes as $tarea) {
-                        $con = obtenerConexion();
-                        $sql = "SELECT COUNT(*) as total FROM aula_entregas WHERE idTarea = ? AND idEstudiante = ?";
-                        $stmt = mysqli_prepare($con, $sql);
-                        mysqli_stmt_bind_param($stmt, "ii", $tarea['idTarea'], $idEstudiante);
-                        mysqli_stmt_execute($stmt);
-                        $res = mysqli_stmt_get_result($stmt);
-                        $result = mysqli_fetch_assoc($res);
-                        $tieneEntrega = $result['total'] > 0;
-                        mysqli_close($con);
-
-                        $estado = $tieneEntrega ? '<span class="badge badge-verde">ENTREGADA</span>' : '<span class="badge badge-azul">PENDIENTE</span>';
-                    ?>
-                    <tr>
-                        <td><strong><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></strong></td>
-                        <td><?= Security::escapeHtml($tarea['nombreModulo']) ?></td>
-                        <td><?= Security::escapeHtml($tarea['nombreProfesor']) ?></td>
-                        <td><span class="texto-pequeño"><?= Security::escapeHtml(substr(strip_tags($tarea['descripcion']), 0, 60)) ?>...</span></td>
-                        <td><?= Security::escapeHtml($estado ) ?></td>
-                        <td>
-                            <a href="tarea_detalle.php?id=<?= Security::escapeHtml($tarea['idTarea'] ) ?>" class="boton-primario btn-pequeno">
-                                <i class="fas fa-arrow-right"></i> VER
-                            </a>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
+    <!-- COLUMNA: EN PROGRESO (Gestionada en BD) -->
+    <div class="kanban-col" id="col-progress" data-status="progress">
+        <h3>En Progreso <span class="badge badge-ambar" id="count-progress"><?= count($colProgreso) ?></span></h3>
+        <?php foreach($colProgreso as $t): ?>
+            <div class="kanban-card" draggable="true" data-id="<?= $t['idTarea'] ?>">
+                <span class="mod"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
+                <p><?= Security::escapeHtml(substr(strip_tags($t['descripcion']), 0, 80)) ?>...</p>
+                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Ver detalles</a>
+            </div>
+        <?php endforeach; ?>
     </div>
-    <?php } ?>
 
-    <?php if (!empty($tareasNoPublicadas)) { ?>
-    <div style="margin-top: 40px;">
-        <h2 style="margin-bottom: 20px; color: #666; border-bottom: 2px solid #ddd; padding-bottom: 10px;">
-            <i class="fas fa-lock"></i> TAREAS NO PUBLICADAS
-        </h2>
-        <div class="alerta-info">
-            <p>Hay <?= Security::escapeHtml(count($tareasNoPublicadas)) ?> tarea(s) que aún no están disponibles para estudiantes.</p>
-        </div>
+    <!-- COLUMNA: ENTREGADAS -->
+    <div class="kanban-col" id="col-submitted" data-status="submitted">
+        <h3>Entregadas <span class="badge badge-indigo"><?= count($colEntregadas) ?></span></h3>
+        <?php foreach($colEntregadas as $t): ?>
+            <div class="kanban-card" style="cursor:default;">
+                <span class="mod" style="background:color-mix(in oklab, var(--accent) 12%, var(--surface)); color:var(--accent);"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
+                <p style="color:var(--verde); font-weight:600; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Esperando corrección</p>
+                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Revisar entrega</a>
+            </div>
+        <?php endforeach; ?>
     </div>
-    <?php } ?>
 
-    <div class="info-sistema">
-        <h3>Información sobre Tareas</h3>
-        <ul>
-            <li><strong>Tareas Disponibles:</strong> Tareas publicadas por el profesor</li>
-            <li><strong>Pendiente:</strong> Aún no has entregado la tarea</li>
-            <li><strong>Entregada:</strong> Ya has enviado tu solución</li>
-            <li><strong>Calificada:</strong> El profesor ha evaluado tu entrega</li>
-            <li>Puedes ver el estado de cada entrega en <strong>MIS ENTREGAS</strong></li>
-        </ul>
+    <!-- COLUMNA: CALIFICADAS -->
+    <div class="kanban-col" id="col-graded" data-status="graded">
+        <h3>Calificadas <span class="badge badge-verde"><?= count($colCalificadas) ?></span></h3>
+        <?php foreach($colCalificadas as $t): ?>
+            <div class="kanban-card" style="cursor:default; opacity:0.9;">
+                <span class="mod" style="background:var(--verde-suave); color:var(--verde-ink);"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
+                <p style="color:var(--text); font-weight:700; font-size:1.1rem; margin-bottom:8px;">Nota: <?= number_format($t['nota'], 1) ?></p>
+                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Ver feedback</a>
+            </div>
+        <?php endforeach; ?>
     </div>
-<?php } ?>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.kanban-card[draggable="true"]');
+    const cols = document.querySelectorAll('.kanban-col[data-status="todo"], .kanban-col[data-status="progress"]');
+    
+    const colTodo = document.getElementById('col-todo');
+    const colProgress = document.getElementById('col-progress');
+    const countProgress = document.getElementById('count-progress');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', () => {
+            card.classList.add('dragging');
+        });
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+        });
+    });
+
+    cols.forEach(col => {
+        col.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            col.classList.add('drag-over');
+        });
+        col.addEventListener('dragleave', () => {
+            col.classList.remove('drag-over');
+        });
+        col.addEventListener('drop', (e) => {
+            e.preventDefault();
+            col.classList.remove('drag-over');
+            const dragged = document.querySelector('.dragging');
+            if (dragged) {
+                // If it moved to a different column
+                const oldCol = dragged.closest('.kanban-col');
+                if (oldCol !== col) {
+                    col.appendChild(dragged);
+                    guardarEstado(dragged.dataset.id, col.dataset.status);
+                    actualizarContadores();
+                }
+            }
+        });
+    });
+
+    function guardarEstado(cardId, newStatus) {
+        const data = new URLSearchParams();
+        data.append('idTarea', cardId);
+        data.append('estado', newStatus);
+        
+        fetch('../../../controladores/estudiantes/aula/ajax_kanban_estado.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: data
+        }).catch(err => console.error(err));
+    }
+
+    function actualizarContadores() {
+        colTodo.querySelector('.badge').innerText = colTodo.querySelectorAll('.kanban-card').length;
+        countProgress.innerText = colProgress.querySelectorAll('.kanban-card').length;
+    }
+});
+</script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

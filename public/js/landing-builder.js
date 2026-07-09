@@ -41,6 +41,16 @@
             });
     }
 
+    // Escuchar mensajes desde el iframe
+    window.addEventListener('message', function(e) {
+        // Solo aceptar mensajes del mismo origen (el iframe va en el mismo dominio)
+        if (e.origin !== window.location.origin) return;
+        if (e.data && e.data.action === 'edit_section') {
+            var id = e.data.idSeccion;
+            abrirEditor(id);
+        }
+    });
+
     function marcarCambios() {
         $('#lb-estado').attr('class', 'texto-estado azul').text('Borrador con cambios');
         $('#lb-descartar').prop('disabled', false);
@@ -242,7 +252,11 @@
         var fd = new FormData();
         fd.append('imagen', archivo);
         fd.append('csrf_token', csrf());
+        
         $wrap.addClass('lb-subiendo');
+        var $preview = $wrap.find('.lb-imagen-preview');
+        var oldHtml = $preview.html();
+        $preview.empty().append($('<span class="lb-imagen-vacia"><i class="fas fa-spinner fa-spin"></i> Subiendo archivo...</span>'));
 
         $.ajax({
             url: BASE + 'subir_imagen.php', type: 'POST', data: fd,
@@ -250,7 +264,11 @@
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .done(function (res) {
-            if (!res.ok) { toast(res.msg, 'error'); return; }
+            if (!res.ok) { 
+                toast(res.msg, 'error'); 
+                $preview.html(oldHtml);
+                return; 
+            }
             $wrap.find('input[type="hidden"]').val(res.filename);
             if (res.filename.endsWith('.mp4')) {
                 $wrap.find('.lb-imagen-preview').empty().append($('<video controls style="max-width:100%; max-height:120px; border-radius:6px;">').attr('src', res.url));
@@ -259,7 +277,10 @@
             }
             toast(res.msg, 'success');
         })
-        .fail(function () { toast('Error al subir la imagen', 'error'); })
+        .fail(function () { 
+            toast('Error al subir la imagen', 'error'); 
+            $preview.html(oldHtml);
+        })
         .always(function () { $wrap.removeClass('lb-subiendo'); });
         $(this).val('');
     });
@@ -327,6 +348,12 @@
 
         $('#lb-editor').addClass('abierto').attr('aria-hidden', 'false');
         $('#lb-editor-fondo').addClass('abierto');
+
+        // Enviar mensaje al iframe para hacer scroll y highlight a esta sección
+        var iframe = $iframe.get(0);
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ action: 'highlight_section', idSeccion: id }, window.location.origin);
+        }
     }
 
     function cerrarEditor() {
@@ -386,6 +413,26 @@
             })
             .fail(function () { toast('Error de conexión', 'error'); })
             .always(function () { $boton.prop('disabled', false); });
+    });
+
+    // Auto-guardado debounced para Live Preview
+    var timeoutEditor = null;
+    $('#lb-editor-form').on('input change', 'input, textarea, select', function () {
+        clearTimeout(timeoutEditor);
+        timeoutEditor = setTimeout(function () {
+            var datos = serializarEditor();
+            if (datos === null) return;
+            var id = idAbierta;
+            post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
+                .done(function (res) {
+                    if (res.ok) {
+                        var seccion = seccionPorId(id);
+                        if (seccion) seccion.contenido = datos;
+                        marcarCambios();
+                        recargarPreview();
+                    }
+                });
+        }, 700); // 700ms debounce
     });
 
     /* ══════════ Ajustes globales ══════════ */

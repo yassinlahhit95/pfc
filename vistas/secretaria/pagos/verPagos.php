@@ -24,6 +24,10 @@ if ($idNivelFiltro && $idCicloFiltro && !in_array($idCicloFiltro, array_column($
 
 $listaPagos = $idCicloFiltro ? listarPagosFiltrados($idCicloFiltro) : listarTodosLosPagos();
 
+// El modal de pendientes es independiente de los filtros de la página:
+// siempre muestra todos los vencidos reales (último pago por estudiante).
+$listaPendientes = listarPagosPendientes();
+
 $titulo_pagina = 'AULAPRO | PAGOS';
 $seccion = 'pagos';
 include __DIR__ . '/../comunes/nav.php';
@@ -31,7 +35,16 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="cabecera">
     <h1>GESTIÓN DE PAGOS</h1>
-    <a href="agregarPago.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVO PAGO</a>
+    <div class="acciones-cabecera" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button type="button" class="boton-secundario" onclick="$('#modal-pendientes').addClass('modal-abierto').removeClass('modal-cerrando')"
+                style="border-color:var(--danger); color:var(--danger); display:inline-flex; align-items:center; gap:8px;">
+            <i class="fas fa-exclamation-circle"></i> PAGOS PENDIENTES
+            <?php if (count($listaPendientes) > 0): ?>
+            <span style="background:var(--danger);color:#fff;border-radius:999px;padding:1px 8px;font-size:.75rem;font-weight:700;"><?= count($listaPendientes) ?></span>
+            <?php endif; ?>
+        </button>
+        <a href="agregarPago.php" class="boton-primario"><i class="fas fa-plus"></i> NUEVO PAGO</a>
+    </div>
 </div>
 
 <div class="panel margen-abajo">
@@ -54,9 +67,17 @@ include __DIR__ . '/../comunes/nav.php';
                     <option value="">-- Todos los Ciclos --</option>
                     <?php foreach ($ciclosFiltrados as $c): ?>
                         <option value="<?= (int)$c['idCiclo'] ?>" <?= (int)$c['idCiclo'] === $idCicloFiltro ? 'selected' : '' ?>>
-                            <?= strtoupper(Security::escapeHtml($c['nombreCiclo'])) ?>
+                            <?= mb_strtoupper(Security::escapeHtml($c['nombreCiclo']), 'UTF-8') ?>
                         </option>
                     <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="campo relleno">
+                <label>FILTRAR POR CURSO:</label>
+                <select id="filtroCursoPagos" data-filtro-tabla="tablaPagos" data-filtro-campo="curso" onchange="filtrarTablaMulti('tablaPagos')">
+                    <option value="">-- Todos los Cursos --</option>
+                    <option value="1º">1º Año</option>
+                    <option value="2º">2º Año</option>
                 </select>
             </div>
         </div>
@@ -69,6 +90,7 @@ include __DIR__ . '/../comunes/nav.php';
             <thead>
                 <tr>
                     <th>ESTUDIANTE</th>
+                    <th>CURSO</th>
                     <th>CICLO</th>
                     <th>TIPO</th>
                     <th>CANTIDAD</th>
@@ -83,9 +105,10 @@ include __DIR__ . '/../comunes/nav.php';
                 <?php else: ?>
                     <?php foreach ($listaPagos as $p): ?>
                     <tr>
-                        <td><b><?= strtoupper(Security::escapeHtml($p['nombreEstudiante'])) ?></b></td>
-                        <td><?= strtoupper(Security::escapeHtml($p['nombreCiclo'])) ?></td>
-                        <td><span class="texto-estado azul"><?= strtoupper(Security::escapeHtml($p['tipoPago'])) ?></span></td>
+                        <td><b><?= mb_strtoupper(Security::escapeHtml($p['nombreEstudiante']), 'UTF-8') ?></b></td>
+                        <td data-campo="curso"><?= Security::escapeHtml($p['curso'] ?? '1º') ?> Año</td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($p['nombreCiclo']), 'UTF-8') ?></td>
+                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($p['tipoPago']), 'UTF-8') ?></span></td>
                         <td><b><?= number_format((float)$p['monto'], 2) ?> €</b></td>
                         <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
                         <td>
@@ -128,7 +151,74 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
 </div>
 
+<!-- Modal Pagos Pendientes -->
+<div id="modal-pendientes" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-caja" style="max-width:800px; width:90%;">
+        <div class="modal-icono" style="background:#fee2e2;">
+            <i class="fas fa-exclamation-circle" style="color:var(--danger)"></i>
+        </div>
+        <h3 class="modal-titulo">Estudiantes con Pagos Pendientes</h3>
+        <p class="modal-subtitulo">Cuotas recurrentes vencidas (último pago de cada estudiante, sin prórroga vigente)</p>
+        <div class="contenedor-tabla" style="margin-top:20px; max-height:400px; overflow-y:auto;">
+            <table class="tabla-datos" style="font-size:13px;">
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Ciclo</th>
+                        <th>Tipo</th>
+                        <th>Vencido desde</th>
+                        <th>Último Pago</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($listaPendientes)): ?>
+                    <tr><td colspan="6" class="vacio">No hay cuotas vencidas. ¡Todos los estudiantes están al día!</td></tr>
+                    <?php else: foreach ($listaPendientes as $p): ?>
+                    <tr>
+                        <td><b><?= Security::escapeHtml(mb_strtoupper($p['nombreEstudiante'], 'UTF-8')) ?></b></td>
+                        <td><?= Security::escapeHtml(mb_strtoupper($p['nombreCiclo'], 'UTF-8')) ?></td>
+                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($p['tipoPago']), 'UTF-8') ?></span></td>
+                        <td class="texto-rojo texto-negrita"><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
+                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?> · <?= number_format((float)$p['monto'], 2) ?> €</td>
+                        <td>
+                            <button type="button" class="boton-secundario" style="padding:4px 10px;font-size:.78rem;"
+                                    onclick="otorgarProrrogaPago(<?= (int)$p['idPago'] ?>)">
+                                <i class="fas fa-clock"></i> Prórroga 7 días
+                            </button>
+                        </td>
+                    </tr>
+                    <?php endforeach; endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-acciones" style="margin-top:20px;">
+            <button class="boton-secundario" onclick="$('#modal-pendientes').addClass('modal-cerrando'); setTimeout(()=>$('#modal-pendientes').removeClass('modal-abierto modal-cerrando'), 200);">Cerrar</button>
+        </div>
+    </div>
+</div>
+
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 iniciarPaginacion('tablaPagos', 15);
+
+function otorgarProrrogaPago(idPago) {
+    var pedir = window.ModalConfirm
+        ? ModalConfirm.prompt('¿Otorgar 7 días de prórroga? Esto desbloqueará el acceso del estudiante.', 'Otorgar prórroga')
+        : Promise.resolve(confirm('¿Otorgar 7 días de prórroga?'));
+    pedir.then(function (ok) {
+        if (!ok) return;
+        var fd = new FormData();
+        fd.append('idPago', idPago);
+        fetch('../../../controladores/secretaria/ajax_prorroga.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (window.Toast) Toast.show(res.msg || (res.ok ? 'Prórroga otorgada' : 'Error'), res.ok ? 'success' : 'error');
+                if (res.ok) setTimeout(function () { window.location.reload(); }, 900);
+            })
+            .catch(function () {
+                if (window.Toast) Toast.show('Error de conexión', 'error');
+            });
+    });
+}
 </script>

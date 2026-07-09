@@ -105,7 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="horario-buscador">
             <i class="fas fa-magnifying-glass"></i>
-            <input type="search" id="horarioBuscar" class="horario-buscar-input" placeholder="Buscar módulo o profesor...">
+            <input type="search" id="horarioBuscar" class="horario-buscar-input" placeholder="Buscar módulo o profesor..." autocomplete="off">
         </div>
         <div class="horario-lista-tarjetas" id="horarioTarjetas">
             <?php if (empty($asignaciones)) { ?>

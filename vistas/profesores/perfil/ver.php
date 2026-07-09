@@ -30,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-datos">
         <div class="nombre-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(strtoupper($profesor['nombreProfesor'])) ?></div>
+        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(mb_strtoupper($profesor['nombreProfesor'], 'UTF-8')) ?></div>
     </div>
 
     <div class="fila-datos">

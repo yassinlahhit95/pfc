@@ -62,7 +62,7 @@ include_once __DIR__ . '/../comunes/nav.php';
                     <td>
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:1px solid var(--border);flex-shrink:0;">
-                                <?= strtoupper(substr($s['nombreSecretaria'], 0, 1)) ?>
+                                <?= mb_strtoupper(mb_substr($s['nombreSecretaria'], 0, 1), 'UTF-8') ?>
                             </div>
                             <b><?= Security::escapeHtml($s['nombreSecretaria']) ?></b>
                         </div>

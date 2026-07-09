@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php if (empty($asistencias)): ?>
 <div class="panel" style="text-align:center;padding:60px 20px;margin-top:20px;">
-  <i class="fas fa-users" style="font-size:3rem;color:#e2e8f0;display:block;margin-bottom:16px;"></i>
+  <i class="fas fa-users" style="font-size:3rem;color:var(--border);display:block;margin-bottom:16px;"></i>
   <p class="texto-suave">No hay registros de asistencia aún.</p>
 </div>
 <?php else: ?>
@@ -105,7 +105,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if ($asist['presente']): ?>
               <span class="badge-estado-modern" style="background:#dcfce7;color:#15803d;"><i class="fas fa-check-circle"></i> PRESENTE</span>
             <?php else: ?>
-              <span class="badge-estado-modern" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-times-circle"></i> AUSENTE</span>
+              <span class="badge-estado-modern" style="background:#fee2e2;color:var(--rojo);"><i class="fas fa-times-circle"></i> AUSENTE</span>
             <?php endif; ?>
           </td>
         </tr>

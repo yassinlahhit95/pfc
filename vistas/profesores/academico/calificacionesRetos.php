@@ -136,7 +136,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             $notaNum = is_numeric($nota) ? (float)$nota : null;
                         ?>
                         <tr>
-                            <td class="texto-negrita"><?= Security::escapeHtml(strtoupper($est['nombreEstudiante'])) ?>
+                            <td class="texto-negrita"><?= Security::escapeHtml(mb_strtoupper($est['nombreEstudiante'], 'UTF-8')) ?>
                                 <input type="hidden" name="estudiantes[]" value="<?= (int)$est['idEstudiante'] ?>">
                             </td>
                             <td><?= Security::escapeHtml($est['nombreCiclo']) ?></td>

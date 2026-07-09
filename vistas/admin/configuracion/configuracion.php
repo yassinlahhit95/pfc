@@ -114,7 +114,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             </div>
         </div>
         <?php if ($mfaActivo): ?>
-            <span style="display:inline-flex;align-items:center;gap:6px;color:#10b981;font-weight:600;font-size:.85rem;">
+            <span style="display:inline-flex;align-items:center;gap:6px;color:var(--verde);font-weight:600;font-size:.85rem;">
                 <i class="fas fa-check-circle"></i> Activada
             </span>
         <?php else: ?>
@@ -329,7 +329,7 @@ include_once __DIR__ . '/../comunes/nav.php';
     content: '';
     position: absolute; left: 3px; top: 3px;
     width: 18px; height: 18px;
-    background: #fff; border-radius: 50%;
+    background:var(--surface); border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0,0,0,.25);
     transition: transform .2s;
 }
@@ -363,11 +363,11 @@ include_once __DIR__ . '/../comunes/nav.php';
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background: #fef2f2;
+    background: var(--rojo-suave);
     border: 1px solid #fecaca;
     border-radius: 8px;
     font-size: .83rem;
-    color: var(--rojo, #dc2626);
+    color: var(--rojo);
     margin-bottom: 10px;
 }
 .logo-pendiente-borrar .enlace-boton {

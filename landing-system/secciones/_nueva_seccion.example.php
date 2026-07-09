@@ -16,7 +16,7 @@ $titulo = $contenido['titulo'] ?? 'Nuestra galería';
 $items  = $contenido['items']  ?? [];
 ?>
 
-<section class="lp-sec lp-galeria" id="galeria">
+<section class="lp-sec lp-galeria" id="galeria"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <h2 class="lp-titulo-sec"><?= Security::escapeHtml($titulo) ?></h2>
 
@@ -25,7 +25,7 @@ $items  = $contenido['items']  ?? [];
       <?php foreach ($items as $item): ?>
       <div class="lp-galeria-item">
         <?php if (!empty($item['imagen'])): ?>
-        <img src="<?= Security::escapeHtml(landing_img_url($item['imagen'])) ?>"
+        <img loading="lazy" src="<?= Security::escapeHtml(landing_img_url($item['imagen'])) ?>"
              alt="<?= Security::escapeHtml($item['alt'] ?? '') ?>">
         <?php endif; ?>
       </div>
@@ -34,3 +34,7 @@ $items  = $contenido['items']  ?? [];
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

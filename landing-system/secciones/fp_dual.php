@@ -1,9 +1,10 @@
 <?php
 // Sección informativa de FP Dual (marketing; independiente del módulo feature_fp_dual).
+$variante = $contenido['variante'] ?? 'split';
 $imgUrl = landing_img_url($contenido['imagen'] ?? '');
 $items  = $contenido['items'] ?? [];
 ?>
-<section class="lp-sec lp-fpdual" id="fp_dual">
+<section class="lp-sec lp-fpdual lp-fpdual-<?= Security::escapeHtml($variante) ?>" id="fp_dual"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-fpdual-inner">
     <div class="lp-fpdual-texto">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -28,8 +29,12 @@ $items  = $contenido['items'] ?? [];
     </div>
     <?php if ($imgUrl): ?>
     <div class="lp-fpdual-visual">
-      <img src="<?= Security::escapeHtml($imgUrl) ?>" alt="">
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="">
     </div>
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

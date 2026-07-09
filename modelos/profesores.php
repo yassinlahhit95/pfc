@@ -153,11 +153,11 @@ function actualizarTutorStatus($idProfesor, $esTutor, $idCicloTutor) {
     return mysqli_stmt_execute($stmt);
 }
 
-function actualizarPerfilProfesor($id, $nombre, $email, $tel) {
+function actualizarPerfilProfesor($id, $nombre, $email, $tel, $dni = null, $fechaNac = null, $direccion = null, $ciudad = null, $codigoPostal = null, $observaciones = null) {
     $con = obtenerConexion();
-    $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=? WHERE idProfesor=?";
+    $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=?, dniProfesor=?, fechaNacimientoProfesor=?, direccionProfesor=?, ciudadProfesor=?, codigoPostalProfesor=?, observacionesProfesor=? WHERE idProfesor=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssi", $nombre, $email, $tel, $id);
+    mysqli_stmt_bind_param($stmt, "sssssssssi", $nombre, $email, $tel, $dni, $fechaNac, $direccion, $ciudad, $codigoPostal, $observaciones, $id);
     return mysqli_stmt_execute($stmt);
 }
 

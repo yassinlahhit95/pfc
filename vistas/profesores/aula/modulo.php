@@ -93,7 +93,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <!-- BÚSQUEDA DINÁMICA -->
 <div id="searchContainer" style="margin-bottom:var(--space-4);display:none;">
   <div class="search-modern">
-    <input type="text" id="searchInput" placeholder="Buscar..." style="width:100%;">
+    <input type="text" id="searchInput" placeholder="Buscar..." style="width:100%;" autocomplete="off">
   </div>
 </div>
 
@@ -237,7 +237,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="tab-sesiones" style="display:none;">
   <div class="panel-modern">
     <div class="panel-header-modern">
-      <h3 class="panel-titulo-modern"><i class="fas fa-video" style="color:#ef4444;"></i> Sesiones Vivas</h3>
+      <h3 class="panel-titulo-modern"><i class="fas fa-video" style="color:var(--rojo);"></i> Sesiones Vivas</h3>
       <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
         <?= Security::escapeHtml(count($sesiones)) ?>
       </span>
@@ -568,15 +568,15 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="modalConfirmar" class="modal-backdrop">
   <div class="modal-content" style="max-width:420px;">
     <div class="modal-header">
-      <h2 class="modal-header-titulo"><i class="fas fa-triangle-exclamation" style="color:#ef4444;"></i> Confirmar eliminación</h2>
+      <h2 class="modal-header-titulo"><i class="fas fa-triangle-exclamation" style="color:var(--rojo);"></i> Confirmar eliminación</h2>
       <button class="modal-close-btn" onclick="cerrarModal('modalConfirmar')">✕</button>
     </div>
     <div class="modal-body">
-      <p id="modalConfirmarMensaje" style="margin:0;font-size:.95rem;color:var(--color-neutral-700,#374151);"></p>
+      <p id="modalConfirmarMensaje" style="margin:0;font-size:.95rem;color:var(--color-neutral-700,var(--text));"></p>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn-modern btn-secondary-modern" onclick="cerrarModal('modalConfirmar')">Cancelar</button>
-      <button type="button" id="modalConfirmarOk" class="btn-modern" style="background:#ef4444;color:#fff;">Eliminar</button>
+      <button type="button" id="modalConfirmarOk" class="btn-modern" style="background:var(--rojo);color:#fff;">Eliminar</button>
     </div>
   </div>
 </div>

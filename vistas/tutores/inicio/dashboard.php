@@ -46,7 +46,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </a>
   <?php endforeach; ?>
 
-  <a href="../pagos/misPagos.php" class="tile card-soft" style="--tint:#10B981; text-decoration:none">
+  <a href="../pagos/misPagos.php" class="tile card-soft" style="--tint:var(--verde); text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">
       <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -61,7 +61,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
-  <a href="../mensajes/chat.php" class="tile card-soft" style="--tint:#F59E0B; text-decoration:none">
+  <a href="../mensajes/chat.php" class="tile card-soft" style="--tint:var(--naranja); text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">
       <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -92,8 +92,8 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     border-radius: 50%;
     flex-shrink: 0;
 }
-.asist-dot--ok   { background: #10b981; }
-.asist-dot--warn { background: #f59e0b; }
+.asist-dot--ok   { background: var(--verde); }
+.asist-dot--warn { background: var(--naranja); }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

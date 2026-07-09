@@ -25,6 +25,12 @@ $email          = strtolower(trim($_POST['emailProfesor']));
 $telefono       = trim($_POST['telefonoProfesor']);
 $passwordActual = trim($_POST['current_password'] ?? '');
 $passwordNueva  = trim($_POST['new_password'] ?? '');
+$dni            = Security::sanitize($_POST['dniProfesor'] ?? '');
+$fechaNac       = Security::sanitize($_POST['fechaNacimientoProfesor'] ?? '');
+$direccion      = Security::sanitize($_POST['direccionProfesor'] ?? '');
+$ciudad         = Security::sanitize($_POST['ciudadProfesor'] ?? '');
+$codigoPostal   = Security::sanitize($_POST['codigoPostalProfesor'] ?? '');
+$observaciones  = Security::sanitize($_POST['observacionesProfesor'] ?? '');
 
 $errores = [];
 
@@ -65,7 +71,7 @@ if (!empty($passwordNueva)) {
     actualizarPasswordProfesor($idProfesor, $passwordNueva);
 }
 
-$resultado = actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono);
+$resultado = actualizarPerfilProfesor($idProfesor, $nombre, $email, $telefono, $dni, $fechaNac ?: null, $direccion, $ciudad, $codigoPostal, $observaciones);
 
 if ($resultado) {
     $_SESSION['exito'] = "Perfil actualizado correctamente.";

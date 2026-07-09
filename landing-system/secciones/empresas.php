@@ -3,7 +3,7 @@
 $items = $contenido['items'] ?? [];
 $variante = $contenido['variante'] ?? 'grid';
 ?>
-<section class="lp-sec lp-empresas lp-variante-<?= Security::escapeHtml($variante) ?>" id="empresas">
+<section class="lp-sec lp-empresas lp-variante-<?= Security::escapeHtml($variante) ?>" id="empresas"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -23,7 +23,7 @@ $variante = $contenido['variante'] ?? 'grid';
           $enlaceValido = (bool)preg_match('#^https?://#i', $url); ?>
       <?php if ($enlaceValido): ?><a class="lp-empresa" href="<?= Security::escapeHtml($url) ?>" target="_blank" rel="noopener"><?php else: ?><div class="lp-empresa"><?php endif; ?>
         <?php if ($logoUrl): ?>
-        <img src="<?= Security::escapeHtml($logoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" title="<?= Security::escapeHtml($item['nombre'] ?? '') ?>">
+        <img loading="lazy" src="<?= Security::escapeHtml($logoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" title="<?= Security::escapeHtml($item['nombre'] ?? '') ?>">
         <?php else: ?>
         <span><?= Security::escapeHtml($item['nombre'] ?? '') ?></span>
         <?php endif; ?>
@@ -36,3 +36,7 @@ $variante = $contenido['variante'] ?? 'grid';
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

@@ -7,11 +7,12 @@ require_once __DIR__ . "/conectar.php";
 
 function listarTodosLosPagos() {
     $con = obtenerConexion();
-    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
-            FROM pagos
-            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante
-            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
-            ORDER BY idPago DESC";
+    $sql = "SELECT p.*, e.nombreEstudiante, e.curso, c.nombreCiclo
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
+            WHERE e.eliminado = 0
+            ORDER BY p.idPago DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
@@ -24,12 +25,12 @@ function listarTodosLosPagos() {
 
 function listarPagosFiltrados($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT pagos.*, estudiantes.nombreEstudiante, ciclos.nombreCiclo
-            FROM pagos
-            JOIN estudiantes ON pagos.idEstudiante = estudiantes.idEstudiante
-            JOIN ciclos ON estudiantes.idCiclo = ciclos.idCiclo
-            WHERE estudiantes.idCiclo = ?
-            ORDER BY idPago DESC";
+    $sql = "SELECT p.*, e.nombreEstudiante, e.curso, c.nombreCiclo
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            STRAIGHT_JOIN pagos p ON p.idEstudiante = e.idEstudiante
+            WHERE e.idCiclo = ? AND e.eliminado = 0
+            ORDER BY p.idPago DESC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -102,15 +103,11 @@ function contarPagosEstudiante($idEstudiante) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo) {
-    require_once __DIR__ . '/configuracion.php';
-    $config = obtenerConfiguracion();
-    $cursoEscolar = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
-
+function insertarPagoCompleto($idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante = null) {
     $con = obtenerConexion();
-    $sql = "INSERT INTO pagos (idEstudiante, cursoEscolar, monto, tipoPago, fechaPago, fechaProximoPago) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO pagos (idEstudiante, monto, tipoPago, fechaPago, fechaProximoPago, comprobante) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "isdsss", $idEstudiante, $cursoEscolar, $monto, $tipoPago, $fechaPago, $fechaProximo);
+    mysqli_stmt_bind_param($stmt, "idssss", $idEstudiante, $monto, $tipoPago, $fechaPago, $fechaProximo, $comprobante);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -137,3 +134,55 @@ function eliminarPago($idPago) {
     mysqli_stmt_bind_param($stmt, "i", $idPago);
     return mysqli_stmt_execute($stmt);
 }
+
+
+// Pagos recurrentes vencidos: solo el ÚLTIMO pago de cada estudiante cuenta
+// (los recibos antiguos ya renovados no son deuda) y una prórroga vigente
+// deja de considerarse vencido. Misma lógica que el dashboard de secretaría.
+function listarPagosPendientes() {
+    $con = obtenerConexion();
+    $sql = "SELECT p.idPago, p.idEstudiante, p.monto, p.tipoPago, p.fechaPago,
+                   p.fechaProximoPago, p.prorrogaHasta,
+                   e.nombreEstudiante, e.curso, c.nombreCiclo
+            FROM pagos p
+            INNER JOIN (
+                SELECT idEstudiante, MAX(idPago) AS max_id
+                FROM pagos GROUP BY idEstudiante
+            ) ultimo ON p.idPago = ultimo.max_id
+            JOIN estudiantes e ON e.idEstudiante = p.idEstudiante AND e.eliminado = 0
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            WHERE p.tipoPago IN ('mensual', 'trimestral', 'semestral')
+              AND p.fechaProximoPago IS NOT NULL
+              AND p.fechaProximoPago < CURDATE()
+              AND (p.prorrogaHasta IS NULL OR p.prorrogaHasta < CURDATE())
+            ORDER BY p.fechaProximoPago ASC";
+    $res = mysqli_query($con, $sql);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $lista[] = $fila;
+    }
+    return $lista;
+}
+
+function listarEstudiantesConPagosPendientes() {
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, c.nombreCiclo, c.precioCiclo, 
+            IFNULL(SUM(p.monto), 0) AS totalPagado,
+            (c.precioCiclo - IFNULL(SUM(p.monto), 0)) AS deuda
+            FROM estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            LEFT JOIN pagos p ON e.idEstudiante = p.idEstudiante
+            WHERE e.eliminado = 0
+            GROUP BY e.idEstudiante
+            HAVING deuda > 0.05
+            ORDER BY deuda DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $lista[] = $fila;
+    }
+    return $lista;
+}
+

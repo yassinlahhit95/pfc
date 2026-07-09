@@ -6,7 +6,7 @@ require_once __DIR__ . "/conectar.php";
 // ══════════════════════════════════════════════════════════════════════
 
 function contarEstudiantes(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes")['total'] ?? 0);
+    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0")['total'] ?? 0);
 }
 
 function contarProfesores(): int {
@@ -26,7 +26,7 @@ function contarCiclos(): int {
 function contarEstudiantesDeProfesor(int $idProfesor): int {
     $row = dbFetchOne(
         "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e
-         WHERE e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+         WHERE e.eliminado = 0 AND e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
             OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)",
         "ii", $idProfesor, $idProfesor
     );
@@ -63,7 +63,7 @@ function contarPagosRealizados(): int {
 
 function contarEstudiantesNuevos(int $dias = 7): int {
     $row = dbFetchOne(
-        "SELECT COUNT(*) as total FROM estudiantes WHERE fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
+        "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
         "i", $dias
     );
     return (int)($row['total'] ?? 0);
@@ -79,50 +79,44 @@ function contarProfesoresNuevos(int $dias = 7): int {
 
 function contarTFGsEntregados(): int {
     return (int)(dbFetchOne(
-        "SELECT COUNT(*) as total FROM estudiantes WHERE archivoTFG != '' AND archivoTFG IS NOT NULL"
+        "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND archivoTFG != '' AND archivoTFG IS NOT NULL"
     )['total'] ?? 0);
 }
 
 // Obtiene todos los contadores del nav de admin en una sola consulta.
 function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
     $cacheKey = 'nav_admin_counts_' . $idAdmin;
-    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time'] < 2)) {
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time'] < 60)) {
         return $_SESSION[$cacheKey];
     }
     
     $con = obtenerConexion();
     $idAdmin = (int)$idAdmin;
-    $res = mysqli_query($con,
-        "SELECT
-            (SELECT COUNT(*) FROM estudiantes)                                      AS total_estudiantes,
-            (SELECT COUNT(*) FROM profesores)                                       AS total_profesores,
-            (SELECT COUNT(*) FROM tutores)                                          AS total_tutores,
-            (SELECT COUNT(*) FROM directores)                                       AS total_directores,
-            (SELECT COUNT(*) FROM ciclos)                                           AS total_ciclos,
-            (SELECT COUNT(*) FROM modulos)                                          AS total_modulos,
-            (SELECT COUNT(*) FROM retos)                                            AS total_retos,
-            (SELECT COUNT(*) FROM anuncios)                                         AS total_anuncios,
-            (SELECT COUNT(*) FROM dispositivos)                                     AS total_inventario,
-            (SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso')      AS total_prestamos,
-            (SELECT COUNT(*) FROM pagos)                                            AS total_pagos,
-            (SELECT COUNT(*) FROM reclamaciones
-             WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL)
-                OR (emisor_rol = 'profesor'   AND idEstudiante IS NULL)
-                OR (emisor_rol = 'admin'))                                          AS total_mensajes,
-            (SELECT COUNT(*) FROM reclamaciones
-             WHERE leido = 0
-               AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL)
-                 OR (emisor_rol = 'profesor'   AND idEstudiante IS NULL)))          AS total_sin_leer,
-            (SELECT COUNT(*) FROM pre_matriculas WHERE estado = 'PENDIENTE')        AS total_admisiones_pendientes,
-            (SELECT COUNT(*) FROM chat_mensajes m
-             JOIN chat_conversaciones c ON m.conversacion_id = c.id
-             WHERE m.leido = 0
-               AND NOT (m.emisor_rol = 'admin' AND m.emisor_id = {$idAdmin})
-               AND (  (c.user_a_rol = 'admin' AND c.user_a_id = {$idAdmin})
-                   OR (c.user_b_rol = 'admin' AND c.user_b_id = {$idAdmin})))      AS total_chat_no_leidos"
-    );
-    $row = $res ? mysqli_fetch_assoc($res) : [];
-    $data = array_map('intval', $row ?: []);
+
+    $queries = [
+        'total_estudiantes' => "SELECT COUNT(*) FROM estudiantes WHERE eliminado = 0",
+        'total_profesores' => "SELECT COUNT(*) FROM profesores",
+        'total_tutores' => "SELECT COUNT(*) FROM tutores",
+        'total_directores' => "SELECT COUNT(*) FROM directores",
+        'total_ciclos' => "SELECT COUNT(*) FROM ciclos",
+        'total_modulos' => "SELECT COUNT(*) FROM modulos",
+        'total_retos' => "SELECT COUNT(*) FROM retos",
+        'total_anuncios' => "SELECT COUNT(*) FROM anuncios",
+        'total_inventario' => "SELECT COUNT(*) FROM dispositivos",
+        'total_prestamos' => "SELECT COUNT(*) FROM prestamos WHERE estadoPrestamo = 'en curso'",
+        'total_pagos' => "SELECT COUNT(*) FROM pagos",
+        'total_mensajes' => "SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')",
+        'total_sin_leer' => "SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))",
+        'total_admisiones_pendientes' => "SELECT COUNT(*) FROM pre_matriculas WHERE estado = 'PENDIENTE'",
+        'total_chat_no_leidos' => "SELECT COUNT(*) FROM chat_mensajes m JOIN chat_conversaciones c ON m.conversacion_id = c.id WHERE m.leido = 0 AND NOT (m.emisor_rol = 'admin' AND m.emisor_id = {$idAdmin}) AND ((c.user_a_rol = 'admin' AND c.user_a_id = {$idAdmin}) OR (c.user_b_rol = 'admin' AND c.user_b_id = {$idAdmin}))"
+    ];
+
+    $data = [];
+    foreach ($queries as $key => $sql) {
+        $res = mysqli_query($con, $sql);
+        $row = $res ? mysqli_fetch_row($res) : [0];
+        $data[$key] = (int)($row[0] ?? 0);
+    }
     
     $_SESSION[$cacheKey] = $data;
     $_SESSION[$cacheKey . '_time'] = time();

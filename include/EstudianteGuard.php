@@ -26,6 +26,37 @@ if (!empty($_SESSION['must_change_password'])) {
     exit;
 }
 
+// Bloqueo Suave por Impagos (Soft-Lock) para Aula Digital
+$requestUri = $_SERVER['REQUEST_URI'];
+if (strpos($requestUri, '/vistas/estudiantes/aula/') !== false) {
+    require_once __DIR__ . '/../modelos/conectar.php';
+    $db = obtenerConexion();
+    $idEst = $_SESSION['idEstudiante'];
+    $sql = "SELECT fechaProximoPago, prorrogaHasta FROM pagos WHERE idEstudiante = ? ORDER BY fechaProximoPago DESC LIMIT 1";
+    $stmt = mysqli_prepare($db, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEst);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($res)) {
+        $fechaProximo = $row['fechaProximoPago'];
+        $prorroga = $row['prorrogaHasta'];
+        $hoy = date('Y-m-d');
+        
+        $vencido = ($fechaProximo < $hoy);
+        $prorrogaInvalida = (empty($prorroga) || $prorroga < $hoy);
+        
+        if ($vencido && $prorrogaInvalida) {
+            if ($_isAjaxGuardEst) {
+                header('Content-Type: application/json');
+                echo json_encode(['ok' => false, 'msg' => 'Acceso bloqueado por impagos.']);
+                exit;
+            }
+            header('Location: /vistas/estudiantes/pagos_pendientes.php');
+            exit;
+        }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Security::validateCSRFToken(null, false)) {
     if ($_isAjaxGuardEst) {
         header('Content-Type: application/json');

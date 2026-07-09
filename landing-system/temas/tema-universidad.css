@@ -4,24 +4,20 @@
    sombras tipo offset sólido (sin difuminar).
    ══════════════════════════════════════════════════════════════════════ */
 
+/* Identidad: bordes rectos, sombras offset sólidas y nav corporativo.
+   El acento lo fija el config (colorAcento) → el selector de color funciona
+   y la paleta clara/oscura la controla base.css. */
 .tema-universidad {
   --lp-fuente-titulos: 'Plus Jakarta Sans', sans-serif;
-  --lp-acento: #003c8f; /* Azul profundo corporativo */
-  --lp-acento-2: #1565c0; /* Azul algo más claro */
-  --lp-acento-suave: #e3f2fd;
-  --lp-fondo: #ffffff;
-  --lp-fondo-alt: #f8fafc;
-  --lp-borde: #e2e8f0;
-  --lp-texto: #1e293b;
-  --lp-texto-suave: #475569;
-  --lp-nav-texto: #ffffff;
-  --lp-nav-fondo: #003c8f;
   --lp-radio: 0px; /* Bordes completamente rectos */
   --lp-radio-boton: 0px;
-  /* Sombras tipo "Offset" sólido, muy brutalistas/limpias */
-  --lp-sombra: 8px 8px 0px rgba(0, 60, 143, 0.15);
-  --lp-sombra-hover: 12px 12px 0px rgba(0, 60, 143, 0.25);
+  /* Sombras tipo "Offset" sólido, muy brutalistas/limpias — siguen al acento */
+  --lp-sombra: 8px 8px 0px color-mix(in srgb, var(--lp-acento) 15%, transparent);
+  --lp-sombra-hover: 12px 12px 0px color-mix(in srgb, var(--lp-acento) 25%, transparent);
   --lp-footer-fondo: #002252;
+  /* Nav corporativo sólido = color de acento (en modo claro y oscuro) */
+  --lp-nav-fondo: var(--lp-acento);
+  --lp-nav-texto: #ffffff;
 }
 
 /* Tipografía de alto contraste */
@@ -79,7 +75,7 @@
 .tema-universidad .lp-boton-primario:hover {
   background: var(--lp-fondo);
   color: var(--lp-acento);
-  box-shadow: 6px 6px 0px rgba(0, 60, 143, 0.2);
+  box-shadow: 6px 6px 0px color-mix(in srgb, var(--lp-acento) 20%, transparent);
 }
 .tema-universidad .lp-boton-borde {
   background: transparent;

@@ -113,7 +113,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <input type="hidden" name="actualizarCategoria" id="cat-accion-actualizar" value="">
 
             <div class="campo" style="margin-bottom:14px;">
-                <label for="cat-nombre">Nombre <span style="color:#ef4444">*</span></label>
+                <label for="cat-nombre">Nombre <span style="color:var(--rojo)">*</span></label>
                 <input type="text" id="cat-nombre" name="nombre" maxlength="100"
                        placeholder="Ej: Material Escolar" required
                        style="width:100%;padding:10px 12px;border:1.5px solid var(--border-2);border-radius:8px;background:var(--surface);color:var(--text);font-size:14px;font-family:inherit;outline:none;">

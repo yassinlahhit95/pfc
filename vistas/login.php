@@ -81,7 +81,7 @@ $csrfToken = Security::generateCSRFToken();
                 <div class="campo-grupo">
                     <label>Contraseña</label>
                     <div class="campo-password">
-                        <input type="password" id="pass_field" name="contrasena" placeholder="********">
+                        <input type="password" id="pass_field" name="contrasena" placeholder="********" autocomplete="new-password">
                         <button type="button" id="btn_ver" class="ojo-boton">
                             Ver
                         </button>
@@ -90,7 +90,7 @@ $csrfToken = Security::generateCSRFToken();
 
                 <button type="submit" name="enviar" class="boton-acceso">Entrar</button>
 
-                <a href="auth/solicitar_reset.php" style="display:block;text-align:center;margin-top:12px;font-size:.875rem;color:#6b7280;">¿Olvidaste tu contraseña?</a>
+                <a href="auth/solicitar_reset.php" style="display:block;text-align:center;margin-top:12px;font-size:.875rem;color:var(--dim);">¿Olvidaste tu contraseña?</a>
 
                 <a href="../index.php" class="enlace-volver">Volver a la web</a>
 

@@ -11,6 +11,15 @@ class Security {
     const RATE_LIMIT_WINDOW    = 300;   // 5 minutos
 
     public static function initSession() {
+        // Enviar cabeceras de seguridad globales
+        if (!headers_sent()) {
+            header('X-Frame-Options: SAMEORIGIN');
+            header('X-XSS-Protection: 1; mode=block');
+            header('X-Content-Type-Options: nosniff');
+            header('Referrer-Policy: strict-origin-when-cross-origin');
+            // No añadimos un CSP estricto aquí para evitar dañar estilos/scripts en línea existentes
+        }
+
         if (session_status() === PHP_SESSION_NONE) {
             // El flag Secure solo se activa sobre HTTPS para no romper el entorno de desarrollo local.
             $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')

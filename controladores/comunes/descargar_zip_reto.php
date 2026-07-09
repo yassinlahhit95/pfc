@@ -35,6 +35,9 @@ if (!empty($_SESSION['idAdmin'])) {
 }
 if (!$autorizado) { http_response_code(403); exit("No tienes permiso para descargar este material."); }
 
+// Liberar el bloqueo de sesión de PHP para permitir al usuario navegar en otras pestañas
+session_write_close();
+
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════

@@ -74,7 +74,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaDeTodosLosProfesores as $profesorIndividual) { ?>
                     <tr>
                         <td><?= Security::escapeHtml($profesorIndividual['idProfesor']) ?></td>
-                        <td><b><?= strtoupper(Security::escapeHtml($profesorIndividual['nombreProfesor'])) ?></b></td>
+                        <td><b><?= mb_strtoupper(Security::escapeHtml($profesorIndividual['nombreProfesor']), 'UTF-8') ?></b></td>
                         <td>
                             <?php if (!empty($profesorIndividual['esTutor'])): ?>
                                 <span class="texto-estado verde" title="Tutor de: <?= Security::escapeHtml($profesorIndividual['nombreCicloTutor'] ?? '') ?>">

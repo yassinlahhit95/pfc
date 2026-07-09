@@ -3,7 +3,7 @@
 $items = $contenido['items'] ?? [];
 $variante = $contenido['variante'] ?? 'grid';
 ?>
-<section class="lp-sec lp-instalaciones lp-variante-<?= Security::escapeHtml($variante) ?>" id="instalaciones">
+<section class="lp-sec lp-instalaciones lp-variante-<?= Security::escapeHtml($variante) ?>" id="instalaciones"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -32,3 +32,7 @@ $variante = $contenido['variante'] ?? 'grid';
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

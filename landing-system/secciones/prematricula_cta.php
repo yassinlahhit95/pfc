@@ -1,8 +1,9 @@
 <?php
 // CTA de pre-matrícula. Si el módulo está desactivado no se renderiza nada.
 if (!FeatureGuard::check('feature_prematricula')) return;
+$variante = $contenido['variante'] ?? 'centrado';
 ?>
-<section class="lp-sec lp-prematricula" id="prematricula_cta">
+<section class="lp-sec lp-prematricula lp-prematricula-<?= Security::escapeHtml($variante) ?>" id="prematricula_cta"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-prematricula-caja">
     <div class="lp-prematricula-texto">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -22,3 +23,7 @@ if (!FeatureGuard::check('feature_prematricula')) return;
     </div>
   </div>
 </section>
+
+
+
+

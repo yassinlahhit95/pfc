@@ -42,9 +42,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 <style>
     /* Modern UI - Glassmorphism & Animations */
     :root {
-        --glass-bg: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.5);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
         --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     
@@ -182,7 +182,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php endif; ?>
                     </div>
                     <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($estudiante['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="boton-secundario btn-animado" style="border-radius: 20px; background:var(--bg-body);">
-                        <i class="fas fa-file-pdf" style="color: #ef4444;"></i> Ver PDF
+                        <i class="fas fa-file-pdf" style="color: var(--rojo);"></i> Ver PDF
                     </a>
                 </div>
             <?php } else { ?>

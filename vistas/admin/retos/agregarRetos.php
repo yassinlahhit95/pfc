@@ -56,14 +56,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </div>
             </div>
 
-        <div class="campo">
-            <label for="filtroCicloReto">Filtrar por Ciclo</label>
-            <select id="filtroCicloReto" onchange="filtrarModulosReto()">
-                <option value="">-- Todos los ciclos --</option>
-                <?php foreach ($listaCiclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
-                <?php endforeach; ?>
-            </select>
+        <div class="row">
+            <div class="campo">
+                <label for="filtroCicloReto">Filtrar por Ciclo</label>
+                <select id="filtroCicloReto" onchange="filtrarModulosReto()">
+                    <option value="">-- Todos los ciclos --</option>
+                    <?php foreach ($listaCiclos as $c): ?>
+                        <option value="<?= (int)$c['idCiclo'] ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="campo">
+                <label for="filtroCursoReto">Filtrar por Curso</label>
+                <select id="filtroCursoReto" onchange="filtrarModulosReto()">
+                    <option value="">-- Todos los cursos --</option>
+                    <option value="1º">1º Año</option>
+                    <option value="2º">2º Año</option>
+                </select>
+            </div>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'modulosReto') ?>">
@@ -73,6 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php foreach ($todos_los_modulos as $modulo) { ?>
                     <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>"
                             data-ciclo="<?= (int)$modulo['idCiclo'] ?>"
+                            data-curso="<?= Security::escapeHtml($modulo['cursoAnio'] ?? '') ?>"
                             <?= ($datos['modulosReto'] ?? '') == $modulo['idModulo'] ? 'selected' : '' ?>>
                         <?= Security::escapeHtml($modulo['nombreModulo']) ?>
                         <?= !empty($modulo['cursoAnio']) ? ' (' . Security::escapeHtml($modulo['cursoAnio']) . ')' : '' ?>
@@ -92,7 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                    style="position:absolute;opacity:0;width:0;height:0;" onchange="mostrarArchivosReto(this)">
             <div class="archivo-reto-lista" id="listaArchivosReto"></div>
             <div id="progressWrapper" style="display:none;margin-top:10px;">
-                <div style="height:6px;background:var(--border-2,#e2e8f0);border-radius:4px;overflow:hidden;">
+                <div style="height:6px;background:var(--border-2,var(--border));border-radius:4px;overflow:hidden;">
                     <div id="progressFill" style="height:100%;background:var(--accent,#4F46E5);width:0%;transition:width .3s;"></div>
                 </div>
                 <p id="progressText" class="texto-suave" style="font-size:.8rem;margin-top:4px;">0%</p>
@@ -114,16 +125,24 @@ var _todosModulos = <?= json_encode(array_map(fn($m) => ['id' => (int)$m['idModu
 
 function filtrarModulosReto() {
     var idCiclo = parseInt($('#filtroCicloReto').val()) || 0;
+    var curso = $('#filtroCursoReto').val();
     var $sel = $('#modulosReto');
     var currentVal = $sel.val();
     $sel.find('option').each(function() {
         if (!$(this).val()) return;
         var optCiclo = parseInt($(this).data('ciclo')) || 0;
-        $(this).toggle(!idCiclo || optCiclo === idCiclo);
+        var optCurso = $(this).data('curso');
+        var matchCiclo = !idCiclo || optCiclo === idCiclo;
+        var matchCurso = !curso || optCurso === curso;
+        $(this).toggle(matchCiclo && matchCurso);
     });
     // Reset selection if the selected option is now hidden
-    if (idCiclo && $sel.find(':selected').val() && parseInt($sel.find(':selected').data('ciclo')) !== idCiclo) {
-        $sel.val('');
+    if ($sel.find(':selected').val()) {
+        var selCiclo = parseInt($sel.find(':selected').data('ciclo')) || 0;
+        var selCurso = $sel.find(':selected').data('curso');
+        if ((idCiclo && selCiclo !== idCiclo) || (curso && selCurso !== curso)) {
+            $sel.val('');
+        }
     }
 }
 

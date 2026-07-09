@@ -70,6 +70,11 @@ $ciclosJson = json_encode(array_map(fn($c) => [
                     <span>Seleccionar alumnos:</span>
                     <label><input type="checkbox" onchange="toggleAllCheckboxes(this, 'wrapper-boletin')"> Todos</label>
                 </div>
+                <div class="filtros-curso" style="padding: 10px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-size: 13px;">
+                    <label style="margin-right:10px;"><input type="radio" name="filtroCurso_boletin" value="" checked onchange="filtrarEstudiantesLista('boletin')"> Todos los cursos</label>
+                    <label style="margin-right:10px;"><input type="radio" name="filtroCurso_boletin" value="1º" onchange="filtrarEstudiantesLista('boletin')"> 1º Año</label>
+                    <label><input type="radio" name="filtroCurso_boletin" value="2º" onchange="filtrarEstudiantesLista('boletin')"> 2º Año</label>
+                </div>
                 <div id="list-boletin" class="estudiantes-lista-check"></div>
             </div>
 
@@ -81,7 +86,7 @@ $ciclosJson = json_encode(array_map(fn($c) => [
 
     <!-- LISTADO DE ESTUDIANTES -->
     <div class="informe-card">
-        <div class="informe-icono" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);">
+        <div class="informe-icono" style="background:linear-gradient(135deg,var(--azul),#0284c7);">
             <i class="fas fa-users"></i>
         </div>
         <h2 class="informe-titulo">Listado de Alumnado</h2>
@@ -106,6 +111,11 @@ $ciclosJson = json_encode(array_map(fn($c) => [
                     <span>Filtrar alumnos (opcional):</span>
                     <label><input type="checkbox" onchange="toggleAllCheckboxes(this, 'wrapper-listado')"> Todos</label>
                 </div>
+                <div class="filtros-curso" style="padding: 10px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-size: 13px;">
+                    <label style="margin-right:10px;"><input type="radio" name="filtroCurso_listado" value="" checked onchange="filtrarEstudiantesLista('listado')"> Todos los cursos</label>
+                    <label style="margin-right:10px;"><input type="radio" name="filtroCurso_listado" value="1º" onchange="filtrarEstudiantesLista('listado')"> 1º Año</label>
+                    <label><input type="radio" name="filtroCurso_listado" value="2º" onchange="filtrarEstudiantesLista('listado')"> 2º Año</label>
+                </div>
                 <div id="list-listado" class="estudiantes-lista-check"></div>
             </div>
 
@@ -117,7 +127,7 @@ $ciclosJson = json_encode(array_map(fn($c) => [
 
     <!-- HORARIO DEL CICLO -->
     <div class="informe-card">
-        <div class="informe-icono" style="background:linear-gradient(135deg,#10b981,#059669);">
+        <div class="informe-icono" style="background:linear-gradient(135deg,var(--verde),#059669);">
             <i class="fas fa-calendar-week"></i>
         </div>
         <h2 class="informe-titulo">Horario del Ciclo</h2>
@@ -184,7 +194,7 @@ function fetchEstudiantes(selectCiclo) {
         return;
     }
 
-    $list.innerHTML = '<p style="font-size:0.8rem; color:#64748b; padding:10px;">Cargando alumnos...</p>';
+    $list.innerHTML = '<p style="font-size:0.8rem; color:var(--dim); padding:10px;">Cargando alumnos...</p>';
     $wrapper.style.display = 'block';
 
     var fetchUrl = window.resolveAppPath('controladores/admin/estudiantes/get_por_ciclo.php?idCiclo=' + idCiclo);
@@ -192,25 +202,47 @@ function fetchEstudiantes(selectCiclo) {
         .then(r => r.json())
         .then(data => {
             if (!data || !data.length) {
-                $list.innerHTML = '<p style="font-size:0.8rem; color:#ef4444; padding:10px;">No hay alumnos en este ciclo.</p>';
+                $list.innerHTML = '<p style="font-size:0.8rem; color:var(--rojo); padding:10px;">No hay alumnos en este ciclo.</p>';
                 return;
             }
             $list.innerHTML = '';
             data.forEach(est => {
                 var div = document.createElement('div');
                 div.className = 'estudiante-check-item';
+                div.dataset.curso = est.curso;
                 div.innerHTML = `
                     <label>
                         <input type="checkbox" name="estudiantes[]" value="${est.idEstudiante}" checked>
-                        <span>${est.nombreEstudiante}</span>
+                        <span>${est.nombreEstudiante} (${est.curso})</span>
                     </label>
                 `;
                 $list.appendChild(div);
             });
+            filtrarEstudiantesLista(type);
         })
         .catch(() => {
-            $list.innerHTML = '<p style="font-size:0.8rem; color:#ef4444; padding:10px;">Error al cargar alumnos.</p>';
+            $list.innerHTML = '<p style="font-size:0.8rem; color:var(--rojo); padding:10px;">Error al cargar alumnos.</p>';
         });
+}
+
+function filtrarEstudiantesLista(type) {
+    var radioVal = document.querySelector('input[name="filtroCurso_' + type + '"]:checked').value;
+    var $list = document.getElementById('list-' + type);
+    var items = $list.querySelectorAll('.estudiante-check-item');
+    items.forEach(function(item) {
+        var optCurso = item.dataset.curso;
+        if (radioVal === '' || optCurso === radioVal) {
+            item.style.display = '';
+            var cb = item.querySelector('input[type="checkbox"]');
+            if (item.dataset.manuallyChanged !== "true") {
+                cb.checked = true;
+            }
+        } else {
+            item.style.display = 'none';
+            var cb = item.querySelector('input[type="checkbox"]');
+            cb.checked = false;
+        }
+    });
 }
 
 function toggleAllCheckboxes(master, wrapperId) {

@@ -30,9 +30,9 @@ $csrfToken = Security::generateCSRFToken();
             --accent: #4f46e5;
             --accent-glow: rgba(79, 70, 229, 0.12);
             --surface: rgba(255, 255, 255, 0.85);
-            --bg: #f8fafc;
-            --text: #1e293b;
-            --text-muted: #64748b;
+            --bg: var(--surface-2);
+            --text: var(--text);
+            --text-muted: var(--dim);
             --border: rgba(0, 0, 0, 0.08);
             --radius: 24px;
         }
@@ -45,7 +45,7 @@ $csrfToken = Security::generateCSRFToken();
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, var(--surface-2) 0%, var(--border) 100%);
             color: var(--text);
             min-height: 100vh;
             display: flex;
@@ -106,8 +106,8 @@ $csrfToken = Security::generateCSRFToken();
         .ob-step-dot {
             width: 14px; height: 14px;
             border-radius: 50%;
-            background: #cbd5e1;
-            border: 3px solid #f1f5f9;
+            background: var(--border-2);
+            border: 3px solid var(--surface-2);
             transition: all 0.4s ease;
         }
         .ob-step-dot.active {
@@ -143,7 +143,7 @@ $csrfToken = Security::generateCSRFToken();
         /* Icons & Media */
         .ob-hero-icon {
             width: 84px; height: 84px;
-            background: linear-gradient(135deg, #fbbf24, #d97706);
+            background: linear-gradient(135deg, #fbbf24, var(--naranja));
             color: #fff;
             border-radius: 22px;
             display: flex; align-items: center; justify-content: center;
@@ -159,7 +159,7 @@ $csrfToken = Security::generateCSRFToken();
 
         .ob-success-badge {
             font-size: 80px;
-            color: #10b981;
+            color: var(--verde);
             margin-bottom: 28px;
             filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.2));
             animation: obScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
@@ -173,7 +173,7 @@ $csrfToken = Security::generateCSRFToken();
         .ob-title {
             font-size: clamp(24px, 4vw, 36px);
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text);
             margin-bottom: 16px;
             letter-spacing: -.02em;
         }
@@ -194,7 +194,7 @@ $csrfToken = Security::generateCSRFToken();
             margin-bottom: 36px;
         }
         .ob-template-card {
-            background: #fff;
+            background:var(--surface);
             border: 1px solid rgba(0,0,0,0.06);
             border-radius: 18px;
             overflow: hidden;
@@ -217,7 +217,7 @@ $csrfToken = Security::generateCSRFToken();
             position: relative;
             aspect-ratio: 16 / 10;
             overflow: hidden;
-            background: #f1f5f9;
+            background: var(--surface-2);
             border-bottom: 1px solid rgba(0,0,0,0.04);
         }
         .ob-template-thumb img {
@@ -234,7 +234,7 @@ $csrfToken = Security::generateCSRFToken();
         .ob-template-info { padding: 20px; }
         .ob-template-info h3 {
             font-size: 16px; margin-bottom: 6px;
-            color: #0f172a;
+            color: var(--text);
             display: flex; align-items: center; gap: 8px;
         }
         .ob-color-dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -242,7 +242,7 @@ $csrfToken = Security::generateCSRFToken();
         .ob-template-selected-check {
             position: absolute; top: 12px; right: 12px;
             font-size: 24px; color: var(--accent);
-            background: #fff; border-radius: 50%;
+            background:var(--surface); border-radius: 50%;
             line-height: 1; display: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
@@ -259,18 +259,31 @@ $csrfToken = Security::generateCSRFToken();
         }
         .ob-input-group { display: flex; flex-direction: column; gap: 8px; }
         .ob-input-group.full { grid-column: span 2; }
-        .ob-input-group label { font-size: 13.5px; font-weight: 600; color: #475569; }
+        .ob-input-group label { font-size: 13.5px; font-weight: 600; color: var(--dim); }
         .ob-input-group input {
-            background: #fff;
-            border: 1px solid #cbd5e1;
+            background:var(--surface);
+            border: 1px solid var(--border-2);
             border-radius: 12px;
             padding: 13px 16px;
-            color: #0f172a; font-size: 14.5px;
+            color: var(--text); font-size: 14.5px;
             transition: all 0.25s ease;
         }
         .ob-input-group input:focus {
             outline: none; border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+        .ob-input-group input.error {
+            border-color: var(--rojo);
+            background-color: var(--rojo-suave);
+        }
+        .ob-error-text {
+            color: var(--rojo);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: -2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         /* Buttons & Actions */
@@ -311,13 +324,13 @@ $csrfToken = Security::generateCSRFToken();
             transform: none;
         }
         .ob-btn-secondary {
-            background: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
+            background: var(--surface-2);
+            color: var(--dim);
+            border: 1px solid var(--border);
         }
         .ob-btn-secondary:hover {
-            background: #e2e8f0;
-            color: #0f172a;
+            background: var(--border);
+            color: var(--text);
         }
 
         /* Responsive */
@@ -411,22 +424,22 @@ $csrfToken = Security::generateCSRFToken();
             <form id="ob-form-identity" class="ob-form-grid" onsubmit="event.preventDefault();">
                 <div class="ob-input-group">
                     <label for="nombreCentro">Nombre Oficial del Centro *</label>
-                    <input type="text" id="nombreCentro" required value="<?= Security::escapeHtml($cfgCentro['nombreCentro'] ?? '') ?>" placeholder="Ej. Instituto Superior Politécnico">
+                    <input type="text" id="nombreCentro" name="nombreCentro" value="<?= Security::escapeHtml($cfgCentro['nombreCentro'] ?? '') ?>" placeholder="Ej. Instituto Superior Politécnico">
                 </div>
                 
                 <div class="ob-input-group">
                     <label for="codigoCentro">Código de Centro</label>
-                    <input type="text" id="codigoCentro" value="<?= Security::escapeHtml($cfgCentro['codigoCentro'] ?? '') ?>" placeholder="Ej. 28001234">
+                    <input type="text" id="codigoCentro" name="codigoCentro" value="<?= Security::escapeHtml($cfgCentro['codigoCentro'] ?? '') ?>" placeholder="Ej. 28001234">
                 </div>
 
                 <div class="ob-input-group">
                     <label for="emailCentro">Correo Electrónico *</label>
-                    <input type="email" id="emailCentro" required value="<?= Security::escapeHtml($cfgCentro['emailCentro'] ?? '') ?>" placeholder="Ej. info@centro.com">
+                    <input type="text" id="emailCentro" name="emailCentro" value="<?= Security::escapeHtml($cfgCentro['emailCentro'] ?? '') ?>" placeholder="Ej. info@centro.com">
                 </div>
                 
                 <div class="ob-input-group">
                     <label for="telefonoCentro">Móvil / Teléfono de Contacto *</label>
-                    <input type="text" id="telefonoCentro" required value="<?= Security::escapeHtml($cfgCentro['telefonoCentro'] ?? '') ?>" placeholder="Ej. +34 910 123 456">
+                    <input type="text" id="telefonoCentro" name="telefonoCentro" value="<?= Security::escapeHtml($cfgCentro['telefonoCentro'] ?? '') ?>" placeholder="Ej. +34 910 123 456">
                 </div>
                 
                 <div class="ob-input-group">
@@ -457,7 +470,7 @@ $csrfToken = Security::generateCSRFToken();
                             <span id="logo-filename-label">Subir Logo...</span>
                             <input type="file" id="logoCentroFile" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="handleLogoChange(this)">
                         </label>
-                        <div id="logo-preview-container" style="display:none; width:48px; height:48px; border-radius:10px; border:1px solid var(--border); overflow:hidden; background:#fff; padding:4px;">
+                        <div id="logo-preview-container" style="display:none; width:48px; height:48px; border-radius:10px; border:1px solid var(--border); overflow:hidden; background:var(--surface); padding:4px;">
                             <img id="logo-preview-img" src="" style="width:100%; height:100%; object-fit:contain;">
                         </div>
                     </div>
@@ -647,9 +660,10 @@ $csrfToken = Security::generateCSRFToken();
 
     function submitOnboardingForm() {
         const form = document.getElementById('ob-form-identity');
-        if (!form.reportValidity()) {
-            return;
-        }
+        
+        // Clear previous errors
+        $('.ob-error-text').remove();
+        $('.ob-input-group input').removeClass('error');
 
         const formData = new FormData();
         formData.append('csrf_token', csrfToken);
@@ -683,7 +697,15 @@ $csrfToken = Security::generateCSRFToken();
                 if (res && res.ok) {
                     nextStep();
                 } else {
-                    Swal.fire('Error', res.msg || 'No se pudo guardar la configuración.', 'error');
+                    if (res.errores) {
+                        for (let campo in res.errores) {
+                            let input = $('#' + campo);
+                            input.addClass('error');
+                            input.after('<span class="ob-error-text"><i class="fas fa-exclamation-circle"></i> ' + res.errores[campo] + '</span>');
+                        }
+                    } else {
+                        Swal.fire('Error', res.msg || 'No se pudo guardar la configuración.', 'error');
+                    }
                 }
             },
             error: function() {

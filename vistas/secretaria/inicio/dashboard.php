@@ -4,6 +4,7 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $nombre = $secretaria['nombreSecretaria'] ?? 'Secretaria';
@@ -36,6 +37,7 @@ if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time'])
 
 $eventos = listarEventosProximos();
 $proximosEventos = array_slice($eventos, 0, 5);
+$estudiantesPendientes = listarEstudiantesConPagosPendientes();
 
 $hora = (int)date('H');
 $saludo = $hora < 12 ? 'Buenos días' : ($hora < 19 ? 'Buenas tardes' : 'Buenas noches');
@@ -64,7 +66,7 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
     <?php if (FeatureGuard::check('feature_prematricula')): ?>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--naranja,#f59e0b);flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--naranja-suave);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--naranja);flex-shrink:0;">
             <i class="fas fa-clock"></i>
         </div>
         <div>
@@ -74,7 +76,7 @@ include __DIR__ . '/../comunes/nav.php';
     </div>
     <?php endif; ?>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--rojo,#ef4444);flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--rojo-suave);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--rojo);flex-shrink:0;">
             <i class="fas fa-envelope"></i>
         </div>
         <div>
@@ -83,7 +85,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
     </div>
     <div class="panel" style="display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--verde,#10b981);flex-shrink:0;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--verde-suave);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--verde);flex-shrink:0;">
             <i class="fas fa-bullhorn"></i>
         </div>
         <div>
@@ -145,5 +147,164 @@ include __DIR__ . '/../comunes/nav.php';
         <?php endif; ?>
     </div>
 </div>
+
+<?php
+// Obtener estadísticas financieras
+$rPagos = mysqli_query($con, "
+    SELECT 
+        SUM(CASE WHEN p.fechaProximoPago >= CURDATE() THEN 1 ELSE 0 END) AS al_dia,
+        SUM(CASE WHEN p.fechaProximoPago BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) AS proximo,
+        SUM(CASE WHEN p.fechaProximoPago < CURDATE() AND (p.prorrogaHasta IS NULL OR p.prorrogaHasta < CURDATE()) THEN 1 ELSE 0 END) AS vencido
+    FROM pagos p
+    INNER JOIN (
+        SELECT idEstudiante, MAX(idPago) as max_id
+        FROM pagos
+        GROUP BY idEstudiante
+    ) latest ON p.idPago = latest.max_id
+");
+$statsPagos = mysqli_fetch_assoc($rPagos);
+
+$rVencidos = mysqli_query($con, "
+    SELECT p.*, e.nombreEstudiante, e.emailEstudiante 
+    FROM pagos p 
+    JOIN estudiantes e ON p.idEstudiante = e.idEstudiante 
+    INNER JOIN (
+        SELECT idEstudiante, MAX(idPago) as max_id
+        FROM pagos
+        GROUP BY idEstudiante
+    ) latest ON p.idPago = latest.max_id
+    WHERE p.fechaProximoPago < CURDATE() AND (p.prorrogaHasta IS NULL OR p.prorrogaHasta < CURDATE())
+");
+$vencidos = [];
+if ($rVencidos) {
+    while($row = mysqli_fetch_assoc($rVencidos)) {
+        $vencidos[] = $row;
+    }
+}
+?>
+<div class="panel" style="margin-top:24px;">
+    <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+        <i class="fas fa-wallet" style="color:var(--verde);"></i> Panel Financiero y Pagos
+    </h2>
+    <div style="display:flex; gap:16px; margin-bottom:24px;">
+        <div style="flex:1; background:var(--verde-suave); border-left:4px solid var(--verde); padding:16px; border-radius:8px;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--verde-ink); text-transform:uppercase;">Al Día</div>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--verde-ink);"><?= (int)$statsPagos['al_dia'] ?> estudiantes</div>
+        </div>
+        <div style="flex:1; background:var(--naranja-suave); border-left:4px solid var(--naranja); padding:16px; border-radius:8px;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--naranja-ink); text-transform:uppercase;">Próximo a Vencer</div>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--naranja-ink);"><?= (int)$statsPagos['proximo'] ?> estudiantes</div>
+        </div>
+        <div style="flex:1; background:var(--rojo-suave); border-left:4px solid var(--rojo); padding:16px; border-radius:8px;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--rojo-ink); text-transform:uppercase;">Vencidos (Bloqueados)</div>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--rojo-ink);"><?= (int)$statsPagos['vencido'] ?> estudiantes</div>
+        </div>
+    </div>
+    
+    <?php if (count($vencidos) > 0): ?>
+    <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--rojo);"><i class="fas fa-exclamation-triangle"></i> Acciones Requeridas: Alumnos Morosos</h3>
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+            <thead>
+                <tr style="background:var(--surface-2); border-bottom:2px solid var(--border-2); text-align:left;">
+                    <th style="padding:10px;">Estudiante</th>
+                    <th style="padding:10px;">Fecha Vencimiento</th>
+                    <th style="padding:10px;">Comprobante</th>
+                    <th style="padding:10px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($vencidos as $v): ?>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px; font-weight:600;"><?= Security::escapeHtml($v['nombreEstudiante']) ?><br><small style="font-weight:normal; color:var(--dim);"><?= Security::escapeHtml($v['emailEstudiante']) ?></small></td>
+                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= date('d/m/Y', strtotime($v['fechaProximoPago'])) ?></td>
+                    <td style="padding:10px;">
+                        <?php if ($v['estadoComprobante'] === 'verificando'): ?>
+                            <span class="badge badge-ambar"><i class="fas fa-search"></i> Verificando</span>
+                        <?php else: ?>
+                            <span class="texto-suave">Sin comprobante</span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="padding:10px;">
+                        <button onclick="otorgarProrroga(<?= $v['idPago'] ?>)" class="boton-secundario btn-pequeno" style="background:var(--rojo-suave); border-color:var(--rojo); color:var(--rojo);">
+                            <i class="fas fa-unlock"></i> Otorgar Prórroga (7 Días)
+                        </button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+</div>
+
+<!-- Panel: Estudiantes con Deuda Pendiente -->
+<div class="panel" style="margin-top:24px;">
+    <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+        <i class="fas fa-file-invoice-dollar" style="color:var(--accent);"></i> Estudiantes con Deuda Pendiente
+    </h2>
+    <?php if (!empty($estudiantesPendientes)) { ?>
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+            <thead>
+                <tr style="background:var(--surface-2); border-bottom:2px solid var(--border-2); text-align:left;">
+                    <th style="padding:10px;">Estudiante</th>
+                    <th style="padding:10px;">Ciclo</th>
+                    <th style="padding:10px;">Pagado</th>
+                    <th style="padding:10px;">Deuda</th>
+                    <th style="padding:10px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $cntP = 0;
+                foreach ($estudiantesPendientes as $ep) {
+                    if ($cntP >= 8) break;
+                ?>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px; font-weight:500;"><?= Security::escapeHtml($ep['nombreEstudiante'] . ' ' . ($ep['apellidosEstudiante'] ?? '')) ?></td>
+                    <td style="padding:10px;"><span style="background:color-mix(in oklab, var(--accent) 14%, var(--surface)); color:var(--accent); padding:2px 8px; border-radius:8px; font-size:0.78rem; font-weight:600;"><?= Security::escapeHtml($ep['nombreCiclo']) ?></span></td>
+                    <td style="padding:10px; color:var(--verde);"><?= number_format($ep['totalPagado'], 2) ?> €</td>
+                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= number_format($ep['deuda'], 2) ?> €</td>
+                    <td style="padding:10px;">
+                        <a href="../pagos/agregarPago.php?idEstudiante=<?= $ep['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
+                    </td>
+                </tr>
+                <?php
+                $cntP++;
+                } ?>
+            </tbody>
+        </table>
+    </div>
+    <?php if (count($estudiantesPendientes) > 8) { ?>
+        <p style="padding:10px; text-align:center; font-size:0.85rem; color:var(--dim);">Mostrando 8 de <?= count($estudiantesPendientes) ?> estudiantes. <a href="../pagos/verPagos.php">Ver todos →</a></p>
+    <?php } ?>
+    <?php } else { ?>
+        <p style="padding:20px; text-align:center; color:var(--dim);">✅ No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
+    <?php } ?>
+</div>
+
+<script>
+function otorgarProrroga(idPago) {
+    if (!confirm('¿Seguro que deseas otorgar 7 días de prórroga? Esto desbloqueará el acceso del estudiante.')) return;
+    
+    const formData = new FormData();
+    formData.append('idPago', idPago);
+    
+    fetch('../../../controladores/secretaria/ajax_prorroga.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.ok) {
+            alert('Prórroga otorgada exitosamente.');
+            window.location.reload();
+        } else {
+            alert(res.msg || 'Error al otorgar prórroga.');
+        }
+    });
+}
+</script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

@@ -40,6 +40,8 @@ if (!empty($cfg['logoCentro'])) {
 <link rel="stylesheet" href="/landing-system/temas/base.css">
 <link rel="stylesheet" href="/landing-system/temas/tema-<?= Security::escapeHtml($tema) ?>.css">
 <style>:root{--lp-acento:<?= Security::escapeHtml($acento) ?>;}</style>
+<script>/* Tema oscuro sin parpadeo: se aplica antes del primer render */
+(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
 </head>
 <body class="tema-<?= Security::escapeHtml($tema) ?>">
 <?php if ($preview): ?>

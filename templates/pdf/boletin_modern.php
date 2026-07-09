@@ -13,14 +13,16 @@ $_serial = $estudiante['_serial'] ?? '';
 if (!empty($_SERVER['HTTP_HOST'])) {
     $_scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $_host     = $_SERVER['HTTP_HOST'];
-    // Determine base path from APP_URL (keeps /pfc or similar sub-dir if any)
-    $_envBase  = rtrim($baseUrl ?? '', '/');
-    $_envPath  = parse_url($_envBase, PHP_URL_PATH) ?? '';
-    $_realBase = $_scheme . '://' . $_host . $_envPath;
+    // Base path derived from the live request, never from APP_URL: the env value
+    // may point to another install (e.g. local /pfc) and would break the QR link.
+    $_script   = $_SERVER['SCRIPT_NAME'] ?? '';
+    $_pos      = strpos($_script, '/controladores/');
+    $_appPath  = ($_pos !== false) ? substr($_script, 0, $_pos) : '';
+    $_realBase = $_scheme . '://' . $_host . $_appPath;
 } else {
     $_realBase = rtrim($baseUrl ?? '', '/');
 }
-$_verifyUrl = $_realBase . '/verificar/?s=' . urlencode($_serial);
+$_verifyUrl = $_realBase . '/verificar/index.php?s=' . urlencode($_serial);
 
 // Build QR PNG as base64 data URI
 try {

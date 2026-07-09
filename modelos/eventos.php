@@ -5,6 +5,18 @@ require_once __DIR__ . "/conectar.php";
 // CONSULTAS
 // ══════════════════════════════════════════════════════════════════════
 
+// Todos los eventos (pasados y futuros) para la gestión de secretaría:
+// así el buscador encuentra también eventos ya celebrados.
+function listarTodosLosEventos() {
+    $con = obtenerConexion();
+    $res = mysqli_query($con, "SELECT * FROM eventos ORDER BY fechaEvento DESC, horaEvento DESC");
+    $lista = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $lista[] = $fila;
+    }
+    return $lista;
+}
+
 function listarEventosProximos() {
     $con = obtenerConexion();
     $hoy = date('Y-m-d');

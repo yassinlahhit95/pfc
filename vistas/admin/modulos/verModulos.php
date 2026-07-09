@@ -57,10 +57,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                     onchange="filtrarTablaMulti('tablaModulos')">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>">
-                        [<?= Security::escapeHtml($cicloFiltro['nombreNivel']) ?>] <?= Security::escapeHtml(strtoupper($cicloFiltro['nombreCiclo'])) ?>
+                    <option value="<?= Security::escapeHtml(mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8')) ?>">
+                        [<?= Security::escapeHtml($cicloFiltro['nombreNivel']) ?>] <?= Security::escapeHtml(mb_strtoupper($cicloFiltro['nombreCiclo'], 'UTF-8')) ?>
                     </option>
                 <?php } ?>
+            </select>
+        </div>
+        <div class="campo relleno">
+            <label for="selectFiltroCurso">FILTRAR POR CURSO:</label>
+            <select id="selectFiltroCurso"
+                    data-filtro-tabla="tablaModulos"
+                    data-filtro-campo="curso"
+                    onchange="filtrarTablaMulti('tablaModulos')">
+                <option value="">-- Todos los Cursos --</option>
+                <option value="1º">1º Año</option>
+                <option value="2º">2º Año</option>
             </select>
         </div>
     </div>
@@ -74,6 +85,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>ID</th>
                     <th>NIVEL</th>
                     <th>NOMBRE DEL MÓDULO</th>
+                    <th>CURSO</th>
                     <th>CICLO FORMATIVO</th>
                     <th>PROFESORES ASIGNADOS</th>
                     <th>HORAS TOTALES</th>
@@ -104,6 +116,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <?= Security::escapeHtml($moduloIndividual['tipoModulo']) ?>
                                 </span>
                             <?php endif; ?>
+                        </td>
+                        <td data-campo="curso">
+                            <span class="texto-pequeno" style="display:inline-block; padding:2px 6px; background:var(--surface-3); border-radius:4px; color:var(--text-muted);">
+                                <?= Security::escapeHtml($moduloIndividual['cursoAnio'] ?? '1º') ?> Año
+                            </span>
                         </td>
                         <td data-campo="ciclo">
                             <?php if (!empty($moduloIndividual['abreviaturaCiclo'])) { ?>
@@ -199,8 +216,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 iniciarPaginacion('tablaModulos', 15);
 var _ciclosData = <?= json_encode(array_map(fn($c) => [
-    'valor'    => strtoupper($c['nombreCiclo']),
-    'label'    => '[' . $c['nombreNivel'] . '] ' . strtoupper($c['nombreCiclo']),
+    'valor'    => mb_strtoupper($c['nombreCiclo'], 'UTF-8'),
+    'label'    => '[' . $c['nombreNivel'] . '] ' . mb_strtoupper($c['nombreCiclo'], 'UTF-8'),
     'idNivel'  => (int)$c['idNivel']
 ], $listaDeCiclosParaFiltro), JSON_UNESCAPED_UNICODE) ?>;
 

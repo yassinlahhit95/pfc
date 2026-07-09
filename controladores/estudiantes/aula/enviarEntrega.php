@@ -10,11 +10,11 @@ require_once __DIR__ . "/../../../include/Logger.php";
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-if (!isset($_POST['enviarEntrega'])) { header("Location: ../../../vistas/estudiantes/aula/index.php"); exit; }
+if (!isset($_POST['enviarEntrega'])) { header("Location: ../../../vistas/estudiantes/aula/recursos.php"); exit; }
 
 if (!Security::validateCSRFToken()) {
     $_SESSION['errores'] = "Solicitud inválida. Por favor, inténtalo de nuevo.";
-    header("Location: ../../../vistas/estudiantes/aula/index.php");
+    header("Location: ../../../vistas/estudiantes/aula/recursos.php");
     exit;
 }
 
@@ -25,13 +25,13 @@ $respuesta    = trim($_POST['respuesta'] ?? '');
 $tarea = obtenerTareaPorIdAula($idTarea);
 if (!$tarea || !$tarea['publicado']) {
     $_SESSION['errores'] = "La tarea no está disponible.";
-    header("Location: ../../../vistas/estudiantes/aula/index.php"); exit;
+    header("Location: ../../../vistas/estudiantes/aula/recursos.php"); exit;
 }
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
 if (!$estudiante || $estudiante['idCiclo'] != $tarea['idCiclo']) {
     $_SESSION['errores'] = "No tienes acceso a esta tarea.";
-    header("Location: ../../../vistas/estudiantes/aula/index.php"); exit;
+    header("Location: ../../../vistas/estudiantes/aula/recursos.php"); exit;
 }
 
 if (empty($respuesta) && empty($_FILES['archivoEntrega']['name'])) {

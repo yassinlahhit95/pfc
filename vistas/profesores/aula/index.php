@@ -29,7 +29,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php if (empty($ciclos)): ?>
 <div class="panel" style="text-align:center;padding:60px 20px;margin-top:20px;">
-  <i class="fas fa-folder-open" style="font-size:3rem;color:#e2e8f0;display:block;margin-bottom:16px;"></i>
+  <i class="fas fa-folder-open" style="font-size:3rem;color:var(--border);display:block;margin-bottom:16px;"></i>
   <p class="texto-suave">No tienes ciclos formativos asignados.</p>
 </div>
 <?php else: ?>

@@ -11,10 +11,10 @@ $errores = $_SESSION['errores'] ?? ''; unset($_SESSION['errores']);
 
 $idModulo = intval($_GET['id'] ?? 0);
 $modulo   = obtenerModuloPorId($idModulo);
-if (!$modulo) { header("Location: index.php"); exit; }
+if (!$modulo) { header("Location: recursos.php"); exit; }
 
 $estudiante = obtenerEstudiantePorId($idEstudiante);
-if ($modulo['idCiclo'] != $estudiante['idCiclo']) { header("Location: index.php"); exit; }
+if ($modulo['idCiclo'] != $estudiante['idCiclo']) { header("Location: recursos.php"); exit; }
 
 $carpetas  = listarCarpetasPorModuloAula($idModulo);
 $archivos  = listarArchivosPorModuloAula($idModulo);
@@ -73,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <!-- BREADCRUMB -->
 <nav class="breadcrumb-modern">
-  <a href="index.php"><i class="fas fa-chalkboard"></i> Aula</a>
+  <a href="recursos.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="breadcrumb-sep">/</span>
   <span class="breadcrumb-actual"><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
 </nav>
@@ -83,7 +83,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div>
     <h1 class="header-titulo"><?= Security::escapeHtml(mb_strtoupper($modulo['nombreModulo'], 'UTF-8')) ?></h1>
   </div>
-  <a href="index.php" class="btn-modern btn-secondary-modern btn-small">
+  <a href="recursos.php" class="btn-modern btn-secondary-modern btn-small">
     <i class="fas fa-arrow-left"></i> Módulos
   </a>
 </div>
@@ -213,7 +213,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="tab-tareas" style="display:none;">
   <div class="panel-modern">
     <div class="panel-header-modern">
-      <h3 class="panel-titulo-modern"><i class="fas fa-tasks" style="color:#8b5cf6;"></i> Tareas</h3>
+      <h3 class="panel-titulo-modern"><i class="fas fa-tasks" style="color:var(--accent);"></i> Tareas</h3>
       <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
         <?= Security::escapeHtml(count($tareas)) ?>
       </span>
@@ -239,9 +239,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
             <?php if ($entrega):
               if ($entrega['estado'] === 'corregida') {
-                echo '<span class="badge-estado-modern" style="background:#dcfce7;color:#15803d;"><i class="fas fa-check-circle"></i> ★ '.$entrega['nota'].'/10</span>';
+                echo '<span class="badge-estado-modern" style="background:var(--verde-suave);color:var(--verde);"><i class="fas fa-check-circle"></i> ★ '.$entrega['nota'].'/10</span>';
               } else {
-                echo '<span class="badge-estado-modern" style="background:#dbeafe;color:#1d4ed8;"><i class="fas fa-paper-plane"></i> Enviada</span>';
+                echo '<span class="badge-estado-modern" style="background:var(--azul-suave);color:var(--azul-ink);"><i class="fas fa-paper-plane"></i> Enviada</span>';
               }
             else:
               echo '<span class="badge-estado-modern badge-pendiente"><i class="fas fa-clock"></i> Pendiente</span>';
@@ -280,7 +280,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="tab-sesiones" style="display:none;">
   <div class="panel-modern">
     <div class="panel-header-modern">
-      <h3 class="panel-titulo-modern"><i class="fas fa-video" style="color:#ef4444;"></i> Sesiones Vivas</h3>
+      <h3 class="panel-titulo-modern"><i class="fas fa-video" style="color:var(--rojo);"></i> Sesiones Vivas</h3>
       <span style="font-size:var(--font-size-xs);color:var(--color-neutral-400);background:var(--color-neutral-100);padding:var(--space-1) var(--space-3);border-radius:4px;">
         <?= Security::escapeHtml(count($sesiones)) ?>
       </span>

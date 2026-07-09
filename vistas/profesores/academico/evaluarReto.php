@@ -151,11 +151,11 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="glass-panel">
         <div style="display:flex; align-items:center; gap:20px; margin-bottom: 25px;">
             <div class="cw-ava cw-ava-alumno avatar-glow" style="width:70px;height:70px;font-size:1.8rem;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg, var(--accent), #8b5cf6);color:#fff;">
-                <?= substr(Security::escapeHtml($estudiante['nombreEstudiante']), 0, 2) ?>
+                <?= mb_strtoupper(mb_substr(Security::escapeHtml($estudiante['nombreEstudiante']), 0, 2), 'UTF-8') ?>
             </div>
             <div>
                 <h2 style="margin:0;font-size:1.4rem; font-weight:700; background: linear-gradient(90deg, var(--text-color), var(--dim)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                    <?= Security::escapeHtml(strtoupper($estudiante['nombreEstudiante'])) ?>
+                    <?= Security::escapeHtml(mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8')) ?>
                 </h2>
                 <div class="texto-suave" style="font-size: 0.95rem; margin-top: 4px; display:flex; align-items:center; gap:5px;">
                     <i class="fas fa-graduation-cap" style="color:var(--accent)"></i> <?= Security::escapeHtml($estudiante['nombreCiclo']) ?>

@@ -13,15 +13,14 @@ $listaModulos = listarModulosPorCiclo($idCiclo);
 $todasLasEntregas = [];
 
 foreach ($listaModulos as $modulo) {
+    // listarTareasPorModuloAula ya devuelve solo tareas con publicado = 1
     $tareas = listarTareasPorModuloAula($modulo['idModulo']);
     foreach ($tareas as $tarea) {
-        if ($tarea['publicada']) {
-            $entrega = obtenerEntregaAula($tarea['idTarea'], $idEstudiante);
-            if ($entrega) {
-                $entrega['nombreModulo'] = $modulo['nombreModulo'];
-                $entrega['nombreTarea'] = $tarea['titulo'];
-                $todasLasEntregas[] = $entrega;
-            }
+        $entrega = obtenerEntregaAula($tarea['idTarea'], $idEstudiante);
+        if ($entrega) {
+            $entrega['nombreModulo'] = $modulo['nombreModulo'];
+            $entrega['nombreTarea'] = $tarea['titulo'];
+            $todasLasEntregas[] = $entrega;
         }
     }
 }
@@ -42,7 +41,7 @@ $exito   = $_SESSION['exito'] ?? null;   unset($_SESSION['exito']);
 $errores = $_SESSION['errores'] ?? null; unset($_SESSION['errores']);
 
 $tituloDelPagina = 'AULAPRO | MIS ENTREGAS';
-$seccionActual = 'aula_sesiones';
+$seccionActual = 'aula_entregas';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

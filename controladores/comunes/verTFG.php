@@ -1,6 +1,6 @@
 <?php
-// Sirve un archivo TFG para visualización o descarga.
-// Verifica permisos de Estudiante, Profesor, Secretaría o Admin.
+// Sirve un archivo TFG para visualizaciï¿½n o descarga.
+// Verifica permisos de Estudiante, Profesor, Secretarï¿½a o Admin.
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../modelos/tfg.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
@@ -9,7 +9,7 @@ $idEstudianteReq = intval($_GET['id'] ?? 0);
 $modo            = ($_GET['modo'] ?? 'ver') === 'descarga' ? 'descarga' : 'ver';
 
 if ($idEstudianteReq < 1) {
-    http_response_code(400); exit('Petición no válida.');
+    http_response_code(400); exit('Peticiï¿½n no vï¿½lida.');
 }
 
 $tfg = obtenerTFGporEstudiante($idEstudianteReq);
@@ -28,6 +28,12 @@ if (!empty($_SESSION['idAdmin']) || !empty($_SESSION['idSecretaria'])) {
     if ($_SESSION['idEstudiante'] == $idEstudianteReq) {
         $autorizado = true;
     }
+} elseif (!empty($_SESSION['idTutor'])) {
+    // Un tutor legal puede ver el TFG de sus hijos vinculados
+    require_once __DIR__ . "/../../modelos/tutores.php";
+    foreach (listarEstudiantesPorTutor($_SESSION['idTutor']) as $hijo) {
+        if ((int)$hijo['idEstudiante'] === $idEstudianteReq) { $autorizado = true; break; }
+    }
 }
 
 if (!$autorizado) {
@@ -35,7 +41,7 @@ if (!$autorizado) {
 }
 
 if (!empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
-    http_response_code(403); exit('Acción bloqueada.');
+    http_response_code(403); exit('Acciï¿½n bloqueada.');
 }
 
 $uploadDir = realpath(__DIR__ . "/../../public/uploads/pfc");
@@ -44,7 +50,7 @@ $ruta      = ($uploadDir !== false)
     : false;
 
 if (!$ruta || !$uploadDir || strpos($ruta, $uploadDir . DIRECTORY_SEPARATOR) !== 0 || !is_file($ruta)) {
-    http_response_code(404); exit('El fichero físico no se encuentra en el servidor.');
+    http_response_code(404); exit('El fichero fï¿½sico no se encuentra en el servidor.');
 }
 
 $ext  = strtolower(pathinfo($tfg['archivoTFG'], PATHINFO_EXTENSION));

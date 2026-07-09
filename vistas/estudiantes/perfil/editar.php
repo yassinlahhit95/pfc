@@ -100,13 +100,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo<?= fieldClass($errores, 'current_password') ?>">
             <label for="current_password">Contraseña Actual</label>
-            <input type="password" name="current_password" id="current_password">
+            <input type="password" name="current_password" id="current_password" autocomplete="new-password">
             <?= fieldError($errores, 'current_password') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'new_password') ?>">
             <label for="new_password">Nueva Contraseña</label>
-            <input type="password" name="new_password" id="new_password">
+            <input type="password" name="new_password" id="new_password" autocomplete="new-password">
             <?= fieldError($errores, 'new_password') ?>
         </div>
 

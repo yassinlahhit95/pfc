@@ -161,7 +161,7 @@ function listarArchivosPorModuloAula($idModulo) {
             JOIN profesores p ON a.idProfesor = p.idProfesor
             LEFT JOIN aula_carpetas c ON a.idCarpeta = c.idCarpeta
             WHERE a.idModulo = ? AND a.eliminado = 0
-            ORDER BY a.fijado DESC, a.nombreOriginal ASC";
+            ORDER BY a.fijado DESC, a.fechaSubida DESC, a.nombreOriginal ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
@@ -178,7 +178,7 @@ function listarArchivosPorCarpetaAula($idCarpeta) {
             FROM aula_archivos a
             JOIN profesores p ON a.idProfesor = p.idProfesor
             WHERE a.idCarpeta = ? AND a.eliminado = 0
-            ORDER BY a.fijado DESC, a.nombreOriginal ASC";
+            ORDER BY a.fijado DESC, a.fechaSubida DESC, a.nombreOriginal ASC";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCarpeta);
     mysqli_stmt_execute($stmt);
@@ -299,6 +299,135 @@ function obtenerTareaPorIdAula($idTarea) {
     $fila = mysqli_fetch_assoc($res);
     
     return $fila;
+}
+
+// ═══════════════════════════════════════
+// GESTIÓN DE TAREAS (PROFESOR)
+// ═══════════════════════════════════════
+
+// Lista todas las tareas de un módulo, incluidos los borradores (solo para el profesor).
+function listarTareasPorModuloProfesorAula($idModulo) {
+    $con = obtenerConexion();
+    $sql = "SELECT t.*, p.nombreProfesor,
+                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea) AS totalEntregas,
+                   (SELECT COUNT(*) FROM aula_entregas e WHERE e.idTarea = t.idTarea AND e.estado = 'corregida') AS totalCorregidas
+            FROM aula_tareas t
+            JOIN profesores p ON t.idProfesor = p.idProfesor
+            WHERE t.idModulo = ?
+            ORDER BY t.fechaCreacion DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+
+    return $lista;
+}
+
+function insertarTareaAula($idModulo, $idProfesor, $titulo, $descripcion, $archivoAdjunto, $publicado) {
+    $con = obtenerConexion();
+    $sql = "INSERT INTO aula_tareas (titulo, descripcion, idModulo, idProfesor, archivoAdjunto, publicado)
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssiisi", $titulo, $descripcion, $idModulo, $idProfesor, $archivoAdjunto, $publicado);
+    if (!mysqli_stmt_execute($stmt)) return 0;
+
+    return (int)mysqli_insert_id($con);
+}
+
+// El adjunto solo se sustituye cuando se sube uno nuevo ($archivoAdjunto !== null).
+function actualizarTareaAula($idTarea, $titulo, $descripcion, $publicado, $archivoAdjunto = null) {
+    $con = obtenerConexion();
+    if ($archivoAdjunto !== null) {
+        $sql = "UPDATE aula_tareas SET titulo=?, descripcion=?, publicado=?, archivoAdjunto=? WHERE idTarea=?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ssisi", $titulo, $descripcion, $publicado, $archivoAdjunto, $idTarea);
+    } else {
+        $sql = "UPDATE aula_tareas SET titulo=?, descripcion=?, publicado=? WHERE idTarea=?";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "ssii", $titulo, $descripcion, $publicado, $idTarea);
+    }
+
+    return mysqli_stmt_execute($stmt);
+}
+
+function actualizarPublicadoTareaAula($idTarea, $publicado) {
+    $con = obtenerConexion();
+    $stmt = mysqli_prepare($con, "UPDATE aula_tareas SET publicado=? WHERE idTarea=?");
+    mysqli_stmt_bind_param($stmt, "ii", $publicado, $idTarea);
+
+    return mysqli_stmt_execute($stmt);
+}
+
+// Borra la tarea y limpia los archivos físicos (las entregas se eliminan en cascada).
+function eliminarTareaAula($idTarea) {
+    $con = obtenerConexion();
+
+    $tarea = obtenerTareaPorIdAula($idTarea);
+    if ($tarea && !empty($tarea['archivoAdjunto'])) {
+        $ruta = __DIR__ . "/../public/uploads/aula/tareas/" . $tarea['archivoAdjunto'];
+        if (is_file($ruta)) unlink($ruta);
+    }
+
+    $stmt = mysqli_prepare($con, "SELECT archivoEntrega FROM aula_entregas WHERE idTarea=? AND archivoEntrega IS NOT NULL");
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($f = mysqli_fetch_assoc($res)) {
+        $ruta = __DIR__ . "/../public/uploads/aula/entregas/" . $f['archivoEntrega'];
+        if (is_file($ruta)) unlink($ruta);
+    }
+
+    $stmt = mysqli_prepare($con, "DELETE FROM aula_tareas WHERE idTarea=?");
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+
+    return mysqli_stmt_execute($stmt);
+}
+
+// Roster completo del ciclo con su entrega (o sin ella) para la vista de corrección.
+function listarEntregasPorTareaAula($idTarea) {
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante,
+                   ent.idEntrega, ent.archivoEntrega, ent.respuesta, ent.version,
+                   ent.fechaEntrega, ent.nota, ent.estado, ent.comentarioCalificacion
+            FROM aula_tareas t
+            JOIN modulos m ON t.idModulo = m.idModulo
+            JOIN estudiantes e ON e.idCiclo = m.idCiclo AND e.eliminado = 0
+            LEFT JOIN aula_entregas ent ON ent.idTarea = t.idTarea AND ent.idEstudiante = e.idEstudiante
+            WHERE t.idTarea = ?
+            ORDER BY e.nombreEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idTarea);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $lista = [];
+    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+
+    return $lista;
+}
+
+function obtenerEntregaPorIdAula($idEntrega) {
+    $con = obtenerConexion();
+    $sql = "SELECT ent.*, t.idModulo, t.idTarea, t.titulo AS tituloTarea
+            FROM aula_entregas ent
+            JOIN aula_tareas t ON ent.idTarea = t.idTarea
+            WHERE ent.idEntrega = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEntrega);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    return mysqli_fetch_assoc($res);
+}
+
+function calificarEntregaAula($idEntrega, $nota, $comentario) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_entregas SET nota=?, comentarioCalificacion=?, estado='corregida' WHERE idEntrega=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "dsi", $nota, $comentario, $idEntrega);
+
+    return mysqli_stmt_execute($stmt);
 }
 
 function moverArchivoAula($idArchivo, $idCarpeta) {
@@ -427,7 +556,7 @@ function marcarTodasLeidasAula($idUsuario, $tipoUsuario) {
 function obtenerTokensFCMPorCicloAula($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT fcm_token FROM estudiantes
-            WHERE idCiclo = ? AND fcm_token IS NOT NULL AND fcm_token != ''";
+            WHERE idCiclo = ? AND eliminado = 0 AND fcm_token IS NOT NULL AND fcm_token != ''";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -440,7 +569,7 @@ function obtenerTokensFCMPorCicloAula($idCiclo) {
 
 function notificarEstudiantesCicloAula($idCiclo, $tipo, $titulo, $mensaje, $idRef = null, $tipoRef = null) {
     $con = obtenerConexion();
-    $sql = "SELECT idEstudiante FROM estudiantes WHERE idCiclo=?";
+    $sql = "SELECT idEstudiante FROM estudiantes WHERE idCiclo=? AND eliminado=0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
@@ -722,7 +851,7 @@ function obtenerEstudiantesPorModulo($idModulo) {
             FROM estudiantes e
             JOIN ciclo_profesor cp ON e.idCiclo = cp.idCiclo
             WHERE cp.idCiclo = (SELECT idCiclo FROM modulos WHERE idModulo = ?)
-            AND e.idCiclo IS NOT NULL";
+            AND e.idCiclo IS NOT NULL AND e.eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
@@ -1022,7 +1151,7 @@ function obtenerControlLecturaArchivoAula($idArchivo, $idCiclo) {
             FROM estudiantes e
             LEFT JOIN aula_archivo_accesos ac
                    ON ac.idEstudiante = e.idEstudiante AND ac.idArchivo = ?
-            WHERE e.idCiclo = ?
+            WHERE e.idCiclo = ? AND e.eliminado = 0
             GROUP BY e.idEstudiante
             ORDER BY (MAX(CASE WHEN ac.tipo='vista' THEN ac.fechaAcceso END) IS NOT NULL) DESC, e.nombreEstudiante ASC";
     $stmt = mysqli_prepare($con, $sql);
@@ -1182,3 +1311,66 @@ function obtenerLimiteAlmacenamientoCicloAula($idCiclo) {
     return $f ? floatval($f['limiteBytes']) : 5368709120; // 5 GB por defecto
 }
 
+
+function obtenerAlumnosEnRiesgoPorProfesorAula($idProfesor) {
+    $con = obtenerConexion();
+    $sql = "SELECT e.idEstudiante, e.nombreEstudiante, m.nombreModulo,
+                   COUNT(t.idTarea) as totalTareas,
+                   SUM(CASE WHEN ent.idEntrega IS NOT NULL THEN 1 ELSE 0 END) as tareasEntregadas,
+                   AVG(ent.nota) as notaMedia
+            FROM estudiantes e
+            JOIN modulos m ON e.idCiclo = m.idCiclo
+            JOIN modulo_profesor mp ON m.idModulo = mp.idModulo
+            JOIN aula_tareas t ON m.idModulo = t.idModulo
+            LEFT JOIN aula_entregas ent ON t.idTarea = ent.idTarea AND e.idEstudiante = ent.idEstudiante
+            WHERE mp.idProfesor = ? AND e.eliminado = 0
+            GROUP BY e.idEstudiante, m.idModulo";
+    
+    $stmt = mysqli_prepare($con, $sql);
+    if (!$stmt) return [];
+    
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    
+    $riesgo = [];
+    while ($r = mysqli_fetch_assoc($res)) {
+        $missed = $r["totalTareas"] - $r["tareasEntregadas"];
+        $nota = $r["notaMedia"] !== null ? floatval($r["notaMedia"]) : null;
+        
+        $nivelRiesgo = "verde";
+        if ($missed >= 2 || ($nota !== null && $nota < 5)) {
+            $nivelRiesgo = "rojo";
+        } elseif ($missed == 1 || ($nota !== null && $nota < 6)) {
+            $nivelRiesgo = "amarillo";
+        }
+        
+        if ($nivelRiesgo !== "verde") {
+            $r["nivelRiesgo"] = $nivelRiesgo;
+            $riesgo[] = $r;
+        }
+    }
+    return $riesgo;
+}
+
+function obtenerProgresoTareasEstudianteAula($idEstudiante) {
+    $con = obtenerConexion();
+    $sql = "SELECT COUNT(t.idTarea) as totalTareas,
+                   SUM(CASE WHEN ent.idEntrega IS NOT NULL THEN 1 ELSE 0 END) as tareasEntregadas
+            FROM aula_tareas t
+            JOIN modulos m ON t.idModulo = m.idModulo
+            JOIN estudiantes e ON m.idCiclo = e.idCiclo
+            LEFT JOIN aula_entregas ent ON t.idTarea = ent.idTarea AND ent.idEstudiante = e.idEstudiante
+            WHERE e.idEstudiante = ? AND t.publicado = 1";
+            
+    $stmt = mysqli_prepare($con, $sql);
+    if (!$stmt) return ["totalTareas"=>0, "tareasEntregadas"=>0];
+    
+    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $r = mysqli_fetch_assoc($res);
+    
+    if (!$r) return ["totalTareas"=>0, "tareasEntregadas"=>0];
+    return $r;
+}

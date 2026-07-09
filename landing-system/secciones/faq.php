@@ -1,15 +1,16 @@
 <?php
-// Preguntas frecuentes (acordeón nativo <details>).
+$variante = $contenido['variante'] ?? 'lista';
 $items = $contenido['items'] ?? [];
 if (!$items) return;
 ?>
-<section class="lp-sec lp-faq" id="faq">
+<section class="lp-sec lp-faq lp-faq-<?= Security::escapeHtml($variante) ?>" id="faq"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-faq-inner">
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
     </div>
     <div class="lp-faq-lista">
       <?php foreach ($items as $item): ?>
+      <?php if ($variante === 'acordeon'): ?>
       <details class="lp-faq-item">
         <summary>
           <?= Security::escapeHtml($item['pregunta'] ?? '') ?>
@@ -17,7 +18,17 @@ if (!$items) return;
         </summary>
         <p><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
       </details>
+      <?php else: ?>
+      <div class="lp-faq-item">
+        <h3><?= Security::escapeHtml($item['pregunta'] ?? '') ?></h3>
+        <p><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
+      </div>
+      <?php endif; ?>
       <?php endforeach; ?>
     </div>
   </div>
 </section>
+
+
+
+

@@ -29,7 +29,7 @@ require_once __DIR__ . '/../comunes/nav.php';
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
     </div>
-    <div class="chat-search"><input type="text" placeholder="Buscar…" id="sidebar-search"></div>
+    <div class="chat-search"><input type="text" placeholder="Buscar…" id="sidebar-search" autocomplete="off"></div>
     <div class="chat-conv-list">
       <?php if (empty($convs)): ?>
         <div class="chat-empty-sidebar">No tienes conversaciones aún.</div>
@@ -66,7 +66,7 @@ require_once __DIR__ . '/../comunes/nav.php';
   <div class="chat-modal">
     <button class="chat-modal-close" id="chat-modal-close">&times;</button>
     <h3>Nueva conversación</h3>
-    <input type="text" class="chat-modal-search" id="chat-modal-search" placeholder="Buscar estudiante o admin…">
+    <input type="text" class="chat-modal-search" id="chat-modal-search" placeholder="Buscar estudiante o admin…" autocomplete="off">
     <div class="chat-contact-list" id="chat-contact-list"></div>
   </div>
 </div>

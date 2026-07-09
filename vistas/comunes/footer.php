@@ -5,31 +5,31 @@
 <div id="modal-borrar" class="modal-confirm-overlay" role="dialog" aria-modal="true" style="display:none;">
   <div class="modal-confirm-dialog">
     <div class="modal-confirm-header">
-      <i class="fas fa-exclamation-triangle modal-confirm-icon" style="color: #ef4444;"></i>
-      <h3 id="modal-confirm-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Eliminar <span id="modal-borrar-tipo"></span></h3>
+      <i class="fas fa-exclamation-triangle modal-confirm-icon" style="color: var(--rojo);"></i>
+      <h3 id="modal-confirm-title" style="margin: 0; font-size: 18px; font-weight: 700; color: var(--text);">Eliminar <span id="modal-borrar-tipo"></span></h3>
     </div>
     <div class="modal-confirm-body">
       <p>Estás a punto de eliminar:</p>
-      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin: 12px 0; color: #334155; font-weight: 600;">
-        <i class="fas fa-tag" style="margin-right: 8px; color: #64748b;"></i>
+      <div style="background: var(--surface-2); padding: 12px; border-radius: 8px; margin: 12px 0; color: var(--text); font-weight: 600;">
+        <i class="fas fa-tag" style="margin-right: 8px; color: var(--dim);"></i>
         <span id="modal-borrar-nombre"></span>
         <span id="modal-borrar-extra" class="modal-extra-badge" style="display:none"></span>
       </div>
-      <p style="color: #ef4444; font-size: 0.9em; margin-bottom: 0;">
+      <p style="color: var(--rojo); font-size: 0.9em; margin-bottom: 0;">
         <i class="fas fa-exclamation-circle"></i> <span id="modal-borrar-aviso">Esta acción es permanente y no se puede deshacer.</span>
       </p>
-      
+
       <div id="modal-password-wrap" style="display:none; margin-top:16px;">
-        <label for="modal-admin-password" style="display: block; font-size: 0.9em; font-weight: 600; color: #475569; margin-bottom: 6px;">
+        <label for="modal-admin-password" style="display: block; font-size: 0.9em; font-weight: 600; color: var(--dim); margin-bottom: 6px;">
           <i class="fas fa-lock"></i> Confirma tu contraseña para continuar
         </label>
-        <input type="password" id="modal-admin-password" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px;"
+        <input type="password" id="modal-admin-password" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-2); border-radius: 8px; background: var(--surface); color: var(--text);"
                placeholder="Contraseña de administrador" autocomplete="current-password">
       </div>
     </div>
     <div class="modal-confirm-footer" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-      <button type="button" id="modal-borrar-cancelar" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: #f1f5f9; color: #475569;">Cancelar</button>
-      <button type="button" id="modal-borrar-confirmar" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: #ef4444; color: #fff;">Sí, eliminar</button>
+      <button type="button" id="modal-borrar-cancelar" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: var(--surface-2); color: var(--dim);">Cancelar</button>
+      <button type="button" id="modal-borrar-confirmar" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: var(--rojo); color: #fff;">Sí, eliminar</button>
     </div>
     <input type="hidden" name="modal_csrf" value="<?= Security::generateCSRFToken() ?>">
   </div>

@@ -3,14 +3,20 @@
    Azul corporativo, degradados suaves, tarjetas limpias, aire premium.
    ══════════════════════════════════════════════════════════════════════ */
 
+/* Acento y paleta claro/oscuro vienen de config + base.css; el tema solo
+   aporta forma (radios, sombras al color de acento, cabeceras). */
 .tema-institucional {
   --lp-acento-2: color-mix(in srgb, var(--lp-acento) 62%, #0ea5e9);
-  --lp-fondo-alt: #f5f8fd;
   --lp-radio: 20px;
   --lp-radio-boton: 12px;
-  --lp-sombra: 0 1px 2px rgba(29, 78, 216, .05), 0 14px 36px rgba(29, 78, 216, .09);
-  --lp-sombra-hover: 0 2px 4px rgba(29, 78, 216, .06), 0 24px 56px rgba(29, 78, 216, .16);
+  --lp-sombra: 0 1px 2px color-mix(in srgb, var(--lp-acento) 5%, transparent), 0 14px 36px color-mix(in srgb, var(--lp-acento) 9%, transparent);
+  --lp-sombra-hover: 0 2px 4px color-mix(in srgb, var(--lp-acento) 6%, transparent), 0 24px 56px color-mix(in srgb, var(--lp-acento) 16%, transparent);
   --lp-footer-fondo: #091634;
+}
+
+/* Tinte azul claro de secciones alternas — solo modo claro */
+html:not([data-theme="dark"]) .tema-institucional {
+  --lp-fondo-alt: #f5f8fd;
 }
 
 /* Cabeceras de sección con subrayado degradado */

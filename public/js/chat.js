@@ -178,7 +178,10 @@ window.AulaChat = (function () {
     function schedulePoll() {
         clearTimeout(pollTimer);
         if (!cfg.convId) return;
-        const delay = document.hidden ? Math.max(pollInterval, POLL_HIDDEN_MS) : pollInterval;
+        // Con la pestaña visible la conversación está a la vista: tope de 6s
+        // para que los mensajes entrantes se sientan en tiempo real.
+        const delay = document.hidden ? Math.max(pollInterval, POLL_HIDDEN_MS)
+                                      : Math.min(pollInterval, 6000);
         pollTimer = setTimeout(fetchNew, delay);
     }
 

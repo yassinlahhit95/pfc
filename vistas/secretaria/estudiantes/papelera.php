@@ -17,7 +17,7 @@ include __DIR__ . '/../comunes/nav.php';
 
 <div class="cabecera">
     <div>
-        <h1><i class="fas fa-trash-alt" style="color:#ef4444;margin-right:8px;"></i>Papelera de Estudiantes</h1>
+        <h1><i class="fas fa-trash-alt" style="color:var(--rojo);margin-right:8px;"></i>Papelera de Estudiantes</h1>
         <p class="subtitulo-encabezado">Estudiantes eliminados. Puedes restaurarlos con todos sus datos y notas.</p>
     </div>
     <div class="acciones-pagina">
@@ -28,7 +28,7 @@ include __DIR__ . '/../comunes/nav.php';
 <div class="panel">
     <?php if (empty($estudiantesEliminados)): ?>
         <div style="text-align:center;padding:60px 20px;color:var(--dim);">
-            <i class="fas fa-check-circle" style="font-size:3rem;color:#10b981;display:block;margin-bottom:16px;"></i>
+            <i class="fas fa-check-circle" style="font-size:3rem;color:var(--verde);display:block;margin-bottom:16px;"></i>
             <h3 style="margin:0 0 8px;color:var(--text);">La papelera está vacía</h3>
             <p style="margin:0;">No hay estudiantes eliminados en este momento.</p>
         </div>
@@ -52,7 +52,7 @@ include __DIR__ . '/../comunes/nav.php';
                         <td><?= (int)$e['idEstudiante'] ?></td>
                         <td><b><?= mb_strtoupper(Security::escapeHtml($e['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($e['emailEstudiante']) ?></td>
-                        <td><?= strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—')) ?></td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—'), 'UTF-8') ?></td>
                         <td>
                             <span class="texto-estado <?= ($e['idNivel'] ?? 0) == 2 ? 'verde' : 'azul' ?>">
                                 <?= ($e['idNivel'] ?? 0) == 2 ? 'Grado Superior' : 'Grado Medio' ?>

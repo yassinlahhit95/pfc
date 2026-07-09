@@ -19,7 +19,7 @@ foreach ($listaMisPagos as $pago) {
 }
 if (empty($cursosDisponibles)) {
     require_once __DIR__ . '/../../../modelos/configuracion.php';
-    $config = obtenerConfiguracion();
+    $config = obtenerConfiguracionCentro();
     $cursosDisponibles[] = $config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1));
 }
 $cursoSeleccionado = $_GET['cursoEscolar'] ?? $cursosDisponibles[0];

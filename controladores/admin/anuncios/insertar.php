@@ -23,7 +23,10 @@ if (isset($_POST['guardarAnuncio'])) {
     }
     $titulo = trim($_POST['tituloAnuncio']);
     $contenido = trim($_POST['contenidoAnuncio']);
-    $dirigidoA = $_POST['dirigidoA'];
+    $dirigidoA = $_POST['dirigidoA'] ?? 'todos';
+    if (!in_array($dirigidoA, ['todos', 'estudiantes', 'profesores', 'tutores'], true)) {
+        $dirigidoA = 'todos';
+    }
 
     // ── Validación ──
     $listaErrores = [];
@@ -46,6 +49,10 @@ if (isset($_POST['guardarAnuncio'])) {
             }
             if ($dirigidoA == 'profesores' || $dirigidoA == 'todos') {
                 $tokens = array_merge($tokens, obtenerTokensProfesores());
+            }
+            if ($dirigidoA == 'tutores' || $dirigidoA == 'todos') {
+                require_once __DIR__ . "/../../../modelos/tutores.php";
+                $tokens = array_merge($tokens, obtenerTokensTutores());
             }
 
             $tokens = array_unique($tokens);

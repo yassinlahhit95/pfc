@@ -39,9 +39,13 @@ include_once __DIR__ . "/../comunes/nav.php";
   <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
-<h3 style="margin-top:18px;font-size:.95rem;color:#475569;"><i class="fas fa-fire"></i> Recursos más consultados</h3>
+<h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);"><i class="fas fa-fire"></i> Recursos más consultados</h3>
 <?php if (empty($topRecursos)): ?>
-  <div class="recurso-vacio"><i class="fas fa-chart-line"></i><p>Aún no hay datos de uso.</p></div>
+  <div class="recurso-vacio" style="padding: 60px 20px; text-align: center; background:var(--surface); border-radius: 12px; border: 1px dashed var(--border-2);">
+    <div class="recurso-vacio-ilus" style="font-size: 3rem; color: var(--mut); margin-bottom: 16px;"><i class="fas fa-chart-line"></i></div>
+    <h3 style="margin:0 0 8px; color: var(--text); font-size: 1.1rem;">Aún no hay datos de uso</h3>
+    <p style="margin:0; color: var(--dim); font-size: 0.95rem;">Tus estudiantes todavía no han interactuado con los archivos de este módulo.</p>
+  </div>
 <?php else: ?>
 <table class="recurso-lista">
   <thead><tr><th>Recurso</th><th>Vistas</th><th>Descargas</th><th>Última consulta</th><th style="text-align:right;">Control de lectura</th></tr></thead>
@@ -61,7 +65,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php if ($archivoSel): ?>
-<h3 style="margin-top:26px;font-size:.95rem;color:#475569;"><i class="fas fa-book-open-reader"></i> Detalle por estudiante: <?= Security::escapeHtml($archivoSel['nombreOriginal']) ?></h3>
+<h3 style="margin-top:26px;font-size:.95rem;color:var(--dim);"><i class="fas fa-book-open-reader"></i> Detalle por estudiante: <?= Security::escapeHtml($archivoSel['nombreOriginal']) ?></h3>
 <table class="recurso-lista">
   <thead><tr><th>Estudiante</th><th>¿Lo ha visto?</th><th>¿Lo ha descargado?</th></tr></thead>
   <tbody>
@@ -72,7 +76,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <td><?php if (!empty($e['fechaDescarga'])): ?><span class="badge badge-azul"><i class="fas fa-download"></i> Descargado</span> <small class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($e['fechaDescarga']))) ?></small><?php else: ?><span class="badge badge-gris">No</span><?php endif; ?></td>
     </tr>
     <?php endforeach; ?>
-    <?php if (empty($lectura)): ?><tr><td colspan="3" class="texto-suave">No hay estudiantes en este ciclo.</td></tr><?php endif; ?>
+    <?php if (empty($lectura)): ?><tr><td colspan="3" style="text-align:center; padding:40px 20px; color:var(--mut);"><i class="fas fa-user-graduate" style="font-size:2rem; margin-bottom:12px; display:block; opacity:0.5;"></i>No hay estudiantes matriculados en este ciclo o no hay datos registrados.</td></tr><?php endif; ?>
   </tbody>
 </table>
 <?php endif; ?>

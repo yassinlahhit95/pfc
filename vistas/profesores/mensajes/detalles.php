@@ -65,7 +65,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <a href="lista.php" class="ibtn ibtn-secondary">
             <i class="fas fa-arrow-left"></i> Volver al buzón
         </a>
-        <a href="borrarMensaje.php?id=<?= $idReclamacion ?>" class="ibtn ibtn-danger" style="margin-left:auto;">
+        <a href="#" class="ibtn ibtn-danger" style="margin-left:auto;"
+           data-modal-borrar
+           data-id="<?= $idReclamacion ?>"
+           data-tipo="Mensaje"
+           data-nombre="<?= Security::escapeHtml($mensaje['asunto'] ?? '—') ?>"
+           data-url="/controladores/profesores/mensajes/borrar.php"
+           data-campo="idReclamacion"
+           data-redirect="/vistas/profesores/mensajes/lista.php">
             <i class="fas fa-trash"></i> Eliminar
         </a>
     </div>
@@ -77,9 +84,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
     <?php endif; ?>
     <?php if ($errores): ?>
-    <div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#dc2626;">
+    <div class="inbox-banner" style="margin-bottom:var(--gap);background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:var(--rojo);">
         <i class="fas fa-exclamation-triangle"></i> <?= Security::escapeHtml($errores) ?>
-        <button class="inbox-banner-close" style="color:#dc2626;" onclick="this.parentElement.remove()">×</button>
+        <button class="inbox-banner-close" style="color:var(--rojo);" onclick="this.parentElement.remove()">×</button>
     </div>
     <?php endif; ?>
 

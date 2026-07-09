@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -188,6 +189,12 @@ function _nav_active_prof($check) {
         <?php if (_nav_active_prof('aula_recursos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../aula/tareas.php" class="nav-item<?= _nav_active_prof('aula_tareas') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
+        <span class="nav-label">Tareas</span>
+        <?php if (_nav_active_prof('aula_tareas') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
       <!-- COMUNICACIÓN -->
       <span class="nav-section-title">COMUNICACIÓN</span>
 
@@ -255,16 +262,27 @@ function _nav_active_prof($check) {
         <?php endif; ?>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
-      <div class="search-wrap">
-        <label class="searchbar">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
-          <input id="search" placeholder="Buscar..." autocomplete="new-password"
-                 data-url="../../../controladores/profesores/buscar.php" />
-          <kbd>⌘K</kbd>
-        </label>
-        <ul class="search-results" id="search-results" hidden></ul>
-      </div>
       <div class="topbar-actions">
+        <!-- Mobile Trigger -->
+        <button class="icon-btn mobile-search-trigger" id="mobile-search-trigger" aria-label="Buscar">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+        </button>
+        <!-- Desktop Input / Mobile Modal -->
+        <div class="search-backdrop" id="search-backdrop" hidden></div>
+        <div class="search-wrapper" id="search-wrapper">
+          <label class="search-modal-bar">
+            <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+            <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   data-url="../../../controladores/profesores/buscar.php" />
+            <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+            <kbd class="search-kbd">⌘K</kbd>
+          </label>
+          <ul class="search-results" id="search-results" hidden></ul>
+        </div>
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>

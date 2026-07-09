@@ -116,7 +116,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <!-- Tutor de Ciclo (profesor con rol especial, NO familia/padres) -->
         <div class="panel" style="margin-top:25px;padding:20px;border:1px solid var(--border);background:var(--surface-2);">
-            <h4 style="margin:0 0 6px;"><i class="fas fa-user-shield" style="color:#f59e0b;"></i> Tutor de Ciclo</h4>
+            <h4 style="margin:0 0 6px;"><i class="fas fa-user-shield" style="color:var(--naranja);"></i> Tutor de Ciclo</h4>
             <p style="font-size:.82rem;color:var(--dim);margin-bottom:16px;">
                 El <strong>Tutor de Ciclo</strong> es un profesor con acceso especial sobre un ciclo: puede gestionar notas, horarios y cambiar contraseñas de sus estudiantes.
                 <em>Este rol no tiene relación con los tutores familiares (padres/madres).</em>
@@ -233,7 +233,7 @@ function cambiarPassProf() {
         return;
     }
     var token = document.querySelector('[name=csrf_token]').value;
-    fetch('/controladores/admin/usuarios/cambiarPassword.php', {
+    fetch('../../../controladores/admin/usuarios/cambiarPassword.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest'},
         body: 'tipo=profesor&id=<?= $id_profesor ?>&nuevaPassword=' + encodeURIComponent(pass) + '&csrf_token=' + encodeURIComponent(token)

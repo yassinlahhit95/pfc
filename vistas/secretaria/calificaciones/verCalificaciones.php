@@ -40,7 +40,7 @@ $seccion = 'calificaciones';
             <span class="tile-desc">Calificaciones ordinarias</span>
         </span>
     </a>
-    <a href="verRetos.php" class="tile card-soft" style="--tint:#10B981; text-decoration:none">
+    <a href="verRetos.php" class="tile card-soft" style="--tint:var(--verde); text-decoration:none">
         <span class="tile-sheen"></span>
         <span class="tile-ico">
             <i class="fas fa-flag" style="font-size:1.5rem"></i>
@@ -50,7 +50,7 @@ $seccion = 'calificaciones';
             <span class="tile-desc">Evaluación por retos</span>
         </span>
     </a>
-    <a href="verTFG.php" class="tile card-soft" style="--tint:#F59E0B; text-decoration:none">
+    <a href="verTFG.php" class="tile card-soft" style="--tint:var(--naranja); text-decoration:none">
         <span class="tile-sheen"></span>
         <span class="tile-ico">
             <i class="fas fa-graduation-cap" style="font-size:1.5rem"></i>

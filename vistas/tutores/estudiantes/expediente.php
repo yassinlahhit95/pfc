@@ -141,12 +141,21 @@ $estadoColor = match($resultados['estado_global']) {
 <?php endif; ?>
 
 <?php if (!empty($resultados['nota_tfg'])): ?>
+<?php
+require_once __DIR__ . "/../../../modelos/tfg.php";
+$tfgDoc = obtenerTFGporEstudiante($idEstudiante);
+?>
 <div class="panel" style="margin-top:16px">
   <div class="panel-titulo-seccion">Proyecto Final (TFG)</div>
-  <div style="display:flex;align-items:center;gap:16px;padding:4px 0 8px">
+  <div style="display:flex;align-items:center;gap:16px;padding:4px 0 8px;flex-wrap:wrap">
     <div style="font-size:2rem;font-weight:700;color:var(--accent)"><?= Security::escapeHtml((string)$resultados['nota_tfg']) ?></div>
     <?php if (!empty($resultados['obs_tfg'])): ?>
     <div style="color:var(--dim);font-size:.9rem"><?= Security::escapeHtml($resultados['obs_tfg']) ?></div>
+    <?php endif; ?>
+    <?php if (!empty($tfgDoc['archivoTFG'])): ?>
+    <a href="../../../controladores/comunes/verTFG.php?id=<?= (int)$idEstudiante ?>" target="_blank" class="boton-secundario" style="margin-left:auto">
+      <i class="fas fa-file-pdf"></i> Ver documento
+    </a>
     <?php endif; ?>
   </div>
 </div>

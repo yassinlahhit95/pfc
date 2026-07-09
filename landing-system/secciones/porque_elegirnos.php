@@ -4,7 +4,7 @@ $iconosPermitidos = landing_iconos_permitidos();
 $items = $contenido['items'] ?? [];
 $variante = $contenido['variante'] ?? 'grid';
 ?>
-<section class="lp-sec lp-porque lp-variante-<?= Security::escapeHtml($variante) ?>" id="porque_elegirnos">
+<section class="lp-sec lp-porque lp-variante-<?= Security::escapeHtml($variante) ?>" id="porque_elegirnos"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -28,3 +28,7 @@ $variante = $contenido['variante'] ?? 'grid';
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

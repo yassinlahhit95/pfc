@@ -237,7 +237,7 @@ include __DIR__ . '/../comunes/nav.php';
 <!-- Modal confirmación eliminar -->
 <div id="modal-eliminar" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);align-items:center;justify-content:center;">
     <div style="background:var(--surface,#fff);border-radius:14px;padding:32px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
-        <div style="font-size:2rem;color:#ef4444;margin-bottom:12px;text-align:center;"><i class="fas fa-trash-alt"></i></div>
+        <div style="font-size:2rem;color:var(--rojo);margin-bottom:12px;text-align:center;"><i class="fas fa-trash-alt"></i></div>
         <h3 style="margin:0 0 8px;text-align:center;">¿Mover a la papelera?</h3>
         <p style="margin:0 0 24px;text-align:center;color:var(--dim);">El estudiante <strong id="modal-nombre"></strong> se moverá a la papelera. Podrá ser restaurado después.</p>
         <form id="form-eliminar" method="POST" action="../../../controladores/secretaria/estudiantes/eliminar.php">
@@ -264,7 +264,7 @@ function cambiarPassSec() {
     var confirm = document.getElementById('nueva-pass-sec-confirm').value;
     if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
     if (pass !== confirm) { if (window.Toast) Toast.show('Las contraseñas no coinciden.', 'error'); return; }
-    fetch('/controladores/secretaria/estudiantes/cambiarPassword.php', {
+    fetch('../../../controladores/secretaria/estudiantes/cambiarPassword.php', {
         method: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'csrf_token=<?= Security::generateCSRFToken() ?>&id=<?= $idEstudiante ?>&nuevaPassword='+encodeURIComponent(pass)

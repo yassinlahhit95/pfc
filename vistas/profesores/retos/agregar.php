@@ -25,6 +25,51 @@ $seccionActual = 'retos';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
+<style>
+.checks-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+}
+.check-btn {
+    cursor: pointer;
+    user-select: none;
+}
+.check-btn input[type="checkbox"] {
+    display: none;
+}
+.check-btn span {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-panel);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.check-btn input[type="checkbox"]:checked + span {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.35);
+    transform: translateY(-2px);
+}
+.check-btn:hover input[type="checkbox"]:not(:checked) + span {
+    border-color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.05);
+}
+.error-text {
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 5px;
+    display: block;
+}
+</style>
 <div class="cabecera">
     <h1>NUEVO RETO</h1>
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
@@ -73,24 +118,26 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'modulos') ?>">
-            <label>Asociar a Módulos</label>
-            <p class="texto-suave" style="margin-bottom: 10px;">Seleccione los modulos en los que se evaluare este reto.</p>
-            <?= fieldError($errores, 'modulos') ?>
-            <div class="checks scroll-v200">
+        <div class="campo<?= fieldClass($errores, 'modulos') ?>" style="margin-top: 25px;">
+            <label style="font-size: 1.1rem;">Asociar a Módulos</label>
+            <p class="texto-suave" style="margin-bottom: 5px;">Seleccione los módulos en los que se evaluará este reto.</p>
+            <?php if (!empty($errores['modulos'])): ?>
+                <span class="error-text"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml($errores['modulos']) ?></span>
+            <?php endif; ?>
+            
+            <div class="checks-grid">
                 <?php if (empty($misModulos)) { ?>
-                    <p class="texto-rojo">No tiene modulos asignados. No puede crear retos.</p>
+                    <p class="texto-rojo" style="padding: 10px; background: rgba(239, 68, 68, 0.1); border-radius: 8px;">No tiene módulos asignados. No puede crear retos.</p>
                 <?php } else { ?>
                     <?php foreach ($misModulos as $mod) { ?>
-                        <label class="check-item" for="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>">
+                        <label class="check-btn" for="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>">
                             <input type="checkbox" name="modulos[]" id="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>" value="<?= Security::escapeHtml($mod['idModulo'] ) ?>" 
-                                <?= Security::escapeHtml(isset($mapaModulosElegidos[$mod['idModulo']]) ? 'checked' : '') ?>>
-                            <span><?= Security::escapeHtml($mod['nombreModulo'] ) ?> (<?= Security::escapeHtml($mod['abreviaturaCiclo'] ) ?>)</span>
+                                <?= isset($mapaModulosElegidos[$mod['idModulo']]) ? 'checked' : '' ?>>
+                            <span><i class="fas fa-cube" style="margin-right: 8px; opacity: 0.7;"></i> <?= Security::escapeHtml($mod['nombreModulo'] ) ?> (<?= Security::escapeHtml($mod['abreviaturaCiclo'] ) ?>)</span>
                         </label>
                     <?php } ?>
                 <?php } ?>
             </div>
-            
         </div>
 
         <div class="acciones" style="margin-top: 20px;">

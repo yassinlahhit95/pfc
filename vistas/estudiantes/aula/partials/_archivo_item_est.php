@@ -28,7 +28,7 @@ $tamStr    = $arch['tamanio'] > 0
       <i class="fas fa-eye"></i>
     </button>
     <a href="<?= Security::escapeHtml($url ) ?>" download="<?= Security::escapeHtml($arch['nombreOriginal']) ?>"
-       class="btn-accion" title="Descargar" style="background:#f1f5f9;color:#475569;">
+       class="btn-accion" title="Descargar" style="background:var(--surface-2);color:var(--dim);">
       <i class="fas fa-download"></i>
     </a>
   </div>

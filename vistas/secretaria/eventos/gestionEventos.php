@@ -5,7 +5,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
-$eventos = listarEventosProximos();
+$eventos = listarTodosLosEventos();
 
 $titulo_pagina = "AULAPRO | EVENTOS";
 $seccion = 'eventos';
@@ -18,8 +18,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <div class="panel margen-abajo">
-    <div class="filtros">
-        <input type="text" id="filtroEventos" class="filtro-input" placeholder="Buscar evento...">
+    <div class="formulario">
+        <div class="campo">
+            <label for="filtroEventos">BUSCAR</label>
+            <input type="text" id="filtroEventos" placeholder="Buscar por título, fecha o ubicación..." autocomplete="off">
+        </div>
     </div>
 </div>
 
@@ -27,7 +30,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php if (empty($eventos)): ?>
     <div class="panel-vacio">
         <div class="panel-vacio-icono"><i class="fas fa-calendar-xmark"></i></div>
-        <div class="panel-vacio-titulo">No hay eventos próximos</div>
+        <div class="panel-vacio-titulo">No hay eventos</div>
         <div class="panel-vacio-desc">Crea el primer evento para que aparezca aquí.</div>
     </div>
     <?php else: ?>
@@ -39,6 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Ubicación</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -50,11 +54,30 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td><?= Security::escapeHtml(substr($ev['horaEvento'] ?? '', 0, 5)) ?></td>
                     <td><?= Security::escapeHtml($ev['ubicacionEvento'] ?? '—') ?></td>
                     <td>
+                        <?php if ($ev['fechaEvento'] === date('Y-m-d')): ?>
+                            <span class="texto-estado naranja">Hoy</span>
+                        <?php elseif ($ev['fechaEvento'] > date('Y-m-d')): ?>
+                            <span class="texto-estado verde">Próximo</span>
+                        <?php else: ?>
+                            <span class="texto-estado gris">Celebrado</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
                         <div class="recurso-menu-wrap">
                             <button class="recurso-menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
                             <div class="recurso-menu">
                                 <a class="recurso-menu-item" href="modificarEvento.php?idEvento=<?= (int)$ev['idEvento'] ?>">
                                     <i class="fas fa-pen"></i> Editar
+                                </a>
+                                <div class="recurso-menu-sep"></div>
+                                <a class="recurso-menu-item peligro" href="#"
+                                   data-modal-borrar
+                                   data-id="<?= (int)$ev['idEvento'] ?>"
+                                   data-tipo="Evento"
+                                   data-nombre="<?= Security::escapeHtml($ev['tituloEvento']) ?>"
+                                   data-url="/controladores/secretaria/eventos/borrar.php"
+                                   data-campo="idEvento">
+                                    <i class="fas fa-trash"></i> Eliminar
                                 </a>
                             </div>
                         </div>
@@ -69,6 +92,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
-filtrarTabla('filtroEventos', 'tablaEventos');
 iniciarPaginacion('tablaEventos', 15);
+// Filtrado en vivo: se ejecuta en cada pulsación
+document.getElementById('filtroEventos').addEventListener('input', function () {
+    filtrarTabla('filtroEventos', 'tablaEventos');
+});
 </script>

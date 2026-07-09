@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <?php if ($tarea['archivoAdjunto']) { ?>
-            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <div style="margin-top: 20px; padding: 15px; background:var(--surface-2); border-radius: 5px;">
                 <strong><i class="fas fa-paperclip"></i> Archivo Adjunto:</strong><br>
                 <a href="../../../public/uploads/aula/tareas/<?= Security::escapeHtml($tarea['archivoAdjunto']) ?>"
                    class="boton-secundario" download>
@@ -81,12 +81,12 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <?php if ($entrega) { ?>
-                <div style="margin: 15px 0; padding: 15px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 3px;">
+                <div style="margin: 15px 0; padding: 15px; background: var(--verde-suave); border-left: 4px solid var(--verde); border-radius: 3px;">
                     <strong>✓ Fecha de Entrega:</strong> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?><br>
                     <?php if ($entrega['nota'] !== null) { ?>
-                        <strong>✓ Calificación:</strong> <span style="font-size: 18px; color: #4caf50;"><?= Security::escapeHtml($entrega['nota'] ) ?>/10</span>
+                        <strong>✓ Calificación:</strong> <span style="font-size: 18px; color: var(--verde);"><?= Security::escapeHtml($entrega['nota'] ) ?>/10</span>
                     <?php } else { ?>
-                        <strong>⏳ Calificación:</strong> <span style="color: #ff9800;">Pendiente</span>
+                        <strong>⏳ Calificación:</strong> <span style="color: var(--naranja);">Pendiente</span>
                     <?php } ?>
                 </div>
 
@@ -97,7 +97,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </a>
 
                 <?php if ($entrega['archivoCorreccion']) { ?>
-                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 3px;">
+                <div style="margin-top: 20px; padding: 15px; background: var(--naranja-suave); border-left: 4px solid var(--naranja); border-radius: 3px;">
                     <strong><i class="fas fa-comment"></i> Retroalimentación del Profesor:</strong><br>
                     <?= Security::escapeHtml($entrega['comentarioCalificacion']) ?><br><br>
                     <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml($entrega['archivoCorreccion']) ?>"

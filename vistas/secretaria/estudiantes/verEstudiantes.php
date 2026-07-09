@@ -87,7 +87,7 @@ include __DIR__ . '/../comunes/nav.php';
                         <td><b><?= mb_strtoupper(Security::escapeHtml($e['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($e['emailEstudiante']) ?></td>
                         <td><?= Security::escapeHtml($e['anioEstudio'] ?? '') ?></td>
-                        <td><?= strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—')) ?></td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—'), 'UTF-8') ?></td>
                         <td>
                             <div style="display:flex;gap:6px;">
                                 <a href="verDetallesEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>" class="boton-secundario boton-pequeno" title="Ver detalles">

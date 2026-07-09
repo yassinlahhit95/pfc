@@ -33,21 +33,21 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idEvento" value="<?= (int)$evento['idEvento'] ?>">
 
         <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
-            <label for="tituloEvento">Título <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="tituloEvento">Título <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="tituloEvento" id="tituloEvento" maxlength="255"
                    value="<?= $v('tituloEvento') ?>">
             <?= fieldError($errores, 'tituloEvento') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
-            <label for="fechaEvento">Fecha <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="fechaEvento">Fecha <span style="color:var(--rojo)">*</span></label>
             <input type="date" name="fechaEvento" id="fechaEvento"
                    value="<?= $v('fechaEvento') ?>">
             <?= fieldError($errores, 'fechaEvento') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
-            <label for="horaEvento">Hora <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="horaEvento">Hora <span style="color:var(--rojo)">*</span></label>
             <input type="time" name="horaEvento" id="horaEvento"
                    value="<?= $v('horaEvento') ?>">
             <?= fieldError($errores, 'horaEvento') ?>

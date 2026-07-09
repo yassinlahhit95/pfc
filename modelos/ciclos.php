@@ -207,7 +207,7 @@ function restaurarCiclo($idCiclo) {
 
 function contarEstudiantesEnCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo = ?";
+    $sql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idCiclo = ? AND eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);

@@ -9,7 +9,7 @@ if (empty($slides)) {
 $autoplay = ($contenido['autoplay'] ?? 'si') === 'si';
 $sliderId = 'hero-slider-' . uniqid();
 ?>
-<section class="lp-sec lp-hero-slider" id="hero-slider">
+<section class="lp-sec lp-hero-slider" id="hero-slider"<?= $styleInline ?? '' ?>>
   <div class="lp-slider-container" id="<?= $sliderId ?>">
     
     <!-- Slides -->
@@ -120,3 +120,7 @@ $sliderId = 'hero-slider-' . uniqid();
 })();
 </script>
 <?php endif; ?>
+
+
+
+

@@ -55,6 +55,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?php } ?>
             </select>
         </div>
+        <div class="campo relleno">
+            <label>FILTRAR POR CURSO:</label>
+            <select id="selectFiltroCurso" onchange="aplicarFiltrosRetos()">
+                <option value="">-- Todos los Cursos --</option>
+                <option value="1º">1º Año</option>
+                <option value="2º">2º Año</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -81,9 +89,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $nombresModulos = array_map(fn($m) => Security::escapeHtml($m['nombreModulo']), $modulos);
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
                         $idCicloReto = !empty($modulos) ? (int)$modulos[0]['idCiclo'] : 0;
+                        $cursoReto = !empty($modulos) ? ($modulos[0]['cursoAnio'] ?? '') : '';
                         $archivos = obtenerArchivosReto($reto['idReto']);
                     ?>
-                    <tr class="fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= (int)($mapaCicloNivel[$idCicloReto] ?? 0) ?>">
+                    <tr class="fila-ciclo-<?= $idCicloReto ?> fila-nivel-<?= (int)($mapaCicloNivel[$idCicloReto] ?? 0) ?> fila-curso-<?= Security::escapeHtml($cursoReto) ?>">
                         <td><b><?= Security::escapeHtml($reto['nombreReto']) ?></b></td>
                         <td><?= $textoModulos ?></td>
                         <td>
@@ -146,12 +155,14 @@ iniciarPaginacion('tablaRetos', 15);
 function aplicarFiltrosRetos() {
     var idNivel = $('#selectFiltroNivel').val();
     var idCiclo = $('#selectFiltroCiclo').val();
+    var curso = $('#selectFiltroCurso').val();
 
     $('#tablaRetos tbody tr').each(function() {
         var $fila = $(this);
         var pasaNivel = idNivel === '' || $fila.hasClass('fila-nivel-' + idNivel);
         var pasaCiclo = idCiclo === '' || $fila.hasClass('fila-ciclo-' + idCiclo);
-        if (pasaNivel && pasaCiclo) {
+        var pasaCurso = curso === '' || $fila.hasClass('fila-curso-' + curso);
+        if (pasaNivel && pasaCiclo && pasaCurso) {
             $fila.removeClass('fila-filtro-oculta');
         } else {
             $fila.addClass('fila-filtro-oculta');

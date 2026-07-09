@@ -148,6 +148,56 @@ crearTabla($con, 'landing_secciones', "CREATE TABLE IF NOT EXISTS landing_seccio
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 // ══════════════════════════════════════════════════════════════════════
+// 6. Anuncios para familias — ampliar el enum dirigidoA con 'tutores'
+// ══════════════════════════════════════════════════════════════════════
+$tipoDirigidoA = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COLUMN_TYPE ct FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'anuncios' AND COLUMN_NAME = 'dirigidoA'"))['ct'] ?? '';
+if (strpos($tipoDirigidoA, 'tutores') === false) {
+    if (mysqli_query($con, "ALTER TABLE anuncios MODIFY dirigidoA
+        ENUM('todos','estudiantes','profesores','tutores') DEFAULT 'todos'")) {
+        echo "[OK]         anuncios.dirigidoA ampliado con 'tutores'\n";
+    } else {
+        echo "[ERROR]      anuncios.dirigidoA: " . mysqli_error($con) . "\n";
+    }
+} else {
+    echo "[ya aplicado] anuncios.dirigidoA incluye 'tutores'\n";
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 7. Boletines: el serial generado (BLT-YYYY-XXXX-XXXX-XXXX-XXXX) ocupa 28
+//    caracteres y la columna era VARCHAR(25) → el registro fallaba y el QR
+//    de verificación nunca encontraba el documento.
+// ══════════════════════════════════════════════════════════════════════
+$lenSerial = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT CHARACTER_MAXIMUM_LENGTH len FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'boletines_log' AND COLUMN_NAME = 'serial'"))['len'] ?? 0;
+if ((int)$lenSerial < 40) {
+    if (mysqli_query($con, "ALTER TABLE boletines_log MODIFY serial VARCHAR(40) NOT NULL")) {
+        echo "[OK]         boletines_log.serial ampliado a VARCHAR(40)\n";
+    } else {
+        echo "[ERROR]      boletines_log.serial: " . mysqli_error($con) . "\n";
+    }
+} else {
+    echo "[ya aplicado] boletines_log.serial >= 40\n";
+}
+
+// Columnas de auditoría de escaneos que usa verificarBoletinPorSerial()
+agregarColumna($con, 'boletines_log', 'scan_count',   "INT UNSIGNED NOT NULL DEFAULT 0");
+agregarColumna($con, 'boletines_log', 'last_scan_at', "DATETIME NULL DEFAULT NULL");
+agregarColumna($con, 'boletines_log', 'last_scan_ip', "VARCHAR(45) NULL DEFAULT NULL");
+
+// Registro de intentos de verificación (auditoría + límite de tasa por IP)
+crearTabla($con, 'verificaciones_log', "CREATE TABLE IF NOT EXISTS verificaciones_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    serial_buscado VARCHAR(40) NOT NULL,
+    ip VARCHAR(45) NOT NULL,
+    resultado TINYINT(1) NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_verif_ip_fecha (ip, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// ══════════════════════════════════════════════════════════════════════
 // FIN — invalidar caché de feature flags para ver los cambios al momento
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/include/FeatureGuard.php';

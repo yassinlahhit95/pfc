@@ -162,10 +162,10 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 // ── Archivos (recursos.php) subidos por el profesor ──
 $stmt = mysqli_prepare($con,
-    "SELECT a.idArchivo, a.nombre, a.idModulo, m.nombreModulo
+    "SELECT a.idArchivo, a.nombreOriginal, a.idModulo, m.nombreModulo
      FROM aula_archivos a
      JOIN modulos m ON a.idModulo = m.idModulo
-     WHERE a.idProfesor = ? AND a.eliminado = 0 AND a.nombre LIKE ?
+     WHERE a.idProfesor = ? AND a.eliminado = 0 AND a.nombreOriginal LIKE ?
      ORDER BY a.fechaSubida DESC LIMIT 3");
 mysqli_stmt_bind_param($stmt, 'is', $idProfesor, $like);
 mysqli_stmt_execute($stmt);
@@ -173,7 +173,7 @@ $res = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($res)) {
     $results[] = [
         'type'  => 'archivo',
-        'label' => $row['nombre'] . ' ('. $row['nombreModulo'] .')',
+        'label' => $row['nombreOriginal'] . ' ('. $row['nombreModulo'] .')',
         'url'   => '../aula/recursos.php?id=' . (int)$row['idModulo'],
     ];
 }

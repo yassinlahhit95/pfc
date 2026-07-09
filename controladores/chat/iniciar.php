@@ -69,6 +69,21 @@ if ($targetRol === $myRol && $targetId === $myId) {
     exit;
 }
 
+// La política de contactos (quién puede hablar con quién) se aplica también
+// en el servidor, no solo en el selector de contactos de la interfaz.
+if (!chatParEsPermitido($myRol, $myId, $targetRol, $targetId)) {
+    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+           && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    if ($isAjax) {
+        http_response_code(403);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ok' => false, 'msg' => 'No puedes iniciar una conversación con este usuario.']);
+        exit;
+    }
+    header("Location: $back");
+    exit;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════

@@ -102,16 +102,16 @@ require_once __DIR__ . "/../comunes/nav.php";
 }
 .asist-opt:hover span { border-color: var(--dim); color: var(--text); }
 .asist-opt.opt-p input:checked ~ span { background: #dcfce7; border-color: #4ade80; color: #15803d; }
-.asist-opt.opt-a input:checked ~ span { background: #fee2e2; border-color: #f87171; color: #b91c1c; }
+.asist-opt.opt-a input:checked ~ span { background: #fee2e2; border-color: #f87171; color: var(--rojo-ink); }
 .asist-opt.opt-r input:checked ~ span { background: #ffedd5; border-color: #fb923c; color: #c2410c; }
-.asist-opt.opt-j input:checked ~ span { background: #dbeafe; border-color: #60a5fa; color: #1d4ed8; }
+.asist-opt.opt-j input:checked ~ span { background: #dbeafe; border-color: #60a5fa; color: var(--azul-ink); }
 
 /* Observación inline input */
 .asist-obs {
   padding: 7px 11px;
   border: 1.5px solid var(--border-2, rgba(15,23,42,.12));
   border-radius: 8px; font-size: 13px; font-family: inherit;
-  background: var(--surface-2, #f8fafc); color: var(--text);
+  background: var(--surface-2); color: var(--text);
   width: 180px; transition: border-color .15s, background .15s;
   autocomplete: off;
 }
@@ -135,9 +135,9 @@ require_once __DIR__ . "/../comunes/nav.php";
   padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
 }
 .chip-p { background: #dcfce7; color: #15803d; }
-.chip-a { background: #fee2e2; color: #b91c1c; }
+.chip-a { background: #fee2e2; color: var(--rojo-ink); }
 .chip-r { background: #ffedd5; color: #c2410c; }
-.chip-j { background: #dbeafe; color: #1d4ed8; }
+.chip-j { background: #dbeafe; color: var(--azul-ink); }
 .chip-t { background: var(--surface-2); color: var(--dim); }
 
 /* Schedule context bar */
@@ -152,7 +152,7 @@ require_once __DIR__ . "/../comunes/nav.php";
   color: var(--text);
 }
 .horario-bar.sin-clase {
-  background: #fef3c7; border: 1.5px solid #fbbf24; color: #92400e;
+  background: #fef3c7; border: 1.5px solid #fbbf24; color: var(--naranja-ink);
 }
 .horario-franja {
   display: inline-flex; align-items: center; gap: 6px;
@@ -176,6 +176,7 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
   <h1><i class="fas fa-clipboard-check"></i> Registro de Asistencia</h1>
+  <a href="../aula/asistencia_qr.php" class="boton-secundario"><i class="fas fa-qrcode"></i> Asistencia por PIN</a>
 </div>
 
 <?php if ($exito): ?>
@@ -246,7 +247,7 @@ require_once __DIR__ . "/../comunes/nav.php";
           <i class="fas fa-check" style="color:#15803d"></i> Todos presentes
         </button>
         <button type="button" class="boton-secundario btn-pequeno" onclick="setAll('ausente')">
-          <i class="fas fa-times" style="color:#b91c1c"></i> Todos ausentes
+          <i class="fas fa-times" style="color:var(--rojo-ink)"></i> Todos ausentes
         </button>
       </div>
     </div>

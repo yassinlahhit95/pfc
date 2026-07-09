@@ -1,85 +1,71 @@
 <?php
-// Plantilla Universidad (Basada en estilo Deusto)
-
+// Plantilla "Universidad" — corporativo académico: mayúsculas (vía CSS),
+// bordes rectos y sombras sólidas offset. Solo define estructura y copy
+// genérico; el contenido real (cifras, testimonios, FAQ…) se rellena desde
+// el panel. Las mayúsculas las aplica el tema (text-transform), no el texto.
 return [
-    'slug' => 'universidad',
-    'nombre' => 'Universidad',
-    'descripcion' => 'Diseño corporativo y académico. Uso de mayúsculas, bordes rectos y sombras sólidas.',
-    'thumbnail' => 'plantilla-universidad.svg', 
+    'slug'        => 'universidad',
+    'nombre'      => 'Universidad',
+    'descripcion' => 'Diseño corporativo y académico: bordes rectos, sombras sólidas y titulares en mayúsculas. Transmite solidez institucional.',
+    'thumbnail'   => 'plantilla-universidad.svg',
     'colorAcento' => '#003c8f', // Azul universidad clásico
-    
+
     'secciones' => [
-        [
-            'tipo' => 'hero',
-            'contenido' => [
-                'variante' => 'fondo',
-                'eyebrow' => 'Tu futuro profesional',
-                'titulo' => 'FORMAMOS PERSONAS PARA TRANSFORMAR EL MUNDO',
-                'subtitulo' => 'Descubre una formación práctica y especializada que te preparará para los retos del mañana.',
-                'videoFondo' => 'https://www.w3schools.com/html/mov_bbb.mp4', // Placeholder video
-                'imagen' => '',
-                'botonTexto' => 'NUESTRA OFERTA',
-                'botonUrl' => '#oferta_formativa',
-                'boton2Texto' => 'SOLICITAR INFO',
-                'boton2Url' => '#contacto',
-            ]
-        ],
-        [
-            'tipo' => 'cifras',
-            'contenido' => [
-                'items' => [
-                    ['numero' => '365', 'sufijo' => ' DIAS', 'etiqueta' => 'DE INNOVACIÓN'],
-                    ['numero' => '12', 'sufijo' => 'K', 'etiqueta' => 'ALUMNOS ACTIVOS'],
-                    ['numero' => '4', 'sufijo' => 'M€', 'etiqueta' => 'EN BECAS']
-                ]
-            ]
-        ],
-        [
-            'tipo' => 'porque_elegirnos',
-            'contenido' => [
-                'titulo' => 'FORMACIÓN Y VALORES',
-                'subtitulo' => 'Educamos en la excelencia académica y humana.',
-                'items' => [
-                    ['icono' => 'fa-graduation-cap', 'titulo' => 'EXCELENCIA', 'texto' => 'Calidad educativa reconocida y adaptada al mercado profesional actual.'],
-                    ['icono' => 'fa-users', 'titulo' => 'PERSONAS', 'texto' => 'Acompañamiento personalizado en tu desarrollo integral.'],
-                    ['icono' => 'fa-briefcase', 'titulo' => 'EMPLEABILIDAD', 'texto' => 'Estrecha relación con el tejido empresarial y prácticas garantizadas.']
-                ]
-            ]
-        ],
-        [
-            'tipo' => 'oferta_formativa',
-            'contenido' => [
-                'titulo' => 'NUESTRA OFERTA DE ESTUDIOS',
-                'subtitulo' => 'Programas de formación profesional diseñados para la especialización técnica.',
-                'botonTexto' => 'VER DETALLES',
-                'mostrarPrecio' => 'no'
-            ]
-        ],
-        [
-            'tipo' => 'instalaciones',
-            'contenido' => [
-                'titulo' => 'NUESTROS CAMPUS',
-                'subtitulo' => 'Entornos de aprendizaje equipados con la última tecnología.',
-                'items' => []
-            ]
-        ],
-        [
-            'tipo' => 'empresas',
-            'contenido' => [
-                'titulo' => 'CONECTADOS CON EL MUNDO EMPRESARIAL',
-                'texto' => 'Trabajamos con líderes del sector para asegurar tu inserción laboral.',
-                'items' => []
-            ]
-        ],
-        [
-            'tipo' => 'contacto',
-            'contenido' => [
-                'modoVisualizacion' => 'integrado',
-                'titulo' => '¿QUIERES SABER MÁS?',
-                'texto' => 'Contacta con nuestro equipo de admisiones y resuelve todas tus dudas.',
-                'mostrarFormulario' => 'si',
-                'mostrarMapa' => 'no'
-            ]
-        ]
-    ]
+        ['tipo' => 'hero', 'contenido' => [
+            'variante'    => 'fondo',
+            'eyebrow'     => 'Tu futuro profesional',
+            'titulo'      => 'Formamos personas para transformar el mundo',
+            'subtitulo'   => 'Una formación práctica y especializada que te prepara para los retos del mañana.',
+            'botonTexto'  => 'Nuestra oferta',
+            'botonUrl'    => '#oferta_formativa',
+            'boton2Texto' => 'Solicitar información',
+            'boton2Url'   => '#contacto',
+        ]],
+        ['tipo' => 'cifras', 'contenido' => ['variante' => 'tarjetas']],
+        ['tipo' => 'porque_elegirnos', 'contenido' => [
+            'titulo'    => 'Formación y valores',
+            'subtitulo' => 'Educamos en la excelencia académica y humana.',
+        ]],
+        ['tipo' => 'oferta_formativa', 'contenido' => [
+            'titulo'        => 'Nuestra oferta de estudios',
+            'subtitulo'     => 'Programas de formación profesional para la especialización técnica.',
+            'botonTexto'    => 'Ver detalles',
+            'mostrarPrecio' => 'no',
+        ]],
+        ['tipo' => 'fp_dual', 'contenido' => [
+            'variante' => 'reverso',
+            'titulo'   => 'Formación profesional dual',
+            'texto'    => 'Estudia y trabaja a la vez: combina la formación teórica con estancias remuneradas en empresas.',
+        ]],
+        ['tipo' => 'instalaciones', 'contenido' => [
+            'titulo'    => 'Nuestros campus',
+            'subtitulo' => 'Entornos de aprendizaje equipados con la última tecnología.',
+        ]],
+        ['tipo' => 'testimonios', 'contenido' => [
+            'variante' => 'carrusel',
+            'titulo'   => 'Alumnos destacados',
+        ]],
+        ['tipo' => 'faq', 'contenido' => [
+            'variante' => 'acordeon',
+            'titulo'   => 'Preguntas frecuentes',
+        ]],
+        ['tipo' => 'empresas', 'contenido' => [
+            'titulo' => 'Conectados con el mundo empresarial',
+            'texto'  => 'Trabajamos con líderes del sector para asegurar tu inserción laboral.',
+        ]],
+        ['tipo' => 'prematricula_cta', 'contenido' => [
+            'variante'   => 'banner',
+            'titulo'     => 'Reserva tu plaza ahora',
+            'texto'      => 'Inicia tu proceso de admisión online de forma rápida y sencilla.',
+            'botonTexto' => 'Iniciar admisión',
+            'notaPlazo'  => 'Últimas plazas disponibles',
+        ]],
+        ['tipo' => 'contacto', 'contenido' => [
+            'modoVisualizacion' => 'integrado',
+            'titulo'            => '¿Quieres saber más?',
+            'texto'             => 'Contacta con nuestro equipo de admisiones y resuelve todas tus dudas.',
+            'mostrarFormulario' => 'si',
+            'mostrarMapa'       => 'no',
+        ]],
+    ],
 ];

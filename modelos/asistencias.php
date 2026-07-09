@@ -49,7 +49,7 @@ function listarEstudiantesDeModulo(int $idModulo): array {
         "SELECT DISTINCT e.idEstudiante, e.nombreEstudiante
          FROM modulos m
          JOIN estudiantes e ON e.idCiclo = m.idCiclo
-         WHERE m.idModulo = ?
+         WHERE m.idModulo = ? AND e.eliminado = 0
          ORDER BY e.nombreEstudiante");
     if (!$stmt) return [];
     mysqli_stmt_bind_param($stmt, "i", $idModulo);

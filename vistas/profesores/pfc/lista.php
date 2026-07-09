@@ -41,7 +41,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
         </div>
         <?php if ($saasLocked): ?>
-            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700;background:#f3f4f6;color:#6b7280;white-space:nowrap;"><i class="fas fa-lock"></i> <?= $entregaAbierta ? 'Activo' : 'Inactivo' ?></span>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700;background:#f3f4f6;color:var(--dim);white-space:nowrap;"><i class="fas fa-lock"></i> <?= $entregaAbierta ? 'Activo' : 'Inactivo' ?></span>
         <?php else: ?>
         <label class="switch">
             <input type="checkbox" id="toggle-subida-tfg" <?= $entregaAbierta ? 'checked' : '' ?>>

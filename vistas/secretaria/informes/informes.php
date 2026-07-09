@@ -69,7 +69,7 @@ $ciclosJson = json_encode(array_map(fn($c) => [
 
     <!-- LISTADO DE ALUMNADO -->
     <div class="informe-card">
-        <div class="informe-icono" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);">
+        <div class="informe-icono" style="background:linear-gradient(135deg,var(--azul),#0284c7);">
             <i class="fas fa-users"></i>
         </div>
         <h2 class="informe-titulo">Listado de Alumnado</h2>
@@ -101,7 +101,7 @@ $ciclosJson = json_encode(array_map(fn($c) => [
 
     <!-- HORARIO DEL CICLO -->
     <div class="informe-card">
-        <div class="informe-icono" style="background:linear-gradient(135deg,#10b981,#059669);">
+        <div class="informe-icono" style="background:linear-gradient(135deg,var(--verde),#059669);">
             <i class="fas fa-calendar-week"></i>
         </div>
         <h2 class="informe-titulo">Horario del Ciclo</h2>
@@ -154,12 +154,12 @@ function fetchEstudiantes(selectCiclo) {
     var $wrapper = document.getElementById('wrapper-' + type);
     var $list    = document.getElementById('list-' + type);
     if (!idCiclo) { $wrapper.style.display = 'none'; return; }
-    $list.innerHTML = '<p style="font-size:0.8rem;color:#64748b;padding:10px;">Cargando alumnos...</p>';
+    $list.innerHTML = '<p style="font-size:0.8rem;color:var(--dim);padding:10px;">Cargando alumnos...</p>';
     $wrapper.style.display = 'block';
     var url = window.resolveAppPath('controladores/secretaria/estudiantes/get_por_ciclo.php?idCiclo=' + idCiclo);
     fetch(url).then(r => r.json()).then(data => {
         if (!data || !data.length) {
-            $list.innerHTML = '<p style="font-size:0.8rem;color:var(--rojo,#ef4444);padding:10px;">No hay alumnos en este ciclo.</p>';
+            $list.innerHTML = '<p style="font-size:0.8rem;color:var(--rojo);padding:10px;">No hay alumnos en este ciclo.</p>';
             return;
         }
         $list.innerHTML = '';
@@ -170,7 +170,7 @@ function fetchEstudiantes(selectCiclo) {
             $list.appendChild(div);
         });
     }).catch(() => {
-        $list.innerHTML = '<p style="font-size:0.8rem;color:var(--rojo,#ef4444);padding:10px;">Error al cargar alumnos.</p>';
+        $list.innerHTML = '<p style="font-size:0.8rem;color:var(--rojo);padding:10px;">Error al cargar alumnos.</p>';
     });
 }
 

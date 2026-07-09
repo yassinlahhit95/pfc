@@ -42,9 +42,11 @@ if ($method === 'POST') {
     $matchType = null;
 
     foreach ($candidates as $type => [$tabla, $idCol, $emailCol]) {
+        // Los estudiantes en la papelera (soft-delete) no pueden autenticarse
+        $filtroEliminado = ($tabla === 'estudiantes') ? ' AND eliminado = 0' : '';
         $st = mysqli_prepare($con,
             "SELECT `$idCol` AS uid, `password`, `must_change_password`
-             FROM `$tabla` WHERE `$emailCol` = ? LIMIT 1");
+             FROM `$tabla` WHERE `$emailCol` = ?$filtroEliminado LIMIT 1");
         mysqli_stmt_bind_param($st, 's', $email);
         mysqli_stmt_execute($st);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($st));

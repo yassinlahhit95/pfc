@@ -242,7 +242,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 function cambiarPassProf() {
     var pass = document.getElementById('nueva-pass-prof').value;
     if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
-    fetch('/controladores/admin/usuarios/cambiarPassword.php', {
+    fetch('../../../controladores/admin/usuarios/cambiarPassword.php', {
         method: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'csrf_token=<?= Security::generateCSRFToken() ?>&tipo=profesor&id=<?= $idProfesor ?>&nuevaPassword='+encodeURIComponent(pass)

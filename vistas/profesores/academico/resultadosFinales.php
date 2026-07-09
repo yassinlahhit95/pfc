@@ -56,11 +56,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
                         <option value="<?= Security::escapeHtml($cicloItem['idCiclo']) ?>"
                             <?= ($id_ciclo_elegido == $cicloItem['idCiclo']) ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml(strtoupper($cicloItem['nombreCiclo'])) ?>
+                            <?= Security::escapeHtml(mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8')) ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
+            <?php if ($id_ciclo_elegido) { ?>
+            <div class="campo relleno">
+                <label for="filtroCursoEstudiante">Filtrar por Curso:</label>
+                <select id="filtroCursoEstudiante" onchange="filtrarResultadosPorCurso()">
+                    <option value="">-- Todos los Cursos --</option>
+                    <option value="1º">1º Año</option>
+                    <option value="2º">2º Año</option>
+                </select>
+            </div>
+            <?php } ?>
         </form>
 
         <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
@@ -103,8 +113,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         $promedioGlobal = $fila['promedio_global'] !== '-' ? number_format((float)$fila['promedio_global'], 2) : '—';
                         $notaTFG = $fila['nota_tfg'] !== null ? Security::escapeHtml($fila['nota_tfg']) : '<span class="texto-suave">—</span>';
                 ?>
-                <tr>
-                    <td><b><?= Security::escapeHtml(strtoupper($fila['nombreEstudiante'])) ?></b></td>
+                <tr class="fila-curso" data-curso="<?= Security::escapeHtml($fila['anioEstudio'] ?? '') ?>">
+                    <td><b><?= Security::escapeHtml(mb_strtoupper($fila['nombreEstudiante'], 'UTF-8')) ?></b></td>
                     <td><?= Security::escapeHtml($mediaModulos) ?></td>
                     <td><?= Security::escapeHtml($mediaRetos) ?></td>
                     <td class="color-primario texto-negrita"><?= $notaTFG ?></td>
@@ -135,11 +145,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php foreach ($datos_finales as $fila) {
     if (empty($fila['detalles_modulos'])) continue;
 ?>
-<div class="panel margen-arriba" style="font-size:.875rem;">
+<div class="panel margen-arriba fila-curso-detalle" data-curso="<?= Security::escapeHtml($fila['anioEstudio'] ?? '') ?>" style="font-size:.875rem;">
     <details>
         <summary style="cursor:pointer;font-weight:700;padding:10px 0;display:flex;align-items:center;gap:8px;">
             <i class="fas fa-user" style="color:var(--accent)"></i>
-            <?= Security::escapeHtml(strtoupper($fila['nombreEstudiante'])) ?>
+            <?= Security::escapeHtml(mb_strtoupper($fila['nombreEstudiante'], 'UTF-8')) ?>
             <span class="texto-suave" style="font-weight:400;margin-left:4px;">— desglose por módulo</span>
         </summary>
         <div style="overflow-x:auto;margin-top:10px;">
@@ -181,4 +191,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include '../comunes/footer.php'; ?>
 <script>
 $(function() { if (typeof iniciarPaginacion === 'function') iniciarPaginacion('tablaResultados', 30); });
+
+function filtrarResultadosPorCurso() {
+    var curso = document.getElementById('filtroCursoEstudiante').value;
+    var filas = document.querySelectorAll('.fila-curso');
+    filas.forEach(function(fila) {
+        var optCurso = fila.getAttribute('data-curso');
+        if (curso === '' || optCurso === curso) {
+            fila.style.display = '';
+        } else {
+            fila.style.display = 'none';
+        }
+    });
+    var detalles = document.querySelectorAll('.fila-curso-detalle');
+    detalles.forEach(function(det) {
+        var optCurso = det.getAttribute('data-curso');
+        if (curso === '' || optCurso === curso) {
+            det.style.display = '';
+        } else {
+            det.style.display = 'none';
+        }
+    });
+}
 </script>

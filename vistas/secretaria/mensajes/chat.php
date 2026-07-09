@@ -31,7 +31,7 @@ require_once __DIR__ . '/../comunes/nav.php';
       </button>
     </div>
     <div class="chat-search">
-      <input type="text" placeholder="Buscar conversación..." id="sidebar-search">
+      <input type="text" placeholder="Buscar conversación..." id="sidebar-search" autocomplete="off">
     </div>
     <div class="chat-conv-list">
       <?php if (empty($convs)): ?>

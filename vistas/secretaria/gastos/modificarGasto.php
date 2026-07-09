@@ -36,27 +36,27 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="idGasto" value="<?= (int)$gasto['idGasto'] ?>">
 
         <div class="campo<?= fieldClass($errores, 'concepto') ?>">
-            <label for="concepto">Concepto <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="concepto">Concepto <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="concepto" id="concepto" maxlength="255"
                    value="<?= $v('concepto') ?>">
             <?= fieldError($errores, 'concepto') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'importe') ?>">
-            <label for="importe">Importe (€) <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="importe">Importe (€) <span style="color:var(--rojo)">*</span></label>
             <input type="number" name="importe" id="importe" step="0.01" min="0.01"
                    value="<?= $v('importe') ?>">
             <?= fieldError($errores, 'importe') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'fecha') ?>">
-            <label for="fecha">Fecha del gasto <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="fecha">Fecha del gasto <span style="color:var(--rojo)">*</span></label>
             <input type="date" name="fecha" id="fecha" value="<?= $v('fecha') ?>">
             <?= fieldError($errores, 'fecha') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'idCategoria') ?>">
-            <label for="idCategoria">Categoría <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
             <select name="idCategoria" id="idCategoria">
                 <option value="">— Selecciona —</option>
                 <?php
@@ -142,7 +142,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </label>
             <ul id="lista-archivos" style="list-style: none; padding: 0; margin: 10px 0; font-size: 0.9em; color: var(--text-mut);"></ul>
             <div id="upload-progress-container" style="display: none; margin-top: 10px;">
-                <div style="background: #e2e8f0; border-radius: 4px; overflow: hidden; height: 8px;">
+                <div style="background: var(--border); border-radius: 4px; overflow: hidden; height: 8px;">
                     <div id="upload-progress-bar" style="background: var(--primary); width: 0%; height: 100%; transition: width 0.2s ease;"></div>
                 </div>
                 <small id="upload-progress-text" style="color: var(--text-mut); display: block; margin-top: 4px; text-align: center;">0%</small>

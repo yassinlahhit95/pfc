@@ -86,9 +86,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($ciclosFiltrados as $cicloItem) { ?>
                         <option value="<?= (int)$cicloItem['idCiclo'] ?>" <?= ($idCicloElegidoParaVer == $cicloItem['idCiclo']) ? 'selected' : '' ?>>
-                            [<?= htmlspecialchars($cicloItem['nombreNivel']) ?>] <?= strtoupper(htmlspecialchars($cicloItem['nombreCiclo'])) ?>
+                            [<?= htmlspecialchars($cicloItem['nombreNivel']) ?>] <?= mb_strtoupper(htmlspecialchars($cicloItem['nombreCiclo']), 'UTF-8') ?>
                         </option>
                     <?php } ?>
+                </select>
+            </div>
+            <div class="campo relleno">
+                <label>Filtrar por Curso:</label>
+                <select id="filtroCursoEstudiante" onchange="filtrarResultadosPorCurso()">
+                    <option value="">-- Todos los Cursos --</option>
+                    <option value="1º">1º Año</option>
+                    <option value="2º">2º Año</option>
                 </select>
             </div>
         </form>
@@ -102,7 +110,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <form action="../../../controladores/admin/academico/exportarCalificaciones.php" method="POST" class="btn-accion-resultados">
                 <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                 <input type="hidden" name="idCiclo" value="<?= $idCicloElegidoParaVer ?>">
-                <button type="submit" class="boton-primario" style="background:#16a34a;">
+                <button type="submit" class="boton-primario" style="background:var(--verde);">
                     <i class="fas fa-file-excel"></i> Exportar Excel
                 </button>
             </form>
@@ -135,7 +143,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             if ($fila['estado_global'] == "APROBADO") { $claseDelColor = "texto-verde"; }
                             if ($fila['estado_global'] == "PENDIENTE") { $claseDelColor = "texto-gris"; }
                         ?>
-                        <tr>
+                        <tr class="fila-curso" data-curso="<?= Security::escapeHtml($fila['anioEstudio'] ?? '') ?>">
                             <td><?= Security::escapeHtml($fila['nombreEstudiante']) ?></td>
                             <td><?= Security::escapeHtml($fila['anioEstudio'] ?? '-') ?></td>
                             <td><?= Security::escapeHtml($fila['media_modulos']) ?></td>
@@ -163,4 +171,17 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include '../comunes/footer.php'; ?>
-
+<script>
+function filtrarResultadosPorCurso() {
+    var curso = document.getElementById('filtroCursoEstudiante').value;
+    var filas = document.querySelectorAll('.fila-curso');
+    filas.forEach(function(fila) {
+        var optCurso = fila.getAttribute('data-curso');
+        if (curso === '' || optCurso === curso) {
+            fila.style.display = '';
+        } else {
+            fila.style.display = 'none';
+        }
+    });
+}
+</script>

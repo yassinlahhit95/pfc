@@ -15,6 +15,7 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/aula.php";
 
 $profesorActual     = obtenerProfesorPorId($idProfesor);
 $listaAnuncios      = listarTodosLosAnuncios();
@@ -23,6 +24,7 @@ $listaEstudiantes   = listarEstudiantesDeProfesor($idProfesor);
 $listaModulos       = listarModulosDeProfesor($idProfesor);
 $listaRetos         = listarRetosDeProfesor($idProfesor);
 $listaEventos       = listarEventosProximos();
+$alumnosRiesgo      = obtenerAlumnosEnRiesgoPorProfesorAula($idProfesor);
 
 $listaTFGsProfesor      = listarTFGsPorProfesor($idProfesor);
 $totalTFGsProfesor      = count($listaTFGsProfesor);
@@ -200,6 +202,56 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 
 </section>
 
+<!-- Heatmap de Alumnos en Riesgo -->
+<?php if (!empty($alumnosRiesgo)): ?>
+<div class="section-head" style="margin-top:24px;">
+  <h2><i class="fas fa-exclamation-triangle" style="color:var(--rojo); margin-right:8px;"></i> Alumnos en Riesgo (Aula Digital)</h2>
+  <span class="count">Requieren atención temprana</span>
+</div>
+<div class="panel" style="overflow-x:auto;">
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Estudiante</th>
+        <th>Módulo</th>
+        <th>Entregas</th>
+        <th>Nota Media</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach($alumnosRiesgo as $r): ?>
+        <tr>
+          <td>
+            <b><?= Security::escapeHtml($r['nombreEstudiante'] . ' ' . ($r['apellidosEstudiante'] ?? '')) ?></b>
+          </td>
+          <td><?= Security::escapeHtml($r['nombreModulo']) ?></td>
+          <td>
+            <?= (int)$r['tareasEntregadas'] ?> / <?= (int)$r['totalTareas'] ?>
+            <?php if ($r['totalTareas'] - $r['tareasEntregadas'] > 0): ?>
+              <span style="color:var(--rojo); font-size:0.8rem; margin-left:8px;"><i class="fas fa-clock"></i> Faltan <?= $r['totalTareas'] - $r['tareasEntregadas'] ?></span>
+            <?php endif; ?>
+          </td>
+          <td>
+            <?php if ($r['notaMedia'] !== null): ?>
+              <span style="font-weight:600; color:<?= $r['notaMedia'] < 5 ? 'var(--rojo)' : 'var(--verde)' ?>"><?= number_format($r['notaMedia'], 1) ?></span>
+            <?php else: ?>
+              <span class="texto-suave">Sin calificar</span>
+            <?php endif; ?>
+          </td>
+          <td>
+            <?php if ($r['nivelRiesgo'] === 'rojo'): ?>
+              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--rojo-suave); color:var(--rojo-ink); border-radius:999px; font-size:0.85rem; font-weight:600;"><i class="fas fa-circle" style="font-size:0.5rem"></i> Alto Riesgo</span>
+            <?php else: ?>
+              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--naranja-suave); color:var(--naranja-ink); border-radius:999px; font-size:0.85rem; font-weight:600;"><i class="fas fa-circle" style="font-size:0.5rem"></i> Precaución</span>
+            <?php endif; ?>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+<?php endif; ?>
 <!-- Announcements + Events panels -->
 <div class="dash-panels">
   <div class="dash-panel">

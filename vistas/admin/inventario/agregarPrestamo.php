@@ -38,16 +38,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <form method="GET" action="agregarPrestamo.php" class="margen-abajo">
-        <div class="campo">
-            <label>Filtrar Estudiantes por Ciclo:</label>
-            <select name="idCiclo" onchange="this.form.submit()">
-                <option value="">-- Todos los ciclos --</option>
-                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
-                    <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
-                    </option>
-                <?php } ?>
-            </select>
+        <div class="row">
+            <div class="campo">
+                <label>Filtrar Estudiantes por Ciclo:</label>
+                <select id="filtroCicloEstudiante" name="idCiclo" onchange="this.form.submit()">
+                    <option value="">-- Todos los ciclos --</option>
+                    <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                        <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="campo">
+                <label>Filtrar Estudiantes por Curso:</label>
+                <select id="filtroCursoEstudiante" onchange="filtrarEstudiantesPrestamo()">
+                    <option value="">-- Todos los cursos --</option>
+                    <option value="1º">1º Año</option>
+                    <option value="2º">2º Año</option>
+                </select>
+            </div>
         </div>
     </form>
 
@@ -75,8 +85,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
                     <?php foreach ($todos_los_estudiantes as $est) { ?>
-                        <option value="<?= (int)$est['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($est['nombreEstudiante']) ?>
+                        <option value="<?= (int)$est['idEstudiante'] ?>" data-curso="<?= Security::escapeHtml($est['curso'] ?? '1º') ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($est['nombreEstudiante']) ?> (<?= Security::escapeHtml($est['curso'] ?? '1º') ?>)
                         </option>
                     <?php } ?>
                 </select>
@@ -99,3 +109,21 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+function filtrarEstudiantesPrestamo() {
+    var curso = document.getElementById('filtroCursoEstudiante').value;
+    var select = document.querySelector('select[name="idEstudiante"]');
+    var options = select.options;
+    var hasVisibleSelected = false;
+    for (var i = 1; i < options.length; i++) {
+        var opt = options[i];
+        var optCurso = opt.getAttribute('data-curso');
+        var show = curso === '' || optCurso === curso;
+        opt.style.display = show ? '' : 'none';
+        if (show && opt.selected) hasVisibleSelected = true;
+    }
+    if (select.value && !hasVisibleSelected) {
+        select.value = '';
+    }
+}
+</script>

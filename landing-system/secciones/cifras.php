@@ -4,7 +4,7 @@ $items = $contenido['items'] ?? [];
 $variante = $contenido['variante'] ?? 'horizontal';
 if (!$items) return;
 ?>
-<section class="lp-sec lp-cifras lp-variante-<?= Security::escapeHtml($variante) ?>" id="cifras">
+<section class="lp-sec lp-cifras lp-variante-<?= Security::escapeHtml($variante) ?>" id="cifras"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-cifras-grid">
     <?php foreach ($items as $item): ?>
     <div class="lp-cifra">
@@ -16,3 +16,7 @@ if (!$items) return;
     <?php endforeach; ?>
   </div>
 </section>
+
+
+
+

@@ -123,7 +123,7 @@
     var url = resolveAppPath(rawUrl);
 
     var timer;
-    var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo", "modulo-asignar": "Módulo", ciclo: "Ciclo" };
+    var TYPE_LABELS = { reto: "Reto", anuncio: "Aviso", mensaje: "Mensaje", estudiante: "Alumno", profesor: "Profesor", modulo: "Módulo", "modulo-asignar": "Módulo", ciclo: "Ciclo", evento: "Evento", director: "Director", secretaria: "Secretaría", archivo: "Archivo", pago: "Pago", entrega: "Entrega", tarea: "Tarea" };
 
     function escHtml(s) {
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")

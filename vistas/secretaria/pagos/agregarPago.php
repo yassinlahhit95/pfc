@@ -28,7 +28,8 @@ if (!empty($idEstudianteElegido)) {
 
 $hoy             = date('Y-m-d');
 $fechaLimite     = date('Y') . '-06-30';
-$esDespuesDeJunio = ($hoy > $fechaLimite);
+// Secretaría puede registrar pagos fuera de plazo.
+$esDespuesDeJunio = false;
 
 $titulo_pagina = "AULAPRO | REGISTRAR PAGO";
 $seccion = 'pagos';
@@ -47,11 +48,7 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 <?php endif; ?>
 
-<?php if ($esDespuesDeJunio): ?>
-<div class="mensaje-error" style="margin-bottom:16px;">
-    <i class="fas fa-exclamation-triangle"></i> No se pueden registrar pagos después del 30 de junio del año en curso.
-</div>
-<?php endif; ?>
+
 
 <!-- ── Paso 1 y 2: elegir ciclo + estudiante ── -->
 <div class="panel margen-abajo">
@@ -113,9 +110,9 @@ include __DIR__ . '/../comunes/nav.php';
             <i class="fas fa-check-circle"></i> Este estudiante ya ha completado todos los pagos del ciclo.
         </div>
     <?php elseif ($esDespuesDeJunio): ?>
-        <p style="color:var(--rojo,#dc2626);"><i class="fas fa-ban"></i> Período de pagos finalizado (30/06 superado).</p>
+        <p style="color:var(--rojo);"><i class="fas fa-ban"></i> Período de pagos finalizado (30/06 superado).</p>
     <?php else: ?>
-    <form action="../../../controladores/secretaria/pagos/insertar.php" method="POST">
+    <form action="../../../controladores/secretaria/pagos/insertar.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
         <input type="hidden" name="fechaPago"     value="<?= $hoy ?>">
@@ -140,6 +137,12 @@ include __DIR__ . '/../comunes/nav.php';
                        placeholder="Se calculará al elegir el tipo">
                 <small class="texto-suave">Máximo: <?= number_format($infoFinanciera['restante'], 2) ?> €</small>
                 <?= fieldError($errores, 'monto') ?>
+            </div>
+
+            <div class="campo">
+                <label for="comprobante">Comprobante de Pago (Opcional)</label>
+                <input type="file" name="comprobante" id="comprobante" accept=".pdf,.jpg,.jpeg,.png">
+                <small class="texto-suave">PDF o imagen. Adjuntar si hay transferencia/recibo.</small>
             </div>
 
             <div class="campo ancho-total" style="display:flex;gap:10px;justify-content:flex-end;">

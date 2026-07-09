@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_anuncios');
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -18,7 +20,7 @@ $mensaje         = Security::sanitize($_POST['mensaje'] ?? '');
 $fechaExpiracion = Security::sanitize($_POST['fechaExpiracion'] ?? '');
 $dirigidoA       = Security::sanitize($_POST['dirigidoA'] ?? 'todos');
 
-$opcValidas = ['todos', 'estudiantes', 'profesores'];
+$opcValidas = ['todos', 'estudiantes', 'profesores', 'tutores'];
 if (!in_array($dirigidoA, $opcValidas)) $dirigidoA = 'todos';
 
 $errores = [];

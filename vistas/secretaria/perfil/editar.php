@@ -27,14 +27,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
 
         <div class="campo<?= fieldClass($errores, 'nombreSecretaria') ?>">
-            <label for="nombreSecretaria">Nombre <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="nombreSecretaria">Nombre <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="nombreSecretaria" id="nombreSecretaria" maxlength="100"
                    value="<?= $v('nombreSecretaria') ?>">
             <?= fieldError($errores, 'nombreSecretaria') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'emailSecretaria') ?>">
-            <label for="emailSecretaria">Email <span style="color:var(--rojo,#ef4444)">*</span></label>
+            <label for="emailSecretaria">Email <span style="color:var(--rojo)">*</span></label>
             <input type="email" name="emailSecretaria" id="emailSecretaria" maxlength="150"
                    value="<?= $v('emailSecretaria') ?>">
             <?= fieldError($errores, 'emailSecretaria') ?>

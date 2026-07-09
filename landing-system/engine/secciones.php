@@ -64,8 +64,9 @@ function landing_tipos(): array {
                 'eyebrow'    => ['tipo' => 'text',     'etiqueta' => 'Texto superior (pequeño)', 'max' => 80],
                 'titulo'     => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'subtitulo'  => ['tipo' => 'textarea', 'etiqueta' => 'Subtítulo', 'max' => 300],
-                'imagen'     => ['tipo' => 'imagen',   'etiqueta' => 'Imagen'],
+                'imagen'     => ['tipo' => 'imagen',   'etiqueta' => 'Imagen (lateral para split)'],
                 'videoFondo' => ['tipo' => 'video',    'etiqueta' => 'Vídeo de fondo (MP4, opcional)'],
+                'fondoParallax'=>['tipo' => 'imagen',  'etiqueta' => 'Imagen de fondo Parallax (si no hay vídeo)'],
                 'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón principal', 'max' => 40],
                 'botonUrl'   => ['tipo' => 'text',     'etiqueta' => 'Enlace del botón principal', 'max' => 255],
                 'boton2Texto'=> ['tipo' => 'text',     'etiqueta' => 'Texto del botón secundario', 'max' => 40],
@@ -75,8 +76,57 @@ function landing_tipos(): array {
                 'variante' => 'fondo', 'eyebrow' => 'Formación Profesional',
                 'titulo' => 'Tu futuro profesional empieza aquí',
                 'subtitulo' => 'Formación Profesional oficial con prácticas en empresas líderes del sector.',
-                'imagen' => '', 'videoFondo' => '', 'botonTexto' => 'Ver ciclos', 'botonUrl' => '#oferta_formativa',
+                'imagen' => '', 'videoFondo' => '', 'fondoParallax' => '', 'botonTexto' => 'Ver ciclos', 'botonUrl' => '#oferta_formativa',
                 'boton2Texto' => 'Contacto', 'boton2Url' => '#contacto',
+            ],
+        ],
+
+        'cta_secundario' => [
+            'nombre' => 'CTA / Banner secundario',
+            'icono'  => 'fa-bullhorn',
+            'menu'   => null,
+            'campos' => [
+                'titulo'     => ['tipo' => 'text', 'etiqueta' => 'Texto del anuncio', 'max' => 120, 'requerido' => true],
+                'botonTexto' => ['tipo' => 'text', 'etiqueta' => 'Texto del botón', 'max' => 40],
+                'botonUrl'   => ['tipo' => 'text', 'etiqueta' => 'Enlace', 'max' => 255],
+            ],
+            'defecto' => [
+                'titulo' => '¡Jornada de puertas abiertas el próximo viernes!',
+                'botonTexto' => 'Inscribirse', 'botonUrl' => '#contacto'
+            ],
+        ],
+
+        'galeria' => [
+            'nombre' => 'Galería Masonry',
+            'icono'  => 'fa-images',
+            'menu'   => 'Galería',
+            'campos' => [
+                'titulo'    => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
+                'subtitulo' => ['tipo' => 'textarea', 'etiqueta' => 'Subtítulo', 'max' => 300],
+                'items'     => ['tipo' => 'lista', 'etiqueta' => 'Fotos', 'max' => 12, 'subcampos' => [
+                    'imagen' => ['tipo' => 'imagen', 'etiqueta' => 'Foto', 'requerido' => true],
+                    'texto'  => ['tipo' => 'text', 'etiqueta' => 'Pie de foto', 'max' => 80],
+                ]],
+            ],
+            'defecto' => [
+                'titulo' => 'Nuestro día a día', 'subtitulo' => 'Echa un vistazo a la vida en el centro.', 'items' => []
+            ],
+        ],
+
+        'noticias' => [
+            'nombre' => 'Últimas Noticias (Blog)',
+            'icono'  => 'fa-newspaper',
+            'menu'   => 'Blog',
+            'campos' => [
+                'titulo'    => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
+                'subtitulo' => ['tipo' => 'textarea', 'etiqueta' => 'Subtítulo', 'max' => 300],
+                'numPosts'  => ['tipo' => 'select',   'etiqueta' => 'Nº de entradas a mostrar',
+                                'opciones' => ['3' => '3 entradas', '6' => '6 entradas']],
+                'botonTexto'=> ['tipo' => 'text', 'etiqueta' => 'Texto del botón "Ver todas"', 'max' => 40],
+            ],
+            'defecto' => [
+                'titulo' => 'Actualidad', 'subtitulo' => 'Mantente informado de las últimas novedades del centro.',
+                'numPosts' => '3', 'botonTexto' => 'Ver todas las noticias'
             ],
         ],
 
@@ -159,12 +209,15 @@ function landing_tipos(): array {
             'icono'  => 'fa-user-plus',
             'menu'   => 'Admisión',
             'campos' => [
+                'variante'   => ['tipo' => 'select',   'etiqueta' => 'Estilo',
+                                 'opciones' => ['centrado' => 'Caja centrada', 'banner' => 'Banner ancho completo']],
                 'titulo'     => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'texto'      => ['tipo' => 'textarea', 'etiqueta' => 'Texto', 'max' => 400],
                 'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón', 'max' => 40],
                 'notaPlazo'  => ['tipo' => 'text',     'etiqueta' => 'Nota de plazo (opcional)', 'max' => 120],
             ],
             'defecto' => [
+                'variante' => 'centrado',
                 'titulo' => 'Reserva tu plaza para el próximo curso',
                 'texto' => 'Realiza tu pre-matrícula online en menos de 10 minutos. Nuestro equipo revisará tu solicitud y te contactará con los siguientes pasos.',
                 'botonTexto' => 'Iniciar pre-matrícula', 'notaPlazo' => 'Plazo abierto — plazas limitadas',
@@ -202,7 +255,7 @@ function landing_tipos(): array {
             'menu'   => null,
             'campos' => [
                 'variante' => ['tipo' => 'select',   'etiqueta' => 'Estilo',
-                               'opciones' => ['horizontal' => 'Lista horizontal', 'tarjetas' => 'Tarjetas', 'minimalista' => 'Minimalista']],
+                               'opciones' => ['horizontal' => 'Lista horizontal', 'tarjetas' => 'Tarjetas', 'minimalista' => 'Minimalista', 'circular' => 'Estilo circular']],
                 'items' => ['tipo' => 'lista', 'etiqueta' => 'Cifras', 'max' => 4, 'subcampos' => [
                     'numero'   => ['tipo' => 'text', 'etiqueta' => 'Número', 'max' => 10, 'requerido' => true],
                     'sufijo'   => ['tipo' => 'text', 'etiqueta' => 'Sufijo (%, +, …)', 'max' => 5],
@@ -225,6 +278,8 @@ function landing_tipos(): array {
             'icono'  => 'fa-building',
             'menu'   => 'FP Dual',
             'campos' => [
+                'variante' => ['tipo' => 'select',   'etiqueta' => 'Estilo',
+                               'opciones' => ['split' => 'Texto izq, Imagen der', 'reverso' => 'Imagen izq, Texto der']],
                 'titulo' => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'texto'  => ['tipo' => 'textarea', 'etiqueta' => 'Texto', 'max' => 500],
                 'imagen' => ['tipo' => 'imagen',   'etiqueta' => 'Imagen'],
@@ -234,6 +289,7 @@ function landing_tipos(): array {
                 ]],
             ],
             'defecto' => [
+                'variante' => 'split',
                 'titulo' => 'Formación Profesional Dual',
                 'texto' => 'Estudia y trabaja a la vez: la FP Dual combina la formación en el aula con estancias remuneradas en empresas colaboradoras.',
                 'imagen' => '',
@@ -293,6 +349,8 @@ function landing_tipos(): array {
             'icono'  => 'fa-quote-left',
             'menu'   => 'Testimonios',
             'campos' => [
+                'variante' => ['tipo' => 'select',   'etiqueta' => 'Estilo',
+                               'opciones' => ['tarjetas' => 'Cuadrícula de tarjetas', 'carrusel' => 'Carrusel horizontal animado']],
                 'titulo' => ['tipo' => 'text', 'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'items'  => ['tipo' => 'lista', 'etiqueta' => 'Testimonios', 'max' => 8, 'subcampos' => [
                     'nombre' => ['tipo' => 'text',     'etiqueta' => 'Nombre', 'max' => 80, 'requerido' => true],
@@ -302,6 +360,7 @@ function landing_tipos(): array {
                 ]],
             ],
             'defecto' => [
+                'variante' => 'tarjetas',
                 'titulo' => 'Lo que dicen nuestros alumnos',
                 'items' => [
                     ['nombre' => 'Laura G.', 'rol' => 'DAM · Promoción 2024', 'texto' => 'Gracias a las prácticas conseguí contrato en la misma empresa antes de terminar el ciclo.', 'foto' => ''],
@@ -315,6 +374,8 @@ function landing_tipos(): array {
             'icono'  => 'fa-circle-question',
             'menu'   => null,
             'campos' => [
+                'variante' => ['tipo' => 'select',   'etiqueta' => 'Estilo',
+                               'opciones' => ['lista' => 'Lista normal', 'acordeon' => 'Acordeón interactivo', 'grid' => 'Cuadrícula 2 columnas']],
                 'titulo' => ['tipo' => 'text', 'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'items'  => ['tipo' => 'lista', 'etiqueta' => 'Preguntas', 'max' => 10, 'subcampos' => [
                     'pregunta'  => ['tipo' => 'text',     'etiqueta' => 'Pregunta', 'max' => 150, 'requerido' => true],
@@ -322,6 +383,7 @@ function landing_tipos(): array {
                 ]],
             ],
             'defecto' => [
+                'variante' => 'lista',
                 'titulo' => 'Preguntas frecuentes',
                 'items' => [
                     ['pregunta' => '¿Qué requisitos necesito para matricularme?', 'respuesta' => 'Depende del ciclo: para grado medio, el título de ESO o equivalente; para grado superior, Bachillerato, un grado medio o prueba de acceso.'],
@@ -361,10 +423,21 @@ function landing_tipos(): array {
         $tipo['campos'] = array_merge([
             'navVisible' => ['tipo' => 'select', 'etiqueta' => 'Mostrar en menú de navegación superior', 'opciones' => ['si' => 'Sí', 'no' => 'No']],
             'navTexto'   => ['tipo' => 'text', 'etiqueta' => 'Texto del enlace en el menú', 'max' => 30]
-        ], $tipo['campos']);
+        ], $tipo['campos'], [
+            'estilo_fondo'  => ['tipo' => 'color',  'etiqueta' => 'Color de fondo personalizado'],
+            'estilo_texto'  => ['tipo' => 'color',  'etiqueta' => 'Color de texto personalizado'],
+            'estilo_fuente' => ['tipo' => 'select', 'etiqueta' => 'Familia tipográfica', 
+                                'opciones' => ['' => 'Por defecto (Tema)', 'system-ui, sans-serif' => 'System Sans-serif', 'Georgia, serif' => 'Serif clásica', 'monospace' => 'Monospace', '"Comic Sans MS", cursive' => 'Cursive', 'Arial, sans-serif' => 'Arial']],
+            'estilo_tamano' => ['tipo' => 'select', 'etiqueta' => 'Tamaño de fuente', 
+                                'opciones' => ['' => 'Normal', '0.9em' => 'Pequeño', '1.15em' => 'Grande', '1.3em' => 'Muy grande']]
+        ]);
         
         $tipo['defecto']['navVisible'] = !empty($tipo['menu']) ? 'si' : 'no';
         $tipo['defecto']['navTexto']   = $tipo['menu'] ?? '';
+        $tipo['defecto']['estilo_fondo']  = '';
+        $tipo['defecto']['estilo_texto']  = '';
+        $tipo['defecto']['estilo_fuente'] = '';
+        $tipo['defecto']['estilo_tamano'] = '';
     }
     unset($tipo);
 

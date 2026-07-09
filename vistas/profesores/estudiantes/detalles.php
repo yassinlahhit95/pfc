@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     
     <div class="fila-datos">
         <div class="nombre-detalle">Nombre Completo</div>
-        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(strtoupper($estudiante['nombreEstudiante'])) ?></div>
+        <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8')) ?></div>
     </div>
 
     <div class="fila-datos">
@@ -138,7 +138,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 function cambiarPassTutor() {
     var pass = document.getElementById('nueva-pass-tutor').value;
     if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
-    fetch('/controladores/profesores/tutor/cambiarPassword.php', {
+    fetch('../../../controladores/profesores/tutor/cambiarPassword.php', {
         method: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'csrf_token=<?= Security::generateCSRFToken() ?>&id=<?= $idEstudiante ?>&nuevaPassword='+encodeURIComponent(pass)

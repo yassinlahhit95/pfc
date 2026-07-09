@@ -3,14 +3,25 @@
 $variante = $contenido['variante'] ?? 'fondo';
 $imgUrl   = landing_img_url($contenido['imagen'] ?? '');
 $videoUrl = landing_img_url($contenido['videoFondo'] ?? '');
+$parallaxUrl = landing_img_url($contenido['fondoParallax'] ?? '');
 
-$estiloFondo = ($variante === 'fondo' && $imgUrl && !$videoUrl)
-    ? ' style="background-image:url(\'' . Security::escapeHtml($imgUrl) . '\');"'
-    : '';
+$estiloLocal = $styleStr ?? '';
+$claseAdicional = '';
+if ($variante === 'fondo') {
+    if ($videoUrl) {
+        // Video de fondo (manejado abajo)
+    } elseif ($parallaxUrl) {
+        $estiloLocal .= 'background-image:url(\'' . Security::escapeHtml($parallaxUrl) . '\'); background-attachment: fixed; background-size: cover; background-position: center;';
+        $claseAdicional = ' lp-hero-parallax';
+    } elseif ($imgUrl) {
+        $estiloLocal .= 'background-image:url(\'' . Security::escapeHtml($imgUrl) . '\');';
+    }
+}
+$estiloFondo = $estiloLocal !== '' ? ' style="' . $estiloLocal . '"' : '';
 ?>
-<section class="lp-sec lp-hero lp-hero-<?= Security::escapeHtml($variante) ?>" id="hero"<?= $estiloFondo ?>>
+<section class="lp-sec lp-hero lp-hero-<?= Security::escapeHtml($variante) ?><?= $claseAdicional ?>" id="hero"<?= $estiloFondo ?>>
   <?php if ($variante === 'fondo' && $videoUrl): ?>
-  <video class="lp-hero-video" autoplay loop muted playsinline>
+  <video class="lp-hero-video" autoplay loop muted playsinline preload="auto">
     <source src="<?= Security::escapeHtml($videoUrl) ?>" type="video/mp4">
   </video>
   <?php endif; ?>
@@ -39,8 +50,12 @@ $estiloFondo = ($variante === 'fondo' && $imgUrl && !$videoUrl)
     </div>
     <?php if ($variante === 'split' && $imgUrl): ?>
     <div class="lp-hero-visual">
-      <img src="<?= Security::escapeHtml($imgUrl) ?>" alt="">
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="">
     </div>
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

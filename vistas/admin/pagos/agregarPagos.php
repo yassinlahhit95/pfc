@@ -29,7 +29,8 @@ if (!empty($idEstudianteElegido)) {
 
 $hoy = date('Y-m-d');
 $fechaLimite = date('Y') . '-06-30';
-$esDespuesDeJunio = ($hoy > $fechaLimite);
+// Los administradores, secretaría y directores siempre pueden registrar pagos fuera de plazo.
+$esDespuesDeJunio = false;
 
 $datos_pago = $_SESSION['datos_pago'] ?? [];
 
@@ -44,11 +45,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 
-<?php if ($esDespuesDeJunio) { ?>
-    <div class="mensaje-error">
-        <i class="fas fa-exclamation-triangle"></i> No se pueden registrar pagos después del 30 de Junio del año en curso.
-    </div>
-<?php } ?>
 
 <div class="panel margen-abajo">
     <form method="GET" action="" class="caja al-final caja-libre espacio-medio">
@@ -107,7 +103,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <?php } elseif ($esDespuesDeJunio) { ?>
         <p class="mensaje-error">Periodo de pagos finalizado (30/06 superado).</p>
     <?php } else { ?>
-        <form action="../../../controladores/admin/pagos/insertar.php" method="POST">
+        <form action="../../../controladores/admin/pagos/insertar.php" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idEstudiante" value="<?= $idEstudianteElegido ?>">
             <input type="hidden" name="fechaPago" value="<?= $hoy ?>">
@@ -131,10 +127,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?= fieldError($errores, 'monto') ?>
             </div>
 
+            <div class="campo">
+                <label for="comprobante">Comprobante de Pago (Opcional)</label>
+                <input type="file" name="comprobante" id="comprobante" accept=".pdf,.jpg,.jpeg,.png">
+                <span>PDF o imagen. Solo si se requiere adjuntar recibo o transferencia.</span>
+            </div>
+
             <div class="acciones">
                 <input type="submit" name="guardarPago" class="boton-primario" value="Confirmar y Registrar Pago">
             </div>
-        </form>
+    </form>
     <?php } ?>
 </div>
 

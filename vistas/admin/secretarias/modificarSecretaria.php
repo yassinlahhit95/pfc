@@ -94,7 +94,7 @@ function cambiarPassSec() {
         return;
     }
     var token = document.querySelector('[name=csrf_token]').value;
-    fetch('/controladores/admin/usuarios/cambiarPassword.php', {
+    fetch('../../../controladores/admin/usuarios/cambiarPassword.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest'},
         body: 'tipo=secretaria&id=<?= (int)$secretaria['idSecretaria'] ?>&nuevaPassword=' + encodeURIComponent(pass) + '&csrf_token=' + encodeURIComponent(token)

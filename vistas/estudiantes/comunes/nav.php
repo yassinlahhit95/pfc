@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/Security.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
+require_once __DIR__ . "/../../../config/Config.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
@@ -19,6 +20,8 @@ $totalSinLeer_menu   = contarMensajesNoLeidosEstudiante($idEstudiante);
 $totalAnuncios_menu  = count(listarAnunciosPorRol('estudiantes'));
 $totalPagos_menu     = contarPagosEstudiante($idEstudiante);
 $totalRetos_menu     = count(listarRetosPorCiclo($idCicloEst_menu));
+require_once __DIR__ . "/../../../modelos/chat.php";
+$totalChatNoLeidos_menu = chatContarNoLeidos('estudiante', $idEstudiante);
 
 // Notification panel: recent unread messages (max 3)
 $_notif_msgs = [];
@@ -56,6 +59,7 @@ function _nav_active_est($check) {
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
+  <link rel="stylesheet" href="../../../public/css/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/chat-widget.css') ?>" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script>window.TWEAK_DEFAULTS={accent:"#4F46E5",dark:false,animation:7,density:"regular"};</script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -150,6 +154,18 @@ function _nav_active_est($check) {
         <?php if (_nav_active_est('aula_favoritos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
+      <a href="../aula/tareas.php" class="nav-item<?= _nav_active_est('aula_tareas') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
+        <span class="nav-label">Tareas</span>
+        <?php if (_nav_active_est('aula_tareas') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
+      <a href="../aula/mis_entregas.php" class="nav-item<?= _nav_active_est('aula_entregas') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg></span>
+        <span class="nav-label">Mis Entregas</span>
+        <?php if (_nav_active_est('aula_entregas') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+
       <!-- PORTAL -->
       <span class="nav-section-title">PORTAL</span>
 
@@ -175,6 +191,7 @@ function _nav_active_est($check) {
       <a href="../chat/index.php" class="nav-item<?= _nav_active_est('chat') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
         <span class="nav-label">Chat</span>
+        <?php if ($totalChatNoLeidos_menu > 0) { ?><span class="nav-badge nav-badge-alert"><?= $totalChatNoLeidos_menu ?></span><?php } ?>
         <?php if (_nav_active_est('chat') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php } ?>
@@ -222,16 +239,27 @@ function _nav_active_est($check) {
         <span class="role-badge">ALUMNO</span>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
-      <div class="search-wrap">
-        <label class="searchbar">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
-          <input id="search" placeholder="Buscar..." autocomplete="off"
-                 data-url="../../../controladores/estudiantes/buscar.php" />
-          <kbd>⌘K</kbd>
-        </label>
-        <ul class="search-results" id="search-results" hidden></ul>
-      </div>
       <div class="topbar-actions">
+        <!-- Mobile Trigger -->
+        <button class="icon-btn mobile-search-trigger" id="mobile-search-trigger" aria-label="Buscar">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+        </button>
+        <!-- Desktop Input / Mobile Modal -->
+        <div class="search-backdrop" id="search-backdrop" hidden></div>
+        <div class="search-wrapper" id="search-wrapper">
+          <label class="search-modal-bar">
+            <svg class="search-icon-svg desktop-only-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg>
+            <input id="sys-search" class="search-modal-input" type="search" placeholder="Buscar..."
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
+                   data-url="../../../controladores/estudiantes/buscar.php" />
+            <button class="search-close" id="search-close" aria-label="Cerrar búsqueda">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+            <kbd class="search-kbd">⌘K</kbd>
+          </label>
+          <ul class="search-results" id="search-results" hidden></ul>
+        </div>
         <button class="icon-btn theme-btn" id="theme" aria-label="Cambiar tema">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>

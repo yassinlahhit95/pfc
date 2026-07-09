@@ -7,7 +7,7 @@ $mostrarPrecio  = ($contenido['mostrarPrecio'] ?? 'no') === 'si';
 $botonTexto     = $contenido['botonTexto'] ?: 'Solicitar plaza';
 $variante       = $contenido['variante'] ?? 'grid';
 ?>
-<section class="lp-sec lp-oferta lp-variante-<?= Security::escapeHtml($variante) ?>" id="oferta_formativa">
+<section class="lp-sec lp-oferta lp-variante-<?= Security::escapeHtml($variante) ?>" id="oferta_formativa"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -40,3 +40,7 @@ $variante       = $contenido['variante'] ?? 'grid';
     <?php endif; ?>
   </div>
 </section>
+
+
+
+

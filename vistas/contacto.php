@@ -45,6 +45,8 @@ foreach ($secciones as $s) {
             'texto' => $navTexto,
             'separado' => $esSeparado
         ];
+        // La sección de noticias enlaza al blog completo, no a un ancla
+        if ($s['tipo'] === 'noticias') $menuAnclas[$s['tipo']]['url'] = '/vistas/blog.php';
     }
 }
 

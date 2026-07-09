@@ -2,7 +2,7 @@
 .cw-wrap {
   position: fixed;
   bottom: max(24px, env(safe-area-inset-bottom, 24px));
-  right: 24px;
+  right: max(24px, env(safe-area-inset-right, 24px));
   z-index: 1050;
   display: flex;
   flex-direction: column;
@@ -388,13 +388,13 @@
 
   .cw-wrap {
     bottom: max(20px, env(safe-area-inset-bottom, 20px));
-    right: 16px;
+    right: max(16px, env(safe-area-inset-right, 16px));
     padding: 0;
   }
 
   .cw-window {
     position: fixed;
-    inset: 64px 8px max(90px, calc(78px + env(safe-area-inset-bottom, 0px)));
+    inset: 64px max(8px, env(safe-area-inset-right, 8px)) max(90px, calc(78px + env(safe-area-inset-bottom, 0px))) max(8px, env(safe-area-inset-left, 8px));
     width: auto;
     height: auto;
     border-radius: 20px;

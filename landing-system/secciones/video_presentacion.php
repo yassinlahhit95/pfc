@@ -12,7 +12,7 @@ if ($variante === 'split') {
     $claseSeccion .= ' lp-video-pres-align-' . $orientacion;
 }
 ?>
-<section class="<?= Security::escapeHtml($claseSeccion) ?>" id="video-presentacion">
+<section class="<?= Security::escapeHtml($claseSeccion) ?>" id="video_presentacion"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-video-pres-inner">
       
@@ -57,3 +57,7 @@ if ($variante === 'split') {
     </div>
   </div>
 </section>
+
+
+
+

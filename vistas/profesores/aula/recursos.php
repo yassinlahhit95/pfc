@@ -77,34 +77,51 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <!-- Barra de almacenamiento del ciclo -->
 <div class="panel" style="padding:12px 16px;margin-top:12px;">
-  <div style="display:flex;justify-content:space-between;font-size:.8rem;color:#64748b;margin-bottom:6px;">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--dim);margin-bottom:6px;">
     <span><i class="fas fa-hard-drive"></i> Almacenamiento del ciclo</span>
     <span><?= Security::escapeHtml(formatearTamanioAula($usado)) ?> / <?= Security::escapeHtml(formatearTamanioAula($limite)) ?> (<?= Security::escapeHtml($pct ) ?>%)</span>
   </div>
   <div class="recurso-almacenamiento-barra"><span style="width:<?= Security::escapeHtml($pct ) ?>%"></span></div>
 </div>
 
-<!-- Migas de pan -->
-<div class="recurso-breadcrumb" data-modulo="<?= Security::escapeHtml($idModulo ) ?>" data-carpeta="<?= Security::escapeHtml($carpetaActual ) ?>" data-csrf="<?= Security::generateCSRFToken() ?>">
-  <a href="index.php"><i class="fas fa-home"></i></a>
-  <span class="sep">/</span>
-  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($idCiclo ) ?>"><?= Security::escapeHtml($modulo['nombreModulo']) ?></a>
-  <?php if ($carpetaActual): ?>
-    <span class="sep">/</span>
-    <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>" data-drop-carpeta="0" title="Arrastra aquí para mover a la raíz">Raíz</a>
-    <?php foreach ($ruta as $r): ?>
-      <span class="sep">/</span>
-      <?php if ($r['idCarpeta'] == $carpetaActual): ?>
-        <span class="actual"><?= Security::escapeHtml($r['nombre']) ?></span>
+<!-- Migas de pan (Breadcrumbs) -->
+<div class="recurso-breadcrumbs" style="margin: 16px 0; padding: 12px 16px; background:var(--surface); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; font-size: 0.9rem;" data-modulo="<?= Security::escapeHtml($idModulo ) ?>" data-carpeta="<?= Security::escapeHtml($carpetaActual ) ?>" data-csrf="<?= Security::generateCSRFToken() ?>">
+  <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>" style="color: var(--dim); text-decoration: none; font-weight: 500;">
+    <i class="fas fa-home"></i> Raíz
+  </a>
+  <?php if (!empty($ruta)): ?>
+    <?php foreach ($ruta as $n => $carpetaMiga): ?>
+      <span style="color: var(--border-2);"><i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i></span>
+      <?php if ($n === count($ruta) - 1): ?>
+        <span style="color: var(--text); font-weight: 600;"><?= Security::escapeHtml($carpetaMiga['nombre']) ?></span>
       <?php else: ?>
-        <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($r['idCarpeta']) ?>" data-drop-carpeta="<?= Security::escapeHtml($r['idCarpeta']) ?>"><?= Security::escapeHtml($r['nombre']) ?></a>
+        <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($carpetaMiga['idCarpeta']) ?>" data-drop-carpeta="<?= Security::escapeHtml($carpetaMiga['idCarpeta']) ?>" style="color: var(--azul); text-decoration: none; font-weight: 500;">
+          <?= Security::escapeHtml($carpetaMiga['nombre']) ?>
+        </a>
       <?php endif; ?>
     <?php endforeach; ?>
   <?php endif; ?>
 </div>
+</div>
 
-<?php if ($exito): ?><div class="alerta-exito" style="margin-bottom:16px;"><i class="fas fa-check-circle"></i><p><?= Security::escapeHtml($exito) ?></p></div><?php endif; ?>
-<?php if ($errores): ?><div class="alerta-error" style="margin-bottom:16px;"><i class="fas fa-exclamation-circle"></i><p><?= Security::escapeHtml($errores) ?></p></div><?php endif; ?>
+<?php if ($exito): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.Toast) {
+        Toast.show(<?= json_encode($exito) ?>, "success");
+    }
+});
+</script>
+<?php endif; ?>
+<?php if ($errores): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.Toast) {
+        Toast.show(<?= json_encode($errores) ?>, "error");
+    }
+});
+</script>
+<?php endif; ?>
 
 <!-- Carpetas -->
 <?php if (!empty($carpetas)): ?>
@@ -366,14 +383,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="modalConfirmar" class="recurso-visor-overlay">
   <div class="recurso-visor" style="height:auto;max-width:420px;">
     <div class="recurso-visor-cabecera">
-      <h3 style="display:flex;align-items:center;gap:8px;"><i class="fas fa-triangle-exclamation" style="color:#ef4444;"></i> Confirmar eliminación</h3>
+      <h3 style="display:flex;align-items:center;gap:8px;"><i class="fas fa-triangle-exclamation" style="color:var(--rojo);"></i> Confirmar eliminación</h3>
       <button class="recurso-visor-cerrar" onclick="AulaRecursos.cerrarModal('modalConfirmar')">✕</button>
     </div>
     <div style="padding:20px 22px;">
-      <p id="modalConfirmarTexto" style="color:#334155;margin:0 0 22px;line-height:1.6;font-size:.9rem;"></p>
+      <p id="modalConfirmarTexto" style="color:var(--text);margin:0 0 22px;line-height:1.6;font-size:.9rem;"></p>
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button type="button" class="boton-secundario" onclick="AulaRecursos.cerrarModal('modalConfirmar')">Cancelar</button>
-        <button type="button" id="modalConfirmarBtn" class="boton-primario" style="background:#ef4444;border-color:#ef4444;">Eliminar</button>
+        <button type="button" id="modalConfirmarBtn" class="boton-primario" style="background:var(--rojo);border-color:var(--rojo);">Eliminar</button>
       </div>
     </div>
   </div>
@@ -391,5 +408,20 @@ include_once __DIR__ . "/../comunes/nav.php";
 <!-- Aviso flotante (toast) -->
 <div id="recursoToast" class="recurso-toast"></div>
 
-<script src="../../../public/js/aula-recursos.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/aula-recursos.js")) ?>"></script>
+<script src="../../../public/js/aula-recursos.js?v=<?= @filemtime(__DIR__."/../../../public/js/aula-recursos.js") ?>"></script>
+<script src="../../../public/js/recursos-dnd.js?v=<?= @filemtime(__DIR__."/../../../public/js/recursos-dnd.js") ?>"></script>
+
+<style>
+.dnd-dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+    box-shadow: inset 0 0 0 2px var(--azul);
+}
+.dnd-drag-over {
+    background: var(--surface-2);
+    box-shadow: inset 0 0 0 2px var(--azul);
+    border-radius: 8px;
+}
+</style>
+
 <?php include __DIR__ . '/../comunes/footer.php'; ?>

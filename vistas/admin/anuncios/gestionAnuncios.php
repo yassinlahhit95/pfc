@@ -43,6 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="todos">Todos los usuarios</option>
                     <option value="estudiantes">Solo Estudiantes</option>
                     <option value="profesores">Solo Profesores</option>
+                    <option value="tutores">Solo Familias</option>
                 </select>
             </div>
             <div class="campo ancho-total">

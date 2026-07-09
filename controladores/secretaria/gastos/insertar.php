@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
+require_once __DIR__ . "/../../../include/FeatureGuard.php";
+FeatureGuard::requirePage('feature_gastos');
 require_once __DIR__ . "/../../../modelos/gastos.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

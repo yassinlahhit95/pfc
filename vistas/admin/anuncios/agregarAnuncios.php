@@ -37,6 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="todos" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'todos') ? 'selected' : '' ?>>Todos los usuarios</option>
                     <option value="estudiantes" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'estudiantes') ? 'selected' : '' ?>>Solo Estudiantes</option>
                     <option value="profesores" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'profesores') ? 'selected' : '' ?>>Solo Profesores</option>
+                    <option value="tutores" <?= (isset($datos['dirigidoA']) && $datos['dirigidoA'] == 'tutores') ? 'selected' : '' ?>>Solo Familias</option>
                 </select>
             </div>
 

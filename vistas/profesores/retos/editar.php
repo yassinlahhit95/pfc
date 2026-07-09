@@ -101,7 +101,7 @@ include_once "../comunes/nav.php";
                     <?php foreach ($archivosExistentes as $ae) {
                         $isPdf = ($ae['tipoArchivo'] === 'pdf'); ?>
                     <div class="archivo-reto-item" id="file-<?= (int)$ae['idArchivo'] ?>">
-                        <i class="fas <?= $isPdf ? 'fa-file-pdf' : 'fa-image' ?>" style="font-size:18px;color:<?= $isPdf ? 'var(--rojo, #ef4444)' : 'var(--accent, #3b82f6)' ?>;flex-shrink:0;"></i>
+                        <i class="fas <?= $isPdf ? 'fa-file-pdf' : 'fa-image' ?>" style="font-size:18px;color:<?= $isPdf ? 'var(--rojo)' : 'var(--accent)' ?>;flex-shrink:0;"></i>
                         <span class="archivo-reto-nombre" title="<?= Security::escapeHtml($ae['nombreArchivo']) ?>"><?= Security::escapeHtml($ae['nombreArchivo']) ?></span>
                         <span class="texto-estado <?= $isPdf ? 'rojo' : 'azul' ?>"><?= $isPdf ? 'PDF' : 'Imagen' ?></span>
                         <button type="button" class="boton-peligro btn-pequeno" onclick="borrarArchivoSmooth(<?= (int)$ae['idArchivo'] ?>, <?= (int)$idReto ?>)">

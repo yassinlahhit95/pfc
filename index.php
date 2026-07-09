@@ -59,6 +59,8 @@ foreach ($secciones as $s) {
             'texto' => $navTexto,
             'separado' => $esSeparado
         ];
+        // La sección de noticias enlaza al blog completo, no a un ancla
+        if ($s['tipo'] === 'noticias') $menuAnclas[$s['tipo']]['url'] = '/vistas/blog.php';
     }
 }
 
@@ -74,7 +76,26 @@ foreach ($secciones as $s) {
         continue;
     }
     
+    // Generar estilos en línea personalizados para la sección
+    $styleStr = '';
+    if (!empty($contenido['estilo_fondo']))  $styleStr .= 'background-color:' . Security::escapeHtml($contenido['estilo_fondo']) . ' !important; ';
+    if (!empty($contenido['estilo_texto']))  $styleStr .= 'color:' . Security::escapeHtml($contenido['estilo_texto']) . ' !important; ';
+    if (!empty($contenido['estilo_fuente'])) $styleStr .= 'font-family:' . Security::escapeHtml($contenido['estilo_fuente']) . ' !important; ';
+    if (!empty($contenido['estilo_tamano'])) $styleStr .= 'font-size:' . Security::escapeHtml($contenido['estilo_tamano']) . ' !important; ';
+    
+    $styleInline = '';
+    if ($styleStr !== '') {
+        $styleInline .= ' style="' . $styleStr . '"';
+    }
+    if ($preview) {
+        $styleInline .= ' data-lb-id="' . Security::escapeHtml($s['idSeccion']) . '"';
+    }
+
     include __DIR__ . '/vistas/landing/secciones/' . $s['tipo'] . '.php';
 }
 
 include __DIR__ . '/vistas/landing/_footer.php';
+
+if ($preview) {
+    echo '<script src="/public/js/builder-preview.js"></script>';
+}

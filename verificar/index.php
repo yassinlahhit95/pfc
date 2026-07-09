@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../modelos/calificaciones.php';
 require_once __DIR__ . '/../modelos/configuracion.php';
 
-$_ip = $_SERVER['HTTP_X_FORWARDED_FOR']
+$_ip = !empty($_SERVER['HTTP_X_FORWARDED_FOR'])
     ? explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]
     : ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
 $_ip = trim($_ip);

@@ -14,6 +14,7 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/eventos.php";
 require_once __DIR__ . "/../../../modelos/tfg.php";
+require_once __DIR__ . "/../../../modelos/aula.php";
 
 $idEstudiante        = $_SESSION['idEstudiante'];
 $estudianteActual    = obtenerEstudiantePorId($idEstudiante);
@@ -30,6 +31,49 @@ $califModulos    = listarCalificacionesPorEstudiante($idEstudiante);
 $califRetos      = listarCalificacionesRetoPorEstudiante($idEstudiante);
 $cantidadPagos   = contarPagosEstudiante($idEstudiante);
 $listaMensajes   = listarMensajesDeEstudiante($idEstudiante);
+$progresoTareas  = obtenerProgresoTareasEstudianteAula($idEstudiante);
+
+$pctTareas = $progresoTareas['totalTareas'] > 0 
+    ? round(($progresoTareas['tareasEntregadas'] / $progresoTareas['totalTareas']) * 100) 
+    : 0;
+
+// Obtener datos del Heatmap de Asistencia (Últimos 30 días)
+$db = obtenerConexion();
+$stmtAsist = mysqli_prepare($db, "
+    SELECT fecha, estado 
+    FROM asistencias 
+    WHERE idEstudiante = ? AND fecha >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+");
+mysqli_stmt_bind_param($stmtAsist, "i", $idEstudiante);
+mysqli_stmt_execute($stmtAsist);
+$resAsist = mysqli_stmt_get_result($stmtAsist);
+$asistenciasRaw = [];
+if ($resAsist) {
+    while ($row = mysqli_fetch_assoc($resAsist)) {
+        $asistenciasRaw[] = $row;
+    }
+}
+
+$heatmap = [];
+// Inicializar últimos 30 días
+for ($i = 29; $i >= 0; $i--) {
+    $fechaStr = date('Y-m-d', strtotime("-$i days"));
+    // Saltar fines de semana (opcional, pero útil)
+    if (date('N', strtotime($fechaStr)) >= 6) continue;
+    $heatmap[$fechaStr] = 'ninguno';
+}
+
+// Prioridad del "peor" estado cuando hay varios módulos el mismo día
+$prioridadEstado = ['ninguno' => 0, 'presente' => 1, 'justificado' => 2, 'retraso' => 3, 'ausente' => 4];
+foreach ($asistenciasRaw as $a) {
+    if (isset($heatmap[$a['fecha']])) {
+        $actual = $prioridadEstado[$heatmap[$a['fecha']]] ?? 0;
+        $nuevo  = $prioridadEstado[$a['estado']] ?? 0;
+        if ($nuevo > $actual) {
+            $heatmap[$a['fecha']] = $a['estado'];
+        }
+    }
+}
 
 $tituloDelPagina = 'AulaPro — Panel de Control';
 $seccionActual   = 'inicio';
@@ -62,7 +106,70 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
   </div>
 </section>
 
-<div class="section-head">
+<!-- Progreso de Tareas (Aula Digital) -->
+<div class="panel" style="margin-top:24px; padding: 24px; display:flex; align-items:center; gap:32px; background:linear-gradient(to right, var(--surface), var(--surface-2)); border-left:4px solid var(--azul);">
+  <div style="position:relative; width:80px; height:80px;">
+    <svg viewBox="0 0 36 36" style="width:100%; height:100%;">
+      <!-- Background Circle -->
+      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" style="stroke:var(--border-2);" stroke-width="3.5" />
+      <!-- Progress Circle -->
+      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" style="stroke:var(--azul);" stroke-width="3.5" stroke-dasharray="<?= $pctTareas ?>, 100" stroke-linecap="round" />
+    </svg>
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-weight:700; font-size:1.1rem; color:var(--text);">
+      <?= $pctTareas ?>%
+    </div>
+  </div>
+  <div>
+    <h3 style="margin:0 0 4px 0; font-size:1.2rem; color:var(--text);">Progreso de Tareas</h3>
+    <p style="margin:0 0 8px 0; color:var(--dim); font-size:0.95rem;">Has entregado <b><?= (int)$progresoTareas['tareasEntregadas'] ?></b> de <b><?= (int)$progresoTareas['totalTareas'] ?></b> tareas del Aula Digital.</p>
+    <?php if ($pctTareas >= 100 && $progresoTareas['totalTareas'] > 0): ?>
+      <span style="display:inline-flex; align-items:center; gap:6px; background:var(--verde-suave); color:var(--verde-ink); padding:4px 10px; border-radius:999px; font-size:0.8rem; font-weight:600;"><i class="fas fa-trophy"></i> ¡Todas las tareas entregadas!</span>
+    <?php elseif ($progresoTareas['tareasEntregadas'] > 0): ?>
+      <span style="display:inline-flex; align-items:center; gap:6px; background:var(--azul-suave); color:var(--azul-ink); padding:4px 10px; border-radius:999px; font-size:0.8rem; font-weight:600;"><i class="fas fa-fire"></i> ¡Sigue así!</span>
+    <?php else: ?>
+      <span style="display:inline-flex; align-items:center; gap:6px; background:var(--surface-2); color:var(--dim); padding:4px 10px; border-radius:999px; font-size:0.8rem; font-weight:600;"><i class="fas fa-info-circle"></i> Aún no has entregado tareas</span>
+    <?php endif; ?>
+  </div>
+</div>
+
+<!-- Asistencia Heatmap -->
+<div class="panel" style="margin-top:24px; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div>
+            <h3 style="margin:0 0 4px 0; font-size:1.2rem; color:var(--text);"><i class="fas fa-calendar-check" style="color:var(--verde);"></i> Mi Asistencia (Últimos 30 días)</h3>
+            <p style="margin:0; color:var(--dim); font-size:0.9rem;">Días lectivos recientes</p>
+        </div>
+        <a href="../aula/registrar_asistencia.php" class="boton-primario btn-pequeno">
+            <i class="fas fa-qrcode"></i> Registrar Hoy
+        </a>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <?php foreach ($heatmap as $fecha => $estado): 
+            $color = 'var(--border-2)'; // ninguno
+            $tooltip = "Sin registro";
+            if ($estado === 'presente') { $color = 'var(--verde)'; $tooltip = "Presente"; }
+            elseif ($estado === 'ausente') { $color = 'var(--rojo)'; $tooltip = "Ausente"; }
+            elseif ($estado === 'retraso') { $color = 'var(--naranja)'; $tooltip = "Retraso"; }
+            elseif ($estado === 'justificado') { $color = 'var(--azul)'; $tooltip = "Justificado"; }
+        ?>
+            <div title="<?= date('d/m/Y', strtotime($fecha)) ?>: <?= $tooltip ?>" 
+                 style="width:24px; height:24px; border-radius:4px; background-color:<?= $color ?>; cursor:help; border:1px solid rgba(0,0,0,0.05); transition:transform 0.1s;"
+                 onmouseover="this.style.transform='scale(1.2)'"
+                 onmouseout="this.style.transform='scale(1)'">
+            </div>
+        <?php endforeach; ?>
+    </div>
+    
+    <div style="display:flex; gap:16px; margin-top:16px; font-size:0.8rem; color:var(--dim);">
+        <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--verde);"></div> Presente</span>
+        <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--rojo);"></div> Ausente</span>
+        <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--naranja);"></div> Retraso</span>
+        <span style="display:flex; align-items:center; gap:4px;"><div style="width:12px;height:12px;border-radius:2px;background:var(--azul);"></div> Justificado</span>
+    </div>
+</div>
+
+<div class="section-head" style="margin-top:32px;">
   <h2>Mi portal</h2>
   <span class="count">Acceso rápido</span>
 </div>
@@ -100,7 +207,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </span>
   </a>
 
-  <?php if (FeatureGuard::check('feature_subida_tfg') && ($datosEstudiante['anioEstudio'] ?? '') !== '1º'): ?>
+  <?php if (FeatureGuard::check('feature_subida_tfg') && ($estudianteActual['curso'] ?? '') !== '1º'): ?>
   <a href="../pfc/subir.php" class="tile card-soft" style="--tint:#D946EF; text-decoration:none">
     <span class="tile-sheen"></span>
     <span class="tile-ico">
@@ -210,10 +317,10 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
           if ($cnt >= 4) break; ?>
           <div class="ann-item">
             <div class="ann-item-head">
-              <span class="ann-item-title"><?= Security::escapeHtml(strtoupper($anuncio['tituloAnuncio'])) ?></span>
+              <span class="ann-item-title"><?= Security::escapeHtml(strtoupper($anuncio['titulo'])) ?></span>
               <span class="ann-item-date"><?= date('d/m/Y', strtotime($anuncio['fechaAnuncio'])) ?></span>
             </div>
-            <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['contenidoAnuncio']), 0, 120)) ?>…</p>
+            <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['mensaje']), 0, 120)) ?>…</p>
             <a href="../anuncios/lista.php" class="ann-item-tag">Ver detalles</a>
           </div>
       <?php $cnt++; } } else { ?>

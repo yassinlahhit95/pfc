@@ -4,10 +4,10 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/landing.php";
 
 $landingCfg = obtenerLandingConfig();
-if (empty($landingCfg['plantilla'])) {
-    header("Location: ../landing/onboarding.php");
-    exit;
-}
+//if (empty($landingCfg['plantilla'])) {
+//    header("Location: ../landing/onboarding.php");
+//    exit;
+//}
 
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
@@ -19,6 +19,7 @@ require_once __DIR__ . "/../../../modelos/directores.php";
 require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/chat.php";
+require_once __DIR__ . "/../../../modelos/pagos.php";
 
 $cacheKeyDash = 'admin_dashboard_stats_' . $_SESSION['idAdmin'];
 if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time']) && (time() - $_SESSION[$cacheKeyDash . '_time'] < 60)) {
@@ -62,6 +63,7 @@ $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
 
 $listaAnuncios = listarTodosLosAnuncios();
 $eventos       = listarEventosProximos();
+$estudiantesPendientes = listarEstudiantesConPagosPendientes();
 
 $titulo_pagina = 'AulaPro — Panel de Control';
 $seccion       = 'inicio';
@@ -109,6 +111,18 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     <p class="sub">Panel de control — <b><?= $totalEstudiantes ?> estudiantes</b> · <b><?= $totalProfesores ?> profesores</b> · <b><?= $totalModulos ?> módulos</b></p>
   </div>
 </section>
+
+<?php if (empty($landingCfg['plantilla'])): ?>
+<div class="panel" style="background: linear-gradient(135deg, var(--accent) 0%, #312e81 100%); color: white; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; padding: 20px 24px; box-shadow: 0 10px 25px rgba(79,70,229,0.3);">
+    <div>
+        <h3 style="color: white; margin-top: 0; display: flex; align-items: center; gap: 8px;"><i class="fas fa-magic"></i> ¡Bienvenido a AulaPro!</h3>
+        <p style="color: rgba(255,255,255,0.85); margin-bottom: 0;">Parece que es su primera vez aquí. Le recomendamos configurar la identidad y plantilla de su centro educativo.</p>
+    </div>
+    <a href="../landing/onboarding.php" class="boton-primario" style="background: white; color: var(--accent); white-space: nowrap;">
+        Configurar estilo y plantillas
+    </a>
+</div>
+<?php endif; ?>
 
 <div class="section-head">
   <h2>Acceso rápido</h2>
@@ -327,7 +341,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       <span class="tile-desc">Comunicación interna</span>
     </span>
     <span class="tile-foot">
-      <span class="tile-stat"><?= $totalMensajes_menu ?? 0 ?> mensajes<?php if (($totalSinLeer_menu ?? 0) > 0): ?> · <span style="color:#ef4444;font-weight:800"><?= $totalSinLeer_menu ?> sin leer</span><?php endif; ?></span>
+      <span class="tile-stat"><?= $totalMensajes_menu ?? 0 ?> mensajes<?php if (($totalSinLeer_menu ?? 0) > 0): ?> · <span style="color:var(--rojo);font-weight:800"><?= $totalSinLeer_menu ?> sin leer</span><?php endif; ?></span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>
@@ -465,6 +479,55 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
           </div>
       <?php $cnt++; } } else { ?>
         <p class="empty-state">No hay eventos próximos programados.</p>
+      <?php } ?>
+    </div>
+  </div>
+
+  <!-- Panel: Estudiantes con Pagos Pendientes -->
+  <div class="dash-panel" style="grid-column: 1 / -1;">
+    <div class="dash-panel-head">
+      <h3>Estudiantes con Pagos Pendientes</h3>
+      <a href="../pagos/verPagosGeneral.php">Ir a Pagos</a>
+    </div>
+    <div class="dash-panel-body" style="padding:0; overflow-x:auto;">
+      <?php if (!empty($estudiantesPendientes)) { ?>
+        <table style="width:100%; border-collapse:collapse; font-size:0.92rem;">
+          <thead>
+            <tr style="background:var(--surface-2, #f1f5f9); text-align:left;">
+              <th style="padding:10px 14px;">Estudiante</th>
+              <th style="padding:10px 14px;">Ciclo</th>
+              <th style="padding:10px 14px;">Pagado</th>
+              <th style="padding:10px 14px;">Deuda</th>
+              <th style="padding:10px 14px;">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $cntP = 0;
+            foreach ($estudiantesPendientes as $ep) {
+              if ($cntP >= 8) break;
+            ?>
+              <tr style="border-bottom:1px solid var(--border, #e2e8f0);">
+                <td style="padding:10px 14px; font-weight:500;"><?= Security::escapeHtml($ep['nombreEstudiante'] . ' ' . ($ep['apellidosEstudiante'] ?? '')) ?></td>
+                <td style="padding:10px 14px;"><span class="ann-item-tag"><?= Security::escapeHtml($ep['nombreCiclo']) ?></span></td>
+                <td style="padding:10px 14px; color:var(--verde, #16a34a);"><?= number_format($ep['totalPagado'], 2) ?> €</td>
+                <td style="padding:10px 14px; color:var(--rojo, #dc2626); font-weight:600;"><?= number_format($ep['deuda'], 2) ?> €</td>
+                <td style="padding:10px 14px;">
+                  <a href="../pagos/agregarPagos.php?idEstudiante=<?= $ep['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
+                </td>
+              </tr>
+            <?php
+            $cntP++;
+            } ?>
+          </tbody>
+        </table>
+        <?php if (count($estudiantesPendientes) > 8) { ?>
+          <p style="padding:10px 14px; text-align:center; font-size:0.85rem; color:var(--dim);">
+            Mostrando 8 de <?= count($estudiantesPendientes) ?> estudiantes. <a href="../pagos/verPagosGeneral.php">Ver todos →</a>
+          </p>
+        <?php } ?>
+      <?php } else { ?>
+        <p class="empty-state" style="padding:20px; text-align:center;">✅ No hay estudiantes con pagos pendientes. ¡Todos están al día!</p>
       <?php } ?>
     </div>
   </div>

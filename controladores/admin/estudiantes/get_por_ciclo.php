@@ -24,6 +24,7 @@ $estudiantes = listarEstudiantesPorCiclo($idCiclo);
 $resultado = array_map(fn($e) => [
     'idEstudiante'     => $e['idEstudiante'],
     'nombreEstudiante' => $e['nombreEstudiante'],
+    'curso'            => $e['curso'] ?? '1º',
 ], $estudiantes);
 
 echo json_encode($resultado);

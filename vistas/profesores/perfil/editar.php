@@ -50,18 +50,53 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?= fieldError($errores, 'telefonoProfesor') ?>
         </div>
 
+        <div class="campo<?= fieldClass($errores, 'dniProfesor') ?>">
+            <label for="dniProfesor">DNI / Identificación</label>
+            <input type="text" name="dniProfesor" id="dniProfesor" value="<?= Security::escapeHtml($datos['dniProfesor'] ?? $profesorActual['dniProfesor'] ?? '') ?>">
+            <?= fieldError($errores, 'dniProfesor') ?>
+        </div>
+
+        <div class="campo<?= fieldClass($errores, 'fechaNacimientoProfesor') ?>">
+            <label for="fechaNacimientoProfesor">Fecha de Nacimiento</label>
+            <input type="date" name="fechaNacimientoProfesor" id="fechaNacimientoProfesor" value="<?= Security::escapeHtml($datos['fechaNacimientoProfesor'] ?? $profesorActual['fechaNacimientoProfesor'] ?? '') ?>">
+            <?= fieldError($errores, 'fechaNacimientoProfesor') ?>
+        </div>
+
+        <div class="campo ancho-total<?= fieldClass($errores, 'direccionProfesor') ?>">
+            <label for="direccionProfesor">Dirección</label>
+            <input type="text" name="direccionProfesor" id="direccionProfesor" value="<?= Security::escapeHtml($datos['direccionProfesor'] ?? $profesorActual['direccionProfesor'] ?? '') ?>">
+            <?= fieldError($errores, 'direccionProfesor') ?>
+        </div>
+
+        <div class="campo<?= fieldClass($errores, 'ciudadProfesor') ?>">
+            <label for="ciudadProfesor">Ciudad</label>
+            <input type="text" name="ciudadProfesor" id="ciudadProfesor" value="<?= Security::escapeHtml($datos['ciudadProfesor'] ?? $profesorActual['ciudadProfesor'] ?? '') ?>">
+            <?= fieldError($errores, 'ciudadProfesor') ?>
+        </div>
+
+        <div class="campo<?= fieldClass($errores, 'codigoPostalProfesor') ?>">
+            <label for="codigoPostalProfesor">Código Postal</label>
+            <input type="text" name="codigoPostalProfesor" id="codigoPostalProfesor" value="<?= Security::escapeHtml($datos['codigoPostalProfesor'] ?? $profesorActual['codigoPostalProfesor'] ?? '') ?>">
+            <?= fieldError($errores, 'codigoPostalProfesor') ?>
+        </div>
+
+        <div class="campo ancho-total">
+            <label for="observacionesProfesor">Observaciones</label>
+            <textarea name="observacionesProfesor" id="observacionesProfesor" rows="3"><?= Security::escapeHtml($datos['observacionesProfesor'] ?? $profesorActual['observacionesProfesor'] ?? '') ?></textarea>
+        </div>
+
         <div class="titulo-tarjeta" style="margin-top:10px;"><h3><i class="fas fa-lock"></i> SEGURIDAD Y CONTRASEÑA</h3></div>
         <p class="texto-suave">Rellene estos campos solo si desea cambiar su contraseña de acceso.</p>
 
         <div class="campo<?= fieldClass($errores, 'current_password') ?>">
             <label for="current_password">Contraseña Actual</label>
-            <input type="password" name="current_password" id="current_password" placeholder="••••••••">
+            <input type="password" name="current_password" id="current_password" placeholder="••••••••" autocomplete="new-password">
             <?= fieldError($errores, 'current_password') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'new_password') ?>">
             <label for="new_password">Nueva Contraseña</label>
-            <input type="password" name="new_password" id="new_password" placeholder="••••••••">
+            <input type="password" name="new_password" id="new_password" placeholder="••••••••" autocomplete="new-password">
             <?= fieldError($errores, 'new_password') ?>
         </div>
 

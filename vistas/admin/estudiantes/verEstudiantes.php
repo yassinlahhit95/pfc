@@ -22,6 +22,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h1>LISTADO DE ESTUDIANTES</h1>
     </div>
     <div class="acciones-pagina" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a href="papelera.php" class="boton-secundario">
+            <i class="fas fa-trash-alt"></i> PAPELERA
+        </a>
         <a href="../../../controladores/admin/estudiantes/exportarCSV.php" class="boton-secundario">
             <i class="fas fa-file-export"></i> EXPORTAR CSV
         </a>
@@ -85,8 +88,8 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Ciclos --</option>
                 <?php foreach ($listaDeCiclosParaFiltro as $cicloFiltro) { ?>
-                    <option value="<?= strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo'])) ?>">
-                        <?= strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo'])) ?>
+                    <option value="<?= mb_strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo']), 'UTF-8') ?>">
+                        <?= mb_strtoupper(Security::escapeHtml($cicloFiltro['nombreCiclo']), 'UTF-8') ?>
                     </option>
                 <?php } ?>
             </select>
@@ -130,7 +133,7 @@ foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
                         </td>
                         <td><b><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreEstudiante']), 'UTF-8') ?></b></td>
                         <td><?= Security::escapeHtml($estudianteIndividual['emailEstudiante']) ?></td>
-                        <td><?= strtoupper(Security::escapeHtml($estudianteIndividual['nombreCiclo'])) ?></td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($estudianteIndividual['nombreCiclo']), 'UTF-8') ?></td>
                         <td><?= Security::escapeHtml($estudianteIndividual['anioEstudio'] ?? '-') ?></td>
                         <td>
                             <div class="recurso-menu-wrap">

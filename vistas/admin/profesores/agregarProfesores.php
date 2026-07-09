@@ -91,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <!-- Tutor Status -->
         <div class="panel" style="margin-top:25px;padding:20px;border:1px solid var(--border);background:var(--bg-2);">
-            <h4 style="margin:0 0 15px;"><i class="fas fa-star" style="color:#f59e0b;"></i> Permiso de Tutor de Ciclo</h4>
+            <h4 style="margin:0 0 15px;"><i class="fas fa-star" style="color:var(--naranja);"></i> Permiso de Tutor de Ciclo</h4>
             <p style="font-size:.85rem;color:var(--text-2);margin-bottom:15px;">
                 Si activas esta opción, el profesor actuará como administrador del ciclo asignado con acceso completo a sus estudiantes, notas, módulos y horario.
             </p>

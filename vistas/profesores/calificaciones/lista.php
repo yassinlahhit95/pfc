@@ -48,32 +48,32 @@ include_once __DIR__ . "/../comunes/nav.php";
     width: 58px;
     text-align: center;
     font-weight: bold;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border-2);
     border-radius: 6px;
     padding: 4px 6px;
     font-size: 0.9rem;
     transition: border-color .15s, background .15s;
 }
 .nota-input:focus { border-color: #1e3a6e; outline: none; box-shadow: 0 0 0 2px #1e3a6e22; }
-.nota-input.is-co { background:#f0fdf4; border-color:#4ade80; color:#166534; pointer-events:none; }
-.nota-input.is-error { border-color:#ef4444; background:#fff1f1; box-shadow: 0 0 0 2px #ef444422; }
-.nota-error { display:none; font-size:0.6rem; color:#ef4444; font-weight:600; margin-top:2px; white-space:nowrap; }
+.nota-input.is-co { background:var(--verde-suave); border-color:#4ade80; color:var(--verde-ink); pointer-events:none; }
+.nota-input.is-error { border-color:var(--rojo); background:#fff1f1; box-shadow: 0 0 0 2px #ef444422; }
+.nota-error { display:none; font-size:0.6rem; color:var(--rojo); font-weight:600; margin-top:2px; white-space:nowrap; }
 .nota-error.visible { display:block; }
-.co-merged { background:#f0fdf4; text-align:center; vertical-align:middle; }
-.co-merged-label { display:inline-block; color:#166534; font-weight:700; font-size:0.85rem; letter-spacing:.3px; }
+.co-merged { background:var(--verde-suave); text-align:center; vertical-align:middle; }
+.co-merged-label { display:inline-block; color:var(--verde-ink); font-weight:700; font-size:0.85rem; letter-spacing:.3px; }
 .badge-letra { display:inline-block; font-size:0.65rem; font-weight:700; padding:1px 5px; border-radius:4px; margin-left:3px; vertical-align:middle; letter-spacing:.4px; }
 .badge-SB { background:#d1fae5; color:#065f46; }
 .badge-NT { background:#d1fae5; color:#065f46; }
-.badge-BI { background:#dbeafe; color:#1e40af; }
-.badge-SF { background:#fef3c7; color:#92400e; }
-.badge-IN { background:#fee2e2; color:#991b1b; }
+.badge-BI { background:#dbeafe; color:var(--azul-ink); }
+.badge-SF { background:#fef3c7; color:var(--naranja-ink); }
+.badge-IN { background:#fee2e2; color:var(--rojo-ink); }
 .co-toggle { display:inline-flex; align-items:center; cursor:pointer; user-select:none; }
 .co-toggle input[type="checkbox"] { display:none; }
-.co-box { width:20px; height:20px; border:2px solid #94a3b8; border-radius:5px; background:#fff; display:flex; align-items:center; justify-content:center; transition:all .15s; font-size:11px; font-weight:bold; color:transparent; }
-.co-toggle input:checked ~ .co-box { background:#16a34a; border-color:#16a34a; color:#fff; }
-.glosario-bar { font-size:0.75rem; color:#64748b; padding:8px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px; }
+.co-box { width:20px; height:20px; border:2px solid var(--mut); border-radius:5px; background:var(--surface); display:flex; align-items:center; justify-content:center; transition:all .15s; font-size:11px; font-weight:bold; color:transparent; }
+.co-toggle input:checked ~ .co-box { background:var(--verde); border-color:var(--verde); color:#fff; }
+.glosario-bar { font-size:0.75rem; color:var(--dim); padding:8px 16px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; margin-bottom:12px; }
 .glosario-bar span { font-weight:700; color:#1e3a6e; margin-right:2px; }
-.glosario-bar .sep { margin:0 10px; color:#cbd5e1; }
+.glosario-bar .sep { margin:0 10px; color:var(--border-2); }
 </style>
 
 <div class="cabecera">
@@ -248,7 +248,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="acciones" style="display:flex; gap:10px; align-items:center;">
                     <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR TODAS LAS NOTAS">
                     <?php if (FeatureGuard::check('feature_ra_ce')): ?>
-                    <a href="evaluarRA.php?idModulo=<?= (int)$idModuloElegido ?>" class="boton-secundario" style="background:#fef3c7; color:#92400e; border-color:#f59e0b;">
+                    <a href="evaluarRA.php?idModulo=<?= (int)$idModuloElegido ?>" class="boton-secundario" style="background:#fef3c7; color:var(--naranja-ink); border-color:var(--naranja);">
                         <i class="fas fa-star-half-stroke"></i> EVALUAR RA / CE (LOMLOE)
                     </a>
                     <?php endif; ?>

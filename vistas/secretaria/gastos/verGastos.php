@@ -58,7 +58,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
     </div>
     <div class="gasto-kpi-card">
-        <div class="gasto-kpi-ico" style="background:rgba(16,185,129,.12);color:#10b981"><i class="fas fa-wallet"></i></div>
+        <div class="gasto-kpi-ico" style="background:rgba(16,185,129,.12);color:var(--verde)"><i class="fas fa-wallet"></i></div>
         <div class="gasto-kpi-body">
             <span class="gasto-kpi-label">Presupuesto total <?= $anyo ?></span>
             <span class="gasto-kpi-valor"><?= number_format($presTotal, 2, ',', '.') ?> €</span>
@@ -147,7 +147,7 @@ include __DIR__ . '/../comunes/nav.php';
         </div>
         <div class="campo relleno">
             <label>BUSCAR</label>
-            <input type="text" id="filtro-busqueda-gastos" placeholder="Concepto, referencia…" style="min-width:160px;">
+            <input type="text" id="filtro-busqueda-gastos" placeholder="Concepto, referencia…" style="min-width:160px;" autocomplete="off">
         </div>
         <div class="campo">
             <button type="submit" class="boton-primario"><i class="fas fa-filter"></i> Filtrar</button>

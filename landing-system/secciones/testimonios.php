@@ -1,10 +1,11 @@
 <?php
-// Sección de testimonios de alumnos moderna con carrusel interactivo
+// Sección de testimonios de alumnos
+$variante = $contenido['variante'] ?? 'tarjetas';
 $items = $contenido['items'] ?? [];
 if (!$items) return;
 $sliderId = 'testimonials-' . uniqid();
 ?>
-<section class="lp-sec lp-testimonios" id="testimonios">
+<section class="lp-sec lp-testimonios lp-testimonios-<?= Security::escapeHtml($variante) ?>" id="testimonios"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     
     <div class="lp-sec-cabecera lp-testimonios-cabecera">
@@ -13,7 +14,7 @@ $sliderId = 'testimonials-' . uniqid();
         <h2><?= Security::escapeHtml($contenido['titulo'] ?? 'Lo que dicen nuestros alumnos') ?></h2>
       </div>
       
-      <?php if (count($items) > 1): ?>
+      <?php if ($variante === 'carrusel' && count($items) > 1): ?>
       <div class="lp-testimonios-controles">
         <button class="lp-testimonios-btn lp-testimonios-prev" aria-label="Testimonio anterior" data-target="<?= $sliderId ?>">
           <i class="fas fa-chevron-left"></i>
@@ -26,7 +27,7 @@ $sliderId = 'testimonials-' . uniqid();
     </div>
 
     <div class="lp-testimonios-wrapper">
-      <div class="lp-testimonios-slider" id="<?= $sliderId ?>">
+      <div class="<?= $variante === 'carrusel' ? 'lp-testimonios-slider' : 'lp-testimonios-grid' ?>" id="<?= $sliderId ?>">
         <?php foreach ($items as $item):
             $fotoUrl = landing_img_url($item['foto'] ?? ''); ?>
         <article class="lp-testimonio-card">
@@ -43,7 +44,7 @@ $sliderId = 'testimonials-' . uniqid();
           <p class="lp-testimonio-texto"><?= nl2br(Security::escapeHtml($item['texto'] ?? '')) ?></p>
           <div class="lp-testimonio-autor">
             <?php if ($fotoUrl): ?>
-            <img src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-testimonio-foto">
+            <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-testimonio-foto">
             <?php else: ?>
             <span class="lp-testimonio-avatar"><?= Security::escapeHtml(mb_strtoupper(mb_substr($item['nombre'] ?? '?', 0, 1))) ?></span>
             <?php endif; ?>
@@ -97,3 +98,7 @@ $sliderId = 'testimonials-' . uniqid();
   updateButtons();
 })();
 </script>
+
+
+
+

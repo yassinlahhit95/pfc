@@ -38,21 +38,32 @@ include __DIR__ . '/../comunes/nav.php';
             <?= fieldError($errores, 'email') ?>
         </div>
 
-        <div class="campo<?= fieldClass($errores, 'password') ?>">
-            <label for="password">Contraseña</label>
-            <input type="password" name="password" id="password" autocomplete="new-password">
-            <?= fieldError($errores, 'password') ?>
+        <!-- Nivel / Curso -->
+        <div class="campo<?= fieldClass($errores, 'curso') ?>">
+            <label for="curso">Nivel</label>
+            <select name="curso" id="curso" onchange="filtrarCiclos()">
+                <option value="">-- Selecciona un nivel --</option>
+                <option value="Grado Medio" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                <option value="Grado Superior" <?php if (isset($datos['curso']) && $datos['curso'] == 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
+            </select>
+            <?= fieldError($errores, 'curso') ?>
         </div>
 
+        <!-- Año de estudio -->
+        <div class="campo">
+            <label for="anioEstudio">Año de estudio</label>
+            <select name="anioEstudio" id="anioEstudio">
+                <option value="">-- 1º o 2º año --</option>
+                <option value="1º" <?= (($datos['anioEstudio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
+                <option value="2º" <?= (($datos['anioEstudio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
+            </select>
+        </div>
+
+        <!-- Ciclo formativo -->
         <div class="campo<?= fieldClass($errores, 'idCiclo') ?>">
             <label for="idCiclo">Ciclo formativo</label>
             <select name="idCiclo" id="idCiclo">
-                <option value="">— Seleccionar —</option>
-                <?php foreach ($ciclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>" <?= ((int)($datos['idCiclo'] ?? 0) === (int)$c['idCiclo']) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($c['nombreCiclo']) ?>
-                </option>
-                <?php endforeach; ?>
+                <option value="">-- Selecciona primero un nivel --</option>
             </select>
             <?= fieldError($errores, 'idCiclo') ?>
         </div>
@@ -89,3 +100,28 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+var todosCiclos = <?= json_encode($ciclos) ?>;
+
+function filtrarCiclos() {
+    var nivel = $('#curso').val();
+    var nivelId = nivel === 'Grado Medio' ? 1 : (nivel === 'Grado Superior' ? 2 : 0);
+    var placeholder = nivel ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --';
+    var $select = $('#idCiclo').empty().append($('<option>').val('').text(placeholder));
+
+    if (nivelId > 0) {
+        $.each(todosCiclos, function(i, ciclo) {
+            if (parseInt(ciclo.idNivel) === nivelId) {
+                $select.append($('<option>').val(ciclo.idCiclo).text(ciclo.nombreCiclo));
+            }
+        });
+    }
+}
+
+$(function() {
+    filtrarCiclos();
+    <?php if (!empty($datos['idCiclo'])) { ?>
+    $('#idCiclo').val('<?= Security::escapeHtml($datos['idCiclo']) ?>');
+    <?php } ?>
+});
+</script>
