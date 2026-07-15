@@ -97,5 +97,5 @@ foreach ($secciones as $s) {
 include __DIR__ . '/vistas/landing/_footer.php';
 
 if ($preview) {
-    echo '<script src="/public/js/builder-preview.js"></script>';
+    echo '<script src="/public/js/features/builder-preview.js"></script>';
 }

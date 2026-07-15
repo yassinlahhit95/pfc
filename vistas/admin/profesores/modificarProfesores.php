@@ -219,7 +219,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 
-<script src="../../../public/js/profesores-form.js"></script>
+<script src="../../../public/js/features/profesores-form.js"></script>
 <script>
 function cambiarPassProf() {
     var pass    = document.getElementById('nueva-pass-prof').value.trim();

@@ -45,12 +45,12 @@ $(document).ajaxError(function(event, xhr) {
     if (xhr.status >= 500)  { Toast.show('Error del servidor (' + xhr.status + '). Contacta con soporte si persiste.', 'error'); return; }
 });
 </script>
-<script src="../../../public/js/dashboard-shell.js?v=<?= filemtime(__DIR__.'/../../public/js/dashboard-shell.js') ?>"></script>
-<script src="../../../public/js/filtros.js"></script>
-<script src="../../../public/js/paginacion.js"></script>
-<script src="../../../public/js/modal-borrar.js"></script>
-<script src="../../../public/js/modal-confirm.js"></script>
-<script src="../../../public/js/toast.js"></script>
+<script src="../../../public/js/core/dashboard-shell.js?v=<?= filemtime(__DIR__.'/../../public/js/core/dashboard-shell.js') ?>"></script>
+<script src="../../../public/js/core/filtros.js"></script>
+<script src="../../../public/js/core/paginacion.js"></script>
+<script src="../../../public/js/core/modal-borrar.js"></script>
+<script src="../../../public/js/core/modal-confirm.js"></script>
+<script src="../../../public/js/core/toast.js"></script>
 <?php
 $__err = $errores ?? null;
 $__ok  = $exito  ?? '';

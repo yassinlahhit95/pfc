@@ -176,7 +176,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div id="recursoLoader" class="recurso-loader"><div class="recurso-loader-caja"><div class="recurso-spinner"></div><p>Procesando…</p></div></div>
 <div id="recursoToast" class="recurso-toast"></div>
 
-<script src="../../../public/js/aula-recursos.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/aula-recursos.js")) ?>"></script>
+<script src="../../../public/js/features/aula-recursos.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/features/aula-recursos.js")) ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 
 

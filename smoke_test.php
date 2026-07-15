@@ -116,7 +116,7 @@ foreach ([
 echo "\n-- Activos estáticos --\n";
 foreach ([
     '/public/css/estilo.css',
-    '/public/js/dashboard-shell.js',
+    '/public/js/core/dashboard-shell.js',
 ] as $ruta) {
     $r  = httpGet($baseUrl . $ruta);
     $ok = $r['code'] === 200 && strlen($r['body']) > 100;

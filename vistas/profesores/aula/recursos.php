@@ -408,8 +408,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Aviso flotante (toast) -->
 <div id="recursoToast" class="recurso-toast"></div>
 
-<script src="../../../public/js/aula-recursos.js?v=<?= @filemtime(__DIR__."/../../../public/js/aula-recursos.js") ?>"></script>
-<script src="../../../public/js/recursos-dnd.js?v=<?= @filemtime(__DIR__."/../../../public/js/recursos-dnd.js") ?>"></script>
+<script src="../../../public/js/features/aula-recursos.js?v=<?= @filemtime(__DIR__."/../../../public/js/features/aula-recursos.js") ?>"></script>
+<script src="../../../public/js/features/recursos-dnd.js?v=<?= @filemtime(__DIR__."/../../../public/js/features/recursos-dnd.js") ?>"></script>
 
 <style>
 .dnd-dragging {

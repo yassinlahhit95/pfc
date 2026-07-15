@@ -20,7 +20,7 @@ function avaClass($rol) {
 
 require_once __DIR__ . '/../comunes/nav.php';
 ?>
-<link rel="stylesheet" href="../../../public/css/chat.css">
+<link rel="stylesheet" href="../../../public/css/features/chat.css">
 
 <div class="chat-page" id="chat-page">
 
@@ -80,7 +80,7 @@ require_once __DIR__ . '/../comunes/nav.php';
   </div>
 </div>
 
-<script src="../../../public/js/chat.js"></script>
+<script src="../../../public/js/features/chat.js"></script>
 <script>
 ChatModal.init({
     csrfToken: '<?= $csrf ?>',

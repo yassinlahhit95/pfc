@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- SCRIPTS: THEME SYSTEM Y ANALYTICS -->
 
-<script src="../../../public/js/analytics.js"></script>
+<script src="../../../public/js/core/analytics.js"></script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 

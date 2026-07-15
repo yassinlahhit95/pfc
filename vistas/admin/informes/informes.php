@@ -17,7 +17,7 @@ $seccion = 'informes';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
-<link rel="stylesheet" href="../../../public/css/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/informes.css') ?>">
+<link rel="stylesheet" href="../../../public/css/features/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/informes.css') ?>">
 
 <div class="cabecera">
     <div>

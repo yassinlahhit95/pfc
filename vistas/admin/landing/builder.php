@@ -52,7 +52,7 @@ $titulo_pagina = "AULAPRO | CONSTRUCTOR DE LA WEB";
 $seccion       = 'landing';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
-<link rel="stylesheet" href="/public/css/landing-builder.css">
+<link rel="stylesheet" href="/public/css/features/landing-builder.css">
 
 <div class="cabecera">
     <h1><i class="fas fa-globe"></i> Página web pública</h1>
@@ -231,4 +231,4 @@ include_once __DIR__ . '/../comunes/nav.php';
 window.LANDING_TIPOS     = <?= json_encode($tipos, JSON_UNESCAPED_UNICODE) ?>;
 window.LANDING_SECCIONES = <?= json_encode($seccionesJs, JSON_UNESCAPED_UNICODE) ?>;
 </script>
-<script src="/public/js/landing-builder.js"></script>
+<script src="/public/js/features/landing-builder.js"></script>

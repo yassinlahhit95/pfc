@@ -23,7 +23,7 @@ landing-system/
     └── modelo.php     ← Funciones de base de datos
 ```
 
-> ⚠️ El **panel de administración** (constructor, arrastrar-soltar, editor de secciones, selector de plantillas) vive **fuera** de esta carpeta por completo: HTML en `vistas/admin/landing/builder.php` y `vistas/admin/landing/plantillas.php`, JS en `public/js/landing-builder.js`, CSS en `public/css/landing-builder.css`. `landing-system/` solo contiene la landing **pública** — si vas a tocar el constructor, edita en `vistas/admin/landing/`, no aquí.
+> ⚠️ El **panel de administración** (constructor, arrastrar-soltar, editor de secciones, selector de plantillas) vive **fuera** de esta carpeta por completo: HTML en `vistas/admin/landing/builder.php` y `vistas/admin/landing/plantillas.php`, JS en `public/js/features/landing-builder.js`, CSS en `public/css/features/landing-builder.css`. `landing-system/` solo contiene la landing **pública** — si vas a tocar el constructor, edita en `vistas/admin/landing/`, no aquí.
 
 ---
 

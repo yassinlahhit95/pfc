@@ -24,7 +24,7 @@ $ciclosJson = json_encode(array_map(fn($c) => [
     'idNivel' => (int)$c['idNivel'],
 ], $ciclos), JSON_UNESCAPED_UNICODE);
 ?>
-<link rel="stylesheet" href="../../../public/css/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/informes.css') ?>">
+<link rel="stylesheet" href="../../../public/css/features/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/informes.css') ?>">
 
 <div class="cabecera">
     <div>

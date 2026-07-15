@@ -16,7 +16,7 @@ $legal_titulo = 'Pre-Matrícula';
 $legal_pagina = 'prematricula';
 $extra_css    = [
     'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css',
-    '/public/css/admisiones.css',
+    '/public/css/features/admisiones.css',
 ];
 
 require __DIR__ . '/../legal/_header.php';
@@ -236,6 +236,6 @@ require __DIR__ . '/../legal/_header.php';
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js" integrity="sha384-nLoOnA/BDh8A/jxqtckg4DumuCGOBYUnNJLZdQz/zfYNp3wcjGSoWTAzgko06G/2" crossorigin="anonymous"></script>
-<script src="/public/js/admisiones.js"></script>
+<script src="/public/js/features/admisiones.js"></script>
 
 <?php require __DIR__ . '/../legal/_footer.php'; ?>

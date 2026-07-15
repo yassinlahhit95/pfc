@@ -22,7 +22,7 @@ $seccionActual = 'horario';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<link rel="stylesheet" href="../../../public/css/horario-admin.css?v=<?= @filemtime(__DIR__.'/../../../public/css/horario-admin.css') ?>">
+<link rel="stylesheet" href="../../../public/css/features/horario-admin.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/horario-admin.css') ?>">
 
 <div class="cabecera">
     <h1>MI HORARIO</h1>

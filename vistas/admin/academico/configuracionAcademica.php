@@ -25,7 +25,7 @@ $seccion = 'configuracion_academica';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
 
-<link rel="stylesheet" href="../../../public/css/academico-wizard.css?v=<?= @filemtime(__DIR__.'/../../../public/css/academico-wizard.css') ?>">
+<link rel="stylesheet" href="../../../public/css/features/academico-wizard.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/academico-wizard.css') ?>">
 
 <div class="cabecera">
   <div>
@@ -338,6 +338,6 @@ include_once __DIR__ . '/../comunes/nav.php';
   </div>
 </div>
 
-<script src="../../../public/js/academico-wizard.js?v=<?= @filemtime(__DIR__.'/../../../public/js/academico-wizard.js') ?>"></script>
+<script src="../../../public/js/features/academico-wizard.js?v=<?= @filemtime(__DIR__.'/../../../public/js/features/academico-wizard.js') ?>"></script>
 
 <?php include '../comunes/footer.php'; ?>

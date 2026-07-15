@@ -10,7 +10,7 @@ Manual FTP deployment — no CI/CD pipeline.
 - **Backend:** PHP 8.3, MySQLi (no ORM), sessions for auth
 - **Frontend:** jQuery (globally available), Font Awesome 6, vanilla JS
 - **CSS:** Custom properties from `dashboard.css`, content styles in `public/css/estilo.css`
-- **JS globals loaded in every page:** `filtros.js`, `paginacion.js`, `toast.js`, `modal-borrar.js` (via `vistas/comunes/footer.php`)
+- **JS globals loaded in every page:** `core/filtros.js`, `core/paginacion.js`, `core/toast.js`, `core/modal-borrar.js` (via `vistas/comunes/footer.php`)
 
 ---
 
@@ -23,9 +23,16 @@ modelos/                 ← DB query functions (one file per entity)
 vistas/admin/            ← admin views (PHP templates)
 vistas/profesores/       ← professor views
 vistas/comunes/          ← shared nav.php + footer.php
-public/css/              ← estilo.css (content styles), dashboard.css (tokens)
-public/js/               ← paginacion.js, filtros.js, toast.js, modal-borrar.js
+public/css/estilo.css   ← content styles (root-level, loaded on every page)
+public/css/dashboard.css ← design tokens/custom properties (root-level, loaded on every page)
+public/css/features/    ← one file per feature (chat.css, mensajes.css, horario-admin.css, ...)
+public/css/landing/     ← public landing page themes (base.css, tema-*.css)
+public/js/core/         ← globals used across pages (filtros.js, paginacion.js, toast.js, modal-borrar.js, modal-confirm.js, menu-contextual.js, dashboard-shell.js, analytics.js, aula-digital.js)
+public/js/features/     ← one file per feature (chat.js, mensajes.js, horario.js, blog-editor.js, ...)
+public/js/firebase/     ← Firebase web SDK config + notifications UI
 ```
+
+Note: `core/analytics.js` and `features/aula-recursos.js` compute their own root path via `document.currentScript`/`import.meta.url` and a hardcoded `../../../` — they must stay exactly 3 directories below the project root (i.e. directly under `public/js/core/` or `public/js/features/`, not nested deeper) or that path math breaks.
 
 ---
 

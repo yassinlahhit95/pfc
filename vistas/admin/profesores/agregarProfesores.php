@@ -165,7 +165,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </form>
 </div>
 
-<script src="../../../public/js/profesores-form.js"></script>
+<script src="../../../public/js/features/profesores-form.js"></script>
 <script>
 function toggleCicloTutor(cb) {
     var campo = document.getElementById('campo-ciclo-tutor');

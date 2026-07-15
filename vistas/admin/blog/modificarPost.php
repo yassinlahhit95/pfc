@@ -161,7 +161,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-<script src="../../../public/js/blog-editor.js?v=<?= @filemtime(__DIR__ . '/../../../public/js/blog-editor.js') ?>"></script>
+<script src="../../../public/js/features/blog-editor.js?v=<?= @filemtime(__DIR__ . '/../../../public/js/features/blog-editor.js') ?>"></script>
 <script>
 iniciarEditorBlog({
     editorId: 'editor-contenido',

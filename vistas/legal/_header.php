@@ -20,7 +20,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
     <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/public/css/legal.css">
+    <link rel="stylesheet" href="/public/css/features/legal.css">
     <?php if (!empty($extra_css)) foreach ((array)$extra_css as $_css): ?>
     <link rel="stylesheet" href="<?= htmlspecialchars($_css) ?>">
     <?php endforeach; ?>

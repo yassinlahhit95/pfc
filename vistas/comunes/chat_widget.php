@@ -67,7 +67,7 @@ if (!isset($cw_rol, $cw_id, $cw_unreadCount, $cw_basePath)) {
   </button>
 </div>
 
-<script src="<?= $cw_basePath ?>public/js/chat-widget.js?v=<?= @filemtime(__DIR__.'/../../public/js/chat-widget.js') ?>"></script>
+<script src="<?= $cw_basePath ?>public/js/features/chat-widget.js?v=<?= @filemtime(__DIR__.'/../../public/js/features/chat-widget.js') ?>"></script>
 <script>
 ChatWidget.init({
   myRol:       '<?= Security::escapeHtml($cw_rol) ?>',

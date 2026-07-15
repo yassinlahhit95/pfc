@@ -32,7 +32,7 @@ $titulo_pagina = "AULAPRO | Redactar Mensaje";
 $seccion = 'reclamaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
-<link rel="stylesheet" href="../../../public/css/mensajes.css">
+<link rel="stylesheet" href="../../../public/css/features/mensajes.css">
 
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:var(--gap);">
     <a href="lista.php" class="ibtn ibtn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
@@ -151,7 +151,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-<script src="../../../public/js/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/mensajes.js') ?>"></script>
+<script src="../../../public/js/features/mensajes.js?v=<?= @filemtime(__DIR__.'/../../../public/js/features/mensajes.js') ?>"></script>
 <style>
 @media(max-width:640px){.compose-cols{grid-template-columns:1fr !important;}}
 </style>
