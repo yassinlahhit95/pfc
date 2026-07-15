@@ -30,7 +30,6 @@ return [
             'titulo'        => 'Nuestra oferta de estudios',
             'subtitulo'     => 'Programas de formación profesional para la especialización técnica.',
             'botonTexto'    => 'Ver detalles',
-            'mostrarPrecio' => 'no',
         ]],
         ['tipo' => 'fp_dual', 'contenido' => [
             'variante' => 'reverso',

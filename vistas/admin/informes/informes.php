@@ -212,7 +212,7 @@ function fetchEstudiantes(selectCiclo) {
                 div.dataset.curso = est.curso;
                 div.innerHTML = `
                     <label>
-                        <input type="checkbox" name="estudiantes[]" value="${est.idEstudiante}" checked>
+                        <input type="checkbox" name="estudiantes[]" value="${est.idEstudiante}">
                         <span>${est.nombreEstudiante} (${est.curso})</span>
                     </label>
                 `;
@@ -231,16 +231,10 @@ function filtrarEstudiantesLista(type) {
     var items = $list.querySelectorAll('.estudiante-check-item');
     items.forEach(function(item) {
         var optCurso = item.dataset.curso;
-        if (radioVal === '' || optCurso === radioVal) {
-            item.style.display = '';
-            var cb = item.querySelector('input[type="checkbox"]');
-            if (item.dataset.manuallyChanged !== "true") {
-                cb.checked = true;
-            }
-        } else {
-            item.style.display = 'none';
-            var cb = item.querySelector('input[type="checkbox"]');
-            cb.checked = false;
+        var match = (radioVal === '' || optCurso === radioVal);
+        item.style.display = match ? '' : 'none';
+        if (!match) {
+            item.querySelector('input[type="checkbox"]').checked = false;
         }
     });
 }

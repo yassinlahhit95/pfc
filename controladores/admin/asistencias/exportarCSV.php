@@ -9,8 +9,10 @@ $rawDesde  = $_GET['fechaDesde'] ?? '';
 $rawHasta  = $_GET['fechaHasta'] ?? '';
 $fechaDesde = preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawDesde) ? $rawDesde : null;
 $fechaHasta = preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawHasta) ? $rawHasta : null;
+$estadosPermitidos = ['presente', 'ausente', 'retraso', 'justificado'];
+$estado = in_array($_GET['estado'] ?? '', $estadosPermitidos, true) ? $_GET['estado'] : null;
 
-$asistencias = listarAsistenciasFiltradas($idCiclo, $idModulo, $idEstudiante, $fechaDesde, $fechaHasta);
+$asistencias = listarAsistenciasFiltradas($idCiclo, $idModulo, $idEstudiante, $fechaDesde, $fechaHasta, $estado);
 
 $filename = 'asistencias_' . date('Y-m-d') . '.csv';
 header('Content-Type: text/csv; charset=UTF-8');

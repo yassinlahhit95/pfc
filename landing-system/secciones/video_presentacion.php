@@ -36,7 +36,7 @@ if ($variante === 'split') {
         
         <?php if (!empty($contenido['botonTexto'])): ?>
         <div class="lp-video-pres-actions">
-          <a href="<?= Security::escapeHtml($contenido['botonUrl'] ?: '#contacto') ?>" class="lp-boton-primario">
+          <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#contacto')) ?>" class="lp-boton-primario">
             <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
           </a>
         </div>

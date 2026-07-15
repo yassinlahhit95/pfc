@@ -36,6 +36,10 @@ function obtenerConexion() {
         exit("Error de conexión a la base de datos. Inténtelo más tarde.");
     }
     mysqli_set_charset($conexion, "utf8mb4");
+    // Alinea el reloj de MySQL (NOW(), CURRENT_TIMESTAMP) con la zona horaria de PHP:
+    // sin esto, comparaciones como "fechaPublicacion <= NOW()" pueden fallar si el
+    // servidor de MySQL usa UTC mientras PHP calcula en Europe/Madrid.
+    mysqli_query($conexion, "SET time_zone = '" . date('P') . "'");
     return $conexion;
 }
 

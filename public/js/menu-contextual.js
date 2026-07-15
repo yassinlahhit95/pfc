@@ -1,8 +1,8 @@
+// Menú contextual reutilizable (estilo Aula Digital) para las tablas del panel admin.
+// Usa las clases .recurso-menu-wrap / .recurso-menu-btn / .recurso-menu / .recurso-menu-item
+// que ya están definidas en public/css/aula-digital.css.
 (function () {
   'use strict';
-  // Menú contextual reutilizable (estilo Aula Digital) para las tablas del panel admin.
-  // Usa las clases .recurso-menu-wrap / .recurso-menu-btn / .recurso-menu / .recurso-menu-item
-  // que ya están definidas en public/css/aula-digital.css.
 
   function cerrarMenus() {
     document.querySelectorAll('.recurso-menu.abierto').forEach(function (m) {

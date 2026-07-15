@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../../modelos/landing.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 require_once __DIR__ . '/../../../include/landing/plantillas.php';
+require_once __DIR__ . '/../../../include/ImageOptimizer.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -69,6 +70,7 @@ if (isset($_FILES['logoCentro']) && $_FILES['logoCentro']['error'] === UPLOAD_ER
         }
         
         if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
+            ImageOptimizer::optimize($uploadDir . $filename, $mime);
             actualizarLogoCentro('logoCentro', $filename);
         }
     }

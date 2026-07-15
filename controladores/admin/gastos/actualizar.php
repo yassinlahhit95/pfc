@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_gastos');
 require_once __DIR__ . "/../../../modelos/gastos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
@@ -102,6 +103,7 @@ if (!empty($_FILES['archivoJustificante']['name'][0])) {
             }
 
             if (move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nuevoNombre)) {
+                if ($mime !== 'application/pdf') ImageOptimizer::optimize($directorio . $nuevoNombre, $mime);
                 $nombresArchivos[] = $nuevoNombre;
             } else {
                 $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";

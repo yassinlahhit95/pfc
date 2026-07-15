@@ -25,6 +25,21 @@ function landing_img_url($nombre): string {
     return '/public/uploads/landing/' . basename($nombre);
 }
 
+// Valida un enlace admin-configurable antes de usarlo en un atributo href:
+// solo se permiten anclas internas (#...), rutas relativas (/...) o URLs
+// http(s) absolutas. Cualquier otro esquema (javascript:, data:, vbscript:...)
+// se descarta y se usa $fallback — así una sección nunca puede convertirse
+// en un vector de XSS a través de un campo de enlace.
+function landing_url_segura($url, string $fallback = '#'): string {
+    $url = trim((string)($url ?? ''));
+    if ($url === '') return $fallback;
+    if ($url[0] === '#') return $url;
+    if (preg_match('#^https?://#i', $url)) return $url;
+    // Ruta relativa, pero no protocolo-relativa ("//dominio-externo.com")
+    if ($url[0] === '/' && (!isset($url[1]) || $url[1] !== '/')) return $url;
+    return $fallback;
+}
+
 // Iconos Font Awesome permitidos en campos de tipo select 'icono'
 function landing_iconos_permitidos(): array {
     return [
@@ -56,6 +71,7 @@ function landing_tipos(): array {
 
         'hero' => [
             'nombre' => 'Portada (Hero)',
+            'descripcion' => 'La primera pantalla de la web: titular grande, imagen o vídeo de fondo y botones principales.',
             'icono'  => 'fa-image',
             'menu'   => null,
             'campos' => [
@@ -68,9 +84,9 @@ function landing_tipos(): array {
                 'videoFondo' => ['tipo' => 'video',    'etiqueta' => 'Vídeo de fondo (MP4, opcional)'],
                 'fondoParallax'=>['tipo' => 'imagen',  'etiqueta' => 'Imagen de fondo Parallax (si no hay vídeo)'],
                 'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón principal', 'max' => 40],
-                'botonUrl'   => ['tipo' => 'text',     'etiqueta' => 'Enlace del botón principal', 'max' => 255],
+                'botonUrl'   => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón principal', 'max' => 255],
                 'boton2Texto'=> ['tipo' => 'text',     'etiqueta' => 'Texto del botón secundario', 'max' => 40],
-                'boton2Url'  => ['tipo' => 'text',     'etiqueta' => 'Enlace del botón secundario', 'max' => 255],
+                'boton2Url'  => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón secundario', 'max' => 255],
             ],
             'defecto' => [
                 'variante' => 'fondo', 'eyebrow' => 'Formación Profesional',
@@ -83,12 +99,13 @@ function landing_tipos(): array {
 
         'cta_secundario' => [
             'nombre' => 'CTA / Banner secundario',
+            'descripcion' => 'Franja destacada con un mensaje corto y un botón, para anunciar algo puntual (jornada de puertas abiertas, plazo, etc.).',
             'icono'  => 'fa-bullhorn',
             'menu'   => null,
             'campos' => [
                 'titulo'     => ['tipo' => 'text', 'etiqueta' => 'Texto del anuncio', 'max' => 120, 'requerido' => true],
                 'botonTexto' => ['tipo' => 'text', 'etiqueta' => 'Texto del botón', 'max' => 40],
-                'botonUrl'   => ['tipo' => 'text', 'etiqueta' => 'Enlace', 'max' => 255],
+                'botonUrl'   => ['tipo' => 'url',  'etiqueta' => 'Enlace', 'max' => 255],
             ],
             'defecto' => [
                 'titulo' => '¡Jornada de puertas abiertas el próximo viernes!',
@@ -98,6 +115,7 @@ function landing_tipos(): array {
 
         'galeria' => [
             'nombre' => 'Galería Masonry',
+            'descripcion' => 'Cuadrícula de fotos del centro con efecto lightbox (ampliar) al hacer clic.',
             'icono'  => 'fa-images',
             'menu'   => 'Galería',
             'campos' => [
@@ -115,23 +133,25 @@ function landing_tipos(): array {
 
         'noticias' => [
             'nombre' => 'Últimas Noticias (Blog)',
+            'descripcion' => 'Muestra las últimas entradas publicadas del blog, con enlace para ver todas.',
             'icono'  => 'fa-newspaper',
             'menu'   => 'Blog',
             'campos' => [
                 'titulo'    => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'subtitulo' => ['tipo' => 'textarea', 'etiqueta' => 'Subtítulo', 'max' => 300],
                 'numPosts'  => ['tipo' => 'select',   'etiqueta' => 'Nº de entradas a mostrar',
-                                'opciones' => ['3' => '3 entradas', '6' => '6 entradas']],
+                                'opciones' => ['n3' => '3 entradas', 'n6' => '6 entradas']],
                 'botonTexto'=> ['tipo' => 'text', 'etiqueta' => 'Texto del botón "Ver todas"', 'max' => 40],
             ],
             'defecto' => [
                 'titulo' => 'Actualidad', 'subtitulo' => 'Mantente informado de las últimas novedades del centro.',
-                'numPosts' => '3', 'botonTexto' => 'Ver todas las noticias'
+                'numPosts' => 'n3', 'botonTexto' => 'Ver todas las noticias'
             ],
         ],
 
         'video_presentacion' => [
             'nombre' => 'Vídeo de Presentación',
+            'descripcion' => 'Bloque con un vídeo (MP4 o URL) junto a un texto de presentación del centro.',
             'icono'  => 'fa-circle-play',
             'menu'   => 'Vídeo',
             'campos' => [
@@ -146,7 +166,7 @@ function landing_tipos(): array {
                 'videoUrl'   => ['tipo' => 'video',    'etiqueta' => 'Vídeo (MP4, subido o URL externa)', 'requerido' => true],
                 'posterUrl'  => ['tipo' => 'imagen',   'etiqueta' => 'Imagen miniatura (Poster, opcional)'],
                 'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón', 'max' => 40],
-                'botonUrl'   => ['tipo' => 'text',     'etiqueta' => 'Enlace del botón', 'max' => 255],
+                'botonUrl'   => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón', 'max' => 255],
             ],
             'defecto' => [
                 'variante' => 'split', 'orientacion' => 'derecha', 'eyebrow' => 'Conoce nuestro centro',
@@ -160,6 +180,7 @@ function landing_tipos(): array {
 
         'hero_slider' => [
             'nombre' => 'Hero Slider',
+            'descripcion' => 'Como la Portada, pero con varias diapositivas que rotan automáticamente.',
             'icono'  => 'fa-images',
             'menu'   => null,
             'campos' => [
@@ -170,7 +191,7 @@ function landing_tipos(): array {
                     'subtitulo' => ['tipo' => 'textarea', 'etiqueta' => 'Subtítulo', 'max' => 300],
                 ]],
                 'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón principal', 'max' => 40],
-                'botonUrl'   => ['tipo' => 'text',     'etiqueta' => 'Enlace del botón principal', 'max' => 255],
+                'botonUrl'   => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón principal', 'max' => 255],
                 'autoplay'   => ['tipo' => 'select',   'etiqueta' => 'Autoplay', 'opciones' => ['si' => 'Sí', 'no' => 'No']],
             ],
             'defecto' => [
@@ -186,26 +207,36 @@ function landing_tipos(): array {
 
         'oferta_formativa' => [
             'nombre' => 'Oferta formativa',
+            'descripcion' => 'Tarjetas de tus ciclos o programas: foto, título, descripción y precio, personalizables una a una.',
             'icono'  => 'fa-graduation-cap',
             'menu'   => 'Ciclos',
             'campos' => [
                 'variante'      => ['tipo' => 'select',   'etiqueta' => 'Estilo',
                                     'opciones' => ['grid' => 'Cuadrícula de tarjetas', 'lista' => 'Vista de lista compacta']],
+                'columnas'      => ['tipo' => 'select',   'etiqueta' => 'Tarjetas por fila (cuadrícula)',
+                                    'opciones' => ['cols-4' => '4 por fila', 'cols-3' => '3 por fila']],
                 'titulo'        => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'subtitulo'     => ['tipo' => 'textarea', 'etiqueta' => 'Introducción', 'max' => 300],
-                'mostrarPrecio' => ['tipo' => 'select',   'etiqueta' => 'Mostrar precio',
-                                    'opciones' => ['no' => 'No', 'si' => 'Sí']],
-                'botonTexto'    => ['tipo' => 'text',     'etiqueta' => 'Texto del botón por ciclo', 'max' => 40],
+                'botonTexto'    => ['tipo' => 'text',     'etiqueta' => 'Texto del botón por tarjeta', 'max' => 40],
+                'items'         => ['tipo' => 'lista', 'etiqueta' => 'Ciclos / programas', 'max' => 12, 'subcampos' => [
+                    'imagen'  => ['tipo' => 'imagen',   'etiqueta' => 'Foto'],
+                    'etiqueta'=> ['tipo' => 'text',     'etiqueta' => 'Etiqueta (ej: Grado Medio)', 'max' => 60],
+                    'titulo'  => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
+                    'texto'   => ['tipo' => 'textarea', 'etiqueta' => 'Descripción', 'max' => 300],
+                    'precio'  => ['tipo' => 'text',     'etiqueta' => 'Precio (ej: 1.200 € /curso, o vacío para ocultarlo)', 'max' => 60],
+                    'botonUrl'=> ['tipo' => 'url',      'etiqueta' => 'Enlace del botón (opcional, si no se rellena usa el general)', 'max' => 255],
+                ]],
             ],
             'defecto' => [
-                'variante' => 'grid', 'titulo' => 'Nuestra oferta formativa',
+                'variante' => 'grid', 'columnas' => 'cols-4', 'titulo' => 'Nuestra oferta formativa',
                 'subtitulo' => 'Ciclos formativos oficiales adaptados a las profesiones con más demanda.',
-                'mostrarPrecio' => 'no', 'botonTexto' => 'Solicitar plaza',
+                'botonTexto' => 'Solicitar plaza', 'items' => [],
             ],
         ],
 
         'prematricula_cta' => [
             'nombre' => 'Admisión (Pre-matrícula)',
+            'descripcion' => 'Llamada a la acción para que los visitantes empiecen su pre-matrícula.',
             'icono'  => 'fa-user-plus',
             'menu'   => 'Admisión',
             'campos' => [
@@ -226,6 +257,7 @@ function landing_tipos(): array {
 
         'porque_elegirnos' => [
             'nombre' => 'Por qué elegirnos',
+            'descripcion' => 'Lista de puntos fuertes del centro, cada uno con icono, título y texto breve.',
             'icono'  => 'fa-circle-check',
             'menu'   => 'El centro',
             'campos' => [
@@ -251,6 +283,7 @@ function landing_tipos(): array {
 
         'cifras' => [
             'nombre' => 'Cifras clave',
+            'descripcion' => 'Números destacados con contador animado (años de experiencia, alumnos, ciclos...).',
             'icono'  => 'fa-chart-simple',
             'menu'   => null,
             'campos' => [
@@ -275,6 +308,7 @@ function landing_tipos(): array {
 
         'fp_dual' => [
             'nombre' => 'FP Dual',
+            'descripcion' => 'Bloque dedicado a explicar la formación dual, con imagen y lista de ventajas.',
             'icono'  => 'fa-building',
             'menu'   => 'FP Dual',
             'campos' => [
@@ -302,6 +336,7 @@ function landing_tipos(): array {
 
         'empresas' => [
             'nombre' => 'Empresas colaboradoras',
+            'descripcion' => 'Carrusel o cuadrícula con los logotipos de las empresas colaboradoras.',
             'icono'  => 'fa-handshake',
             'menu'   => 'Empresas',
             'campos' => [
@@ -312,7 +347,7 @@ function landing_tipos(): array {
                 'items'  => ['tipo' => 'lista', 'etiqueta' => 'Empresas', 'max' => 12, 'subcampos' => [
                     'nombre' => ['tipo' => 'text',   'etiqueta' => 'Nombre', 'max' => 80, 'requerido' => true],
                     'logo'   => ['tipo' => 'imagen', 'etiqueta' => 'Logo'],
-                    'url'    => ['tipo' => 'text',   'etiqueta' => 'Web (opcional)', 'max' => 255],
+                    'url'    => ['tipo' => 'url',    'etiqueta' => 'Web (opcional)', 'max' => 255],
                 ]],
             ],
             'defecto' => [
@@ -324,6 +359,7 @@ function landing_tipos(): array {
 
         'instalaciones' => [
             'nombre' => 'Instalaciones',
+            'descripcion' => 'Galería de fotos de las instalaciones del centro, cada una con su título.',
             'icono'  => 'fa-school',
             'menu'   => 'Instalaciones',
             'campos' => [
@@ -346,6 +382,7 @@ function landing_tipos(): array {
 
         'testimonios' => [
             'nombre' => 'Testimonios',
+            'descripcion' => 'Opiniones de alumnos o familias, con nombre, ciclo y foto opcional.',
             'icono'  => 'fa-quote-left',
             'menu'   => 'Testimonios',
             'campos' => [
@@ -371,6 +408,7 @@ function landing_tipos(): array {
 
         'faq' => [
             'nombre' => 'Preguntas frecuentes',
+            'descripcion' => 'Lista de preguntas y respuestas, en formato lista, acordeón o cuadrícula.',
             'icono'  => 'fa-circle-question',
             'menu'   => null,
             'campos' => [
@@ -394,6 +432,7 @@ function landing_tipos(): array {
 
         'contacto' => [
             'nombre' => 'Contacto',
+            'descripcion' => 'Formulario de contacto, datos del centro, horario y mapa.',
             'icono'  => 'fa-envelope',
             'menu'   => 'Contacto',
             'campos' => [
@@ -484,9 +523,16 @@ function _landing_sanear_campos(array $schema, array $datos): array {
                 break;
 
             case 'html':
-                // Para código embed como iframes de mapas
-                $v = trim(strip_tags((string)($valor ?? ''), '<iframe>'));
-                $limpio[$clave] = mb_substr($v, 0, $def['max'] ?? 2000);
+                // Código embed de mapa: solo se permite un <iframe> de Google
+                // Maps, reconstruido desde cero con atributos seguros (nunca se
+                // copian atributos del HTML pegado por el admin, así que no hay
+                // forma de colar onload/srcdoc/etc.)
+                $limpio[$clave] = _landing_sanear_iframe_mapa((string)($valor ?? ''));
+                break;
+
+            case 'url':
+                $v = landing_url_segura(trim((string)($valor ?? '')), '');
+                $limpio[$clave] = $v !== '' ? mb_substr($v, 0, $def['max'] ?? 255) : '';
                 break;
 
             case 'select':
@@ -537,4 +583,27 @@ function _landing_sanear_campos(array $schema, array $datos): array {
         }
     }
     return $limpio;
+}
+
+// Solo permite un <iframe> de Google Maps ("Insertar un mapa" -> HTML) con
+// atributos seguros. Se reconstruye el tag desde cero (src validado, width
+// y height acotados) en vez de copiar los atributos del HTML pegado por el
+// admin, así onload/onerror/srcdoc/class/id/etc. nunca pasan, sea cual sea
+// el contenido pegado.
+function _landing_sanear_iframe_mapa(string $html): string {
+    if (!preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\'][^>]*>/i', $html, $m)) {
+        return '';
+    }
+    $src = html_entity_decode($m[1], ENT_QUOTES);
+    if (!preg_match('#^https://www\.google\.com/maps/embed[?/]#i', $src)) {
+        return '';
+    }
+    $width  = 600;
+    $height = 450;
+    if (preg_match('/\bwidth=["\']?(\d+)/i', $m[0], $wm))  $width  = min((int)$wm[1], 2000);
+    if (preg_match('/\bheight=["\']?(\d+)/i', $m[0], $hm)) $height = min((int)$hm[1], 2000);
+
+    return '<iframe src="' . htmlspecialchars($src, ENT_QUOTES)
+         . '" width="' . $width . '" height="' . $height
+         . '" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
 }

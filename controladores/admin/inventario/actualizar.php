@@ -11,8 +11,15 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
 if (isset($_POST['actualizarArticulo'])) {
     if (!Security::validateCSRFToken()) {
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida. Inténtelo de nuevo.']);
+            exit;
+        }
         $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
         header("Location: ../../../vistas/admin/inventario/verInventario.php");
         exit;
@@ -26,23 +33,32 @@ if (isset($_POST['actualizarArticulo'])) {
     if (empty($numeroSerie)) $errores['numeroSerie'] = "El número de serie es un campo obligatorio.";
     if (empty($errores) && checkArticuloExistente($numeroSerie, $idArticulo)) $errores['numeroSerie'] = "Este número de serie ya está registrado por otro artículo.";
 
-    if (!empty($errores)) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['datos_inventario'] = $_POST;
-    } else {
+    if (empty($errores)) {
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
         $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
 
         if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
             registrarAccion('actualizar', 'inventario', $idArticulo, $nombreArticulo);
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['ok' => true, 'msg' => 'El artículo ha sido actualizado correctamente.']);
+                exit;
+            }
             $_SESSION['exito'] = "El artículo ha sido actualizado correctamente.";
             header("Location: ../../../vistas/admin/inventario/verInventario.php");
             exit;
         }
-        $_SESSION['errores'] = "Ocurrió un error al intentar actualizar el artículo.";
+        $errores = ['general' => 'Ocurrió un error al intentar actualizar el artículo.'];
     }
 
-    header("Location: ../../../vistas/admin/inventario/modificarArticulo.php?idArticulo=" . $idArticulo);
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => $errores['general'] ?? reset($errores), 'errores' => $errores, 'csrf_token' => Security::generateCSRFToken()]);
+        exit;
+    }
+    $_SESSION['errores'] = $errores;
+    $_SESSION['datos_inventario'] = $_POST;
+    header("Location: ../../../vistas/admin/inventario/verInventario.php");
     exit;
 }
 

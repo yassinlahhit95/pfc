@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
-$historial = listarHistorialSecretarias(100); // Muestra las últimas 100 acciones
+$historial = listarHistorialSecretarias(null, 100); // Muestra las últimas 100 acciones
 
 $titulo_pagina = 'AULAPRO | HISTORIAL DE SECRETARIAS';
 $seccion = 'secretarias'; // Mantener activa la pestaña de secretarias

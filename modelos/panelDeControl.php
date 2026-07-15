@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Cache.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // CONTADORES PARA EL PANEL DE CONTROL
@@ -83,17 +84,15 @@ function contarTFGsEntregados(): int {
     )['total'] ?? 0);
 }
 
-// Obtiene todos los contadores del nav de admin en una sola consulta.
+// Obtiene todos los contadores del nav de admin. Los contadores globales
+// (no dependen del admin concreto) se cachean en APCu y se comparten entre
+// todas las sesiones admin/secretaria concurrentes en vez de recalcularse
+// por sesión; solo el contador de chat, que sí depende de $idAdmin, se
+// cachea por admin.
 function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
-    $cacheKey = 'nav_admin_counts_' . $idAdmin;
-    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time'] < 60)) {
-        return $_SESSION[$cacheKey];
-    }
-    
-    $con = obtenerConexion();
     $idAdmin = (int)$idAdmin;
 
-    $queries = [
+    $globalQueries = [
         'total_estudiantes' => "SELECT COUNT(*) FROM estudiantes WHERE eliminado = 0",
         'total_profesores' => "SELECT COUNT(*) FROM profesores",
         'total_tutores' => "SELECT COUNT(*) FROM tutores",
@@ -108,18 +107,30 @@ function obtenerContadoresNavAdmin(int $idAdmin = 0): array {
         'total_mensajes' => "SELECT COUNT(*) FROM reclamaciones WHERE (emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL) OR (emisor_rol = 'admin')",
         'total_sin_leer' => "SELECT COUNT(*) FROM reclamaciones WHERE leido = 0 AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL) OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))",
         'total_admisiones_pendientes' => "SELECT COUNT(*) FROM pre_matriculas WHERE estado = 'PENDIENTE'",
-        'total_chat_no_leidos' => "SELECT COUNT(*) FROM chat_mensajes m JOIN chat_conversaciones c ON m.conversacion_id = c.id WHERE m.leido = 0 AND NOT (m.emisor_rol = 'admin' AND m.emisor_id = {$idAdmin}) AND ((c.user_a_rol = 'admin' AND c.user_a_id = {$idAdmin}) OR (c.user_b_rol = 'admin' AND c.user_b_id = {$idAdmin}))"
     ];
 
-    $data = [];
-    foreach ($queries as $key => $sql) {
-        $res = mysqli_query($con, $sql);
-        $row = $res ? mysqli_fetch_row($res) : [0];
-        $data[$key] = (int)($row[0] ?? 0);
-    }
-    
-    $_SESSION[$cacheKey] = $data;
-    $_SESSION[$cacheKey . '_time'] = time();
-    
+    $data = Cache::remember('nav_admin_counts_global', 60, function () use ($globalQueries) {
+        $con = obtenerConexion();
+        $out = [];
+        foreach ($globalQueries as $key => $sql) {
+            $res = mysqli_query($con, $sql);
+            $row = $res ? mysqli_fetch_row($res) : [0];
+            $out[$key] = (int)($row[0] ?? 0);
+        }
+        return $out;
+    });
+
+    $data['total_chat_no_leidos'] = Cache::remember("nav_admin_chat_no_leidos_{$idAdmin}", 60, function () use ($idAdmin) {
+        $con = obtenerConexion();
+        $stmt = mysqli_prepare($con,
+            "SELECT COUNT(*) FROM chat_mensajes m JOIN chat_conversaciones c ON m.conversacion_id = c.id
+             WHERE m.leido = 0 AND NOT (m.emisor_rol = 'admin' AND m.emisor_id = ?)
+             AND ((c.user_a_rol = 'admin' AND c.user_a_id = ?) OR (c.user_b_rol = 'admin' AND c.user_b_id = ?))");
+        mysqli_stmt_bind_param($stmt, "iii", $idAdmin, $idAdmin, $idAdmin);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_row(mysqli_stmt_get_result($stmt));
+        return (int)($row[0] ?? 0);
+    });
+
     return $data;
 }

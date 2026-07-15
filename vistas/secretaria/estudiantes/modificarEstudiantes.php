@@ -11,6 +11,7 @@ unset($_SESSION['datos_estudiante']);
 
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/academico_config.php";
 
 $idEstudiante = (int)($_GET['id'] ?? 0);
 $estudiante = obtenerEstudiantePorId($idEstudiante);
@@ -21,6 +22,7 @@ if (!$estudiante) {
 }
 
 $ciclos = listarTodosLosCiclos();
+$todos_los_cursos = listarTodosLosCursosAcademicos();
 
 // Repopulate: prefer session datos (after validation failure), fall back to DB
 $v = fn($field) => Security::escapeHtml($datos[$field] ?? $estudiante[$field] ?? '');
@@ -96,8 +98,6 @@ include __DIR__ . '/../comunes/nav.php';
             <label for="anioEstudio">Año de estudio</label>
             <select name="anioEstudio" id="anioEstudio">
                 <option value="">— Sin especificar —</option>
-                <option value="1º" <?= (($datos['anioEstudio'] ?? $estudiante['anioEstudio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
-                <option value="2º" <?= (($datos['anioEstudio'] ?? $estudiante['anioEstudio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
             </select>
         </div>
 
@@ -148,14 +148,15 @@ include __DIR__ . '/../comunes/nav.php';
 <script>
 var listaDeCiclos = <?= json_encode($ciclos) ?>;
 var idCicloActual = <?= (int)($datos['idCiclo'] ?? $estudiante['idCiclo'] ?? 0) ?>;
+var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? $estudiante['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {
     var nivelNombre = document.getElementById('curso').value;
-    var nivelId = nivelNombre === 'Grado Medio' ? 1 : 2;
     var sel = document.getElementById('idCiclo');
     sel.innerHTML = '<option value="">— Seleccionar —</option>';
     listaDeCiclos.forEach(function(c) {
-        if (parseInt(c.idNivel) === nivelId) {
+        if (c.nombreNivel === nivelNombre) {
             var opt = document.createElement('option');
             opt.value = c.idCiclo;
             opt.textContent = c.nombreCiclo;
@@ -163,7 +164,24 @@ function filtrarCiclos() {
             sel.appendChild(opt);
         }
     });
+    poblarAnios();
 }
 
+function poblarAnios() {
+    var idCiclo = document.getElementById('idCiclo').value;
+    var sel = document.getElementById('anioEstudio');
+    sel.innerHTML = '<option value="">— Sin especificar —</option>';
+    todosCursos.forEach(function(c) {
+        if (String(c.idCiclo) === String(idCiclo)) {
+            var opt = document.createElement('option');
+            opt.value = c.nombre;
+            opt.textContent = c.nombre + ' año';
+            if (c.nombre === anioEstudioActual) opt.selected = true;
+            sel.appendChild(opt);
+        }
+    });
+}
+
+document.getElementById('idCiclo').addEventListener('change', poblarAnios);
 document.addEventListener('DOMContentLoaded', function() { filtrarCiclos(); });
 </script>

@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
+require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
@@ -56,6 +57,8 @@ if (!in_array($ext, $permitidos)) {
     if (!is_dir($dir)) mkdir($dir, 0755, true);
     $nombreArchivo = bin2hex(random_bytes(12)) . '.' . $ext;
     if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir . $nombreArchivo)) {
+        $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+        if (isset($imgMimes[$ext])) ImageOptimizer::optimize($dir . $nombreArchivo, $imgMimes[$ext]);
         $nuevaVersion = actualizarArchivoConVersionAula($idArchivo, $nombreArchivo, $nombreOrig, $ext, $tamanio, $idProfesor);
         if ($nuevaVersion) {
             $_SESSION['exito'] = "Nueva versión (v$nuevaVersion) guardada.";

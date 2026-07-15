@@ -7,6 +7,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/academico_config.php";
 
 $id_del_estudiante = (int)($_GET['idEstudiante'] ?? 0);
 $estudiante = obtenerEstudiantePorId($id_del_estudiante);
@@ -23,6 +24,7 @@ if ($datos_sesion) {
 }
 
 $lista_ciclos = listarTodosLosCiclos();
+$todos_los_cursos = listarTodosLosCursosAcademicos();
 
 $titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
 $seccion = 'estudiantes';
@@ -69,8 +71,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="anioEstudio">Año de estudio</label>
                 <select name="anioEstudio" id="anioEstudio">
                     <option value="">-- Sin especificar --</option>
-                    <option value="1º" <?= (($estudiante['anioEstudio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
-                    <option value="2º" <?= (($estudiante['anioEstudio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
                 </select>
             </div>
 
@@ -153,21 +153,39 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 var listaDeCiclos = <?= json_encode($lista_ciclos) ?>;
+var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var anioEstudioActual = <?= json_encode($estudiante['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {
-    var nivelId = $('#curso').val() === 'Grado Medio' ? 1 : 2;
+    var nivelNombre = $('#curso').val();
     var $select = $('#idCiclo').empty().append('<option value="">-- Selecciona un ciclo --</option>');
 
     $.each(listaDeCiclos, function(i, ciclo) {
-        if (parseInt(ciclo.idNivel) === nivelId) {
+        if (ciclo.nombreNivel === nivelNombre) {
             $select.append($('<option>').val(ciclo.idCiclo).text(ciclo.nombreCiclo));
         }
     });
+    poblarAnios();
 }
+
+function poblarAnios() {
+    var idCiclo = $('#idCiclo').val();
+    var $select = $('#anioEstudio').empty();
+    $select.append($('<option>').val('').text('-- Sin especificar --'));
+    $.each(todosCursos, function(i, curso) {
+        if (String(curso.idCiclo) === String(idCiclo)) {
+            $select.append($('<option>').val(curso.nombre).text(curso.nombre + ' año'));
+        }
+    });
+    if (anioEstudioActual) $select.val(anioEstudioActual);
+}
+
+$('#idCiclo').on('change', poblarAnios);
 
 $(function() {
     filtrarCiclos();
     $('#idCiclo').val('<?= Security::escapeHtml($estudiante['idCiclo']) ?>');
+    poblarAnios();
 });
 
 function cambiarPassEst() {

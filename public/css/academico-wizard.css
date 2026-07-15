@@ -1,0 +1,54 @@
+/* ══════════════════════════════════════════════════════════════════════
+   ASISTENTE DE CONFIGURACIÓN ACADÉMICA — academico-wizard.css
+   Usa las variables de dashboard.css (var(--accent), var(--surface)...);
+   el modo oscuro se resuelve solo, como en el resto de la app.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.aw-wizard { display: flex; gap: 24px; align-items: flex-start; }
+
+.aw-pasos {
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 220px; flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding-right: 16px;
+}
+
+.aw-paso-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: none; border: none; text-align: left;
+    padding: 10px 12px; border-radius: 8px;
+    color: var(--text); font-size: 13.5px; cursor: pointer;
+    transition: background .12s ease, color .12s ease;
+}
+.aw-paso-btn:hover { background: var(--surface-2); }
+.aw-paso-btn.activo { background: var(--accent); color: #fff; }
+.aw-paso-btn span {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--surface-2); color: var(--dim);
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.aw-paso-btn.activo span { background: rgba(255,255,255,.25); color: #fff; }
+
+.aw-contenido { flex: 1; min-width: 0; }
+
+.aw-paso.oculto { display: none; }
+.aw-paso h2 { margin: 0 0 6px; font-size: 17px; }
+.aw-ayuda { color: var(--dim); font-size: 13px; margin: 0 0 18px; max-width: 640px; }
+
+.aw-activar-caja {
+    margin-top: 18px; padding: 14px 16px; border-radius: 10px;
+    background: var(--surface-2); border: 1px solid var(--border);
+}
+.aw-activar-caja p { margin: 0 0 10px; font-size: 13px; color: var(--dim); }
+
+.campo-checkbox { display: flex; align-items: center; }
+.campo-checkbox label { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.campo-checkbox input[type="checkbox"] { width: 16px; height: 16px; }
+
+#tabla-cursos, #tabla-periodos, #tabla-tipos { margin-bottom: 18px; }
+
+@media (max-width: 860px) {
+    .aw-wizard { flex-direction: column; }
+    .aw-pasos { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 12px; width: 100%; }
+}

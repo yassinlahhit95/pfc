@@ -526,7 +526,7 @@ ul { list-style-position: inside; }
   letter-spacing: .01em;
 }
 
-.campo input,
+.campo input:not([type="checkbox"]):not([type="radio"]),
 .campo select,
 .campo textarea {
   padding: 10px 13px;
@@ -541,6 +541,19 @@ ul { list-style-position: inside; }
   appearance: none;
 }
 
+/* Checkboxes/radios inside .campo must keep their native look — a boxed
+   text-input style with no :checked state made them look like a plain
+   button that only flashed a focus ring on click. */
+.campo input[type="checkbox"],
+.campo input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent, #4F46E5);
+}
+
 .campo select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -548,20 +561,26 @@ ul { list-style-position: inside; }
   padding-right: 32px;
 }
 
-.campo input:hover,
+.campo input:not([type="checkbox"]):not([type="radio"]):hover,
 .campo select:hover,
 .campo textarea:hover {
   border-color: color-mix(in oklab, var(--border-2) 60%, var(--accent) 40%);
   background: var(--surface, #fff);
 }
 
-.campo input:focus,
+.campo input:not([type="checkbox"]):not([type="radio"]):focus,
 .campo select:focus,
 .campo textarea:focus {
   outline: none;
   border-color: var(--accent, #4F46E5);
   background: var(--surface, #fff);
   box-shadow: 0 0 0 3px var(--ring, rgb(79 70 229 / 18%));
+}
+
+.campo input[type="checkbox"]:focus-visible,
+.campo input[type="radio"]:focus-visible {
+  outline: 2px solid var(--accent, #4F46E5);
+  outline-offset: 2px;
 }
 
 .campo input::placeholder,
@@ -620,6 +639,14 @@ ul { list-style-position: inside; }
   cursor: pointer;
   accent-color: var(--accent, #4F46E5);
 }
+
+/* Grupo de varios .campo-checkbox en una fila (spans full form width) */
+.campo-checkbox-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+}
+.campo-checkbox-grupo .campo-checkbox { margin-bottom: 0; }
 
 /* Error state */
 .border-error  { border-color: #dc2626 !important; }
@@ -767,6 +794,50 @@ ul { list-style-position: inside; }
 .notif-bloque:has(input:checked) { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
 .notif-bloque:has(input:checked) .notif-bloque-chk { background: var(--accent); border-color: var(--accent); color: #fff; }
 .notif-bloque:has(input:checked) .notif-bloque-icono { background: color-mix(in oklab, var(--accent) 15%, transparent); color: var(--accent); }
+
+/* Rich text editor (blog post content) */
+.editor-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 2px;
+  padding: 6px; border: 1px solid var(--border-2); border-bottom: none;
+  border-radius: 10px 10px 0 0; background: var(--surface-2);
+}
+.editor-toolbar button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 2px;
+  min-width: 32px; height: 32px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px;
+  background: transparent; color: var(--text); font-size: 13px; cursor: pointer; transition: background .15s, border-color .15s;
+}
+.editor-toolbar button:hover { background: var(--surface); border-color: var(--border-2); }
+.editor-toolbar-sep { width: 1px; height: 20px; background: var(--border-2); margin: 0 4px; }
+.editor-toolbar-select {
+  height: 32px; padding: 0 8px; border: 1px solid var(--border-2); border-radius: 6px;
+  background: var(--surface); color: var(--text); font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.editor-toolbar-select:hover { border-color: var(--accent); }
+.editor-toolbar-color {
+  display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 6px;
+  border: 1px solid transparent; border-radius: 6px; color: var(--dim); font-size: 12px; cursor: pointer;
+}
+.editor-toolbar-color:hover { background: var(--surface); border-color: var(--border-2); }
+.editor-toolbar-color input[type="color"] {
+  width: 18px; height: 18px; padding: 0; border: 1px solid var(--border-2); border-radius: 4px;
+  background: none; cursor: pointer;
+}
+.editor-contenido {
+  min-height: 260px; padding: 14px 16px; border: 1px solid var(--border-2); border-radius: 0 0 10px 10px;
+  background: var(--surface); color: var(--text); font-size: 14px; line-height: 1.6; overflow-y: auto;
+}
+.editor-contenido:focus { outline: none; border-color: var(--accent); }
+.editor-contenido:empty:before { content: attr(data-placeholder); color: var(--dim); }
+.editor-contenido img { max-width: 100%; border-radius: 8px; margin: 6px 0; }
+.editor-contenido iframe { max-width: 100%; border-radius: 8px; margin: 6px 0; }
+.editor-contenido h1 { font-size: 1.6rem; margin: 14px 0 8px; }
+.editor-contenido h2 { font-size: 1.3rem; margin: 12px 0 6px; }
+.editor-contenido h3 { font-size: 1.1rem; margin: 10px 0 6px; }
+.editor-contenido h4 { font-size: 1rem; margin: 10px 0 6px; }
+.editor-contenido h5 { font-size: .9rem; margin: 8px 0 4px; }
+.editor-contenido h6 { font-size: .8rem; margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .04em; }
+.editor-contenido p { margin: 0 0 10px; }
+.editor-contenido ul, .editor-contenido ol { margin: 0 0 10px 22px; }
 
 
 /* ── 8. STATUS CHIPS & BADGES ────────────────────────────────────────────────── */
@@ -2237,11 +2308,6 @@ ul { list-style-position: inside; }
   padding: 5px 10px !important;
   font-size: 12px !important;
   min-height: unset !important;
-}
-
-/* campo-ancho-total — spans full grid width */
-.campo-ancho-total {
-  grid-column: 1 / -1;
 }
 
 /* ── 23. INLINE FORM CONTROLS (cabecera / filter bars) ────────────────────────── */

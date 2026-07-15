@@ -82,21 +82,10 @@ try {
 
     .signature-area { margin-top: 50px; width: 100%; }
     .signature-box { border-top: 1px solid #94a3b8; padding-top: 10px; text-align: center; font-size: 9pt; }
-    
-    .header-table { width: 100%; border-bottom: 2px solid #1e3a6e; padding-bottom: 15px; margin-bottom: 20px; }
 </style>
 
 <htmlpageheader name="page-header">
-    <table class="header-table">
-        <tr>
-            <td width="20%"><img src="<?= logoParaPdf($cfg['logoGobierno1']) ?>" style="max-height: 50px;"></td>
-            <td width="60%" align="center">
-                <div style="font-size: 16pt; font-weight: bold; color: #1e3a6e;"><?= htmlspecialchars($cfg['nombreCentro']) ?></div>
-                <div style="font-size: 9pt; color: #64748b;"><?= htmlspecialchars($cfg['direccionCentro']) ?></div>
-            </td>
-            <td width="20%" align="right"><img src="<?= logoParaPdf($cfg['logoCentro'] ?: $cfg['logoGobierno2']) ?>" style="max-height: 50px;"></td>
-        </tr>
-    </table>
+    <?php include __DIR__ . '/_header.php'; ?>
 </htmlpageheader>
 
 <htmlpagefooter name="page-footer">
@@ -137,7 +126,8 @@ try {
     <table class="table-notas">
         <thead>
             <tr>
-                <th width="40%">Módulo Profesional</th>
+                <th width="8%">Código</th>
+                <th width="32%">Módulo Profesional</th>
                 <th width="12%">1ª Eval.</th>
                 <th width="12%">1ª Final</th>
                 <th width="12%">2ª Eval.</th>
@@ -148,7 +138,6 @@ try {
         <tbody>
             <?php
             $i = 0;
-            $defsParaMedia = [];
             $especiales = ['NP', 'EX', 'CO'];
             $etiquetaEst = ['NP'=>'No Presentado','EX'=>'Exento','CO'=>'Convalidado'];
             // Returns display string for one eval cell
@@ -156,31 +145,35 @@ try {
                 if ($estado && in_array($estado, $especiales, true)) return $estado;
                 return ($nota !== null) ? number_format((float)$nota, 1) : '—';
             };
-            // Returns definitive value (string NP/EX/CO or float) or null
-            $defVal = function($n) use ($especiales) {
-                $pairs = [
-                    [$n['nota_2final'] ?? null, $n['estado_2final'] ?? null],
-                    [$n['nota_2ev']    ?? null, $n['estado_2ev']    ?? null],
-                    [$n['nota_1final'] ?? null, $n['estado_1final'] ?? null],
-                    [$n['nota_1ev']    ?? null, $n['estado_1ev']    ?? null],
-                ];
-                foreach ($pairs as [$nota, $est]) {
+            // Solo detecta un código especial (NP/EX/CO) para saber si mostrar la
+            // fila de "Convalidado"/etc — la NOTA numérica ya no se recalcula aquí,
+            // viene resuelta por listarResultadosFinalesCiclo() (mismo motor que
+            // el resto de la app: calcularNotaDefinitiva + peso examen/reto
+            // configurable), para que el boletín nunca pueda mostrar un número
+            // distinto al que ve el alumno en su panel.
+            $codigoEspecial = function($n) use ($especiales) {
+                foreach ([$n['estado_2final'] ?? null, $n['estado_2ev'] ?? null, $n['estado_1final'] ?? null, $n['estado_1ev'] ?? null] as $est) {
                     if ($est && in_array($est, $especiales, true)) return $est;
-                    if ($nota !== null) return (float)$nota;
                 }
                 return null;
             };
             foreach ($notas as $mod):
                 $n   = $mod['notas'] ?? [];
-                $def = $defVal($n);
-                if (is_float($def)) $defsParaMedia[] = $def;
-                $claseDef = is_string($def) ? 'nota-especial'
-                          : (is_float($def) ? ($def >= 5 ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia');
+                $codigo = $codigoEspecial($n);
+                $notaFinalModulo = $mod['nota_final'] ?? '-';
+                if ($codigo !== null) {
+                    $claseDef = 'nota-especial';
+                } elseif (is_numeric($notaFinalModulo)) {
+                    $claseDef = ($mod['estado'] ?? '') === 'Aprobado' ? 'nota-aprobada' : 'nota-suspensa';
+                } else {
+                    $claseDef = 'nota-vacia';
+                }
                 $i++;
             ?>
             <tr class="<?= $i % 2 == 0 ? 'row-even' : 'row-odd' ?>">
+                <td style="text-align:center; font-size:8pt; color:#64748b;"><?= htmlspecialchars($mod['codigoModulo'] ?? '') ?: '—' ?></td>
                 <td><?= htmlspecialchars($mod['nombreModulo']) ?></td>
-                <?php if ($def === 'CO'): ?>
+                <?php if ($codigo === 'CO'): ?>
                 <td colspan="4" style="text-align:center; background:#f0fdf4; color:#166534; font-weight:bold; font-size:9pt;">
                     &#10003; Convalidado
                 </td>
@@ -192,7 +185,7 @@ try {
                 <?php endif; ?>
                 <td>
                     <div class="nota-circle <?= $claseDef ?>">
-                        <?= is_string($def) ? $def : (is_float($def) ? number_format($def, 0) : '—') ?>
+                        <?= $codigo !== null ? $codigo : (is_numeric($notaFinalModulo) ? number_format((float)$notaFinalModulo, 0) : '—') ?>
                     </div>
                 </td>
             </tr>
@@ -200,10 +193,23 @@ try {
 
             $notaTFG = isset($estudiante['nota_tfg']) && $estudiante['nota_tfg'] !== null
                 ? (float)$estudiante['nota_tfg'] : null;
-            if ($notaTFG !== null) $defsParaMedia[] = $notaTFG;
-            $claseTFG = ($notaTFG !== null) ? ($notaTFG >= 5 ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
+            // notaAprobado: 5 salvo que el motor configurable esté activo con otro valor.
+            // El TFG usa su propio mínimo (tfg_config.notaMinima) si existe.
+            $notaAprobado = 5.0;
+            $notaMinimaTfgPdf = 5.0;
+            if (motorAcademicoActivo()) {
+                $configActiva = obtenerConfigAcademicaActiva();
+                if ($configActiva) {
+                    $politica = obtenerPoliticaCalificacion((int)$configActiva['idConfig']);
+                    if ($politica) $notaAprobado = (float)$politica['notaAprobado'];
+                    $configTFGPdf = obtenerConfigTFG((int)$configActiva['idConfig']);
+                    if ($configTFGPdf) $notaMinimaTfgPdf = (float)$configTFGPdf['notaMinima'];
+                }
+            }
+            $claseTFG = ($notaTFG !== null) ? ($notaTFG >= $notaMinimaTfgPdf ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
             ?>
             <tr style="background:#eef2ff; border-top: 2px solid #1e3a6e;">
+                <td>—</td>
                 <td style="font-weight:bold; color:#1e3a6e;">Trabajo de Fin de Grado (TFG)</td>
                 <td>—</td>
                 <td>—</td>
@@ -216,21 +222,24 @@ try {
                 </td>
             </tr>
             <?php
-            $mediaTotal = count($defsParaMedia) > 0
-                ? array_sum($defsParaMedia) / count($defsParaMedia) : null;
-            $claseMedia = ($mediaTotal !== null) ? ($mediaTotal >= 5 ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
+            // Media global: ya resuelta por listarResultadosFinalesCiclo() (peso
+            // examen/reto configurable + peso de TFG), no una media simple
+            // recalculada aquí — antes esta plantilla ignoraba los retos por
+            // completo al hacer la media, algo que ningún otro sitio de la app hacía.
+            $mediaTotal = $estudiante['promedio_global'] ?? '-';
+            $claseMedia = is_numeric($mediaTotal) ? ($mediaTotal >= $notaAprobado ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
             ?>
             <tr style="background:#1e3a6e;">
-                <td style="color:#ffffff; font-weight:bold; font-size:10pt;">NOTA MEDIA FINAL</td>
+                <td colspan="2" style="color:#ffffff; font-weight:bold; font-size:10pt;">NOTA MEDIA FINAL</td>
                 <td colspan="4" style="color:#94a3b8; font-style:italic; font-size:8pt; text-align:center;">Media de todas las calificaciones definitivas</td>
                 <td>
                     <div class="nota-circle <?= $claseMedia ?>">
-                        <?= ($mediaTotal !== null) ? number_format($mediaTotal, 1) : '—' ?>
+                        <?= is_numeric($mediaTotal) ? number_format((float)$mediaTotal, 1) : '—' ?>
                     </div>
                 </td>
             </tr>
             <tr style="background:#f8fafc;">
-                <td colspan="6" style="padding:8px 10px;">
+                <td colspan="7" style="padding:8px 10px;">
                     <table style="width:100%; font-size: 7.5pt; color: #334155; border-collapse: collapse;">
                         <tr>
                             <td style="color:#1e3a6e; font-weight:bold; white-space:nowrap; padding-right:10px;">GLOSARIO:</td>
@@ -279,5 +288,11 @@ try {
             </td>
         </tr>
     </table>
+
+    <?php if (!empty($cfg['textoLegal'])): ?>
+    <div style="margin-top:18px; padding-top:8px; border-top:1px solid #e2e8f0; font-size:7pt; color:#94a3b8; text-align:center;">
+        <?= nl2br(htmlspecialchars($cfg['textoLegal'])) ?>
+    </div>
+    <?php endif; ?>
 
 </div>

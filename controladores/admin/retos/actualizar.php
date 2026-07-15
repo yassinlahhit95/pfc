@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_retos');
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -94,6 +95,8 @@ if (isset($_POST['actualizarReto'])) {
                 $newFileName = bin2hex(random_bytes(8)) . '.' . $fileExt;
                 if (move_uploaded_file($tmpName, $uploadDir . $newFileName)) {
                     $tipo = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']) ? 'imagen' : 'pdf';
+                    $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
+                    if (isset($imgMimes[$fileExt])) ImageOptimizer::optimize($uploadDir . $newFileName, $imgMimes[$fileExt]);
                     registrarArchivoReto($idReto, $fileName, "public/uploads/retos/" . $newFileName, $tipo);
                 }
             }

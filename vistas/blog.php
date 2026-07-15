@@ -49,7 +49,8 @@ if ($post) {
     $ajustes['descripcionSeo'] = $post['resumen'] ?: mb_substr(strip_tags($post['contenido']), 0, 155);
 
     $imgPost    = $post['imagen'] !== '' ? '/public/uploads/blog/' . basename($post['imagen']) : '';
-    $parrafos   = preg_split('/\n{2,}/', trim($post['contenido'])) ?: [];
+    $contenidoEsHtml = (bool)preg_match('/<[a-z][\s\S]*>/i', $post['contenido']);
+    $parrafos   = $contenidoEsHtml ? [] : (preg_split('/\n{2,}/', trim($post['contenido'])) ?: []);
     $palabras   = str_word_count(strip_tags($post['contenido']));
     $minLectura = max(1, (int)round($palabras / 200));
     $relacionados = listarPostsRelacionados($post['idPost'], 3);
@@ -94,9 +95,13 @@ if ($post) {
         <?php if ($post['resumen'] !== ''): ?>
         <p class="lp-articulo-entradilla"><?= nl2br(Security::escapeHtml($post['resumen'])) ?></p>
         <?php endif; ?>
+        <?php if ($contenidoEsHtml): ?>
+        <?= $post['contenido'] /* ya saneado con HtmlSanitizer al guardar */ ?>
+        <?php else: ?>
         <?php foreach ($parrafos as $p): if (trim($p) === '') continue; ?>
         <p><?= nl2br(Security::escapeHtml(trim($p))) ?></p>
         <?php endforeach; ?>
+        <?php endif; ?>
       </div>
 
       <footer class="lp-articulo-pie">

@@ -1,3 +1,5 @@
+// Arrastrar y soltar archivos/carpetas de Aula Digital sobre otra carpeta
+// para moverlos (AJAX). Requiere .recurso-breadcrumbs[data-csrf] en la página.
 document.addEventListener('DOMContentLoaded', () => {
     // We expect the container to have a data-csrf attribute
     const container = document.querySelector('.recurso-breadcrumbs');

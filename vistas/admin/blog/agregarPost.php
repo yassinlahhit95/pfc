@@ -65,8 +65,13 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div class="campo<?= fieldClass($errores, 'imagen') ?>">
-                <label for="imagen">Imagen de portada (JPG, PNG o WebP)</label>
-                <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp">
+                <label>Imagen de portada</label>
+                <label class="zona-subida" for="imagen">
+                    <i class="fas fa-image"></i>
+                    <span>Elige una imagen de portada</span>
+                    <small>JPG, PNG o WebP</small>
+                    <input type="file" id="imagen" name="imagen" accept="image/jpeg,image/png,image/webp" style="display:none">
+                </label>
                 <?= fieldError($errores, 'imagen') ?>
             </div>
 
@@ -78,21 +83,52 @@ include_once __DIR__ . "/../comunes/nav.php";
 
             <div class="campo ancho-total<?= fieldClass($errores, 'contenido') ?>">
                 <label for="contenido">Contenido</label>
-                <textarea id="contenido" name="contenido" rows="14" required
-                          placeholder="Escribe aquí el contenido completo. Separa los párrafos con una línea en blanco."><?= Security::escapeHtml($datos['contenido'] ?? '') ?></textarea>
+                <div class="editor-toolbar" data-editor-toolbar="contenido">
+                    <select class="editor-toolbar-select" data-cmd-select="formatBlock" title="Estilo de título">
+                        <option value="">Título…</option>
+                        <option value="P">Párrafo normal</option>
+                        <option value="H1">Título 1</option>
+                        <option value="H2">Título 2</option>
+                        <option value="H3">Título 3</option>
+                        <option value="H4">Título 4</option>
+                        <option value="H5">Título 5</option>
+                        <option value="H6">Título 6</option>
+                    </select>
+                    <span class="editor-toolbar-sep"></span>
+                    <button type="button" data-cmd="bold" title="Negrita"><i class="fas fa-bold"></i></button>
+                    <button type="button" data-cmd="italic" title="Cursiva"><i class="fas fa-italic"></i></button>
+                    <button type="button" data-cmd="underline" title="Subrayado"><i class="fas fa-underline"></i></button>
+                    <span class="editor-toolbar-sep"></span>
+                    <label class="editor-toolbar-color" title="Color de texto">
+                        <i class="fas fa-font"></i>
+                        <input type="color" data-cmd-color="foreColor" value="#1d4ed8">
+                    </label>
+                    <label class="editor-toolbar-color" title="Color de resaltado">
+                        <i class="fas fa-highlighter"></i>
+                        <input type="color" data-cmd-color="hiliteColor" value="#fef08a">
+                    </label>
+                    <span class="editor-toolbar-sep"></span>
+                    <button type="button" data-cmd="insertUnorderedList" title="Lista"><i class="fas fa-list-ul"></i></button>
+                    <button type="button" data-cmd="insertOrderedList" title="Lista numerada"><i class="fas fa-list-ol"></i></button>
+                    <button type="button" data-cmd="createLink" title="Insertar enlace"><i class="fas fa-link"></i></button>
+                    <span class="editor-toolbar-sep"></span>
+                    <button type="button" data-accion="imagen" title="Insertar imagen"><i class="fas fa-image"></i></button>
+                    <button type="button" data-accion="video" title="Insertar vídeo"><i class="fas fa-video"></i></button>
+                    <button type="button" data-cmd="removeFormat" title="Quitar formato"><i class="fas fa-eraser"></i></button>
+                </div>
+                <div class="editor-contenido" id="editor-contenido" contenteditable="true" data-placeholder="Escribe aquí el contenido completo..."></div>
+                <input type="file" id="editor-imagen-input" accept="image/jpeg,image/png,image/webp" style="display:none;">
+                <textarea id="contenido" name="contenido" style="display:none;"></textarea>
                 <?= fieldError($errores, 'contenido') ?>
             </div>
 
-            <div class="campo">
-                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
-                    <input type="checkbox" name="publicado" value="1" <?= !isset($datos['titulo']) || !empty($datos['publicado']) ? 'checked' : '' ?> style="width:auto;">
+            <div class="campo-checkbox-grupo campo-ancho-total">
+                <label class="campo-checkbox">
+                    <input type="checkbox" name="publicado" value="1" <?= !isset($datos['titulo']) || !empty($datos['publicado']) ? 'checked' : '' ?>>
                     Publicar (visible en el blog público)
                 </label>
-            </div>
-
-            <div class="campo">
-                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
-                    <input type="checkbox" name="destacado" value="1" <?= !empty($datos['destacado']) ? 'checked' : '' ?> style="width:auto;">
+                <label class="campo-checkbox">
+                    <input type="checkbox" name="destacado" value="1" <?= !empty($datos['destacado']) ? 'checked' : '' ?>>
                     Destacar (se muestra primero)
                 </label>
             </div>
@@ -106,3 +142,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
+<script src="../../../public/js/blog-editor.js?v=<?= @filemtime(__DIR__ . '/../../../public/js/blog-editor.js') ?>"></script>
+<script>
+iniciarEditorBlog({
+    editorId: 'editor-contenido',
+    textareaId: 'contenido',
+    fileInputId: 'editor-imagen-input',
+    uploadUrl: '../../../controladores/admin/blog/subir_imagen_contenido.php',
+    csrfToken: document.querySelector('[name=csrf_token]').value,
+    initialContent: <?= json_encode($datos['contenido'] ?? '') ?>
+});
+</script>

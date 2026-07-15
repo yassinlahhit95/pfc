@@ -5,6 +5,7 @@
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../modelos/academico_config.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
@@ -29,8 +30,8 @@ if (isset($_POST['guardarEstudiante'])) {
     $idCiclo         = (int)($_POST['idCiclo'] ?? 0);
     $cursosPermitidos = ['Grado Medio', 'Grado Superior'];
     $curso           = in_array($_POST['curso'] ?? '', $cursosPermitidos, true) ? $_POST['curso'] : '';
-    $aniosPermitidos  = ['1º', '2º'];
-    $anioEstudio      = in_array($_POST['anioEstudio'] ?? '', $aniosPermitidos, true) ? $_POST['anioEstudio'] : null;
+    $anioEstudioPost  = trim($_POST['anioEstudio'] ?? '');
+    $anioEstudio      = existeNombreCursoEnCiclo($idCiclo, $anioEstudioPost) && $anioEstudioPost !== '' ? $anioEstudioPost : null;
 
     $avisos = [];
     if (empty($nombre)) $avisos['nombreEstudiante'] = "El nombre es un campo obligatorio.";

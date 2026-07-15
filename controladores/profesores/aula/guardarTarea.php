@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../../../include/ProfesorGuard.php';
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
+require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 
 $idProfesor = (int)$_SESSION['idProfesor'];
 
@@ -79,7 +80,11 @@ if (!empty($_FILES['archivoAdjunto']['name']) && $_FILES['archivoAdjunto']['erro
     $nombreAdjunto = bin2hex(random_bytes(12)) . '.' . $ext;
     if (!move_uploaded_file($_FILES['archivoAdjunto']['tmp_name'], $dir . $nombreAdjunto)) {
         $nombreAdjunto = null;
-    } elseif ($tareaExistente && !empty($tareaExistente['archivoAdjunto'])) {
+    } else {
+        $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
+        if (isset($imgMimes[$ext])) ImageOptimizer::optimize($dir . $nombreAdjunto, $imgMimes[$ext]);
+    }
+    if ($nombreAdjunto !== null && $tareaExistente && !empty($tareaExistente['archivoAdjunto'])) {
         // Sustituye el adjunto anterior
         $rutaVieja = $dir . $tareaExistente['archivoAdjunto'];
         if (is_file($rutaVieja)) unlink($rutaVieja);

@@ -4,17 +4,23 @@ require_once __DIR__ . "/../../../include/FeatureGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
+require_once __DIR__ . "/../../../modelos/panelDeControl.php";
+require_once __DIR__ . "/../../../include/Cache.php";
 
 $_sec_datos      = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $nombreUsuario_menu = $_sec_datos['nombreSecretaria'] ?? 'Secretaria';
 
-// Badges
-$_con_sec = obtenerConexion();
-$_r = mysqli_query($_con_sec, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-$totalSinLeer_menu = $_r ? (int)(mysqli_fetch_assoc($_r)['n'] ?? 0) : 0;
+// Badges. total_admisiones_pendientes es idéntico al que ya cachea
+// obtenerContadoresNavAdmin(), así que lo reutilizamos; total_sin_leer aquí
+// filtra además "id_parent IS NULL" (solo hilos raíz), a diferencia del
+// contador de admin, así que se mantiene como consulta propia (cacheada aparte).
+$totalSinLeer_menu = Cache::remember('nav_secretaria_sin_leer', 60, function () {
+    $con = obtenerConexion();
+    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
+    return $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+});
 
-$_r2 = mysqli_query($_con_sec, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado='PENDIENTE'");
-$totalAdmisionesPendientes_menu = $_r2 ? (int)(mysqli_fetch_assoc($_r2)['n'] ?? 0) : 0;
+$totalAdmisionesPendientes_menu = obtenerContadoresNavAdmin()['total_admisiones_pendientes'];
 
 function _nav_active_sec($check) {
     global $seccion;
@@ -33,6 +39,7 @@ function _nav_active_sec($check) {
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
   <link rel="stylesheet" href="../../../public/css/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/chat-widget.css') ?>" />
@@ -191,6 +198,14 @@ function _nav_active_sec($check) {
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
         <span class="nav-label">Informes PDF</span>
         <?php if (_nav_active_sec('informes') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
+
+      <?php if (FeatureGuard::check('feature_landing')): ?>
+      <a href="../blog/gestionBlog.php" class="nav-item<?= _nav_active_sec('blog') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span>
+        <span class="nav-label">Blog</span>
+        <?php if (_nav_active_sec('blog') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
       <?php endif; ?>
 

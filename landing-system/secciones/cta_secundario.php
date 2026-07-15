@@ -7,7 +7,7 @@
       <strong><i class="fas fa-bullhorn"></i> <?= Security::escapeHtml($contenido['titulo'] ?? '') ?></strong>
     </div>
     <?php if (!empty($contenido['botonTexto'])): ?>
-    <a href="<?= Security::escapeHtml($contenido['botonUrl'] ?? '#') ?>" class="lp-boton-fantasma lp-cta-sec-btn">
+    <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#')) ?>" class="lp-boton-fantasma lp-cta-sec-btn">
       <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
     </a>
     <?php endif; ?>

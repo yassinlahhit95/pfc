@@ -1,3 +1,6 @@
+// Paginación client-side para tablas .tabla-datos: oculta filas con la clase
+// .pag-oculta y pinta los controles debajo. iniciarPaginacion(tablaId, filasPorPagina)
+// arranca; resetearPaginacion(tablaId) se llama tras filtrar (ver filtros.js).
 var _paginaciones = {};
 
 (function() {

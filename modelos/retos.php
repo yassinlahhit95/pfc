@@ -287,8 +287,29 @@ function obtenerCalificacionReto($idEstudiante, $idReto) {
         $nota = $fila['nota'];
     }
 
-    
+
     return $nota;
+}
+
+// Notas de un reto para varios estudiantes a la vez => [idEstudiante => nota].
+// Evita el patrón N+1 de llamar obtenerCalificacionReto() una vez por estudiante
+// en las vistas de evaluación (calificacionesRetos.php de admin y secretaría).
+function listarCalificacionesRetoPorEstudiantes(array $idsEstudiantes, $idReto): array {
+    if (!$idsEstudiantes) return [];
+    $con = obtenerConexion();
+    $ph = implode(',', array_fill(0, count($idsEstudiantes), '?'));
+    $types = str_repeat('i', count($idsEstudiantes)) . 'i';
+    $params = array_merge($idsEstudiantes, [$idReto]);
+    $sql = "SELECT idEstudiante, nota FROM calificaciones_retos WHERE idEstudiante IN ($ph) AND idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $notas = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $notas[$fila['idEstudiante']] = $fila['nota'];
+    }
+    return $notas;
 }
 
 function listarCalificacionesRetoPorModulo($idModulo) {

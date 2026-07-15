@@ -1,3 +1,7 @@
+// Filtros de texto para tablas: filtrarTabla() busca en 1 input,
+// filtrarTablaMulti() combina varios inputs con data-filtro-tabla/data-filtro-campo.
+// Ambos re-sincronizan la paginación (paginacion.js) tras filtrar.
+
 function filtrarTabla(inputId, tablaId) {
     var q = $('#' + inputId).val().toLowerCase();
 

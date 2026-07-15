@@ -4,6 +4,7 @@
 require_once __DIR__ . "/../../include/Security.php"; // enforces session fingerprint + idle timeout
 require_once __DIR__ . "/../../modelos/aula.php";
 require_once __DIR__ . "/../../modelos/modulos.php";
+require_once __DIR__ . "/../../include/FileServer.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN Y PERMISOS
@@ -77,9 +78,4 @@ $mime = $mimes[$ext] ?? 'application/octet-stream';
 $inlineOk    = in_array($ext, ['pdf','txt','csv','jpg','jpeg','png','gif','webp']);
 $disposition = ($modo === 'ver' && $inlineOk) ? 'inline' : 'attachment';
 
-header("Content-Type: $mime");
-header("Content-Length: " . filesize($ruta));
-header("Content-Disposition: $disposition; filename=\"" . rawurlencode($archivo['nombreOriginal']) . "\"");
-header("X-Content-Type-Options: nosniff");
-readfile($ruta);
-exit;
+servirArchivo($ruta, $archivo['nombreOriginal'], $mime, $disposition === 'inline');

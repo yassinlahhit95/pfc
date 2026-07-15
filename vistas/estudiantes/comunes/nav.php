@@ -9,35 +9,53 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
+require_once __DIR__ . "/../../../modelos/chat.php";
+require_once __DIR__ . "/../../../include/Cache.php";
 
 $idEstudiante           = $_SESSION['idEstudiante'];
 $datosEstudiante_menu   = obtenerEstudiantePorId($idEstudiante);
 $idCicloEst_menu        = $datosEstudiante_menu['idCiclo'] ?? 0;
 $nombreUsuario_menu     = $datosEstudiante_menu['nombreEstudiante'] ?? 'Estudiante';
 
-$totalMensajes_menu  = count(listarMensajesDeEstudiante($idEstudiante));
-$totalSinLeer_menu   = contarMensajesNoLeidosEstudiante($idEstudiante);
-$totalAnuncios_menu  = count(listarAnunciosPorRol('estudiantes'));
-$totalPagos_menu     = contarPagosEstudiante($idEstudiante);
-$totalRetos_menu     = count(listarRetosPorCiclo($idCicloEst_menu));
-require_once __DIR__ . "/../../../modelos/chat.php";
+// contarMensajesNoLeidosEstudiante() y chatContarNoLeidos() ya se cachean 10s
+// dentro de sus propias funciones; el resto se agrupa aquí en un solo bloque
+// cacheado 60s por estudiante para no repetir 4 consultas en cada carga de página.
+$navCounts_menu = Cache::remember("nav_estudiante_counts_{$idEstudiante}", 60, function () use ($idEstudiante, $idCicloEst_menu) {
+    return [
+        'mensajes' => count(listarMensajesDeEstudiante($idEstudiante)),
+        'anuncios' => count(listarAnunciosPorRol('estudiantes')),
+        'pagos'    => contarPagosEstudiante($idEstudiante),
+        'retos'    => count(listarRetosPorCiclo($idCicloEst_menu)),
+    ];
+});
+$totalMensajes_menu     = $navCounts_menu['mensajes'];
+$totalSinLeer_menu      = contarMensajesNoLeidosEstudiante($idEstudiante);
+$totalAnuncios_menu     = $navCounts_menu['anuncios'];
+$totalPagos_menu        = $navCounts_menu['pagos'];
+$totalRetos_menu        = $navCounts_menu['retos'];
 $totalChatNoLeidos_menu = chatContarNoLeidos('estudiante', $idEstudiante);
 
 // Notification panel: recent unread messages (max 3)
 $_notif_msgs = [];
 if ($totalSinLeer_menu > 0) {
-    $_con_notif = obtenerConexion();
-    $_stmt_notif = mysqli_prepare($_con_notif,
-        "SELECT idReclamacion, asunto, fecha FROM reclamaciones
-         WHERE idEstudiante = ? AND leido = 0 AND emisor_rol != 'estudiante'
-         ORDER BY idReclamacion DESC LIMIT 3");
-    mysqli_stmt_bind_param($_stmt_notif, 'i', $idEstudiante);
-    mysqli_stmt_execute($_stmt_notif);
-    $r = mysqli_stmt_get_result($_stmt_notif);
-    while ($row = mysqli_fetch_assoc($r)) { $_notif_msgs[] = $row; }
+    $_notif_msgs = Cache::remember("nav_estudiante_notif_{$idEstudiante}", 10, function () use ($idEstudiante) {
+        $_con_notif = obtenerConexion();
+        $_stmt_notif = mysqli_prepare($_con_notif,
+            "SELECT idReclamacion, asunto, fecha FROM reclamaciones
+             WHERE idEstudiante = ? AND leido = 0 AND emisor_rol != 'estudiante'
+             ORDER BY idReclamacion DESC LIMIT 3");
+        mysqli_stmt_bind_param($_stmt_notif, 'i', $idEstudiante);
+        mysqli_stmt_execute($_stmt_notif);
+        $r = mysqli_stmt_get_result($_stmt_notif);
+        $out = [];
+        while ($row = mysqli_fetch_assoc($r)) { $out[] = $row; }
+        return $out;
+    });
 }
 // Notification panel: 3 most recent pagos
-$_notif_pagos = array_slice(listarPagosPorEstudiante($idEstudiante), 0, 3);
+$_notif_pagos = Cache::remember("nav_estudiante_pagos_{$idEstudiante}", 30, function () use ($idEstudiante) {
+    return array_slice(listarPagosPorEstudiante($idEstudiante), 0, 3);
+});
 
 // Active-state helper
 function _nav_active_est($check) {
@@ -57,6 +75,7 @@ function _nav_active_est($check) {
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
   <link rel="stylesheet" href="../../../public/css/chat-widget.css?v=<?= @filemtime(__DIR__.'/../../../public/css/chat-widget.css') ?>" />

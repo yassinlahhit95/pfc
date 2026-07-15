@@ -1,13 +1,15 @@
 <?php
-// Oferta formativa: los ciclos salen de la BD (solo activos), no del contenido.
-require_once __DIR__ . '/../../modelos/ciclos.php';
-$ciclosLanding  = listarTodosLosCiclos();
+// Oferta formativa: tarjetas gestionadas manualmente desde el constructor
+// (título, texto, foto y precio libres por tarjeta) — no dependen de los
+// ciclos formativos académicos (tabla `ciclos`), que son una entidad aparte.
+$items          = $contenido['items'] ?? [];
 $prematriculaOn = FeatureGuard::check('feature_prematricula');
-$mostrarPrecio  = ($contenido['mostrarPrecio'] ?? 'no') === 'si';
 $botonTexto     = $contenido['botonTexto'] ?: 'Solicitar plaza';
 $variante       = $contenido['variante'] ?? 'grid';
+$columnas       = in_array($contenido['columnas'] ?? 'cols-4', ['cols-3', 'cols-4'], true) ? $contenido['columnas'] : 'cols-4';
+$enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#contacto';
 ?>
-<section class="lp-sec lp-oferta lp-variante-<?= Security::escapeHtml($variante) ?>" id="oferta_formativa"<?= $styleInline ?? '' ?>>
+<section class="lp-sec lp-oferta lp-variante-<?= Security::escapeHtml($variante) ?> lp-oferta-<?= Security::escapeHtml($columnas) ?>" id="oferta_formativa"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
@@ -16,31 +18,36 @@ $variante       = $contenido['variante'] ?? 'grid';
       <?php endif; ?>
     </div>
 
-    <?php if (empty($ciclosLanding)): ?>
+    <?php if (empty($items)): ?>
     <p class="lp-vacio">Próximamente publicaremos nuestra oferta de ciclos formativos.</p>
     <?php else: ?>
     <div class="lp-oferta-grid">
-      <?php foreach ($ciclosLanding as $ciclo): ?>
+      <?php foreach ($items as $item):
+          $imgUrl = landing_img_url($item['imagen'] ?? '');
+          $enlace = landing_url_segura($item['botonUrl'] ?? '', $enlaceDefecto);
+      ?>
       <article class="lp-tarjeta lp-ciclo">
-        <span class="lp-ciclo-nivel"><?= Security::escapeHtml($ciclo['nombreNivel'] ?? '') ?></span>
-        <h3><?= Security::escapeHtml($ciclo['nombreCiclo'] ?? '') ?></h3>
-        <?php if (!empty($ciclo['abreviaturaCiclo'])): ?>
-        <p class="lp-ciclo-abrev"><?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?></p>
+        <?php if ($imgUrl): ?>
+        <div class="lp-ciclo-foto"><img src="<?= Security::escapeHtml($imgUrl) ?>" alt="" loading="lazy"></div>
         <?php endif; ?>
-        <?php if ($mostrarPrecio && !empty($ciclo['precioCiclo'])): ?>
-        <p class="lp-ciclo-precio"><?= Security::escapeHtml(number_format((float)$ciclo['precioCiclo'], 0, ',', '.')) ?> €<span>/curso</span></p>
-        <?php endif; ?>
-        <a class="lp-boton-primario lp-ciclo-boton"
-           href="<?= $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#contacto' ?>">
-          <?= Security::escapeHtml($botonTexto) ?>
-        </a>
+        <div class="lp-ciclo-cuerpo">
+          <?php if (!empty($item['etiqueta'])): ?>
+          <span class="lp-ciclo-nivel"><?= Security::escapeHtml($item['etiqueta']) ?></span>
+          <?php endif; ?>
+          <h3><?= Security::escapeHtml($item['titulo'] ?? '') ?></h3>
+          <?php if (!empty($item['texto'])): ?>
+          <p class="lp-ciclo-texto"><?= nl2br(Security::escapeHtml($item['texto'])) ?></p>
+          <?php endif; ?>
+          <?php if (!empty($item['precio'])): ?>
+          <p class="lp-ciclo-precio"><?= Security::escapeHtml($item['precio']) ?></p>
+          <?php endif; ?>
+          <a class="lp-boton-primario lp-ciclo-boton" href="<?= Security::escapeHtml($enlace) ?>">
+            <?= Security::escapeHtml($botonTexto) ?>
+          </a>
+        </div>
       </article>
       <?php endforeach; ?>
     </div>
     <?php endif; ?>
   </div>
 </section>
-
-
-
-

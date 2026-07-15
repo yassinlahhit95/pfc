@@ -38,7 +38,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 <?php else: ?>
 
 <div class="panel margen-abajo">
-    <input type="text" id="buscarSecretaria" class="buscador"
+    <input type="text" id="buscarSecretaria" class="buscador" autocomplete="off"
            placeholder="Buscar por nombre o email…"
            oninput="filtrarTabla('buscarSecretaria','tablaSecretarias')">
 </div>

@@ -13,16 +13,17 @@ landing-system/
 ├── secciones/         ← ⭐ CREA Y EDITA SECCIONES AQUÍ
 ├── temas/             ← CSS de cada plantilla (base.css + tema-*.css)
 ├── assets/
-│   ├── js/            ← landing.js (pública) y builder.js (admin)
+│   ├── js/            ← landing.js (scripts de la landing pública: contadores, lightbox, etc.)
 │   └── imagenes/      ← Thumbnails de plantillas (.svg recomendado)
 ├── views/
-│   ├── public/        ← Estructura HTML de la landing (_head, _nav, _footer)
-│   └── admin/         ← Panel de administración (builder, selector de plantillas)
+│   └── public/        ← Estructura HTML de la landing (_head, _nav, _footer)
 └── engine/            ← 🔒 Motor interno. NO MODIFICAR.
     ├── secciones.php  ← Catálogo de tipos de sección y sus campos
     ├── plantillas.php ← Registro de plantillas disponibles
     └── modelo.php     ← Funciones de base de datos
 ```
+
+> ⚠️ El **panel de administración** (constructor, arrastrar-soltar, editor de secciones, selector de plantillas) vive **fuera** de esta carpeta por completo: HTML en `vistas/admin/landing/builder.php` y `vistas/admin/landing/plantillas.php`, JS en `public/js/landing-builder.js`, CSS en `public/css/landing-builder.css`. `landing-system/` solo contiene la landing **pública** — si vas a tocar el constructor, edita en `vistas/admin/landing/`, no aquí.
 
 ---
 

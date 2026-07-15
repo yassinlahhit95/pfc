@@ -3,6 +3,7 @@ require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../include/FeatureGuard.php";
 FeatureGuard::requirePage('feature_gastos');
 require_once __DIR__ . "/../../../modelos/gastos.php";
+require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/gastos/verGastos.php");
@@ -89,6 +90,7 @@ if (!empty($_FILES['archivoJustificante']['name'][0])) {
             }
 
             if (move_uploaded_file($archivos['tmp_name'][$i], $directorio . $nuevoNombre)) {
+                if ($mime !== 'application/pdf') ImageOptimizer::optimize($directorio . $nuevoNombre, $mime);
                 $nombresArchivos[] = $nuevoNombre;
             } else {
                 $errores[] = "No se pudo guardar el archivo {$archivos['name'][$i]} en el servidor.";

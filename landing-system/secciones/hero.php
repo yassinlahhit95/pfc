@@ -37,12 +37,12 @@ $estiloFondo = $estiloLocal !== '' ? ' style="' . $estiloLocal . '"' : '';
       <?php endif; ?>
       <div class="lp-hero-botones">
         <?php if (!empty($contenido['botonTexto'])): ?>
-        <a href="<?= Security::escapeHtml($contenido['botonUrl'] ?: '#contacto') ?>" class="lp-boton-primario lp-boton-grande">
+        <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#contacto')) ?>" class="lp-boton-primario lp-boton-grande">
           <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
         </a>
         <?php endif; ?>
         <?php if (!empty($contenido['boton2Texto'])): ?>
-        <a href="<?= Security::escapeHtml($contenido['boton2Url'] ?: '#contacto') ?>" class="lp-boton-borde lp-boton-grande">
+        <a href="<?= Security::escapeHtml(landing_url_segura($contenido['boton2Url'] ?? '', '#contacto')) ?>" class="lp-boton-borde lp-boton-grande">
           <?= Security::escapeHtml($contenido['boton2Texto']) ?>
         </a>
         <?php endif; ?>

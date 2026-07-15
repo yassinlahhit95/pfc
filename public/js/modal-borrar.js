@@ -1,3 +1,6 @@
+// Modal de confirmación de borrado reutilizable. Los enlaces "Eliminar" llevan
+// atributos data-modal-borrar/data-tipo/data-nombre/data-url/data-campo; este
+// script rellena el modal con esos datos y hace la petición DELETE al aceptar.
 (function ($) {
     var $modal = null;
     var $tipo = null;

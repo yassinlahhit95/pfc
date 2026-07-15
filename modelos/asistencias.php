@@ -61,7 +61,7 @@ function listarEstudiantesDeModulo(int $idModulo): array {
     return $rows;
 }
 
-function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstudiante, ?string $fechaDesde, ?string $fechaHasta): array {
+function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstudiante, ?string $fechaDesde, ?string $fechaHasta, ?string $estado = null): array {
     $con = obtenerConexion();
     $where = ["1=1"];
     $params = [];
@@ -86,6 +86,10 @@ function listarAsistenciasFiltradas(?int $idCiclo, ?int $idModulo, ?int $idEstud
     if ($fechaHasta) {
         $where[] = "a.fecha <= ?";
         $types .= "s"; $params[] = $fechaHasta;
+    }
+    if ($estado) {
+        $where[] = "a.estado = ?";
+        $types .= "s"; $params[] = $estado;
     }
 
     $sql = "SELECT a.idAsistencia, a.fecha, a.estado, a.observacion, a.fechaRegistro,

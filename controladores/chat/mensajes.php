@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/chat.php';
+require_once __DIR__ . '/../../include/Cache.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 header('Content-Type: application/json; charset=utf-8');
@@ -37,6 +38,14 @@ session_write_close(); // release session lock before DB work
 $convId  = (int)($_GET['conv_id'] ?? 0);
 $afterId = (int)($_GET['after_id'] ?? 0);
 if ($convId <= 0) { echo json_encode(['ok' => false]); exit; }
+
+// Red de seguridad frente a un cliente atascado/duplicado que sondee más
+// rápido que su propio mínimo (3s en chat.js/chat-widget.js); no afecta al
+// sondeo normal, que nunca llega a este límite.
+if (!Throttle::allow("chat_poll_{$myRol}_{$myId}_{$convId}", 2.0)) {
+    echo json_encode(['ok' => true, 'messages' => []]);
+    exit;
+}
 
 $conv = chatConversacionPorId($convId);
 if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) {

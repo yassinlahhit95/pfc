@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../modelos/conectar.php';
+require_once __DIR__ . '/../../include/Cache.php';
 
 // ══════════════════════════════════════════════════════════════════════
 // CONFIGURACIÓN DE LA LANDING (fila única, idLanding = 1)
@@ -30,18 +31,30 @@ function guardarAjustesLanding($plantilla, $ajustesJson) {
 // ══════════════════════════════════════════════════════════════════════
 
 function listarSeccionesLanding($version, $soloVisibles = false) {
-    $con = obtenerConexion();
     if (!in_array($version, ['draft', 'live'], true)) return [];
-    $sql = "SELECT * FROM landing_secciones WHERE version = ?"
-         . ($soloVisibles ? " AND visible = 1" : "")
-         . " ORDER BY orden ASC, idSeccion ASC";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $version);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
-    return $lista;
+
+    $fetch = function () use ($version, $soloVisibles) {
+        $con = obtenerConexion();
+        $sql = "SELECT * FROM landing_secciones WHERE version = ?"
+             . ($soloVisibles ? " AND visible = 1" : "")
+             . " ORDER BY orden ASC, idSeccion ASC";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $version);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $lista = [];
+        while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
+        return $lista;
+    };
+
+    // El borrador cambia constantemente mientras se edita: nunca se cachea.
+    // La versión publicada solo cambia al pulsar "Publicar", así que la
+    // cacheamos: es la que sirven index.php/blog.php/contacto.php en cada
+    // visita pública anónima.
+    if ($version === 'live') {
+        return Cache::remember('landing_secciones_live_' . ($soloVisibles ? 1 : 0), 300, $fetch);
+    }
+    return $fetch();
 }
 
 function obtenerSeccionPorId($id) {
@@ -151,6 +164,8 @@ function publicarLanding() {
         if (!$ok) throw new Exception(mysqli_error($con));
 
         mysqli_commit($con);
+        Cache::forget('landing_secciones_live_1');
+        Cache::forget('landing_secciones_live_0');
         return true;
     } catch (Exception $e) {
         mysqli_rollback($con);

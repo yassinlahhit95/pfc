@@ -103,6 +103,13 @@ List page delete links use `data-modal-borrar` attributes — never `onclick="co
 ### Filters
 Use `filtrarTabla(inputId, tableId)` or `filtrarTablaMulti(tableId)` from `filtros.js`. Custom filter functions must call `resetearPaginacion(tableId)` at the end.
 
+### Search/filter inputs — no browser autocomplete
+Every "buscar"/filter `<input>` must carry `autocomplete="off"` — these are live client-side filters, never form fields to be re-submitted, so browser suggestion dropdowns only get in the way. For the global topbar search (`#sys-search` in each role's `nav.php`), use the fuller hardened set since `autocomplete="off"` alone doesn't stop Chrome/password managers on a field named/id'd like a search box:
+```html
+<input type="search" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+       data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+```
+
 ### Toast notifications
 `Toast.show('message', 'success'|'error'|'info')` — always guard with `if (window.Toast)`.
 

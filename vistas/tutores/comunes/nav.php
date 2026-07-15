@@ -28,6 +28,7 @@ function _nav_active_tutor($check) {
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="shortcut icon" href="../../../public/imagenes/favicon.ico" type="image/x-icon" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -139,7 +140,8 @@ function _nav_active_tutor($check) {
       </div>
     </header>
 
-    <?php if (FeatureGuard::check('feature_chat') && ($seccionActual ?? '') !== 'chat'):
+    <?php // Las vistas de tutores definen $seccion (no $seccionActual)
+    if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         require_once __DIR__ . "/../../../modelos/chat.php";
         $cw_rol = 'tutor';
         $cw_id = (int)$_SESSION['idTutor'];

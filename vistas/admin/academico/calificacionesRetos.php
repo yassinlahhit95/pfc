@@ -28,9 +28,11 @@ if ($idNivelFiltro && $idCicloElegido && !in_array((int)$idCicloElegido, array_c
 
 $listaRetos = $idCicloElegido ? listarRetosPorCiclo($idCicloElegido) : [];
 $listaEstudiantes = [];
+$notasPorEstudiante = [];
 $cursoAnioReto = '';
 if ($idCicloElegido && $idRetoElegido) {
     $listaEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
+    $notasPorEstudiante = listarCalificacionesRetoPorEstudiantes(array_column($listaEstudiantes, 'idEstudiante'), $idRetoElegido);
     foreach (listarModulosDeReto($idRetoElegido) as $_mr) {
         if (!empty($_mr['cursoAnio'])) { $cursoAnioReto = $_mr['cursoAnio']; break; }
     }
@@ -112,7 +114,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaEstudiantes as $est) {
-                        $notaActual = obtenerCalificacionReto($est['idEstudiante'], $idRetoElegido);
+                        $notaActual = $notasPorEstudiante[$est['idEstudiante']] ?? '';
                     ?>
                     <tr>
                         <td><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>

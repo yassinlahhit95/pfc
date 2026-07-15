@@ -113,24 +113,33 @@ function listarTFGsPorProfesor($idProfesor) {
     return $listaTFGs;
 }
 
+// Devuelve la convocatoria "vigente": si hay extraordinaria (una recuperación
+// ya se hizo), esa es la oficial, gane o pierda respecto a la ordinaria —
+// a diferencia de la recuperación de módulos (que solo sustituye si es
+// mayor), una convocatoria extraordinaria de TFG es un intento deliberado y
+// su resultado es el que cuenta. Antes de añadir la columna `convocatoria`
+// (ver migrate_db.php sección 12) solo podía existir una fila por alumno, así
+// que esto no cambia nada para los datos ya existentes.
 function obtenerCalificacionTFG($idEstudiante) {
     $con = obtenerConexion();
-    $sql = "SELECT * FROM calificaciones_tfg WHERE idEstudiante = ?";
+    $sql = "SELECT * FROM calificaciones_tfg WHERE idEstudiante = ?
+            ORDER BY (convocatoria = 'extraordinaria') DESC LIMIT 1";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $datos = mysqli_fetch_assoc($resultado);
-    
+
     return $datos;
 }
 
-function guardarCalificacionTFG($idEstudiante, $nota, $observaciones) {
+function guardarCalificacionTFG($idEstudiante, $nota, $observaciones, string $convocatoria = 'ordinaria') {
+    if (!in_array($convocatoria, ['ordinaria', 'extraordinaria'], true)) $convocatoria = 'ordinaria';
     $con = obtenerConexion();
-    $sql = "INSERT INTO calificaciones_tfg (idEstudiante, nota, observaciones) VALUES (?, ?, ?) AS new_val
+    $sql = "INSERT INTO calificaciones_tfg (idEstudiante, convocatoria, nota, observaciones) VALUES (?, ?, ?, ?) AS new_val
             ON DUPLICATE KEY UPDATE nota = new_val.nota, observaciones = new_val.observaciones";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ids", $idEstudiante, $nota, $observaciones);
+    mysqli_stmt_bind_param($stmt, "isds", $idEstudiante, $convocatoria, $nota, $observaciones);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -164,7 +173,7 @@ function listarEvaluacionTFG($idCiclo = null) {
     $con = obtenerConexion();
 
     if ($idCiclo) {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, e.curso AS anioEstudio,
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, e.anioEstudio,
                        c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo
@@ -174,7 +183,7 @@ function listarEvaluacionTFG($idCiclo = null) {
         $stmt = mysqli_prepare($con, $sql);
         mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     } else {
-        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, e.curso AS anioEstudio,
+        $sql = "SELECT e.idEstudiante, e.nombreEstudiante, e.archivoTFG, e.fechaSubidaTFG, e.anioEstudio,
                        c.nombreCiclo, c.abreviaturaCiclo, ct.nota, ct.observaciones, ct.idCalificacion
                 FROM estudiantes e
                 JOIN ciclos c ON e.idCiclo = c.idCiclo

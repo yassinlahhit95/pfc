@@ -1,3 +1,6 @@
+// Aula Digital (recursos): modales de carpeta/archivo, menú contextual,
+// y llamadas AJAX a controladores/profesores|estudiantes/aula/. Expone
+// window.AulaRecursos para los onclick inline de las vistas.
 (function () {
   'use strict';
 

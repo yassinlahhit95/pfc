@@ -85,8 +85,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
                     <?php foreach ($todos_los_estudiantes as $est) { ?>
-                        <option value="<?= (int)$est['idEstudiante'] ?>" data-curso="<?= Security::escapeHtml($est['curso'] ?? '1º') ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($est['nombreEstudiante']) ?> (<?= Security::escapeHtml($est['curso'] ?? '1º') ?>)
+                        <option value="<?= (int)$est['idEstudiante'] ?>" data-curso="<?= Security::escapeHtml($est['anioEstudio'] ?? '') ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($est['nombreEstudiante']) ?><?= !empty($est['anioEstudio']) ? ' (' . Security::escapeHtml($est['anioEstudio']) . ')' : '' ?>
                         </option>
                     <?php } ?>
                 </select>

@@ -124,9 +124,16 @@ include_once __DIR__ . '/../comunes/nav.php';
             <form id="lb-form-ajustes" class="lb-ajustes">
                 <label class="lb-campo">
                     <span>Color de acento</span>
-                    <div class="lb-color-wrap">
-                        <input type="color" name="colorAcento" value="<?= Security::escapeHtml($ajustes['colorAcento'] ?? '#1d4ed8') ?>">
-                        <code><?= Security::escapeHtml($ajustes['colorAcento'] ?? '#1d4ed8') ?></code>
+                    <div class="lb-color-picker">
+                        <div class="lb-color-wrap">
+                            <input type="color" name="colorAcento" value="<?= Security::escapeHtml($ajustes['colorAcento'] ?? '#1d4ed8') ?>">
+                            <code><?= Security::escapeHtml($ajustes['colorAcento'] ?? '#1d4ed8') ?></code>
+                        </div>
+                        <div class="lb-swatches">
+                            <?php foreach (['#1d4ed8', '#4338ca', '#7c3aed', '#059669', '#0891b2', '#d97706', '#dc2626', '#334155'] as $sw): ?>
+                            <button type="button" class="lb-swatch" style="background-color:<?= $sw ?>" data-color="<?= $sw ?>" title="<?= $sw ?>"></button>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </label>
                 <label class="lb-campo">
@@ -192,11 +199,28 @@ include_once __DIR__ . '/../comunes/nav.php';
         </div>
         <div class="lb-catalogo">
             <?php foreach ($tipos as $tipoClave => $t): ?>
-            <button type="button" class="lb-catalogo-item" data-tipo="<?= Security::escapeHtml($tipoClave) ?>">
+            <button type="button" class="lb-catalogo-item" data-tipo="<?= Security::escapeHtml($tipoClave) ?>"
+                    title="<?= Security::escapeHtml($t['descripcion'] ?? '') ?>">
                 <i class="fas <?= Security::escapeHtml($t['icono']) ?>"></i>
-                <span><?= Security::escapeHtml($t['nombre']) ?></span>
+                <span class="lb-catalogo-nombre"><?= Security::escapeHtml($t['nombre']) ?></span>
+                <?php if (!empty($t['descripcion'])): ?>
+                <span class="lb-catalogo-desc"><?= Security::escapeHtml($t['descripcion']) ?></span>
+                <?php endif; ?>
             </button>
             <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ Modal biblioteca de imágenes/vídeos ══════════ -->
+<div class="lb-modal" id="lb-modal-biblioteca">
+    <div class="lb-modal-caja panel">
+        <div class="lb-panel-titulo">
+            <h3><i class="fas fa-photo-film"></i> Biblioteca de archivos</h3>
+            <button type="button" class="lb-item-btn" id="lb-biblioteca-cerrar" title="Cerrar"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="lb-biblioteca-grid" id="lb-biblioteca-grid">
+            <p class="lb-biblioteca-cargando">Cargando…</p>
         </div>
     </div>
 </div>

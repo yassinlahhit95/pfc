@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/conectar.php";
+require_once __DIR__ . "/../include/Cache.php";
 
 // ══════════════════════════════════════════════════════════════════════
 //  CONSULTAS
@@ -153,31 +154,37 @@ function eliminarMensaje($idReclamacion) {
     return $resultado;
 }
 
+// Contadores de no leídos: cacheados ~10s en APCu porque se sondean desde
+// dos pollers distintos (mensajes.js y dashboard-shell.js) cada 30s cada
+// uno; la caché evita que el segundo poller repita la misma consulta.
 function contarMensajesNoLeidosAdmin() {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones
-            WHERE leido = 0
-            AND (
-                (emisor_rol = 'estudiante' AND idProfesor IS NULL)
-                OR (emisor_rol = 'profesor' AND idEstudiante IS NULL)
-            )";
-    $resultado = mysqli_query($con, $sql);
-    $fila = mysqli_fetch_assoc($resultado);
-    
-    return intval($fila['total']);
+    return Cache::remember('no_leidos_admin', 10, function () {
+        $con = obtenerConexion();
+        $sql = "SELECT COUNT(*) as total FROM reclamaciones
+                WHERE leido = 0
+                AND (
+                    (emisor_rol = 'estudiante' AND idProfesor IS NULL)
+                    OR (emisor_rol = 'profesor' AND idEstudiante IS NULL)
+                )";
+        $resultado = mysqli_query($con, $sql);
+        $fila = mysqli_fetch_assoc($resultado);
+        return intval($fila['total']);
+    });
 }
 
 
 function contarMensajesNoLeidosProfesor($idProfesor) {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idProfesor = ? AND emisor_rol != 'profesor'";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-    
-    return intval($fila['total']);
+    $idProfesor = (int)$idProfesor;
+    return Cache::remember("no_leidos_profesor_{$idProfesor}", 10, function () use ($idProfesor) {
+        $con = obtenerConexion();
+        $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idProfesor = ? AND emisor_rol != 'profesor'";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+        mysqli_stmt_execute($stmt);
+        $resultado = mysqli_stmt_get_result($stmt);
+        $fila = mysqli_fetch_assoc($resultado);
+        return intval($fila['total']);
+    });
 }
 
 function contarMensajesDeProfesor($idProfesor) {
@@ -193,15 +200,17 @@ function contarMensajesDeProfesor($idProfesor) {
 }
 
 function contarMensajesNoLeidosEstudiante($idEstudiante) {
-    $con = obtenerConexion();
-    $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idEstudiante = ? AND emisor_rol != 'estudiante'";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado);
-
-    return intval($fila['total']);
+    $idEstudiante = (int)$idEstudiante;
+    return Cache::remember("no_leidos_estudiante_{$idEstudiante}", 10, function () use ($idEstudiante) {
+        $con = obtenerConexion();
+        $sql = "SELECT COUNT(*) as total FROM reclamaciones WHERE leido = 0 AND idEstudiante = ? AND emisor_rol != 'estudiante'";
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+        mysqli_stmt_execute($stmt);
+        $resultado = mysqli_stmt_get_result($stmt);
+        $fila = mysqli_fetch_assoc($resultado);
+        return intval($fila['total']);
+    });
 }
 
 function obtenerHiloCompleto(int $idRaiz): array {

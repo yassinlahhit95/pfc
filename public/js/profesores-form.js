@@ -1,3 +1,5 @@
+// Formulario de profesor: muestra solo los módulos de los ciclos marcados
+// con los checkboxes .check-ciclo; avisa si no hay ninguno seleccionado.
 $(document).ready(function() {
 
     function actualizarModulos() {

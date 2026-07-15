@@ -4,6 +4,7 @@ require_once __DIR__ . "/../../../include/FeatureGuard.php";
 FeatureGuard::requirePage('feature_pagos');
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../include/ImageOptimizer.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/pagos/agregarPago.php");
@@ -67,6 +68,9 @@ if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] === UPLOAD_
         $rutaDestino = $directorioUpload . $nombreComprobante;
         if (!move_uploaded_file($_FILES['comprobante']['tmp_name'], $rutaDestino)) {
             $nombreComprobante = null;
+        } else {
+            $imgMimes = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
+            if (isset($imgMimes[$extension])) ImageOptimizer::optimize($rutaDestino, $imgMimes[$extension]);
         }
     }
 }

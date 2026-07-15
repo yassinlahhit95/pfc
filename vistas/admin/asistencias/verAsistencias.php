@@ -14,14 +14,18 @@ $idModulo     = (int)($_GET['idModulo']   ?? 0) ?: null;
 $idEstudiante = (int)($_GET['idEstudiante'] ?? 0) ?: null;
 $fechaDesde   = preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fechaDesde'] ?? '') ? $_GET['fechaDesde'] : '';
 $fechaHasta   = preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['fechaHasta'] ?? '') ? $_GET['fechaHasta'] : '';
+$estadosPermitidos = ['presente', 'ausente', 'retraso', 'justificado'];
+$estado       = in_array($_GET['estado'] ?? '', $estadosPermitidos, true) ? $_GET['estado'] : '';
 
-$ciclos   = listarTodosLosCiclos();
-$modulos  = $idCiclo ? listarModulosPorCiclo($idCiclo) : [];
+$ciclos      = listarTodosLosCiclos();
+$modulos     = $idCiclo ? listarModulosPorCiclo($idCiclo) : [];
+$estudiantesCiclo = $idCiclo ? listarEstudiantesPorCiclo($idCiclo) : [];
 
 $asistencias = listarAsistenciasFiltradas(
     $idCiclo, $idModulo, $idEstudiante,
     $fechaDesde ?: null,
-    $fechaHasta ?: null
+    $fechaHasta ?: null,
+    $estado ?: null
 );
 
 $titulo_pagina = "AulaPro | Asistencias";
@@ -35,7 +39,7 @@ require_once __DIR__ . "/../comunes/nav.php";
   </div>
   <a href="../../../controladores/admin/asistencias/exportarCSV.php?<?= http_build_query(array_filter([
     'idCiclo' => $idCiclo, 'idModulo' => $idModulo, 'idEstudiante' => $idEstudiante,
-    'fechaDesde' => $fechaDesde, 'fechaHasta' => $fechaHasta
+    'fechaDesde' => $fechaDesde, 'fechaHasta' => $fechaHasta, 'estado' => $estado
   ])) ?>" class="boton-secundario">
     <i class="fas fa-download"></i> Exportar CSV
   </a>
@@ -43,9 +47,6 @@ require_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel margen-abajo">
   <form method="GET" action="" class="formulario" id="form-filtros-asistencias">
-    <?php if ($idEstudiante): ?>
-      <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
-    <?php endif; ?>
     <div class="campo">
       <label>Ciclo</label>
       <select name="idCiclo" id="sel-ciclo-asist" onchange="this.form.submit()">
@@ -70,6 +71,31 @@ require_once __DIR__ . "/../comunes/nav.php";
       </select>
     </div>
     <?php endif; ?>
+    <?php if ($idCiclo && $estudiantesCiclo): ?>
+    <div class="campo">
+      <label>Estudiante</label>
+      <select name="idEstudiante" onchange="this.form.submit()">
+        <option value="">Todos los estudiantes</option>
+        <?php foreach ($estudiantesCiclo as $e): ?>
+        <option value="<?= (int)$e['idEstudiante'] ?>" <?= $idEstudiante === (int)$e['idEstudiante'] ? 'selected' : '' ?>>
+          <?= Security::escapeHtml($e['nombreEstudiante']) ?>
+        </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <?php elseif ($idEstudiante): ?>
+      <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
+    <?php endif; ?>
+    <div class="campo">
+      <label>Estado</label>
+      <select name="estado" onchange="this.form.submit()">
+        <option value="">Todos los estados</option>
+        <option value="presente" <?= $estado === 'presente' ? 'selected' : '' ?>>Presente</option>
+        <option value="ausente" <?= $estado === 'ausente' ? 'selected' : '' ?>>Ausente</option>
+        <option value="retraso" <?= $estado === 'retraso' ? 'selected' : '' ?>>Retraso</option>
+        <option value="justificado" <?= $estado === 'justificado' ? 'selected' : '' ?>>Justificado</option>
+      </select>
+    </div>
     <div class="campo">
       <label>Desde</label>
       <input type="date" name="fechaDesde" value="<?= Security::escapeHtml($fechaDesde) ?>">
@@ -80,7 +106,7 @@ require_once __DIR__ . "/../comunes/nav.php";
     </div>
     <div class="campo" style="display:flex;align-items:flex-end;gap:8px;">
       <button type="submit" class="boton-primario"><i class="fas fa-search"></i> Filtrar</button>
-      <a href="verAsistencias.php<?= $idEstudiante ? '?idEstudiante=' . $idEstudiante : '' ?>" class="boton-secundario">Limpiar</a>
+      <a href="verAsistencias.php" class="boton-secundario">Limpiar</a>
     </div>
   </form>
 </div>

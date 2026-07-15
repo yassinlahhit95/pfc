@@ -14,6 +14,7 @@ $listaDeModulosActuales = listarModulos();
 $todos_los_profesores   = listarProfesores();
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
+$profesoresPorModulo = listarProfesoresPorModulos(array_column($listaDeModulosActuales, 'idModulo'));
 
 $titulo_pagina = "AULAPRO | MÓDULOS PROFESIONALES";
 $seccion = 'modulos';
@@ -83,6 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>CÓDIGO</th>
                     <th>NIVEL</th>
                     <th>NOMBRE DEL MÓDULO</th>
                     <th>CURSO</th>
@@ -96,18 +98,19 @@ include_once __DIR__ . "/../comunes/nav.php";
             <tbody>
                 <?php if (empty($listaDeModulosActuales)) { ?>
                     <tr>
-                        <td colspan="8" class="vacio">No hay módulos registrados en el sistema.</td>
+                        <td colspan="9" class="vacio">No hay módulos registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaDeModulosActuales as $moduloIndividual) {
-                        $nombresProfesores   = listarNombresProfesoresDeModulo($moduloIndividual['idModulo']);
-                        $idsProfsModulo      = listarProfesoresDeModulo($moduloIndividual['idModulo']);
-                        $idProfesorActual    = !empty($idsProfsModulo) ? (int)$idsProfsModulo[0] : 0;
+                        $profsModulo         = $profesoresPorModulo[$moduloIndividual['idModulo']] ?? [];
+                        $nombresProfesores   = array_column($profsModulo, 'nombreProfesor');
+                        $idProfesorActual    = !empty($profsModulo) ? $profsModulo[0]['idProfesor'] : 0;
                     ?>
                     <tr>
                         <td><?= Security::escapeHtml($moduloIndividual['idModulo']) ?></td>
+                        <td><?= !empty($moduloIndividual['codigoModulo']) ? Security::escapeHtml($moduloIndividual['codigoModulo']) : '<span class="texto-suave">—</span>' ?></td>
                         <td data-campo="nivel">
-                            <span class="texto-estado <?= $moduloIndividual['idNivel'] == 1 ? 'azul' : 'verde' ?>"><?= $moduloIndividual['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior' ?></span>
+                            <span class="texto-estado <?= $moduloIndividual['nombreNivel'] === 'Grado Medio' ? 'azul' : 'verde' ?>"><?= Security::escapeHtml($moduloIndividual['nombreNivel']) ?></span>
                         </td>
                         <td>
                             <b><?= Security::escapeHtml(mb_strtoupper($moduloIndividual['nombreModulo'], 'UTF-8')) ?></b>

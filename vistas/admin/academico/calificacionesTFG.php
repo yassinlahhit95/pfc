@@ -59,6 +59,15 @@ include_once __DIR__ . "/../comunes/nav.php";
             </select>
         </div>
     </form>
+
+    <div class="campo relleno" style="margin-top:12px;">
+        <label>Filtrar por Año:</label>
+        <select id="filtroAnioTFG" onchange="filtrarTFGPorAnio()">
+            <option value="">-- Todos los Años --</option>
+            <option value="1º">1º Año</option>
+            <option value="2º">2º Año</option>
+        </select>
+    </div>
 </div>
 
 
@@ -84,7 +93,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaEvaluacion as $item) { ?>
-                    <tr>
+                    <tr class="fila-anio-tfg" data-anio="<?= Security::escapeHtml($item['anioEstudio'] ?? '') ?>">
                         <td><?= Security::escapeHtml($item['nombreEstudiante']) ?></td>
                         <td><?= Security::escapeHtml($item['abreviaturaCiclo']) ?></td>
                         <td><?= !empty($item['anioEstudio']) ? '<span class="texto-estado azul">' . Security::escapeHtml($item['anioEstudio']) . '</span>' : '<span class="texto-suave">—</span>' ?></td>
@@ -135,4 +144,12 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <?php include '../comunes/footer.php'; ?>
+<script>
+function filtrarTFGPorAnio() {
+    var anio = document.getElementById('filtroAnioTFG').value;
+    document.querySelectorAll('.fila-anio-tfg').forEach(function(fila) {
+        fila.style.display = (anio === '' || fila.getAttribute('data-anio') === anio) ? '' : 'none';
+    });
+}
+</script>
 

@@ -37,9 +37,9 @@ function obtenerTutorPorId($idTutor) {
 
 function listarEstudiantesPorTutor($idTutor) {
     $con = obtenerConexion();
-    $sql = "SELECT e.*, c.nombreCiclo, et.parentesco 
-            FROM estudiantes e 
-            JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante 
+    $sql = "SELECT e.*, c.nombreCiclo, et.parentesco
+            FROM estudiantes e
+            JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
             JOIN ciclos c ON e.idCiclo = c.idCiclo
             WHERE et.idTutor = ? AND e.eliminado = 0";
     $stmt = mysqli_prepare($con, $sql);
@@ -51,6 +51,30 @@ function listarEstudiantesPorTutor($idTutor) {
         $lista[] = $fila;
     }
     return $lista;
+}
+
+// Hijos de varios tutores a la vez, agrupados por idTutor => [['idEstudiante','nombreEstudiante'], ...].
+// Evita el patrón N+1 de llamar listarEstudiantesPorTutor() una vez por tutor en las
+// vistas de listado (verTutores.php de admin y secretaría).
+function listarHijosPorTutores(array $idsTutores): array {
+    if (!$idsTutores) return [];
+    $con = obtenerConexion();
+    $ph = implode(',', array_fill(0, count($idsTutores), '?'));
+    $types = str_repeat('i', count($idsTutores));
+    $sql = "SELECT et.idTutor, e.idEstudiante, e.nombreEstudiante
+            FROM estudiantes e
+            JOIN estudiante_tutor et ON e.idEstudiante = et.idEstudiante
+            WHERE et.idTutor IN ($ph) AND e.eliminado = 0
+            ORDER BY e.nombreEstudiante ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, $types, ...$idsTutores);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $porTutor = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $porTutor[$fila['idTutor']][] = ['idEstudiante' => (int)$fila['idEstudiante'], 'nombreEstudiante' => $fila['nombreEstudiante']];
+    }
+    return $porTutor;
 }
 
 function obtenerTokensTutores() {

@@ -37,7 +37,7 @@ $sliderId = 'hero-slider-' . uniqid();
             
             <div class="lp-hero-botones lp-slide-btns">
               <?php if (!empty($contenido['botonTexto'])): ?>
-              <a href="<?= Security::escapeHtml($contenido['botonUrl'] ?: '#oferta_formativa') ?>" class="lp-boton-primario lp-boton-grande">
+              <a href="<?= Security::escapeHtml(landing_url_segura($contenido['botonUrl'] ?? '', '#oferta_formativa')) ?>" class="lp-boton-primario lp-boton-grande">
                 <?= Security::escapeHtml($contenido['botonTexto']) ?> <i class="fas fa-arrow-right"></i>
               </a>
               <?php endif; ?>

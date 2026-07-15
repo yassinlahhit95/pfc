@@ -12,6 +12,24 @@
     var $iframe   = $('#lb-iframe');
     var idAbierta = null;   // idSeccion abierta en el editor
 
+    // Paleta de colores sugeridos junto a cada selector de color (acento global
+    // y color de fondo/texto por sección): atajo para quien no domina hex.
+    var PALETA_SUGERIDA = ['#1d4ed8', '#4338ca', '#7c3aed', '#059669', '#0891b2', '#d97706', '#dc2626', '#334155'];
+
+    function crearSwatchesColor() {
+        var $fila = $('<div class="lb-swatches">');
+        PALETA_SUGERIDA.forEach(function (color) {
+            $fila.append($('<button type="button" class="lb-swatch">').css('background-color', color).attr({ 'data-color': color, title: color }));
+        });
+        return $fila;
+    }
+
+    // Delegado: funciona tanto en el editor de secciones como en Ajustes globales.
+    $(document).on('click', '.lb-swatch', function () {
+        var color = $(this).data('color');
+        $(this).closest('.lb-color-picker').find('input[type="color"]').val(color).trigger('input');
+    });
+
     function csrf() { return $('#lb-csrf').val(); }
 
     function toast(msg, tipo) { if (window.Toast) Toast.show(msg, tipo || 'info'); }
@@ -166,6 +184,30 @@
 
     /* ══════════ Editor de sección (formulario desde el schema) ══════════ */
 
+    // Marca/desmarca un campo obligatorio vacío con estilo + mensaje inline.
+    // Reutiliza las clases .campo-invalido/.campo-error ya definidas en estilo.css
+    // para el resto de formularios del panel (agregarEstudiantes, etc.).
+    function marcarCampoInvalido($campo, invalido) {
+        $campo.toggleClass('campo-invalido', invalido);
+        $campo.find('.campo-error').remove();
+        if (invalido) $campo.append($('<span class="campo-error"><i class="fas fa-exclamation-circle"></i> Este campo es obligatorio.</span>'));
+    }
+
+    // Valida todos los campos de nivel superior marcados 'requerido' del formulario
+    // abierto. Devuelve true si todo está OK; si no, marca los campos y hace foco al primero.
+    function validarCamposRequeridos($form, campos) {
+        var valido = true, $primero = null;
+        $.each(campos, function (clave, def) {
+            if (!def.requerido || def.tipo === 'lista') return;
+            var $input = $form.find('[name="' + clave + '"]').first();
+            var vacio = $input.val() === '' || $input.val() == null;
+            marcarCampoInvalido($input.closest('.lb-ecampo'), vacio);
+            if (vacio) { valido = false; if (!$primero) $primero = $input; }
+        });
+        if ($primero) $primero.trigger('focus');
+        return valido;
+    }
+
     function crearCampo(clave, def, valor) {
         var $campo = $('<div class="lb-ecampo">');
         var $etiqueta = $('<label>').text(def.etiqueta + (def.requerido ? ' *' : ''));
@@ -173,6 +215,7 @@
 
         switch (def.tipo) {
             case 'text':
+            case 'url':
                 $campo.append($('<input type="text">').attr({ name: clave, maxlength: def.max || 255 }).val(valor || ''));
                 break;
 
@@ -191,7 +234,8 @@
                 break;
 
             case 'color':
-                $campo.append($('<input type="color">').attr('name', clave).val(valor || '#1d4ed8'));
+                var $inputColor = $('<input type="color">').attr('name', clave).val(valor || '#1d4ed8');
+                $campo.append($('<div class="lb-color-picker">').append($inputColor, crearSwatchesColor()));
                 break;
 
             case 'imagen':
@@ -227,9 +271,77 @@
         var $file = $('<input type="file" accept="' + accept + '" class="lb-imagen-input" style="display:none;">');
         var $botones = $('<div class="lb-imagen-botones">')
             .append($('<button type="button" class="boton-secundario boton-pequeno lb-imagen-subir"><i class="fas fa-upload"></i> Subir</button>'))
+            .append($('<button type="button" class="boton-secundario boton-pequeno lb-imagen-biblioteca"><i class="fas fa-photo-film"></i> Biblioteca</button>'))
             .append($('<button type="button" class="boton-secundario boton-pequeno lb-imagen-quitar"><i class="fas fa-xmark"></i> Quitar</button>'));
         return $wrap.append($hidden, $preview, $file, $botones);
     }
+
+    /* ══════════ Biblioteca de imágenes/vídeos ya subidos ══════════ */
+    var $wrapBibliotecaActivo = null;
+
+    function aplicarSeleccionMedia($wrap, filename, url) {
+        $wrap.find('input[type="hidden"]').val(filename);
+        var isVideo = filename.toLowerCase().endsWith('.mp4');
+        var $preview = $wrap.find('.lb-imagen-preview').empty();
+        if (isVideo) {
+            $preview.append($('<video controls style="max-width:100%; max-height:120px; border-radius:6px;">').attr('src', url));
+        } else {
+            $preview.append($('<img>').attr('src', url));
+        }
+    }
+
+    $(document).on('click', '.lb-imagen-biblioteca', function () {
+        var $wrap = $(this).closest('.lb-imagen');
+        $wrapBibliotecaActivo = $wrap;
+        var accept = $wrap.find('input[type="file"]').attr('accept');
+        var esVideo = accept && accept.indexOf('video') !== -1;
+
+        var $grid = $('#lb-biblioteca-grid').html('<p class="lb-biblioteca-cargando">Cargando…</p>');
+        $('#lb-modal-biblioteca').addClass('abierto');
+
+        $.getJSON(BASE + 'listar_imagenes.php', { tipo: esVideo ? 'video' : 'imagen' })
+            .done(function (res) {
+                if (!res.ok || !res.archivos || !res.archivos.length) {
+                    $grid.html('<p class="lb-biblioteca-vacio">Todavía no has subido ningún archivo ' + (esVideo ? 'de vídeo' : 'de imagen') + '.</p>');
+                    return;
+                }
+                $grid.empty();
+                res.archivos.forEach(function (archivo) {
+                    var $item = $('<button type="button" class="lb-biblioteca-item">')
+                        .attr({ 'data-filename': archivo.filename, 'data-url': archivo.url });
+                    if (esVideo) {
+                        $item.append($('<video muted preload="metadata">').attr('src', archivo.url));
+                    } else {
+                        $item.append($('<img loading="lazy">').attr('src', archivo.url));
+                    }
+                    $grid.append($item);
+                });
+            })
+            .fail(function () {
+                $grid.html('<p class="lb-biblioteca-vacio">Error al cargar la biblioteca.</p>');
+            });
+    });
+
+    $(document).on('click', '.lb-biblioteca-item', function () {
+        if (!$wrapBibliotecaActivo) return;
+        aplicarSeleccionMedia($wrapBibliotecaActivo, $(this).data('filename'), $(this).data('url'));
+        $('#lb-modal-biblioteca').removeClass('abierto');
+        $wrapBibliotecaActivo = null;
+    });
+
+    $('#lb-biblioteca-cerrar').on('click', function () {
+        $('#lb-modal-biblioteca').removeClass('abierto');
+        $wrapBibliotecaActivo = null;
+    });
+    $('#lb-modal-biblioteca').on('click', function (e) {
+        if (e.target === this) { $(this).removeClass('abierto'); $wrapBibliotecaActivo = null; }
+    });
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $('#lb-modal-biblioteca').hasClass('abierto')) {
+            $('#lb-modal-biblioteca').removeClass('abierto');
+            $wrapBibliotecaActivo = null;
+        }
+    });
 
     // Subida de imagen inmediata al elegir archivo
     $(document).on('click', '.lb-imagen-subir', function () {
@@ -333,6 +445,10 @@
         $item.next('.lb-elista-item').after($item);
     });
 
+    // Campos que el motor añade automáticamente a TODOS los tipos de sección
+    // (engine/secciones.php); se agrupan aparte para no alargar el formulario.
+    var CAMPOS_AVANZADOS = ['navVisible', 'navTexto', 'estilo_fondo', 'estilo_texto', 'estilo_fuente', 'estilo_tamano'];
+
     function abrirEditor(id) {
         var seccion = seccionPorId(id);
         if (!seccion || !TIPOS[seccion.tipo]) return;
@@ -342,9 +458,22 @@
         $('#lb-editor-titulo').html('<i class="fas ' + tipo.icono + '"></i> ').append(document.createTextNode(tipo.nombre));
 
         var $form = $('#lb-editor-form').empty();
+        var $avanzados = $('<div class="lb-editor-avanzados-campos">');
         $.each(tipo.campos, function (clave, def) {
-            $form.append(crearCampo(clave, def, seccion.contenido[clave]));
+            var $campo = crearCampo(clave, def, seccion.contenido[clave]);
+            if (CAMPOS_AVANZADOS.indexOf(clave) !== -1) {
+                $avanzados.append($campo);
+            } else {
+                $form.append($campo);
+            }
         });
+        if ($avanzados.children().length) {
+            $form.append(
+                $('<details class="lb-avanzado">')
+                    .append('<summary><i class="fas fa-sliders"></i> Ajustes avanzados (menú y estilo)</summary>')
+                    .append($avanzados)
+            );
+        }
 
         $('#lb-editor').addClass('abierto').attr('aria-hidden', 'false');
         $('#lb-editor-fondo').addClass('abierto');
@@ -395,7 +524,18 @@
         if (e.key === 'Escape' && $('#lb-editor').hasClass('abierto')) cerrarEditor();
     });
 
+    // Quita la marca de error en cuanto el campo deja de estar vacío.
+    $('#lb-editor-form').on('input change', '.campo-invalido input, .campo-invalido textarea, .campo-invalido select', function () {
+        if ($(this).val() !== '') marcarCampoInvalido($(this).closest('.lb-ecampo'), false);
+    });
+
     $('#lb-editor-guardar').on('click', function () {
+        var seccion = seccionPorId(idAbierta);
+        if (!seccion) return;
+        if (!validarCamposRequeridos($('#lb-editor-form'), TIPOS[seccion.tipo].campos)) {
+            toast('Completa los campos obligatorios marcados en rojo.', 'error');
+            return;
+        }
         var datos = serializarEditor();
         if (datos === null) return;
         var id = idAbierta;
@@ -420,6 +560,11 @@
     $('#lb-editor-form').on('input change', 'input, textarea, select', function () {
         clearTimeout(timeoutEditor);
         timeoutEditor = setTimeout(function () {
+            var seccion = seccionPorId(idAbierta);
+            if (!seccion) return;
+            // Mientras haya un obligatorio vacío no tiene sentido autoguardar
+            // (el servidor lo rechazaría entero); se limita a marcar el campo.
+            if (!validarCamposRequeridos($('#lb-editor-form'), TIPOS[seccion.tipo].campos)) return;
             var datos = serializarEditor();
             if (datos === null) return;
             var id = idAbierta;
@@ -430,6 +575,8 @@
                         if (seccion) seccion.contenido = datos;
                         marcarCambios();
                         recargarPreview();
+                    } else {
+                        toast(res.msg, 'error');
                     }
                 });
         }, 700); // 700ms debounce

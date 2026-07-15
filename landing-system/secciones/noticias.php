@@ -1,11 +1,9 @@
 <?php
-// Últimas noticias del blog. Muestra las entradas publicadas más recientes;
-// si aún no hay ninguna, usa contenido de ejemplo para no dejar la sección vacía.
+// Últimas noticias del blog. Muestra solo entradas publicadas reales.
 $titulo     = $contenido['titulo'] ?? 'Actualidad';
 $subtitulo  = $contenido['subtitulo'] ?? '';
 $botonTexto = $contenido['botonTexto'] ?? 'Ver todas las noticias';
-$numPosts   = (int)($contenido['numPosts'] ?? 3);
-if (!in_array($numPosts, [3, 6], true)) $numPosts = 3;
+$numPosts   = ($contenido['numPosts'] ?? 'n3') === 'n6' ? 6 : 3;
 
 $noticias = [];
 try {
@@ -13,15 +11,6 @@ try {
     $noticias = listarPostsPublicados($numPosts);
 } catch (Throwable $e) {
     // La landing pública nunca debe romperse por un error de BD
-}
-
-$esEjemplo = empty($noticias);
-if ($esEjemplo) {
-    $noticias = [
-        ['titulo' => 'Apertura del plazo de matriculación', 'resumen' => 'Ya puedes reservar tu plaza para el próximo curso. ¡Plazas limitadas!', 'fechaPublicacion' => date('Y-m-d', strtotime('-2 days')), 'categoria' => 'Admisiones', 'imagen' => '', 'slug' => '', 'autor' => ''],
-        ['titulo' => 'Nuevos convenios de FP Dual', 'resumen' => 'Ampliamos nuestra red de empresas colaboradoras en el sector tecnológico y sanitario.', 'fechaPublicacion' => date('Y-m-d', strtotime('-5 days')), 'categoria' => 'FP Dual', 'imagen' => '', 'slug' => '', 'autor' => ''],
-        ['titulo' => 'Jornada de puertas abiertas', 'resumen' => 'Ven a conocer nuestras instalaciones el próximo viernes. Contaremos con antiguos alumnos.', 'fechaPublicacion' => date('Y-m-d', strtotime('-10 days')), 'categoria' => 'Eventos', 'imagen' => '', 'slug' => '', 'autor' => ''],
-    ];
 }
 ?>
 <section class="lp-sec lp-noticias" id="noticias"<?= $styleInline ?? '' ?>>
@@ -33,6 +22,13 @@ if ($esEjemplo) {
       <?php endif; ?>
     </div>
 
+    <?php if (empty($noticias)): ?>
+    <div class="lp-blog-vacio">
+      <i class="far fa-newspaper"></i>
+      <h2>Todavía no hay entradas</h2>
+      <p>Muy pronto publicaremos aquí las noticias y novedades del centro.</p>
+    </div>
+    <?php else: ?>
     <div class="lp-blog-grid lp-noticias-grid">
       <?php foreach ($noticias as $noticia):
           $enlace = $noticia['slug'] !== '' ? '/vistas/blog.php?post=' . rawurlencode($noticia['slug']) : '/vistas/blog.php';
@@ -70,6 +66,7 @@ if ($esEjemplo) {
     <div class="lp-noticias-cta">
       <a href="/vistas/blog.php" class="lp-boton-borde lp-boton-grande"><?= Security::escapeHtml($botonTexto) ?> <i class="fas fa-arrow-right"></i></a>
     </div>
+    <?php endif; ?>
     <?php endif; ?>
   </div>
 </section>

@@ -2,6 +2,7 @@
 // Sube una imagen del constructor a public/uploads/landing/ (AJAX multipart).
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../include/AdminGuard.php';
+require_once __DIR__ . '/../../../include/ImageOptimizer.php';
 require_once __DIR__ . '/../../../modelos/log.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -17,9 +18,11 @@ if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
 }
 
 $file = $_FILES['imagen'];
-if ($file['size'] > 30 * 1024 * 1024) {
+// El límite real ya lo impone upload_max_filesize (20M, .user.ini); esta
+// comprobación solo da un mensaje claro en vez de un error genérico de PHP.
+if ($file['size'] > 20 * 1024 * 1024) {
     ob_clean();
-    echo json_encode(['ok' => false, 'msg' => 'El archivo supera el máximo de 30 MB.']);
+    echo json_encode(['ok' => false, 'msg' => 'El archivo supera el máximo de 20 MB.']);
     exit;
 }
 
@@ -49,6 +52,10 @@ if (!move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
     ob_clean();
     echo json_encode(['ok' => false, 'msg' => 'No se pudo guardar la imagen.']);
     exit;
+}
+
+if ($mime !== 'video/mp4') {
+    ImageOptimizer::optimize($uploadDir . $filename, $mime);
 }
 
 registrarAccion('insertar', 'landing', null, 'Imagen subida: ' . $filename);

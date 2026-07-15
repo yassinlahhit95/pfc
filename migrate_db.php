@@ -39,6 +39,27 @@ function agregarColumna($con, $tabla, $columna, $definicion) {
     }
 }
 
+function indiceExiste($con, $tabla, $indice) {
+    $stmt = mysqli_prepare($con,
+        "SELECT COUNT(*) c FROM information_schema.STATISTICS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?");
+    mysqli_stmt_bind_param($stmt, 'ss', $tabla, $indice);
+    mysqli_stmt_execute($stmt);
+    return (int)mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))['c'] > 0;
+}
+
+function agregarIndice($con, $tabla, $indice, $columnas) {
+    if (indiceExiste($con, $tabla, $indice)) {
+        echo "[ya aplicado] $tabla.$indice\n";
+        return;
+    }
+    if (mysqli_query($con, "ALTER TABLE `$tabla` ADD INDEX `$indice` ($columnas)")) {
+        echo "[OK]         índice $tabla.$indice añadido\n";
+    } else {
+        echo "[ERROR]      $tabla.$indice: " . mysqli_error($con) . "\n";
+    }
+}
+
 function crearTabla($con, $nombre, $sql) {
     if (mysqli_query($con, $sql)) {
         echo "[OK]         tabla $nombre\n";
@@ -196,6 +217,407 @@ crearTabla($con, 'verificaciones_log', "CREATE TABLE IF NOT EXISTS verificacione
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_verif_ip_fecha (ip, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// ══════════════════════════════════════════════════════════════════════
+// 8. Módulos: código oficial (RD) de cada módulo profesional
+// ══════════════════════════════════════════════════════════════════════
+agregarColumna($con, 'modulos', 'codigoModulo', "VARCHAR(20) NULL AFTER `nombreModulo`");
+
+// ══════════════════════════════════════════════════════════════════════
+// 9. Estudiantes: año de estudio (1º/2º). Una migración anterior sobrescribió
+//    por error la columna `curso` (Grado Medio/Superior) con el enum 1º/2º
+//    en lugar de crear esta columna nueva, dejando a todos los estudiantes
+//    con curso='1º' y rompiendo el guardado de ficha (columna anioEstudio
+//    inexistente). Aquí se añade la columna que faltaba y, si se detecta la
+//    corrupción, se restaura `curso` a partir del nivel del ciclo del alumno.
+// ══════════════════════════════════════════════════════════════════════
+agregarColumna($con, 'estudiantes', 'anioEstudio', "ENUM('1º','2º') NULL AFTER `curso`");
+
+$cursoTipo = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COLUMN_TYPE ct FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'estudiantes' AND COLUMN_NAME = 'curso'"))['ct'] ?? '';
+if (strpos($cursoTipo, "'Grado Medio'") === false) {
+    if (mysqli_query($con, "ALTER TABLE estudiantes MODIFY curso VARCHAR(20) NULL")) {
+        mysqli_query($con, "UPDATE estudiantes e
+            JOIN ciclos c ON e.idCiclo = c.idCiclo
+            JOIN niveles n ON c.idNivel = n.idNivel
+            SET e.curso = n.nombreNivel");
+        if (mysqli_query($con, "ALTER TABLE estudiantes MODIFY curso ENUM('Grado Medio','Grado Superior') NULL")) {
+            echo "[OK]         estudiantes.curso restaurado desde el nivel del ciclo\n";
+        } else {
+            echo "[ERROR]      estudiantes.curso (enum final): " . mysqli_error($con) . "\n";
+        }
+    } else {
+        echo "[ERROR]      estudiantes.curso (ampliar): " . mysqli_error($con) . "\n";
+    }
+} else {
+    echo "[ya aplicado] estudiantes.curso ya tiene el enum correcto\n";
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 10. Índice compuesto en chat_mensajes: las consultas del contador de no
+//     leídos y del último mensaje por conversación (chatContarNoLeidos,
+//     chatConversacionesDe — usadas en el sondeo del chat en cada página,
+//     los 5 roles) solo tenían índices de una columna (conversacion_id,
+//     leido, fecha por separado). Con un índice compuesto MySQL puede
+//     resolver el filtro conversacion_id + leido en una sola búsqueda.
+// ══════════════════════════════════════════════════════════════════════
+agregarIndice($con, 'chat_mensajes', 'idx_msg_conv_leido', '`conversacion_id`, `leido`');
+
+// ══════════════════════════════════════════════════════════════════════
+// 11. Blog / noticias del centro. Antes se creaba con CREATE TABLE IF NOT
+//     EXISTS en cada request (modelos/blog.php), una sentencia DDL costosa
+//     y sin sentido después de la primera vez. Se crea aquí, una sola vez.
+// ══════════════════════════════════════════════════════════════════════
+crearTabla($con, 'blog_posts', "CREATE TABLE IF NOT EXISTS blog_posts (
+    idPost INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    slug VARCHAR(220) NOT NULL UNIQUE,
+    resumen VARCHAR(500) NOT NULL DEFAULT '',
+    contenido MEDIUMTEXT NULL,
+    imagen VARCHAR(255) NOT NULL DEFAULT '',
+    categoria VARCHAR(80) NOT NULL DEFAULT '',
+    autor VARCHAR(120) NOT NULL DEFAULT '',
+    publicado TINYINT(1) NOT NULL DEFAULT 0,
+    destacado TINYINT(1) NOT NULL DEFAULT 0,
+    fechaPublicacion DATETIME NULL,
+    creadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_publicado (publicado, fechaPublicacion)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// ══════════════════════════════════════════════════════════════════════
+// 12. Motor académico configurable — sustituye reglas antes hardcodeadas
+//     (peso examen/reto 0.75/0.25, nota de aprobado = 5, exactamente 2
+//     evaluaciones, etc. — ver modelos/academico_config.php) por
+//     configuración en BD. Aditivo: no se toca ni se borra ninguna tabla
+//     ni columna existente; calificaciones_modulos sigue intacta como red
+//     de seguridad. feature_academico_config controla si el motor nuevo
+//     está activo (por defecto 0: nada cambia hasta que se ejecute el
+//     asistente de configuración, ver seedConfiguracionPorDefecto() más abajo).
+// ══════════════════════════════════════════════════════════════════════
+agregarColumna($con, 'configuracion_centro', 'feature_academico_config', "TINYINT(1) NOT NULL DEFAULT 0");
+
+crearTabla($con, 'academic_config', "CREATE TABLE IF NOT EXISTS academic_config (
+    idConfig INT AUTO_INCREMENT PRIMARY KEY,
+    idCentro INT NULL COMMENT 'reservado para multi-centro futuro; hoy siempre NULL',
+    nombre VARCHAR(150) NOT NULL DEFAULT 'Configuración académica',
+    anioAcademico VARCHAR(9) NULL COMMENT 'p.ej. 2026-2027',
+    tipoEducacion ENUM('grado_medio','grado_superior','otro') NOT NULL DEFAULT 'otro',
+    activo TINYINT(1) NOT NULL DEFAULT 1,
+    creadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_ac_centro_activo (idCentro, activo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'cursos_academicos', "CREATE TABLE IF NOT EXISTS cursos_academicos (
+    idCurso INT AUTO_INCREMENT PRIMARY KEY,
+    idCiclo INT NOT NULL,
+    nombre VARCHAR(40) NOT NULL COMMENT 'p.ej. 1º, 2º, o nombre libre',
+    orden INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (idCiclo) REFERENCES ciclos(idCiclo) ON DELETE CASCADE,
+    UNIQUE KEY uk_curso_ciclo_orden (idCiclo, orden)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// modulos.cursoAnio y modulos.creditosECTS ya se usan en modelos/modulos.php
+// (insertarModulo/actualizarModulo) pero no tenían ALTER registrado en este
+// migrador — deuda de esquema detectada durante el análisis. Se añaden aquí
+// de forma idempotente (si ya existen en producción, agregarColumna lo detecta
+// y no hace nada).
+agregarColumna($con, 'modulos', 'cursoAnio',     "VARCHAR(10) NULL AFTER `nombreModulo`");
+agregarColumna($con, 'modulos', 'creditosECTS',  "INT NULL AFTER `horasMaximas`");
+agregarColumna($con, 'modulos', 'idCurso',       "INT NULL AFTER `idCiclo`");
+agregarColumna($con, 'estudiantes', 'idCurso',   "INT NULL AFTER `anioEstudio`");
+agregarIndice($con, 'modulos', 'idx_modulo_curso', '`idCurso`');
+agregarIndice($con, 'estudiantes', 'idx_est_curso', '`idCurso`');
+
+// Ciclos creados antes de que insertarNuevoCiclo() sembrara cursos_academicos
+// por defecto se quedarían sin opciones de año en los formularios de módulos/
+// estudiantes (que ahora leen esta tabla en vez de un "1º"/"2º" hardcodeado).
+// Backfill idempotente: solo toca ciclos que hoy tienen 0 filas en cursos_academicos.
+$resCiclosSinCurso = mysqli_query($con, "SELECT idCiclo FROM ciclos WHERE idCiclo NOT IN (SELECT DISTINCT idCiclo FROM cursos_academicos)");
+if ($resCiclosSinCurso) {
+    $stmtCurso = mysqli_prepare($con, "INSERT INTO cursos_academicos (idCiclo, nombre, orden) VALUES (?, ?, ?)");
+    while ($filaCiclo = mysqli_fetch_assoc($resCiclosSinCurso)) {
+        $idCicloBackfill = (int)$filaCiclo['idCiclo'];
+        foreach ([['1º', 1], ['2º', 2]] as [$nombreCurso, $orden]) {
+            mysqli_stmt_bind_param($stmtCurso, "isi", $idCicloBackfill, $nombreCurso, $orden);
+            mysqli_stmt_execute($stmtCurso);
+        }
+    }
+    echo "Backfill de cursos_academicos para ciclos existentes: OK\n";
+}
+
+crearTabla($con, 'academic_periods', "CREATE TABLE IF NOT EXISTS academic_periods (
+    idPeriodo INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    nombre VARCHAR(80) NOT NULL,
+    tipo ENUM('evaluacion','recuperacion','ordinaria','extraordinaria','final','proyecto','practicas','certificacion','otro') NOT NULL DEFAULT 'evaluacion',
+    fechaInicio DATE NULL,
+    fechaFin DATE NULL,
+    orden INT NOT NULL DEFAULT 1,
+    visible TINYINT(1) NOT NULL DEFAULT 1,
+    bloqueado TINYINT(1) NOT NULL DEFAULT 0,
+    peso DECIMAL(5,2) NOT NULL DEFAULT 100.00,
+    idPeriodoRecuperaDe INT NULL COMMENT 'si tipo=recuperacion, a qué período ordinario sustituye (solo si la nota de recuperación es mayor)',
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    FOREIGN KEY (idPeriodoRecuperaDe) REFERENCES academic_periods(idPeriodo) ON DELETE SET NULL,
+    KEY idx_periodo_config_orden (idConfig, orden)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'assessment_types', "CREATE TABLE IF NOT EXISTS assessment_types (
+    idTipo INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    nombre VARCHAR(80) NOT NULL,
+    notaMaxima DECIMAL(4,2) NOT NULL DEFAULT 10.00,
+    peso DECIMAL(6,2) NOT NULL DEFAULT 1.00 COMMENT 'peso relativo dentro de la media ponderada del módulo',
+    aprobadoMinimo DECIMAL(4,2) NULL,
+    obligatorio TINYINT(1) NOT NULL DEFAULT 0,
+    recuperable TINYINT(1) NOT NULL DEFAULT 1,
+    visible TINYINT(1) NOT NULL DEFAULT 1,
+    editableProfesor TINYINT(1) NOT NULL DEFAULT 1,
+    editableDirector TINYINT(1) NOT NULL DEFAULT 1,
+    incluirEnMedia TINYINT(1) NOT NULL DEFAULT 1,
+    origen ENUM('examen','reto','ra_ce','fct','tfg','otro') NOT NULL DEFAULT 'otro' COMMENT 'de qué tabla de datos se alimenta este tipo',
+    orden INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    KEY idx_tipo_config (idConfig)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'calificaciones_periodo', "CREATE TABLE IF NOT EXISTS calificaciones_periodo (
+    idCalificacion INT AUTO_INCREMENT PRIMARY KEY,
+    idEstudiante INT NOT NULL,
+    idModulo INT NOT NULL,
+    idPeriodo INT NOT NULL,
+    idTipo INT NOT NULL,
+    nota DECIMAL(4,2) NULL,
+    estado VARCHAR(2) NULL COMMENT 'NP/EX/CO u otro código configurable',
+    observaciones TEXT NULL,
+    actualizadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (idEstudiante) REFERENCES estudiantes(idEstudiante) ON DELETE CASCADE,
+    FOREIGN KEY (idModulo) REFERENCES modulos(idModulo) ON DELETE CASCADE,
+    FOREIGN KEY (idPeriodo) REFERENCES academic_periods(idPeriodo) ON DELETE CASCADE,
+    FOREIGN KEY (idTipo) REFERENCES assessment_types(idTipo) ON DELETE CASCADE,
+    UNIQUE KEY uk_cp_est_mod_periodo_tipo (idEstudiante, idModulo, idPeriodo, idTipo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'grading_policies', "CREATE TABLE IF NOT EXISTS grading_policies (
+    idPolitica INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    escalaMin DECIMAL(4,2) NOT NULL DEFAULT 0.00,
+    escalaMax DECIMAL(4,2) NOT NULL DEFAULT 10.00,
+    notaAprobado DECIMAL(4,2) NOT NULL DEFAULT 5.00,
+    decimales TINYINT NOT NULL DEFAULT 2,
+    pesoTfgEnMedia DECIMAL(6,2) NOT NULL DEFAULT 1.00 COMMENT 'peso del TFG frente a 1 módulo en la media global',
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    UNIQUE KEY uk_gp_config (idConfig)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'promotion_rules', "CREATE TABLE IF NOT EXISTS promotion_rules (
+    idRegla INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    requiereTodosModulos TINYINT(1) NOT NULL DEFAULT 1,
+    notaMinimaGlobal DECIMAL(4,2) NOT NULL DEFAULT 5.00,
+    permiteModulosPendientes INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    UNIQUE KEY uk_pr_config (idConfig)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'internship_config', "CREATE TABLE IF NOT EXISTS internship_config (
+    idConfigFCT INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    habilitado TINYINT(1) NOT NULL DEFAULT 0,
+    horasRequeridasDefecto INT NOT NULL DEFAULT 0,
+    metodoEvaluacion ENUM('nota','apto_no_apto','ambos') NOT NULL DEFAULT 'ambos',
+    pesoEnMedia DECIMAL(6,2) NOT NULL DEFAULT 0.00,
+    requiereAprobarParaTitular TINYINT(1) NOT NULL DEFAULT 1,
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    UNIQUE KEY uk_ic_config (idConfig)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// La tabla `fct` ya existe (creada fuera de este migrador) con nota/apto/fase,
+// pero enlaza la empresa solo por texto libre. Se añade idEmpresa como FK
+// opcional hacia fp_empresas sin tocar la columna `empresa` existente, para no
+// romper filas ya guardadas.
+agregarColumna($con, 'fct', 'idEmpresa', "INT NULL AFTER `empresa`");
+agregarIndice($con, 'fct', 'idx_fct_empresa', '`idEmpresa`');
+
+crearTabla($con, 'tfg_config', "CREATE TABLE IF NOT EXISTS tfg_config (
+    idConfigTFG INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    habilitado TINYINT(1) NOT NULL DEFAULT 1,
+    requiereComite TINYINT(1) NOT NULL DEFAULT 0,
+    requiereDefensa TINYINT(1) NOT NULL DEFAULT 0,
+    notaMinima DECIMAL(4,2) NOT NULL DEFAULT 5.00,
+    pesoEnMedia DECIMAL(6,2) NOT NULL DEFAULT 1.00,
+    permiteRecuperacion TINYINT(1) NOT NULL DEFAULT 1,
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    UNIQUE KEY uk_tc_config (idConfig)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// calificaciones_tfg: añadir convocatoria y ampliar la unicidad de
+// (idEstudiante) a (idEstudiante, convocatoria) para que una recuperación
+// no sobrescriba la nota anterior. Bloque idempotente a medida porque
+// agregarIndice() no sustituye una UNIQUE KEY existente.
+agregarColumna($con, 'calificaciones_tfg', 'convocatoria',
+    "ENUM('ordinaria','extraordinaria') NOT NULL DEFAULT 'ordinaria' AFTER `idEstudiante`");
+$tfgUniqueActual = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) c FROM information_schema.STATISTICS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'calificaciones_tfg'
+       AND INDEX_NAME = 'uk_est_tfg' AND COLUMN_NAME = 'convocatoria'"))['c'] ?? 0;
+if ((int)$tfgUniqueActual === 0) {
+    // DROP + ADD deben ir en la MISMA sentencia ALTER TABLE: idEstudiante
+    // tiene una FK hacia estudiantes(idEstudiante) que necesita un índice de
+    // apoyo en todo momento. Si se hacen en dos ALTER separados, al llegar el
+    // DROP ya no quedaría ningún índice sobre idEstudiante y MySQL lo rechaza
+    // (error 1553) aunque el ADD de la misma transacción fuera a cubrirlo.
+    if (mysqli_query($con, "ALTER TABLE calificaciones_tfg
+            DROP INDEX uk_est_tfg,
+            ADD UNIQUE KEY uk_est_tfg (idEstudiante, convocatoria)")) {
+        echo "[OK]         calificaciones_tfg.uk_est_tfg ampliada a (idEstudiante, convocatoria)\n";
+    } else {
+        echo "[ERROR]      calificaciones_tfg.uk_est_tfg: " . mysqli_error($con) . "\n";
+    }
+} else {
+    echo "[ya aplicado] calificaciones_tfg.uk_est_tfg ya incluye convocatoria\n";
+}
+
+crearTabla($con, 'challenge_config', "CREATE TABLE IF NOT EXISTS challenge_config (
+    idConfigReto INT AUTO_INCREMENT PRIMARY KEY,
+    idConfig INT NOT NULL,
+    pesoDefecto DECIMAL(6,2) NOT NULL DEFAULT 1.00,
+    permiteGrupal TINYINT(1) NOT NULL DEFAULT 0,
+    permiteFases TINYINT(1) NOT NULL DEFAULT 0,
+    requiereRubrica TINYINT(1) NOT NULL DEFAULT 0,
+    evaluacionPares TINYINT(1) NOT NULL DEFAULT 0,
+    FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
+    UNIQUE KEY uk_cc_config (idConfig)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'rubrics', "CREATE TABLE IF NOT EXISTS rubrics (
+    idRubrica INT AUTO_INCREMENT PRIMARY KEY,
+    ambito ENUM('reto','tfg','fct') NOT NULL,
+    nombre VARCHAR(150) NOT NULL,
+    activo TINYINT(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'rubric_criteria', "CREATE TABLE IF NOT EXISTS rubric_criteria (
+    idCriterio INT AUTO_INCREMENT PRIMARY KEY,
+    idRubrica INT NOT NULL,
+    descripcion VARCHAR(255) NOT NULL,
+    pesoCriterio DECIMAL(6,2) NOT NULL DEFAULT 1.00,
+    notaMaxima DECIMAL(4,2) NOT NULL DEFAULT 10.00,
+    orden INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (idRubrica) REFERENCES rubrics(idRubrica) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+crearTabla($con, 'academic_templates', "CREATE TABLE IF NOT EXISTS academic_templates (
+    idPlantilla INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    descripcion VARCHAR(500) NULL,
+    configuracionJson JSON NOT NULL,
+    editable TINYINT(1) NOT NULL DEFAULT 1,
+    creadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// RA/CE → motor de medias ponderadas: un RA puede enlazarse a un
+// assessment_type ('ra_ce') para que su `porcentaje` alimente la media del
+// módulo igual que exámenes o retos. Nullable: si no se enlaza, RA/CE sigue
+// funcionando exactamente igual que hoy (documentación sin efecto en la nota).
+agregarColumna($con, 'resultados_aprendizaje', 'idTipo', "INT NULL AFTER `porcentaje`");
+agregarIndice($con, 'resultados_aprendizaje', 'idx_ra_tipo', '`idTipo`');
+
+// ── Configuración por defecto: reproduce EXACTAMENTE el comportamiento
+//    hardcodeado actual (peso examen 3 : reto 1 = 75%/25%, aprobado = 5,
+//    2 decimales, TFG cuenta como 1 módulo, recuperación siempre permitida,
+//    retos individuales sin fases). feature_academico_config sigue en 0
+//    tras esto: nada cambia para nadie hasta que se active explícitamente
+//    desde el asistente. Solo se siembra si no existe ya ninguna config.
+$yaHayConfig = (int)(mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) c FROM academic_config"))['c'] ?? 0) > 0;
+if (!$yaHayConfig) {
+    mysqli_query($con, "INSERT INTO academic_config (nombre, tipoEducacion, activo)
+        VALUES ('Configuración heredada (auto-generada)', 'otro', 1)");
+    $idConfig = (int)mysqli_insert_id($con);
+
+    mysqli_query($con, "INSERT INTO grading_policies
+        (idConfig, escalaMin, escalaMax, notaAprobado, decimales, pesoTfgEnMedia)
+        VALUES ($idConfig, 0.00, 10.00, 5.00, 2, 1.00)");
+
+    mysqli_query($con, "INSERT INTO promotion_rules
+        (idConfig, requiereTodosModulos, notaMinimaGlobal, permiteModulosPendientes)
+        VALUES ($idConfig, 1, 5.00, 0)");
+
+    mysqli_query($con, "INSERT INTO assessment_types
+        (idConfig, nombre, notaMaxima, peso, obligatorio, recuperable, incluirEnMedia, origen, orden)
+        VALUES
+        ($idConfig, 'Examen', 10.00, 3.00, 1, 1, 1, 'examen', 1),
+        ($idConfig, 'Reto',   10.00, 1.00, 0, 1, 1, 'reto',   2)");
+
+    // 4 períodos que reproducen las 4 columnas actuales (1ev/1final/2ev/2final):
+    // 2 evaluaciones ordinarias + su recuperación respectiva, enlazadas vía
+    // idPeriodoRecuperaDe (recuperación cuenta solo si su nota es mayor —
+    // misma regla que calcularNotaDefinitiva() hoy).
+    mysqli_query($con, "INSERT INTO academic_periods (idConfig, nombre, tipo, orden)
+        VALUES ($idConfig, '1ª Evaluación', 'evaluacion', 1), ($idConfig, '2ª Evaluación', 'evaluacion', 3)");
+    $idPeriodo1Ev = (int)mysqli_insert_id($con);
+    $idPeriodo2Ev = $idPeriodo1Ev + 1;
+    mysqli_query($con, "INSERT INTO academic_periods (idConfig, nombre, tipo, orden, idPeriodoRecuperaDe)
+        VALUES ($idConfig, 'Recuperación 1ª Evaluación', 'recuperacion', 2, $idPeriodo1Ev),
+               ($idConfig, 'Recuperación 2ª Evaluación', 'recuperacion', 4, $idPeriodo2Ev)");
+
+    mysqli_query($con, "INSERT INTO internship_config
+        (idConfig, habilitado, metodoEvaluacion, pesoEnMedia, requiereAprobarParaTitular)
+        VALUES ($idConfig, 0, 'ambos', 0.00, 1)");
+
+    mysqli_query($con, "INSERT INTO tfg_config
+        (idConfig, habilitado, requiereComite, requiereDefensa, notaMinima, pesoEnMedia, permiteRecuperacion)
+        VALUES ($idConfig, 1, 0, 0, 5.00, 1.00, 1)");
+
+    mysqli_query($con, "INSERT INTO challenge_config
+        (idConfig, pesoDefecto, permiteGrupal, permiteFases, requiereRubrica, evaluacionPares)
+        VALUES ($idConfig, 1.00, 0, 0, 0, 0)");
+
+    echo "[OK]         configuración académica por defecto sembrada (idConfig=$idConfig)\n";
+} else {
+    echo "[ya aplicado] ya existe una configuración académica\n";
+}
+
+// ── Plantillas de arranque para el asistente (STEP 10). Se generan a partir
+//    de la primera configuración que exista (la heredada o la que se acabe
+//    de sembrar arriba), con el mismo esquema de exportación que usa
+//    "guardar como plantilla" — ver modelos/plantillas_academicas.php.
+$yaHayPlantillas = (int)(mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) c FROM academic_templates"))['c'] ?? 0) > 0;
+if (!$yaHayPlantillas) {
+    require_once __DIR__ . '/modelos/plantillas_academicas.php';
+    $configBase = obtenerConfigAcademicaActiva();
+    if ($configBase) {
+        $snapshot = exportarConfigComoArray((int)$configBase['idConfig']);
+
+        $snapshotMedio = $snapshot;
+        $snapshotMedio['config']['tipoEducacion'] = 'grado_medio';
+        guardarPlantillaAcademica(
+            'Estándar FP Grado Medio',
+            'Configuración de partida para ciclos de Grado Medio: 2 evaluaciones + recuperación, examen 75% / reto 25%, aprobado 5.',
+            $snapshotMedio, true
+        );
+
+        $snapshotSuperior = $snapshot;
+        $snapshotSuperior['config']['tipoEducacion'] = 'grado_superior';
+        guardarPlantillaAcademica(
+            'Estándar FP Grado Superior',
+            'Configuración de partida para ciclos de Grado Superior: misma estructura que Grado Medio, totalmente editable tras aplicarla.',
+            $snapshotSuperior, true
+        );
+
+        echo "[OK]         2 plantillas académicas de arranque sembradas\n";
+    } else {
+        echo "[omitido]    sin configuración base para generar plantillas\n";
+    }
+} else {
+    echo "[ya aplicado] ya existen plantillas académicas\n";
+}
 
 // ══════════════════════════════════════════════════════════════════════
 // FIN — invalidar caché de feature flags para ver los cambios al momento

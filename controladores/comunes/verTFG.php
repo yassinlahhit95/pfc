@@ -4,6 +4,7 @@
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../modelos/tfg.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
+require_once __DIR__ . "/../../include/FileServer.php";
 
 $idEstudianteReq = intval($_GET['id'] ?? 0);
 $modo            = ($_GET['modo'] ?? 'ver') === 'descarga' ? 'descarga' : 'ver';
@@ -66,9 +67,4 @@ $mime = $mimes[$ext] ?? 'application/octet-stream';
 $inlineOk    = in_array($ext, ['pdf']);
 $disposition = ($modo === 'ver' && $inlineOk) ? 'inline' : 'attachment';
 
-header("Content-Type: $mime");
-header("Content-Length: " . filesize($ruta));
-header("Content-Disposition: $disposition; filename=\"" . rawurlencode($tfg['archivoTFG']) . "\"");
-header("X-Content-Type-Options: nosniff");
-readfile($ruta);
-exit;
+servirArchivo($ruta, $tfg['archivoTFG'], $mime, $disposition === 'inline');

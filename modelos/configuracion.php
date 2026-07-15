@@ -69,6 +69,7 @@ function actualizarFeatureToggle($feature, $estado) {
         'feature_anuncios', 'feature_eventos', 'feature_retos', 'feature_mensajes',
         'feature_pagos', 'feature_gastos', 'feature_informes', 'feature_horario',
         'feature_geoblock_admin', 'feature_ra_ce', 'feature_fp_dual', 'feature_landing',
+        'feature_academico_config',
         'prematricula_filtrar_niveles'
     ];
     if (!in_array($feature, $featuresValidas)) return 'Funcionalidad no reconocida.';

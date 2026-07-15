@@ -46,6 +46,26 @@ function contarGastosPorCategoria($id) {
     return (int)($row['total'] ?? 0);
 }
 
+// Nº de gastos de varias categorías a la vez => [idCategoria => total].
+// Evita el patrón N+1 de llamar contarGastosPorCategoria() una vez por categoría
+// en las vistas de listado (categorias.php de admin y secretaría).
+function contarGastosPorCategorias(array $idsCategorias): array {
+    if (!$idsCategorias) return [];
+    $con = obtenerConexion();
+    $ph = implode(',', array_fill(0, count($idsCategorias), '?'));
+    $types = str_repeat('i', count($idsCategorias));
+    $sql = "SELECT idCategoria, COUNT(*) AS total FROM gastos WHERE idCategoria IN ($ph) GROUP BY idCategoria";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, $types, ...$idsCategorias);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $totales = [];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $totales[$fila['idCategoria']] = (int)$fila['total'];
+    }
+    return $totales;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // GASTOS — CONSULTAS
 // ══════════════════════════════════════════════════════════════════════

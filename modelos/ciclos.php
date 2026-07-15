@@ -96,6 +96,30 @@ function listarNombresTutoresCiclo($idCiclo) {
     return $nombres;
 }
 
+// Profesores de varios ciclos a la vez, agrupados por idCiclo => [['idProfesor','nombreProfesor'], ...].
+// Evita el patrón N+1 de llamar listarProfesoresDeUnCiclo()/listarNombresTutoresCiclo()
+// una vez por ciclo en las vistas de listado (verCiclos.php).
+function listarProfesoresPorCiclos(array $idsCiclos): array {
+    if (!$idsCiclos) return [];
+    $con = obtenerConexion();
+    $ph = implode(',', array_fill(0, count($idsCiclos), '?'));
+    $types = str_repeat('i', count($idsCiclos));
+    $sql = "SELECT cp.idCiclo, p.idProfesor, p.nombreProfesor
+            FROM ciclo_profesor cp
+            JOIN profesores p ON p.idProfesor = cp.idProfesor
+            WHERE cp.idCiclo IN ($ph)
+            ORDER BY p.idProfesor ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, $types, ...$idsCiclos);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $porCiclo = [];
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $porCiclo[$fila['idCiclo']][] = ['idProfesor' => (int)$fila['idProfesor'], 'nombreProfesor' => $fila['nombreProfesor']];
+    }
+    return $porCiclo;
+}
+
 function actualizarProfesoresDeCiclo($idCiclo, array $listaIdsProfesores) {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
@@ -137,6 +161,14 @@ function insertarNuevoCiclo($nombreCiclo, $abreviaturaCiclo, $idNivel, $listaIds
                 mysqli_stmt_bind_param($stmt2, "ii", $idNuevoCiclo, (int)$idProfesor);
                 if (!mysqli_stmt_execute($stmt2)) throw new \RuntimeException('insert ciclo_profesor');
             }
+        }
+        // Cursos por defecto (1º, 2º) para que el ciclo tenga opciones de año
+        // seleccionables desde el primer momento; el asistente académico
+        // permite luego renombrarlos/ampliarlos.
+        $stmt3 = mysqli_prepare($con, "INSERT INTO cursos_academicos (idCiclo, nombre, orden) VALUES (?, ?, ?)");
+        foreach ([['1º', 1], ['2º', 2]] as [$nombreCurso, $orden]) {
+            mysqli_stmt_bind_param($stmt3, "isi", $idNuevoCiclo, $nombreCurso, $orden);
+            if (!mysqli_stmt_execute($stmt3)) throw new \RuntimeException('insert curso_academico');
         }
         mysqli_commit($con);
         return true;

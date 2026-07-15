@@ -8,6 +8,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/tutores.php";
 
 $listaTutores = listarTodosLosTutores();
+$hijosPorTutor = listarHijosPorTutores(array_column($listaTutores, 'idTutor'));
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE TUTORES";
 $seccion = 'tutores';
@@ -45,8 +46,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td colspan="6" class="vacio">No hay tutores registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaTutores as $t): 
-                        $hijos = listarEstudiantesPorTutor($t['idTutor']);
+                    <?php foreach ($listaTutores as $t):
+                        $hijos = $hijosPorTutor[$t['idTutor']] ?? [];
                     ?>
                     <tr>
                         <td><?= Security::escapeHtml($t['idTutor']) ?></td>
@@ -65,7 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php else: ?>
                                 <div style="display:flex;flex-direction:column;gap:4px;">
                                     <?php foreach ($hijos as $h): ?>
-                                        <span style="font-size:.83rem;"><i class="fas fa-user-graduate" style="opacity:.5;margin-right:4px;"></i><?= Security::escapeHtml($h['nombreEstudiante']) ?></span>
+                                        <a href="../estudiantes/verDetallesEstudiantes.php?idEstudiante=<?= (int)$h['idEstudiante'] ?>" style="font-size:.83rem;color:var(--text);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text)'"><i class="fas fa-user-graduate" style="opacity:.5;margin-right:4px;"></i><?= Security::escapeHtml($h['nombreEstudiante']) ?></a>
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>

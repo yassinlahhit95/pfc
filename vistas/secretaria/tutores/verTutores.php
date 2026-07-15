@@ -8,6 +8,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/tutores.php";
 
 $listaTutores = listarTodosLosTutores();
+$hijosPorTutor = listarHijosPorTutores(array_column($listaTutores, 'idTutor'));
 
 $titulo_pagina = "AULAPRO | SISTEMA PARENTAL";
 $seccion = 'tutores';
@@ -50,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 <?php } else { ?>
                     <?php foreach ($listaTutores as $t):
-                        $hijos = listarEstudiantesPorTutor($t['idTutor']);
+                        $hijos = $hijosPorTutor[$t['idTutor']] ?? [];
                     ?>
                     <tr>
                         <td>

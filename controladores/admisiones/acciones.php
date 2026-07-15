@@ -7,6 +7,7 @@ require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/RateLimiter.php";
 require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/ciclos.php";
+require_once __DIR__ . "/../../include/ImageOptimizer.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // LÍMITE DE TASA
@@ -224,6 +225,7 @@ switch ($action) {
 
         if (move_uploaded_file($file['tmp_name'], $dest)) {
             @chmod($dest, 0644);
+            if ($ext !== 'pdf') ImageOptimizer::optimize($dest, $allowed[$ext]);
             $nombreOriginalLimpio = mb_substr(basename($file['name']), 0, 150);
             registrarArchivoPreMatricula($idPreMatricula, $tipo, $nombreOriginalLimpio, "/public/uploads/admisiones/" . $newName);
             echo json_encode(['status' => 'success', 'filename' => $nombreOriginalLimpio]);

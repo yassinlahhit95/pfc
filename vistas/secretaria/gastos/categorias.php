@@ -10,6 +10,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/gastos.php";
 
 $categorias = listarCategorias();
+$gastosPorCategoria = contarGastosPorCategorias(array_column($categorias, 'idCategoria'));
 
 $titulo_pagina = "AULAPRO | CATEGORÍAS DE GASTO";
 $seccion = 'gastos';
@@ -50,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php foreach ($categorias as $cat):
-                    $numGastos = contarGastosPorCategoria($cat['idCategoria']);
+                    $numGastos = $gastosPorCategoria[$cat['idCategoria']] ?? 0;
                 ?>
                 <tr>
                     <td>

@@ -10,33 +10,51 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/chat.php";
+require_once __DIR__ . "/../../../include/Cache.php";
 
 $idProfesor             = $_SESSION['idProfesor'];
 $datosProfesor_menu     = obtenerProfesorPorId($idProfesor);
 $nombreUsuario_menu     = $datosProfesor_menu['nombreProfesor'] ?? 'Profesor';
 
 // _menu suffix avoids collisions with variables in pages that include this nav
-$totalAlumnos_menu   = contarEstudiantesDeProfesor($idProfesor);
-$totalCiclos_menu    = contarCiclosDeProfesor($idProfesor);
-$totalMensajes_menu  = contarMensajesDeProfesor($idProfesor);
-$totalSinLeer_menu   = contarMensajesNoLeidosProfesor($idProfesor);
-$totalTfgs_menu      = contarTFGsDeProfesor($idProfesor);
-$totalModulos_menu   = count(listarModulosDeProfesor($idProfesor));
-$totalRetos_menu     = count(listarRetosDeProfesor($idProfesor));
+// contarMensajesNoLeidosProfesor() y chatContarNoLeidos() ya se cachean 10s
+// dentro de sus propias funciones; el resto se agrupa aquí en un solo bloque
+// cacheado 60s por profesor para no repetir 6 consultas en cada carga de página.
+$navCounts_menu = Cache::remember("nav_profesor_counts_{$idProfesor}", 60, function () use ($idProfesor) {
+    return [
+        'alumnos' => contarEstudiantesDeProfesor($idProfesor),
+        'ciclos'  => contarCiclosDeProfesor($idProfesor),
+        'mensajes'=> contarMensajesDeProfesor($idProfesor),
+        'tfgs'    => contarTFGsDeProfesor($idProfesor),
+        'modulos' => count(listarModulosDeProfesor($idProfesor)),
+        'retos'   => count(listarRetosDeProfesor($idProfesor)),
+    ];
+});
+$totalAlumnos_menu      = $navCounts_menu['alumnos'];
+$totalCiclos_menu       = $navCounts_menu['ciclos'];
+$totalMensajes_menu     = $navCounts_menu['mensajes'];
+$totalSinLeer_menu      = contarMensajesNoLeidosProfesor($idProfesor);
+$totalTfgs_menu         = $navCounts_menu['tfgs'];
+$totalModulos_menu      = $navCounts_menu['modulos'];
+$totalRetos_menu        = $navCounts_menu['retos'];
 $totalChatNoLeidos_menu = chatContarNoLeidos('profesor', $idProfesor);
 
 // Notification panel: recent unread messages for profesor (max 3)
 $_notif_msgs_prof = [];
 if ($totalSinLeer_menu > 0) {
-    $_con_notif_p = obtenerConexion();
-    $_stmt_notif_p = mysqli_prepare($_con_notif_p,
-        "SELECT idReclamacion, asunto, fecha FROM reclamaciones
-         WHERE leido = 0 AND idProfesor = ? AND emisor_rol != 'profesor'
-         ORDER BY idReclamacion DESC LIMIT 3");
-    mysqli_stmt_bind_param($_stmt_notif_p, 'i', $idProfesor);
-    mysqli_stmt_execute($_stmt_notif_p);
-    $_r_p = mysqli_stmt_get_result($_stmt_notif_p);
-    while ($_row_p = mysqli_fetch_assoc($_r_p)) { $_notif_msgs_prof[] = $_row_p; }
+    $_notif_msgs_prof = Cache::remember("nav_profesor_notif_{$idProfesor}", 10, function () use ($idProfesor) {
+        $_con_notif_p = obtenerConexion();
+        $_stmt_notif_p = mysqli_prepare($_con_notif_p,
+            "SELECT idReclamacion, asunto, fecha FROM reclamaciones
+             WHERE leido = 0 AND idProfesor = ? AND emisor_rol != 'profesor'
+             ORDER BY idReclamacion DESC LIMIT 3");
+        mysqli_stmt_bind_param($_stmt_notif_p, 'i', $idProfesor);
+        mysqli_stmt_execute($_stmt_notif_p);
+        $_r_p = mysqli_stmt_get_result($_stmt_notif_p);
+        $out = [];
+        while ($_row_p = mysqli_fetch_assoc($_r_p)) { $out[] = $_row_p; }
+        return $out;
+    });
 }
 
 // Active-state helper
@@ -57,6 +75,7 @@ function _nav_active_prof($check) {
   <link rel="stylesheet" href="../../../public/css/dashboard.css" />
   <link rel="stylesheet" href="../../../public/css/estilo.css" />
   <link rel="stylesheet" href="../../../public/css/notificaciones.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../public/css/aula-digital.css?v=<?= @filemtime(__DIR__.'/../../../public/css/aula-digital.css') ?>" />
   <?php if (FeatureGuard::check('feature_chat')): ?>

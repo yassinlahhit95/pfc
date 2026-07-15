@@ -3,6 +3,7 @@ require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../modelos/academico_config.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/estudiantes/agregarEstudiantes.php");
@@ -22,7 +23,8 @@ $telefono        = Security::sanitize($_POST['telefono'] ?? '');
 $direccion       = Security::sanitize($_POST['direccion'] ?? '');
 $fechaNacimiento = Security::sanitize($_POST['fechaNacimiento'] ?? '');
 $curso           = Security::sanitize($_POST['curso'] ?? 'Grado Medio');
-$anioEstudio     = Security::sanitize($_POST['anioEstudio'] ?? '');
+$anioEstudioPost = Security::sanitize($_POST['anioEstudio'] ?? '');
+$anioEstudio     = existeNombreCursoEnCiclo($idCiclo, $anioEstudioPost) ? $anioEstudioPost : '';
 $fechaAlta       = date('Y-m-d');
 $ciudad          = '';
 $codigoPostal    = '';

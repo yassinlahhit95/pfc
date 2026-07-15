@@ -112,13 +112,12 @@ var todosCiclos = <?= json_encode($mis_ciclos) ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();
-    var nivelId = nivel === 'Grado Medio' ? 1 : (nivel === 'Grado Superior' ? 2 : 0);
     var placeholder = nivel ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --';
     var $select = $('#idCiclo').empty().append($('<option>').val('').text(placeholder));
 
-    if (nivelId > 0) {
+    if (nivel) {
         $.each(todosCiclos, function(i, ciclo) {
-            if (parseInt(ciclo.idNivel) === nivelId) {
+            if (ciclo.nombreNivel === nivel) {
                 $select.append($('<option>').val(ciclo.idCiclo).text(ciclo.nombreCiclo));
             }
         });

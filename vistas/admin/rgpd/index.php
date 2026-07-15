@@ -49,7 +49,7 @@ require_once __DIR__ . "/../comunes/nav.php";
           </option>
           <?php endforeach; ?>
         </select>
-        <input type="text" id="exportar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('exportar')"
+        <input type="text" id="exportar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('exportar')" autocomplete="off"
                style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
       </div>
       <div class="campo" style="align-self:end;">
@@ -82,7 +82,7 @@ require_once __DIR__ . "/../comunes/nav.php";
           </option>
           <?php endforeach; ?>
         </select>
-        <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')"
+        <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')" autocomplete="off"
                style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
       </div>
       <div class="campo ancho-total">

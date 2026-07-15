@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../../include/AdminGuard.php';
 require_once __DIR__ . '/../../../modelos/configuracion.php';
 require_once __DIR__ . '/../../../modelos/log.php';
+require_once __DIR__ . '/../../../include/ImageOptimizer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Security::validateCSRFToken()) {
     if (isset($_POST['onboarding'])) {
@@ -76,6 +77,7 @@ foreach ($logoFields as $field) {
     }
     
     if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
+        ImageOptimizer::optimize($uploadDir . $filename, $mime);
         actualizarLogoCentro($field, $filename);
     }
 }

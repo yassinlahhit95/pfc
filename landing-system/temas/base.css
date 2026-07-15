@@ -508,22 +508,33 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* ── Oferta formativa ────────────────────────────────────────────────── */
 .lp-oferta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(272px, 1fr)); gap: 22px; }
-.lp-ciclo { display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
+.lp-oferta-cols-3 .lp-oferta-grid { grid-template-columns: repeat(3, 1fr); }
+.lp-oferta-cols-4 .lp-oferta-grid { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 980px) {
+  .lp-oferta-cols-3 .lp-oferta-grid, .lp-oferta-cols-4 .lp-oferta-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .lp-oferta-cols-3 .lp-oferta-grid, .lp-oferta-cols-4 .lp-oferta-grid { grid-template-columns: 1fr; }
+}
+.lp-ciclo { display: flex; flex-direction: column; padding: 0; overflow: hidden; position: relative; }
 .lp-ciclo::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, var(--lp-acento), var(--lp-acento-2));
-  opacity: 0; transition: opacity .22s ease;
+  opacity: 0; transition: opacity .22s ease; z-index: 1;
 }
 .lp-ciclo:hover::before { opacity: 1; }
+.lp-ciclo-foto { aspect-ratio: 16 / 10; overflow: hidden; }
+.lp-ciclo-foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+.lp-ciclo:hover .lp-ciclo-foto img { transform: scale(1.05); }
+.lp-ciclo-cuerpo { display: flex; flex-direction: column; gap: 10px; padding: 26px 28px 28px; flex: 1; }
 .lp-ciclo-nivel {
   align-self: flex-start; font-size: 11.5px; font-weight: 800; letter-spacing: .06em;
   text-transform: uppercase; color: var(--lp-acento); background: var(--lp-acento-suave);
   padding: 5px 12px; border-radius: 999px;
 }
 .lp-ciclo h3 { font-size: 19px; font-weight: 800; }
-.lp-ciclo-abrev { color: var(--lp-texto-suave); font-size: 13.5px; }
+.lp-ciclo-texto { color: var(--lp-texto-suave); font-size: 14.5px; line-height: 1.6; }
 .lp-ciclo-precio { font-size: 24px; font-weight: 800; color: var(--lp-texto); }
-.lp-ciclo-precio span { font-size: 13px; font-weight: 600; color: var(--lp-texto-suave); }
 .lp-ciclo-boton { margin-top: auto; }
 
 /* ── Pre-matrícula CTA ───────────────────────────────────────────────── */
@@ -882,11 +893,22 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 .lp-cifras.lp-variante-minimalista .lp-cifra-numero { color: var(--lp-acento); font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 300; }
 
 /* .lp-oferta */
-.lp-oferta.lp-variante-lista .lp-oferta-grid { grid-template-columns: 1fr; max-width: 900px; margin: 0 auto; gap: 16px; }
-.lp-oferta.lp-variante-lista .lp-ciclo { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 24px; padding: 16px 24px; text-align: left; }
+.lp-oferta.lp-variante-lista .lp-oferta-grid,
+.lp-oferta.lp-variante-lista.lp-oferta-cols-3 .lp-oferta-grid,
+.lp-oferta.lp-variante-lista.lp-oferta-cols-4 .lp-oferta-grid { grid-template-columns: 1fr; max-width: 900px; margin: 0 auto; gap: 16px; }
+.lp-oferta.lp-variante-lista .lp-ciclo { flex-direction: row; align-items: stretch; }
+.lp-oferta.lp-variante-lista .lp-ciclo-foto { width: 120px; aspect-ratio: auto; flex-shrink: 0; }
+.lp-oferta.lp-variante-lista .lp-ciclo-cuerpo {
+  flex-direction: row; flex-wrap: wrap; align-items: center; gap: 16px 24px; padding: 16px 24px;
+}
 .lp-oferta.lp-variante-lista .lp-ciclo-nivel { position: static; transform: none; font-size: 0.8rem; padding: 4px 8px; }
+.lp-oferta.lp-variante-lista .lp-ciclo h3 { flex: 1; min-width: 160px; }
+.lp-oferta.lp-variante-lista .lp-ciclo-texto { flex-basis: 100%; }
+.lp-oferta.lp-variante-lista .lp-ciclo-boton { margin-top: 0; }
 @media (max-width: 768px) {
-  .lp-oferta.lp-variante-lista .lp-ciclo { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  .lp-oferta.lp-variante-lista .lp-ciclo { flex-direction: column; text-align: center; }
+  .lp-oferta.lp-variante-lista .lp-ciclo-foto { width: 100%; aspect-ratio: 16 / 10; }
+  .lp-oferta.lp-variante-lista .lp-ciclo-cuerpo { flex-direction: column; align-items: center; }
 }
 
 /* .lp-empresas */
@@ -1278,7 +1300,7 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 .lp-blog-card-body {
   display: flex; flex-direction: column; gap: 10px;
-  padding: 22px 24px 24px; flex: 1;
+  padding: 22px 24px 24px; flex: 1; overflow-wrap: break-word;
 }
 .lp-blog-meta {
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
@@ -1392,6 +1414,7 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   font-size: clamp(30px, 4.6vw, 48px); font-weight: 800;
   letter-spacing: -.03em; line-height: 1.15;
   margin: 16px 0 18px; max-width: 880px; color: var(--lp-texto); text-wrap: balance;
+  overflow-wrap: break-word;
 }
 .lp-migas {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -1407,20 +1430,67 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 .lp-articulo-meta i { margin-right: 6px; color: var(--lp-acento); }
 
-.lp-articulo-contenedor { max-width: 860px; padding-top: clamp(36px, 5vw, 56px); }
+.lp-articulo-contenedor { max-width: 920px; padding-top: clamp(36px, 5vw, 56px); overflow-wrap: break-word; }
 .lp-articulo-portada {
   margin: 0 0 clamp(28px, 4vw, 44px);
   border-radius: var(--lp-radio); overflow: hidden;
   border: 1px solid var(--lp-borde); box-shadow: var(--lp-sombra-hover);
 }
 .lp-articulo-portada img { width: 100%; max-height: 480px; object-fit: cover; }
-.lp-articulo-cuerpo { font-size: 17px; line-height: 1.85; color: var(--lp-texto); }
+.lp-articulo-cuerpo {
+  font-size: 17px; line-height: 1.85; color: var(--lp-texto);
+  overflow-wrap: break-word; word-break: break-word;
+}
 .lp-articulo-cuerpo p { margin-bottom: 1.4em; }
+.lp-articulo-cuerpo h1 {
+  font-size: clamp(28px, 3.6vw, 36px); font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.25; color: var(--lp-texto); margin: 1.6em 0 .7em;
+}
+.lp-articulo-cuerpo h2 {
+  font-size: clamp(24px, 3vw, 30px); font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.3; color: var(--lp-texto); margin: 1.6em 0 .7em;
+}
+.lp-articulo-cuerpo h3 {
+  font-size: clamp(20px, 2.4vw, 23px); font-weight: 800; letter-spacing: -.01em;
+  line-height: 1.35; color: var(--lp-texto); margin: 1.5em 0 .6em;
+}
+.lp-articulo-cuerpo h4 {
+  font-size: 18px; font-weight: 700; line-height: 1.4; color: var(--lp-texto); margin: 1.4em 0 .5em;
+}
+.lp-articulo-cuerpo h5 {
+  font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--lp-texto); margin: 1.3em 0 .5em;
+}
+.lp-articulo-cuerpo h6 {
+  font-size: 14px; font-weight: 700; line-height: 1.4; color: var(--lp-texto-suave);
+  text-transform: uppercase; letter-spacing: .05em; margin: 1.3em 0 .5em;
+}
+.lp-articulo-cuerpo > h1:first-child, .lp-articulo-cuerpo > h2:first-child,
+.lp-articulo-cuerpo > h3:first-child, .lp-articulo-cuerpo > h4:first-child,
+.lp-articulo-cuerpo > h5:first-child, .lp-articulo-cuerpo > h6:first-child { margin-top: 0; }
+.lp-articulo-cuerpo ul, .lp-articulo-cuerpo ol { margin: 0 0 1.4em; padding-left: 1.3em; }
+.lp-articulo-cuerpo li { margin-bottom: .55em; }
+.lp-articulo-cuerpo li::marker { color: var(--lp-acento); font-weight: 700; }
+.lp-articulo-cuerpo a { color: var(--lp-acento); text-decoration: underline; text-underline-offset: 3px; }
+.lp-articulo-cuerpo a:hover { color: var(--lp-acento-2); }
+.lp-articulo-cuerpo strong, .lp-articulo-cuerpo b { font-weight: 800; color: var(--lp-texto); }
+.lp-articulo-cuerpo img {
+  display: block; max-width: 100%; height: auto; margin: 1.7em auto;
+  border-radius: var(--lp-radio); border: 1px solid var(--lp-borde); box-shadow: var(--lp-sombra-hover);
+}
+.lp-articulo-cuerpo iframe {
+  display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; height: auto;
+  margin: 1.8em 0; border-radius: var(--lp-radio); border: 1px solid var(--lp-borde);
+}
+.lp-articulo-cuerpo blockquote {
+  margin: 1.8em 0; padding: 2px 0 2px 20px; border-left: 3px solid var(--lp-acento);
+  color: var(--lp-texto-suave); font-style: italic; font-size: 18px; line-height: 1.7;
+}
 .lp-articulo-entradilla {
   font-size: 20px; line-height: 1.6; font-weight: 500;
   color: var(--lp-texto-suave);
   padding-left: 20px; border-left: 3px solid var(--lp-acento);
   margin-bottom: 1.8em !important;
+  overflow-wrap: break-word;
 }
 .lp-articulo-pie {
   margin: clamp(36px, 5vw, 56px) 0 clamp(48px, 7vw, 72px);

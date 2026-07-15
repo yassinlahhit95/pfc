@@ -30,8 +30,9 @@ $listaDePagosAMostrar = $idDelCicloParaFiltrar
     : listarTodosLosPagos();
 
 // El modal de pendientes es independiente de los filtros de la página:
-// siempre muestra todos los vencidos reales (último pago por estudiante).
-$listaPendientes = listarPagosPendientes();
+// muestra estudiantes con saldo pendiente (precio del ciclo - pagos realizados),
+// igual que el widget del dashboard, para que ambos conteos coincidan.
+$listaPendientes = listarEstudiantesConPagosPendientes();
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE PAGOS";
 $seccion = 'pagos';
@@ -162,28 +163,30 @@ include_once __DIR__ . "/../comunes/nav.php";
             <i class="fas fa-exclamation-circle" style="color:var(--danger)"></i>
         </div>
         <h3 class="modal-titulo">Estudiantes con Pagos Pendientes</h3>
-        <p class="modal-subtitulo">Cuotas recurrentes vencidas (último pago de cada estudiante, sin prórroga vigente)</p>
+        <p class="modal-subtitulo">Saldo pendiente (precio del ciclo menos pagos realizados)</p>
         <div class="contenedor-tabla" style="margin-top:20px; max-height:400px; overflow-y:auto;">
             <table class="tabla-datos" style="font-size:13px;">
                 <thead>
                     <tr>
                         <th>Estudiante</th>
                         <th>Ciclo</th>
-                        <th>Tipo</th>
-                        <th>Vencido desde</th>
-                        <th>Último Pago</th>
+                        <th>Precio Ciclo</th>
+                        <th>Pagado</th>
+                        <th>Deuda</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($listaPendientes)): ?>
-                    <tr><td colspan="5" class="vacio">No hay cuotas vencidas. ¡Todos los estudiantes están al día!</td></tr>
+                    <tr><td colspan="6" class="vacio">No hay estudiantes con pagos pendientes. ¡Todos están al día!</td></tr>
                     <?php else: foreach ($listaPendientes as $p): ?>
                     <tr>
                         <td><b><?= Security::escapeHtml(mb_strtoupper($p['nombreEstudiante'], 'UTF-8')) ?></b></td>
                         <td><?= Security::escapeHtml(mb_strtoupper($p['nombreCiclo'], 'UTF-8')) ?></td>
-                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($p['tipoPago']), 'UTF-8') ?></span></td>
-                        <td class="texto-rojo texto-negrita"><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
-                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?> · <?= number_format((float)$p['monto'], 2) ?> €</td>
+                        <td><?= number_format((float)$p['precioCiclo'], 2) ?> €</td>
+                        <td><?= number_format((float)$p['totalPagado'], 2) ?> €</td>
+                        <td class="texto-rojo texto-negrita"><?= number_format((float)$p['deuda'], 2) ?> €</td>
+                        <td><a href="agregarPagos.php?idEstudiante=<?= (int)$p['idEstudiante'] ?>" class="boton-primario" style="padding:4px 12px;font-size:.8rem;">Cobrar</a></td>
                     </tr>
                     <?php endforeach; endif; ?>
                 </tbody>

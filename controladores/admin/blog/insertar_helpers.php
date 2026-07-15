@@ -1,5 +1,6 @@
 <?php
 // Helpers compartidos de los controladores del blog.
+require_once __DIR__ . '/../../../include/ImageOptimizer.php';
 
 // Sube la imagen de portada a public/uploads/blog/. Devuelve el nombre de
 // archivo, '' si no se envió nada, o null si el archivo no es válido
@@ -22,5 +23,6 @@ function blogSubirImagenPortada(&$msgError) {
         $msgError = 'No se pudo guardar la imagen.';
         return null;
     }
+    ImageOptimizer::optimize($dir . $nombre, $mime);
     return $nombre;
 }

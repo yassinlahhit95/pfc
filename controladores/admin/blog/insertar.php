@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../../include/FeatureGuard.php';
 FeatureGuard::requirePage('feature_landing');
 require_once __DIR__ . "/../../../modelos/blog.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../include/HtmlSanitizer.php";
 require_once __DIR__ . "/insertar_helpers.php";
 
 // ══════════════════════════════════════════════════════════════════════
@@ -48,6 +49,7 @@ if (isset($_POST['guardarPost'])) {
 
     if (empty($listaErrores)) {
         $slug = generarSlugBlog($titulo);
+        $contenido = HtmlSanitizer::clean($contenido);
         $idPost = insertarPost($titulo, $slug, mb_substr($resumen, 0, 500), $contenido,
                                $imagen, mb_substr($categoria, 0, 80), mb_substr($autor, 0, 120),
                                $publicado, $destacado, $fechaPublicacion);

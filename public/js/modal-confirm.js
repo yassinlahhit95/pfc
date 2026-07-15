@@ -1,3 +1,7 @@
+// Diálogo de confirmación reutilizable (window.ModalConfirm), inyecta su propio
+// HTML/CSS al cargar. Dos modos de uso:
+//   ModalConfirm.open({url, data, onSuccess, ...})  — confirma y lanza un AJAX
+//   ModalConfirm.prompt(message, title, type)        — reemplaza confirm() nativo, devuelve una Promise<boolean>
 (function($) {
     if (!$ || window.ModalConfirm) return; // Only init once, requires jQuery
 

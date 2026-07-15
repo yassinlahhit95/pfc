@@ -80,8 +80,9 @@ if (!$mostrarFormulario && !$mostrarMapa) {
 
         <?php if ($mostrarMapa && !empty($iframeMapa)): ?>
         <div class="lp-contacto-mapa">
-          <!-- Note: iframe is output without escaping to allow embed codes, but sanitized in builder. 
-               Only admin can save this. -->
+          <!-- Se muestra sin escapar a propósito: es un <iframe> ya reconstruido
+               y validado por _landing_sanear_iframe_mapa() (solo Google Maps
+               embed, atributos propios descartados) al guardar en el constructor. -->
           <?= $iframeMapa ?>
         </div>
         <?php endif; ?>

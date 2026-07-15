@@ -16,6 +16,72 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `academic_config`
+--
+
+DROP TABLE IF EXISTS `academic_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `academic_config` (
+  `idConfig` int NOT NULL AUTO_INCREMENT,
+  `idCentro` int DEFAULT NULL,
+  `nombre` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Configuraci‚îú‚îÇn acad‚îú¬Æmica',
+  `anioAcademico` varchar(9) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tipoEducacion` enum('grado_medio','grado_superior','otro') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
+  `activo` tinyint(1) NOT NULL DEFAULT '1',
+  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idConfig`),
+  KEY `idx_ac_centro_activo` (`idCentro`,`activo`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `academic_periods`
+--
+
+DROP TABLE IF EXISTS `academic_periods`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `academic_periods` (
+  `idPeriodo` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `nombre` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` enum('evaluacion','recuperacion','ordinaria','extraordinaria','final','proyecto','practicas','certificacion','otro') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'evaluacion',
+  `fechaInicio` date DEFAULT NULL,
+  `fechaFin` date DEFAULT NULL,
+  `orden` int NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `bloqueado` tinyint(1) NOT NULL DEFAULT '0',
+  `peso` decimal(5,2) NOT NULL DEFAULT '100.00',
+  `idPeriodoRecuperaDe` int DEFAULT NULL,
+  PRIMARY KEY (`idPeriodo`),
+  KEY `idPeriodoRecuperaDe` (`idPeriodoRecuperaDe`),
+  KEY `idx_periodo_config_orden` (`idConfig`,`orden`),
+  CONSTRAINT `academic_periods_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE,
+  CONSTRAINT `academic_periods_ibfk_2` FOREIGN KEY (`idPeriodoRecuperaDe`) REFERENCES `academic_periods` (`idPeriodo`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `academic_templates`
+--
+
+DROP TABLE IF EXISTS `academic_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `academic_templates` (
+  `idPlantilla` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcion` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `configuracionJson` json NOT NULL,
+  `editable` tinyint(1) NOT NULL DEFAULT '1',
+  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPlantilla`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `account_lockout`
 --
 
@@ -32,16 +98,6 @@ CREATE TABLE `account_lockout` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `account_lockout`
---
-
-LOCK TABLES `account_lockout` WRITE;
-/*!40000 ALTER TABLE `account_lockout` DISABLE KEYS */;
-INSERT INTO `account_lockout` VALUES ('carlos.sanchez@aulapro.com',1,1782295716,NULL),('juan.garcia@aulapro.com',3,1782295616,NULL),('pablo.martinez@aulapro.com',1,1782297121,NULL),('secretaria@aulapro.com',1,1782296130,NULL);
-/*!40000 ALTER TABLE `account_lockout` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `anuncios`
 --
 
@@ -54,20 +110,11 @@ CREATE TABLE `anuncios` (
   `mensaje` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `fechaAnuncio` datetime DEFAULT CURRENT_TIMESTAMP,
   `fechaExpiracion` date NOT NULL,
-  `dirigidoA` enum('todos','estudiantes','profesores') COLLATE utf8mb4_unicode_ci DEFAULT 'todos',
+  `dirigidoA` enum('todos','estudiantes','profesores','tutores') COLLATE utf8mb4_unicode_ci DEFAULT 'todos',
   PRIMARY KEY (`idAnuncio`),
   KEY `idx_anuncio_fecha` (`fechaAnuncio`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `anuncios`
---
-
-LOCK TABLES `anuncios` WRITE;
-/*!40000 ALTER TABLE `anuncios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `anuncios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `asistencias`
@@ -94,13 +141,32 @@ CREATE TABLE `asistencias` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `asistencias`
+-- Table structure for table `assessment_types`
 --
 
-LOCK TABLES `asistencias` WRITE;
-/*!40000 ALTER TABLE `asistencias` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asistencias` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `assessment_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assessment_types` (
+  `idTipo` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `nombre` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notaMaxima` decimal(4,2) NOT NULL DEFAULT '10.00',
+  `peso` decimal(6,2) NOT NULL DEFAULT '1.00',
+  `aprobadoMinimo` decimal(4,2) DEFAULT NULL,
+  `obligatorio` tinyint(1) NOT NULL DEFAULT '0',
+  `recuperable` tinyint(1) NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `editableProfesor` tinyint(1) NOT NULL DEFAULT '1',
+  `editableDirector` tinyint(1) NOT NULL DEFAULT '1',
+  `incluirEnMedia` tinyint(1) NOT NULL DEFAULT '1',
+  `origen` enum('examen','reto','ra_ce','fct','tfg','otro') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'otro',
+  `orden` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idTipo`),
+  KEY `idx_tipo_config` (`idConfig`),
+  CONSTRAINT `assessment_types_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `auditoria`
@@ -124,15 +190,6 @@ CREATE TABLE `auditoria` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `auditoria`
---
-
-LOCK TABLES `auditoria` WRITE;
-/*!40000 ALTER TABLE `auditoria` DISABLE KEYS */;
-/*!40000 ALTER TABLE `auditoria` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_almacenamiento_ciclo`
 --
 
@@ -146,16 +203,6 @@ CREATE TABLE `aula_almacenamiento_ciclo` (
   CONSTRAINT `fk_aulaalm_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_almacenamiento_ciclo`
---
-
-LOCK TABLES `aula_almacenamiento_ciclo` WRITE;
-/*!40000 ALTER TABLE `aula_almacenamiento_ciclo` DISABLE KEYS */;
-INSERT INTO `aula_almacenamiento_ciclo` VALUES (1,5368709120),(2,5368709120),(3,5368709120);
-/*!40000 ALTER TABLE `aula_almacenamiento_ciclo` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_analytics`
@@ -182,15 +229,6 @@ CREATE TABLE `aula_analytics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_analytics`
---
-
-LOCK TABLES `aula_analytics` WRITE;
-/*!40000 ALTER TABLE `aula_analytics` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_analytics` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_archivo_accesos`
 --
 
@@ -210,15 +248,6 @@ CREATE TABLE `aula_archivo_accesos` (
   CONSTRAINT `fk_aulaacc_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_archivo_accesos`
---
-
-LOCK TABLES `aula_archivo_accesos` WRITE;
-/*!40000 ALTER TABLE `aula_archivo_accesos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_archivo_accesos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_archivo_versiones`
@@ -244,15 +273,6 @@ CREATE TABLE `aula_archivo_versiones` (
   CONSTRAINT `fk_aulaver_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_archivo_versiones`
---
-
-LOCK TABLES `aula_archivo_versiones` WRITE;
-/*!40000 ALTER TABLE `aula_archivo_versiones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_archivo_versiones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_archivos`
@@ -288,15 +308,6 @@ CREATE TABLE `aula_archivos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_archivos`
---
-
-LOCK TABLES `aula_archivos` WRITE;
-/*!40000 ALTER TABLE `aula_archivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_archivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_asistencia_sesion`
 --
 
@@ -319,15 +330,6 @@ CREATE TABLE `aula_asistencia_sesion` (
   CONSTRAINT `fk_aulasis_sesion` FOREIGN KEY (`idSesion`) REFERENCES `aula_sesiones_vivas` (`idSesion`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_asistencia_sesion`
---
-
-LOCK TABLES `aula_asistencia_sesion` WRITE;
-/*!40000 ALTER TABLE `aula_asistencia_sesion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_asistencia_sesion` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_carpetas`
@@ -359,15 +361,6 @@ CREATE TABLE `aula_carpetas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_carpetas`
---
-
-LOCK TABLES `aula_carpetas` WRITE;
-/*!40000 ALTER TABLE `aula_carpetas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_carpetas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_comentarios`
 --
 
@@ -387,15 +380,6 @@ CREATE TABLE `aula_comentarios` (
   CONSTRAINT `fk_aulacomen_entr` FOREIGN KEY (`idEntrega`) REFERENCES `aula_entregas` (`idEntrega`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_comentarios`
---
-
-LOCK TABLES `aula_comentarios` WRITE;
-/*!40000 ALTER TABLE `aula_comentarios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_comentarios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_entregas`
@@ -421,17 +405,8 @@ CREATE TABLE `aula_entregas` (
   KEY `idx_aula_entr_est` (`idEstudiante`),
   CONSTRAINT `fk_aulaentr_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulaentr_tar` FOREIGN KEY (`idTarea`) REFERENCES `aula_tareas` (`idTarea`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_entregas`
---
-
-LOCK TABLES `aula_entregas` WRITE;
-/*!40000 ALTER TABLE `aula_entregas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_entregas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_favoritos`
@@ -454,15 +429,6 @@ CREATE TABLE `aula_favoritos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_favoritos`
---
-
-LOCK TABLES `aula_favoritos` WRITE;
-/*!40000 ALTER TABLE `aula_favoritos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_favoritos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_kanban_estado`
 --
 
@@ -481,15 +447,6 @@ CREATE TABLE `aula_kanban_estado` (
   CONSTRAINT `fk_kanban_tarea` FOREIGN KEY (`idTarea`) REFERENCES `aula_tareas` (`idTarea`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_kanban_estado`
---
-
-LOCK TABLES `aula_kanban_estado` WRITE;
-/*!40000 ALTER TABLE `aula_kanban_estado` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_kanban_estado` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_notificaciones`
@@ -513,15 +470,6 @@ CREATE TABLE `aula_notificaciones` (
   KEY `idx_aula_notif_usr` (`idUsuario`,`tipoUsuario`,`leida`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_notificaciones`
---
-
-LOCK TABLES `aula_notificaciones` WRITE;
-/*!40000 ALTER TABLE `aula_notificaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_notificaciones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_sesiones_vivas`
@@ -551,15 +499,6 @@ CREATE TABLE `aula_sesiones_vivas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_sesiones_vivas`
---
-
-LOCK TABLES `aula_sesiones_vivas` WRITE;
-/*!40000 ALTER TABLE `aula_sesiones_vivas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_sesiones_vivas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_tareas`
 --
 
@@ -580,17 +519,8 @@ CREATE TABLE `aula_tareas` (
   KEY `fk_aulatar_prof` (`idProfesor`),
   CONSTRAINT `fk_aulatar_mod` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
   CONSTRAINT `fk_aulatar_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `aula_tareas`
---
-
-LOCK TABLES `aula_tareas` WRITE;
-/*!40000 ALTER TABLE `aula_tareas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_tareas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aula_versiones_entrega`
@@ -616,15 +546,6 @@ CREATE TABLE `aula_versiones_entrega` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula_versiones_entrega`
---
-
-LOCK TABLES `aula_versiones_entrega` WRITE;
-/*!40000 ALTER TABLE `aula_versiones_entrega` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula_versiones_entrega` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aulas`
 --
 
@@ -647,14 +568,31 @@ CREATE TABLE `aulas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aulas`
+-- Table structure for table `blog_posts`
 --
 
-LOCK TABLES `aulas` WRITE;
-/*!40000 ALTER TABLE `aulas` DISABLE KEYS */;
-INSERT INTO `aulas` (`idAula`, `planta`, `numero`, `nombreAula`, `tipoAula`, `capacidad`, `activa`) VALUES (1,1,1,'Aula 101','teoria',30,1),(2,1,2,'Aula 102','teoria',30,1),(3,2,1,'Laboratorio 201','laboratorio',24,1),(4,2,2,'Laboratorio 202','laboratorio',24,1),(5,0,1,'Aula 001 (Taller)','taller',20,1);
-/*!40000 ALTER TABLE `aulas` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `blog_posts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_posts` (
+  `idPost` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(220) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resumen` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `contenido` mediumtext COLLATE utf8mb4_unicode_ci,
+  `imagen` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `categoria` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `autor` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `publicado` tinyint(1) NOT NULL DEFAULT '0',
+  `destacado` tinyint(1) NOT NULL DEFAULT '0',
+  `fechaPublicacion` datetime DEFAULT NULL,
+  `creadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPost`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_publicado` (`publicado`,`fechaPublicacion`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `boletines_log`
@@ -664,25 +602,19 @@ DROP TABLE IF EXISTS `boletines_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `boletines_log` (
-  `serial` varchar(25) NOT NULL,
+  `serial` varchar(40) NOT NULL,
   `idEstudiante` int NOT NULL,
   `idCiclo` int NOT NULL,
   `nombreEstudiante` varchar(255) NOT NULL,
   `nombreCiclo` varchar(255) NOT NULL,
   `cursoEscolar` varchar(20) NOT NULL,
   `fechaGeneracion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `scan_count` int unsigned NOT NULL DEFAULT '0',
+  `last_scan_at` datetime DEFAULT NULL,
+  `last_scan_ip` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`serial`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `boletines_log`
---
-
-LOCK TABLES `boletines_log` WRITE;
-/*!40000 ALTER TABLE `boletines_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `boletines_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `calificaciones_ce`
@@ -701,17 +633,8 @@ CREATE TABLE `calificaciones_ce` (
   KEY `idCE` (`idCE`),
   CONSTRAINT `calificaciones_ce_ibfk_1` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `calificaciones_ce_ibfk_2` FOREIGN KEY (`idCE`) REFERENCES `criterios_evaluacion` (`idCE`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `calificaciones_ce`
---
-
-LOCK TABLES `calificaciones_ce` WRITE;
-/*!40000 ALTER TABLE `calificaciones_ce` DISABLE KEYS */;
-/*!40000 ALTER TABLE `calificaciones_ce` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `calificaciones_modulos`
@@ -739,18 +662,37 @@ CREATE TABLE `calificaciones_modulos` (
   KEY `idx_cm_mod` (`idModulo`),
   CONSTRAINT `fk_cm_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_cm_modulo` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `calificaciones_modulos`
+-- Table structure for table `calificaciones_periodo`
 --
 
-LOCK TABLES `calificaciones_modulos` WRITE;
-/*!40000 ALTER TABLE `calificaciones_modulos` DISABLE KEYS */;
-INSERT INTO `calificaciones_modulos` VALUES (1,1,3,NULL,NULL,NULL,NULL,'','CO','CO','CO','CO'),(2,2,3,7.00,7.00,7.00,7.00,'',NULL,NULL,NULL,NULL),(3,3,3,NULL,9.00,8.00,7.00,'','NP',NULL,NULL,NULL),(4,1,5,6.00,6.00,6.00,6.00,'',NULL,NULL,NULL,NULL),(5,2,5,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(6,3,5,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(7,1,1,7.00,7.00,8.00,9.00,'',NULL,NULL,NULL,NULL),(8,2,1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(9,3,1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(10,1,2,4.00,5.00,8.00,7.00,'',NULL,NULL,NULL,NULL),(11,2,2,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(12,3,2,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(13,1,4,6.00,8.00,4.00,5.00,'',NULL,NULL,NULL,NULL),(14,2,4,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL),(15,3,4,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `calificaciones_modulos` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `calificaciones_periodo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `calificaciones_periodo` (
+  `idCalificacion` int NOT NULL AUTO_INCREMENT,
+  `idEstudiante` int NOT NULL,
+  `idModulo` int NOT NULL,
+  `idPeriodo` int NOT NULL,
+  `idTipo` int NOT NULL,
+  `nota` decimal(4,2) DEFAULT NULL,
+  `estado` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `observaciones` text COLLATE utf8mb4_unicode_ci,
+  `actualizadoEn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idCalificacion`),
+  UNIQUE KEY `uk_cp_est_mod_periodo_tipo` (`idEstudiante`,`idModulo`,`idPeriodo`,`idTipo`),
+  KEY `idModulo` (`idModulo`),
+  KEY `idTipo` (`idTipo`),
+  KEY `idPeriodo` (`idPeriodo`),
+  CONSTRAINT `calificaciones_periodo_ibfk_1` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
+  CONSTRAINT `calificaciones_periodo_ibfk_2` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE,
+  CONSTRAINT `calificaciones_periodo_ibfk_4` FOREIGN KEY (`idTipo`) REFERENCES `assessment_types` (`idTipo`) ON DELETE CASCADE,
+  CONSTRAINT `calificaciones_periodo_ibfk_5` FOREIGN KEY (`idPeriodo`) REFERENCES `academic_periods` (`idPeriodo`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `calificaciones_retos`
@@ -769,18 +711,8 @@ CREATE TABLE `calificaciones_retos` (
   KEY `idx_cal_reto_reto` (`idReto`),
   CONSTRAINT `fk_cr_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_cr_reto` FOREIGN KEY (`idReto`) REFERENCES `retos` (`idReto`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `calificaciones_retos`
---
-
-LOCK TABLES `calificaciones_retos` WRITE;
-/*!40000 ALTER TABLE `calificaciones_retos` DISABLE KEYS */;
-INSERT INTO `calificaciones_retos` VALUES (1,1,1,7.50);
-/*!40000 ALTER TABLE `calificaciones_retos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `calificaciones_tfg`
@@ -792,22 +724,14 @@ DROP TABLE IF EXISTS `calificaciones_tfg`;
 CREATE TABLE `calificaciones_tfg` (
   `idCalificacion` int NOT NULL AUTO_INCREMENT,
   `idEstudiante` int NOT NULL,
+  `convocatoria` enum('ordinaria','extraordinaria') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ordinaria',
   `nota` decimal(4,2) NOT NULL,
   `observaciones` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`idCalificacion`),
-  UNIQUE KEY `uk_est_tfg` (`idEstudiante`),
+  UNIQUE KEY `uk_est_tfg` (`idEstudiante`,`convocatoria`),
   CONSTRAINT `fk_ctfg_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `calificaciones_tfg`
---
-
-LOCK TABLES `calificaciones_tfg` WRITE;
-/*!40000 ALTER TABLE `calificaciones_tfg` DISABLE KEYS */;
-/*!40000 ALTER TABLE `calificaciones_tfg` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `carpetas_ejercicios`
@@ -834,15 +758,6 @@ CREATE TABLE `carpetas_ejercicios` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `carpetas_ejercicios`
---
-
-LOCK TABLES `carpetas_ejercicios` WRITE;
-/*!40000 ALTER TABLE `carpetas_ejercicios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `carpetas_ejercicios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `categorias_gasto`
 --
 
@@ -860,14 +775,25 @@ CREATE TABLE `categorias_gasto` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `categorias_gasto`
+-- Table structure for table `challenge_config`
 --
 
-LOCK TABLES `categorias_gasto` WRITE;
-/*!40000 ALTER TABLE `categorias_gasto` DISABLE KEYS */;
-INSERT INTO `categorias_gasto` VALUES (1,'Material escolar',2000.00,'#0d6efd',1),(2,'Mantenimiento',3000.00,'#198754',1),(3,'Equipamiento TIC',5000.00,'#0dcaf0',1),(4,'Actividades',1500.00,'#ffc107',1),(5,'Administraci¢n',1000.00,'#6c757d',1);
-/*!40000 ALTER TABLE `categorias_gasto` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `challenge_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `challenge_config` (
+  `idConfigReto` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `pesoDefecto` decimal(6,2) NOT NULL DEFAULT '1.00',
+  `permiteGrupal` tinyint(1) NOT NULL DEFAULT '0',
+  `permiteFases` tinyint(1) NOT NULL DEFAULT '0',
+  `requiereRubrica` tinyint(1) NOT NULL DEFAULT '0',
+  `evaluacionPares` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idConfigReto`),
+  UNIQUE KEY `uk_cc_config` (`idConfig`),
+  CONSTRAINT `challenge_config_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `chat_conversaciones`
@@ -888,17 +814,8 @@ CREATE TABLE `chat_conversaciones` (
   KEY `idx_conv_a` (`user_a_rol`,`user_a_id`),
   KEY `idx_conv_b` (`user_b_rol`,`user_b_id`),
   KEY `idx_conv_last` (`last_message_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `chat_conversaciones`
---
-
-LOCK TABLES `chat_conversaciones` WRITE;
-/*!40000 ALTER TABLE `chat_conversaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `chat_conversaciones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `chat_mensajes`
@@ -919,18 +836,10 @@ CREATE TABLE `chat_mensajes` (
   KEY `idx_msg_conv` (`conversacion_id`),
   KEY `idx_msg_fecha` (`fecha`),
   KEY `idx_msg_leido` (`leido`),
+  KEY `idx_msg_conv_leido` (`conversacion_id`,`leido`),
   CONSTRAINT `fk_msg_conv` FOREIGN KEY (`conversacion_id`) REFERENCES `chat_conversaciones` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `chat_mensajes`
---
-
-LOCK TABLES `chat_mensajes` WRITE;
-/*!40000 ALTER TABLE `chat_mensajes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `chat_mensajes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ciclo_profesor`
@@ -950,16 +859,6 @@ CREATE TABLE `ciclo_profesor` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ciclo_profesor`
---
-
-LOCK TABLES `ciclo_profesor` WRITE;
-/*!40000 ALTER TABLE `ciclo_profesor` DISABLE KEYS */;
-INSERT INTO `ciclo_profesor` VALUES (1,1),(2,2);
-/*!40000 ALTER TABLE `ciclo_profesor` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `ciclos`
 --
 
@@ -977,18 +876,8 @@ CREATE TABLE `ciclos` (
   PRIMARY KEY (`idCiclo`),
   KEY `idx_ciclo_nivel` (`idNivel`),
   CONSTRAINT `fk_ciclos_niveles` FOREIGN KEY (`idNivel`) REFERENCES `niveles` (`idNivel`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ciclos`
---
-
-LOCK TABLES `ciclos` WRITE;
-/*!40000 ALTER TABLE `ciclos` DISABLE KEYS */;
-INSERT INTO `ciclos` VALUES (1,'Desarrollo de Aplicaciones Web','DAW',1200.00,2,1,NULL),(2,'Desarrollo de Aplicaciones Multiplataforma','DAM',1200.00,2,1,NULL),(3,'Sistemas Inform√°ticos en Red','ASIR',1200.00,2,1,NULL);
-/*!40000 ALTER TABLE `ciclos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `cola_emails`
@@ -1015,15 +904,6 @@ CREATE TABLE `cola_emails` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cola_emails`
---
-
-LOCK TABLES `cola_emails` WRITE;
-/*!40000 ALTER TABLE `cola_emails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cola_emails` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `configuracion_centro`
 --
 
@@ -1032,7 +912,7 @@ DROP TABLE IF EXISTS `configuracion_centro`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `configuracion_centro` (
   `idConfig` int NOT NULL DEFAULT '1',
-  `nombreCentro` varchar(200) DEFAULT 'Centro de Formaci¢n Profesional',
+  `nombreCentro` varchar(200) DEFAULT 'Centro de Formaci√≥n Profesional',
   `codigoCentro` varchar(50) DEFAULT '',
   `direccionCentro` varchar(200) DEFAULT '',
   `ciudadCentro` varchar(100) DEFAULT '',
@@ -1070,19 +950,10 @@ CREATE TABLE `configuracion_centro` (
   `feature_fp_dual` tinyint(1) DEFAULT '0',
   `feature_landing` tinyint(1) NOT NULL DEFAULT '1',
   `prematricula_filtrar_niveles` tinyint(1) NOT NULL DEFAULT '0',
+  `feature_academico_config` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`idConfig`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `configuracion_centro`
---
-
-LOCK TABLES `configuracion_centro` WRITE;
-/*!40000 ALTER TABLE `configuracion_centro` DISABLE KEYS */;
-INSERT INTO `configuracion_centro` VALUES (1,'Centro de Formaci¢n Profesional','','','','','','','2024-2025','logoCentro_1780959435.jpeg','logoGobierno1_1780959435.png','logoGobierno2_1780959435.png','','',0,1,1,1,'active',NULL,0,NULL,'info',NULL,NULL,NULL,1,1,1,1,1,1,1,1,1,0,0,1,0);
-/*!40000 ALTER TABLE `configuracion_centro` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `criterios_evaluacion`
@@ -1099,17 +970,26 @@ CREATE TABLE `criterios_evaluacion` (
   PRIMARY KEY (`idCE`),
   KEY `idRA` (`idRA`),
   CONSTRAINT `criterios_evaluacion_ibfk_1` FOREIGN KEY (`idRA`) REFERENCES `resultados_aprendizaje` (`idRA`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `criterios_evaluacion`
+-- Table structure for table `cursos_academicos`
 --
 
-LOCK TABLES `criterios_evaluacion` WRITE;
-/*!40000 ALTER TABLE `criterios_evaluacion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `criterios_evaluacion` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `cursos_academicos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cursos_academicos` (
+  `idCurso` int NOT NULL AUTO_INCREMENT,
+  `idCiclo` int NOT NULL,
+  `nombre` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `orden` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idCurso`),
+  UNIQUE KEY `uk_curso_ciclo_orden` (`idCiclo`,`orden`),
+  CONSTRAINT `cursos_academicos_ibfk_1` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `directores`
@@ -1139,16 +1019,6 @@ CREATE TABLE `directores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `directores`
---
-
-LOCK TABLES `directores` WRITE;
-/*!40000 ALTER TABLE `directores` DISABLE KEYS */;
-INSERT INTO `directores` VALUES (1,'Administrador','admin@aulapro.com','$2y$12$aAidhwyJ..kyv17j5bHode8qVyAN4H0pwIXu52zUQEBfM2MWIYSBy',NULL,'00000000T',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `directores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `dispositivos`
 --
 
@@ -1162,17 +1032,8 @@ CREATE TABLE `dispositivos` (
   `estadoDispositivo` enum('disponible','prestado') COLLATE utf8mb4_unicode_ci DEFAULT 'disponible',
   PRIMARY KEY (`idDispositivo`),
   UNIQUE KEY `uk_serie` (`numeroSerie`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `dispositivos`
---
-
-LOCK TABLES `dispositivos` WRITE;
-/*!40000 ALTER TABLE `dispositivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dispositivos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ejercicios`
@@ -1203,15 +1064,6 @@ CREATE TABLE `ejercicios` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ejercicios`
---
-
-LOCK TABLES `ejercicios` WRITE;
-/*!40000 ALTER TABLE `ejercicios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ejercicios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `entregas_ejercicios`
 --
 
@@ -1237,15 +1089,6 @@ CREATE TABLE `entregas_ejercicios` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `entregas_ejercicios`
---
-
-LOCK TABLES `entregas_ejercicios` WRITE;
-/*!40000 ALTER TABLE `entregas_ejercicios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `entregas_ejercicios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `estudiante_tutor`
 --
 
@@ -1262,16 +1105,6 @@ CREATE TABLE `estudiante_tutor` (
   CONSTRAINT `fk_et_tut` FOREIGN KEY (`idTutor`) REFERENCES `tutores` (`idTutor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `estudiante_tutor`
---
-
-LOCK TABLES `estudiante_tutor` WRITE;
-/*!40000 ALTER TABLE `estudiante_tutor` DISABLE KEYS */;
-INSERT INTO `estudiante_tutor` VALUES (1,1,'Madre'),(2,2,'Padre'),(3,3,'Madre'),(4,3,'Madre');
-/*!40000 ALTER TABLE `estudiante_tutor` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `estudiantes`
@@ -1295,6 +1128,8 @@ CREATE TABLE `estudiantes` (
   `observacionesEstudiante` text COLLATE utf8mb4_unicode_ci,
   `idCiclo` int DEFAULT NULL,
   `curso` enum('Grado Medio','Grado Superior') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `anioEstudio` enum('1¬∫','2¬∫') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idCurso` int DEFAULT NULL,
   `archivoTFG` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tituloTFG` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fechaSubidaTFG` datetime DEFAULT NULL,
@@ -1305,19 +1140,10 @@ CREATE TABLE `estudiantes` (
   UNIQUE KEY `uk_email_est` (`emailEstudiante`),
   UNIQUE KEY `uk_dni_est` (`dniEstudiante`),
   KEY `idx_est_ciclo` (`idCiclo`),
+  KEY `idx_est_curso` (`idCurso`),
   CONSTRAINT `fk_estudiantes_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `estudiantes`
---
-
-LOCK TABLES `estudiantes` WRITE;
-/*!40000 ALTER TABLE `estudiantes` DISABLE KEYS */;
-INSERT INTO `estudiantes` VALUES (1,'Carlos S√°nchez L√≥pez','carlos.sanchez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'11111111C','2004-06-10','2023-09-01',NULL,NULL,NULL,NULL,1,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(2,'Laura Fern√°ndez Garc√≠a','laura.fernandez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'22222222D','2004-08-22','2023-09-01',NULL,NULL,NULL,NULL,1,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(3,'Pablo Mart√≠nez Ruiz','pablo.martinez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'33333333E','2005-01-18','2023-09-01',NULL,NULL,NULL,NULL,1,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(4,'Andrea Jim√©nez Torres','andrea.jimenez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'44444444F','2004-07-14','2023-09-01',NULL,NULL,NULL,NULL,2,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(5,'David Moreno P√©rez','david.moreno@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'55555555G','2005-02-28','2023-09-01',NULL,NULL,NULL,NULL,2,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(6,'Sof√≠a Gonz√°lez Blanco','sofia.gonzalez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'66666666H','2004-11-05','2023-09-01',NULL,NULL,NULL,NULL,2,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(7,'Alejandro Ram√≠rez Santos','alejandro.ramirez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'77777777I','2004-09-12','2023-09-01',NULL,NULL,NULL,NULL,3,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(8,'Cristina D√≠az Mu√±oz','cristina.diaz@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'88888888J','2005-03-30','2023-09-01',NULL,NULL,NULL,NULL,3,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL),(9,'Roberto Vega Herrera','roberto.vega@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu',NULL,'99999999K','2004-12-08','2023-09-01',NULL,NULL,NULL,NULL,3,'Grado Superior',NULL,NULL,NULL,NULL,0,NULL);
-/*!40000 ALTER TABLE `estudiantes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `eventos`
@@ -1339,15 +1165,6 @@ CREATE TABLE `eventos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `eventos`
---
-
-LOCK TABLES `eventos` WRITE;
-/*!40000 ALTER TABLE `eventos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `eventos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `fct`
 --
 
@@ -1359,6 +1176,7 @@ CREATE TABLE `fct` (
   `idEstudiante` int NOT NULL,
   `idCiclo` int NOT NULL,
   `empresa` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idEmpresa` int DEFAULT NULL,
   `tutorEmpresa` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailTutorEmpresa` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `telefonoEmpresa` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1377,20 +1195,12 @@ CREATE TABLE `fct` (
   UNIQUE KEY `uq_fct_est_ciclo_fase` (`idEstudiante`,`idCiclo`,`fase`),
   KEY `idx_fct_ciclo` (`idCiclo`),
   KEY `idx_fct_profesor` (`idProfesorTutor`),
+  KEY `idx_fct_empresa` (`idEmpresa`),
   CONSTRAINT `fk_fct_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
   CONSTRAINT `fk_fct_est` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
   CONSTRAINT `fk_fct_prof` FOREIGN KEY (`idProfesorTutor`) REFERENCES `profesores` (`idProfesor`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fct`
---
-
-LOCK TABLES `fct` WRITE;
-/*!40000 ALTER TABLE `fct` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fct` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `fp_dual_asignaciones`
@@ -1416,15 +1226,6 @@ CREATE TABLE `fp_dual_asignaciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `fp_dual_asignaciones`
---
-
-LOCK TABLES `fp_dual_asignaciones` WRITE;
-/*!40000 ALTER TABLE `fp_dual_asignaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fp_dual_asignaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `fp_empresas`
 --
 
@@ -1443,15 +1244,6 @@ CREATE TABLE `fp_empresas` (
   PRIMARY KEY (`idEmpresa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fp_empresas`
---
-
-LOCK TABLES `fp_empresas` WRITE;
-/*!40000 ALTER TABLE `fp_empresas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fp_empresas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `gastos`
@@ -1478,17 +1270,29 @@ CREATE TABLE `gastos` (
   KEY `idx_gasto_fecha` (`fecha`),
   CONSTRAINT `fk_gasto_cat` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_gasto` (`idCategoria`) ON DELETE RESTRICT,
   CONSTRAINT `fk_gasto_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `gastos`
+-- Table structure for table `grading_policies`
 --
 
-LOCK TABLES `gastos` WRITE;
-/*!40000 ALTER TABLE `gastos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gastos` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `grading_policies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `grading_policies` (
+  `idPolitica` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `escalaMin` decimal(4,2) NOT NULL DEFAULT '0.00',
+  `escalaMax` decimal(4,2) NOT NULL DEFAULT '10.00',
+  `notaAprobado` decimal(4,2) NOT NULL DEFAULT '5.00',
+  `decimales` tinyint NOT NULL DEFAULT '2',
+  `pesoTfgEnMedia` decimal(6,2) NOT NULL DEFAULT '1.00',
+  PRIMARY KEY (`idPolitica`),
+  UNIQUE KEY `uk_gp_config` (`idConfig`),
+  CONSTRAINT `grading_policies_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `historial_secretarias`
@@ -1511,15 +1315,6 @@ CREATE TABLE `historial_secretarias` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `historial_secretarias`
---
-
-LOCK TABLES `historial_secretarias` WRITE;
-/*!40000 ALTER TABLE `historial_secretarias` DISABLE KEYS */;
-/*!40000 ALTER TABLE `historial_secretarias` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `horario_franjas`
 --
 
@@ -1539,16 +1334,6 @@ CREATE TABLE `horario_franjas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `horario_franjas`
---
-
-LOCK TABLES `horario_franjas` WRITE;
-/*!40000 ALTER TABLE `horario_franjas` DISABLE KEYS */;
-INSERT INTO `horario_franjas` VALUES (2,1,'09:00:00','10:00:00',0),(3,1,'10:00:00','11:00:00',0),(51,2,'08:00:00','09:00:00',0),(52,2,'09:00:00','10:00:00',0),(53,2,'10:00:00','11:00:00',0),(54,2,'11:00:00','11:30:00',1),(55,2,'11:30:00','12:30:00',0),(56,2,'12:30:00','13:30:00',0),(57,2,'13:30:00','14:30:00',0),(58,3,'08:00:00','09:00:00',0),(59,3,'09:00:00','10:00:00',0),(60,3,'10:00:00','11:00:00',0),(61,3,'11:00:00','11:30:00',1),(63,3,'12:30:00','13:30:00',0),(68,1,'11:00:00','11:30:00',1),(69,1,'11:30:00','12:30:00',0),(70,1,'12:30:00','13:30:00',0),(71,1,'13:30:00','14:30:00',0),(88,1,'14:30:00','15:00:00',1),(96,1,'15:00:00','16:00:00',0),(97,1,'08:00:00','09:00:00',0);
-/*!40000 ALTER TABLE `horario_franjas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `horarios`
 --
 
@@ -1558,7 +1343,7 @@ DROP TABLE IF EXISTS `horarios`;
 CREATE TABLE `horarios` (
   `idHorario` int NOT NULL AUTO_INCREMENT,
   `idCiclo` int NOT NULL,
-  `diaSemana` enum('Lunes','Martes','MiÇrcoles','Jueves','Viernes') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `diaSemana` enum('Lunes','Martes','Mi√©rcoles','Jueves','Viernes') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `horaInicio` time NOT NULL,
   `horaFin` time NOT NULL,
   `idModulo` int DEFAULT NULL,
@@ -1580,14 +1365,25 @@ CREATE TABLE `horarios` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `horarios`
+-- Table structure for table `internship_config`
 --
 
-LOCK TABLES `horarios` WRITE;
-/*!40000 ALTER TABLE `horarios` DISABLE KEYS */;
-INSERT INTO `horarios` VALUES (2,1,'Lunes','09:00:00','10:00:00',2,1,1,'2026-06-08 11:20:22'),(3,1,'Lunes','10:00:00','11:00:00',3,1,1,'2026-06-08 11:20:22'),(6,1,'MiÇrcoles','09:00:00','10:00:00',3,1,1,'2026-06-08 11:20:22'),(8,1,'Jueves','10:00:00','11:00:00',4,1,3,'2026-06-08 11:20:22');
-/*!40000 ALTER TABLE `horarios` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `internship_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `internship_config` (
+  `idConfigFCT` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `habilitado` tinyint(1) NOT NULL DEFAULT '0',
+  `horasRequeridasDefecto` int NOT NULL DEFAULT '0',
+  `metodoEvaluacion` enum('nota','apto_no_apto','ambos') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ambos',
+  `pesoEnMedia` decimal(6,2) NOT NULL DEFAULT '0.00',
+  `requiereAprobarParaTitular` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idConfigFCT`),
+  UNIQUE KEY `uk_ic_config` (`idConfig`),
+  CONSTRAINT `internship_config_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `inventario`
@@ -1604,15 +1400,6 @@ CREATE TABLE `inventario` (
   PRIMARY KEY (`idInventario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `inventario`
---
-
-LOCK TABLES `inventario` WRITE;
-/*!40000 ALTER TABLE `inventario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `inventario` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `landing_config`
@@ -1634,16 +1421,6 @@ CREATE TABLE `landing_config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `landing_config`
---
-
-LOCK TABLES `landing_config` WRITE;
-/*!40000 ALTER TABLE `landing_config` DISABLE KEYS */;
-INSERT INTO `landing_config` VALUES (1,NULL,NULL,'institucional',NULL,'2026-07-05 13:07:55','2026-07-07 02:23:35');
-/*!40000 ALTER TABLE `landing_config` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `landing_secciones`
 --
 
@@ -1659,18 +1436,8 @@ CREATE TABLE `landing_secciones` (
   `contenido` json DEFAULT NULL,
   PRIMARY KEY (`idSeccion`),
   KEY `idx_landing_version_orden` (`version`,`orden`)
-) ENGINE=InnoDB AUTO_INCREMENT=294 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=296 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `landing_secciones`
---
-
-LOCK TABLES `landing_secciones` WRITE;
-/*!40000 ALTER TABLE `landing_secciones` DISABLE KEYS */;
-INSERT INTO `landing_secciones` VALUES (278,'draft','hero',1,1,'{\"imagen\": \"\", \"titulo\": \"Formaci¢n oficial que abre puertas\", \"eyebrow\": \"Centro Integrado de Formaci¢n Profesional\", \"botonUrl\": \"#oferta_formativa\", \"variante\": \"split\", \"boton2Url\": \"#contacto\", \"subtitulo\": \"Ciclos formativos de grado medio y superior con pr†cticas en empresas colaboradoras y profesorado especialista.\", \"botonTexto\": \"Ver ciclos\", \"boton2Texto\": \"Contacto\"}'),(279,'draft','cifras',2,1,'{\"items\": [{\"numero\": \"95\", \"sufijo\": \"%\", \"etiqueta\": \"Inserci¢n laboral\"}, {\"numero\": \"30\", \"sufijo\": \"+\", \"etiqueta\": \"Empresas colaboradoras\"}, {\"numero\": \"20\", \"sufijo\": \"+\", \"etiqueta\": \"A§os de experiencia\"}, {\"numero\": \"500\", \"sufijo\": \"+\", \"etiqueta\": \"Alumnos titulados\"}]}'),(280,'draft','oferta_formativa',3,1,'{\"titulo\": \"Nuestra oferta formativa\", \"subtitulo\": \"Ciclos formativos oficiales adaptados a las profesiones con m†s demanda.\", \"botonTexto\": \"Solicitar plaza\", \"mostrarPrecio\": \"no\"}'),(281,'draft','porque_elegirnos',4,1,'{\"items\": [{\"icono\": \"fa-briefcase\", \"texto\": \"Convenios con empresas del sector para que hagas pr†cticas reales desde el primer curso.\", \"titulo\": \"Pr†cticas garantizadas\"}, {\"icono\": \"fa-chalkboard-teacher\", \"texto\": \"Docentes con experiencia profesional activa en su especialidad.\", \"titulo\": \"Profesorado experto\"}, {\"icono\": \"fa-award\", \"texto\": \"T°tulos oficiales de Formaci¢n Profesional v†lidos en toda Espa§a y la UE.\", \"titulo\": \"Titulaci¢n oficial\"}], \"titulo\": \"®Por quÇ estudiar con nosotros?\", \"subtitulo\": \"\"}'),(282,'draft','fp_dual',5,1,'{\"items\": [{\"texto\": \"Aprende trabajando en empresas del sector desde el primer a§o.\", \"titulo\": \"Experiencia real\"}, {\"texto\": \"Recibe una compensaci¢n econ¢mica durante tu estancia en la empresa.\", \"titulo\": \"Remuneraci¢n\"}], \"texto\": \"Estudia y trabaja a la vez: la FP Dual combina la formaci¢n en el aula con estancias remuneradas en empresas colaboradoras.\", \"imagen\": \"\", \"titulo\": \"Formaci¢n Profesional Dual\"}'),(283,'draft','instalaciones',6,1,'{\"items\": [], \"titulo\": \"Nuestras instalaciones\", \"subtitulo\": \"Espacios y equipamiento profesional para aprender con las mismas herramientas que usar†s en tu trabajo.\"}'),(284,'draft','prematricula_cta',7,1,'{\"texto\": \"Realiza tu pre-matr°cula online en menos de 10 minutos. Nuestro equipo revisar† tu solicitud y te contactar† con los siguientes pasos.\", \"titulo\": \"Reserva tu plaza para el pr¢ximo curso\", \"notaPlazo\": \"Plazo abierto ? plazas limitadas\", \"botonTexto\": \"Iniciar pre-matr°cula\"}'),(285,'draft','contacto',8,1,'{\"texto\": \"Resolvemos tus dudas sobre ciclos, admisi¢n, becas y convalidaciones.\", \"titulo\": \"®Hablamos?\", \"iframeMapa\": \"<iframe src=\\\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.336113824316!2d-3.705886423377759!3d40.42358895522774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287d55986ec3%3A0x6b8030206122d1!2sPuerta%20del%20Sol!5e0!3m2!1ses!2ses!4v1707920150974!5m2!1ses!2ses\\\" width=\\\"100%\\\" height=\\\"400\\\" style=\\\"border:0; border-radius: 12px;\\\" allowfullscreen=\\\"\\\" loading=\\\"lazy\\\" referrerpolicy=\\\"no-referrer-when-downgrade\\\"></iframe>\", \"mostrarMapa\": \"si\", \"textoHorario\": \"Lunes a viernes: 9:00 ? 14:00\\nSecretar°a: 9:00 ? 13:00\", \"mostrarFormulario\": \"si\"}'),(286,'live','hero',1,1,'{\"imagen\": \"\", \"titulo\": \"Formaci¢n oficial que abre puertas\", \"eyebrow\": \"Centro Integrado de Formaci¢n Profesional\", \"botonUrl\": \"#oferta_formativa\", \"variante\": \"split\", \"boton2Url\": \"#contacto\", \"subtitulo\": \"Ciclos formativos de grado medio y superior con pr†cticas en empresas colaboradoras y profesorado especialista.\", \"botonTexto\": \"Ver ciclos\", \"boton2Texto\": \"Contacto\"}'),(287,'live','cifras',2,1,'{\"items\": [{\"numero\": \"95\", \"sufijo\": \"%\", \"etiqueta\": \"Inserci¢n laboral\"}, {\"numero\": \"30\", \"sufijo\": \"+\", \"etiqueta\": \"Empresas colaboradoras\"}, {\"numero\": \"20\", \"sufijo\": \"+\", \"etiqueta\": \"A§os de experiencia\"}, {\"numero\": \"500\", \"sufijo\": \"+\", \"etiqueta\": \"Alumnos titulados\"}]}'),(288,'live','oferta_formativa',3,1,'{\"titulo\": \"Nuestra oferta formativa\", \"subtitulo\": \"Ciclos formativos oficiales adaptados a las profesiones con m†s demanda.\", \"botonTexto\": \"Solicitar plaza\", \"mostrarPrecio\": \"no\"}'),(289,'live','porque_elegirnos',4,1,'{\"items\": [{\"icono\": \"fa-briefcase\", \"texto\": \"Convenios con empresas del sector para que hagas pr†cticas reales desde el primer curso.\", \"titulo\": \"Pr†cticas garantizadas\"}, {\"icono\": \"fa-chalkboard-teacher\", \"texto\": \"Docentes con experiencia profesional activa en su especialidad.\", \"titulo\": \"Profesorado experto\"}, {\"icono\": \"fa-award\", \"texto\": \"T°tulos oficiales de Formaci¢n Profesional v†lidos en toda Espa§a y la UE.\", \"titulo\": \"Titulaci¢n oficial\"}], \"titulo\": \"®Por quÇ estudiar con nosotros?\", \"subtitulo\": \"\"}'),(290,'live','fp_dual',5,1,'{\"items\": [{\"texto\": \"Aprende trabajando en empresas del sector desde el primer a§o.\", \"titulo\": \"Experiencia real\"}, {\"texto\": \"Recibe una compensaci¢n econ¢mica durante tu estancia en la empresa.\", \"titulo\": \"Remuneraci¢n\"}], \"texto\": \"Estudia y trabaja a la vez: la FP Dual combina la formaci¢n en el aula con estancias remuneradas en empresas colaboradoras.\", \"imagen\": \"\", \"titulo\": \"Formaci¢n Profesional Dual\"}'),(291,'live','instalaciones',6,1,'{\"items\": [], \"titulo\": \"Nuestras instalaciones\", \"subtitulo\": \"Espacios y equipamiento profesional para aprender con las mismas herramientas que usar†s en tu trabajo.\"}'),(292,'live','prematricula_cta',7,1,'{\"texto\": \"Realiza tu pre-matr°cula online en menos de 10 minutos. Nuestro equipo revisar† tu solicitud y te contactar† con los siguientes pasos.\", \"titulo\": \"Reserva tu plaza para el pr¢ximo curso\", \"notaPlazo\": \"Plazo abierto ? plazas limitadas\", \"botonTexto\": \"Iniciar pre-matr°cula\"}'),(293,'live','contacto',8,1,'{\"texto\": \"Resolvemos tus dudas sobre ciclos, admisi¢n, becas y convalidaciones.\", \"titulo\": \"®Hablamos?\", \"iframeMapa\": \"<iframe src=\\\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.336113824316!2d-3.705886423377759!3d40.42358895522774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287d55986ec3%3A0x6b8030206122d1!2sPuerta%20del%20Sol!5e0!3m2!1ses!2ses!4v1707920150974!5m2!1ses!2ses\\\" width=\\\"100%\\\" height=\\\"400\\\" style=\\\"border:0; border-radius: 12px;\\\" allowfullscreen=\\\"\\\" loading=\\\"lazy\\\" referrerpolicy=\\\"no-referrer-when-downgrade\\\"></iframe>\", \"mostrarMapa\": \"si\", \"textoHorario\": \"Lunes a viernes: 9:00 ? 14:00\\nSecretar°a: 9:00 ? 13:00\", \"mostrarFormulario\": \"si\"}');
-/*!40000 ALTER TABLE `landing_secciones` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `login_attempts`
@@ -1687,15 +1454,6 @@ CREATE TABLE `login_attempts` (
   KEY `idx_ip_time` (`ip_address`,`attempt_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `login_attempts`
---
-
-LOCK TABLES `login_attempts` WRITE;
-/*!40000 ALTER TABLE `login_attempts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `login_attempts` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `login_intentos`
@@ -1716,16 +1474,6 @@ CREATE TABLE `login_intentos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `login_intentos`
---
-
-LOCK TABLES `login_intentos` WRITE;
-/*!40000 ALTER TABLE `login_intentos` DISABLE KEYS */;
-INSERT INTO `login_intentos` VALUES (1,'::1',8,NULL,'2026-06-24 12:32:01');
-/*!40000 ALTER TABLE `login_intentos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `modulo_profesor`
 --
 
@@ -1741,16 +1489,6 @@ CREATE TABLE `modulo_profesor` (
   CONSTRAINT `fk_relm_prof` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `modulo_profesor`
---
-
-LOCK TABLES `modulo_profesor` WRITE;
-/*!40000 ALTER TABLE `modulo_profesor` DISABLE KEYS */;
-INSERT INTO `modulo_profesor` VALUES (1,1),(2,1),(3,1),(4,1),(5,1),(6,2),(7,2),(8,2),(9,2),(10,2);
-/*!40000 ALTER TABLE `modulo_profesor` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `modulo_reto`
@@ -1770,16 +1508,6 @@ CREATE TABLE `modulo_reto` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `modulo_reto`
---
-
-LOCK TABLES `modulo_reto` WRITE;
-/*!40000 ALTER TABLE `modulo_reto` DISABLE KEYS */;
-INSERT INTO `modulo_reto` VALUES (1,1),(2,2),(3,3),(4,4),(1,5),(2,5),(3,5),(4,5);
-/*!40000 ALTER TABLE `modulo_reto` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `modulos`
 --
 
@@ -1789,26 +1517,21 @@ DROP TABLE IF EXISTS `modulos`;
 CREATE TABLE `modulos` (
   `idModulo` int NOT NULL AUTO_INCREMENT,
   `nombreModulo` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `codigoModulo` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `horasMaximas` int DEFAULT NULL,
   `idCiclo` int NOT NULL,
-  `tipoModulo` enum('Espec°fico','Transversal','Proyecto','Empresa') COLLATE utf8mb4_unicode_ci DEFAULT 'Espec°fico',
+  `idCurso` int DEFAULT NULL,
+  `tipoModulo` enum('Espec√≠fico','Transversal','Proyecto','Empresa') COLLATE utf8mb4_unicode_ci DEFAULT 'Espec√≠fico',
   `pinAsistencia` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `pinAsistenciaExpira` datetime DEFAULT NULL,
+  `cursoAnio` enum('1¬∫','2¬∫') COLLATE utf8mb4_unicode_ci DEFAULT '1¬∫',
+  `creditosECTS` int DEFAULT '0',
   PRIMARY KEY (`idModulo`),
   KEY `idx_modulo_ciclo` (`idCiclo`),
+  KEY `idx_modulo_curso` (`idCurso`),
   CONSTRAINT `fk_modulos_ciclos` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `modulos`
---
-
-LOCK TABLES `modulos` WRITE;
-/*!40000 ALTER TABLE `modulos` DISABLE KEYS */;
-INSERT INTO `modulos` VALUES (1,'Lenguajes de Marcas',42,1,'Espec°fico',NULL,NULL),(2,'Programaci√≥n del Lado del Cliente',126,1,'Espec°fico',NULL,NULL),(3,'Bases de Datos',84,1,'Espec°fico',NULL,NULL),(4,'Programaci√≥n del Lado del Servidor',126,1,'Espec°fico',NULL,NULL),(5,'Despliegue de Aplicaciones Web',63,1,'Espec°fico',NULL,NULL),(6,'Lenguajes de Programaci√≥n',105,2,'Espec°fico',NULL,NULL),(7,'Fundamentos de Bases de Datos',84,2,'Espec°fico',NULL,NULL),(8,'Programaci√≥n Multimedia',105,2,'Espec°fico',NULL,NULL),(9,'Acceso a Datos',84,2,'Espec°fico',NULL,NULL),(10,'Interfaces',84,2,'Espec°fico',NULL,NULL),(11,'Planificaci√≥n y Administraci√≥n de Redes',84,3,'Espec°fico',NULL,NULL),(12,'Gesti√≥n e Instalaci√≥n de Sistemas Operativos',105,3,'Espec°fico',NULL,NULL),(13,'Servicios en Red',105,3,'Espec°fico',NULL,NULL),(14,'Sistemas Gestores de Bases de Datos',84,3,'Espec°fico',NULL,NULL),(15,'Seguridad Inform√°tica',105,3,'Espec°fico',NULL,NULL);
-/*!40000 ALTER TABLE `modulos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `niveles`
@@ -1823,16 +1546,6 @@ CREATE TABLE `niveles` (
   PRIMARY KEY (`idNivel`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `niveles`
---
-
-LOCK TABLES `niveles` WRITE;
-/*!40000 ALTER TABLE `niveles` DISABLE KEYS */;
-INSERT INTO `niveles` VALUES (1,'Grado Medio'),(2,'Grado Superior');
-/*!40000 ALTER TABLE `niveles` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `pagos`
@@ -1854,17 +1567,8 @@ CREATE TABLE `pagos` (
   PRIMARY KEY (`idPago`),
   KEY `idx_pago_est` (`idEstudiante`),
   CONSTRAINT `fk_pag_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `pagos`
---
-
-LOCK TABLES `pagos` WRITE;
-/*!40000 ALTER TABLE `pagos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pagos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `password_resets`
@@ -1889,15 +1593,6 @@ CREATE TABLE `password_resets` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `password_resets`
---
-
-LOCK TABLES `password_resets` WRITE;
-/*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
-/*!40000 ALTER TABLE `password_resets` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `pre_matricula_archivos`
 --
 
@@ -1918,15 +1613,6 @@ CREATE TABLE `pre_matricula_archivos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pre_matricula_archivos`
---
-
-LOCK TABLES `pre_matricula_archivos` WRITE;
-/*!40000 ALTER TABLE `pre_matricula_archivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pre_matricula_archivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `pre_matriculas`
 --
 
@@ -1941,7 +1627,7 @@ CREATE TABLE `pre_matriculas` (
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `telefono` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `idCiclo` int NOT NULL,
-  `curso` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '1ß',
+  `curso` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '1¬∫',
   `nombreTutor` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dniTutor` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailTutor` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1957,15 +1643,6 @@ CREATE TABLE `pre_matriculas` (
   CONSTRAINT `fk_pm_ciclo` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `pre_matriculas`
---
-
-LOCK TABLES `pre_matriculas` WRITE;
-/*!40000 ALTER TABLE `pre_matriculas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pre_matriculas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `prestamos`
@@ -1987,15 +1664,6 @@ CREATE TABLE `prestamos` (
   CONSTRAINT `fk_pres_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `prestamos`
---
-
-LOCK TABLES `prestamos` WRITE;
-/*!40000 ALTER TABLE `prestamos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `prestamos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `profesores`
@@ -2023,18 +1691,27 @@ CREATE TABLE `profesores` (
   PRIMARY KEY (`idProfesor`),
   UNIQUE KEY `uk_email_prof` (`emailProfesor`),
   KEY `idx_prof_dni` (`dniProfesor`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `profesores`
+-- Table structure for table `promotion_rules`
 --
 
-LOCK TABLES `profesores` WRITE;
-/*!40000 ALTER TABLE `profesores` DISABLE KEYS */;
-INSERT INTO `profesores` VALUES (1,'Juan Garc√≠a Mart√≠nez','juan.garcia@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu','612345678','12345678A','1980-05-15','2023-09-01','Calle Principal 123','Madrid','28001',NULL,NULL,0,NULL),(2,'Mar√≠a L√≥pez Rodr√≠guez','maria.lopez@aulpro.com','$2y$10$9nwmzvOe4muwQ9jM5Ryc7.bmaA3Gipm7S4Wnj2S1oiDPnRo1JNcvu','623456789','87654321B','1985-03-22','2023-09-01','Avenida Principal 456','Barcelona','08002',NULL,NULL,0,NULL);
-/*!40000 ALTER TABLE `profesores` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `promotion_rules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `promotion_rules` (
+  `idRegla` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `requiereTodosModulos` tinyint(1) NOT NULL DEFAULT '1',
+  `notaMinimaGlobal` decimal(4,2) NOT NULL DEFAULT '5.00',
+  `permiteModulosPendientes` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idRegla`),
+  UNIQUE KEY `uk_pr_config` (`idConfig`),
+  CONSTRAINT `promotion_rules_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `rate_limits`
@@ -2054,16 +1731,6 @@ CREATE TABLE `rate_limits` (
   UNIQUE KEY `uq_scope_ip` (`scope`,`ip`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rate_limits`
---
-
-LOCK TABLES `rate_limits` WRITE;
-/*!40000 ALTER TABLE `rate_limits` DISABLE KEYS */;
-INSERT INTO `rate_limits` VALUES (1,'contacto_centro','127.0.0.1',1,1783244556,NULL);
-/*!40000 ALTER TABLE `rate_limits` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `reclamaciones`
@@ -2095,15 +1762,6 @@ CREATE TABLE `reclamaciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `reclamaciones`
---
-
-LOCK TABLES `reclamaciones` WRITE;
-/*!40000 ALTER TABLE `reclamaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `reclamaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `resultados_aprendizaje`
 --
 
@@ -2116,20 +1774,13 @@ CREATE TABLE `resultados_aprendizaje` (
   `codigo` varchar(20) NOT NULL,
   `descripcion` text,
   `porcentaje` int DEFAULT '0',
+  `idTipo` int DEFAULT NULL,
   PRIMARY KEY (`idRA`),
   KEY `idModulo` (`idModulo`),
+  KEY `idx_ra_tipo` (`idTipo`),
   CONSTRAINT `resultados_aprendizaje_ibfk_1` FOREIGN KEY (`idModulo`) REFERENCES `modulos` (`idModulo`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `resultados_aprendizaje`
---
-
-LOCK TABLES `resultados_aprendizaje` WRITE;
-/*!40000 ALTER TABLE `resultados_aprendizaje` DISABLE KEYS */;
-/*!40000 ALTER TABLE `resultados_aprendizaje` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `reto_archivos`
@@ -2147,17 +1798,8 @@ CREATE TABLE `reto_archivos` (
   `fechaSubida` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idArchivo`),
   KEY `idReto` (`idReto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `reto_archivos`
---
-
-LOCK TABLES `reto_archivos` WRITE;
-/*!40000 ALTER TABLE `reto_archivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `reto_archivos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `retos`
@@ -2175,16 +1817,6 @@ CREATE TABLE `retos` (
   PRIMARY KEY (`idReto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `retos`
---
-
-LOCK TABLES `retos` WRITE;
-/*!40000 ALTER TABLE `retos` DISABLE KEYS */;
-INSERT INTO `retos` VALUES (1,'Reto HTML y CSS','2026-02-01','2026-02-28',20),(2,'Reto JavaScript','2026-03-01','2026-03-31',25),(3,'Reto Base de Datos','2026-04-01','2026-04-30',30),(4,'Reto Backend','2026-05-01','2026-05-31',35),(5,'Reto Full Stack','2026-06-01','2026-06-30',50);
-/*!40000 ALTER TABLE `retos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rgpd_eliminaciones`
@@ -2208,13 +1840,40 @@ CREATE TABLE `rgpd_eliminaciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rgpd_eliminaciones`
+-- Table structure for table `rubric_criteria`
 --
 
-LOCK TABLES `rgpd_eliminaciones` WRITE;
-/*!40000 ALTER TABLE `rgpd_eliminaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rgpd_eliminaciones` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `rubric_criteria`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rubric_criteria` (
+  `idCriterio` int NOT NULL AUTO_INCREMENT,
+  `idRubrica` int NOT NULL,
+  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pesoCriterio` decimal(6,2) NOT NULL DEFAULT '1.00',
+  `notaMaxima` decimal(4,2) NOT NULL DEFAULT '10.00',
+  `orden` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idCriterio`),
+  KEY `idRubrica` (`idRubrica`),
+  CONSTRAINT `rubric_criteria_ibfk_1` FOREIGN KEY (`idRubrica`) REFERENCES `rubrics` (`idRubrica`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rubrics`
+--
+
+DROP TABLE IF EXISTS `rubrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rubrics` (
+  `idRubrica` int NOT NULL AUTO_INCREMENT,
+  `ambito` enum('reto','tfg','fct') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idRubrica`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `secretarias`
@@ -2239,14 +1898,26 @@ CREATE TABLE `secretarias` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `secretarias`
+-- Table structure for table `tfg_config`
 --
 
-LOCK TABLES `secretarias` WRITE;
-/*!40000 ALTER TABLE `secretarias` DISABLE KEYS */;
-INSERT INTO `secretarias` VALUES (1,'Rosa PÇrez Mart°nez','secretaria@aulapro.com','$2y$12$vkJmVDiRp10Ayd76wF7wAOS5E65O833pCcn9KvCXAO0O.iTalc3z2',1,NULL,1,NULL,'2026-06-23 10:50:56');
-/*!40000 ALTER TABLE `secretarias` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `tfg_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tfg_config` (
+  `idConfigTFG` int NOT NULL AUTO_INCREMENT,
+  `idConfig` int NOT NULL,
+  `habilitado` tinyint(1) NOT NULL DEFAULT '1',
+  `requiereComite` tinyint(1) NOT NULL DEFAULT '0',
+  `requiereDefensa` tinyint(1) NOT NULL DEFAULT '0',
+  `notaMinima` decimal(4,2) NOT NULL DEFAULT '5.00',
+  `pesoEnMedia` decimal(6,2) NOT NULL DEFAULT '1.00',
+  `permiteRecuperacion` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idConfigTFG`),
+  UNIQUE KEY `uk_tc_config` (`idConfig`),
+  CONSTRAINT `tfg_config_ibfk_1` FOREIGN KEY (`idConfig`) REFERENCES `academic_config` (`idConfig`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `tutores`
@@ -2272,14 +1943,26 @@ CREATE TABLE `tutores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tutores`
+-- Table structure for table `verificaciones_log`
 --
 
-LOCK TABLES `tutores` WRITE;
-/*!40000 ALTER TABLE `tutores` DISABLE KEYS */;
-INSERT INTO `tutores` VALUES (1,'Mar°a Antonia S†nchez Ruiz','maria.sanchez.tutor@gmail.com','$2y$12$vVub1O6l31W.N01viOaFeeEujpwOFDGGQ9IoQ1vQEk0AFKHc05BCW','600111222','12345678T',NULL,1,NULL,NULL,'2026-06-23 10:50:56'),(2,'Fernando Garc°a L¢pez','fernando.garcia.tutor@gmail.com','$2y$12$vVub1O6l31W.N01viOaFeeEujpwOFDGGQ9IoQ1vQEk0AFKHc05BCW','600333444','23456789G',NULL,1,NULL,NULL,'2026-06-23 10:50:56'),(3,'Ana Torres JimÇnez','ana.torres.tutor@gmail.com','$2y$12$vVub1O6l31W.N01viOaFeeEujpwOFDGGQ9IoQ1vQEk0AFKHc05BCW','600555666','34567890A',NULL,1,NULL,NULL,'2026-06-23 10:50:56');
-/*!40000 ALTER TABLE `tutores` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `verificaciones_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `verificaciones_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `serial_buscado` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resultado` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_verif_ip_fecha` (`ip`,`created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping routines for database 'yassjjzw_pfc'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2290,4 +1973,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-08  3:04:55
+-- Dump completed on 2026-07-13  9:28:36

@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . "/../../modelos/retos.php";
+require_once __DIR__ . "/../../include/FileServer.php";
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -44,32 +45,45 @@ session_write_close();
 $archivos = obtenerArchivosReto($idReto);
 if (empty($archivos)) { http_response_code(404); exit("Este reto no tiene archivos para descargar."); }
 
-$baseDir = realpath(__DIR__ . "/../../public/uploads");
-$zip     = new ZipArchive();
-$zipName = "Materiales_Reto_" . preg_replace('/[^A-Za-z0-9]/', '_', $reto['nombreReto']) . ".zip";
-$zipPath = sys_get_temp_dir() . '/' . bin2hex(random_bytes(8)) . '.zip';
+$baseDir  = realpath(__DIR__ . "/../../public/uploads");
+$zipName  = "Materiales_Reto_" . preg_replace('/[^A-Za-z0-9]/', '_', $reto['nombreReto']) . ".zip";
 
 // ══════════════════════════════════════════════════════════════════════
-// RESPUESTA
+// CACHÉ DEL ZIP: se reconstruye solo si cambian los ficheros del reto
+// (el nombre incluye un hash de ruta+mtime de cada fichero), en vez de
+// recrearlo en cada descarga. Vive dentro de public/uploads/retos/, que
+// tiene un .htaccess con "Require all denied" heredado por subcarpetas,
+// así que no es descargable salvo a través de este controlador.
 // ══════════════════════════════════════════════════════════════════════
-if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-    foreach ($archivos as $arch) {
-        $filePath = realpath(__DIR__ . "/../../" . ltrim($arch['rutaArchivo'], '/'));
-        // Contención: solo se incluyen ficheros dentro de /public/uploads
-        if ($filePath && $baseDir && strpos($filePath, $baseDir . DIRECTORY_SEPARATOR) === 0 && is_file($filePath)) {
-            $zip->addFile($filePath, $arch['nombreArchivo']);
-        }
+$cacheDir = $baseDir . '/retos/_cache_zip';
+if (!is_dir($cacheDir)) mkdir($cacheDir, 0755, true);
+
+$firma = md5(implode('|', array_map(function ($a) {
+    $p = realpath(__DIR__ . "/../../" . ltrim($a['rutaArchivo'], '/'));
+    return $a['rutaArchivo'] . '_' . ($p ? filemtime($p) : 0);
+}, $archivos)));
+$zipPath = $cacheDir . "/reto_{$idReto}_{$firma}.zip";
+
+if (!is_file($zipPath)) {
+    // Limpia versiones cacheadas antiguas de este mismo reto (firma distinta).
+    foreach (glob($cacheDir . "/reto_{$idReto}_*.zip") ?: [] as $antiguo) {
+        @unlink($antiguo);
     }
-    $zip->close();
 
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $zipName . '"');
-    header('Content-Length: ' . filesize($zipPath));
-    header('X-Content-Type-Options: nosniff');
-    readfile($zipPath);
-    unlink($zipPath);
-    exit;
-} else {
-    http_response_code(500);
-    die("No se pudo crear el archivo ZIP.");
+    $zip = new ZipArchive();
+    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        foreach ($archivos as $arch) {
+            $filePath = realpath(__DIR__ . "/../../" . ltrim($arch['rutaArchivo'], '/'));
+            // Contención: solo se incluyen ficheros dentro de /public/uploads
+            if ($filePath && $baseDir && strpos($filePath, $baseDir . DIRECTORY_SEPARATOR) === 0 && is_file($filePath)) {
+                $zip->addFile($filePath, $arch['nombreArchivo']);
+            }
+        }
+        $zip->close();
+    } else {
+        http_response_code(500);
+        die("No se pudo crear el archivo ZIP.");
+    }
 }
+
+servirArchivo($zipPath, $zipName, 'application/zip');

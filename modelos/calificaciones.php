@@ -4,6 +4,175 @@ require_once __DIR__ . "/modulos.php";
 require_once __DIR__ . "/estudiantes.php";
 require_once __DIR__ . "/retos.php";
 require_once __DIR__ . "/tfg.php";
+require_once __DIR__ . "/academico_config.php";
+require_once __DIR__ . "/motor_calificaciones.php";
+require_once __DIR__ . "/fct.php";
+
+// ══════════════════════════════════════════════════════════════════════
+// MOTOR DE NOTAS — reglas compartidas entre listarResultadosFinalesCiclo()
+// y obtenerResultadosFinalesEstudiante() (antes duplicadas literalmente en
+// ambas). Cuando feature_academico_config está activo, delega en
+// calcularNotaModuloConfigurable(); si no, reproduce exactamente la fórmula
+// original (0.75 examen / 0.25 reto, aprobado = 5) para no cambiar nada en
+// centros que no hayan configurado el motor nuevo.
+// ══════════════════════════════════════════════════════════════════════
+
+// Detalle de un módulo (nota, estado) para un estudiante. $notas es la fila
+// de calificaciones_modulos (o null); $mediaRetosBruta es el AVG ya calculado
+// de calificaciones_retos para ese módulo (o null). Incluye claves internas
+// (_mediaExamenes/_mediaRetos/_tieneNota) que usa _resumenGlobalEstudiante()
+// para el promedio global — no se exponen en el detalle público final.
+function _detalleModulo($idModulo, $nombreModulo, $cursoAnio, ?array $notas, $mediaRetosBruta, bool $motorActivo, ?int $idConfigActivo, int $idEstudiante): array {
+    if ($motorActivo && $idConfigActivo) {
+        $r = calcularNotaModuloConfigurable($idEstudiante, (int)$idModulo, $idConfigActivo);
+        $tieneNota = $r['nota_final'] !== '-';
+        return [
+            'idModulo' => $idModulo,
+            'nombreModulo' => $nombreModulo,
+            'cursoAnio' => $cursoAnio,
+            'media_retos' => round((float)$r['media_retos'], 2),
+            'estado' => $r['estado'],
+            'media_notas' => $tieneNota ? round((float)$r['media_notas'], 2) : '-',
+            'nota_final' => $tieneNota ? round((float)$r['nota_final'], 2) : '-',
+            '_mediaExamenes' => $tieneNota ? (float)$r['media_notas'] : 0.0,
+            '_mediaRetos' => (float)$r['media_retos'],
+            '_notaFinalNum' => $tieneNota ? (float)$r['nota_final'] : 0.0,
+            '_tieneNota' => $tieneNota,
+        ];
+    }
+
+    $nota1ev    = isset($notas['nota_1ev'])    ? floatval($notas['nota_1ev'])    : null;
+    $nota1final = isset($notas['nota_1final']) ? floatval($notas['nota_1final']) : null;
+    $nota2ev    = isset($notas['nota_2ev'])    ? floatval($notas['nota_2ev'])    : null;
+    $nota2final = isset($notas['nota_2final']) ? floatval($notas['nota_2final']) : null;
+
+    $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
+    $notaDefinitiva2 = calcularNotaDefinitiva($nota2ev, $nota2final);
+
+    $sumaEvaluaciones = 0;
+    $evaluacionesConNota = 0;
+    if ($notaDefinitiva1 !== null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
+    if ($notaDefinitiva2 !== null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
+
+    $mediaExamenes = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
+    $mediaRetos = floatval($mediaRetosBruta ?? 0);
+    $notaFinal = ($mediaExamenes * 0.75) + ($mediaRetos * 0.25);
+
+    if ($evaluacionesConNota == 0) {
+        $estado = "Pendiente";
+    } elseif ($notaFinal >= 5) {
+        $estado = "Aprobado";
+    } else {
+        $estado = "Suspenso";
+    }
+
+    return [
+        'idModulo' => $idModulo,
+        'nombreModulo' => $nombreModulo,
+        'cursoAnio' => $cursoAnio,
+        'media_retos' => round($mediaRetos, 2),
+        'estado' => $estado,
+        'media_notas' => $evaluacionesConNota > 0 ? round($mediaExamenes, 2) : "-",
+        'nota_final' => $evaluacionesConNota > 0 ? round($notaFinal, 2) : "-",
+        '_mediaExamenes' => $mediaExamenes,
+        '_mediaRetos' => $mediaRetos,
+        '_notaFinalNum' => $evaluacionesConNota > 0 ? $notaFinal : 0.0,
+        '_tieneNota' => $evaluacionesConNota > 0,
+    ];
+}
+
+// Resumen global (promedio, estado_global) a partir de los detalles de
+// módulo ya calculados (con sus claves internas _mediaExamenes/_mediaRetos/
+// _tieneNota) más la nota de TFG.
+function _resumenGlobalEstudiante(array $detallesModulos, $notaTfgBruta, bool $motorActivo, ?int $idConfigActivo, int $idEstudiante = 0, int $idCiclo = 0): array {
+    $sumaModulos = 0.0; $sumaRetos = 0.0; $sumaNotaFinal = 0.0; $modulosConNotas = 0; $tieneSuspensos = false;
+    $totalModulos = count($detallesModulos);
+
+    foreach ($detallesModulos as $d) {
+        if ($d['estado'] === 'Suspenso') $tieneSuspensos = true;
+        if ($d['_tieneNota']) {
+            $sumaModulos += $d['_mediaExamenes'];
+            $sumaRetos += $d['_mediaRetos'];
+            $sumaNotaFinal += $d['_notaFinalNum'];
+            $modulosConNotas++;
+        }
+    }
+
+    if ($modulosConNotas === 0) {
+        return [
+            'media_modulos' => "-", 'media_retos' => "-", 'promedio_global' => "-",
+            'calculo_completo' => false, 'tiene_suspensos' => $tieneSuspensos, 'estado_global' => 'PENDIENTE',
+        ];
+    }
+
+    $mediaModulos = $sumaModulos / $modulosConNotas;
+    $mediaRetosGlobal = $sumaRetos / $modulosConNotas;
+
+    // Motor activo: se promedia nota_final de cada módulo directamente (ya
+    // viene ponderada con TODOS los tipos configurados — Examen, Reto, RA/CE,
+    // los que haya). Reconstruir a partir de mediaExamenes/mediaRetos (como
+    // hace el camino heredado) solo cubriría 2 de N tipos posibles y dejaría
+    // fuera, por ejemplo, la aportación de RA/CE a la media global.
+    $promedioGlobal = $motorActivo
+        ? $sumaNotaFinal / $modulosConNotas
+        : ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+
+    $notaAprobado = 5.0;
+    $notaMinimaTfg = 5.0;
+    $pesoTfg = 1.0;
+    $configFCT = null;
+    if ($motorActivo && $idConfigActivo) {
+        $politica = obtenerPoliticaCalificacion($idConfigActivo);
+        if ($politica) {
+            $notaAprobado = (float)$politica['notaAprobado'];
+            $pesoTfg = (float)$politica['pesoTfgEnMedia'];
+        }
+        $configTFG = obtenerConfigTFG($idConfigActivo);
+        if ($configTFG) {
+            $notaMinimaTfg = (float)$configTFG['notaMinima'];
+            $pesoTfg = (float)$configTFG['pesoEnMedia']; // pesoEnMedia vive en tfg_config, no en grading_policies
+        }
+        $configFCT = obtenerConfigFCT($idConfigActivo);
+    }
+
+    $notaTfgNum = is_numeric($notaTfgBruta) ? (float)$notaTfgBruta : null;
+    if ($notaTfgNum !== null) {
+        $promedioGlobal = ($promedioGlobal * $modulosConNotas + $notaTfgNum * $pesoTfg) / ($modulosConNotas + $pesoTfg);
+        if ($notaTfgNum < $notaMinimaTfg) $tieneSuspensos = true;
+    }
+
+    // FCT (Formación en Centros de Trabajo): es por ciclo, no por módulo, así
+    // que se incorpora aquí (igual que el TFG) y no en _detalleModulo().
+    if (!empty($configFCT['habilitado']) && $idEstudiante && $idCiclo) {
+        $fct = obtenerNotaFCTEscala10($idEstudiante, $idCiclo, $configFCT['metodoEvaluacion'] ?? 'ambos');
+        if ($fct['huboNota']) {
+            $pesoFct = (float)($configFCT['pesoEnMedia'] ?? 0);
+            if ($pesoFct > 0) {
+                $promedioGlobal = ($promedioGlobal * $modulosConNotas + $fct['media'] * $pesoFct) / ($modulosConNotas + $pesoFct);
+            }
+            if (!empty($configFCT['requiereAprobarParaTitular']) && $fct['media'] < $notaAprobado) {
+                $tieneSuspensos = true;
+            }
+        }
+    }
+
+    $calculoCompleto = ($modulosConNotas === $totalModulos);
+    $estadoGlobal = 'PENDIENTE';
+    if ($tieneSuspensos) {
+        $estadoGlobal = 'SUSPENSO';
+    } elseif ($calculoCompleto && $promedioGlobal >= $notaAprobado) {
+        $estadoGlobal = 'APROBADO';
+    }
+
+    return [
+        'media_modulos' => round($mediaModulos, 2),
+        'media_retos' => round($mediaRetosGlobal, 2),
+        'promedio_global' => round($promedioGlobal, 2),
+        'calculo_completo' => $calculoCompleto,
+        'tiene_suspensos' => $tieneSuspensos,
+        'estado_global' => $estadoGlobal,
+    ];
+}
 
 // ══════════════════════════════════════════════════════════════════════
 // CONSULTAS
@@ -118,6 +287,20 @@ function actualizarOCrearNotaCompleta($idEstudiante, $idModulo, $val1ev, $val1fi
         $est1ev, $est1final, $est2ev, $est2final,
         $observaciones);
     $exito = mysqli_stmt_execute($stmt);
+
+    // Mantiene calificaciones_periodo al día con lo que se acaba de guardar
+    // en las 4 columnas fijas, para que el motor configurable (si está
+    // activo) vea la nota sin necesitar una vista de entrada nueva.
+    if ($exito && motorAcademicoActivo()) {
+        $configActiva = obtenerConfigAcademicaActiva();
+        if ($configActiva) {
+            sincronizarCalificacionPeriodo(
+                (int)$idEstudiante, (int)$idModulo, (int)$configActiva['idConfig'],
+                $nota1ev, $est1ev, $nota1final, $est1final, $nota2ev, $est2ev, $nota2final, $est2final
+            );
+        }
+    }
+
     return $exito;
 }
 
@@ -214,101 +397,41 @@ function listarResultadosFinalesCiclo($idCiclo, $cursoEscolar = null)
         $allTFG[$fila['idEstudiante']] = $fila;
     }
 
+    $motorActivo = motorAcademicoActivo();
+    $idConfigActivo = $motorActivo ? (obtenerConfigAcademicaActiva()['idConfig'] ?? null) : null;
+
     $resultados = [];
     foreach ($estudiantes as $idEstudiante => $datosEstudiante) {
+        $notaTfgBruta = $allTFG[$idEstudiante]['nota'] ?? null;
         $resumen = [
             'idEstudiante' => $idEstudiante,
             'nombreEstudiante' => $datosEstudiante['nombreEstudiante'],
             'nombreCiclo' => $datosEstudiante['nombreCiclo'],
             'anioEstudio' => $datosEstudiante['curso'] ?? '-',
             'detalles_modulos' => [],
-            'estado_global' => 'PENDIENTE',
-            'tiene_suspensos' => false,
-            'nota_tfg' => $allTFG[$idEstudiante]['nota'] ?? null,
+            'nota_tfg' => $notaTfgBruta,
             'obs_tfg' => $allTFG[$idEstudiante]['observaciones'] ?? '',
         ];
 
-        $sumaModulos = 0;
-        $sumaRetos = 0;
-        $modulosConNotas = 0;
-        $totalModulos = count($modulos);
-
+        $detallesInternos = [];
         foreach ($modulos as $idModulo => $modulo) {
-            $notas = $allGrades[$idEstudiante][$idModulo] ?? null;
-
-            $nota1ev = isset($notas['nota_1ev']) ? floatval($notas['nota_1ev']) : null;
-            $nota1final = isset($notas['nota_1final']) ? floatval($notas['nota_1final']) : null;
-            $nota2ev = isset($notas['nota_2ev']) ? floatval($notas['nota_2ev']) : null;
-            $nota2final = isset($notas['nota_2final']) ? floatval($notas['nota_2final']) : null;
-
-            $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
-            $notaDefinitiva2 = calcularNotaDefinitiva($nota2ev, $nota2final);
-
-            $sumaEvaluaciones = 0;
-            $evaluacionesConNota = 0;
-
-            if ($notaDefinitiva1 !== null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
-            if ($notaDefinitiva2 !== null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
-
-            $mediaExamenes = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
-            $mediaRetos = floatval($allRetos[$idEstudiante][$idModulo] ?? 0);
-            $notaFinal = ($mediaExamenes * 0.75) + ($mediaRetos * 0.25);
-
-            if ($evaluacionesConNota == 0) {
-                $estado = "Pendiente";
-            } elseif ($notaFinal >= 5) {
-                $estado = "Aprobado";
-            } else {
-                $estado = "Suspenso";
-                $resumen['tiene_suspensos'] = true;
-            }
-
-            $detalle = [
-                'idModulo' => $idModulo,
-                'nombreModulo' => $modulo['nombreModulo'],
-                'cursoAnio' => $modulo['cursoAnio'],
-                'media_retos' => round($mediaRetos, 2),
-                'estado' => $estado,
-                'media_notas' => $evaluacionesConNota > 0 ? round($mediaExamenes, 2) : "-",
-                'nota_final' => $evaluacionesConNota > 0 ? round($notaFinal, 2) : "-",
-            ];
-            $resumen['detalles_modulos'][] = $detalle;
-
-            if ($evaluacionesConNota > 0) {
-                $sumaModulos += $mediaExamenes;
-                $sumaRetos += $mediaRetos;
-                $modulosConNotas++;
-            }
+            $detallesInternos[] = _detalleModulo(
+                $idModulo, $modulo['nombreModulo'], $modulo['cursoAnio'],
+                $allGrades[$idEstudiante][$idModulo] ?? null,
+                $allRetos[$idEstudiante][$idModulo] ?? null,
+                $motorActivo, $idConfigActivo, (int)$idEstudiante
+            );
         }
 
-        if ($modulosConNotas > 0) {
-            $mediaModulos     = $sumaModulos / $modulosConNotas;
-            $mediaRetosGlobal = $sumaRetos   / $modulosConNotas;
-            $promedioGlobal   = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+        $global = _resumenGlobalEstudiante($detallesInternos, $notaTfgBruta, $motorActivo, $idConfigActivo, (int)$idEstudiante, (int)$idCiclo);
+        $resumen = array_merge($resumen, $global);
 
-            // Incluir TFG/Proyecto en la media global si tiene nota numérica
-            $notaTFGnum = is_numeric($resumen['nota_tfg']) ? floatval($resumen['nota_tfg']) : null;
-            if ($notaTFGnum !== null) {
-                $promedioGlobal = ($promedioGlobal * $modulosConNotas + $notaTFGnum) / ($modulosConNotas + 1);
-                if ($notaTFGnum < 5) $resumen['tiene_suspensos'] = true;
-            }
+        // El detalle público no expone las claves internas (_mediaExamenes/_mediaRetos/_tieneNota)
+        $resumen['detalles_modulos'] = array_map(function ($d) {
+            unset($d['_mediaExamenes'], $d['_mediaRetos'], $d['_tieneNota']);
+            return $d;
+        }, $detallesInternos);
 
-            $resumen['media_modulos']    = round($mediaModulos, 2);
-            $resumen['media_retos']      = round($mediaRetosGlobal, 2);
-            $resumen['promedio_global']  = round($promedioGlobal, 2);
-            $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
-
-            if ($resumen['tiene_suspensos']) {
-                $resumen['estado_global'] = 'SUSPENSO';
-            } elseif ($resumen['calculo_completo'] && $promedioGlobal >= 5) {
-                $resumen['estado_global'] = 'APROBADO';
-            }
-        } else {
-            $resumen['media_modulos']    = "-";
-            $resumen['media_retos']      = "-";
-            $resumen['promedio_global']  = "-";
-            $resumen['calculo_completo'] = false;
-        }
         $resultados[] = $resumen;
     }
 
@@ -327,119 +450,65 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null,
     $resumen['idEstudiante'] = $idEstudiante;
     $resumen['nombreEstudiante'] = $datosEstudiante['nombreEstudiante'];
     $resumen['nombreCiclo'] = $datosEstudiante['nombreCiclo'];
-    $resumen['detalles_modulos'] = [];
-    $resumen['estado_global'] = 'PENDIENTE';
-    $resumen['tiene_suspensos'] = false;
 
     $calificacionTFG = obtenerCalificacionTFG($idEstudiante);
-    $resumen['nota_tfg'] = null;
-    $resumen['obs_tfg'] = '';
-    if ($calificacionTFG) {
-        $resumen['nota_tfg'] = $calificacionTFG['nota'];
-        $resumen['obs_tfg'] = $calificacionTFG['observaciones'];
+    $notaTfgBruta = $calificacionTFG['nota'] ?? null;
+    $resumen['nota_tfg'] = $notaTfgBruta;
+    $resumen['obs_tfg'] = $calificacionTFG['observaciones'] ?? '';
+
+    // Batch de notas y medias de retos para todos los módulos del estudiante
+    // en 2 consultas, en vez de 2 por módulo dentro del bucle.
+    $notasPorModulo = [];
+    $retosPorModulo = [];
+    $moduloIds = array_column($listaModulos, 'idModulo');
+    if (!empty($moduloIds)) {
+        $con = obtenerConexion();
+        $phMod = implode(',', array_fill(0, count($moduloIds), '?'));
+        $tMod  = str_repeat('i', count($moduloIds));
+
+        $stmtN = mysqli_prepare($con, "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo IN ($phMod)");
+        mysqli_stmt_bind_param($stmtN, 'i' . $tMod, $idEstudiante, ...$moduloIds);
+        mysqli_stmt_execute($stmtN);
+        $resN = mysqli_stmt_get_result($stmtN);
+        while ($fila = mysqli_fetch_assoc($resN)) {
+            $notasPorModulo[$fila['idModulo']] = $fila;
+        }
+
+        $stmtR = mysqli_prepare($con,
+            "SELECT mr.idModulo, AVG(cr.nota) AS promedio
+             FROM calificaciones_retos cr
+             JOIN modulo_reto mr ON cr.idReto = mr.idReto
+             WHERE mr.idModulo IN ($phMod) AND cr.idEstudiante = ?
+             GROUP BY mr.idModulo");
+        mysqli_stmt_bind_param($stmtR, $tMod . 'i', ...[...$moduloIds, $idEstudiante]);
+        mysqli_stmt_execute($stmtR);
+        $resR = mysqli_stmt_get_result($stmtR);
+        while ($fila = mysqli_fetch_assoc($resR)) {
+            $retosPorModulo[$fila['idModulo']] = $fila['promedio'];
+        }
     }
 
-    $sumaModulos = 0;
-    $sumaRetos = 0;
-    $modulosConNotas = 0;
-    $totalModulos = count($listaModulos);
+    $motorActivo = motorAcademicoActivo();
+    $idConfigActivo = $motorActivo ? (obtenerConfigAcademicaActiva()['idConfig'] ?? null) : null;
 
+    $detallesInternos = [];
     foreach ($listaModulos as $modulo) {
         $idModuloActual = $modulo['idModulo'];
-        $notas = obtenerNotasModulo($idEstudiante, $idModuloActual, $cursoEscolar);
-
-        $nota1ev    = null;
-        $nota1final = null;
-        $nota2ev    = null;
-        $nota2final = null;
-
-        if ($notas) {
-            if ($notas['nota_1ev'] !== null)    $nota1ev    = floatval($notas['nota_1ev']);
-            if ($notas['nota_1final'] !== null)  $nota1final = floatval($notas['nota_1final']);
-            if ($notas['nota_2ev'] !== null)    $nota2ev    = floatval($notas['nota_2ev']);
-            if ($notas['nota_2final'] !== null)  $nota2final = floatval($notas['nota_2final']);
-        }
-
-        $notaDefinitiva1 = calcularNotaDefinitiva($nota1ev, $nota1final);
-        $notaDefinitiva2 = calcularNotaDefinitiva($nota2ev, $nota2final);
-
-        $sumaEvaluaciones = 0;
-        $evaluacionesConNota = 0;
-
-        if ($notaDefinitiva1 !== null) { $sumaEvaluaciones += $notaDefinitiva1; $evaluacionesConNota++; }
-        if ($notaDefinitiva2 !== null) { $sumaEvaluaciones += $notaDefinitiva2; $evaluacionesConNota++; }
-
-        $mediaExamenes = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
-
-        $calificacionesRetos = listarCalificacionesRetoPorModulo($idModuloActual);
-        $mediaRetos = 0;
-        if (isset($calificacionesRetos[$idEstudiante])) {
-            $mediaRetos = floatval($calificacionesRetos[$idEstudiante]);
-        }
-
-        $notaFinal = ($mediaExamenes * 0.75) + ($mediaRetos * 0.25);
-
-        if ($evaluacionesConNota == 0) {
-            $estado = "Pendiente";
-        } elseif ($notaFinal >= 5) {
-            $estado = "Aprobado";
-        } else {
-            $estado = "Suspenso";
-            $resumen['tiene_suspensos'] = true;
-        }
-
-        $detalle = [];
-        $detalle['idModulo'] = $idModuloActual;
-        $detalle['nombreModulo'] = $modulo['nombreModulo'];
-        $detalle['cursoAnio'] = $modulo['cursoAnio'] ?? 1;
-        $detalle['media_retos'] = round($mediaRetos, 2);
-        $detalle['estado'] = $estado;
-
-        if ($evaluacionesConNota > 0) {
-            $detalle['media_notas'] = round($mediaExamenes, 2);
-            $detalle['nota_final'] = round($notaFinal, 2);
-        } else {
-            $detalle['media_notas'] = "-";
-            $detalle['nota_final'] = "-";
-        }
-
-        $resumen['detalles_modulos'][] = $detalle;
-
-        if ($evaluacionesConNota > 0) {
-            $sumaModulos += $mediaExamenes;
-            $sumaRetos += $mediaRetos;
-            $modulosConNotas++;
-        }
+        $detallesInternos[] = _detalleModulo(
+            $idModuloActual, $modulo['nombreModulo'], $modulo['cursoAnio'] ?? 1,
+            $notasPorModulo[$idModuloActual] ?? null,
+            $retosPorModulo[$idModuloActual] ?? null,
+            $motorActivo, $idConfigActivo, (int)$idEstudiante
+        );
     }
 
-    if ($modulosConNotas > 0) {
-        $mediaModulos     = $sumaModulos / $modulosConNotas;
-        $mediaRetosGlobal = $sumaRetos   / $modulosConNotas;
-        $promedioGlobal   = ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+    $global = _resumenGlobalEstudiante($detallesInternos, $notaTfgBruta, $motorActivo, $idConfigActivo, (int)$idEstudiante, (int)($datosEstudiante['idCiclo'] ?? 0));
+    $resumen = array_merge($resumen, $global);
 
-        // Incluir TFG/Proyecto en la media global si tiene nota numérica
-        $notaTFGnum = is_numeric($resumen['nota_tfg']) ? floatval($resumen['nota_tfg']) : null;
-        if ($notaTFGnum !== null) {
-            $promedioGlobal = ($promedioGlobal * $modulosConNotas + $notaTFGnum) / ($modulosConNotas + 1);
-            if ($notaTFGnum < 5) $resumen['tiene_suspensos'] = true;
-        }
-
-        $resumen['media_modulos']    = round($mediaModulos, 2);
-        $resumen['media_retos']      = round($mediaRetosGlobal, 2);
-        $resumen['promedio_global']  = round($promedioGlobal, 2);
-        $resumen['calculo_completo'] = ($modulosConNotas == $totalModulos);
-
-        if ($resumen['tiene_suspensos']) {
-            $resumen['estado_global'] = 'SUSPENSO';
-        } elseif ($resumen['calculo_completo'] && $promedioGlobal >= 5) {
-            $resumen['estado_global'] = 'APROBADO';
-        }
-    } else {
-        $resumen['media_modulos']    = "-";
-        $resumen['media_retos']      = "-";
-        $resumen['promedio_global']  = "-";
-        $resumen['calculo_completo'] = false;
-    }
+    $resumen['detalles_modulos'] = array_map(function ($d) {
+        unset($d['_mediaExamenes'], $d['_mediaRetos'], $d['_tieneNota']);
+        return $d;
+    }, $detallesInternos);
 
     return $resumen;
 }
@@ -544,14 +613,35 @@ function generarDatosBoletinCiclo($idCiclo) {
         $tfgMap[$row['idEstudiante']] = $row['nota'];
     }
 
+    // Nota/estado ya resueltos (recuperación, pesos, aprobado) por el mismo
+    // motor que usa el resto de la app — el boletín ya NO recalcula por su
+    // cuenta (antes tenía su propia lógica independiente en la plantilla,
+    // que podía divergir: usaba "última evaluación no nula" en vez de
+    // calcularNotaDefinitiva(), y una media simple sin el peso de retos).
+    $resultadosPorEstudiante = [];
+    foreach (listarResultadosFinalesCiclo($idCiclo) as $r) {
+        $resultadosPorEstudiante[$r['idEstudiante']] = $r;
+    }
+
     foreach ($estudiantes as &$est) {
         $est['nota_tfg'] = $tfgMap[$est['idEstudiante']] ?? null;
+        $resultado = $resultadosPorEstudiante[$est['idEstudiante']] ?? null;
+        $est['promedio_global'] = $resultado['promedio_global'] ?? '-';
+        $est['estado_global']   = $resultado['estado_global'] ?? 'PENDIENTE';
+        $detallesPorModulo = [];
+        foreach ($resultado['detalles_modulos'] ?? [] as $d) {
+            $detallesPorModulo[$d['idModulo']] = $d;
+        }
+
         $est['modulos'] = [];
         foreach ($modulos as $mod) {
             $est['modulos'][] = [
                 'idModulo'     => $mod['idModulo'],
                 'nombreModulo' => $mod['nombreModulo'],
+                'codigoModulo' => $mod['codigoModulo'] ?? null,
                 'notas'        => $gradeMap[$est['idEstudiante']][$mod['idModulo']] ?? null,
+                'nota_final'   => $detallesPorModulo[$mod['idModulo']]['nota_final'] ?? '-',
+                'estado'       => $detallesPorModulo[$mod['idModulo']]['estado'] ?? 'Pendiente',
             ];
         }
     }

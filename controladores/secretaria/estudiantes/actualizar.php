@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../include/SecretariaGuard.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/log.php";
+require_once __DIR__ . "/../../../modelos/academico_config.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../../../vistas/secretaria/estudiantes/verEstudiantes.php");
@@ -26,7 +27,8 @@ $observaciones   = Security::sanitize($_POST['observaciones'] ?? '');
 $fechaNacimiento = Security::sanitize($_POST['fechaNacimiento'] ?? '');
 $fechaAlta       = Security::sanitize($_POST['fechaAltaEstudiante'] ?? '');
 $curso           = Security::sanitize($_POST['curso'] ?? 'Grado Medio');
-$anioEstudio     = Security::sanitize($_POST['anioEstudio'] ?? '');
+$anioEstudioPost = Security::sanitize($_POST['anioEstudio'] ?? '');
+$anioEstudio     = existeNombreCursoEnCiclo($idCiclo, $anioEstudioPost) ? $anioEstudioPost : '';
 
 $errores = [];
 if ($idEstudiante <= 0) $errores['general'] = "Estudiante no válido.";

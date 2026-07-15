@@ -7,6 +7,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
+require_once __DIR__ . "/../../../modelos/academico_config.php";
 
 $id_del_modulo = (int)($_GET['idModulo'] ?? 0);
 $modulo = obtenerModuloPorId($id_del_modulo);
@@ -17,6 +18,7 @@ if (!$modulo) {
 }
 
 $todos_los_ciclos = listarTodosLosCiclos();
+$todos_los_cursos = listarTodosLosCursosAcademicos();
 
 $datos = $_SESSION['datos_modulo'] ?? [];
 
@@ -27,7 +29,7 @@ if (!empty($datos)) {
 $nivelActual = '';
 foreach ($todos_los_ciclos as $cicloItem) {
     if ($cicloItem['idCiclo'] == $modulo['idCiclo']) {
-        $nivelActual = $cicloItem['idNivel'];
+        $nivelActual = $cicloItem['nombreNivel'];
         break;
     }
 }
@@ -55,12 +57,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <?= fieldError($errores, 'nombreModulo') ?>
             </div>
 
+            <div class="campo<?= fieldClass($errores, 'codigoModulo') ?>">
+                <label for="codigoModulo">Código del Módulo <span class="texto-suave" style="font-weight:400;">(oficial, ej: 0483)</span></label>
+                <input type="text" name="codigoModulo" id="codigoModulo" maxlength="20" value="<?= Security::escapeHtml($modulo['codigoModulo'] ?? '') ?>">
+                <?= fieldError($errores, 'codigoModulo') ?>
+            </div>
+
             <div class="campo">
                 <label for="nivel">Nivel</label>
                 <select id="nivel" onchange="filtrarCiclos()">
                     <option value="">-- Selecciona un nivel --</option>
-                    <option value="1" <?php if ($nivelActual == 1) { echo 'selected'; } ?>>Grado Medio</option>
-                    <option value="2" <?php if ($nivelActual == 2) { echo 'selected'; } ?>>Grado Superior</option>
+                    <option value="Grado Medio" <?php if ($nivelActual === 'Grado Medio') { echo 'selected'; } ?>>Grado Medio</option>
+                    <option value="Grado Superior" <?php if ($nivelActual === 'Grado Superior') { echo 'selected'; } ?>>Grado Superior</option>
                 </select>
             </div>
 
@@ -81,9 +89,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="cursoAnio">Año del ciclo</label>
                 <select name="cursoAnio" id="cursoAnio">
-                    <option value="">-- Sin especificar --</option>
-                    <option value="1º" <?= (($modulo['cursoAnio'] ?? '') == '1º') ? 'selected' : '' ?>>1º año</option>
-                    <option value="2º" <?= (($modulo['cursoAnio'] ?? '') == '2º') ? 'selected' : '' ?>>2º año</option>
+                    <option value="">-- Selecciona primero un ciclo --</option>
                 </select>
             </div>
 
@@ -112,25 +118,47 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 var todosCiclos = <?= json_encode($todos_los_ciclos) ?>;
+var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var cursoAnioActual = <?= json_encode($modulo['cursoAnio'] ?? '') ?>;
 
 function filtrarCiclos() {
-    var nivelId = parseInt($('#nivel').val());
-    var placeholder = nivelId > 0 ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --';
+    var nivelNombre = $('#nivel').val();
+    var placeholder = nivelNombre ? '-- Selecciona un ciclo --' : '-- Selecciona primero un nivel --';
     var $select = $('#idCiclo').empty().append($('<option>').val('').text(placeholder));
 
-    if (nivelId > 0) {
+    if (nivelNombre) {
         $.each(todosCiclos, function(i, ciclo) {
-            if (parseInt(ciclo.idNivel) === nivelId) {
+            if (ciclo.nombreNivel === nivelNombre) {
                 $select.append($('<option>').val(ciclo.idCiclo).text(ciclo.nombreCiclo));
             }
         });
     }
+    poblarCursos();
 }
+
+function poblarCursos() {
+    var idCiclo = $('#idCiclo').val();
+    var $select = $('#cursoAnio').empty();
+    if (!idCiclo) {
+        $select.append($('<option>').val('').text('-- Selecciona primero un ciclo --'));
+        return;
+    }
+    $select.append($('<option>').val('').text('-- Sin especificar --'));
+    $.each(todosCursos, function(i, curso) {
+        if (String(curso.idCiclo) === String(idCiclo)) {
+            $select.append($('<option>').val(curso.nombre).text(curso.nombre + ' año'));
+        }
+    });
+    if (cursoAnioActual) $select.val(cursoAnioActual);
+}
+
+$('#idCiclo').on('change', poblarCursos);
 
 $(function() {
     if ($('#nivel').val() !== '') {
         filtrarCiclos();
         $('#idCiclo').val('<?= Security::escapeHtml($modulo['idCiclo']) ?>');
+        poblarCursos();
     }
 });
 </script>

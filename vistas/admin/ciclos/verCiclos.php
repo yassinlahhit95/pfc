@@ -12,6 +12,7 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 $todos_los_ciclos     = listarTodosLosCiclos();
 $listaNiveles         = listarNiveles();
 $todos_los_profesores = listarProfesores();
+$profesoresPorCiclo   = listarProfesoresPorCiclos(array_column($todos_los_ciclos, 'idCiclo'));
 
 $titulo_pagina = "AULAPRO | CICLOS FORMATIVOS";
 $seccion = 'ciclos';
@@ -62,8 +63,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr><td colspan="6" class="vacio">No hay ciclos configurados</td></tr>
                 <?php else: ?>
                     <?php foreach ($todos_los_ciclos as $ciclo):
-                        $idsProfActuales = listarProfesoresDeUnCiclo($ciclo['idCiclo']);
-                        $nombresTutores  = array_map(['Security', 'escapeHtml'], listarNombresTutoresCiclo($ciclo['idCiclo']));
+                        $profsCiclo      = $profesoresPorCiclo[$ciclo['idCiclo']] ?? [];
+                        $idsProfActuales = array_column($profsCiclo, 'idProfesor');
+                        $nombresTutores  = array_map(['Security', 'escapeHtml'], array_column($profsCiclo, 'nombreProfesor'));
                         $textoTutores    = !empty($nombresTutores)
                             ? implode(', ', $nombresTutores)
                             : '<span class="texto-suave">Sin asignar</span>';

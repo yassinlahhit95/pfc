@@ -1,8 +1,10 @@
+// Asistente público de pre-matrícula (3 pasos): datos alumno/tutor, subida de
+// documentos, resumen y envío. Habla con controladores/admisiones/acciones.php.
 $(document).ready(function() {
     let currentStep = 1;
     let idPreMatricula = null;
 
-    // Filtrado de ciclos por nivel (Grado Medio / Superior)
+    // ── Filtrado de ciclos por nivel (Grado Medio / Superior) ──────────────
     const cycleSelect = $('#idCiclo');
     if (cycleSelect.length) {
         const allCycleOptions = cycleSelect.find('option').clone();
@@ -45,7 +47,7 @@ $(document).ready(function() {
         });
     }
 
-    // Navegación del Asistente
+    // ── Navegación del asistente ────────────────────────────────────────────
     function showStep(step) {
         $('.step-content').removeClass('active');
         $(`.step-content[data-step="${step}"]`).addClass('active');
@@ -91,6 +93,7 @@ $(document).ready(function() {
         }
     });
 
+    // ── Paso 1: datos del alumno y del tutor ────────────────────────────────
     function submitStep1() {
         const formData = {
             dni: $('#dni').val(),
@@ -145,7 +148,7 @@ $(document).ready(function() {
         });
     }
 
-    // Manejo de subida de archivos
+    // ── Paso 2: subida de documentos ────────────────────────────────────────
     $('.file-input').change(function() {
         const input = $(this);
         const tipo = input.data('tipo');
@@ -182,6 +185,7 @@ $(document).ready(function() {
         });
     });
 
+    // ── Paso 3: resumen y envío final ───────────────────────────────────────
     function updateSummary() {
         $('#summary-nombre').text($('#nombre').val() + ' ' + $('#apellidos').val());
         $('#summary-ciclo').text($('#idCiclo option:selected').text());
