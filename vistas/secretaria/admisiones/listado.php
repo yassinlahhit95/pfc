@@ -8,8 +8,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/admisiones.php";
 $admisiones = listarPreMatriculas();
 
-$pendientes = array_filter($admisiones, fn($a) => in_array($a['estado'], ['PENDIENTE','EN_REVISION']));
-$admitidos  = array_filter($admisiones, fn($a) => $a['estado'] === 'ADMITIDO');
+$pendientes = array_filter($admisiones, fn($adm) => in_array($adm['estado'], ['PENDIENTE','EN_REVISION']));
+$admitidos  = array_filter($admisiones, fn($adm) => $adm['estado'] === 'ADMITIDO');
 
 $titulo_pagina = 'AULAPRO | ADMISIONES';
 $seccion = 'admisiones';
@@ -34,14 +34,14 @@ include __DIR__ . '/../comunes/nav.php';
         ['label'=>'Pendientes',      'value'=>count($pendientes), 'icon'=>'fa-clock',           'color'=>'#f59e0b'],
         ['label'=>'Admitidos',       'value'=>count($admitidos),  'icon'=>'fa-user-check',      'color'=>'#10b981'],
     ];
-    foreach ($stats as $s): ?>
+    foreach ($stats as $stat): ?>
     <div class="panel" style="flex:1;min-width:160px;display:flex;align-items:center;gap:16px;padding:20px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,<?= $s['color'] ?> 12%,transparent);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:<?= $s['color'] ?>;flex-shrink:0;">
-            <i class="fas <?= $s['icon'] ?>"></i>
+        <div style="width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,<?= $stat['color'] ?> 12%,transparent);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:<?= $stat['color'] ?>;flex-shrink:0;">
+            <i class="fas <?= $stat['icon'] ?>"></i>
         </div>
         <div>
-            <div class="texto-suave" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;"><?= $s['label'] ?></div>
-            <div style="font-size:1.7rem;font-weight:700;line-height:1.1;color:var(--text);"><?= $s['value'] ?></div>
+            <div class="texto-suave" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;"><?= $stat['label'] ?></div>
+            <div style="font-size:1.7rem;font-weight:700;line-height:1.1;color:var(--text);"><?= $stat['value'] ?></div>
         </div>
     </div>
     <?php endforeach; ?>
@@ -207,22 +207,22 @@ function verDetalle(id) {
             if (window.Toast) Toast.show('Error al cargar los datos.', 'error');
             return;
         }
-        const d = res.data;
-        $('#admNombre').text(d.nombre + ' ' + d.apellidos);
-        $('#admFullname').text(d.nombre + ' ' + d.apellidos);
-        $('#admDni').text(d.dni || '—');
-        $('#admEmail').text(d.email || '—');
-        $('#admTel').text(d.telefono || 'No indicado');
-        $('#admCiclo').text(d.nombreCiclo + ' (' + d.curso + ')');
-        $('#admFecha').text(d.fechaSolicitud ? d.fechaSolicitud.substr(0,10).split('-').reverse().join('/') : '—');
-        $('#admEstado').val(d.estado);
-        $('#admObs').val(d.observaciones || '');
+        const data = res.data;
+        $('#admNombre').text(data.nombre + ' ' + data.apellidos);
+        $('#admFullname').text(data.nombre + ' ' + data.apellidos);
+        $('#admDni').text(data.dni || '—');
+        $('#admEmail').text(data.email || '—');
+        $('#admTel').text(data.telefono || 'No indicado');
+        $('#admCiclo').text(data.nombreCiclo + ' (' + data.curso + ')');
+        $('#admFecha').text(data.fechaSolicitud ? data.fechaSolicitud.substr(0,10).split('-').reverse().join('/') : '—');
+        $('#admEstado').val(data.estado);
+        $('#admObs').val(data.observaciones || '');
 
         // Tutor legal
-        if (d.nombreTutor) {
-            $('#admTutorNombre').text(d.nombreTutor || '—');
-            $('#admTutorParentesco').text(d.parentescoTutor || '—');
-            $('#admTutorEmail').text(d.emailTutor || '—');
+        if (data.nombreTutor) {
+            $('#admTutorNombre').text(data.nombreTutor || '—');
+            $('#admTutorParentesco').text(data.parentescoTutor || '—');
+            $('#admTutorEmail').text(data.emailTutor || '—');
             $('#admTutorWrap').show();
         }
 
@@ -231,11 +231,11 @@ function verDetalle(id) {
         if (!res.archivos || !res.archivos.length) {
             html = '<span class="texto-suave">Sin documentos adjuntos.</span>';
         } else {
-            res.archivos.forEach(function(f) {
+            res.archivos.forEach(function(archivo) {
                 html += '<div style="margin-bottom:8px;">'
-                      + '<a href="' + f.rutaArchivo + '" target="_blank" style="color:var(--accent);text-decoration:none;">'
+                      + '<a href="' + archivo.rutaArchivo + '" target="_blank" style="color:var(--accent);text-decoration:none;">'
                       + '<i class="fas fa-file-alt" style="margin-right:6px;"></i>'
-                      + f.tipoDocumento
+                      + archivo.tipoDocumento
                       + ' <i class="fas fa-external-link-alt" style="font-size:.7rem;opacity:.6;"></i>'
                       + '</a></div>';
             });

@@ -19,17 +19,17 @@ if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time'])
 } else {
     $con = obtenerConexion();
 
-    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
-    $totalEstudiantes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
+    $totalEstudiantes = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
 
-    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado = 'PENDIENTE'");
-    $admisionesPendientes = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM pre_matriculas WHERE estado = 'PENDIENTE'");
+    $admisionesPendientes = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
 
-    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido = 0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-    $mensajesSinLeer = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido = 0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
+    $mensajesSinLeer = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
 
-    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM anuncios WHERE fechaExpiracion >= CURDATE()");
-    $anunciosActivos = $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM anuncios WHERE fechaExpiracion >= CURDATE()");
+    $anunciosActivos = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
     
     $_SESSION[$cacheKeyDash] = compact('totalEstudiantes', 'admisionesPendientes', 'mensajesSinLeer', 'anunciosActivos');
     $_SESSION[$cacheKeyDash . '_time'] = time();
@@ -130,15 +130,15 @@ include __DIR__ . '/../comunes/nav.php';
             <p class="texto-suave" style="font-size:.9rem;">No hay eventos próximos.</p>
         <?php else: ?>
             <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
-                <?php foreach ($proximosEventos as $ev): ?>
+                <?php foreach ($proximosEventos as $evento): ?>
                 <li style="display:flex;align-items:flex-start;gap:10px;">
                     <div style="min-width:36px;height:36px;border-radius:8px;background:rgba(79,70,229,.1);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:.8rem;">
-                        <?= date('d', strtotime($ev['fechaEvento'])) ?><br><small><?= strtoupper(substr(date('M', strtotime($ev['fechaEvento'])), 0, 3)) ?></small>
+                        <?= date('d', strtotime($evento['fechaEvento'])) ?><br><small><?= strtoupper(substr(date('M', strtotime($evento['fechaEvento'])), 0, 3)) ?></small>
                     </div>
                     <div>
-                        <div style="font-weight:600;font-size:.9rem;"><?= Security::escapeHtml($ev['tituloEvento']) ?></div>
-                        <?php if (!empty($ev['ubicacionEvento'])): ?>
-                            <div class="texto-suave" style="font-size:.78rem;"><i class="fas fa-map-marker-alt"></i> <?= Security::escapeHtml($ev['ubicacionEvento']) ?></div>
+                        <div style="font-weight:600;font-size:.9rem;"><?= Security::escapeHtml($evento['tituloEvento']) ?></div>
+                        <?php if (!empty($evento['ubicacionEvento'])): ?>
+                            <div class="texto-suave" style="font-size:.78rem;"><i class="fas fa-map-marker-alt"></i> <?= Security::escapeHtml($evento['ubicacionEvento']) ?></div>
                         <?php endif; ?>
                     </div>
                 </li>
@@ -177,8 +177,8 @@ $rVencidos = mysqli_query($con, "
 ");
 $vencidos = [];
 if ($rVencidos) {
-    while($row = mysqli_fetch_assoc($rVencidos)) {
-        $vencidos[] = $row;
+    while($filaPago = mysqli_fetch_assoc($rVencidos)) {
+        $vencidos[] = $filaPago;
     }
 }
 ?>
@@ -214,19 +214,19 @@ if ($rVencidos) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($vencidos as $v): ?>
+                <?php foreach($vencidos as $pagoVencido): ?>
                 <tr style="border-bottom:1px solid var(--border);">
-                    <td style="padding:10px; font-weight:600;"><?= Security::escapeHtml($v['nombreEstudiante']) ?><br><small style="font-weight:normal; color:var(--dim);"><?= Security::escapeHtml($v['emailEstudiante']) ?></small></td>
-                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= date('d/m/Y', strtotime($v['fechaProximoPago'])) ?></td>
+                    <td style="padding:10px; font-weight:600;"><?= Security::escapeHtml($pagoVencido['nombreEstudiante']) ?><br><small style="font-weight:normal; color:var(--dim);"><?= Security::escapeHtml($pagoVencido['emailEstudiante']) ?></small></td>
+                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= date('d/m/Y', strtotime($pagoVencido['fechaProximoPago'])) ?></td>
                     <td style="padding:10px;">
-                        <?php if ($v['estadoComprobante'] === 'verificando'): ?>
+                        <?php if ($pagoVencido['estadoComprobante'] === 'verificando'): ?>
                             <span class="badge badge-ambar"><i class="fas fa-search"></i> Verificando</span>
                         <?php else: ?>
                             <span class="texto-suave">Sin comprobante</span>
                         <?php endif; ?>
                     </td>
                     <td style="padding:10px;">
-                        <button onclick="otorgarProrroga(<?= $v['idPago'] ?>)" class="boton-secundario btn-pequeno" style="background:var(--rojo-suave); border-color:var(--rojo); color:var(--rojo);">
+                        <button onclick="otorgarProrroga(<?= $pagoVencido['idPago'] ?>)" class="boton-secundario btn-pequeno" style="background:var(--rojo-suave); border-color:var(--rojo); color:var(--rojo);">
                             <i class="fas fa-unlock"></i> Otorgar Prórroga (7 Días)
                         </button>
                     </td>
@@ -257,21 +257,21 @@ if ($rVencidos) {
             </thead>
             <tbody>
                 <?php
-                $cntP = 0;
-                foreach ($estudiantesPendientes as $ep) {
-                    if ($cntP >= 8) break;
+                $contadorPagos = 0;
+                foreach ($estudiantesPendientes as $estudiantePendiente) {
+                    if ($contadorPagos >= 8) break;
                 ?>
                 <tr style="border-bottom:1px solid var(--border);">
-                    <td style="padding:10px; font-weight:500;"><?= Security::escapeHtml($ep['nombreEstudiante'] . ' ' . ($ep['apellidosEstudiante'] ?? '')) ?></td>
-                    <td style="padding:10px;"><span style="background:color-mix(in oklab, var(--accent) 14%, var(--surface)); color:var(--accent); padding:2px 8px; border-radius:8px; font-size:0.78rem; font-weight:600;"><?= Security::escapeHtml($ep['nombreCiclo']) ?></span></td>
-                    <td style="padding:10px; color:var(--verde);"><?= number_format($ep['totalPagado'], 2) ?> €</td>
-                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= number_format($ep['deuda'], 2) ?> €</td>
+                    <td style="padding:10px; font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante'] . ' ' . ($estudiantePendiente['apellidosEstudiante'] ?? '')) ?></td>
+                    <td style="padding:10px;"><span style="background:color-mix(in oklab, var(--accent) 14%, var(--surface)); color:var(--accent); padding:2px 8px; border-radius:8px; font-size:0.78rem; font-weight:600;"><?= Security::escapeHtml($estudiantePendiente['nombreCiclo']) ?></span></td>
+                    <td style="padding:10px; color:var(--verde);"><?= number_format($estudiantePendiente['totalPagado'], 2) ?> €</td>
+                    <td style="padding:10px; color:var(--rojo); font-weight:600;"><?= number_format($estudiantePendiente['deuda'], 2) ?> €</td>
                     <td style="padding:10px;">
-                        <a href="../pagos/agregarPago.php?idEstudiante=<?= $ep['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
+                        <a href="../pagos/agregarPago.php?idEstudiante=<?= $estudiantePendiente['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
                     </td>
                 </tr>
                 <?php
-                $cntP++;
+                $contadorPagos++;
                 } ?>
             </tbody>
         </table>

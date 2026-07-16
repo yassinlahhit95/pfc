@@ -36,24 +36,24 @@ $totalRetos_menu        = $navCounts_menu['retos'];
 $totalChatNoLeidos_menu = chatContarNoLeidos('estudiante', $idEstudiante);
 
 // Notification panel: recent unread messages (max 3)
-$_notif_msgs = [];
+$mensajesNotif = [];
 if ($totalSinLeer_menu > 0) {
-    $_notif_msgs = Cache::remember("nav_estudiante_notif_{$idEstudiante}", 10, function () use ($idEstudiante) {
-        $_con_notif = obtenerConexion();
-        $_stmt_notif = mysqli_prepare($_con_notif,
+    $mensajesNotif = Cache::remember("nav_estudiante_notif_{$idEstudiante}", 10, function () use ($idEstudiante) {
+        $conexionNotif = obtenerConexion();
+        $stmtNotif = mysqli_prepare($conexionNotif,
             "SELECT idReclamacion, asunto, fecha FROM reclamaciones
              WHERE idEstudiante = ? AND leido = 0 AND emisor_rol != 'estudiante'
              ORDER BY idReclamacion DESC LIMIT 3");
-        mysqli_stmt_bind_param($_stmt_notif, 'i', $idEstudiante);
-        mysqli_stmt_execute($_stmt_notif);
-        $r = mysqli_stmt_get_result($_stmt_notif);
+        mysqli_stmt_bind_param($stmtNotif, 'i', $idEstudiante);
+        mysqli_stmt_execute($stmtNotif);
+        $resultNotif = mysqli_stmt_get_result($stmtNotif);
         $out = [];
-        while ($row = mysqli_fetch_assoc($r)) { $out[] = $row; }
+        while ($filaNotif = mysqli_fetch_assoc($resultNotif)) { $out[] = $filaNotif; }
         return $out;
     });
 }
 // Notification panel: 3 most recent pagos
-$_notif_pagos = Cache::remember("nav_estudiante_pagos_{$idEstudiante}", 30, function () use ($idEstudiante) {
+$pagosNotif = Cache::remember("nav_estudiante_pagos_{$idEstudiante}", 30, function () use ($idEstudiante) {
     return array_slice(listarPagosPorEstudiante($idEstudiante), 0, 3);
 });
 
@@ -96,10 +96,10 @@ function _nav_active_est($check) {
     <script>
       try {
         if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
-          var s = document.getElementById("main-sidebar");
-          s.classList.add("collapsed");
-          s.style.setProperty("transition", "none", "important");
-          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+          var sidebarEl = document.getElementById("main-sidebar");
+          sidebarEl.classList.add("collapsed");
+          sidebarEl.style.setProperty("transition", "none", "important");
+          setTimeout(function() { sidebarEl.style.removeProperty("transition"); }, 150);
         }
       } catch (e) {}
     </script>
@@ -292,35 +292,35 @@ function _nav_active_est($check) {
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
 
-            <?php if (!empty($_notif_msgs)): ?>
+            <?php if (!empty($mensajesNotif)): ?>
             <div class="notif-group-title">Mensajes sin leer</div>
-            <?php foreach ($_notif_msgs as $_m): ?>
-            <a href="../mensajes/detalles.php?id=<?= (int)$_m['idReclamacion'] ?>" class="notif-item">
+            <?php foreach ($mensajesNotif as $msgNotif): ?>
+            <a href="../mensajes/detalles.php?id=<?= (int)$msgNotif['idReclamacion'] ?>" class="notif-item">
               <span class="notif-ico"><i class="fas fa-envelope"></i></span>
               <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($_m['asunto']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($_m['fecha'])) ?></span>
+                <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
+                <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>
             <?php endforeach; ?>
             <?php endif; ?>
 
-            <?php if (!empty($_notif_pagos)): ?>
+            <?php if (!empty($pagosNotif)): ?>
             <div class="notif-group-title">Pagos recientes</div>
-            <?php foreach ($_notif_pagos as $_p): ?>
-            <a href="../pagos/lista.php" class="notif-item notif-item--pago" data-pid="<?= (int)$_p['idPago'] ?>">
+            <?php foreach ($pagosNotif as $pagoNotif): ?>
+            <a href="../pagos/lista.php" class="notif-item notif-item--pago" data-pid="<?= (int)$pagoNotif['idPago'] ?>">
               <span class="notif-ico"><i class="fas fa-credit-card"></i></span>
               <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($_p['tipoPago']) ?> — <?= number_format((float)$_p['monto'], 2) ?>€</span>
-                <span class="notif-time"><?= !empty($_p['fechaPago']) ? date('d/m/Y', strtotime($_p['fechaPago'])) : '' ?></span>
+                <span class="notif-label"><?= Security::escapeHtml($pagoNotif['tipoPago']) ?> — <?= number_format((float)$pagoNotif['monto'], 2) ?>€</span>
+                <span class="notif-time"><?= !empty($pagoNotif['fechaPago']) ? date('d/m/Y', strtotime($pagoNotif['fechaPago'])) : '' ?></span>
               </div>
               <span class="notif-badge-new notif-pago-new">Nuevo</span>
             </a>
             <?php endforeach; ?>
             <?php endif; ?>
 
-            <?php if (empty($_notif_msgs) && empty($_notif_pagos)): ?>
+            <?php if (empty($mensajesNotif) && empty($pagosNotif)): ?>
             <div class="notif-empty">Sin notificaciones nuevas</div>
             <?php endif; ?>
 

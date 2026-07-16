@@ -28,9 +28,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="campo<?= fieldClass($errores, 'planta') ?>">
                     <label for="planta">Planta</label>
                     <select name="planta" id="planta">
-                        <?php for ($p = 0; $p <= 5; $p++) { ?>
-                            <option value="<?= $p ?>" <?= (($datos['planta'] ?? '1') == $p) ? 'selected' : '' ?>>
-                                <?= $p === 0 ? 'Planta Baja (0)' : 'Planta ' . $p ?>
+                        <?php for ($planta = 0; $planta <= 5; $planta++) { ?>
+                            <option value="<?= $planta ?>" <?= (($datos['planta'] ?? '1') == $planta) ? 'selected' : '' ?>>
+                                <?= $planta === 0 ? 'Planta Baja (0)' : 'Planta ' . $planta ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -58,8 +58,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <select name="tipoAula" id="tipoAula">
                         <?php
                         $tipos = ['teoria' => 'Teoría', 'laboratorio' => 'Laboratorio', 'taller' => 'Taller', 'otro' => 'Otro'];
-                        foreach ($tipos as $val => $lbl) { ?>
-                            <option value="<?= $val ?>" <?= (($datos['tipoAula'] ?? 'teoria') == $val) ? 'selected' : '' ?>><?= $lbl ?></option>
+                        foreach ($tipos as $valorTipo => $nombreTipo) { ?>
+                            <option value="<?= $valorTipo ?>" <?= (($datos['tipoAula'] ?? 'teoria') == $valorTipo) ? 'selected' : '' ?>><?= $nombreTipo ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -85,7 +85,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include '../comunes/footer.php'; ?>
 <script>
 (function () {
-    function pad(n) { n = String(n); return n.length < 2 ? '0' + n : n; }
+    function pad(numero) { numero = String(numero); return numero.length < 2 ? '0' + numero : numero; }
     function actualizar() {
         var planta = document.getElementById('planta').value;
         var numero = document.getElementById('numero').value;

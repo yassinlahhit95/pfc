@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
 $listaDeModulosActuales = listarModulos();
-$todos_los_profesores   = listarProfesores();
+$listaDeProfesores      = listarProfesores();
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
 $profesoresPorModulo = listarProfesoresPorModulos(array_column($listaDeModulosActuales, 'idModulo'));
@@ -43,9 +43,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     data-filtro-campo="nivel"
                     onchange="cascadeCicloSelect(this); filtrarTablaMulti('tablaModulos')">
                 <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $n) { ?>
-                    <option value="<?= Security::escapeHtml($n['nombreNivel']) ?>">
-                        <?= Security::escapeHtml($n['nombreNivel']) ?>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <option value="<?= Security::escapeHtml($nivel['nombreNivel']) ?>">
+                        <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -140,9 +140,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <div class="texto-pequeno">
                                     <?php
                                 $listaNombres = '';
-                                foreach ($nombresProfesores as $np) {
+                                foreach ($nombresProfesores as $nombreProfesor) {
                                     if ($listaNombres) $listaNombres .= ', ';
-                                    $listaNombres .= mb_strtoupper($np, 'UTF-8');
+                                    $listaNombres .= mb_strtoupper($nombreProfesor, 'UTF-8');
                                 }
                                 echo Security::escapeHtml($listaNombres);
                                 ?>
@@ -199,7 +199,7 @@ include_once __DIR__ . "/../comunes/nav.php";
       <label for="ap-select-profesor" style="display:block;font-size:13px;font-weight:600;color:var(--dim);margin-bottom:8px;">Profesor asignado</label>
       <select id="ap-select-profesor" style="width:100%;padding:10px 12px;border:1.5px solid var(--border-2);border-radius:8px;background:var(--surface);color:var(--text);font-size:14px;outline:none;">
         <option value="">— Sin asignar —</option>
-        <?php foreach ($todos_los_profesores as $prof): ?>
+        <?php foreach ($listaDeProfesores as $prof): ?>
           <option value="<?= (int)$prof['idProfesor'] ?>">
             <?= Security::escapeHtml($prof['nombreProfesor']) ?>
           </option>
@@ -218,10 +218,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 iniciarPaginacion('tablaModulos', 15);
-var _ciclosData = <?= json_encode(array_map(fn($c) => [
-    'valor'    => mb_strtoupper($c['nombreCiclo'], 'UTF-8'),
-    'label'    => '[' . $c['nombreNivel'] . '] ' . mb_strtoupper($c['nombreCiclo'], 'UTF-8'),
-    'idNivel'  => (int)$c['idNivel']
+var _ciclosData = <?= json_encode(array_map(fn($ciclo) => [
+    'valor'    => mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8'),
+    'label'    => '[' . $ciclo['nombreNivel'] . '] ' . mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8'),
+    'idNivel'  => (int)$ciclo['idNivel']
 ], $listaDeCiclosParaFiltro), JSON_UNESCAPED_UNICODE) ?>;
 
 function cascadeCicloSelect(selectNivel) {
@@ -230,9 +230,9 @@ function cascadeCicloSelect(selectNivel) {
     var prev    = $ciclo.val();
 
     $ciclo.find('option:not(:first)').remove();
-    _ciclosData.forEach(function(c) {
-        if (!idNivel || c.idNivel === idNivel) {
-            $('<option>', { value: c.valor }).text(c.label).appendTo($ciclo);
+    _ciclosData.forEach(function(cicloItem) {
+        if (!idNivel || cicloItem.idNivel === idNivel) {
+            $('<option>', { value: cicloItem.valor }).text(cicloItem.label).appendTo($ciclo);
         }
     });
 

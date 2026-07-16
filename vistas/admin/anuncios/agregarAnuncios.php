@@ -9,6 +9,7 @@ $exito   = $_SESSION['exito']   ?? '';
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_anuncio'] ?? [];
+unset($_SESSION['datos_anuncio']);
 
 $titulo_pagina = "AULAPRO | PUBLICAR NUEVO ANUNCIO";
 $seccion = 'anuncios';

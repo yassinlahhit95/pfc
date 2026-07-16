@@ -53,10 +53,10 @@ include_once "../comunes/nav.php";
                 <label class="compose-label" for="idProfesor">Destinatario</label>
                 <select id="idProfesor" name="idProfesor" class="compose-select">
                     <option value="">— Dirección (Administración) —</option>
-                    <?php foreach ($listaProfesores as $prof): ?>
-                    <option value="<?= (int)$prof['idProfesor'] ?>"
-                        <?= (isset($datos['idProfesor']) && $datos['idProfesor'] == $prof['idProfesor']) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($prof['nombreProfesor'] . ' (' . $prof['nombreModulo'] . ')') ?>
+                    <?php foreach ($listaProfesores as $profesor): ?>
+                    <option value="<?= (int)$profesor['idProfesor'] ?>"
+                        <?= (isset($datos['idProfesor']) && $datos['idProfesor'] == $profesor['idProfesor']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($profesor['nombreProfesor'] . ' (' . $profesor['nombreModulo'] . ')') ?>
                     </option>
                     <?php endforeach; ?>
                 </select>

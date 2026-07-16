@@ -15,10 +15,10 @@ if (!$modulo) {
     exit;
 }
 
-$profesores_asignados = listarProfesoresDeModulo($idModulo);
-$idProfesorActual = !empty($profesores_asignados) ? $profesores_asignados[0] : 0;
+$profesoresAsignados = listarProfesoresDeModulo($idModulo);
+$idProfesorActual = !empty($profesoresAsignados) ? $profesoresAsignados[0] : 0;
 
-$todos_los_profesores = listarProfesores();
+$todosLosProfesores = listarProfesores();
 
 $titulo_pagina = "AULAPRO | ASIGNAR PROFESOR A MÓDULO";
 $seccion = 'modulos';
@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Profesor Asignado:</label>
             <select name="idProfesor">
                 <option value="">-- Sin Profesor Asignado --</option>
-                <?php foreach ($todos_los_profesores as $prof) { ?>
+                <?php foreach ($todosLosProfesores as $prof) { ?>
                     <option value="<?= (int)$prof['idProfesor'] ?>" <?= ($prof['idProfesor'] == $idProfesorActual ? 'selected' : '') ?>>
                         <?= Security::escapeHtml($prof['nombreProfesor']) ?>
                     </option>

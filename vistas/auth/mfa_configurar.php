@@ -18,8 +18,8 @@ if (empty($_SESSION['mfa_setup_secret'])) {
 }
 $secret = $_SESSION['mfa_setup_secret'];
 
-$dir   = obtenerDirectorPorId((int)$_SESSION['idAdmin']);
-$label = $dir['emailDirector'] ?? ('admin#' . (int)$_SESSION['idAdmin']);
+$director = obtenerDirectorPorId((int)$_SESSION['idAdmin']);
+$label = $director['emailDirector'] ?? ('admin#' . (int)$_SESSION['idAdmin']);
 $uri   = Totp::provisioningUri($secret, $label, 'AulaPro');
 
 $qrDataUri = (new Builder())

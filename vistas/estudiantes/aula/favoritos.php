@@ -35,26 +35,26 @@ include_once __DIR__ . "/../comunes/nav.php";
 <table class="recurso-lista" data-csrf="<?= Security::generateCSRFToken() ?>">
   <thead><tr><th>Nombre</th><th>Módulo</th><th>Profesor</th><th>Tamaño</th><th style="text-align:right;">Acciones</th></tr></thead>
   <tbody>
-    <?php foreach ($favoritos as $a):
-      [$cls, $ico] = iconoArchivoAula($a['extension']);
-      $previa = archivoPrevisualizableAula($a['extension']);
-      $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $a['idArchivo'];
+    <?php foreach ($favoritos as $archivo):
+      [$cls, $ico] = iconoArchivoAula($archivo['extension']);
+      $previa = archivoPrevisualizableAula($archivo['extension']);
+      $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $archivo['idArchivo'];
     ?>
-    <tr data-archivo-id="<?= Security::escapeHtml($a['idArchivo'] ) ?>">
-      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span><?= Security::escapeHtml($a['nombreOriginal']) ?></div></td>
-      <td><?= Security::escapeHtml($a['nombreModulo']) ?></td>
-      <td><?= Security::escapeHtml($a['nombreProfesor']) ?></td>
-      <td><?= Security::escapeHtml(formatearTamanioAula($a['tamanio'])) ?></td>
+    <tr data-archivo-id="<?= Security::escapeHtml($archivo['idArchivo']) ?>">
+      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls) ?>"><i class="fas <?= Security::escapeHtml($ico) ?>"></i></span><?= Security::escapeHtml($archivo['nombreOriginal']) ?></div></td>
+      <td><?= Security::escapeHtml($archivo['nombreModulo']) ?></td>
+      <td><?= Security::escapeHtml($archivo['nombreProfesor']) ?></td>
+      <td><?= Security::escapeHtml(formatearTamanioAula($archivo['tamanio'])) ?></td>
       <td style="text-align:right;">
         <div class="recurso-menu-wrap">
           <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
           <div class="recurso-menu">
             <?php if ($previa): ?>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl ) ?>&modo=ver', <?= Security::escapeHtml(json_encode($a['nombreOriginal'])) ?>, '<?= Security::escapeHtml($a['extension'] ) ?>')"><i class="fas fa-eye"></i> Ver</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl) ?>&modo=ver', <?= Security::escapeHtml(json_encode($archivo['nombreOriginal'])) ?>, '<?= Security::escapeHtml($archivo['extension']) ?>')"><i class="fas fa-eye"></i> Ver</button>
             <?php endif; ?>
-            <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl ) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl ) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
-            <button type="button" class="recurso-menu-item peligro" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($a['idArchivo'] ) ?>, this, 'favoritos')"><i class="fas fa-star"></i> Quitar de favoritos</button>
+            <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
+            <button type="button" class="recurso-menu-item peligro" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($archivo['idArchivo']) ?>, this, 'favoritos')"><i class="fas fa-star"></i> Quitar de favoritos</button>
           </div>
         </div>
       </td>
@@ -82,5 +82,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script src="../../../public/js/features/aula-recursos.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/features/aula-recursos.js")) ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
 

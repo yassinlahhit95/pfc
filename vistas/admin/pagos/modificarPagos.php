@@ -10,8 +10,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/pagos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 
-$id_pago = (int)($_GET['idPago'] ?? 0);
-$pago = obtenerPagoPorId($id_pago);
+$idPago = (int)($_GET['idPago'] ?? 0);
+$pago = obtenerPagoPorId($idPago);
 
 if (!$pago) {
     header("Location: verPagosGeneral.php");
@@ -23,7 +23,7 @@ if (isset($_SESSION['datos_pago'])) {
 }
 unset($_SESSION['datos_pago']);
 
-$todos_los_estudiantes = listarEstudiantes();
+$todosLosEstudiantes = listarEstudiantes();
 
 $titulo_pagina = "AULAPRO | MODIFICAR PAGO";
 $seccion = 'pagos';
@@ -39,13 +39,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/pagos/actualizar.php">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idPago" value="<?= $id_pago ?>">
+        <input type="hidden" name="idPago" value="<?= $idPago ?>">
         
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'idEstudiante') ?>">
                 <label for="idEstudiante">Estudiante</label>
                 <select name="idEstudiante" id="idEstudiante">
-                    <?php foreach ($todos_los_estudiantes as $estudiante) { ?>
+                    <?php foreach ($todosLosEstudiantes as $estudiante) { ?>
                         <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $pago['idEstudiante'] == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
                             <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
                         </option>

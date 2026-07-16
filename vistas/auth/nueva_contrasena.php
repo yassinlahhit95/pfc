@@ -9,7 +9,7 @@ if (isset($_SESSION['idEstudiante'])) { header("Location: ../estudiantes/inicio/
 $token    = trim($_GET['token'] ?? '');
 $resetRow = $token ? validarTokenReset($token) : null;
 
-$err = $_SESSION['reset_error'] ?? null;
+$error = $_SESSION['reset_error'] ?? null;
 unset($_SESSION['reset_error']);
 
 $csrfToken = Security::generateCSRFToken();
@@ -48,8 +48,8 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Introduce tu nueva contraseña</p>
             </div>
 
-            <?php if ($err) { ?>
-            <div class="error-alerta"><?= Security::escapeHtml($err) ?></div>
+            <?php if ($error) { ?>
+            <div class="error-alerta"><?= Security::escapeHtml($error) ?></div>
             <?php } ?>
 
             <?php if (!$resetRow) { ?>
@@ -89,9 +89,9 @@ $csrfToken = Security::generateCSRFToken();
 
 <script>
 function togglePass(id, btn) {
-    var f = document.getElementById(id);
-    f.type = f.type === 'password' ? 'text' : 'password';
-    btn.textContent = f.type === 'password' ? 'Ver' : 'Ocultar';
+    var campo = document.getElementById(id);
+    campo.type = campo.type === 'password' ? 'text' : 'password';
+    btn.textContent = campo.type === 'password' ? 'Ver' : 'Ocultar';
 }
 </script>
 

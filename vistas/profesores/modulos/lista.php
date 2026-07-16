@@ -39,25 +39,25 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($modulos): ?>
-                    <?php foreach ($modulos as $m): ?>
+                    <?php foreach ($modulos as $modulo): ?>
                         <tr>
-                            <td class="texto-negrita"><?= Security::escapeHtml($m['nombreModulo']) ?></td>
-                            <td><?= Security::escapeHtml($m['horasMaximas']) ?> h</td>
-                            <td><?= Security::escapeHtml($m['nombreCiclo']) ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($modulo['nombreModulo']) ?></td>
+                            <td><?= Security::escapeHtml($modulo['horasMaximas']) ?> h</td>
+                            <td><?= Security::escapeHtml($modulo['nombreCiclo']) ?></td>
                             <?php if ($esTutor): ?>
                             <td style="text-align:right;">
                                 <div class="recurso-menu-wrap">
                                     <button type="button" class="recurso-menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
                                     <div class="recurso-menu">
-                                        <a class="recurso-menu-item" href="editar.php?idModulo=<?= (int)$m['idModulo'] ?>">
+                                        <a class="recurso-menu-item" href="editar.php?idModulo=<?= (int)$modulo['idModulo'] ?>">
                                             <i class="fas fa-edit"></i> Editar
                                         </a>
                                         <div class="recurso-menu-sep"></div>
                                         <a class="recurso-menu-item peligro" href="#"
                                            data-modal-borrar
-                                           data-id="<?= (int)$m['idModulo'] ?>"
+                                           data-id="<?= (int)$modulo['idModulo'] ?>"
                                            data-tipo="Módulo"
-                                           data-nombre="<?= Security::escapeHtml($m['nombreModulo']) ?>"
+                                           data-nombre="<?= Security::escapeHtml($modulo['nombreModulo']) ?>"
                                            data-url="/controladores/profesores/modulos/borrar.php"
                                            data-campo="idModulo">
                                             <i class="fas fa-trash"></i> Eliminar
@@ -82,8 +82,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 iniciarPaginacion('tablaModulosProf', 15);
 </script>
-
-
-
-
-

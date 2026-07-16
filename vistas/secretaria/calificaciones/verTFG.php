@@ -72,9 +72,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Filtrar por Nivel:</label>
             <select name="idNivel" onchange="document.getElementById('selectCicloTFG').value=''; this.form.submit()">
                 <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $n) { ?>
-                    <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($n['nombreNivel']) ?>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>" <?= ((int)$nivel['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -114,28 +114,28 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td colspan="7" class="vacio">No hay estudiantes registrados.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaEvaluacion as $item) { ?>
+                    <?php foreach ($listaEvaluacion as $evaluacion) { ?>
                     <tr>
-                        <td><?= Security::escapeHtml($item['nombreEstudiante']) ?></td>
-                        <td><?= Security::escapeHtml($item['abreviaturaCiclo']) ?></td>
-                        <td><?= !empty($item['anioEstudio']) ? '<span class="texto-estado azul">' . Security::escapeHtml($item['anioEstudio']) . '</span>' : '<span class="texto-suave">—</span>' ?></td>
+                        <td><?= Security::escapeHtml($evaluacion['nombreEstudiante']) ?></td>
+                        <td><?= Security::escapeHtml($evaluacion['abreviaturaCiclo']) ?></td>
+                        <td><?= !empty($evaluacion['anioEstudio']) ? '<span class="texto-estado azul">' . Security::escapeHtml($evaluacion['anioEstudio']) . '</span>' : '<span class="texto-suave">—</span>' ?></td>
                         <td>
-                            <?php if (!empty($item['archivoTFG'])) { ?>
+                            <?php if (!empty($evaluacion['archivoTFG'])) { ?>
                                 <span class="indicador-estado activo-verde">ENTREGADO</span>
                             <?php } else { ?>
                                 <span class="indicador-estado inactivo-rojo">PENDIENTE</span>
                             <?php } ?>
                         </td>
                         <td>
-                            <?php if (!empty($item['fechaSubidaTFG'])) { ?>
-                                <?= date('d/m/Y', strtotime($item['fechaSubidaTFG'])) ?>
+                            <?php if (!empty($evaluacion['fechaSubidaTFG'])) { ?>
+                                <?= date('d/m/Y', strtotime($evaluacion['fechaSubidaTFG'])) ?>
                             <?php } else { ?>
                                 <span class="texto-suave">---</span>
                             <?php } ?>
                         </td>
                         <td>
-                            <?php if (!empty($item['archivoTFG'])) { ?>
-                                <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($item['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="btn-accion btn-ver">
+                            <?php if (!empty($evaluacion['archivoTFG'])) { ?>
+                                <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($evaluacion['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="btn-accion btn-ver">
                                     <i class="fas fa-file-pdf"></i> Descargar
                                 </a>
                             <?php } else { ?>
@@ -143,9 +143,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                         </td>
                         <td>
-                            <?php if ($item['nota'] !== null) { ?>
-                                <span class="texto-negrita <?= $item['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
-                                    <?= Security::escapeHtml($item['nota']) ?>
+                            <?php if ($evaluacion['nota'] !== null) { ?>
+                                <span class="texto-negrita <?= $evaluacion['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
+                                    <?= Security::escapeHtml($evaluacion['nota']) ?>
                                 </span>
                             <?php } else { ?>
                                 <span class="texto-suave">---</span>

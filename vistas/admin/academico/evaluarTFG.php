@@ -71,7 +71,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo" style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-2); border-radius:12px; padding:16px;">
             <div style="font-size:0.85rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; font-weight:600;">Calificación Actual</div>
             <div class="texto-negrita <?= $calificacion['nota'] >= 5 ? 'texto-verde' : 'texto-rojo' ?>" style="font-size:2rem;">
-                <?= $calificacion['nota'] ?>
+                <?= Security::escapeHtml($calificacion['nota']) ?>
             </div>
         </div>
         <?php } ?>
@@ -122,4 +122,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-

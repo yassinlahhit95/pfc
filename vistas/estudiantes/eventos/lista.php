@@ -41,8 +41,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td class="texto-negrita"><?= Security::escapeHtml(date('d/m/Y', strtotime($evento['fechaEvento']))) ?></td>
                         <td><?= Security::escapeHtml(date('H:i', strtotime($evento['horaEvento']))) ?>h</td>
                         <td><b><?= Security::escapeHtml(strtoupper($evento['tituloEvento'])) ?></b></td>
-                        <td><p class="texto-pequeno"><?= Security::escapeHtml($evento['descripcionEvento'] ) ?></p></td>
-                        <td><?= Security::escapeHtml($evento['ubicacionEvento'] ) ?></td>
+                        <td><p class="texto-pequeno"><?= Security::escapeHtml($evento['descripcionEvento']) ?></p></td>
+                        <td><?= Security::escapeHtml($evento['ubicacionEvento']) ?></td>
                     </tr>
                     <?php } ?>
                 <?php } ?>
@@ -52,6 +52,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

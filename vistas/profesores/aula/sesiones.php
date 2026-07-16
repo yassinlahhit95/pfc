@@ -92,9 +92,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <i class="fas fa-link"></i> <?= Security::escapeHtml(ucfirst($sesion['plataforma'])) ?>
                         </span>
                     </td>
-                    <td><?= Security::escapeHtml($estado ) ?></td>
+                    <td><?= Security::escapeHtml($estado) ?></td>
                     <td>
-                        <strong><?= Security::escapeHtml($totalAsistencias ) ?></strong> estudiantes
+                        <strong><?= Security::escapeHtml($totalAsistencias) ?></strong> estudiantes
                     </td>
                     <td>
                         <button type="button" class="boton-secundario btn-pequeno" title="Copiar enlace" onclick="AulaDigital.copyToClipboard('<?= Security::escapeHtml($sesion['enlaceReunion']) ?>')">
@@ -123,5 +123,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

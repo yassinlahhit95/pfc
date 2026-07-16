@@ -18,7 +18,7 @@ $ciclos     = listarTodosLosCiclos();
 $datos      = $_SESSION['datos_gasto'] ?? null;
 unset($_SESSION['datos_gasto']);
 
-$v = fn($k) => Security::escapeHtml($datos[$k] ?? $gasto[$k] ?? '');
+$valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $gasto[$k] ?? '');
 
 $titulo_pagina = "AULAPRO | EDITAR GASTO";
 $seccion = 'gastos';
@@ -38,20 +38,20 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo<?= fieldClass($errores, 'concepto') ?>">
             <label for="concepto">Concepto <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="concepto" id="concepto" maxlength="255"
-                   value="<?= $v('concepto') ?>">
+                   value="<?= $valorCampo('concepto') ?>">
             <?= fieldError($errores, 'concepto') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'importe') ?>">
             <label for="importe">Importe (€) <span style="color:var(--rojo)">*</span></label>
             <input type="number" name="importe" id="importe" step="0.01" min="0.01"
-                   value="<?= $v('importe') ?>">
+                   value="<?= $valorCampo('importe') ?>">
             <?= fieldError($errores, 'importe') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'fecha') ?>">
             <label for="fecha">Fecha del gasto <span style="color:var(--rojo)">*</span></label>
-            <input type="date" name="fecha" id="fecha" value="<?= $v('fecha') ?>">
+            <input type="date" name="fecha" id="fecha" value="<?= $valorCampo('fecha') ?>">
             <?= fieldError($errores, 'fecha') ?>
         </div>
 
@@ -61,10 +61,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <option value="">— Selecciona —</option>
                 <?php
                 $selCat = $datos['idCategoria'] ?? $gasto['idCategoria'] ?? '';
-                foreach ($categorias as $cat): ?>
-                <option value="<?= (int)$cat['idCategoria'] ?>"
-                    <?= ((string)$selCat === (string)$cat['idCategoria']) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($cat['nombre']) ?>
+                foreach ($categorias as $categoria): ?>
+                <option value="<?= (int)$categoria['idCategoria'] ?>"
+                    <?= ((string)$selCat === (string)$categoria['idCategoria']) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($categoria['nombre']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -85,7 +85,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label for="numeroReferencia">Nº Factura / Referencia</label>
             <input type="text" name="numeroReferencia" id="numeroReferencia" maxlength="100"
-                   value="<?= $v('numeroReferencia') ?>">
+                   value="<?= $valorCampo('numeroReferencia') ?>">
         </div>
 
         <div class="campo">
@@ -94,10 +94,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <option value="">— Sin ciclo específico —</option>
                 <?php
                 $selCiclo = $datos['idCiclo'] ?? $gasto['idCiclo'] ?? '';
-                foreach ($ciclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>"
-                    <?= ((string)$selCiclo === (string)$c['idCiclo']) ? 'selected' : '' ?>>
-                    [<?= Security::escapeHtml($c['abreviaturaCiclo'] ?: $c['idCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                foreach ($ciclos as $ciclo): ?>
+                <option value="<?= (int)$ciclo['idCiclo'] ?>"
+                    <?= ((string)$selCiclo === (string)$ciclo['idCiclo']) ? 'selected' : '' ?>>
+                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -105,16 +105,16 @@ include_once __DIR__ . "/../comunes/nav.php";
 
         <div class="campo">
             <label>Justificante</label>
-            <?php if (!empty($gasto['archivoJustificante'])): 
+            <?php if (!empty($gasto['archivoJustificante'])):
                 $archivos = json_decode($gasto['archivoJustificante'], true);
                 if (is_array($archivos)):
-                    foreach ($archivos as $i => $arch): ?>
+                    foreach ($archivos as $i => $archivo): ?>
                     <div class="file-item-premium" style="margin-bottom:10px;max-width:360px;">
                         <i class="fas fa-file-alt" style="color:var(--accent);font-size:1.2rem;flex-shrink:0;"></i>
                         <div class="file-info-premium">
                             <span class="file-name-premium">Archivo actual <?= count($archivos)>1 ? ($i+1) : '' ?></span>
                             <span class="file-type-premium">
-                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($arch) ?>"
+                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($archivo) ?>"
                                    target="_blank" rel="noopener">Ver archivo adjunto</a>
                             </span>
                         </div>
@@ -131,7 +131,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </span>
                         </div>
                     </div>
-                <?php endif; 
+                <?php endif;
             endif; ?>
             <label class="zona-subida" for="archivoJustificante">
                 <i class="fas fa-file-upload"></i>
@@ -188,7 +188,7 @@ document.getElementById('archivoJustificante').addEventListener('change', functi
         e.preventDefault();
         btn.disabled = true;
         btn.classList.add('cargando');
-        
+
         var hasFiles = document.getElementById('archivoJustificante').files.length > 0;
         if (hasFiles) {
             progressContainer.style.display = 'block';

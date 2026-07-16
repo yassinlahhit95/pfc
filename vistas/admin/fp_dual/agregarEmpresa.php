@@ -10,6 +10,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_empresa'] ?? [];
+unset($_SESSION['datos_empresa']);
 
 $titulo_pagina = "AULAPRO | AGREGAR EMPRESA DUAL";
 $seccion = 'fp_dual';

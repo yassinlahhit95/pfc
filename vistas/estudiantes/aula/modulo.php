@@ -27,15 +27,15 @@ $paginaArchivos = max(1, intval($_GET['pag_arch'] ?? 1));
 $paginaTareas   = max(1, intval($_GET['pag_tareas'] ?? 1));
 
 // Filtrar archivos
-$archivosFiltered = array_filter($archivos, function($a) {
+$archivosFiltered = array_filter($archivos, function($archivo) {
     $search = $_GET['search_arch'] ?? '';
-    return empty($search) || stripos($a['nombreOriginal'], $search) !== false;
+    return empty($search) || stripos($archivo['nombreOriginal'], $search) !== false;
 });
 
 // Filtrar tareas
-$tareasFiltered = array_filter($tareas, function($t) {
+$tareasFiltered = array_filter($tareas, function($tarea) {
     $search = $_GET['search_tareas'] ?? '';
-    return empty($search) || stripos($t['titulo'], $search) !== false;
+    return empty($search) || stripos($tarea['titulo'], $search) !== false;
 });
 
 // Paginación archivos
@@ -391,8 +391,8 @@ document.addEventListener('DOMContentLoaded', function() {
   var primera = document.querySelector('.carpeta');
   if (primera) primera.classList.add('abierta');
 
-  document.querySelectorAll('.carpeta-header-modern').forEach(function(h) {
-    h.addEventListener('click', function(e) {
+  document.querySelectorAll('.carpeta-header-modern').forEach(function(header) {
+    header.addEventListener('click', function(e) {
       if (!e.target.closest('button') && !e.target.closest('a')) {
         this.closest('.carpeta').classList.toggle('abierta');
       }
@@ -402,6 +402,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('[data-ver-archivo]').forEach(function(btn) {
     btn.addEventListener('click', function() {
       abrirViewerAula(this.dataset.verArchivo, this.dataset.ext, this.dataset.nombre);
+    });
+  });
+
+  // Track tab switches
+  document.querySelectorAll('.tab-modern').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabName = this.textContent.trim().toLowerCase();
+      if (window.analytics) analytics.trackTabSwitch(tabName);
     });
   });
 });
@@ -414,8 +422,8 @@ function abrirViewerAula(url, ext, nombre) {
   modal.style.display = 'flex';
 
   if (ext === 'txt') {
-    fetch(url).then(r => r.text()).then(t => {
-      contenedor.innerHTML = '<div style="padding:20px;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;color:var(--color-neutral-700);">' + t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+    fetch(url).then(response => response.text()).then(texto => {
+      contenedor.innerHTML = '<div style="padding:20px;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;color:var(--color-neutral-700);">' + texto.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
     }).catch(() => {
       contenedor.innerHTML = '<p style="padding:20px;color:var(--color-danger);">No se pudo cargar el archivo.</p>';
     });
@@ -423,15 +431,6 @@ function abrirViewerAula(url, ext, nombre) {
     contenedor.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-file-word" style="font-size:3rem;color:var(--color-info);"></i><p style="margin-top:12px;color:var(--color-neutral-500);">Vista previa no disponible. Descárgalo para ver.</p></div>';
   }
 }
-
-  // Track tab switches
-  document.querySelectorAll('.tab-modern').forEach(tab => {
-    tab.addEventListener('click', function() {
-      const tabName = this.textContent.trim().toLowerCase();
-      if (window.analytics) analytics.trackTabSwitch(tabName);
-    });
-  });
-});
 </script>
 
 <!-- SCRIPTS: THEME SYSTEM Y ANALYTICS -->

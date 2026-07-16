@@ -25,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 </div>
 <?php else:
-    $iniciales = strtoupper(implode('', array_map(fn($p) => $p[0], array_filter(explode(' ', trim($secretaria['nombreSecretaria']))))));
+    $iniciales = strtoupper(implode('', array_map(fn($palabra) => $palabra[0], array_filter(explode(' ', trim($secretaria['nombreSecretaria']))))));
     $iniciales = mb_substr($iniciales, 0, 2, 'UTF-8');
 ?>
 <div class="panel margen-abajo">

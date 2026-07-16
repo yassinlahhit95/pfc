@@ -103,8 +103,8 @@
         if ($confirmar.hasClass('cargando')) return;
 
         if (config.requiresPassword) {
-            var pw = $pwInput.val().trim();
-            if (!pw) {
+            var password = $pwInput.val().trim();
+            if (!password) {
                 $pwInput.focus();
                 $pwInput.css('border-color', 'var(--rojo, #ef4444)');
                 setTimeout(function () { $pwInput.css('border-color', ''); }, 1500);

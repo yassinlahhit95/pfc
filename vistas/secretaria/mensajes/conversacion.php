@@ -17,7 +17,7 @@ if (!$conv || !chatEsParticipante($conv, $myRol, $myId)) {
     exit;
 }
 
-$titulo_pagina = 'Chat con ' . Security::escapeHtml($conv['other_nombre'] ?? '');
+$titulo_pagina = 'Chat con ' . ($conv['other_nombre'] ?? '');
 
 function avaClassConv($rol) {
     return $rol === 'admin' ? 'ava-admin' : ($rol === 'profesor' ? 'ava-profesor' : 'ava-alumno');
@@ -39,15 +39,15 @@ require_once __DIR__ . '/../comunes/nav.php';
     <div class="chat-conv-list">
       <?php
       $convs = chatConversacionesDe($myRol, $myId);
-      foreach ($convs as $c):
-        $initials = strtoupper(substr($c['other_nombre'], 0, 1) . (strpos($c['other_nombre'], ' ') !== false ? substr(strstr($c['other_nombre'], ' '), 1, 1) : ''));
-        $active   = ($c['id'] == $convId) ? ' active' : '';
+      foreach ($convs as $conversacion):
+        $initials = strtoupper(substr($conversacion['other_nombre'], 0, 1) . (strpos($conversacion['other_nombre'], ' ') !== false ? substr(strstr($conversacion['other_nombre'], ' '), 1, 1) : ''));
+        $active   = ($conversacion['id'] == $convId) ? ' active' : '';
       ?>
-        <a href="conversacion.php?id=<?= (int)$c['id'] ?>" class="chat-conv-row<?= $active ?>">
-          <div class="chat-ava <?= avaClassConv($c['other_rol']) ?>"><?= Security::escapeHtml($initials) ?></div>
+        <a href="conversacion.php?id=<?= (int)$conversacion['id'] ?>" class="chat-conv-row<?= $active ?>">
+          <div class="chat-ava <?= avaClassConv($conversacion['other_rol']) ?>"><?= Security::escapeHtml($initials) ?></div>
           <div class="chat-conv-info">
-            <div class="chat-conv-name"><?= Security::escapeHtml($c['other_nombre']) ?></div>
-            <div class="chat-conv-preview"><?= Security::escapeHtml($c['last_preview'] ?? '') ?></div>
+            <div class="chat-conv-name"><?= Security::escapeHtml($conversacion['other_nombre']) ?></div>
+            <div class="chat-conv-preview"><?= Security::escapeHtml($conversacion['last_preview'] ?? '') ?></div>
           </div>
         </a>
       <?php endforeach; ?>

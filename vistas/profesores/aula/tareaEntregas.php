@@ -28,8 +28,8 @@ if (!in_array((int)$tarea['idModulo'], array_column($misModulos, 'idModulo'))) {
 $filas = listarEntregasPorTareaAula($idTarea);
 
 $totalEstudiantes = count($filas);
-$totalEntregadas  = count(array_filter($filas, fn($f) => !empty($f['idEntrega'])));
-$totalCorregidas  = count(array_filter($filas, fn($f) => ($f['estado'] ?? '') === 'corregida'));
+$totalEntregadas  = count(array_filter($filas, fn($fila) => !empty($fila['idEntrega'])));
+$totalCorregidas  = count(array_filter($filas, fn($fila) => ($fila['estado'] ?? '') === 'corregida'));
 
 $tituloDelPagina = 'AULAPRO | ENTREGAS — ' . mb_strtoupper($tarea['titulo'], 'UTF-8');
 $seccionActual   = 'aula_tareas';
@@ -92,51 +92,51 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($filas as $f): ?>
+                <?php foreach ($filas as $fila): ?>
                 <tr>
-                    <td><strong><?= Security::escapeHtml($f['nombreEstudiante']) ?></strong></td>
+                    <td><strong><?= Security::escapeHtml($fila['nombreEstudiante']) ?></strong></td>
                     <td>
-                        <?php if (empty($f['idEntrega'])): ?>
+                        <?php if (empty($fila['idEntrega'])): ?>
                             <span class="texto-estado gris">Sin entregar</span>
-                        <?php elseif ($f['estado'] === 'corregida'): ?>
+                        <?php elseif ($fila['estado'] === 'corregida'): ?>
                             <span class="texto-estado verde">Corregida</span>
                         <?php else: ?>
-                            <span class="texto-estado azul">Enviada (v<?= (int)$f['version'] ?>)</span>
+                            <span class="texto-estado azul">Enviada (v<?= (int)$fila['version'] ?>)</span>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if (!empty($f['archivoEntrega'])): ?>
-                            <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($f['archivoEntrega']) ?>"
+                        <?php if (!empty($fila['archivoEntrega'])): ?>
+                            <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($fila['archivoEntrega']) ?>"
                                target="_blank" class="boton-secundario btn-pequeno">
                                 <i class="fas fa-file-download"></i> Archivo
                             </a>
                         <?php endif; ?>
-                        <?php if (!empty($f['respuesta'])): ?>
+                        <?php if (!empty($fila['respuesta'])): ?>
                             <div class="texto-suave" style="font-size:.82rem;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-                                 title="<?= Security::escapeHtml($f['respuesta']) ?>">
-                                <?= Security::escapeHtml(mb_substr($f['respuesta'], 0, 80)) ?><?= mb_strlen($f['respuesta']) > 80 ? '…' : '' ?>
+                                 title="<?= Security::escapeHtml($fila['respuesta']) ?>">
+                                <?= Security::escapeHtml(mb_substr($fila['respuesta'], 0, 80)) ?><?= mb_strlen($fila['respuesta']) > 80 ? '…' : '' ?>
                             </div>
                         <?php endif; ?>
-                        <?php if (empty($f['archivoEntrega']) && empty($f['respuesta'])): ?>
+                        <?php if (empty($fila['archivoEntrega']) && empty($fila['respuesta'])): ?>
                             <span class="texto-suave">—</span>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?= !empty($f['fechaEntrega']) && !empty($f['idEntrega'])
-                            ? date('d/m/Y H:i', strtotime($f['fechaEntrega']))
+                        <?= !empty($fila['fechaEntrega']) && !empty($fila['idEntrega'])
+                            ? date('d/m/Y H:i', strtotime($fila['fechaEntrega']))
                             : '<span class="texto-suave">—</span>' ?>
                     </td>
                     <td>
-                        <?php if (!empty($f['idEntrega'])): ?>
+                        <?php if (!empty($fila['idEntrega'])): ?>
                         <form method="POST" action="../../../controladores/profesores/aula/calificarEntrega.php"
                               style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                            <input type="hidden" name="idEntrega" value="<?= (int)$f['idEntrega'] ?>">
+                            <input type="hidden" name="idEntrega" value="<?= (int)$fila['idEntrega'] ?>">
                             <input type="number" name="nota" min="0" max="10" step="0.01" required
-                                   value="<?= $f['nota'] !== null ? Security::escapeHtml((string)$f['nota']) : '' ?>"
+                                   value="<?= $fila['nota'] !== null ? Security::escapeHtml((string)$fila['nota']) : '' ?>"
                                    placeholder="Nota" style="width:80px;">
                             <input type="text" name="comentario" maxlength="500"
-                                   value="<?= Security::escapeHtml($f['comentarioCalificacion'] ?? '') ?>"
+                                   value="<?= Security::escapeHtml($fila['comentarioCalificacion'] ?? '') ?>"
                                    placeholder="Comentario (opcional)" style="flex:1;min-width:120px;">
                             <button type="submit" class="boton-primario btn-pequeno" title="Guardar calificación">
                                 <i class="fas fa-check"></i>

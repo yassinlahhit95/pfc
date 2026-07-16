@@ -40,40 +40,37 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-datos">
         <div class="nombre-detalle">Nombre Completo</div>
         <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(strtoupper($estudiante['nombreEstudiante'])) ?></div>
-    </div> 
+    </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciclo Formativo</div>
-        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= Security::escapeHtml($estudiante['nombreCiclo'] ) ?></span></div>
+        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></span></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Email</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['emailEstudiante'] ) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['emailEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Telefono</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['telefonoEstudiante'] ) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['telefonoEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">DNI / Identificacion</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['dniEstudiante'] ) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['dniEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Ciudad</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['ciudadEstudiante'] ) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['ciudadEstudiante']) ?></div>
     </div>
 
     <div class="fila-datos">
         <div class="nombre-detalle">Direccion</div>
-        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['direccionEstudiante'] ) ?></div>
+        <div class="valor-detalle"><?= Security::escapeHtml($estudiante['direccionEstudiante']) ?></div>
     </div>
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

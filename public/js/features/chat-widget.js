@@ -23,8 +23,8 @@
   /* ── Helpers ─────────────────────────────────────────────────────────────── */
   const $ = id => document.getElementById(id);
 
-  function escHtml(s) {
-    return String(s || '')
+  function escHtml(str) {
+    return String(str || '')
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -45,15 +45,15 @@
     return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || '?';
   }
 
-  function fmtTime(s) {
-    if (!s) return '';
-    const sp = s.indexOf(' ');
-    return sp >= 0 ? s.substring(sp + 1, sp + 6) : '';
+  function fmtTime(str) {
+    if (!str) return '';
+    const sp = str.indexOf(' ');
+    return sp >= 0 ? str.substring(sp + 1, sp + 6) : '';
   }
 
-  function fmtDate(s) {
-    if (!s) return '';
-    const dateOnly = s.substring(0, 10);
+  function fmtDate(str) {
+    if (!str) return '';
+    const dateOnly = str.substring(0, 10);
     const now = new Date();
     const pad = n => String(n).padStart(2, '0');
     const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
@@ -79,11 +79,11 @@
   }
 
   /* ── Badge ───────────────────────────────────────────────────────────────── */
-  function updateBadge(n) {
+  function updateBadge(count) {
     const badge = $('cw-fab-badge');
     if (!badge) return;
-    badge.textContent = n;
-    badge.hidden = n <= 0;
+    badge.textContent = count;
+    badge.hidden = count <= 0;
   }
 
   /* ── Window open/close ───────────────────────────────────────────────────── */
@@ -146,30 +146,30 @@
       return;
     }
     list.innerHTML = '';
-    convs.forEach(c => {
+    convs.forEach(conv => {
       const row = document.createElement('div');
       row.className = 'cw-conv-row';
 
       const ava = document.createElement('div');
-      ava.className = avaClass(c.other_rol);
-      ava.textContent = avaInit(c.other_nombre);
+      ava.className = avaClass(conv.other_rol);
+      ava.textContent = avaInit(conv.other_nombre);
 
       const info = document.createElement('div');
       info.className = 'cw-conv-info';
-      info.innerHTML = `<div class="cw-conv-name">${escHtml(c.other_nombre)}</div>
-                        <div class="cw-conv-preview">${escHtml(c.last_preview)}</div>`;
+      info.innerHTML = `<div class="cw-conv-name">${escHtml(conv.other_nombre)}</div>
+                        <div class="cw-conv-preview">${escHtml(conv.last_preview)}</div>`;
 
       const meta = document.createElement('div');
       meta.className = 'cw-conv-meta';
-      meta.innerHTML = `<div class="cw-conv-time">${escHtml(fmtTime(c.last_at || ''))}</div>`;
-      if (c.unread > 0) {
-        meta.innerHTML += `<div class="cw-conv-badge">${c.unread}</div>`;
+      meta.innerHTML = `<div class="cw-conv-time">${escHtml(fmtTime(conv.last_at || ''))}</div>`;
+      if (conv.unread > 0) {
+        meta.innerHTML += `<div class="cw-conv-badge">${conv.unread}</div>`;
       }
 
       row.appendChild(ava);
       row.appendChild(info);
       row.appendChild(meta);
-      row.addEventListener('click', () => openConversation(c.id, c.other_nombre, c.other_rol));
+      row.addEventListener('click', () => openConversation(conv.id, conv.other_nombre, conv.other_rol));
       list.appendChild(row);
     });
   }
@@ -295,7 +295,7 @@
         .then(r => r.json())
         .then(data => {
           if (data.ok && data.messages.length) {
-            data.messages.forEach(m => appendMsg(m));
+            data.messages.forEach(msg => appendMsg(msg));
             pollInterval = 3000;
           } else {
             pollInterval = Math.min(Math.round(pollInterval * 1.4), 30000);
@@ -318,7 +318,7 @@
               renderConversations(data.convs);
             }
             let unread = 0;
-            data.convs.forEach(c => { unread += (parseInt(c.unread) || 0); });
+            data.convs.forEach(conv => { unread += (parseInt(conv.unread) || 0); });
             
             const currentBadgeStr = $('cw-fab-badge')?.textContent || '0';
             const currentBadge = parseInt(currentBadgeStr, 10) || 0;
@@ -335,10 +335,10 @@
             } else if (unread > 0) {
                const navItem = document.querySelector('.nav-item[href*="chat"]');
                if (navItem) {
-                  const b = document.createElement('span');
-                  b.className = 'nav-badge nav-badge-alert';
-                  b.textContent = unread;
-                  navItem.insertBefore(b, navItem.querySelector('.nav-rail'));
+                  const badgeEl = document.createElement('span');
+                  badgeEl.className = 'nav-badge nav-badge-alert';
+                  badgeEl.textContent = unread;
+                  navItem.insertBefore(badgeEl, navItem.querySelector('.nav-rail'));
                }
             }
             pollInterval = Math.min(Math.round(pollInterval * 1.4), 30000);
@@ -398,21 +398,21 @@
       return;
     }
     list.innerHTML = '';
-    contacts.forEach(c => {
+    contacts.forEach(contact => {
       const row = document.createElement('div');
       row.className = 'cw-contact-row';
 
       const ava = document.createElement('div');
-      ava.className = avaClass(c.rol);
-      ava.textContent = avaInit(c.nombre);
+      ava.className = avaClass(contact.rol);
+      ava.textContent = avaInit(contact.nombre);
 
       const info = document.createElement('div');
-      info.innerHTML = `<div class="cw-contact-name">${escHtml(c.nombre)}</div>
-                        <div class="cw-contact-role">${roleLabel(c.rol)}</div>`;
+      info.innerHTML = `<div class="cw-contact-name">${escHtml(contact.nombre)}</div>
+                        <div class="cw-contact-role">${roleLabel(contact.rol)}</div>`;
 
       row.appendChild(ava);
       row.appendChild(info);
-      row.addEventListener('click', () => startConversation(c));
+      row.addEventListener('click', () => startConversation(contact));
       list.appendChild(row);
     });
   }
@@ -454,12 +454,12 @@
     }
 
     if (window.visualViewport) {
-      const vv = window.visualViewport;
-      const keyboardHeight = window.innerHeight - vv.height;
+      const viewport = window.visualViewport;
+      const keyboardHeight = window.innerHeight - viewport.height;
 
       if (keyboardHeight > 100) {
         win.style.bottom = (keyboardHeight + 8) + 'px';
-        win.style.height = (vv.height - 80) + 'px';
+        win.style.height = (viewport.height - 80) + 'px';
         win.style.top = 'auto';
       } else {
         win.style.bottom = '';

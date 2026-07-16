@@ -15,12 +15,12 @@ $modulosProfesor   = listarModulosDeProfesor($idProfesor);
 $ciclosTutorizados = listarCiclosTutorizadosProfesor($idProfesor);
 
 /* ── Avatar helpers ── */
-$_av_nombre    = $profesor['nombreProfesor'];
-$_av_partes    = explode(' ', trim($_av_nombre));
-$_av_iniciales = mb_strtoupper(mb_substr($_av_partes[0], 0, 1));
-if (count($_av_partes) > 1) $_av_iniciales .= mb_strtoupper(mb_substr($_av_partes[1], 0, 1));
-$_av_paleta = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
-$_av_color  = $_av_paleta[ord($_av_iniciales[0]) % count($_av_paleta)];
+$nombreCompleto = $profesor['nombreProfesor'];
+$partesNombre   = explode(' ', trim($nombreCompleto));
+$iniciales      = mb_strtoupper(mb_substr($partesNombre[0], 0, 1));
+if (count($partesNombre) > 1) $iniciales .= mb_strtoupper(mb_substr($partesNombre[1], 0, 1));
+$paletaAvatar = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444'];
+$colorAvatar  = $paletaAvatar[ord($iniciales[0]) % count($paletaAvatar)];
 
 $titulo_pagina = "AULAPRO | DETALLES PROFESOR";
 $seccion = 'profesores';
@@ -36,11 +36,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="panel">
     <div class="perfil-cabecera">
-        <div class="perfil-avatar" style="--av-color:<?= $_av_color ?>">
-            <?= Security::escapeHtml($_av_iniciales) ?>
+        <div class="perfil-avatar" style="--av-color:<?= $colorAvatar ?>">
+            <?= Security::escapeHtml($iniciales) ?>
         </div>
         <div class="perfil-info">
-            <div class="perfil-nombre"><?= Security::escapeHtml(mb_strtoupper($_av_nombre, 'UTF-8')) ?></div>
+            <div class="perfil-nombre"><?= Security::escapeHtml(mb_strtoupper($nombreCompleto, 'UTF-8')) ?></div>
             <div class="perfil-meta">
                 <i class="fas fa-chalkboard-teacher"></i> Profesor
                 <?php if (!empty($ciclosTutorizados)): ?>
@@ -246,9 +246,9 @@ function cambiarPassProf() {
         method: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'csrf_token=<?= Security::generateCSRFToken() ?>&tipo=profesor&id=<?= $idProfesor ?>&nuevaPassword='+encodeURIComponent(pass)
-    }).then(r => r.json()).then(d => {
-        if (window.Toast) Toast.show(d.msg, d.ok ? 'success' : 'error');
-        if (d.ok) document.getElementById('nueva-pass-prof').value = '';
+    }).then(r => r.json()).then(data => {
+        if (window.Toast) Toast.show(data.msg, data.ok ? 'success' : 'error');
+        if (data.ok) document.getElementById('nueva-pass-prof').value = '';
     });
 }
 </script>

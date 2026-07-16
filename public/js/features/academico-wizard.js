@@ -38,7 +38,7 @@
     $('#aw-form-crear').on('submit', function (e) {
         e.preventDefault();
         var datos = {};
-        $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+        $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('crear_config', datos).done(function (res) {
             if (res.ok) { toast('Configuración creada. Recargando…', 'success'); location.reload(); }
             else toast(res.msg || 'Error al crear la configuración', 'error');
@@ -48,7 +48,7 @@
     $('#aw-form-general').on('submit', function (e) {
         e.preventDefault();
         var datos = {};
-        $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+        $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_general', datos).done(function (res) {
             toast(res.ok ? 'Guardado' : (res.msg || 'Error al guardar'), res.ok ? 'success' : 'error');
         }).fail(function () { toast('Error de conexión', 'error'); });
@@ -85,7 +85,7 @@
     $('#aw-form-curso').on('submit', function (e) {
         e.preventDefault();
         var datos = {};
-        $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+        $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_curso', datos).done(function (res) {
             if (res.ok) {
                 toast('Curso añadido. Recargando…', 'success');
@@ -106,7 +106,7 @@
     $('#aw-form-periodo').on('submit', function (e) {
         e.preventDefault();
         var datos = { visible: 0, bloqueado: 0 };
-        $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+        $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_periodo', datos).done(function (res) {
             if (res.ok) { toast('Período guardado. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
             else toast(res.msg || 'Error', 'error');
@@ -125,7 +125,7 @@
     $('#aw-form-tipo').on('submit', function (e) {
         e.preventDefault();
         var datos = { obligatorio: 0, recuperable: 0, incluirEnMedia: 0 };
-        $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+        $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_tipo', datos).done(function (res) {
             if (res.ok) { toast('Tipo guardado. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
             else toast(res.msg || 'Error', 'error');
@@ -145,8 +145,8 @@
         $(selector).on('submit', function (e) {
             e.preventDefault();
             var datos = {};
-            camposCheckbox.forEach(function (c) { datos[c] = 0; });
-            $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+            camposCheckbox.forEach(function (nombreCampo) { datos[nombreCampo] = 0; });
+            $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
             post(accion, datos).done(function (res) {
                 toast(res.ok ? 'Guardado' : (res.msg || 'Error al guardar'), res.ok ? 'success' : 'error');
             }).fail(function () { toast('Error de conexión', 'error'); });
@@ -170,7 +170,7 @@
     $('#aw-form-guardar-plantilla').on('submit', function (e) {
         e.preventDefault();
         var datos = {};
-        $(this).serializeArray().forEach(function (f) { datos[f.name] = f.value; });
+        $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_como_plantilla', datos).done(function (res) {
             if (res.ok) { toast('Plantilla guardada', 'success'); this.reset(); } else toast(res.msg || 'Error', 'error');
         }.bind(this)).fail(function () { toast('Error de conexión', 'error'); });

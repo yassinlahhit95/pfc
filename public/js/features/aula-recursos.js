@@ -28,15 +28,15 @@
 
   const AulaRecursos = {
     abrirModal(id) {
-      const m = document.getElementById(id);
-      if (m) {
+      const modal = document.getElementById(id);
+      if (modal) {
         cerrarMenus();
-        m.classList.add('abierto');
+        modal.classList.add('abierto');
       }
     },
     cerrarModal(id) {
-      const m = document.getElementById(id);
-      if (m) m.classList.remove('abierto');
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('abierto');
       if (id === 'modalVisor') document.getElementById('visorCuerpo').innerHTML = '';
     },
     editarCarpeta(id, nombre, color, icono) {
@@ -59,26 +59,26 @@
     // ── Menú contextual de cada recurso ──────────────────
     menu(btn) {
       if (btn._menu === undefined) btn._menu = btn.nextElementSibling;
-      const m = btn._menu;
-      if (!m || !m.classList.contains('recurso-menu')) return;
-      const yaAbierto = m.classList.contains('abierto');
+      const menu = btn._menu;
+      if (!menu || !menu.classList.contains('recurso-menu')) return;
+      const yaAbierto = menu.classList.contains('abierto');
       cerrarMenus();
       if (yaAbierto) return;
       // Mover al <body> para que no lo recorte el overflow de la tabla
-      if (m.parentNode !== document.body) document.body.appendChild(m);
-      m.classList.add('abierto');
-      const r = btn.getBoundingClientRect();
-      const ancho = m.offsetWidth || 200;
-      let izq = r.right - ancho;
+      if (menu.parentNode !== document.body) document.body.appendChild(menu);
+      menu.classList.add('abierto');
+      const btnRect = btn.getBoundingClientRect();
+      const ancho = menu.offsetWidth || 200;
+      let izq = btnRect.right - ancho;
       if (izq < 8) izq = 8;
-      let top = r.bottom + 6;
-      const alto = m.offsetHeight || 180;
+      let top = btnRect.bottom + 6;
+      const alto = menu.offsetHeight || 180;
       if (top + alto > window.innerHeight) {
-        top = r.top - alto - 6;
+        top = btnRect.top - alto - 6;
         if (top < 8) top = 8;
       }
-      m.style.top = top + 'px';
-      m.style.left = izq + 'px';
+      menu.style.top = top + 'px';
+      menu.style.left = izq + 'px';
     },
 
     // ── Mover archivo ────────────────────────────────────
@@ -97,18 +97,18 @@
         modulo: idModulo,
         regresar: carpetaActual()
       };
-      const f = document.createElement('form');
-      f.method = 'POST';
-      f.action = CTRL + 'moverArchivo.php';
-      for (const k in campos) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = CTRL + 'moverArchivo.php';
+      for (const campoNombre in campos) {
         const inp = document.createElement('input');
         inp.type = 'hidden';
-        inp.name = k;
-        inp.value = campos[k];
-        f.appendChild(inp);
+        inp.name = campoNombre;
+        inp.value = campos[campoNombre];
+        form.appendChild(inp);
       }
-      document.body.appendChild(f);
-      f.submit();
+      document.body.appendChild(form);
+      form.submit();
     },
 
     // ── Copiar enlace al portapapeles ────────────────────
@@ -123,14 +123,14 @@
       cerrarMenus();
     },
     _copiaManual(texto, ok) {
-      const ta = document.createElement('textarea');
-      ta.value = texto;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
+      const textarea = document.createElement('textarea');
+      textarea.value = texto;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
       try { document.execCommand('copy'); ok(); } catch (e) { /* noop */ }
-      document.body.removeChild(ta);
+      document.body.removeChild(textarea);
     },
 
     // ── Visor de documentos ──────────────────────────────
@@ -175,13 +175,13 @@
         const fijado = (res.fijado === 1 || res.fijado === '1');
         const label = btn.querySelector('.recurso-pin-label');
         if (label) label.textContent = fijado ? 'Quitar fijado' : 'Fijar';
-        const el = localizarElemento(tipo, id);
-        if (el) {
-          marcarFijado(el, tipo, fijado);
+        const targetEl = localizarElemento(tipo, id);
+        if (targetEl) {
+          marcarFijado(targetEl, tipo, fijado);
           if (fijado) {
             // Subir el elemento al principio de su lista, sin recargar la página
-            const cont = (tipo === 'carpeta') ? el.closest('.recurso-carpetas-grid') : el.closest('tbody');
-            if (cont && cont.firstElementChild !== el) cont.insertBefore(el, cont.firstElementChild);
+            const cont = (tipo === 'carpeta') ? targetEl.closest('.recurso-carpetas-grid') : targetEl.closest('tbody');
+            if (cont && cont.firstElementChild !== targetEl) cont.insertBefore(targetEl, cont.firstElementChild);
           }
         }
         cerrarMenus();
@@ -208,8 +208,6 @@
     toast(msg, type) {
         if (window.Toast) {
             window.Toast.show(msg, type);
-        } else {
-
         }
     },
 
@@ -276,23 +274,23 @@
     // Color
     var swatch = e.target.closest('.swatch[data-color]');
     if (swatch) {
-      var grid = swatch.closest('.selector-colores');
-      if (!grid) return;
-      grid.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('activo'); });
+      var colorGrid = swatch.closest('.selector-colores');
+      if (!colorGrid) return;
+      colorGrid.querySelectorAll('.swatch').forEach(function(sw) { sw.classList.remove('activo'); });
       swatch.classList.add('activo');
-      var inp = document.getElementById(grid.getAttribute('data-target'));
-      if (inp) inp.value = swatch.getAttribute('data-color');
+      var colorInput = document.getElementById(colorGrid.getAttribute('data-target'));
+      if (colorInput) colorInput.value = swatch.getAttribute('data-color');
       return;
     }
     // Icono
     var ico = e.target.closest('.icono-op[data-icono]');
     if (ico) {
-      var grid2 = ico.closest('.selector-iconos');
-      if (!grid2) return;
-      grid2.querySelectorAll('.icono-op').forEach(function(b) { b.classList.remove('activo'); });
+      var iconGrid = ico.closest('.selector-iconos');
+      if (!iconGrid) return;
+      iconGrid.querySelectorAll('.icono-op').forEach(function(opt) { opt.classList.remove('activo'); });
       ico.classList.add('activo');
-      var inp2 = document.getElementById(grid2.getAttribute('data-target'));
-      if (inp2) inp2.value = ico.getAttribute('data-icono');
+      var iconInput = document.getElementById(iconGrid.getAttribute('data-target'));
+      if (iconInput) iconInput.value = ico.getAttribute('data-icono');
       return;
     }
     // Borrado con confirmación

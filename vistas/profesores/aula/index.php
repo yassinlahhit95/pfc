@@ -40,28 +40,28 @@ include_once __DIR__ . "/../comunes/nav.php";
   $iconos = ['fa-laptop-code', 'fa-network-wired', 'fa-database', 'fa-microchip', 'fa-code', 'fa-server', 'fa-diagram-project', 'fa-shield-halved'];
 ?>
 <div class="aula-recursos-grid">
-  <?php foreach ($ciclos as $c):
-      $idc     = (int) $c['idCiclo'];
+  <?php foreach ($ciclos as $ciclo):
+      $idCiclo = (int) $ciclo['idCiclo'];
       $modulos = ($esTutor && $idCicloTutor)
-          ? listarModulosPorCiclo($idc)
-          : listarModulosDeProfesorPorCiclo($idProfesor, $idc);
-      $usado   = obtenerUsoAlmacenamientoCicloAula($idc);
-      $limite  = obtenerLimiteAlmacenamientoCicloAula($idc);
+          ? listarModulosPorCiclo($idCiclo)
+          : listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
+      $usado   = obtenerUsoAlmacenamientoCicloAula($idCiclo);
+      $limite  = obtenerLimiteAlmacenamientoCicloAula($idCiclo);
       $pct     = $limite > 0 ? min(100, round($usado / $limite * 100)) : 0;
-      $clase   = $paleta[$idc % count($paleta)];
-      $icono   = $iconos[$idc % count($iconos)];
+      $clase   = $paleta[$idCiclo % count($paleta)];
+      $icono   = $iconos[$idCiclo % count($iconos)];
   ?>
-  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($c['idCiclo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($clase ) ?>">
-    <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($icono ) ?>"></i></div>
+  <a href="modulos.php?idCiclo=<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($clase) ?>">
+    <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($icono) ?>"></i></div>
     <div class="recurso-ciclo-body">
-      <h3><?= Security::escapeHtml($c['nombreCiclo']) ?></h3>
-      <span class="recurso-ciclo-abrev"><?= Security::escapeHtml($c['abreviaturaCiclo']) ?></span>
+      <h3><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></h3>
+      <span class="recurso-ciclo-abrev"><?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?></span>
       <div class="recurso-ciclo-meta">
         <span><i class="fas fa-cubes"></i> <?= Security::escapeHtml(count($modulos)) ?> módulos</span>
       </div>
       <div class="recurso-almacenamiento" title="<?= Security::escapeHtml(round($usado/1048576, 1)) ?> MB de <?= Security::escapeHtml(round($limite/1073741824, 1)) ?> GB">
-        <div class="recurso-almacenamiento-barra"><span style="width:<?= Security::escapeHtml($pct ) ?>%"></span></div>
-        <small><?= Security::escapeHtml($pct ) ?>% usado</small>
+        <div class="recurso-almacenamiento-barra"><span style="width:<?= Security::escapeHtml($pct) ?>%"></span></div>
+        <small><?= Security::escapeHtml($pct) ?>% usado</small>
       </div>
     </div>
     <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
@@ -71,5 +71,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

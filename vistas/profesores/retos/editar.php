@@ -37,7 +37,7 @@ if ($datosReto) {
     $reto = array_merge($reto, $datosReto);
     if (isset($datosReto['modulos'])) {
         $mapaModulosAsociados = [];
-        foreach ($datosReto['modulos'] as $idM) { $mapaModulosAsociados[$idM] = true; }
+        foreach ($datosReto['modulos'] as $idModuloElegido) { $mapaModulosAsociados[$idModuloElegido] = true; }
     }
 }
 
@@ -98,13 +98,13 @@ include_once "../comunes/nav.php";
             <?php $archivosExistentes = obtenerArchivosReto($idReto);
             if (!empty($archivosExistentes)) { ?>
                 <div class="archivo-reto-lista">
-                    <?php foreach ($archivosExistentes as $ae) {
-                        $isPdf = ($ae['tipoArchivo'] === 'pdf'); ?>
-                    <div class="archivo-reto-item" id="file-<?= (int)$ae['idArchivo'] ?>">
+                    <?php foreach ($archivosExistentes as $archivoExistente) {
+                        $isPdf = ($archivoExistente['tipoArchivo'] === 'pdf'); ?>
+                    <div class="archivo-reto-item" id="file-<?= (int)$archivoExistente['idArchivo'] ?>">
                         <i class="fas <?= $isPdf ? 'fa-file-pdf' : 'fa-image' ?>" style="font-size:18px;color:<?= $isPdf ? 'var(--rojo)' : 'var(--accent)' ?>;flex-shrink:0;"></i>
-                        <span class="archivo-reto-nombre" title="<?= Security::escapeHtml($ae['nombreArchivo']) ?>"><?= Security::escapeHtml($ae['nombreArchivo']) ?></span>
+                        <span class="archivo-reto-nombre" title="<?= Security::escapeHtml($archivoExistente['nombreArchivo']) ?>"><?= Security::escapeHtml($archivoExistente['nombreArchivo']) ?></span>
                         <span class="texto-estado <?= $isPdf ? 'rojo' : 'azul' ?>"><?= $isPdf ? 'PDF' : 'Imagen' ?></span>
-                        <button type="button" class="boton-peligro btn-pequeno" onclick="borrarArchivoSmooth(<?= (int)$ae['idArchivo'] ?>, <?= (int)$idReto ?>)">
+                        <button type="button" class="boton-peligro btn-pequeno" onclick="borrarArchivoSmooth(<?= (int)$archivoExistente['idArchivo'] ?>, <?= (int)$idReto ?>)">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -118,13 +118,13 @@ include_once "../comunes/nav.php";
             <p class="texto-suave" style="font-size:13px;margin-bottom:10px;">Seleccione los módulos en los que se evaluará este reto.</p>
             <?= fieldError($errores, 'modulos') ?>
             <div class="modulo-chips">
-                <?php foreach ($misModulos as $mod) { ?>
+                <?php foreach ($misModulos as $modulo) { ?>
                 <label class="modulo-chip">
-                    <input type="checkbox" name="modulos[]" value="<?= (int)$mod['idModulo'] ?>"
-                           <?= isset($mapaModulosAsociados[$mod['idModulo']]) ? 'checked' : '' ?>>
+                    <input type="checkbox" name="modulos[]" value="<?= (int)$modulo['idModulo'] ?>"
+                           <?= isset($mapaModulosAsociados[$modulo['idModulo']]) ? 'checked' : '' ?>>
                     <span>
-                        <?= Security::escapeHtml($mod['nombreModulo']) ?>
-                        <em>(<?= Security::escapeHtml($mod['abreviaturaCiclo']) ?>)</em>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?>
+                        <em>(<?= Security::escapeHtml($modulo['abreviaturaCiclo']) ?>)</em>
                     </span>
                 </label>
                 <?php } ?>
@@ -213,5 +213,3 @@ $(document).ready(function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
-
-

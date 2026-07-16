@@ -14,12 +14,12 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
 $idEstudianteElegido = (int)($_GET['idEstudiante'] ?? 0);
 
-$todos_los_ciclos = listarTodosLosCiclos();
+$todosLosCiclos = listarTodosLosCiclos();
 
 if (!empty($idCicloElegido)) {
-    $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloElegido);
+    $todosLosEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 } else {
-    $todos_los_estudiantes = listarEstudiantes();
+    $todosLosEstudiantes = listarEstudiantes();
 }
 
 $infoFinanciera = null;
@@ -32,7 +32,8 @@ $fechaLimite = date('Y') . '-06-30';
 // Los administradores, secretaría y directores siempre pueden registrar pagos fuera de plazo.
 $esDespuesDeJunio = false;
 
-$datos_pago = $_SESSION['datos_pago'] ?? [];
+$datosPago = $_SESSION['datos_pago'] ?? [];
+unset($_SESSION['datos_pago']);
 
 $titulo_pagina = "AULAPRO | REGISTRAR PAGO";
 $seccion = 'pagos';
@@ -52,7 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCiclo">1. Filtrar por Ciclo:</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                <?php foreach ($todosLosCiclos as $ciclo) { ?>
                     <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloElegido == $ciclo['idCiclo']) ? 'selected' : '' ?>>  
                         <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
@@ -64,9 +65,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idEstudiante">2. Seleccionar Estudiante:</label>
             <select name="idEstudiante" id="idEstudiante" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Estudiante --</option>
-                <?php foreach ($todos_los_estudiantes as $est) { ?>
-                    <option value="<?= (int)$est['idEstudiante'] ?>" <?= ($idEstudianteElegido == $est['idEstudiante']) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($est['nombreEstudiante']) ?>
+                <?php foreach ($todosLosEstudiantes as $estudiante) { ?>
+                    <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= ($idEstudianteElegido == $estudiante['idEstudiante']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -112,17 +113,17 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="tipoPago">Tipo de Pago</label>
                 <select name="tipoPago" id="tipoPago">
                     <option value="">-- Elegir --</option>
-                    <option value="mensual" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'mensual') ? 'selected' : '' ?>>Mensual (10% del total)</option>
-                    <option value="trimestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'trimestral') ? 'selected' : '' ?>>Trimestral (25% del total)</option>
-                    <option value="semestral" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'semestral') ? 'selected' : '' ?>>Semestral (50% del total)</option>
-                    <option value="unico" <?= (isset($datos_pago['tipoPago']) && $datos_pago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>
+                    <option value="mensual" <?= (isset($datosPago['tipoPago']) && $datosPago['tipoPago'] == 'mensual') ? 'selected' : '' ?>>Mensual (10% del total)</option>
+                    <option value="trimestral" <?= (isset($datosPago['tipoPago']) && $datosPago['tipoPago'] == 'trimestral') ? 'selected' : '' ?>>Trimestral (25% del total)</option>
+                    <option value="semestral" <?= (isset($datosPago['tipoPago']) && $datosPago['tipoPago'] == 'semestral') ? 'selected' : '' ?>>Semestral (50% del total)</option>
+                    <option value="unico" <?= (isset($datosPago['tipoPago']) && $datosPago['tipoPago'] == 'unico') ? 'selected' : '' ?>>Todo lo restante (<?= number_format($infoFinanciera['restante'], 2) ?> €)</option>
                 </select>
                 <?= fieldError($errores, 'tipoPago') ?>
             </div>
 
             <div class="campo<?= fieldClass($errores, 'monto') ?>">
                 <label for="montoInput">Cantidad a Cobrar (€)</label>
-                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= Security::escapeHtml($datos_pago['monto'] ?? '') ?>">
+                <input type="number" name="monto" id="montoInput" step="0.01" max="<?= $infoFinanciera['restante'] ?>" readonly value="<?= Security::escapeHtml($datosPago['monto'] ?? '') ?>">
                 <span>Máximo permitido: <?= $infoFinanciera['restante'] ?> €</span>
                 <?= fieldError($errores, 'monto') ?>
             </div>

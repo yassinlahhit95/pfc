@@ -19,6 +19,7 @@ if (!$empresa) {
 }
 
 $datos = $_SESSION['datos_empresa'] ?? [];
+unset($_SESSION['datos_empresa']);
 if (!empty($datos)) {
     $empresa = $datos + $empresa;
 }

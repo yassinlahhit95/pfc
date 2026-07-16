@@ -15,7 +15,7 @@ if (!$evento) {
 $datos = $_SESSION['datos_evento'] ?? null;
 unset($_SESSION['datos_evento']);
 
-$v = fn($k) => Security::escapeHtml($datos[$k] ?? $evento[$k] ?? '');
+$valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $evento[$k] ?? '');
 
 $titulo_pagina = "AULAPRO | EDITAR EVENTO";
 $seccion = 'eventos';
@@ -35,33 +35,33 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo<?= fieldClass($errores, 'tituloEvento') ?>">
             <label for="tituloEvento">Título <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="tituloEvento" id="tituloEvento" maxlength="255"
-                   value="<?= $v('tituloEvento') ?>">
+                   value="<?= $valorCampo('tituloEvento') ?>">
             <?= fieldError($errores, 'tituloEvento') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'fechaEvento') ?>">
             <label for="fechaEvento">Fecha <span style="color:var(--rojo)">*</span></label>
             <input type="date" name="fechaEvento" id="fechaEvento"
-                   value="<?= $v('fechaEvento') ?>">
+                   value="<?= $valorCampo('fechaEvento') ?>">
             <?= fieldError($errores, 'fechaEvento') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'horaEvento') ?>">
             <label for="horaEvento">Hora <span style="color:var(--rojo)">*</span></label>
             <input type="time" name="horaEvento" id="horaEvento"
-                   value="<?= $v('horaEvento') ?>">
+                   value="<?= $valorCampo('horaEvento') ?>">
             <?= fieldError($errores, 'horaEvento') ?>
         </div>
 
         <div class="campo">
             <label for="ubicacionEvento">Ubicación</label>
             <input type="text" name="ubicacionEvento" id="ubicacionEvento" maxlength="255"
-                   value="<?= $v('ubicacionEvento') ?>">
+                   value="<?= $valorCampo('ubicacionEvento') ?>">
         </div>
 
         <div class="campo campo-ancho-total">
             <label for="descripcionEvento">Descripción</label>
-            <textarea name="descripcionEvento" id="descripcionEvento" rows="4"><?= $v('descripcionEvento') ?></textarea>
+            <textarea name="descripcionEvento" id="descripcionEvento" rows="4"><?= $valorCampo('descripcionEvento') ?></textarea>
         </div>
 
         <div class="acciones">

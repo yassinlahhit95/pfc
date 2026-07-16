@@ -7,6 +7,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_director'] ?? [];
+unset($_SESSION['datos_director']);
 
 $titulo_pagina = "AULAPRO | REGISTRAR DIRECTOR";
 $seccion = 'directores';

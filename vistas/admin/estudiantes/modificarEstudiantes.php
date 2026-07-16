@@ -9,22 +9,22 @@ require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
 
-$id_del_estudiante = (int)($_GET['idEstudiante'] ?? 0);
-$estudiante = obtenerEstudiantePorId($id_del_estudiante);
+$idEstudiante = (int)($_GET['idEstudiante'] ?? 0);
+$estudiante = obtenerEstudiantePorId($idEstudiante);
 
 if (!$estudiante) {
     header("Location: verEstudiantes.php");
     exit;
 }
 
-$datos_sesion = $_SESSION['datos_estudiante'] ?? null;
+$datosSesion = $_SESSION['datos_estudiante'] ?? null;
 unset($_SESSION['datos_estudiante']);
-if ($datos_sesion) {
-    $estudiante = $datos_sesion + $estudiante;
+if ($datosSesion) {
+    $estudiante = $datosSesion + $estudiante;
 }
 
-$lista_ciclos = listarTodosLosCiclos();
-$todos_los_cursos = listarTodosLosCursosAcademicos();
+$listaCiclos = listarTodosLosCiclos();
+$todosLosCursos = listarTodosLosCursosAcademicos();
 
 $titulo_pagina = "AULAPRO | MODIFICAR ESTUDIANTE";
 $seccion = 'estudiantes';
@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/admin/estudiantes/actualizar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($id_del_estudiante) ?>">
+        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
 
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'nombreEstudiante') ?>">
@@ -152,8 +152,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var listaDeCiclos = <?= json_encode($lista_ciclos) ?>;
-var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var listaDeCiclos = <?= json_encode($listaCiclos) ?>;
+var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var anioEstudioActual = <?= json_encode($estudiante['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {
@@ -203,7 +203,7 @@ function cambiarPassEst() {
     fetch('../../../controladores/admin/usuarios/cambiarPassword.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest'},
-        body: 'tipo=estudiante&id=<?= $id_del_estudiante ?>&nuevaPassword=' + encodeURIComponent(pass) + '&csrf_token=' + encodeURIComponent(token)
+        body: 'tipo=estudiante&id=<?= $idEstudiante ?>&nuevaPassword=' + encodeURIComponent(pass) + '&csrf_token=' + encodeURIComponent(token)
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {

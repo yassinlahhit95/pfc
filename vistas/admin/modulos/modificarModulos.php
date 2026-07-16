@@ -9,25 +9,26 @@ require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
 
-$id_del_modulo = (int)($_GET['idModulo'] ?? 0);
-$modulo = obtenerModuloPorId($id_del_modulo);
+$idModulo = (int)($_GET['idModulo'] ?? 0);
+$modulo = obtenerModuloPorId($idModulo);
 
 if (!$modulo) {
     header("Location: verModulos.php");
     exit;
 }
 
-$todos_los_ciclos = listarTodosLosCiclos();
-$todos_los_cursos = listarTodosLosCursosAcademicos();
+$todosLosCiclos = listarTodosLosCiclos();
+$todosLosCursos = listarTodosLosCursosAcademicos();
 
 $datos = $_SESSION['datos_modulo'] ?? [];
+unset($_SESSION['datos_modulo']);
 
 if (!empty($datos)) {
     $modulo = $datos + $modulo;
 }
 
 $nivelActual = '';
-foreach ($todos_los_ciclos as $cicloItem) {
+foreach ($todosLosCiclos as $cicloItem) {
     if ($cicloItem['idCiclo'] == $modulo['idCiclo']) {
         $nivelActual = $cicloItem['nombreNivel'];
         break;
@@ -48,7 +49,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/admin/modulos/actualizar.php" method="POST">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idModulo" value="<?= $id_del_modulo ?>">
+        <input type="hidden" name="idModulo" value="<?= $idModulo ?>">
 
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'nombreModulo') ?>">
@@ -117,8 +118,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($todos_los_ciclos) ?>;
-var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var todosCiclos = <?= json_encode($todosLosCiclos) ?>;
+var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var cursoAnioActual = <?= json_encode($modulo['cursoAnio'] ?? '') ?>;
 
 function filtrarCiclos() {

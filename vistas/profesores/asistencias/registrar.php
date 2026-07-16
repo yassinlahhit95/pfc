@@ -20,8 +20,8 @@ $fecha         = $_GET['fecha'] ?? $fechaHoy;
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) $fecha = $fechaHoy;
 
 $moduloActual = null;
-foreach ($misModulos as $m) {
-    if ((int)$m['idModulo'] === $idModulo) { $moduloActual = $m; break; }
+foreach ($misModulos as $modulo) {
+    if ((int)$modulo['idModulo'] === $idModulo) { $moduloActual = $modulo; break; }
 }
 if ($idModulo && !$moduloActual) $idModulo = 0;
 
@@ -30,29 +30,29 @@ $asistenciasHoy    = $idModulo ? listarAsistenciasPorModuloFecha($idModulo, $fec
 $fechasRegistradas = $idModulo ? listarFechasConRegistro($idModulo)            : [];
 
 // Absentismo: umbral legal típico del 15 % de horas del módulo
-$_umbralAbsent  = 15.0;
-$_horasModulo   = (int)($moduloActual['horasMaximas'] ?? 0);
-$_absentMap     = [];
-if ($idModulo && !empty($estudiantes) && $_horasModulo > 0) {
-    foreach ($estudiantes as $_e) {
-        $_absentMap[(int)$_e['idEstudiante']] = calcularAbsentismoModulo(
-            (int)$_e['idEstudiante'], $idModulo, $_horasModulo, $_umbralAbsent
+$umbralAbsentismo = 15.0;
+$horasModulo      = (int)($moduloActual['horasMaximas'] ?? 0);
+$mapaAbsentismo   = [];
+if ($idModulo && !empty($estudiantes) && $horasModulo > 0) {
+    foreach ($estudiantes as $estudianteRiesgo) {
+        $mapaAbsentismo[(int)$estudianteRiesgo['idEstudiante']] = calcularAbsentismoModulo(
+            (int)$estudianteRiesgo['idEstudiante'], $idModulo, $horasModulo, $umbralAbsentismo
         );
     }
 }
-$_estudiantesEnRiesgo = array_filter($_absentMap, fn($a) => $a['excede']);
+$estudiantesEnRiesgo = array_filter($mapaAbsentismo, fn($datos) => $datos['excede']);
 
 $asistMap = [];
-foreach ($asistenciasHoy as $a) {
-    $asistMap[(int)$a['idEstudiante']] = $a;
+foreach ($asistenciasHoy as $registro) {
+    $asistMap[(int)$registro['idEstudiante']] = $registro;
 }
 
 // Cuadro horario: clases de este módulo en el día de la semana seleccionado
-$_diasEs   = ['Monday'=>'Lunes','Tuesday'=>'Martes','Wednesday'=>'Miércoles','Thursday'=>'Jueves','Friday'=>'Viernes','Saturday'=>'Sábado','Sunday'=>'Domingo'];
-$_diaSemana = $_diasEs[date('l', strtotime($fecha))] ?? '';
-$clasesHoy  = $idModulo ? listarClasesDeModuloPorDia($idModulo, $_diaSemana) : [];
+$diasEnEspanol = ['Monday'=>'Lunes','Tuesday'=>'Martes','Wednesday'=>'Miércoles','Thursday'=>'Jueves','Friday'=>'Viernes','Saturday'=>'Sábado','Sunday'=>'Domingo'];
+$diaSemana     = $diasEnEspanol[date('l', strtotime($fecha))] ?? '';
+$clasesHoy  = $idModulo ? listarClasesDeModuloPorDia($idModulo, $diaSemana) : [];
 
-$_av_paleta = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6'];
+$paletaAvatares = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6'];
 
 $tituloDelPagina = "AULAPRO | Asistencia";
 $seccionActual   = "asistencias";
@@ -193,9 +193,9 @@ require_once __DIR__ . "/../comunes/nav.php";
       <label>Módulo</label>
       <select name="idModulo" onchange="this.form.submit()">
         <option value="">Selecciona un módulo</option>
-        <?php foreach ($misModulos as $m): ?>
-        <option value="<?= (int)$m['idModulo'] ?>" <?= $idModulo === (int)$m['idModulo'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($m['nombreModulo']) ?>
+        <?php foreach ($misModulos as $modulo): ?>
+        <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
+          <?= Security::escapeHtml($modulo['nombreModulo']) ?>
         </option>
         <?php endforeach; ?>
       </select>
@@ -238,8 +238,8 @@ require_once __DIR__ . "/../comunes/nav.php";
         <select onchange="if(this.value)location.href='registrar.php?idModulo=<?= $idModulo ?>&fecha='+this.value"
                 style="padding:7px 12px;border:1.5px solid var(--border-2);border-radius:8px;font-size:13px;background:var(--surface);color:var(--dim);cursor:pointer;">
           <option value="">Historial...</option>
-          <?php foreach ($fechasRegistradas as $f): ?>
-          <option value="<?= Security::escapeHtml($f) ?>"><?= date('d/m/Y', strtotime($f)) ?></option>
+          <?php foreach ($fechasRegistradas as $fechaHistorial): ?>
+          <option value="<?= Security::escapeHtml($fechaHistorial) ?>"><?= date('d/m/Y', strtotime($fechaHistorial)) ?></option>
           <?php endforeach; ?>
         </select>
         <?php endif; ?>
@@ -256,38 +256,38 @@ require_once __DIR__ . "/../comunes/nav.php";
     <?php if (!empty($clasesHoy)): ?>
     <div class="horario-bar tiene-clase">
       <i class="fas fa-calendar-check" style="color:var(--accent);flex-shrink:0;"></i>
-      <span style="font-weight:600;margin-right:4px;"><?= Security::escapeHtml($_diaSemana) ?> —</span>
-      <?php foreach ($clasesHoy as $cl): ?>
+      <span style="font-weight:600;margin-right:4px;"><?= Security::escapeHtml($diaSemana) ?> —</span>
+      <?php foreach ($clasesHoy as $clase): ?>
       <div class="horario-franja">
         <i class="fas fa-clock"></i>
-        <?= Security::escapeHtml($cl['horaInicio']) ?> – <?= Security::escapeHtml($cl['horaFin']) ?>
-        <?php if (!empty($cl['codigoAula'])): ?>
-        <span class="horario-aula">· <?= Security::escapeHtml($cl['codigoAula']) ?></span>
+        <?= Security::escapeHtml($clase['horaInicio']) ?> – <?= Security::escapeHtml($clase['horaFin']) ?>
+        <?php if (!empty($clase['codigoAula'])): ?>
+        <span class="horario-aula">· <?= Security::escapeHtml($clase['codigoAula']) ?></span>
         <?php endif; ?>
       </div>
       <?php endforeach; ?>
     </div>
-    <?php elseif ($_diaSemana && $idModulo): ?>
+    <?php elseif ($diaSemana && $idModulo): ?>
     <div class="horario-bar sin-clase">
       <i class="fas fa-triangle-exclamation"></i>
-      <span>Este módulo no tiene clases programadas para el <strong><?= Security::escapeHtml($_diaSemana) ?></strong>. Verifica el cuadro horario.</span>
+      <span>Este módulo no tiene clases programadas para el <strong><?= Security::escapeHtml($diaSemana) ?></strong>. Verifica el cuadro horario.</span>
     </div>
     <?php endif; ?>
 
     <!-- Alerta de absentismo -->
-    <?php if (!empty($_estudiantesEnRiesgo)): ?>
+    <?php if (!empty($estudiantesEnRiesgo)): ?>
     <div class="horario-bar sin-clase" style="margin-bottom:0;">
       <i class="fas fa-triangle-exclamation" style="color:#b45309;flex-shrink:0;"></i>
       <span>
-        <strong><?= count($_estudiantesEnRiesgo) ?> alumno(s) superan el <?= $_umbralAbsent ?>% de absentismo</strong>
+        <strong><?= count($estudiantesEnRiesgo) ?> alumno(s) superan el <?= $umbralAbsentismo ?>% de absentismo</strong>
         (umbral legal de pérdida de evaluación continua).
-        <?php foreach ($_estudiantesEnRiesgo as $_idE => $_datos): ?>
-          <?php foreach ($estudiantes as $_est): ?>
-            <?php if ((int)$_est['idEstudiante'] === $_idE): ?>
+        <?php foreach ($estudiantesEnRiesgo as $idEstudianteRiesgo => $datosAbsentismo): ?>
+          <?php foreach ($estudiantes as $estudianteInfo): ?>
+            <?php if ((int)$estudianteInfo['idEstudiante'] === $idEstudianteRiesgo): ?>
               <span style="display:inline-block;margin:.2em .4em;background:rgba(180,83,9,.12);border-radius:5px;padding:1px 7px;font-size:.8em;">
-                <?= Security::escapeHtml($_est['nombreEstudiante']) ?>
-                — <?= $_datos['ausencias'] ?>h ausente
-                (<?= $_datos['porcentaje'] ?>% / <?= $_umbralAbsent ?>%)
+                <?= Security::escapeHtml($estudianteInfo['nombreEstudiante']) ?>
+                — <?= $datosAbsentismo['ausencias'] ?>h ausente
+                (<?= $datosAbsentismo['porcentaje'] ?>% / <?= $umbralAbsentismo ?>%)
               </span>
             <?php endif; ?>
           <?php endforeach; ?>
@@ -306,27 +306,27 @@ require_once __DIR__ . "/../comunes/nav.php";
     </div>
 
     <div class="asist-lista">
-      <?php foreach ($estudiantes as $e):
-        $idEst  = (int)$e['idEstudiante'];
+      <?php foreach ($estudiantes as $estudiante):
+        $idEst  = (int)$estudiante['idEstudiante'];
         $actual = $asistMap[$idEst] ?? null;
         $est    = $actual['estado'] ?? 'presente';
 
-        $partes    = explode(' ', trim($e['nombreEstudiante']));
+        $partes    = explode(' ', trim($estudiante['nombreEstudiante']));
         $iniciales = mb_strtoupper(mb_substr($partes[0], 0, 1));
         if (count($partes) > 1) $iniciales .= mb_strtoupper(mb_substr($partes[1], 0, 1));
-        $avColor = $_av_paleta[ord($iniciales[0]) % count($_av_paleta)];
+        $avColor = $paletaAvatares[ord($iniciales[0]) % count($paletaAvatares)];
       ?>
       <div class="asist-card">
         <div class="asist-avatar" style="background:<?= $avColor ?>">
           <?= Security::escapeHtml($iniciales) ?>
         </div>
         <div style="flex:1;min-width:0;">
-          <span class="asist-nombre"><?= Security::escapeHtml($e['nombreEstudiante']) ?></span>
-          <?php if (!empty($_absentMap[$idEst]) && $_absentMap[$idEst]['ausencias'] > 0): ?>
-          <span title="<?= $_absentMap[$idEst]['ausencias'] ?>h ausente — <?= $_absentMap[$idEst]['porcentaje'] ?>% del módulo"
-                class="texto-estado <?= $_absentMap[$idEst]['excede'] ? 'rojo' : 'naranja' ?>"
+          <span class="asist-nombre"><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></span>
+          <?php if (!empty($mapaAbsentismo[$idEst]) && $mapaAbsentismo[$idEst]['ausencias'] > 0): ?>
+          <span title="<?= $mapaAbsentismo[$idEst]['ausencias'] ?>h ausente — <?= $mapaAbsentismo[$idEst]['porcentaje'] ?>% del módulo"
+                class="texto-estado <?= $mapaAbsentismo[$idEst]['excede'] ? 'rojo' : 'naranja' ?>"
                 style="font-size:.65rem;display:block;margin-top:2px;">
-            <?= $_absentMap[$idEst]['excede'] ? '⚠ Absentismo: ' : '' ?><?= $_absentMap[$idEst]['porcentaje'] ?>%
+            <?= $mapaAbsentismo[$idEst]['excede'] ? '⚠ Absentismo: ' : '' ?><?= $mapaAbsentismo[$idEst]['porcentaje'] ?>%
           </span>
           <?php endif; ?>
         </div>

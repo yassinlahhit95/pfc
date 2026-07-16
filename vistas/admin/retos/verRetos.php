@@ -10,7 +10,7 @@ require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 
-$todos_los_retos = listarRetos();
+$todosLosRetos = listarRetos();
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
 $mapaCicloNivel = [];
@@ -81,12 +81,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_retos)) { ?>
+                <?php if (empty($todosLosRetos)) { ?>
                     <tr><td colspan="7" class="vacio">No hay retos configurados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_retos as $reto) {
+                    <?php foreach ($todosLosRetos as $reto) {
                         $modulos = listarModulosDeReto($reto['idReto']);
-                        $nombresModulos = array_map(fn($m) => Security::escapeHtml($m['nombreModulo']), $modulos);
+                        $nombresModulos = array_map(fn($modulo) => Security::escapeHtml($modulo['nombreModulo']), $modulos);
                         $textoModulos = !empty($nombresModulos) ? implode(", ", $nombresModulos) : "<em>Sin módulos</em>";
                         $idCicloReto = !empty($modulos) ? (int)$modulos[0]['idCiclo'] : 0;
                         $cursoReto = !empty($modulos) ? ($modulos[0]['cursoAnio'] ?? '') : '';
@@ -105,13 +105,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     </a>
                                     <div class="materiales-dropdown">
                                         <div class="small fw-bold mb-2 px-2 text-muted text-uppercase" style="font-size: 9px; letter-spacing: 0.5px;">Archivos individuales:</div>
-                                        <?php foreach ($archivos as $arch): 
-                                            $isPdf = ($arch['tipoArchivo'] === 'pdf');
+                                        <?php foreach ($archivos as $archivo):
+                                            $isPdf = ($archivo['tipoArchivo'] === 'pdf');
                                             $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
                                         ?>
-                                            <a href="../../../<?= Security::escapeHtml(ltrim($arch['rutaArchivo'], '/')) ?>" target="_blank" class="dropdown-file-item">
+                                            <a href="../../../<?= Security::escapeHtml(ltrim($archivo['rutaArchivo'], '/')) ?>" target="_blank" class="dropdown-file-item">
                                                 <i class="fas <?= $icon ?>"></i>
-                                                <span class="text-truncate"><?= Security::escapeHtml($arch['nombreArchivo']) ?></span>
+                                                <span class="text-truncate"><?= Security::escapeHtml($archivo['nombreArchivo']) ?></span>
                                             </a>
                                         <?php endforeach; ?>
                                         <hr class="my-2 opacity-10">

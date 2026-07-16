@@ -17,11 +17,11 @@ $folder  = $_GET['folder'] ?? 'todo';
 $allowed = ['todo', 'nuevos', 'recibidos', 'enviados'];
 if (!in_array($folder, $allowed)) $folder = 'todo';
 
-$lista = array_filter($todos, function($m) use ($folder) {
+$lista = array_filter($todos, function($mensaje) use ($folder) {
     switch ($folder) {
-        case 'nuevos':   return !$m['leido'] && $m['emisor_rol'] !== 'estudiante';
-        case 'recibidos': return $m['emisor_rol'] !== 'estudiante';
-        case 'enviados': return $m['emisor_rol'] === 'estudiante';
+        case 'nuevos':   return !$mensaje['leido'] && $mensaje['emisor_rol'] !== 'estudiante';
+        case 'recibidos': return $mensaje['emisor_rol'] !== 'estudiante';
+        case 'enviados': return $mensaje['emisor_rol'] === 'estudiante';
         default:         return true;
     }
 });
@@ -29,8 +29,8 @@ $lista = array_values($lista);
 
 $cTodo     = count($todos);
 $cNuevos   = (int)$totalSinLeer;
-$cRecibidos= count(array_filter($todos, fn($m) => $m['emisor_rol'] !== 'estudiante'));
-$cEnviados = count(array_filter($todos, fn($m) => $m['emisor_rol'] === 'estudiante'));
+$cRecibidos= count(array_filter($todos, fn($mensaje) => $mensaje['emisor_rol'] !== 'estudiante'));
+$cEnviados = count(array_filter($todos, fn($mensaje) => $mensaje['emisor_rol'] === 'estudiante'));
 
 $tituloDelPagina = "AULAPRO | Mis Mensajes";
 $seccionActual   = 'reclamaciones';

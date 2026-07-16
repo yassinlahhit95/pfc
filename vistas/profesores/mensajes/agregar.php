@@ -76,11 +76,11 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idEstudiante" id="idEstudiante" class="compose-select">
                     <option value="">— Dirección (Administración) —</option>
                     <optgroup label="Mis Estudiantes">
-                        <?php foreach ($listaDeEstudiantes as $est): ?>
-                        <option value="<?= (int)$est['idEstudiante'] ?>"
-                            <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($est['nombreEstudiante']) ?>
-                            (<?= Security::escapeHtml($est['abreviaturaCiclo'] ?? '') ?>)
+                        <?php foreach ($listaDeEstudiantes as $estudiante): ?>
+                        <option value="<?= (int)$estudiante['idEstudiante'] ?>"
+                            <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $estudiante['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
+                            (<?= Security::escapeHtml($estudiante['abreviaturaCiclo'] ?? '') ?>)
                         </option>
                         <?php endforeach; ?>
                     </optgroup>

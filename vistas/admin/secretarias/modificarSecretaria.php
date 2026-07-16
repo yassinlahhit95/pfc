@@ -8,15 +8,15 @@ $errores = $_SESSION['errores'] ?? null;
 $datos   = $_SESSION['datos_secretaria'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores'], $_SESSION['datos_secretaria']);
 
-$id = (int)($_GET['id'] ?? 0);
-if (!$id) {
+$idSecretaria = (int)($_GET['id'] ?? 0);
+if (!$idSecretaria) {
     header("Location: verSecretarias.php");
     exit;
 }
 
 $secretaria = $datos
-    ? array_merge(obtenerSecretariaPorId($id) ?? [], $datos)
-    : obtenerSecretariaPorId($id);
+    ? array_merge(obtenerSecretariaPorId($idSecretaria) ?? [], $datos)
+    : obtenerSecretariaPorId($idSecretaria);
 
 if (!$secretaria) {
     header("Location: verSecretarias.php");

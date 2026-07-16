@@ -7,8 +7,8 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../include/Cache.php";
 
-$_sec_datos      = obtenerSecretariaPorId($_SESSION['idSecretaria']);
-$nombreUsuario_menu = $_sec_datos['nombreSecretaria'] ?? 'Secretaria';
+$datosSecretaria     = obtenerSecretariaPorId($_SESSION['idSecretaria']);
+$nombreUsuario_menu = $datosSecretaria['nombreSecretaria'] ?? 'Secretaria';
 
 // Badges. total_admisiones_pendientes es idéntico al que ya cachea
 // obtenerContadoresNavAdmin(), así que lo reutilizamos; total_sin_leer aquí
@@ -16,8 +16,8 @@ $nombreUsuario_menu = $_sec_datos['nombreSecretaria'] ?? 'Secretaria';
 // contador de admin, así que se mantiene como consulta propia (cacheada aparte).
 $totalSinLeer_menu = Cache::remember('nav_secretaria_sin_leer', 60, function () {
     $con = obtenerConexion();
-    $r = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
-    return $r ? (int)(mysqli_fetch_assoc($r)['n'] ?? 0) : 0;
+    $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM reclamaciones WHERE leido=0 AND id_parent IS NULL AND ((emisor_rol='estudiante' AND idProfesor IS NULL) OR (emisor_rol='profesor' AND idEstudiante IS NULL))");
+    return $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
 });
 
 $totalAdmisionesPendientes_menu = obtenerContadoresNavAdmin()['total_admisiones_pendientes'];
@@ -59,10 +59,10 @@ function _nav_active_sec($check) {
     <script>
       try {
         if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
-          var s = document.getElementById("main-sidebar");
-          s.classList.add("collapsed");
-          s.style.setProperty("transition", "none", "important");
-          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+          var sidebarEl = document.getElementById("main-sidebar");
+          sidebarEl.classList.add("collapsed");
+          sidebarEl.style.setProperty("transition", "none", "important");
+          setTimeout(function() { sidebarEl.style.removeProperty("transition"); }, 150);
         }
       } catch (e) {}
     </script>

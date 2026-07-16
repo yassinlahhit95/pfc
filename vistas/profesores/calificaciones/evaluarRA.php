@@ -20,8 +20,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 $resultados = listarRAPorModulo($idModulo);
 
-$titulo_pagina = "AULAPRO | EVALUAR RA / CE";
-$seccion = 'calificaciones';
+$tituloDelPagina = "AULAPRO | EVALUAR RA / CE";
+$seccionActual = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 

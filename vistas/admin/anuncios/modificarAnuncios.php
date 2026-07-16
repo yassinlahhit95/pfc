@@ -9,8 +9,8 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-$id_anuncio = (int)($_GET['idAnuncio'] ?? 0);
-$anuncio = obtenerAnuncioPorId($id_anuncio);
+$idAnuncio = (int)($_GET['idAnuncio'] ?? 0);
+$anuncio = obtenerAnuncioPorId($idAnuncio);
 
 if (!$anuncio) {
     header("Location: gestionAnuncios.php");
@@ -36,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/anuncios/actualizar.php">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idAnuncio" value="<?= $id_anuncio ?>">
+        <input type="hidden" name="idAnuncio" value="<?= $idAnuncio ?>">
 
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'tituloAnuncio') ?>">

@@ -38,19 +38,19 @@
     ].join('');
 
     function injectCSS() {
-        var s = document.createElement('style');
-        s.textContent = CSS;
-        document.head.appendChild(s);
+        var styleEl = document.createElement('style');
+        styleEl.textContent = CSS;
+        document.head.appendChild(styleEl);
     }
 
     function getOrCreateContainer() {
-        var c = document.getElementById('toast-container');
-        if (!c) {
-            c = document.createElement('div');
-            c.id = 'toast-container';
-            document.body.appendChild(c);
+        var container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            document.body.appendChild(container);
         }
-        return c;
+        return container;
     }
 
     function dismiss(el) {
@@ -102,12 +102,12 @@
             { sel: '.mensaje-error', type: 'err' }
         ];
 
-        selectors.forEach(function (s) {
-            document.querySelectorAll(s.sel).forEach(function (el) {
+        selectors.forEach(function (entry) {
+            document.querySelectorAll(entry.sel).forEach(function (el) {
                 var msg = el.textContent.trim();
                 if (!msg) return;
                 el.style.display = 'none';
-                showToast(msg, s.type);
+                showToast(msg, entry.type);
             });
         });
     }

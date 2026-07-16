@@ -53,10 +53,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
             <select name="idCategoria" id="idCategoria">
                 <option value="">— Selecciona —</option>
-                <?php foreach ($categorias as $cat): ?>
-                <option value="<?= (int)$cat['idCategoria'] ?>"
-                    <?= ((string)($datos['idCategoria'] ?? '') === (string)$cat['idCategoria']) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($cat['nombre']) ?>
+                <?php foreach ($categorias as $categoria): ?>
+                <option value="<?= (int)$categoria['idCategoria'] ?>"
+                    <?= ((string)($datos['idCategoria'] ?? '') === (string)$categoria['idCategoria']) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($categoria['nombre']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -83,10 +83,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCiclo">Ciclo asociado <span class="texto-suave">(opcional)</span></label>
             <select name="idCiclo" id="idCiclo">
                 <option value="">— Sin ciclo específico —</option>
-                <?php foreach ($ciclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>"
-                    <?= ((string)($datos['idCiclo'] ?? '') === (string)$c['idCiclo']) ? 'selected' : '' ?>>
-                    [<?= Security::escapeHtml($c['abreviaturaCiclo'] ?: $c['idCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                <?php foreach ($ciclos as $ciclo): ?>
+                <option value="<?= (int)$ciclo['idCiclo'] ?>"
+                    <?= ((string)($datos['idCiclo'] ?? '') === (string)$ciclo['idCiclo']) ? 'selected' : '' ?>>
+                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -148,7 +148,7 @@ document.getElementById('archivoJustificante').addEventListener('change', functi
         e.preventDefault();
         btn.disabled = true;
         btn.classList.add('cargando');
-        
+
         var hasFiles = document.getElementById('archivoJustificante').files.length > 0;
         if (hasFiles) {
             progressContainer.style.display = 'block';

@@ -104,8 +104,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="filtroCiclo">Filtrar por Ciclo</label>
                 <select id="filtroCiclo" onchange="filtrarEstudiantes()">
                     <option value="">— Todos los ciclos —</option>
-                    <?php foreach ($listaCiclos as $c): ?>
-                        <option value="<?= Security::escapeHtml($c['idCiclo']) ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                    <?php foreach ($listaCiclos as $ciclo): ?>
+                        <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>"><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -128,24 +128,24 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (empty($listaEstudiantes)): ?>
                 <p class="texto-suave" style="text-align:center;padding:20px;">No hay estudiantes registrados.</p>
             <?php else: ?>
-                <?php foreach ($listaEstudiantes as $est): ?>
+                <?php foreach ($listaEstudiantes as $estudiante): ?>
                     <label class="check-item est-item"
-                           data-nombre="<?= strtolower(Security::escapeHtml($est['nombreEstudiante'])) ?>"
-                           data-nivel="<?= Security::escapeHtml($est['idNivel'] ?? '') ?>"
-                           data-ciclo="<?= Security::escapeHtml($est['idCiclo']) ?>"
-                           data-anio="<?= Security::escapeHtml($est['anioEstudio'] ?? '') ?>"
+                           data-nombre="<?= strtolower(Security::escapeHtml($estudiante['nombreEstudiante'])) ?>"
+                           data-nivel="<?= Security::escapeHtml($estudiante['idNivel'] ?? '') ?>"
+                           data-ciclo="<?= Security::escapeHtml($estudiante['idCiclo']) ?>"
+                           data-anio="<?= Security::escapeHtml($estudiante['anioEstudio'] ?? '') ?>"
                            style="display:flex;">
-                        <input type="checkbox" name="estudiantes[]" value="<?= (int)$est['idEstudiante'] ?>"
-                            <?= in_array((int)$est['idEstudiante'], $idsHijosActuales) ? 'checked' : '' ?>>
+                        <input type="checkbox" name="estudiantes[]" value="<?= (int)$estudiante['idEstudiante'] ?>"
+                            <?= in_array((int)$estudiante['idEstudiante'], $idsHijosActuales) ? 'checked' : '' ?>>
                         <span style="display:flex;align-items:center;gap:10px;flex:1;">
-                            <b><?= Security::escapeHtml($est['nombreEstudiante']) ?></b>
-                            <span class="texto-estado <?= ($est['idNivel'] ?? 0) == 1 ? 'azul' : 'verde' ?>" style="font-size:.72rem;">
-                                <?= ($est['idNivel'] ?? 0) == 1 ? 'G. Medio' : 'G. Superior' ?>
+                            <b><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></b>
+                            <span class="texto-estado <?= ($estudiante['idNivel'] ?? 0) == 1 ? 'azul' : 'verde' ?>" style="font-size:.72rem;">
+                                <?= ($estudiante['idNivel'] ?? 0) == 1 ? 'G. Medio' : 'G. Superior' ?>
                             </span>
-                            <?php if (!empty($est['anioEstudio'])): ?>
-                                <span class="texto-estado gris" style="font-size:.72rem;"><?= Security::escapeHtml($est['anioEstudio']) ?></span>
+                            <?php if (!empty($estudiante['anioEstudio'])): ?>
+                                <span class="texto-estado gris" style="font-size:.72rem;"><?= Security::escapeHtml($estudiante['anioEstudio']) ?></span>
                             <?php endif; ?>
-                            <small style="color:var(--text-2);"><?= Security::escapeHtml($est['nombreCiclo']) ?></small>
+                            <small style="color:var(--text-2);"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></small>
                         </span>
                     </label>
                 <?php endforeach; ?>

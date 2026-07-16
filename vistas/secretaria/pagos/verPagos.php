@@ -14,7 +14,7 @@ $listaNiveles        = listarNiveles();
 
 $idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
 $ciclosFiltrados = $idNivelFiltro
-    ? array_values(array_filter($listaTodosLosCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    ? array_values(array_filter($listaTodosLosCiclos, fn($ciclo) => (int)$ciclo['idNivel'] === $idNivelFiltro))
     : $listaTodosLosCiclos;
 
 $idCicloFiltro = (int)($_GET['idCiclo'] ?? 0);
@@ -54,9 +54,9 @@ include __DIR__ . '/../comunes/nav.php';
                 <label>FILTRAR POR NIVEL:</label>
                 <select name="idNivel" onchange="this.form.submit()">
                     <option value="">-- Todos los Niveles --</option>
-                    <?php foreach ($listaNiveles as $n): ?>
-                        <option value="<?= (int)$n['idNivel'] ?>" <?= (int)$n['idNivel'] === $idNivelFiltro ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($n['nombreNivel']) ?>
+                    <?php foreach ($listaNiveles as $nivel): ?>
+                        <option value="<?= (int)$nivel['idNivel'] ?>" <?= (int)$nivel['idNivel'] === $idNivelFiltro ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -65,9 +65,9 @@ include __DIR__ . '/../comunes/nav.php';
                 <label>FILTRAR POR CICLO:</label>
                 <select name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Todos los Ciclos --</option>
-                    <?php foreach ($ciclosFiltrados as $c): ?>
-                        <option value="<?= (int)$c['idCiclo'] ?>" <?= (int)$c['idCiclo'] === $idCicloFiltro ? 'selected' : '' ?>>
-                            <?= mb_strtoupper(Security::escapeHtml($c['nombreCiclo']), 'UTF-8') ?>
+                    <?php foreach ($ciclosFiltrados as $ciclo): ?>
+                        <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= (int)$ciclo['idCiclo'] === $idCicloFiltro ? 'selected' : '' ?>>
+                            <?= mb_strtoupper(Security::escapeHtml($ciclo['nombreCiclo']), 'UTF-8') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -103,19 +103,19 @@ include __DIR__ . '/../comunes/nav.php';
                 <?php if (empty($listaPagos)): ?>
                     <tr><td colspan="7" class="vacio">No hay registros de pagos que coincidan con los filtros.</td></tr>
                 <?php else: ?>
-                    <?php foreach ($listaPagos as $p): ?>
+                    <?php foreach ($listaPagos as $pago): ?>
                     <tr>
-                        <td><b><?= mb_strtoupper(Security::escapeHtml($p['nombreEstudiante']), 'UTF-8') ?></b></td>
-                        <td data-campo="curso"><?= Security::escapeHtml($p['curso'] ?? '1º') ?> Año</td>
-                        <td><?= mb_strtoupper(Security::escapeHtml($p['nombreCiclo']), 'UTF-8') ?></td>
-                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($p['tipoPago']), 'UTF-8') ?></span></td>
-                        <td><b><?= number_format((float)$p['monto'], 2) ?> €</b></td>
-                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
+                        <td><b><?= mb_strtoupper(Security::escapeHtml($pago['nombreEstudiante']), 'UTF-8') ?></b></td>
+                        <td data-campo="curso"><?= Security::escapeHtml($pago['curso'] ?? '1º') ?> Año</td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($pago['nombreCiclo']), 'UTF-8') ?></td>
+                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($pago['tipoPago']), 'UTF-8') ?></span></td>
+                        <td><b><?= number_format((float)$pago['monto'], 2) ?> €</b></td>
+                        <td><?= date('d/m/Y', strtotime($pago['fechaPago'])) ?></td>
                         <td>
-                            <?php if (strtolower(trim($p['tipoPago'])) === 'unico'): ?>
+                            <?php if (strtolower(trim($pago['tipoPago'])) === 'unico'): ?>
                                 <span style="color:var(--mut)">N/A</span>
                             <?php else: ?>
-                                <?= !empty($p['fechaProximoPago']) ? date('d/m/Y', strtotime($p['fechaProximoPago'])) : '—' ?>
+                                <?= !empty($pago['fechaProximoPago']) ? date('d/m/Y', strtotime($pago['fechaProximoPago'])) : '—' ?>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -124,18 +124,18 @@ include __DIR__ . '/../comunes/nav.php';
                                     <i class="fas fa-ellipsis-vertical"></i>
                                 </button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="../../../vistas/secretaria/pagos/historialEstudiante.php?idEstudiante=<?= (int)$p['idEstudiante'] ?>">
+                                    <a class="recurso-menu-item" href="../../../vistas/secretaria/pagos/historialEstudiante.php?idEstudiante=<?= (int)$pago['idEstudiante'] ?>">
                                         <i class="fas fa-history"></i> Historial
                                     </a>
-                                    <a class="recurso-menu-item" href="../../../vistas/secretaria/pagos/modificarPagos.php?idPago=<?= (int)$p['idPago'] ?>">
+                                    <a class="recurso-menu-item" href="../../../vistas/secretaria/pagos/modificarPagos.php?idPago=<?= (int)$pago['idPago'] ?>">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
                                     <div class="recurso-menu-sep"></div>
                                     <a class="recurso-menu-item peligro" href="#"
                                        data-modal-borrar
-                                       data-id="<?= (int)$p['idPago'] ?>"
+                                       data-id="<?= (int)$pago['idPago'] ?>"
                                        data-tipo="Pago"
-                                       data-nombre="<?= Security::escapeHtml($p['nombreEstudiante'] . ' — ' . $p['tipoPago'] . ' ' . number_format((float)$p['monto'], 2) . ' €') ?>"
+                                       data-nombre="<?= Security::escapeHtml($pago['nombreEstudiante'] . ' — ' . $pago['tipoPago'] . ' ' . number_format((float)$pago['monto'], 2) . ' €') ?>"
                                        data-url="/controladores/secretaria/pagos/borrar.php"
                                        data-campo="idPago">
                                         <i class="fas fa-trash"></i> Eliminar
@@ -174,16 +174,16 @@ include __DIR__ . '/../comunes/nav.php';
                 <tbody>
                     <?php if (empty($listaPendientes)): ?>
                     <tr><td colspan="6" class="vacio">No hay cuotas vencidas. ¡Todos los estudiantes están al día!</td></tr>
-                    <?php else: foreach ($listaPendientes as $p): ?>
+                    <?php else: foreach ($listaPendientes as $pago): ?>
                     <tr>
-                        <td><b><?= Security::escapeHtml(mb_strtoupper($p['nombreEstudiante'], 'UTF-8')) ?></b></td>
-                        <td><?= Security::escapeHtml(mb_strtoupper($p['nombreCiclo'], 'UTF-8')) ?></td>
-                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($p['tipoPago']), 'UTF-8') ?></span></td>
-                        <td class="texto-rojo texto-negrita"><?= date('d/m/Y', strtotime($p['fechaProximoPago'])) ?></td>
-                        <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?> · <?= number_format((float)$p['monto'], 2) ?> €</td>
+                        <td><b><?= Security::escapeHtml(mb_strtoupper($pago['nombreEstudiante'], 'UTF-8')) ?></b></td>
+                        <td><?= Security::escapeHtml(mb_strtoupper($pago['nombreCiclo'], 'UTF-8')) ?></td>
+                        <td><span class="texto-estado azul"><?= mb_strtoupper(Security::escapeHtml($pago['tipoPago']), 'UTF-8') ?></span></td>
+                        <td class="texto-rojo texto-negrita"><?= date('d/m/Y', strtotime($pago['fechaProximoPago'])) ?></td>
+                        <td><?= date('d/m/Y', strtotime($pago['fechaPago'])) ?> · <?= number_format((float)$pago['monto'], 2) ?> €</td>
                         <td>
                             <button type="button" class="boton-secundario" style="padding:4px 10px;font-size:.78rem;"
-                                    onclick="otorgarProrrogaPago(<?= (int)$p['idPago'] ?>)">
+                                    onclick="otorgarProrrogaPago(<?= (int)$pago['idPago'] ?>)">
                                 <i class="fas fa-clock"></i> Prórroga 7 días
                             </button>
                         </td>

@@ -13,9 +13,9 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 if ($esTutor && $idCicloTutor) {
     $cicloTutor = obtenerCicloPorId($idCicloTutor);
-    $mis_ciclos = $cicloTutor ? [$cicloTutor] : [];
+    $misCiclos = $cicloTutor ? [$cicloTutor] : [];
 } else {
-    $mis_ciclos = listarCiclosDeProfesor($idProfesor);
+    $misCiclos = listarCiclosDeProfesor($idProfesor);
 }
 
 $datos = $_SESSION['datos_estudiante'] ?? [];
@@ -30,7 +30,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     <a href="lista.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
 </div>
 
-
 <div class="panel">
     <form action="../../../controladores/profesores/estudiantes/insertar.php" method="POST">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
@@ -38,49 +37,49 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="campo">
                 <label for="nombreEstudiante">Nombre Completo</label>
                 <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="emailEstudiante">Email</label>
                 <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="dniEstudiante">DNI</label>
                 <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= Security::escapeHtml($datos['dniEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="telefonoEstudiante">Teléfono</label>
                 <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
                 <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($datos['fechaNacimientoEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= Security::escapeHtml($datos['direccionEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="ciudadEstudiante">Ciudad</label>
                 <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= Security::escapeHtml($datos['ciudadEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="codigoPostalEstudiante">Código Postal</label>
                 <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
@@ -96,7 +95,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona primero un nivel --</option>
                 </select>
-                
+
             </div>
         </div>
 
@@ -108,7 +107,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($mis_ciclos) ?>;
+var todosCiclos = <?= json_encode($misCiclos) ?>;
 
 function filtrarCiclos() {
     var nivel = $('#curso').val();
@@ -133,5 +132,3 @@ $(function() {
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

@@ -39,9 +39,9 @@ var Horario = (function () {
     function construirSelectAula(idSeleccionada) {
         var aulas = window.HORARIO_AULAS || [];
         var opts = '<option value="">— Aula —</option>';
-        aulas.forEach(function (a) {
-            var sel = (String(a.id) === String(idSeleccionada)) ? ' selected' : '';
-            opts += '<option value="' + a.id + '"' + sel + '>Aula ' + escapar(a.codigo) + '</option>';
+        aulas.forEach(function (aula) {
+            var sel = (String(aula.id) === String(idSeleccionada)) ? ' selected' : '';
+            opts += '<option value="' + aula.id + '"' + sel + '>Aula ' + escapar(aula.codigo) + '</option>';
         });
         return '<select class="horario-aula-select" aria-label="Aula">' + opts + '</select>';
     }
@@ -154,14 +154,14 @@ var Horario = (function () {
             return;
         }
         var parts = inicio.split(':');
-        var h = parseInt(parts[0], 10), m = parseInt(parts[1], 10) + 60;
-        h += Math.floor(m / 60); m = m % 60;
-        var maxFin = ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2);
+        var horas = parseInt(parts[0], 10), minutos = parseInt(parts[1], 10) + 60;
+        horas += Math.floor(minutos / 60); minutos = minutos % 60;
+        var maxFin = ('0' + horas).slice(-2) + ':' + ('0' + minutos).slice(-2);
 
         var slots = window.HORARIO_END_SLOTS || [];
-        slots.forEach(function (s) {
-            if (s > inicio && s <= maxFin) {
-                $fin.append($('<option>', { value: s, text: s }));
+        slots.forEach(function (slot) {
+            if (slot > inicio && slot <= maxFin) {
+                $fin.append($('<option>', { value: slot, text: slot }));
             }
         });
         $fin.prop('disabled', false).val('');

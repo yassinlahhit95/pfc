@@ -10,7 +10,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$todos_los_modulos = listarModulos();
+$todosLosModulos = listarModulos();
 $listaCiclos = listarTodosLosCiclos();
 
 $datos = $_SESSION['datos_reto'] ?? [];
@@ -61,8 +61,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="filtroCicloReto">Filtrar por Ciclo</label>
                 <select id="filtroCicloReto" onchange="filtrarModulosReto()">
                     <option value="">-- Todos los ciclos --</option>
-                    <?php foreach ($listaCiclos as $c): ?>
-                        <option value="<?= (int)$c['idCiclo'] ?>"><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                    <?php foreach ($listaCiclos as $ciclo): ?>
+                        <option value="<?= (int)$ciclo['idCiclo'] ?>"><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="modulosReto">Módulo Asociado</label>
             <select name="modulosReto" id="modulosReto">
                 <option value="">-- Selecciona un módulo --</option>
-                <?php foreach ($todos_los_modulos as $modulo) { ?>
+                <?php foreach ($todosLosModulos as $modulo) { ?>
                     <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>"
                             data-ciclo="<?= (int)$modulo['idCiclo'] ?>"
                             data-curso="<?= Security::escapeHtml($modulo['cursoAnio'] ?? '') ?>"
@@ -121,7 +121,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var _todosModulos = <?= json_encode(array_map(fn($m) => ['id' => (int)$m['idModulo'], 'ciclo' => (int)$m['idCiclo']], $todos_los_modulos)) ?>;
+var _todosModulos = <?= json_encode(array_map(fn($modulo) => ['id' => (int)$modulo['idModulo'], 'ciclo' => (int)$modulo['idCiclo']], $todosLosModulos)) ?>;
 
 function filtrarModulosReto() {
     var idCiclo = parseInt($('#filtroCicloReto').val()) || 0;
@@ -148,13 +148,13 @@ function filtrarModulosReto() {
 
 function mostrarArchivosReto(input) {
     var $lista = $('#listaArchivosReto').empty();
-    Array.from(input.files).forEach(function(f) {
-        var icon = f.type === 'application/pdf' ? 'fa-file-pdf' : 'fa-file-image';
-        var size = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.ceil(f.size / 1024) + ' KB';
+    Array.from(input.files).forEach(function(archivo) {
+        var icon = archivo.type === 'application/pdf' ? 'fa-file-pdf' : 'fa-file-image';
+        var size = archivo.size > 1048576 ? (archivo.size / 1048576).toFixed(1) + ' MB' : Math.ceil(archivo.size / 1024) + ' KB';
         $lista.append(
             '<div class="archivo-reto-item">' +
             '<i class="fas ' + icon + '" style="color:var(--accent,#4F46E5);font-size:16px;flex-shrink:0;"></i>' +
-            '<span class="archivo-reto-nombre">' + $('<span>').text(f.name).html() + '</span>' +
+            '<span class="archivo-reto-nombre">' + $('<span>').text(archivo.name).html() + '</span>' +
             '<span class="texto-suave" style="font-size:.75rem;white-space:nowrap;">' + size + '</span>' +
             '</div>'
         );

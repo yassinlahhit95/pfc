@@ -9,6 +9,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_inventario'] ?? [];
+unset($_SESSION['datos_inventario']);
 
 $titulo_pagina = "AULAPRO | AÑADIR NUEVO ARTÍCULO";
 $seccion = 'inventario';
@@ -24,7 +25,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="panel">
         <form method="POST" action="../../../controladores/secretaria/inventario/insertar.php">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <div class="formulario">
                 <div class="campo<?= fieldClass($errores, 'nombreArticulo') ?>">
                     <label for="nombreArticulo">NOMBRE DEL ARTÍCULO</label>

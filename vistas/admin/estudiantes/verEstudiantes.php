@@ -65,10 +65,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php
 $listaDeCiclosParaFiltro = listarTodosLosCiclos();
 $listaNiveles = listarNiveles();
-$mapaCicloNivel = [];
-foreach ($listaDeCiclosParaFiltro as $cicloFiltro) {
-    $mapaCicloNivel[$cicloFiltro['idCiclo']] = $cicloFiltro['idNivel'];
-}
 ?>
 <div class="panel margen-abajo">
     <div class="caja caja-libre espacio-grande">

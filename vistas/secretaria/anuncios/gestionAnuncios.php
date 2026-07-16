@@ -45,31 +45,31 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($anuncios as $an): ?>
+                <?php foreach ($anuncios as $anuncio): ?>
                 <tr>
-                    <td><?= Security::escapeHtml($an['tituloAnuncio'] ?? $an['titulo']) ?></td>
+                    <td><?= Security::escapeHtml($anuncio['tituloAnuncio'] ?? $anuncio['titulo']) ?></td>
                     <td>
                         <?php
-                        $dir = $an['dirigidoA'] ?? 'todos';
+                        $dirigidoA = $anuncio['dirigidoA'] ?? 'todos';
                         $colores = ['todos' => 'gris', 'estudiantes' => 'azul', 'profesores' => 'verde'];
-                        $col = $colores[$dir] ?? 'gris';
+                        $colorEstado = $colores[$dirigidoA] ?? 'gris';
                         ?>
-                        <span class="texto-estado <?= $col ?>"><?= Security::escapeHtml(ucfirst($dir)) ?></span>
+                        <span class="texto-estado <?= $colorEstado ?>"><?= Security::escapeHtml(ucfirst($dirigidoA)) ?></span>
                     </td>
-                    <td><?= $an['fechaExpiracion'] ? Security::escapeHtml(date('d/m/Y', strtotime($an['fechaExpiracion']))) : '—' ?></td>
+                    <td><?= $anuncio['fechaExpiracion'] ? Security::escapeHtml(date('d/m/Y', strtotime($anuncio['fechaExpiracion']))) : '—' ?></td>
                     <td>
                         <div class="recurso-menu-wrap">
                             <button class="recurso-menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
                             <div class="recurso-menu">
-                                <a class="recurso-menu-item" href="modificarAnuncio.php?id=<?= (int)$an['idAnuncio'] ?>">
+                                <a class="recurso-menu-item" href="modificarAnuncio.php?id=<?= (int)$anuncio['idAnuncio'] ?>">
                                     <i class="fas fa-pen"></i> Editar
                                 </a>
                                 <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
-                                   data-id="<?= (int)$an['idAnuncio'] ?>"
+                                   data-id="<?= (int)$anuncio['idAnuncio'] ?>"
                                    data-tipo="Anuncio"
-                                   data-nombre="<?= Security::escapeHtml($an['titulo']) ?>"
+                                   data-nombre="<?= Security::escapeHtml($anuncio['titulo']) ?>"
                                    data-url="/controladores/secretaria/anuncios/borrar.php"
                                    data-campo="idAnuncio">
                                     <i class="fas fa-trash"></i> Eliminar

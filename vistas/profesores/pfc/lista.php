@@ -95,7 +95,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
                                 <div id="form-<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>" style="display: none; margin-top: 10px;">
                                     <form action="../../../controladores/profesores/pfc/calificar.php" method="POST" class="formulario">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>">
                                         <div class="campo">
                                             <label>Nota (0-10):</label>
@@ -163,6 +163,3 @@ if (toggleEl) {
 </script>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-

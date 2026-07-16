@@ -38,15 +38,15 @@ include __DIR__ . '/../comunes/nav.php';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($historial as $h): ?>
+                <?php foreach ($historial as $entrada): ?>
                 <tr>
-                    <td style="white-space:nowrap;"><?= date('d/m/Y H:i:s', strtotime($h['fecha'])) ?></td>
-                    <td><b><?= Security::escapeHtml($h['nombreSecretaria'] ?? 'Secretaria #' . $h['idSecretaria']) ?></b></td>
+                    <td style="white-space:nowrap;"><?= date('d/m/Y H:i:s', strtotime($entrada['fecha'])) ?></td>
+                    <td><b><?= Security::escapeHtml($entrada['nombreSecretaria'] ?? 'Secretaria #' . $entrada['idSecretaria']) ?></b></td>
                     <td>
-                        <span class="texto-estado azul"><?= Security::escapeHtml($h['accion']) ?></span>
+                        <span class="texto-estado azul"><?= Security::escapeHtml($entrada['accion']) ?></span>
                     </td>
-                    <td><?= Security::escapeHtml($h['entidad']) ?></td>
-                    <td><small class="texto-suave"><?= Security::escapeHtml($h['detalles']) ?></small></td>
+                    <td><?= Security::escapeHtml($entrada['entidad']) ?></td>
+                    <td><small class="texto-suave"><?= Security::escapeHtml($entrada['detalles']) ?></small></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

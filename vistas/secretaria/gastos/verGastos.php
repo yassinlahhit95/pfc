@@ -91,23 +91,23 @@ include __DIR__ . '/../comunes/nav.php';
         </span>
     </div>
     <div class="presupuesto-grid">
-        <?php foreach ($resumen as $cat):
-            $pct      = $cat['presupuestoAnual'] > 0 ? min(100, round(($cat['gastado'] / $cat['presupuestoAnual']) * 100)) : 0;
-            $over     = $cat['presupuestoAnual'] > 0 && $cat['gastado'] > $cat['presupuestoAnual'];
-            $barColor = $over ? '#ef4444' : ($pct >= 80 ? '#f59e0b' : $cat['color']);
+        <?php foreach ($resumen as $catResumen):
+            $pct      = $catResumen['presupuestoAnual'] > 0 ? min(100, round(($catResumen['gastado'] / $catResumen['presupuestoAnual']) * 100)) : 0;
+            $over     = $catResumen['presupuestoAnual'] > 0 && $catResumen['gastado'] > $catResumen['presupuestoAnual'];
+            $barColor = $over ? '#ef4444' : ($pct >= 80 ? '#f59e0b' : $catResumen['color']);
         ?>
         <div class="presupuesto-cat">
             <div class="presupuesto-cat-header">
-                <span class="presupuesto-cat-dot" style="background:<?= Security::escapeHtml($cat['color']) ?>"></span>
-                <span class="presupuesto-cat-name"><?= Security::escapeHtml($cat['nombre']) ?></span>
+                <span class="presupuesto-cat-dot" style="background:<?= Security::escapeHtml($catResumen['color']) ?>"></span>
+                <span class="presupuesto-cat-name"><?= Security::escapeHtml($catResumen['nombre']) ?></span>
                 <?php if ($over): ?><span class="texto-estado rojo" style="margin-left:auto;font-size:10px">SOBREPASADO</span><?php endif; ?>
             </div>
             <div class="presupuesto-barra-wrap">
                 <div class="presupuesto-barra" style="width:<?= $pct ?>%;background:<?= Security::escapeHtml($barColor) ?>"></div>
             </div>
             <div class="presupuesto-cat-nums">
-                <span><?= number_format($cat['gastado'], 2, ',', '.') ?> €</span>
-                <span class="texto-suave">/ <?= number_format($cat['presupuestoAnual'], 2, ',', '.') ?> € (<?= $pct ?>%)</span>
+                <span><?= number_format($catResumen['gastado'], 2, ',', '.') ?> €</span>
+                <span class="texto-suave">/ <?= number_format($catResumen['presupuestoAnual'], 2, ',', '.') ?> € (<?= $pct ?>%)</span>
             </div>
         </div>
         <?php endforeach; ?>
@@ -127,9 +127,9 @@ include __DIR__ . '/../comunes/nav.php';
             <label>CATEGORÍA</label>
             <select name="idCategoria" id="filtro-categoria">
                 <option value="">— Todas —</option>
-                <?php foreach ($categorias as $cat): ?>
-                <option value="<?= (int)$cat['idCategoria'] ?>" <?= $idCategoria == $cat['idCategoria'] ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($cat['nombre']) ?>
+                <?php foreach ($categorias as $categoria): ?>
+                <option value="<?= (int)$categoria['idCategoria'] ?>" <?= $idCategoria == $categoria['idCategoria'] ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($categoria['nombre']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -138,9 +138,9 @@ include __DIR__ . '/../comunes/nav.php';
             <label>CICLO</label>
             <select name="idCiclo" id="filtro-ciclo">
                 <option value="">— Todos —</option>
-                <?php foreach ($ciclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
-                    [<?= Security::escapeHtml($c['abreviaturaCiclo'] ?: $c['idCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                <?php foreach ($ciclos as $ciclo): ?>
+                <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= $idCiclo == $ciclo['idCiclo'] ? 'selected' : '' ?>>
+                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -180,23 +180,23 @@ include __DIR__ . '/../comunes/nav.php';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($gastos as $g): ?>
+                <?php foreach ($gastos as $gasto): ?>
                 <tr>
-                    <td><?= date('d/m/Y', strtotime($g['fecha'])) ?></td>
+                    <td><?= date('d/m/Y', strtotime($gasto['fecha'])) ?></td>
                     <td>
-                        <b><?= Security::escapeHtml($g['concepto']) ?></b>
-                        <?php if (!empty($g['numeroReferencia'])): ?>
-                            <br><small class="texto-suave">Ref: <?= Security::escapeHtml($g['numeroReferencia']) ?></small>
+                        <b><?= Security::escapeHtml($gasto['concepto']) ?></b>
+                        <?php if (!empty($gasto['numeroReferencia'])): ?>
+                            <br><small class="texto-suave">Ref: <?= Security::escapeHtml($gasto['numeroReferencia']) ?></small>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <span class="gasto-cat-chip" style="--cat-color:<?= Security::escapeHtml($g['color'] ?? '#94a3b8') ?>">
-                            <?= Security::escapeHtml($g['nombreCategoria'] ?? '—') ?>
+                        <span class="gasto-cat-chip" style="--cat-color:<?= Security::escapeHtml($gasto['color'] ?? '#94a3b8') ?>">
+                            <?= Security::escapeHtml($gasto['nombreCategoria'] ?? '—') ?>
                         </span>
                     </td>
                     <td>
-                        <?php if (!empty($g['abreviaturaCiclo'])): ?>
-                            <span class="texto-estado azul"><?= Security::escapeHtml($g['abreviaturaCiclo']) ?></span>
+                        <?php if (!empty($gasto['abreviaturaCiclo'])): ?>
+                            <span class="texto-estado azul"><?= Security::escapeHtml($gasto['abreviaturaCiclo']) ?></span>
                         <?php else: ?>
                             <span class="texto-suave">—</span>
                         <?php endif; ?>
@@ -205,23 +205,23 @@ include __DIR__ . '/../comunes/nav.php';
                         <?php
                         $tipoLabels = ['factura'=>'Factura','ticket'=>'Ticket','recibo'=>'Recibo','otro'=>'Otro'];
                         $tipoClases = ['factura'=>'azul','ticket'=>'verde','recibo'=>'naranja','otro'=>'gris'];
-                        $t = $g['tipoJustificante'] ?? '';
+                        $tipo = $gasto['tipoJustificante'] ?? '';
                         ?>
-                        <span class="texto-estado <?= $tipoClases[$t] ?? 'gris' ?>"><?= $tipoLabels[$t] ?? Security::escapeHtml($t ?: '—') ?></span>
+                        <span class="texto-estado <?= $tipoClases[$tipo] ?? 'gris' ?>"><?= $tipoLabels[$tipo] ?? Security::escapeHtml($tipo ?: '—') ?></span>
                     </td>
-                    <td><b><?= number_format((float)$g['importe'], 2, ',', '.') ?> €</b></td>
+                    <td><b><?= number_format((float)$gasto['importe'], 2, ',', '.') ?> €</b></td>
                     <td>
-                        <?php if (!empty($g['archivoJustificante'])): 
-                            $archivos = json_decode($g['archivoJustificante'], true);
+                        <?php if (!empty($gasto['archivoJustificante'])): 
+                            $archivos = json_decode($gasto['archivoJustificante'], true);
                             if (is_array($archivos)):
-                                foreach ($archivos as $i => $arch): ?>
-                                    <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($arch) ?>"
+                                foreach ($archivos as $indice => $archivo): ?>
+                                    <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($archivo) ?>"
                                        target="_blank" rel="noopener" class="boton-secundario boton-pequeno" style="margin-bottom:2px; display:inline-block;">
-                                        <i class="fas fa-file-alt"></i> Ver <?= count($archivos)>1 ? ($i+1) : '' ?>
+                                        <i class="fas fa-file-alt"></i> Ver <?= count($archivos)>1 ? ($indice+1) : '' ?>
                                     </a>
                                 <?php endforeach;
                             else: ?>
-                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($g['archivoJustificante']) ?>"
+                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($gasto['archivoJustificante']) ?>"
                                    target="_blank" rel="noopener" class="boton-secundario boton-pequeno">
                                     <i class="fas fa-file-alt"></i> Ver
                                 </a>
@@ -234,15 +234,15 @@ include __DIR__ . '/../comunes/nav.php';
                         <div class="recurso-menu-wrap">
                             <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                             <div class="recurso-menu">
-                                <a class="recurso-menu-item" href="modificarGasto.php?idGasto=<?= (int)$g['idGasto'] ?>">
+                                <a class="recurso-menu-item" href="modificarGasto.php?idGasto=<?= (int)$gasto['idGasto'] ?>">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
                                 <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
-                                   data-id="<?= (int)$g['idGasto'] ?>"
+                                   data-id="<?= (int)$gasto['idGasto'] ?>"
                                    data-tipo="Gasto"
-                                   data-nombre="<?= Security::escapeHtml($g['concepto']) ?>"
+                                   data-nombre="<?= Security::escapeHtml($gasto['concepto']) ?>"
                                    data-url="/controladores/secretaria/gastos/borrar.php"
                                    data-campo="idGasto"
                                    data-aviso="Se eliminará el gasto y su justificante adjunto.">

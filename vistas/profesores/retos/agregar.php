@@ -18,7 +18,7 @@ $idProfesor = $_SESSION['idProfesor'];
 $misModulos = listarModulosDeProfesor($idProfesor);
 $modulosElegidos = $datos['modulos'] ?? [];
 $mapaModulosElegidos = [];
-foreach ($modulosElegidos as $idM) { $mapaModulosElegidos[$idM] = true; }
+foreach ($modulosElegidos as $idModuloElegido) { $mapaModulosElegidos[$idModuloElegido] = true; }
 
 $tituloDelPagina = "AULAPRO | NUEVO RETO";
 $seccionActual = 'retos';
@@ -124,16 +124,16 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (!empty($errores['modulos'])): ?>
                 <span class="error-text"><i class="fas fa-exclamation-circle"></i> <?= Security::escapeHtml($errores['modulos']) ?></span>
             <?php endif; ?>
-            
+
             <div class="checks-grid">
                 <?php if (empty($misModulos)) { ?>
                     <p class="texto-rojo" style="padding: 10px; background: rgba(239, 68, 68, 0.1); border-radius: 8px;">No tiene módulos asignados. No puede crear retos.</p>
                 <?php } else { ?>
-                    <?php foreach ($misModulos as $mod) { ?>
-                        <label class="check-btn" for="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>">
-                            <input type="checkbox" name="modulos[]" id="mod_<?= Security::escapeHtml($mod['idModulo'] ) ?>" value="<?= Security::escapeHtml($mod['idModulo'] ) ?>" 
-                                <?= isset($mapaModulosElegidos[$mod['idModulo']]) ? 'checked' : '' ?>>
-                            <span><i class="fas fa-cube" style="margin-right: 8px; opacity: 0.7;"></i> <?= Security::escapeHtml($mod['nombreModulo'] ) ?> (<?= Security::escapeHtml($mod['abreviaturaCiclo'] ) ?>)</span>
+                    <?php foreach ($misModulos as $modulo) { ?>
+                        <label class="check-btn" for="mod_<?= Security::escapeHtml($modulo['idModulo'] ) ?>">
+                            <input type="checkbox" name="modulos[]" id="mod_<?= Security::escapeHtml($modulo['idModulo'] ) ?>" value="<?= Security::escapeHtml($modulo['idModulo'] ) ?>"
+                                <?= isset($mapaModulosElegidos[$modulo['idModulo']]) ? 'checked' : '' ?>>
+                            <span><i class="fas fa-cube" style="margin-right: 8px; opacity: 0.7;"></i> <?= Security::escapeHtml($modulo['nombreModulo'] ) ?> (<?= Security::escapeHtml($modulo['abreviaturaCiclo'] ) ?>)</span>
                         </label>
                     <?php } ?>
                 <?php } ?>
@@ -195,5 +195,3 @@ $(document).ready(function() {
 </script>
 
 <?php include '../comunes/footer.php'; ?>
-
-

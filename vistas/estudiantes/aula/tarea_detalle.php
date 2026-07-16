@@ -53,7 +53,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </div>
 
             <div style="margin: 20px 0; line-height: 1.6;">
-                <?= Security::escapeHtml($tarea['descripcion'] ) ?>
+                <?= Security::escapeHtml($tarea['descripcion']) ?>
             </div>
 
             <?php if ($tarea['archivoAdjunto']) { ?>
@@ -84,7 +84,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div style="margin: 15px 0; padding: 15px; background: var(--verde-suave); border-left: 4px solid var(--verde); border-radius: 3px;">
                     <strong>✓ Fecha de Entrega:</strong> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?><br>
                     <?php if ($entrega['nota'] !== null) { ?>
-                        <strong>✓ Calificación:</strong> <span style="font-size: 18px; color: var(--verde);"><?= Security::escapeHtml($entrega['nota'] ) ?>/10</span>
+                        <strong>✓ Calificación:</strong> <span style="font-size: 18px; color: var(--verde);"><?= Security::escapeHtml($entrega['nota']) ?>/10</span>
                     <?php } else { ?>
                         <strong>⏳ Calificación:</strong> <span style="color: var(--naranja);">Pendiente</span>
                     <?php } ?>
@@ -115,7 +115,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <div class="grupo-formulario">
                         <label for="archivo">SUBIR ARCHIVO DE ENTREGA *</label>
                         <input type="file" id="archivo" name="archivo" accept=".pdf,.doc,.docx,.zip,.rar,.txt">
-                        <span class="texto-pequeño texto-suave">Formatos: PDF, DOC, DOCX, ZIP, RAR, TXT (Máx: 10MB)</span>
+                        <span class="texto-pequeno texto-suave">Formatos: PDF, DOC, DOCX, ZIP, RAR, TXT (Máx: 10MB)</span>
                     </div>
 
                     <div class="grupo-formulario">
@@ -136,5 +136,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
 

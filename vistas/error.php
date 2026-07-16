@@ -57,7 +57,7 @@ $msg = $messages[$code] ?? $messages[404];
     <?php
     $homeUrl = '/vistas/login.php';
     if (!empty($_SESSION['idAdmin']))      $homeUrl = '/vistas/admin/inicio/dashboard.php';
-    elseif (!empty($_SESSION['idProfesor']))   $homeUrl = '/vistas/profesores/inicio/panel.php';
+    elseif (!empty($_SESSION['idProfesor']))   $homeUrl = '/vistas/profesores/inicio/dashboard.php';
     elseif (!empty($_SESSION['idEstudiante'])) $homeUrl = '/vistas/estudiantes/inicio/dashboard.php';
     elseif (!empty($_SESSION['idSecretaria'])) $homeUrl = '/vistas/secretaria/inicio/dashboard.php';
     elseif (!empty($_SESSION['idTutor']))      $homeUrl = '/vistas/tutores/inicio/dashboard.php';

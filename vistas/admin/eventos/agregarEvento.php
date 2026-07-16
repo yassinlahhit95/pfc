@@ -9,6 +9,7 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $datos = $_SESSION['datos_evento'] ?? [];
+unset($_SESSION['datos_evento']);
 
 $titulo_pagina = "AULAPRO | AGREGAR EVENTO";
 $seccion = 'eventos';

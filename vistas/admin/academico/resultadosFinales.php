@@ -13,7 +13,7 @@ $listaNiveles = listarNiveles();
 
 $idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
 $ciclosFiltrados = $idNivelFiltro
-    ? array_values(array_filter($listaDeTodosLosCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    ? array_values(array_filter($listaDeTodosLosCiclos, fn($ciclo) => (int)$ciclo['idNivel'] === $idNivelFiltro))
     : $listaDeTodosLosCiclos;
 
 $idCicloElegidoParaVer = (int)($_GET['idCiclo'] ?? 0);
@@ -73,9 +73,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Filtrar por Nivel:</label>
                 <select name="idNivel" onchange="this.form.submit()">
                     <option value="">-- Todos los Niveles --</option>
-                    <?php foreach ($listaNiveles as $n) { ?>
-                        <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($n['nombreNivel']) ?>
+                    <?php foreach ($listaNiveles as $nivel) { ?>
+                        <option value="<?= (int)$nivel['idNivel'] ?>" <?= ((int)$nivel['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -86,7 +86,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <option value="">-- Seleccionar Ciclo --</option>
                     <?php foreach ($ciclosFiltrados as $cicloItem) { ?>
                         <option value="<?= (int)$cicloItem['idCiclo'] ?>" <?= ($idCicloElegidoParaVer == $cicloItem['idCiclo']) ? 'selected' : '' ?>>
-                            [<?= htmlspecialchars($cicloItem['nombreNivel']) ?>] <?= mb_strtoupper(htmlspecialchars($cicloItem['nombreCiclo']), 'UTF-8') ?>
+                            [<?= Security::escapeHtml($cicloItem['nombreNivel']) ?>] <?= mb_strtoupper(Security::escapeHtml($cicloItem['nombreCiclo']), 'UTF-8') ?>
                         </option>
                     <?php } ?>
                 </select>

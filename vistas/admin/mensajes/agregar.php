@@ -85,9 +85,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <label class="compose-label">2. Filtrar por ciclo (opcional)</label>
                     <select class="compose-select" onchange="window.location.href='?tipoDestinatario=estudiante&idCiclo='+this.value">
                         <option value="">— Todos los estudiantes —</option>
-                        <?php foreach ($listaDeCiclos as $c): ?>
-                        <option value="<?= (int)$c['idCiclo'] ?>" <?= $idCiclo == $c['idCiclo'] ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                        <?php foreach ($listaDeCiclos as $ciclo): ?>
+                        <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= $idCiclo == $ciclo['idCiclo'] ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                         </option>
                         <?php endforeach; ?>
                     </select>
@@ -99,10 +99,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </label>
                     <select name="idEstudiante" class="compose-select">
                         <option value="">— Todos del ciclo —</option>
-                        <?php foreach ($listaDeEstudiantes as $est): ?>
-                        <option value="<?= (int)$est['idEstudiante'] ?>"
-                            <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($est['nombreEstudiante']) ?> (<?= Security::escapeHtml($est['nombreCiclo'] ?? '') ?>)
+                        <?php foreach ($listaDeEstudiantes as $estudiante): ?>
+                        <option value="<?= (int)$estudiante['idEstudiante'] ?>"
+                            <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $estudiante['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?> (<?= Security::escapeHtml($estudiante['nombreCiclo'] ?? '') ?>)
                         </option>
                         <?php endforeach; ?>
                     </select>

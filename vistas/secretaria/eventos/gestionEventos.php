@@ -47,16 +47,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($eventos as $ev): ?>
+                <?php foreach ($eventos as $evento): ?>
                 <tr>
-                    <td><?= Security::escapeHtml($ev['tituloEvento']) ?></td>
-                    <td><?= Security::escapeHtml(date('d/m/Y', strtotime($ev['fechaEvento']))) ?></td>
-                    <td><?= Security::escapeHtml(substr($ev['horaEvento'] ?? '', 0, 5)) ?></td>
-                    <td><?= Security::escapeHtml($ev['ubicacionEvento'] ?? '—') ?></td>
+                    <td><?= Security::escapeHtml($evento['tituloEvento']) ?></td>
+                    <td><?= Security::escapeHtml(date('d/m/Y', strtotime($evento['fechaEvento']))) ?></td>
+                    <td><?= Security::escapeHtml(substr($evento['horaEvento'] ?? '', 0, 5)) ?></td>
+                    <td><?= Security::escapeHtml($evento['ubicacionEvento'] ?? '—') ?></td>
                     <td>
-                        <?php if ($ev['fechaEvento'] === date('Y-m-d')): ?>
+                        <?php if ($evento['fechaEvento'] === date('Y-m-d')): ?>
                             <span class="texto-estado naranja">Hoy</span>
-                        <?php elseif ($ev['fechaEvento'] > date('Y-m-d')): ?>
+                        <?php elseif ($evento['fechaEvento'] > date('Y-m-d')): ?>
                             <span class="texto-estado verde">Próximo</span>
                         <?php else: ?>
                             <span class="texto-estado gris">Celebrado</span>
@@ -66,15 +66,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <div class="recurso-menu-wrap">
                             <button class="recurso-menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
                             <div class="recurso-menu">
-                                <a class="recurso-menu-item" href="modificarEvento.php?idEvento=<?= (int)$ev['idEvento'] ?>">
+                                <a class="recurso-menu-item" href="modificarEvento.php?idEvento=<?= (int)$evento['idEvento'] ?>">
                                     <i class="fas fa-pen"></i> Editar
                                 </a>
                                 <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
-                                   data-id="<?= (int)$ev['idEvento'] ?>"
+                                   data-id="<?= (int)$evento['idEvento'] ?>"
                                    data-tipo="Evento"
-                                   data-nombre="<?= Security::escapeHtml($ev['tituloEvento']) ?>"
+                                   data-nombre="<?= Security::escapeHtml($evento['tituloEvento']) ?>"
                                    data-url="/controladores/secretaria/eventos/borrar.php"
                                    data-campo="idEvento">
                                     <i class="fas fa-trash"></i> Eliminar

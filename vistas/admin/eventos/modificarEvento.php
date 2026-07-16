@@ -18,6 +18,7 @@ if (!$evento) {
 }
 
 $datos = $_SESSION['datos_evento'] ?? [];
+unset($_SESSION['datos_evento']);
 
 $titulo_pagina = "AULAPRO | MODIFICAR EVENTO";
 $seccion = 'eventos';

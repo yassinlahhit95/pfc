@@ -58,16 +58,16 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- Estado Académico KPI -->
     <div class="panel" style="display:flex; align-items:center; gap:20px; padding:25px;">
         <?php
-        $gCls = $resumen['estado_global'] === 'APROBADO' ? 'rgba(16,185,129,0.1)' : ($resumen['estado_global'] === 'SUSPENSO' ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)');
-        $gIconColor = $resumen['estado_global'] === 'APROBADO' ? '#10b981' : ($resumen['estado_global'] === 'SUSPENSO' ? '#ef4444' : '#f59e0b');
-        $gIcon = $resumen['estado_global'] === 'APROBADO' ? 'fa-check-circle' : ($resumen['estado_global'] === 'SUSPENSO' ? 'fa-times-circle' : 'fa-clock');
+        $estadoBg    = $resumen['estado_global'] === 'APROBADO' ? 'rgba(16,185,129,0.1)' : ($resumen['estado_global'] === 'SUSPENSO' ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)');
+        $estadoColor = $resumen['estado_global'] === 'APROBADO' ? '#10b981' : ($resumen['estado_global'] === 'SUSPENSO' ? '#ef4444' : '#f59e0b');
+        $estadoIcono = $resumen['estado_global'] === 'APROBADO' ? 'fa-check-circle' : ($resumen['estado_global'] === 'SUSPENSO' ? 'fa-times-circle' : 'fa-clock');
         ?>
-        <div style="width:60px; height:60px; border-radius:50%; background:<?= $gCls ?>; color:<?= $gIconColor ?>; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">
-            <i class="fas <?= $gIcon ?>"></i>
+        <div style="width:60px; height:60px; border-radius:50%; background:<?= $estadoBg ?>; color:<?= $estadoColor ?>; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">
+            <i class="fas <?= $estadoIcono ?>"></i>
         </div>
         <div>
             <div style="font-size:0.85rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Estado Global</div>
-            <div style="font-size:1.4rem; font-weight:700; color:<?= $gIconColor ?>; line-height:1; margin-top:8px;">
+            <div style="font-size:1.4rem; font-weight:700; color:<?= $estadoColor ?>; line-height:1; margin-top:8px;">
                 <?= Security::escapeHtml($resumen['estado_global']) ?>
             </div>
         </div>
@@ -77,21 +77,21 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel" style="display:flex; align-items:center; gap:20px; padding:25px;">
         <?php
         $notaTfg = $resumen['nota_tfg'] ?? null;
-        $tCls = 'rgba(245,158,11,0.1)'; $tIconColor = '#f59e0b'; $tIcon = 'fa-file-alt';
+        $tfgBg = 'rgba(245,158,11,0.1)'; $tfgColor = '#f59e0b'; $tfgIcono = 'fa-file-alt';
         if ($notaTfg !== null) {
-            $tCls = (float)$notaTfg >= 5 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
-            $tIconColor = (float)$notaTfg >= 5 ? '#10b981' : '#ef4444';
+            $tfgBg    = (float)$notaTfg >= 5 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
+            $tfgColor = (float)$notaTfg >= 5 ? '#10b981' : '#ef4444';
         }
         ?>
-        <div style="width:60px; height:60px; border-radius:50%; background:<?= $tCls ?>; color:<?= $tIconColor ?>; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">
-            <i class="fas <?= $tIcon ?>"></i>
+        <div style="width:60px; height:60px; border-radius:50%; background:<?= $tfgBg ?>; color:<?= $tfgColor ?>; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">
+            <i class="fas <?= $tfgIcono ?>"></i>
         </div>
         <div>
             <div style="font-size:0.85rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Proyecto TFG</div>
             <div style="font-size:1.8rem; font-weight:800; color:var(--text-color); line-height:1; display:flex; align-items:baseline; gap:10px;">
                 <?= Security::escapeHtml($notaTfg !== null ? $notaTfg : '—') ?>
                 <?php if ($notaTfg !== null) { ?>
-                    <span style="font-size:0.9rem; font-weight:600; color:<?= $tIconColor ?>;">/ 10</span>
+                    <span style="font-size:0.9rem; font-weight:600; color:<?= $tfgColor ?>;">/ 10</span>
                 <?php } else { ?>
                     <span style="font-size:0.9rem; font-weight:600; color:var(--dim);">PENDIENTE</span>
                 <?php } ?>
@@ -119,9 +119,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <?php
         $modulosPorAnio = [1 => [], 2 => []];
         if (!empty($resumen['detalles_modulos'])) {
-            foreach ($resumen['detalles_modulos'] as $d) {
-                $anio = (int)($d['cursoAnio'] ?? 1);
-                $modulosPorAnio[$anio][] = $d;
+            foreach ($resumen['detalles_modulos'] as $modulo) {
+                $anio = (int)($modulo['cursoAnio'] ?? 1);
+                $modulosPorAnio[$anio][] = $modulo;
             }
         }
         
@@ -142,22 +142,22 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </thead>
                     <tbody>
                         <?php if (!empty($modulosAnio)) { ?>
-                            <?php foreach ($modulosAnio as $d) {
-                                $est = $d['estado'];
-                                $cls = $est === 'Aprobado' ? 'badge-exito' : ($est === 'Suspenso' ? 'badge-error' : 'badge-alerta');
+                            <?php foreach ($modulosAnio as $modulo) {
+                                $estado = $modulo['estado'];
+                                $claseEstado = $estado === 'Aprobado' ? 'badge-exito' : ($estado === 'Suspenso' ? 'badge-error' : 'badge-alerta');
                             ?>
                             <tr>
                                 <td>
-                                    <div style="font-weight:600; color:var(--text-color);"><?= Security::escapeHtml($d['nombreModulo']) ?></div>
+                                    <div style="font-weight:600; color:var(--text-color);"><?= Security::escapeHtml($modulo['nombreModulo']) ?></div>
                                     <div style="font-size:0.8rem; color:var(--dim); margin-top:3px;">
-                                        Exámenes: <?= Security::escapeHtml($d['media_notas']) ?> | Retos: <?= Security::escapeHtml($d['media_retos']) ?>
+                                        Exámenes: <?= Security::escapeHtml($modulo['media_notas']) ?> | Retos: <?= Security::escapeHtml($modulo['media_retos']) ?>
                                     </div>
                                 </td>
                                 <td style="text-align:center; font-weight:800; font-size:1.15rem; color:var(--text-color);">
-                                    <?= Security::escapeHtml($d['nota_final']) ?>
+                                    <?= Security::escapeHtml($modulo['nota_final']) ?>
                                 </td>
                                 <td style="text-align:center;">
-                                    <span class="badge <?= Security::escapeHtml($cls) ?>"><?= Security::escapeHtml(strtoupper($est)) ?></span>
+                                    <span class="badge <?= Security::escapeHtml($claseEstado) ?>"><?= Security::escapeHtml(strtoupper($estado)) ?></span>
                                 </td>
                             </tr>
                             <?php } ?>
@@ -192,21 +192,21 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </thead>
                 <tbody>
                     <?php if (!empty($retosNotas)) { ?>
-                        <?php foreach ($retosNotas as $r) {
-                            $nota = (float)$r['nota'];
-                            $cls  = $nota >= 5 ? 'texto-verde' : 'texto-rojo';
+                        <?php foreach ($retosNotas as $reto) {
+                            $nota = (float)$reto['nota'];
+                            $claseNota = $nota >= 5 ? 'texto-verde' : 'texto-rojo';
                         ?>
                         <tr>
                             <td style="font-weight:600; color:var(--text-color);">
-                                <?= Security::escapeHtml($r['nombreReto']) ?>
+                                <?= Security::escapeHtml($reto['nombreReto']) ?>
                             </td>
                             <td style="font-size:0.85rem; color:var(--dim);">
-                                <?= !empty($r['fechaInicio']) ? date('d/m/y', strtotime($r['fechaInicio'])) : '—' ?>
+                                <?= !empty($reto['fechaInicio']) ? date('d/m/y', strtotime($reto['fechaInicio'])) : '—' ?>
                                 <br>
-                                <?= !empty($r['fechaFin']) ? date('d/m/y', strtotime($r['fechaFin'])) : '—' ?>
+                                <?= !empty($reto['fechaFin']) ? date('d/m/y', strtotime($reto['fechaFin'])) : '—' ?>
                             </td>
-                            <td style="text-align:center; font-weight:800; font-size:1.15rem;" class="<?= Security::escapeHtml($cls) ?>">
-                                <?= Security::escapeHtml($r['nota']) ?>
+                            <td style="text-align:center; font-weight:800; font-size:1.15rem;" class="<?= Security::escapeHtml($claseNota) ?>">
+                                <?= Security::escapeHtml($reto['nota']) ?>
                             </td>
                         </tr>
                         <?php } ?>

@@ -16,7 +16,7 @@ $listaNiveles          = listarNiveles();
 
 $idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
 $ciclosFiltrados = $idNivelFiltro
-    ? array_values(array_filter($listaDeTodosLosCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    ? array_values(array_filter($listaDeTodosLosCiclos, fn($ciclo) => (int)$ciclo['idNivel'] === $idNivelFiltro))
     : $listaDeTodosLosCiclos;
 
 $idDelCicloParaFiltrar = (int)($_GET['idCiclo'] ?? 0);
@@ -63,9 +63,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>FILTRAR POR NIVEL:</label>
                 <select name="idNivel" onchange="this.form.submit()">
                     <option value="">-- Todos los Niveles --</option>
-                    <?php foreach ($listaNiveles as $n) { ?>
-                        <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($n['nombreNivel']) ?>
+                    <?php foreach ($listaNiveles as $nivel) { ?>
+                        <option value="<?= (int)$nivel['idNivel'] ?>" <?= ((int)$nivel['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -179,14 +179,14 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <tbody>
                     <?php if (empty($listaPendientes)): ?>
                     <tr><td colspan="6" class="vacio">No hay estudiantes con pagos pendientes. ¡Todos están al día!</td></tr>
-                    <?php else: foreach ($listaPendientes as $p): ?>
+                    <?php else: foreach ($listaPendientes as $pendiente): ?>
                     <tr>
-                        <td><b><?= Security::escapeHtml(mb_strtoupper($p['nombreEstudiante'], 'UTF-8')) ?></b></td>
-                        <td><?= Security::escapeHtml(mb_strtoupper($p['nombreCiclo'], 'UTF-8')) ?></td>
-                        <td><?= number_format((float)$p['precioCiclo'], 2) ?> €</td>
-                        <td><?= number_format((float)$p['totalPagado'], 2) ?> €</td>
-                        <td class="texto-rojo texto-negrita"><?= number_format((float)$p['deuda'], 2) ?> €</td>
-                        <td><a href="agregarPagos.php?idEstudiante=<?= (int)$p['idEstudiante'] ?>" class="boton-primario" style="padding:4px 12px;font-size:.8rem;">Cobrar</a></td>
+                        <td><b><?= Security::escapeHtml(mb_strtoupper($pendiente['nombreEstudiante'], 'UTF-8')) ?></b></td>
+                        <td><?= Security::escapeHtml(mb_strtoupper($pendiente['nombreCiclo'], 'UTF-8')) ?></td>
+                        <td><?= number_format((float)$pendiente['precioCiclo'], 2) ?> €</td>
+                        <td><?= number_format((float)$pendiente['totalPagado'], 2) ?> €</td>
+                        <td class="texto-rojo texto-negrita"><?= number_format((float)$pendiente['deuda'], 2) ?> €</td>
+                        <td><a href="agregarPagos.php?idEstudiante=<?= (int)$pendiente['idEstudiante'] ?>" class="boton-primario" style="padding:4px 12px;font-size:.8rem;">Cobrar</a></td>
                     </tr>
                     <?php endforeach; endif; ?>
                 </tbody>

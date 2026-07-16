@@ -10,8 +10,8 @@ function iniciarEditorBlog(config) {
     var inicial = config.initialContent || '';
     if (inicial && !/<[a-z][\s\S]*>/i.test(inicial)) {
         // Contenido heredado en texto plano (párrafos separados por línea en blanco)
-        $editor.innerHTML = inicial.split(/\n{2,}/).map(function (p) {
-            var esc = p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+        $editor.innerHTML = inicial.split(/\n{2,}/).map(function (parrafo) {
+            var esc = parrafo.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
             return '<p>' + esc + '</p>';
         }).join('');
     } else {

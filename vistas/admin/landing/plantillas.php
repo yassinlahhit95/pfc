@@ -38,23 +38,23 @@ include_once __DIR__ . '/../comunes/nav.php';
 </div>
 
 <div class="plantillas-grid">
-    <?php foreach ($plantillas as $slug => $p):
+    <?php foreach ($plantillas as $slug => $plantilla):
         $esActual = ($landingCfg['plantilla'] === $slug); ?>
     <article class="panel plantilla-card<?= $esActual ? ' plantilla-actual' : '' ?>">
         <div class="plantilla-thumb">
-            <img src="../../../public/imagenes/landing/<?= Security::escapeHtml($p['thumbnail']) ?>" alt="<?= Security::escapeHtml($p['nombre']) ?>">
+            <img src="../../../public/imagenes/landing/<?= Security::escapeHtml($plantilla['thumbnail']) ?>" alt="<?= Security::escapeHtml($plantilla['nombre']) ?>">
             <?php if ($esActual): ?>
             <span class="texto-estado verde plantilla-badge">Plantilla del borrador</span>
             <?php endif; ?>
         </div>
         <div class="plantilla-info">
             <h3>
-                <span class="plantilla-color" style="background:<?= Security::escapeHtml($p['colorAcento']) ?>;"></span>
-                <?= Security::escapeHtml($p['nombre']) ?>
+                <span class="plantilla-color" style="background:<?= Security::escapeHtml($plantilla['colorAcento']) ?>;"></span>
+                <?= Security::escapeHtml($plantilla['nombre']) ?>
             </h3>
-            <p><?= Security::escapeHtml($p['descripcion']) ?></p>
+            <p><?= Security::escapeHtml($plantilla['descripcion']) ?></p>
             <button type="button" class="boton-primario" data-aplicar-plantilla="<?= Security::escapeHtml($slug) ?>"
-                    data-nombre="<?= Security::escapeHtml($p['nombre']) ?>" style="width: 100%; justify-content: center; margin-top: 10px;">
+                    data-nombre="<?= Security::escapeHtml($plantilla['nombre']) ?>" style="width: 100%; justify-content: center; margin-top: 10px;">
                 <i class="fas fa-wand-magic-sparkles"></i> Aplicar plantilla
             </button>
         </div>

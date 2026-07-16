@@ -23,7 +23,7 @@ if ($idCiclo) {
     $todosLosModulosDelCiclo = listarModulosPorCiclo($idCiclo);
     $misModulosAsignados = listarIdsModulosDeProfesor($idProfesor);
     $mapaModulosAsignados = [];
-    foreach ($misModulosAsignados as $idM) { $mapaModulosAsignados[$idM] = true; }
+    foreach ($misModulosAsignados as $idModuloAsignado) { $mapaModulosAsignados[$idModuloAsignado] = true; }
 
     foreach ($todosLosModulosDelCiclo as $moduloItem) {
         if (isset($mapaModulosAsignados[$moduloItem['idModulo']])) {
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <input type="hidden" name="idModulo" value="<?= Security::escapeHtml($idModulo ) ?>">
             <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($idCiclo ) ?>">
-            
+
             <div class="contenedor-tabla">
                 <table class="tabla-datos">
                     <thead>
@@ -99,10 +99,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <?php if (empty($listaDeEstudiantes)) { ?>
                             <tr><td colspan="6" class="vacio">No hay alumnos en este ciclo todavia.</td></tr>
                         <?php } else { ?>
-                            <?php foreach ($listaDeEstudiantes as $estudiante) { 
+                            <?php foreach ($listaDeEstudiantes as $estudiante) {
                                 $idEstudiante = $estudiante['idEstudiante'];
                                 $notas = obtenerNotasModulo($idEstudiante, $idModulo);
-                                
+
                                 $nota1ev       = $notas['nota_1ev']      ?? '';
                                 $nota1final    = $notas['nota_1final']   ?? '';
                                 $nota2ev       = $notas['nota_2ev']      ?? '';
@@ -135,13 +135,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tbody>
                 </table>
             </div>
-            
+
             <?php if (!empty($listaDeEstudiantes)) { ?>
                 <div class="acciones">
                     <input type="submit" name="guardarNotas" class="boton-primario" value="GUARDAR CALIFICACIONES">
                     <input type="reset" class="boton-secundario" value="LIMPIAR">
                     <label class="texto-aviso ml-auto">
-                        <input type="checkbox" name="notificarEstudiantes" value="1"> 
+                        <input type="checkbox" name="notificarEstudiantes" value="1">
                         <i class="fas fa-envelope"></i> Enviar aviso por email
                     </label>
                 </div>
@@ -151,6 +151,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-

@@ -13,9 +13,9 @@ function getEnvValue(string $key, string $default = ''): string {
     foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         $line = trim($line);
         if (!$line || $line[0] === '#' || !str_contains($line, '=')) continue;
-        [$k, $v] = explode('=', $line, 2);
-        if (trim($k) === $key) {
-            return trim($v, " \t\n\r\0\x0B\"'");
+        [$envKey, $envValue] = explode('=', $line, 2);
+        if (trim($envKey) === $key) {
+            return trim($envValue, " \t\n\r\0\x0B\"'");
         }
     }
     return $default;
@@ -53,30 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (!Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
         $error_msg = "Token de seguridad inválido. Recarga la página.";
     } else {
-    $url = trim($_POST['app_url'] ?? '');
-    $apiKey = trim($_POST['api_key'] ?? '');
-    $apiSecret = trim($_POST['api_secret'] ?? '');
-    $licSecret = trim($_POST['lic_secret'] ?? '');
+        $url = trim($_POST['app_url'] ?? '');
+        $apiKey = trim($_POST['api_key'] ?? '');
+        $apiSecret = trim($_POST['api_secret'] ?? '');
+        $licSecret = trim($_POST['lic_secret'] ?? '');
 
-    if (!$url || !$apiKey || !$apiSecret || !$licSecret) {
-        $error_msg = "Todos los campos de credenciales son obligatorios.";
-    } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
-        $error_msg = "La URL de la Instancia no es una dirección web válida.";
-    } else {
-        $updated = updateEnvFile([
-            'APP_URL'             => rtrim($url, '/'),
-            'ADMIN_API_KEY'       => $apiKey,
-            'ADMIN_API_SECRET'    => $apiSecret,
-            'SAAS_LICENSE_SECRET' => $licSecret
-        ]);
-        if ($updated) {
-            FeatureGuard::clearCache();
-            $success_msg = "Credenciales de conexión actualizadas correctamente.";
+        if (!$url || !$apiKey || !$apiSecret || !$licSecret) {
+            $error_msg = "Todos los campos de credenciales son obligatorios.";
+        } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
+            $error_msg = "La URL de la Instancia no es una dirección web válida.";
         } else {
-            $error_msg = "No se pudo escribir en el archivo .env. Por favor, comprueba los permisos de escritura del archivo en el servidor.";
+            $updated = updateEnvFile([
+                'APP_URL'             => rtrim($url, '/'),
+                'ADMIN_API_KEY'       => $apiKey,
+                'ADMIN_API_SECRET'    => $apiSecret,
+                'SAAS_LICENSE_SECRET' => $licSecret
+            ]);
+            if ($updated) {
+                FeatureGuard::clearCache();
+                $success_msg = "Credenciales de conexión actualizadas correctamente.";
+            } else {
+                $error_msg = "No se pudo escribir en el archivo .env. Por favor, comprueba los permisos de escritura del archivo en el servidor.";
+            }
         }
     }
-    } // end CSRF else
 }
 
 $titulo_pagina = 'AULAPRO | ESTADO DE LA PLATAFORMA';
@@ -287,13 +287,13 @@ $expLabel = $subExpTs ? 'Suscripción válida hasta' : 'Token válido hasta';
 
   function fmt(remaining) {
     if (remaining <= 0) { el.textContent = 'Expirado'; el.style.color = 'var(--rojo)'; return; }
-    const d = Math.floor(remaining / 86400);
-    const h = Math.floor((remaining % 86400) / 3600);
-    const m = Math.floor((remaining % 3600) / 60);
-    const s = remaining % 60;
-    el.textContent = d > 0
-      ? `${d}d ${h}h ${m}m`
-      : `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    const days = Math.floor(remaining / 86400);
+    const hours = Math.floor((remaining % 86400) / 3600);
+    const minutes = Math.floor((remaining % 3600) / 60);
+    const seconds = remaining % 60;
+    el.textContent = days > 0
+      ? `${days}d ${hours}h ${minutes}m`
+      : `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
   }
 
   function tick() { fmt(expTs - Math.floor(Date.now() / 1000)); }

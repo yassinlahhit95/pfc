@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>MIS RETOS</h1>
-    <p class="subtitulo">Retos asignados a tu ciclo: <?= Security::escapeHtml($nombreCiclo ) ?></p>
+    <p class="subtitulo">Retos asignados a tu ciclo: <?= Security::escapeHtml($nombreCiclo) ?></p>
 </div>
 
 
@@ -72,13 +72,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         </a>
                                         <div class="materiales-dropdown">
                                             <div class="small fw-bold mb-2 px-2 text-muted text-uppercase" style="font-size: 9px;">Recursos:</div>
-                                            <?php foreach ($archivos as $arch): 
-                                                $isPdf = ($arch['tipoArchivo'] === 'pdf');
+                                            <?php foreach ($archivos as $archivo):
+                                                $isPdf = ($archivo['tipoArchivo'] === 'pdf');
                                                 $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
                                             ?>
-                                                <a href="../../../<?= Security::escapeHtml($arch['rutaArchivo']) ?>" target="_blank" class="dropdown-file-item">
+                                                <a href="../../../<?= Security::escapeHtml($archivo['rutaArchivo']) ?>" target="_blank" class="dropdown-file-item">
                                                     <i class="fas <?= $icon ?>"></i>
-                                                    <span class="text-truncate"><?= Security::escapeHtml($arch['nombreArchivo']) ?></span>
+                                                    <span class="text-truncate"><?= Security::escapeHtml($archivo['nombreArchivo']) ?></span>
                                                 </a>
                                             <?php endforeach; ?>
                                             <hr class="my-2 opacity-10">
@@ -91,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </td>
                             <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaInicio']))) ?></td>
                             <td><?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaFin']))) ?></td>
-                            <td><?= Security::escapeHtml($reto['horasReto'] ) ?> h</td>
+                            <td><?= Security::escapeHtml($reto['horasReto']) ?> h</td>
                         </tr>
                     <?php } ?>
                 <?php } ?>
@@ -101,6 +101,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

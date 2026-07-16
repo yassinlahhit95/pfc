@@ -12,10 +12,11 @@ $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
 $datos = $_SESSION['datos_ciclo'] ?? [];
+unset($_SESSION['datos_ciclo']);
 
 $profesoresElegidos = $datos['profesores'] ?? [];
 $mapaProfesoresElegidos = [];
-foreach ($profesoresElegidos as $idP) { $mapaProfesoresElegidos[$idP] = true; }
+foreach ($profesoresElegidos as $idProfesor) { $mapaProfesoresElegidos[$idProfesor] = true; }
 
 $titulo_pagina = "AULAPRO | AGREGAR CICLO";
 $seccion = 'ciclos';

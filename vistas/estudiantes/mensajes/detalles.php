@@ -114,21 +114,21 @@ include_once __DIR__ . "/../comunes/nav.php";
             Conversación (<?= count($hilo) ?> mensaje<?= count($hilo) !== 1 ? 's' : '' ?>)
         </div>
         <div class="msg-thread-body" id="thread-body">
-            <?php foreach ($hilo as $item):
-                $isMine = ($item['emisor_rol'] === 'estudiante' && (int)$item['idEstudiante'] === (int)$_SESSION['idEstudiante']);
-                if ($item['emisor_rol'] === 'admin') {
+            <?php foreach ($hilo as $mensajeHilo):
+                $isMine = ($mensajeHilo['emisor_rol'] === 'estudiante' && (int)$mensajeHilo['idEstudiante'] === (int)$_SESSION['idEstudiante']);
+                if ($mensajeHilo['emisor_rol'] === 'admin') {
                     $avaClass = 'ava-admin'; $avaInit = 'AD'; $senderLabel = 'Dirección';
-                } elseif ($item['emisor_rol'] === 'profesor') {
+                } elseif ($mensajeHilo['emisor_rol'] === 'profesor') {
                     $avaClass    = 'ava-profe';
-                    $avaInit     = mb_strtoupper(mb_substr($item['nombreProfesor'] ?? 'P', 0, 2));
-                    $senderLabel = Security::escapeHtml($item['nombreProfesor'] ?? 'Profesor');
+                    $avaInit     = mb_strtoupper(mb_substr($mensajeHilo['nombreProfesor'] ?? 'P', 0, 2));
+                    $senderLabel = Security::escapeHtml($mensajeHilo['nombreProfesor'] ?? 'Profesor');
                 } else {
                     $avaClass    = 'ava-yo';
                     $avaInit     = 'YO';
                     $senderLabel = 'Tú';
                 }
-                $timeStr   = date('d/m/Y H:i', strtotime($item['fecha']));
-                $contenido = $item['descripcion'] ?? '';
+                $timeStr   = date('d/m/Y H:i', strtotime($mensajeHilo['fecha']));
+                $contenido = $mensajeHilo['descripcion'] ?? '';
             ?>
             <div class="msg-thread-row <?= $isMine ? 'mine' : '' ?>">
                 <div class="msg-thread-ava <?= $avaClass ?>"><?= $isMine ? 'YO' : Security::escapeHtml($avaInit) ?></div>

@@ -9,8 +9,8 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$id_ciclo = (int)($_GET['idCiclo'] ?? 0);
-$ciclo = obtenerCicloPorId($id_ciclo);
+$idCiclo = (int)($_GET['idCiclo'] ?? 0);
+$ciclo = obtenerCicloPorId($idCiclo);
 
 if (!$ciclo) {
     header("Location: verCiclos.php");
@@ -20,11 +20,12 @@ if (!$ciclo) {
 $listaNiveles = listarNiveles();
 $listaProfesores = listarProfesores();
 
-$profesores_marcados = listarProfesoresDeUnCiclo($id_ciclo);
-$datos_sesion = $_SESSION['datos_ciclos'] ?? null;
-if ($datos_sesion) {
-    $ciclo = $datos_sesion + $ciclo;
-    $profesores_marcados = $datos_sesion['profesores'] ?? [];
+$profesoresMarcados = listarProfesoresDeUnCiclo($idCiclo);
+$datosSesion = $_SESSION['datos_ciclos'] ?? null;
+unset($_SESSION['datos_ciclos']);
+if ($datosSesion) {
+    $ciclo = $datosSesion + $ciclo;
+    $profesoresMarcados = $datosSesion['profesores'] ?? [];
 }
 
 $titulo_pagina = "AULAPRO | MODIFICAR CICLO";
@@ -45,7 +46,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/ciclos/actualizar.php">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo) ?>">
+        <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($idCiclo) ?>">
         
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'nombreCiclo') ?>">
@@ -85,7 +86,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaProfesores as $prof) { ?>
                         <label class="check-item">
                             <input type="checkbox" name="profesores[]" value="<?= Security::escapeHtml($prof['idProfesor']) ?>"
-                                <?php if (in_array($prof['idProfesor'], $profesores_marcados)) { ?>checked<?php } ?>>
+                                <?php if (in_array($prof['idProfesor'], $profesoresMarcados)) { ?>checked<?php } ?>>
                             <span><?= Security::escapeHtml($prof['nombreProfesor']) ?></span>
                         </label>
                     <?php } ?>

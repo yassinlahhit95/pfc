@@ -17,9 +17,9 @@
                 if (!data || !data.ok) return;
                 actualizarBadge(data.unread);
                 if (prevUnread >= 0 && data.unread > prevUnread) {
-                    var n = data.unread - prevUnread;
-                    mostrarBannerNuevos(n);
-                    if (window.Toast) Toast.show(n + ' mensaje(s) nuevo(s)', 'ok');
+                    var nuevos = data.unread - prevUnread;
+                    mostrarBannerNuevos(nuevos);
+                    if (window.Toast) Toast.show(nuevos + ' mensaje(s) nuevo(s)', 'ok');
                 }
                 prevUnread = data.unread;
             });
@@ -36,40 +36,40 @@
         var existing = document.getElementById('msg-banner-nuevos');
         if (existing) existing.remove();
 
-        var b = document.createElement('div');
-        b.id = 'msg-banner-nuevos';
-        b.className = 'msg-banner-nuevos';
-        b.innerHTML =
+        var banner = document.createElement('div');
+        banner.id = 'msg-banner-nuevos';
+        banner.className = 'msg-banner-nuevos';
+        banner.innerHTML =
             '<i class="fas fa-envelope"></i> Tienes <strong>' + count +
             '</strong> mensaje(s) nuevo(s). <a href="lista.php">Ver ahora</a>' +
             '<button class="msg-banner-cerrar" aria-label="Cerrar">×</button>';
 
-        b.querySelector('.msg-banner-cerrar').addEventListener('click', function () {
-            b.remove();
+        banner.querySelector('.msg-banner-cerrar').addEventListener('click', function () {
+            banner.remove();
         });
 
         var anchor = document.querySelector('.panel, .cabecera');
         if (anchor) {
-            anchor.parentNode.insertBefore(b, anchor);
+            anchor.parentNode.insertBefore(banner, anchor);
         } else {
-            document.body.prepend(b);
+            document.body.prepend(banner);
         }
     }
 
     // ── Contador de caracteres ────────────────────────────────────────
     function initCharCounters() {
-        document.querySelectorAll('textarea[maxlength]').forEach(function (ta) {
-            var max = parseInt(ta.getAttribute('maxlength'), 10);
-            var ctr = document.createElement('span');
-            ctr.className = 'msg-char-counter';
-            ta.parentNode.appendChild(ctr);
+        document.querySelectorAll('textarea[maxlength]').forEach(function (textarea) {
+            var max = parseInt(textarea.getAttribute('maxlength'), 10);
+            var counterEl = document.createElement('span');
+            counterEl.className = 'msg-char-counter';
+            textarea.parentNode.appendChild(counterEl);
 
             function update() {
-                var n = ta.value.length;
-                ctr.textContent = n + ' / ' + max;
-                ctr.classList.toggle('msg-char-limit', n > max * 0.88);
+                var len = textarea.value.length;
+                counterEl.textContent = len + ' / ' + max;
+                counterEl.classList.toggle('msg-char-limit', len > max * 0.88);
             }
-            ta.addEventListener('input', update);
+            textarea.addEventListener('input', update);
             update();
         });
     }
@@ -185,8 +185,8 @@
         } catch (e) {}
     }
 
-    function escHtmlMsg(s) {
-        return String(s)
+    function escHtmlMsg(str) {
+        return String(str)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')

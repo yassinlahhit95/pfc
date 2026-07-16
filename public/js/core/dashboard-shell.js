@@ -16,17 +16,17 @@
 
   /* ── applyTheme — runs immediately (before DOM ready) to avoid flash ──── */
   function applyTheme() {
-    var r = document.documentElement;
-    r.setAttribute("data-theme", state.dark ? "dark" : "light");
-    r.setAttribute("data-density", state.density || "regular");
-    if (state.accent) r.style.setProperty("--accent", state.accent);
-    if (typeof state.animation === "number") r.style.setProperty("--anim", String(state.animation / 10));
+    var htmlEl = document.documentElement;
+    htmlEl.setAttribute("data-theme", state.dark ? "dark" : "light");
+    htmlEl.setAttribute("data-density", state.density || "regular");
+    if (state.accent) htmlEl.style.setProperty("--accent", state.accent);
+    if (typeof state.animation === "number") htmlEl.style.setProperty("--anim", String(state.animation / 10));
   }
   applyTheme();
 
   /* ── Helpers ──────────────────────────────────────────────────────────── */
-  function qs(sel, root) { return (root || document).querySelector(sel); }
-  var G = window.gsap;
+  function getEl(sel, root) { return (root || document).querySelector(sel); }
+  var gsapLib = window.gsap;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /**
@@ -48,15 +48,15 @@
   }
 
   function syncThemeBtn() {
-    var knob = qs("#theme .theme-knob");
+    var knob = getEl("#theme .theme-knob");
     if (knob) knob.innerHTML = state.dark ? SUN_SVG : MOON_SVG;
   }
 
   function spinTheme() {
-    var knob = qs("#theme .theme-knob");
+    var knob = getEl("#theme .theme-knob");
     if (!knob) return;
-    if (G && !reduced) {
-      G.fromTo(knob, { rotate: -90, opacity: 0 }, { rotate: 0, opacity: 1, duration: 0.45, ease: "back.out(2)" });
+    if (gsapLib && !reduced) {
+      gsapLib.fromTo(knob, { rotate: -90, opacity: 0 }, { rotate: 0, opacity: 1, duration: 0.45, ease: "back.out(2)" });
     }
   }
 
@@ -67,8 +67,8 @@
   function failsafe(sel) {
     setTimeout(function () {
       document.querySelectorAll(sel).forEach(function (e) {
-        if (G && parseFloat(getComputedStyle(e).opacity) < 0.99) {
-          G.set(e, { clearProps: "transform,opacity" });
+        if (gsapLib && parseFloat(getComputedStyle(e).opacity) < 0.99) {
+          gsapLib.set(e, { clearProps: "transform,opacity" });
         }
       });
     }, 1500);
@@ -76,14 +76,14 @@
 
   function animateIntro() {
     var factor = (typeof state.animation === "number" ? state.animation : 7) / 10;
-    if (!G || reduced || factor === 0) return;
-    G.from(".sidebar", { x: -40, opacity: 0, duration: 0.6, ease: "power3.out", clearProps: "transform,opacity" });
-    G.from(".topbar > *", { y: -16, opacity: 0, duration: 0.5, stagger: 0.05, ease: "power2.out", delay: 0.1, clearProps: "transform,opacity" });
+    if (!gsapLib || reduced || factor === 0) return;
+    gsapLib.from(".sidebar", { x: -40, opacity: 0, duration: 0.6, ease: "power3.out", clearProps: "transform,opacity" });
+    gsapLib.from(".topbar > *", { y: -16, opacity: 0, duration: 0.5, stagger: 0.05, ease: "power2.out", delay: 0.1, clearProps: "transform,opacity" });
     if (document.querySelector(".hero-text")) {
-      G.from(".hero-text > *", { y: 18, opacity: 0, duration: 0.55, stagger: 0.07, ease: "power3.out", delay: 0.15, clearProps: "transform,opacity" });
+      gsapLib.from(".hero-text > *", { y: 18, opacity: 0, duration: 0.55, stagger: 0.07, ease: "power3.out", delay: 0.15, clearProps: "transform,opacity" });
     }
     if (document.querySelector(".stat")) {
-      G.from(".stat", { y: 18, opacity: 0, scale: 0.95, duration: 0.5, stagger: 0.08, ease: "back.out(1.5)", delay: 0.25, clearProps: "transform,opacity" });
+      gsapLib.from(".stat", { y: 18, opacity: 0, scale: 0.95, duration: 0.5, stagger: 0.08, ease: "back.out(1.5)", delay: 0.25, clearProps: "transform,opacity" });
     }
     failsafe(".sidebar, .topbar > *" + (document.querySelector(".hero-text") ? ", .hero-text > *" : "") + (document.querySelector(".stat") ? ", .stat" : ""));
   }
@@ -92,12 +92,12 @@
     var tiles = document.querySelectorAll(".tile");
     if (!tiles.length) return;
     var factor = (typeof state.animation === "number" ? state.animation : 7) / 10;
-    if (!G || reduced || factor === 0) {
+    if (!gsapLib || reduced || factor === 0) {
       tiles.forEach(function (t) { t.style.opacity = 1; t.style.transform = ""; });
       return;
     }
-    G.killTweensOf(tiles);
-    G.fromTo(tiles,
+    gsapLib.killTweensOf(tiles);
+    gsapLib.fromTo(tiles,
       { opacity: 0, y: 24 + 30 * factor, scale: 0.96 },
       { opacity: 1, y: 0, scale: 1, duration: 0.5 + 0.35 * factor, ease: "power3.out",
         stagger: { each: 0.03 + 0.05 * factor, from: "start" },
@@ -107,12 +107,12 @@
 
   /* ── Search ──────────────────────────────────────────────────────────── */
   function initSearch() {
-    var input = qs("#sys-search");
-    var list = qs("#search-results");
-    var wrapper = qs("#search-wrapper");
-    var trigger = qs(".mobile-search-trigger");
-    var backdrop = qs("#search-backdrop");
-    var closeBtn = qs("#search-close");
+    var input = getEl("#sys-search");
+    var list = getEl("#search-results");
+    var wrapper = getEl("#search-wrapper");
+    var trigger = getEl(".mobile-search-trigger");
+    var backdrop = getEl("#search-backdrop");
+    var closeBtn = getEl("#search-close");
 
     if (!input || !list) return;
 
@@ -210,9 +210,9 @@
 
   /* ── Notifications ─────────────────────────────────────────────────────── */
   function initNotifications() {
-    var btn   = qs("#notif-btn");
-    var panel = qs("#notif-panel");
-    var dot   = qs("#notif-dot");
+    var btn   = getEl("#notif-btn");
+    var panel = getEl("#notif-panel");
+    var dot   = getEl("#notif-dot");
     if (!btn || !panel) return;
 
     var SEEN_KEY = "ap_seen_pagos";
@@ -265,7 +265,7 @@
 
   /* ── Collapsible nav categories (+/-) ─────────────────────────────────── */
   function initNavSections() {
-    var nav = qs("#sidebar-nav");
+    var nav = getEl("#sidebar-nav");
     if (!nav) return;
     var KEY = "aulapro_nav_sections";
     var saved = {};
@@ -313,7 +313,7 @@
 
   /* ── Sidebar Scroll Persistence ───────────────────────────────────────── */
   function initSidebarScroll() {
-    var nav = qs("#sidebar-nav");
+    var nav = getEl("#sidebar-nav");
     if (!nav) return;
 
     var SCROLL_KEY = "aulapro_sidebar_scroll";
@@ -353,8 +353,8 @@
     initSidebarScroll();
 
     /* Collapse button */
-    var collapseBtn = qs("#collapse");
-    var sidebar = qs(".sidebar");
+    var collapseBtn = getEl("#collapse");
+    var sidebar = getEl(".sidebar");
     if (collapseBtn && sidebar) {
       if (state.sidebarCollapsed) sidebar.classList.add("collapsed");
       collapseBtn.addEventListener("click", function () {
@@ -365,9 +365,9 @@
     }
 
     /* Mobile menu button */
-    var app = qs("#app");
-    var menuBtn = qs("#menu");
-    var mobileCloseBtn = qs("#mobile-close");
+    var app = getEl("#app");
+    var menuBtn = getEl("#menu");
+    var mobileCloseBtn = getEl("#mobile-close");
     
     function closeMobileNav() {
       if (app) app.classList.remove("nav-open");
@@ -384,7 +384,7 @@
     }
 
     /* Scrim click closes nav */
-    var scrim = qs(".scrim");
+    var scrim = getEl(".scrim");
     if (scrim) {
       scrim.addEventListener("click", closeMobileNav);
     }
@@ -397,7 +397,7 @@
     });
 
     /* Theme toggle */
-    var themeBtn = qs("#theme");
+    var themeBtn = getEl("#theme");
     if (themeBtn) {
       themeBtn.addEventListener("click", function () {
         state.dark = !state.dark;
@@ -412,7 +412,7 @@
     document.addEventListener("keydown", function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        var search = qs("#sys-search");
+        var search = getEl("#sys-search");
         if (search) search.focus();
       }
     });
@@ -430,7 +430,7 @@
        Uses recursive setTimeout with exponential backoff so network errors
        (ERR_NETWORK_CHANGED, etc.) don't flood the console. */
     (function pollUnread() {
-      var dot = qs("#notif-dot");
+      var dot = getEl("#notif-dot");
       if (!dot) return;
       var POLL_URL = resolveAppPath('controladores/comunes/contar_no_leidos.php');
       var INTERVAL  = 30000;   // normal interval ms
@@ -455,21 +455,21 @@
             if (!r.ok) throw new Error(r.status);
             return r.json();
           })
-          .then(function(d) {
-            if (!d) return;
+          .then(function(data) {
+            if (!data) return;
             errors = 0;
-            var n    = parseInt(d.count || 0, 10);
-            var prev = parseInt(dot.dataset.msgs || '0', 10);
-            if (n > prev) {
-              dot.dataset.msgs = n;
+            var unreadCount   = parseInt(data.count || 0, 10);
+            var previousCount = parseInt(dot.dataset.msgs || '0', 10);
+            if (unreadCount > previousCount) {
+              dot.dataset.msgs = unreadCount;
               dot.removeAttribute('hidden');
             }
-            
-            var chatN = parseInt(d.chat_count || 0, 10);
+
+            var chatUnreadCount = parseInt(data.chat_count || 0, 10);
             var cwBadge = document.getElementById('cw-fab-badge');
             if (cwBadge) {
-              cwBadge.textContent = chatN;
-              if (chatN > 0) {
+              cwBadge.textContent = chatUnreadCount;
+              if (chatUnreadCount > 0) {
                 cwBadge.removeAttribute('hidden');
               } else {
                 cwBadge.setAttribute('hidden', '');
@@ -500,8 +500,8 @@
     /* Tile click elastic feedback */
     document.addEventListener("click", function (e) {
       var tile = e.target.closest(".tile");
-      if (tile && G && !reduced) {
-        G.fromTo(tile, { scale: 0.97 }, { scale: 1, duration: 0.4, ease: "elastic.out(1,0.5)", clearProps: "transform" });
+      if (tile && gsapLib && !reduced) {
+        gsapLib.fromTo(tile, { scale: 0.97 }, { scale: 1, duration: 0.4, ease: "elastic.out(1,0.5)", clearProps: "transform" });
       }
     });
 
@@ -564,11 +564,11 @@
 
       tickTimer = setInterval(function() {
         var left = Math.max(0, warnDeadline - Date.now());
-        var el   = document.getElementById('al-countdown');
-        if (el) {
-          var m = Math.floor(left / 60000);
-          var s = Math.floor((left % 60000) / 1000);
-          el.textContent = m + ':' + (s < 10 ? '0' + s : s);
+        var countdownEl = document.getElementById('al-countdown');
+        if (countdownEl) {
+          var minutesLeft = Math.floor(left / 60000);
+          var secondsLeft = Math.floor((left % 60000) / 1000);
+          countdownEl.textContent = minutesLeft + ':' + (secondsLeft < 10 ? '0' + secondsLeft : secondsLeft);
         }
         if (left === 0) clearInterval(tickTimer);
       }, 1000);

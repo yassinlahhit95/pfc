@@ -15,7 +15,7 @@ $listaNiveles = listarNiveles();
 
 $idNivelFiltro   = (int)($_GET['idNivel']  ?? 0);
 $ciclosFiltrados = $idNivelFiltro
-    ? array_values(array_filter($listaCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    ? array_values(array_filter($listaCiclos, fn($cicloItem) => (int)$cicloItem['idNivel'] === $idNivelFiltro))
     : $listaCiclos;
 
 $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
@@ -119,9 +119,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Filtrar por Nivel:</label>
             <select name="idNivel" onchange="this.form.submit()">
                 <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $n) { ?>
-                    <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($n['nombreNivel']) ?>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>" <?= ((int)$nivel['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -242,11 +242,11 @@ function filtrarModulosPorCurso() {
                             foreach ($pairs as [$nota, $est]) {
                                 if ($est && in_array($est, $especiales, true)) return $glLabels[$est];
                                 if ($nota !== null && $nota !== '') {
-                                    $d = (float)$nota;
-                                    if ($d >= 9) return $glLabels['SB'];
-                                    if ($d >= 7) return $glLabels['NT'];
-                                    if ($d >= 6) return $glLabels['BI'];
-                                    if ($d >= 5) return $glLabels['SF'];
+                                    $notaNum = (float)$nota;
+                                    if ($notaNum >= 9) return $glLabels['SB'];
+                                    if ($notaNum >= 7) return $glLabels['NT'];
+                                    if ($notaNum >= 6) return $glLabels['BI'];
+                                    if ($notaNum >= 5) return $glLabels['SF'];
                                     return $glLabels['IN'];
                                 }
                             }
@@ -272,7 +272,7 @@ function filtrarModulosPorCurso() {
                                     ['notas_2ev[]',    $cellVal($notas['nota_2ev']    ?? null, $notas['estado_2ev']    ?? null)],
                                     ['notas_2final[]', $cellVal($notas['nota_2final'] ?? null, $notas['estado_2final'] ?? null)],
                                 ];
-                                $allCO = array_reduce($cells, fn($c, $cell) => $c && strtoupper(trim((string)$cell[1])) === 'CO', true);
+                                $allCO = array_reduce($cells, fn($acc, $cell) => $acc && strtoupper(trim((string)$cell[1])) === 'CO', true);
                             ?>
                                 <tr>
                                     <td>
@@ -344,16 +344,16 @@ var GL_LABELS = {
 };
 var ESPECIALES = ['NP', 'EX', 'CO'];
 
-function notaALetra(v) {
-    v = v.trim().toUpperCase();
-    if (ESPECIALES.indexOf(v) !== -1) return v;
-    var n = parseFloat(v);
-    if (isNaN(n) || v === '') return '';
-    if (n >= 9) return 'SB';
-    if (n >= 7) return 'NT';
-    if (n >= 6) return 'BI';
-    if (n >= 5) return 'SF';
-    if (n >= 0) return 'IN';
+function notaALetra(valor) {
+    valor = valor.trim().toUpperCase();
+    if (ESPECIALES.indexOf(valor) !== -1) return valor;
+    var numero = parseFloat(valor);
+    if (isNaN(numero) || valor === '') return '';
+    if (numero >= 9) return 'SB';
+    if (numero >= 7) return 'NT';
+    if (numero >= 6) return 'BI';
+    if (numero >= 5) return 'SF';
+    if (numero >= 0) return 'IN';
     return '';
 }
 
@@ -364,8 +364,8 @@ function actualizarGlosario(fila) {
     var inputs = fila.querySelectorAll('.nota-input');
     var key = '';
     for (var j = inputs.length - 1; j >= 0; j--) {
-        var v = inputs[j].value.trim();
-        if (v !== '') { key = notaALetra(v); break; }
+        var valor = inputs[j].value.trim();
+        if (valor !== '') { key = notaALetra(valor); break; }
     }
     if (key && GL_LABELS[key]) {
         cel.textContent   = GL_LABELS[key][0];
@@ -378,12 +378,12 @@ function actualizarGlosario(fila) {
     }
 }
 
-function esValorValido(v) {
-    v = v.trim().toUpperCase();
-    if (v === '') return true;
-    if (ESPECIALES.indexOf(v) !== -1) return true;
-    var n = parseFloat(v);
-    return !isNaN(n) && n >= 0 && n <= 10 && String(v).match(/^\d+(\.\d+)?$/);
+function esValorValido(valor) {
+    valor = valor.trim().toUpperCase();
+    if (valor === '') return true;
+    if (ESPECIALES.indexOf(valor) !== -1) return true;
+    var numero = parseFloat(valor);
+    return !isNaN(numero) && numero >= 0 && numero <= 10 && String(valor).match(/^\d+(\.\d+)?$/);
 }
 
 function validarNota(input) {
@@ -404,9 +404,9 @@ function limpiarError(input) {
 }
 
 function actualizarBadge(input) {
-    var v     = input.value.trim().toUpperCase();
+    var valor = input.value.trim().toUpperCase();
     var badge = input.nextElementSibling;
-    var letra = notaALetra(v);
+    var letra = notaALetra(valor);
     badge.textContent = letra;
     badge.className   = 'badge-letra' + (letra ? ' badge-' + letra : '');
     actualizarGlosario(input.closest('tr'));

@@ -9,9 +9,9 @@ if (isset($_SESSION['idTutor']))      { header("Location: tutores/inicio/dashboa
 if (isset($_SESSION['idEstudiante'])) { header("Location: estudiantes/inicio/dashboard.php"); exit; }
 if (isset($_SESSION['idSecretaria'])) { header("Location: secretaria/inicio/dashboard.php"); exit; }
 
-$err    = $_SESSION['errores']   ?? null;
-$ok     = $_SESSION['reset_ok']  ?? null;
-$vals   = $_SESSION['datos_login'] ?? [];
+$errores = $_SESSION['errores']   ?? null;
+$exito   = $_SESSION['reset_ok']  ?? null;
+$datos   = $_SESSION['datos_login'] ?? [];
 unset($_SESSION['errores'], $_SESSION['datos_login'], $_SESSION['reset_ok']);
 
 // Generar token CSRF
@@ -59,23 +59,23 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Introduce tus datos para entrar al sistema</p>
             </div>
 
-            <?php if ($ok) { ?>
-            <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($ok) ?></div>
+            <?php if ($exito) { ?>
+            <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($exito) ?></div>
             <?php } ?>
-            <?php if ($err) { ?>
+            <?php if ($errores) { ?>
             <div class="error-alerta">
-                <?= Security::escapeHtml(is_array($err) ? implode(' ', $err) : $err) ?>
+                <?= Security::escapeHtml(is_array($errores) ? implode(' ', $errores) : $errores) ?>
             </div>
             <?php } ?>
 
             <form action="../controladores/validacion.php" method="POST" id="formLogin">
                 <!-- CSRF Token Protection -->
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
                 <?= BotGuard::renderFields() ?>
 
                 <div class="campo-grupo">
                     <label>Usuario / Email</label>
-                    <input type="text" name="usuario" placeholder="ejemplo@correo.com" value="<?= Security::escapeHtml($vals['usuario'] ?? $_GET['u'] ?? '') ?>" autofocus>
+                    <input type="text" name="usuario" placeholder="ejemplo@correo.com" value="<?= Security::escapeHtml($datos['usuario'] ?? $_GET['u'] ?? '') ?>" autofocus>
                 </div>
 
                 <div class="campo-grupo">

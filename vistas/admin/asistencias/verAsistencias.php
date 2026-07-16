@@ -51,9 +51,9 @@ require_once __DIR__ . "/../comunes/nav.php";
       <label>Ciclo</label>
       <select name="idCiclo" id="sel-ciclo-asist" onchange="this.form.submit()">
         <option value="">Todos los ciclos</option>
-        <?php foreach ($ciclos as $c): ?>
-        <option value="<?= (int)$c['idCiclo'] ?>" <?= $idCiclo === (int)$c['idCiclo'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($c['nombreCiclo']) ?>
+        <?php foreach ($ciclos as $ciclo): ?>
+        <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= $idCiclo === (int)$ciclo['idCiclo'] ? 'selected' : '' ?>>
+          <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
         </option>
         <?php endforeach; ?>
       </select>
@@ -63,9 +63,9 @@ require_once __DIR__ . "/../comunes/nav.php";
       <label>Módulo</label>
       <select name="idModulo" onchange="this.form.submit()">
         <option value="">Todos los módulos</option>
-        <?php foreach ($modulos as $m): ?>
-        <option value="<?= (int)$m['idModulo'] ?>" <?= $idModulo === (int)$m['idModulo'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($m['nombreModulo']) ?>
+        <?php foreach ($modulos as $modulo): ?>
+        <option value="<?= (int)$modulo['idModulo'] ?>" <?= $idModulo === (int)$modulo['idModulo'] ? 'selected' : '' ?>>
+          <?= Security::escapeHtml($modulo['nombreModulo']) ?>
         </option>
         <?php endforeach; ?>
       </select>
@@ -76,9 +76,9 @@ require_once __DIR__ . "/../comunes/nav.php";
       <label>Estudiante</label>
       <select name="idEstudiante" onchange="this.form.submit()">
         <option value="">Todos los estudiantes</option>
-        <?php foreach ($estudiantesCiclo as $e): ?>
-        <option value="<?= (int)$e['idEstudiante'] ?>" <?= $idEstudiante === (int)$e['idEstudiante'] ? 'selected' : '' ?>>
-          <?= Security::escapeHtml($e['nombreEstudiante']) ?>
+        <?php foreach ($estudiantesCiclo as $estudiante): ?>
+        <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= $idEstudiante === (int)$estudiante['idEstudiante'] ? 'selected' : '' ?>>
+          <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
         </option>
         <?php endforeach; ?>
       </select>
@@ -132,32 +132,32 @@ require_once __DIR__ . "/../comunes/nav.php";
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($asistencias as $a): ?>
+        <?php foreach ($asistencias as $asistencia): ?>
         <tr>
-          <td><?= Security::escapeHtml(date('d/m/Y', strtotime($a['fecha']))) ?></td>
-          <td><?= Security::escapeHtml($a['nombreEstudiante']) ?></td>
-          <td><?= Security::escapeHtml($a['nombreModulo']) ?></td>
-          <td><?= Security::escapeHtml($a['nombreCiclo']) ?></td>
+          <td><?= Security::escapeHtml(date('d/m/Y', strtotime($asistencia['fecha']))) ?></td>
+          <td><?= Security::escapeHtml($asistencia['nombreEstudiante']) ?></td>
+          <td><?= Security::escapeHtml($asistencia['nombreModulo']) ?></td>
+          <td><?= Security::escapeHtml($asistencia['nombreCiclo']) ?></td>
           <td>
             <?php
-            $chip = match($a['estado']) {
+            $chip = match($asistencia['estado']) {
                 'presente'    => 'verde',
                 'ausente'     => 'rojo',
                 'retraso'     => 'naranja',
                 'justificado' => 'azul',
                 default       => 'gris',
             };
-            $label = match($a['estado']) {
+            $label = match($asistencia['estado']) {
                 'presente'    => 'Presente',
                 'ausente'     => 'Ausente',
                 'retraso'     => 'Retraso',
                 'justificado' => 'Justificado',
-                default       => $a['estado'],
+                default       => $asistencia['estado'],
             };
             ?>
-            <span class="texto-estado <?= $chip ?>"><?= $label ?></span>
+            <span class="texto-estado <?= $chip ?>"><?= Security::escapeHtml($label) ?></span>
           </td>
-          <td><?= Security::escapeHtml($a['observacion'] ?? '') ?></td>
+          <td><?= Security::escapeHtml($asistencia['observacion'] ?? '') ?></td>
         </tr>
         <?php endforeach; ?>
       </tbody>

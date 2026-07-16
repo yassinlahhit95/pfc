@@ -49,14 +49,20 @@
   if ($msg): ?>
   <div class="mensaje-admin">
     <strong>Mensaje del administrador:</strong><br>
-    <?= htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') ?>
+    <?= Security::escapeHtml($msg) ?>
   </div>
   <?php endif; ?>
 
   <hr class="divider">
   <p class="contacto">Para reactivar el acceso, contacta con el administrador de tu centro.</p>
 
-  <a href="<?= htmlspecialchars($_SERVER['HTTP_REFERER'] ?? '/', ENT_QUOTES) ?>" class="boton boton-sec">← Volver</a>
+  <?php
+  $volverUrl = $_SERVER['HTTP_REFERER'] ?? '/';
+  if (!str_starts_with($volverUrl, '/') || str_starts_with($volverUrl, '//')) {
+      $volverUrl = '/';
+  }
+  ?>
+  <a href="<?= Security::escapeHtml($volverUrl) ?>" class="boton boton-sec">← Volver</a>
   <a href="/index.php" class="boton boton-sec">Inicio</a>
 </div>
 </body>

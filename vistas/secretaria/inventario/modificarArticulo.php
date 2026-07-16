@@ -18,6 +18,7 @@ if (!$articulo) {
 }
 
 $datos = $_SESSION['datos_inventario'] ?? [];
+unset($_SESSION['datos_inventario']);
 
 $titulo_pagina = "AULAPRO | MODIFICAR ARTÍCULO";
 $seccion = 'inventario';

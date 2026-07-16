@@ -10,7 +10,7 @@ $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $datos      = $_SESSION['datos_perfil'] ?? null;
 unset($_SESSION['datos_perfil']);
 
-$v = fn($k) => Security::escapeHtml($datos[$k] ?? $secretaria[$k] ?? '');
+$valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $secretaria[$k] ?? '');
 
 $titulo_pagina = "AULAPRO | EDITAR PERFIL";
 $seccion = 'perfil';
@@ -29,14 +29,14 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo<?= fieldClass($errores, 'nombreSecretaria') ?>">
             <label for="nombreSecretaria">Nombre <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="nombreSecretaria" id="nombreSecretaria" maxlength="100"
-                   value="<?= $v('nombreSecretaria') ?>">
+                   value="<?= $valorCampo('nombreSecretaria') ?>">
             <?= fieldError($errores, 'nombreSecretaria') ?>
         </div>
 
         <div class="campo<?= fieldClass($errores, 'emailSecretaria') ?>">
             <label for="emailSecretaria">Email <span style="color:var(--rojo)">*</span></label>
             <input type="email" name="emailSecretaria" id="emailSecretaria" maxlength="150"
-                   value="<?= $v('emailSecretaria') ?>">
+                   value="<?= $valorCampo('emailSecretaria') ?>">
             <?= fieldError($errores, 'emailSecretaria') ?>
         </div>
 

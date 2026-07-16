@@ -387,18 +387,18 @@ $csrfToken = Security::generateCSRFToken();
             </p>
             
             <div class="ob-template-grid">
-                <?php foreach ($plantillas as $slug => $p): ?>
+                <?php foreach ($plantillas as $slug => $plantilla): ?>
                 <div class="ob-template-card" data-slug="<?= Security::escapeHtml($slug) ?>" onclick="selectTemplate(this)">
                     <div class="ob-template-thumb">
-                        <img src="/public/imagenes/landing/<?= Security::escapeHtml($p['thumbnail']) ?>" alt="">
-                        <div class="ob-template-glow" style="background: <?= Security::escapeHtml($p['colorAcento']) ?>;"></div>
+                        <img src="/public/imagenes/landing/<?= Security::escapeHtml($plantilla['thumbnail']) ?>" alt="">
+                        <div class="ob-template-glow" style="background: <?= Security::escapeHtml($plantilla['colorAcento']) ?>;"></div>
                     </div>
                     <div class="ob-template-info">
                         <h3>
-                            <span class="ob-color-dot" style="background:<?= Security::escapeHtml($p['colorAcento']) ?>;"></span>
-                            <?= Security::escapeHtml($p['nombre']) ?>
+                            <span class="ob-color-dot" style="background:<?= Security::escapeHtml($plantilla['colorAcento']) ?>;"></span>
+                            <?= Security::escapeHtml($plantilla['nombre']) ?>
                         </h3>
-                        <p><?= Security::escapeHtml($p['descripcion']) ?></p>
+                        <p><?= Security::escapeHtml($plantilla['descripcion']) ?></p>
                     </div>
                     <div class="ob-template-selected-check">
                         <i class="fas fa-check-circle"></i>

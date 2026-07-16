@@ -30,7 +30,7 @@ usort($todasLasEntregas, function($a, $b) {
 });
 
 $totalEntregas = count($todasLasEntregas);
-$totalCalificadas = count(array_filter($todasLasEntregas, function($e) { return $e['nota'] !== null; }));
+$totalCalificadas = count(array_filter($todasLasEntregas, function($entrega) { return $entrega['nota'] !== null; }));
 $promedio = 0;
 if ($totalCalificadas > 0) {
     $sumNotas = array_sum(array_column($todasLasEntregas, 'nota'));
@@ -60,19 +60,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cuadricula-estadisticas">
     <div class="tarjeta-estadistica tarjeta-estadistica-azul">
         <div class="info-estadistica">
-            <h3><?= Security::escapeHtml($totalEntregas ) ?></h3>
+            <h3><?= Security::escapeHtml($totalEntregas) ?></h3>
             <p>Entregas Totales</p>
         </div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-verde">
         <div class="info-estadistica">
-            <h3><?= Security::escapeHtml($totalCalificadas ) ?></h3>
+            <h3><?= Security::escapeHtml($totalCalificadas) ?></h3>
             <p>Calificadas</p>
         </div>
     </div>
     <div class="tarjeta-estadistica tarjeta-estadistica-morada">
         <div class="info-estadistica">
-            <h3><?= Security::escapeHtml($promedio ) ?></h3>
+            <h3><?= Security::escapeHtml($promedio) ?></h3>
             <p>Promedio</p>
         </div>
     </div>
@@ -106,7 +106,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?></td>
                     <td>
                         <?php if ($entrega['nota'] !== null) { ?>
-                            <strong style="font-size: 16px; color: #4caf50;"><?= Security::escapeHtml($entrega['nota'] ) ?>/10</strong>
+                            <strong style="font-size: 16px; color: #4caf50;"><?= Security::escapeHtml($entrega['nota']) ?>/10</strong>
                         <?php } else { ?>
                             <span style="color: #ff9800;">Pendiente</span>
                         <?php } ?>
@@ -125,7 +125,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         ?>
                     </td>
                     <td>
-                        <a href="tarea_detalle.php?id=<?= Security::escapeHtml($entrega['idTarea'] ) ?>" class="boton-secundario btn-pequeno">
+                        <a href="tarea_detalle.php?id=<?= Security::escapeHtml($entrega['idTarea']) ?>" class="boton-secundario btn-pequeno">
                             <i class="fas fa-eye"></i> VER
                         </a>
                     </td>
@@ -147,5 +147,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
 

@@ -24,7 +24,6 @@ include_once __DIR__ . "/../comunes/nav.php";
     </div>
 <?php } else { ?>
     <form method="POST" action="../../../controladores/aula/crear_sesion.php" class="formulario-principal">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
 
         <div class="grupo-formulario">
@@ -32,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <select id="idModulo" name="idModulo" required>
                 <option value="">-- Selecciona un módulo --</option>
                 <?php foreach ($modulos as $modulo) { ?>
-                    <option value="<?= Security::escapeHtml($modulo['idModulo'] ) ?>"><?= Security::escapeHtml($modulo['nombreModulo']) ?></option>
+                    <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>"><?= Security::escapeHtml($modulo['nombreModulo']) ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -95,5 +94,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php } ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

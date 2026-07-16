@@ -44,7 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </select>
     </div>
-    
+
     <div class="campo" style="flex:1; min-width:200px;">
         <label for="selectFiltroAnioProf">FILTRAR POR AÑO:</label>
         <select id="selectFiltroAnioProf" onchange="aplicarFiltrosProf()">
@@ -72,30 +72,30 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($estudiantes) { ?>
-                    <?php foreach ($estudiantes as $est) { ?>
+                    <?php foreach ($estudiantes as $estudiante) { ?>
                         <tr>
                             <td>
-                                <span class="texto-estado <?= Security::escapeHtml($est['idNivel'] == 1 ? 'azul' : 'verde') ?>">
-                                    <?= Security::escapeHtml($est['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?>
+                                <span class="texto-estado <?= Security::escapeHtml($estudiante['idNivel'] == 1 ? 'azul' : 'verde') ?>">
+                                    <?= Security::escapeHtml($estudiante['idNivel'] == 1 ? 'Grado Medio' : 'Grado Superior') ?>
                                 </span>
                             </td>
-                            <td class="texto-negrita"><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
-                            <td><?= Security::escapeHtml($est['emailEstudiante']) ?></td>
-                            <td><?= Security::escapeHtml($est['dniEstudiante']) ?></td>
-                            <td><?= Security::escapeHtml($est['anioEstudio'] ?? '') ?></td>
-                            <td><?= Security::escapeHtml($est['nombreCiclo']) ?></td>
+                            <td class="texto-negrita"><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($estudiante['emailEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($estudiante['dniEstudiante']) ?></td>
+                            <td><?= Security::escapeHtml($estudiante['anioEstudio'] ?? '') ?></td>
+                            <td><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></td>
                             <td style="text-align:right;">
                                 <div class="recurso-menu-wrap">
                                     <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                     <div class="recurso-menu">
-                                        <a class="recurso-menu-item" href="detalles.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-eye"></i> Ver perfil</a>
-                                        <a class="recurso-menu-item" href="editar.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>"><i class="fas fa-edit"></i> Editar</a>
+                                        <a class="recurso-menu-item" href="detalles.php?idEstudiante=<?= (int)$estudiante['idEstudiante'] ?>"><i class="fas fa-eye"></i> Ver perfil</a>
+                                        <a class="recurso-menu-item" href="editar.php?idEstudiante=<?= (int)$estudiante['idEstudiante'] ?>"><i class="fas fa-edit"></i> Editar</a>
                                         <div class="recurso-menu-sep"></div>
                                         <a class="recurso-menu-item peligro" href="#"
                                            data-modal-borrar
-                                           data-id="<?= (int)$est['idEstudiante'] ?>"
+                                           data-id="<?= (int)$estudiante['idEstudiante'] ?>"
                                            data-tipo="Estudiante"
-                                           data-nombre="<?= Security::escapeHtml($est['nombreEstudiante']) ?>"
+                                           data-nombre="<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>"
                                            data-url="/controladores/profesores/estudiantes/borrar.php"
                                            data-campo="idEstudiante"><i class="fas fa-trash"></i> Eliminar</a>
                                     </div>
@@ -120,22 +120,22 @@ iniciarPaginacion('tablaEstudiantesProf', 15);
 function aplicarFiltrosProf() {
     let inputCiclo = document.getElementById("selectFiltroCicloProf").value.toUpperCase();
     let inputAnio = document.getElementById("selectFiltroAnioProf").value.toUpperCase();
-    
+
     let table = document.getElementById("tablaEstudiantesProf");
     let tr = table.getElementsByTagName("tr");
-    
+
     let rowsMostrados = 0;
-    
+
     for (let i = 1; i < tr.length; i++) {
         let tdCiclo = tr[i].getElementsByTagName("td")[5]; // Index 5 is Ciclo now
         let tdAnio = tr[i].getElementsByTagName("td")[4];  // Index 4 is Año now
         if (tdCiclo && tdAnio) {
             let txtCiclo = tdCiclo.textContent || tdCiclo.innerText;
             let txtAnio = tdAnio.textContent || tdAnio.innerText;
-            
+
             let matchCiclo = (inputCiclo === "" || txtCiclo.toUpperCase().indexOf(inputCiclo) > -1);
             let matchAnio = (inputAnio === "" || txtAnio.toUpperCase().indexOf(inputAnio) > -1);
-            
+
             if (matchCiclo && matchAnio) {
                 tr[i].style.display = "";
                 rowsMostrados++;
@@ -144,5 +144,7 @@ function aplicarFiltrosProf() {
             }
         }
     }
+
+    if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaEstudiantesProf');
 }
 </script>

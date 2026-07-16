@@ -9,7 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
-$todos_los_articulos = listarArticulos();
+$todosLosArticulos = listarArticulos();
 
 $titulo_pagina = "AULAPRO | INVENTARIO DEL CENTRO";
 $seccion = 'inventario';
@@ -37,20 +37,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_articulos)) { ?>
+                <?php if (empty($todosLosArticulos)) { ?>
                     <tr><td colspan="4" class="vacio">No hay artículos en el inventario</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_articulos as $art) { ?>
+                    <?php foreach ($todosLosArticulos as $articulo) { ?>
                     <tr>
-                        <td><b><?= Security::escapeHtml($art['nombreArticulo']) ?></b></td>
-                        <td><?= Security::escapeHtml($art['numeroSerie'] ?? '') ?></td>
+                        <td><b><?= Security::escapeHtml($articulo['nombreArticulo']) ?></b></td>
+                        <td><?= Security::escapeHtml($articulo['numeroSerie'] ?? '') ?></td>
                         <td>
                             <?php
-                            $clase_estado = "activo-verde";
-                            if ($art['estado'] != 'disponible') { $clase_estado = "inactivo-rojo"; }
+                            $claseEstado = "activo-verde";
+                            if ($articulo['estado'] != 'disponible') { $claseEstado = "inactivo-rojo"; }
                             ?>
-                            <span class="indicador-estado <?= $clase_estado ?>">
-                                <?= Security::escapeHtml($art['estado']) ?>
+                            <span class="indicador-estado <?= $claseEstado ?>">
+                                <?= Security::escapeHtml($articulo['estado']) ?>
                             </span>
                         </td>
                         <td>
@@ -59,15 +59,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <div class="recurso-menu">
                                     <a class="recurso-menu-item" href="#"
                                        data-editar-articulo
-                                       data-id="<?= (int)$art['idArticulo'] ?>"
-                                       data-nombre="<?= Security::escapeHtml($art['nombreArticulo']) ?>"
-                                       data-serie="<?= Security::escapeHtml($art['numeroSerie'] ?? '') ?>"><i class="fas fa-edit"></i> Editar</a>
+                                       data-id="<?= (int)$articulo['idArticulo'] ?>"
+                                       data-nombre="<?= Security::escapeHtml($articulo['nombreArticulo']) ?>"
+                                       data-serie="<?= Security::escapeHtml($articulo['numeroSerie'] ?? '') ?>"><i class="fas fa-edit"></i> Editar</a>
                                     <div class="recurso-menu-sep"></div>
                                     <a class="recurso-menu-item peligro" href="#"
                                        data-modal-borrar
-                                       data-id="<?= (int)$art['idArticulo'] ?>"
+                                       data-id="<?= (int)$articulo['idArticulo'] ?>"
                                        data-tipo="Artículo"
-                                       data-nombre="<?= Security::escapeHtml($art['nombreArticulo']) ?>"
+                                       data-nombre="<?= Security::escapeHtml($articulo['nombreArticulo']) ?>"
                                        data-url="/controladores/admin/inventario/borrar.php"
                                        data-campo="idArticulo"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>

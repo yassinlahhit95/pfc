@@ -9,7 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/inventario.php";
 
-$todos_los_prestamos = listarTodosLosPrestamos();
+$todosLosPrestamos = listarTodosLosPrestamos();
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE PRÉSTAMOS";
 $seccion = 'prestamos';
@@ -38,39 +38,39 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_prestamos)) { ?>
+                <?php if (empty($todosLosPrestamos)) { ?>
                     <tr><td colspan="6" class="vacio">No hay registros de préstamos</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_prestamos as $p) { ?>
+                    <?php foreach ($todosLosPrestamos as $prestamo) { ?>
                     <tr>
-                        <td><b><?= Security::escapeHtml($p['nombreEstudiante']) ?></b></td>
-                        <td><?= Security::escapeHtml($p['nombreArticulo']) ?></td>
-                        <td><?= date('d/m/Y', strtotime($p['fechaPrestamo'])) ?></td>
+                        <td><b><?= Security::escapeHtml($prestamo['nombreEstudiante']) ?></b></td>
+                        <td><?= Security::escapeHtml($prestamo['nombreArticulo']) ?></td>
+                        <td><?= date('d/m/Y', strtotime($prestamo['fechaPrestamo'])) ?></td>
                         <td>
-                            <?php if (!empty($p['fechaDevolucion'])) { ?>
-                                <?= date('d/m/Y', strtotime($p['fechaDevolucion'])) ?>
+                            <?php if (!empty($prestamo['fechaDevolucion'])) { ?>
+                                <?= date('d/m/Y', strtotime($prestamo['fechaDevolucion'])) ?>
                             <?php } else { ?>
                                 -
                             <?php } ?>
                         </td>
                         <td>
                             <?php
-                            $clase_estado = "inactivo-rojo";
-                            if ($p['estadoPrestamo'] == 'en curso') { $clase_estado = "activo-verde"; }
+                            $claseEstado = "inactivo-rojo";
+                            if ($prestamo['estadoPrestamo'] == 'en curso') { $claseEstado = "activo-verde"; }
                             ?>
-                            <span class="indicador-estado <?= $clase_estado ?>">
-                                <?= Security::escapeHtml($p['estadoPrestamo']) ?>
+                            <span class="indicador-estado <?= $claseEstado ?>">
+                                <?= Security::escapeHtml($prestamo['estadoPrestamo']) ?>
                             </span>
                         </td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <?php if ($p['estadoPrestamo'] == 'en curso') { ?>
+                                    <?php if ($prestamo['estadoPrestamo'] == 'en curso') { ?>
                                     <form action="../../../controladores/admin/inventario/devolver.php" method="POST" style="margin:0">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                                        <input type="hidden" name="idPrestamo" value="<?= $p['idPrestamo'] ?>">
-                                        <input type="hidden" name="idArticulo" value="<?= $p['idArticulo'] ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                                        <input type="hidden" name="idPrestamo" value="<?= $prestamo['idPrestamo'] ?>">
+                                        <input type="hidden" name="idArticulo" value="<?= $prestamo['idArticulo'] ?>">
                                         <button type="submit" class="recurso-menu-item"><i class="fas fa-rotate-left"></i> Marcar devuelto</button>
                                     </form>
                                     <?php } else { ?>

@@ -56,8 +56,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <input type="text" id="categoria" name="categoria" maxlength="80" list="categorias-blog"
                        value="<?= Security::escapeHtml($post['categoria']) ?>">
                 <datalist id="categorias-blog">
-                    <?php foreach ($categorias as $cat) { ?>
-                    <option value="<?= Security::escapeHtml($cat['categoria']) ?>"></option>
+                    <?php foreach ($categorias as $categoria) { ?>
+                    <option value="<?= Security::escapeHtml($categoria['categoria']) ?>"></option>
                     <?php } ?>
                 </datalist>
             </div>

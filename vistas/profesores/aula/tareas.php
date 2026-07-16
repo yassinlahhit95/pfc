@@ -13,8 +13,8 @@ $modulos    = listarModulosDeProfesor($idProfesor);
 
 $idModuloSeleccionado = (int)($_GET['idModulo'] ?? ($modulos[0]['idModulo'] ?? 0));
 $moduloSeleccionado   = null;
-foreach ($modulos as $m) {
-    if ((int)$m['idModulo'] === $idModuloSeleccionado) { $moduloSeleccionado = $m; break; }
+foreach ($modulos as $modulo) {
+    if ((int)$modulo['idModulo'] === $idModuloSeleccionado) { $moduloSeleccionado = $modulo; break; }
 }
 if (!$moduloSeleccionado) { $idModuloSeleccionado = 0; }
 
@@ -22,8 +22,8 @@ if (!$moduloSeleccionado) { $idModuloSeleccionado = 0; }
 $idEditar     = (int)($_GET['editar'] ?? 0);
 $tareaEditar  = null;
 if ($idEditar > 0 && $idModuloSeleccionado) {
-    $t = obtenerTareaPorIdAula($idEditar);
-    if ($t && (int)$t['idModulo'] === $idModuloSeleccionado) $tareaEditar = $t;
+    $tareaCandidata = obtenerTareaPorIdAula($idEditar);
+    if ($tareaCandidata && (int)$tareaCandidata['idModulo'] === $idModuloSeleccionado) $tareaEditar = $tareaCandidata;
 }
 $mostrarForm = $tareaEditar || isset($_GET['nueva']) || !empty($datos);
 
@@ -70,9 +70,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="GET" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <label for="idModulo" style="font-weight:600;">Módulo:</label>
         <select name="idModulo" id="idModulo" onchange="this.form.submit()" style="min-width:280px;">
-            <?php foreach ($modulos as $m): ?>
-                <option value="<?= (int)$m['idModulo'] ?>" <?= (int)$m['idModulo'] === $idModuloSeleccionado ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($m['nombreModulo']) ?> (<?= Security::escapeHtml($m['nombreCiclo'] ?? '') ?>)
+            <?php foreach ($modulos as $modulo): ?>
+                <option value="<?= (int)$modulo['idModulo'] ?>" <?= (int)$modulo['idModulo'] === $idModuloSeleccionado ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo'] ?? '') ?>)
                 </option>
             <?php endforeach; ?>
         </select>
@@ -151,44 +151,44 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($tareas as $t): ?>
+                <?php foreach ($tareas as $tarea): ?>
                 <tr>
                     <td>
-                        <strong><?= Security::escapeHtml($t['titulo']) ?></strong>
-                        <?php if (!empty($t['archivoAdjunto'])): ?> <i class="fas fa-paperclip texto-suave" title="Con adjunto"></i><?php endif; ?>
+                        <strong><?= Security::escapeHtml($tarea['titulo']) ?></strong>
+                        <?php if (!empty($tarea['archivoAdjunto'])): ?> <i class="fas fa-paperclip texto-suave" title="Con adjunto"></i><?php endif; ?>
                     </td>
                     <td>
-                        <span class="texto-estado <?= $t['publicado'] ? 'verde' : 'gris' ?>">
-                            <?= $t['publicado'] ? 'Publicada' : 'Borrador' ?>
+                        <span class="texto-estado <?= $tarea['publicado'] ? 'verde' : 'gris' ?>">
+                            <?= $tarea['publicado'] ? 'Publicada' : 'Borrador' ?>
                         </span>
                     </td>
-                    <td style="text-align:center"><?= (int)$t['totalEntregas'] ?></td>
-                    <td style="text-align:center"><?= (int)$t['totalCorregidas'] ?></td>
-                    <td><?= date('d/m/Y', strtotime($t['fechaCreacion'])) ?></td>
+                    <td style="text-align:center"><?= (int)$tarea['totalEntregas'] ?></td>
+                    <td style="text-align:center"><?= (int)$tarea['totalCorregidas'] ?></td>
+                    <td><?= date('d/m/Y', strtotime($tarea['fechaCreacion'])) ?></td>
                     <td style="text-align:right">
                         <div class="recurso-menu-wrap">
                             <button class="recurso-menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
                             <div class="recurso-menu">
-                                <a class="recurso-menu-item" href="tareaEntregas.php?id=<?= (int)$t['idTarea'] ?>">
+                                <a class="recurso-menu-item" href="tareaEntregas.php?id=<?= (int)$tarea['idTarea'] ?>">
                                     <i class="fas fa-inbox"></i> Ver Entregas
                                 </a>
-                                <a class="recurso-menu-item" href="tareas.php?idModulo=<?= $idModuloSeleccionado ?>&editar=<?= (int)$t['idTarea'] ?>">
+                                <a class="recurso-menu-item" href="tareas.php?idModulo=<?= $idModuloSeleccionado ?>&editar=<?= (int)$tarea['idTarea'] ?>">
                                     <i class="fas fa-pen"></i> Editar
                                 </a>
                                 <form method="POST" action="../../../controladores/profesores/aula/publicarTarea.php" style="margin:0;">
                                     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                                    <input type="hidden" name="idTarea" value="<?= (int)$t['idTarea'] ?>">
+                                    <input type="hidden" name="idTarea" value="<?= (int)$tarea['idTarea'] ?>">
                                     <button type="submit" class="recurso-menu-item" style="width:100%;background:none;border:0;cursor:pointer;text-align:left;">
-                                        <i class="fas fa-<?= $t['publicado'] ? 'eye-slash' : 'bullhorn' ?>"></i>
-                                        <?= $t['publicado'] ? 'Ocultar' : 'Publicar' ?>
+                                        <i class="fas fa-<?= $tarea['publicado'] ? 'eye-slash' : 'bullhorn' ?>"></i>
+                                        <?= $tarea['publicado'] ? 'Ocultar' : 'Publicar' ?>
                                     </button>
                                 </form>
                                 <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
-                                   data-id="<?= (int)$t['idTarea'] ?>"
+                                   data-id="<?= (int)$tarea['idTarea'] ?>"
                                    data-tipo="Tarea"
-                                   data-nombre="<?= Security::escapeHtml($t['titulo']) ?>"
+                                   data-nombre="<?= Security::escapeHtml($tarea['titulo']) ?>"
                                    data-extra="Se eliminarán también todas las entregas"
                                    data-url="/controladores/profesores/aula/borrarTarea.php"
                                    data-campo="idTarea">

@@ -1,15 +1,15 @@
 // Función para sacar un aviso en pantalla (toast) premium
-export function avisoPush(t, m, tipo = 'info') {
-    var c = document.getElementById('contenedor-notificaciones');
+export function avisoPush(titulo, mensaje, tipo = 'info') {
+    var contenedor = document.getElementById('contenedor-notificaciones');
 
-    if (!c) {
-        c = document.createElement('div');
-        c.id = 'contenedor-notificaciones';
-        document.body.appendChild(c);
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.id = 'contenedor-notificaciones';
+        document.body.appendChild(contenedor);
     }
 
-    var div = document.createElement('div');
-    div.className = "notificacion-toast premium " + tipo;
+    var toastEl = document.createElement('div');
+    toastEl.className = "notificacion-toast premium " + tipo;
 
     var icon = 'fa-bell';
     if (tipo === 'exito') icon = 'fa-check-circle';
@@ -17,7 +17,7 @@ export function avisoPush(t, m, tipo = 'info') {
 
     // Static structure via innerHTML is safe here — icon is hardcoded from tipo, not user input.
     // Title and body are set via .textContent below to prevent XSS from FCM payload content.
-    div.innerHTML = `
+    toastEl.innerHTML = `
         <div class="toast-icono"><i class="fas ${icon}"></i></div>
         <div class="toast-contenido">
             <div class="toast-titulo"></div>
@@ -26,23 +26,23 @@ export function avisoPush(t, m, tipo = 'info') {
         <button class="toast-cerrar" aria-label="Cerrar">&times;</button>
         <div class="toast-progreso"><div class="toast-progreso-barra"></div></div>
     `;
-    div.querySelector('.toast-titulo').textContent = t;
-    div.querySelector('.toast-mensaje').textContent = m;
+    toastEl.querySelector('.toast-titulo').textContent = titulo;
+    toastEl.querySelector('.toast-mensaje').textContent = mensaje;
 
-    c.appendChild(div);
+    contenedor.appendChild(toastEl);
 
     // Sonido opcional (solo si el usuario ha interactuado)
-    var sn = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
-    sn.volume = 0.7;
-    sn.play().catch(function() { /* Silenciar error si no hay interacción previa */ });
+    var sonido = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+    sonido.volume = 0.7;
+    sonido.play().catch(function() { /* Silenciar error si no hay interacción previa */ });
 
-    div.querySelector('.toast-cerrar').onclick = function() {
-        quitarToast(div);
+    toastEl.querySelector('.toast-cerrar').onclick = function() {
+        quitarToast(toastEl);
     };
 
     // Auto-dismiss tras 6 segundos
     setTimeout(function() {
-        quitarToast(div);
+        quitarToast(toastEl);
     }, 6000);
 }
 

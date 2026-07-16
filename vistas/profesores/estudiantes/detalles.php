@@ -32,7 +32,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="titulo-tarjeta">
         <h3><i class="fas fa-user-graduate"></i> INFORMACION PERSONAL</h3>
     </div>
-    
+
     <div class="fila-datos">
         <div class="nombre-detalle">Nombre Completo</div>
         <div class="valor-detalle texto-negrita"><?= Security::escapeHtml(mb_strtoupper($estudiante['nombreEstudiante'], 'UTF-8')) ?></div>
@@ -73,7 +73,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="fila-datos">
         <div class="nombre-detalle">Observaciones</div>
         <div class="valor-detalle">
-            <?= Security::escapeHtml(!empty($estudiante['observacionesEstudiante']) ? nl2br($estudiante['observacionesEstudiante']) : '<span class="texto-suave">Sin observaciones registradas.</span>') ?>
+            <?= !empty($estudiante['observacionesEstudiante']) ? nl2br(Security::escapeHtml($estudiante['observacionesEstudiante'])) : '<span class="texto-suave">Sin observaciones registradas.</span>' ?>
         </div>
     </div>
 </div>
@@ -91,24 +91,24 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <span class="indicador-estado inactivo-rojo">PENDIENTE / NO SUBIDO</span>
             <?php } ?>
         </div>
-        
+
         <?php
         $notaTFG = obtenerCalificacionTFG($idEstudiante);
         if ($notaTFG) {
         ?>
             <div style="text-align: right;">
-                <p class="nombre-detalle" style="margin-bottom: 5px;">CALIFICACIUN TFG</p>
+                <p class="nombre-detalle" style="margin-bottom: 5px;">CALIFICACIÓN TFG</p>
                 <span class="texto-negrita <?= Security::escapeHtml($notaTFG['nota'] >= 5 ? 'texto-verde' : 'texto-rojo') ?>" style="font-size: 1.5em;">
                     <?= Security::escapeHtml($notaTFG['nota'] ) ?> / 10
                 </span>
             </div>
         <?php } ?>
     </div>
-    
+
     <?php if ($notaTFG && !empty($notaTFG['observaciones'])) { ?>
         <div class="margen-arriba tarjeta-gris-suave" style="padding: 15px;">
             <p class="texto-negrita" style="font-size: 13px; color: #718096; margin-bottom: 5px;">FEEDBACK DEL TFG:</p>
-            <p class="texto-pequeno"><?= Security::escapeHtml(nl2br($notaTFG['observaciones'])) ?></p>
+            <p class="texto-pequeno"><?= nl2br(Security::escapeHtml($notaTFG['observaciones'])) ?></p>
         </div>
     <?php } ?>
 </div>
@@ -150,6 +150,3 @@ function cambiarPassTutor() {
 </script>
 <?php endif; ?>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-

@@ -56,26 +56,26 @@ include_once __DIR__ . '/../comunes/nav.php';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($listaSecretarias as $s): ?>
+                <?php foreach ($listaSecretarias as $secretaria): ?>
                 <tr>
-                    <td><?= (int)$s['idSecretaria'] ?></td>
+                    <td><?= (int)$secretaria['idSecretaria'] ?></td>
                     <td>
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:1px solid var(--border);flex-shrink:0;">
-                                <?= mb_strtoupper(mb_substr($s['nombreSecretaria'], 0, 1), 'UTF-8') ?>
+                                <?= mb_strtoupper(mb_substr($secretaria['nombreSecretaria'], 0, 1), 'UTF-8') ?>
                             </div>
-                            <b><?= Security::escapeHtml($s['nombreSecretaria']) ?></b>
+                            <b><?= Security::escapeHtml($secretaria['nombreSecretaria']) ?></b>
                         </div>
                     </td>
-                    <td><?= Security::escapeHtml($s['emailSecretaria']) ?></td>
+                    <td><?= Security::escapeHtml($secretaria['emailSecretaria']) ?></td>
                     <td>
-                        <button class="btn-toggle-activo texto-estado <?= $s['activoSecretaria'] ? 'verde' : 'rojo' ?>"
-                                data-id="<?= (int)$s['idSecretaria'] ?>"
-                                data-activo="<?= (int)$s['activoSecretaria'] ?>"
-                                title="<?= $s['activoSecretaria'] ? 'Clic para desactivar' : 'Clic para activar' ?>"
+                        <button class="btn-toggle-activo texto-estado <?= $secretaria['activoSecretaria'] ? 'verde' : 'rojo' ?>"
+                                data-id="<?= (int)$secretaria['idSecretaria'] ?>"
+                                data-activo="<?= (int)$secretaria['activoSecretaria'] ?>"
+                                title="<?= $secretaria['activoSecretaria'] ? 'Clic para desactivar' : 'Clic para activar' ?>"
                                 style="cursor:pointer;border:none;background:none;padding:0;">
-                            <i class="fas <?= $s['activoSecretaria'] ? 'fa-check-circle' : 'fa-times-circle' ?>"></i>
-                            <?= $s['activoSecretaria'] ? 'Activa' : 'Inactiva' ?>
+                            <i class="fas <?= $secretaria['activoSecretaria'] ? 'fa-check-circle' : 'fa-times-circle' ?>"></i>
+                            <?= $secretaria['activoSecretaria'] ? 'Activa' : 'Inactiva' ?>
                         </button>
                     </td>
                     <td>
@@ -84,19 +84,19 @@ include_once __DIR__ . '/../comunes/nav.php';
                                 <i class="fas fa-ellipsis-vertical"></i>
                             </button>
                             <div class="recurso-menu">
-                                <a class="recurso-menu-item" href="modificarSecretaria.php?id=<?= (int)$s['idSecretaria'] ?>">
+                                <a class="recurso-menu-item" href="modificarSecretaria.php?id=<?= (int)$secretaria['idSecretaria'] ?>">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <a class="recurso-menu-item" href="historialSecretarias.php?id=<?= (int)$s['idSecretaria'] ?>">
+                                <a class="recurso-menu-item" href="historialSecretarias.php?id=<?= (int)$secretaria['idSecretaria'] ?>">
                                     <i class="fas fa-history"></i> Ver historial
                                 </a>
                                 <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
-                                   data-id="<?= (int)$s['idSecretaria'] ?>"
+                                   data-id="<?= (int)$secretaria['idSecretaria'] ?>"
                                    data-tipo="Secretaria"
-                                   data-nombre="<?= Security::escapeHtml($s['nombreSecretaria']) ?>"
-                                   data-extra="<?= Security::escapeHtml($s['emailSecretaria']) ?>"
+                                   data-nombre="<?= Security::escapeHtml($secretaria['nombreSecretaria']) ?>"
+                                   data-extra="<?= Security::escapeHtml($secretaria['emailSecretaria']) ?>"
                                    data-url="/controladores/admin/secretarias/borrar.php"
                                    data-campo="idSecretaria">
                                     <i class="fas fa-trash"></i> Eliminar

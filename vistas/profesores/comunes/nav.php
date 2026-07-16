@@ -40,19 +40,19 @@ $totalRetos_menu        = $navCounts_menu['retos'];
 $totalChatNoLeidos_menu = chatContarNoLeidos('profesor', $idProfesor);
 
 // Notification panel: recent unread messages for profesor (max 3)
-$_notif_msgs_prof = [];
+$mensajesNotifProf = [];
 if ($totalSinLeer_menu > 0) {
-    $_notif_msgs_prof = Cache::remember("nav_profesor_notif_{$idProfesor}", 10, function () use ($idProfesor) {
-        $_con_notif_p = obtenerConexion();
-        $_stmt_notif_p = mysqli_prepare($_con_notif_p,
+    $mensajesNotifProf = Cache::remember("nav_profesor_notif_{$idProfesor}", 10, function () use ($idProfesor) {
+        $conexionNotif = obtenerConexion();
+        $stmtNotif = mysqli_prepare($conexionNotif,
             "SELECT idReclamacion, asunto, fecha FROM reclamaciones
              WHERE leido = 0 AND idProfesor = ? AND emisor_rol != 'profesor'
              ORDER BY idReclamacion DESC LIMIT 3");
-        mysqli_stmt_bind_param($_stmt_notif_p, 'i', $idProfesor);
-        mysqli_stmt_execute($_stmt_notif_p);
-        $_r_p = mysqli_stmt_get_result($_stmt_notif_p);
+        mysqli_stmt_bind_param($stmtNotif, 'i', $idProfesor);
+        mysqli_stmt_execute($stmtNotif);
+        $resultNotif = mysqli_stmt_get_result($stmtNotif);
         $out = [];
-        while ($_row_p = mysqli_fetch_assoc($_r_p)) { $out[] = $_row_p; }
+        while ($filaNotif = mysqli_fetch_assoc($resultNotif)) { $out[] = $filaNotif; }
         return $out;
     });
 }
@@ -98,10 +98,10 @@ function _nav_active_prof($check) {
     <script>
       try {
         if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
-          var s = document.getElementById("main-sidebar");
-          s.classList.add("collapsed");
-          s.style.setProperty("transition", "none", "important");
-          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+          var sidebarEl = document.getElementById("main-sidebar");
+          sidebarEl.classList.add("collapsed");
+          sidebarEl.style.setProperty("transition", "none", "important");
+          setTimeout(function() { sidebarEl.style.removeProperty("transition"); }, 150);
         }
       } catch (e) {}
     </script>
@@ -312,14 +312,14 @@ function _nav_active_prof($check) {
           </button>
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
-            <?php if (!empty($_notif_msgs_prof)): ?>
+            <?php if (!empty($mensajesNotifProf)): ?>
             <div class="notif-group-title">Mensajes sin leer</div>
-            <?php foreach ($_notif_msgs_prof as $_m_p): ?>
+            <?php foreach ($mensajesNotifProf as $msgNotif): ?>
             <a href="../mensajes/lista.php" class="notif-item">
               <span class="notif-ico"><i class="fas fa-envelope"></i></span>
               <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($_m_p['asunto']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($_m_p['fecha'])) ?></span>
+                <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
+                <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>

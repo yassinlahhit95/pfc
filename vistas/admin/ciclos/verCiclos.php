@@ -9,10 +9,10 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/niveles.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
-$todos_los_ciclos     = listarTodosLosCiclos();
+$todosLosCiclos     = listarTodosLosCiclos();
 $listaNiveles         = listarNiveles();
-$todos_los_profesores = listarProfesores();
-$profesoresPorCiclo   = listarProfesoresPorCiclos(array_column($todos_los_ciclos, 'idCiclo'));
+$todosLosProfesores = listarProfesores();
+$profesoresPorCiclo   = listarProfesoresPorCiclos(array_column($todosLosCiclos, 'idCiclo'));
 
 $titulo_pagina = "AULAPRO | CICLOS FORMATIVOS";
 $seccion = 'ciclos';
@@ -59,10 +59,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_ciclos)): ?>
+                <?php if (empty($todosLosCiclos)): ?>
                     <tr><td colspan="6" class="vacio">No hay ciclos configurados</td></tr>
                 <?php else: ?>
-                    <?php foreach ($todos_los_ciclos as $ciclo):
+                    <?php foreach ($todosLosCiclos as $ciclo):
                         $profsCiclo      = $profesoresPorCiclo[$ciclo['idCiclo']] ?? [];
                         $idsProfActuales = array_column($profsCiclo, 'idProfesor');
                         $nombresTutores  = array_map(['Security', 'escapeHtml'], array_column($profsCiclo, 'nombreProfesor'));
@@ -126,10 +126,10 @@ include_once __DIR__ . "/../comunes/nav.php";
         <input type="hidden" id="modal-ciclo-id-val" value="">
         <input type="hidden" id="modal-asig-ciclo-csrf" value="<?= Security::generateCSRFToken() ?>">
         <div id="modal-prof-ciclo-lista" style="max-height:300px;overflow-y:auto;border:1.5px solid var(--border-2);border-radius:10px;padding:6px 10px;">
-            <?php if (empty($todos_los_profesores)): ?>
+            <?php if (empty($todosLosProfesores)): ?>
                 <p class="texto-suave" style="padding:12px;text-align:center;">No hay profesores registrados.</p>
             <?php else: ?>
-                <?php foreach ($todos_los_profesores as $prof): ?>
+                <?php foreach ($todosLosProfesores as $prof): ?>
                 <label style="display:flex;align-items:center;gap:10px;padding:8px 4px;cursor:pointer;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);">
                     <input type="checkbox" class="prof-ciclo-check" value="<?= (int)$prof['idProfesor'] ?>"
                            style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;">
@@ -211,7 +211,7 @@ iniciarPaginacion('tablaCiclos', 15);
             if (res && res.ok) {
                 if (window.Toast) Toast.show(res.msg, 'success');
                 var txt = (res.nombres && res.nombres.length)
-                    ? res.nombres.map(function (n) { return $('<span>').text(n).html(); }).join(', ')
+                    ? res.nombres.map(function (nombre) { return $('<span>').text(nombre).html(); }).join(', ')
                     : '<span class="texto-suave">Sin asignar</span>';
                 $('#prof-cell-' + idCiclo).html(txt);
                 $('[data-asignar-prof-ciclo][data-id="' + idCiclo + '"]').data('prof-ids', ids);

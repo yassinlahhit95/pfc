@@ -6,8 +6,8 @@ if (isset($_SESSION['idAdmin']))      { header("Location: ../admin/inicio/dashbo
 if (isset($_SESSION['idProfesor']))   { header("Location: ../profesores/inicio/dashboard.php");  exit; }
 if (isset($_SESSION['idEstudiante'])) { header("Location: ../estudiantes/inicio/dashboard.php"); exit; }
 
-$ok  = $_SESSION['reset_ok']    ?? null;
-$err = $_SESSION['reset_error'] ?? null;
+$exito = $_SESSION['reset_ok']    ?? null;
+$error = $_SESSION['reset_error'] ?? null;
 unset($_SESSION['reset_ok'], $_SESSION['reset_error']);
 
 $csrfToken = Security::generateCSRFToken();
@@ -46,14 +46,14 @@ $csrfToken = Security::generateCSRFToken();
                 <p>Te enviaremos las instrucciones por email</p>
             </div>
 
-            <?php if ($ok) { ?>
-            <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($ok) ?></div>
+            <?php if ($exito) { ?>
+            <div class="error-alerta" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;"><?= Security::escapeHtml($exito) ?></div>
             <?php } ?>
-            <?php if ($err) { ?>
-            <div class="error-alerta"><?= Security::escapeHtml($err) ?></div>
+            <?php if ($error) { ?>
+            <div class="error-alerta"><?= Security::escapeHtml($error) ?></div>
             <?php } ?>
 
-            <?php if (!$ok) { ?>
+            <?php if (!$exito) { ?>
             <form action="../../controladores/auth/solicitar_reset.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
                 <?= BotGuard::renderFields() ?>

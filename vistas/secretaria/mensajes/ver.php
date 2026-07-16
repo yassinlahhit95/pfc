@@ -7,36 +7,36 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
 $idReclamacion = (int)($_GET['id'] ?? 0);
-$msg = obtenerMensajePorId($idReclamacion);
+$mensaje = obtenerMensajePorId($idReclamacion);
 
-if (!$msg) {
+if (!$mensaje) {
     header("Location: lista.php");
     exit;
 }
 
-$esParaAdmin = ($msg['emisor_rol'] === 'estudiante' && $msg['idProfesor'] === null)
-            || ($msg['emisor_rol'] === 'profesor'   && $msg['idEstudiante'] === null);
-if (!$msg['leido'] && $esParaAdmin) {
+$esParaAdmin = ($mensaje['emisor_rol'] === 'estudiante' && $mensaje['idProfesor'] === null)
+            || ($mensaje['emisor_rol'] === 'profesor'   && $mensaje['idEstudiante'] === null);
+if (!$mensaje['leido'] && $esParaAdmin) {
     marcarMensajeComoLeido($idReclamacion);
-    $msg['leido'] = 1;
+    $mensaje['leido'] = 1;
 }
 
 $hilo = obtenerHiloCompleto($idReclamacion);
 
-if ($msg['emisor_rol'] === 'admin') {
+if ($mensaje['emisor_rol'] === 'admin') {
     $fromInit  = 'SC'; $fromAva = 'msg-ava-lg inbox-ava-admin';
     $fromRtag  = 'rtag-admin'; $fromRlabel = 'Secretaría'; $fromName = '';
-    if (!empty($msg['idEstudiante']))     { $toName = Security::escapeHtml($msg['nombreEstudiante'] ?? '—'); $toRtag = 'rtag-alumno'; $toRlabel = 'Alumno'; }
-    elseif (!empty($msg['idProfesor']))   { $toName = Security::escapeHtml($msg['nombreProfesor'] ?? '—');   $toRtag = 'rtag-profe';  $toRlabel = 'Profe'; }
+    if (!empty($mensaje['idEstudiante']))     { $toName = Security::escapeHtml($mensaje['nombreEstudiante'] ?? '—'); $toRtag = 'rtag-alumno'; $toRlabel = 'Alumno'; }
+    elseif (!empty($mensaje['idProfesor']))   { $toName = Security::escapeHtml($mensaje['nombreProfesor'] ?? '—');   $toRtag = 'rtag-profe';  $toRlabel = 'Profe'; }
     else                                  { $toName = 'General'; $toRtag = ''; $toRlabel = ''; }
-} elseif ($msg['emisor_rol'] === 'profesor') {
-    $fromName  = Security::escapeHtml($msg['nombreProfesor'] ?? '—');
-    $fromInit  = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2)));
+} elseif ($mensaje['emisor_rol'] === 'profesor') {
+    $fromName  = Security::escapeHtml($mensaje['nombreProfesor'] ?? '—');
+    $fromInit  = Security::escapeHtml(mb_strtoupper(mb_substr($mensaje['nombreProfesor'] ?? 'P', 0, 2)));
     $fromAva   = 'msg-ava-lg inbox-ava-profe'; $fromRtag = 'rtag-profe'; $fromRlabel = 'Profe';
     $toName = ''; $toRtag = 'rtag-admin'; $toRlabel = 'Secretaría';
 } else {
-    $fromName  = Security::escapeHtml($msg['nombreEstudiante'] ?? '—');
-    $fromInit  = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2)));
+    $fromName  = Security::escapeHtml($mensaje['nombreEstudiante'] ?? '—');
+    $fromInit  = Security::escapeHtml(mb_strtoupper(mb_substr($mensaje['nombreEstudiante'] ?? 'A', 0, 2)));
     $fromAva   = 'msg-ava-lg inbox-ava-alumno'; $fromRtag = 'rtag-alumno'; $fromRlabel = 'Alumno';
     $toName = ''; $toRtag = 'rtag-admin'; $toRlabel = 'Secretaría';
 }
@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
            data-modal-borrar
            data-id="<?= $idReclamacion ?>"
            data-tipo="Mensaje"
-           data-nombre="<?= Security::escapeHtml($msg['asunto'] ?? '—') ?>"
+           data-nombre="<?= Security::escapeHtml($mensaje['asunto'] ?? '—') ?>"
            data-url="/controladores/secretaria/mensajes/borrar.php"
            data-campo="idReclamacion"
            data-redirect="/vistas/secretaria/mensajes/lista.php">
@@ -82,7 +82,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="msg-card-head">
             <div class="<?= $fromAva ?>"><?= $fromInit ?></div>
             <div class="msg-head-meta">
-                <div class="msg-head-subject"><?= Security::escapeHtml(strtoupper($msg['asunto'] ?? '')) ?></div>
+                <div class="msg-head-subject"><?= Security::escapeHtml(strtoupper($mensaje['asunto'] ?? '')) ?></div>
                 <div class="msg-meta-row">
                     <div class="msg-meta-item">
                         <span class="msg-meta-label">De:</span>
@@ -96,10 +96,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </div>
                     <div class="msg-meta-item">
                         <span class="msg-meta-label">Fecha:</span>
-                        <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($msg['fecha']))) ?>
+                        <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($mensaje['fecha']))) ?>
                     </div>
                     <div class="msg-meta-item">
-                        <?php if ($msg['leido']): ?>
+                        <?php if ($mensaje['leido']): ?>
                             <span class="schip schip-read"><i class="fas fa-check-double"></i> Leído</span>
                         <?php else: ?>
                             <span class="schip schip-unread"><i class="fas fa-circle"></i> Nuevo</span>
@@ -116,21 +116,21 @@ include_once __DIR__ . "/../comunes/nav.php";
             Conversación (<?= count($hilo) ?> mensaje<?= count($hilo) !== 1 ? 's' : '' ?>)
         </div>
         <div class="msg-thread-body" id="thread-body">
-            <?php foreach ($hilo as $item):
-                $isMine = ($item['emisor_rol'] === 'admin');
-                if ($item['emisor_rol'] === 'admin') {
+            <?php foreach ($hilo as $mensajeHilo):
+                $isMine = ($mensajeHilo['emisor_rol'] === 'admin');
+                if ($mensajeHilo['emisor_rol'] === 'admin') {
                     $avaClass = 'ava-admin'; $avaInit = 'SC'; $senderLabel = 'Secretaría';
-                } elseif ($item['emisor_rol'] === 'profesor') {
+                } elseif ($mensajeHilo['emisor_rol'] === 'profesor') {
                     $avaClass    = 'ava-profe';
-                    $avaInit     = Security::escapeHtml(mb_strtoupper(mb_substr($item['nombreProfesor'] ?? 'P', 0, 2)));
-                    $senderLabel = Security::escapeHtml($item['nombreProfesor'] ?? 'Profesor');
+                    $avaInit     = Security::escapeHtml(mb_strtoupper(mb_substr($mensajeHilo['nombreProfesor'] ?? 'P', 0, 2)));
+                    $senderLabel = Security::escapeHtml($mensajeHilo['nombreProfesor'] ?? 'Profesor');
                 } else {
                     $avaClass    = 'ava-alumno';
-                    $avaInit     = Security::escapeHtml(mb_strtoupper(mb_substr($item['nombreEstudiante'] ?? 'A', 0, 2)));
-                    $senderLabel = Security::escapeHtml($item['nombreEstudiante'] ?? 'Alumno');
+                    $avaInit     = Security::escapeHtml(mb_strtoupper(mb_substr($mensajeHilo['nombreEstudiante'] ?? 'A', 0, 2)));
+                    $senderLabel = Security::escapeHtml($mensajeHilo['nombreEstudiante'] ?? 'Alumno');
                 }
-                $timeStr   = date('d/m/Y H:i', strtotime($item['fecha']));
-                $contenido = $item['descripcion'] ?? '';
+                $timeStr   = date('d/m/Y H:i', strtotime($mensajeHilo['fecha']));
+                $contenido = $mensajeHilo['descripcion'] ?? '';
             ?>
             <div class="msg-thread-row <?= $isMine ? 'mine' : '' ?>">
                 <div class="msg-thread-ava <?= $avaClass ?>"><?= $avaInit ?></div>

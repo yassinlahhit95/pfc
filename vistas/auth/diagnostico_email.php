@@ -574,8 +574,8 @@ $warningLogs = Logger::getTail('warning.log', 20);
         let swReg;
         try {
             const regs = await navigator.serviceWorker.getRegistrations();
-            swReg = regs.find(r => {
-                const scriptUrl = (r.active || r.installing || r.waiting || {}).scriptURL || '';
+            swReg = regs.find(reg => {
+                const scriptUrl = (reg.active || reg.installing || reg.waiting || {}).scriptURL || '';
                 return scriptUrl.includes('firebase-messaging-sw.js');
             });
 

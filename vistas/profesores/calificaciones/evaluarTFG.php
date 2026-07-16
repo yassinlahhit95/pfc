@@ -19,13 +19,6 @@ if (!$estudiante) {
 
 $calificacion = obtenerCalificacionTFG($idEstudiante);
 
-/* Avatar */
-$_av_partes    = explode(' ', trim($estudiante['nombreEstudiante']));
-$_av_iniciales = mb_strtoupper(mb_substr($_av_partes[0], 0, 1));
-if (count($_av_partes) > 1) $_av_iniciales .= mb_strtoupper(mb_substr($_av_partes[1], 0, 1));
-$_av_paleta    = ['#4F46E5','#0ea5e9','#10b981','#f59e0b','#ec4899','#8b5cf6'];
-$_av_color     = $_av_paleta[ord($_av_iniciales[0]) % count($_av_paleta)];
-
 $tituloDelPagina = "AULAPRO | EVALUAR TFG";
 $seccionActual   = 'notas_tfg';
 include_once __DIR__ . "/../comunes/nav.php";

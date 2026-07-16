@@ -9,7 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-$idReclamacion = $_GET['id'] ?? 0;
+$idReclamacion = (int)($_GET['id'] ?? 0);
 $mensaje = obtenerMensajePorId($idReclamacion);
 
 if (!$mensaje) {
@@ -43,13 +43,13 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="tarjeta-gris-suave margen-abajo">
         <p class="texto-negrita"><?= Security::escapeHtml($mensaje['asunto'] ) ?></p>
         <hr class="margen-abajo" style="margin-top: 5px;">
-        <p><?= Security::escapeHtml(nl2br($mensaje['descripcion'])) ?></p>
+        <p><?= nl2br(Security::escapeHtml($mensaje['descripcion'])) ?></p>
     </div>
 
     <form action="../../../controladores/profesores/mensajes/actualizar.php" method="POST" class="formulario">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
         <input type="hidden" name="idReclamacion" value="<?= Security::escapeHtml($idReclamacion ) ?>">
-        
+
         <div class="campo">
             <label for="respuesta">Tu Respuesta / Explicación:</label>
             <textarea name="respuesta" id="respuesta" rows="5" placeholder="Escribe tu respuesta..."><?= Security::escapeHtml($mensaje['respuesta'] ?? '') ?></textarea>
@@ -64,5 +64,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

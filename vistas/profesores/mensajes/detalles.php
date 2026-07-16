@@ -130,21 +130,21 @@ include_once __DIR__ . "/../comunes/nav.php";
             Conversación (<?= count($hilo) ?> mensaje<?= count($hilo) !== 1 ? 's' : '' ?>)
         </div>
         <div class="msg-thread-body" id="thread-body">
-            <?php foreach ($hilo as $item):
-                $isMine = ($item['emisor_rol'] === 'profesor' && (int)$item['idProfesor'] === (int)$_SESSION['idProfesor']);
-                if ($item['emisor_rol'] === 'admin') {
+            <?php foreach ($hilo as $mensajeHilo):
+                $isMine = ($mensajeHilo['emisor_rol'] === 'profesor' && (int)$mensajeHilo['idProfesor'] === (int)$_SESSION['idProfesor']);
+                if ($mensajeHilo['emisor_rol'] === 'admin') {
                     $avaClass = 'ava-admin'; $avaInit = 'AD'; $senderLabel = 'Dirección';
-                } elseif ($item['emisor_rol'] === 'profesor') {
+                } elseif ($mensajeHilo['emisor_rol'] === 'profesor') {
                     $avaClass    = $isMine ? 'ava-yo' : 'ava-profe';
-                    $avaInit     = mb_strtoupper(mb_substr($item['nombreProfesor'] ?? 'P', 0, 2));
-                    $senderLabel = Security::escapeHtml($item['nombreProfesor'] ?? 'Profesor');
+                    $avaInit     = mb_strtoupper(mb_substr($mensajeHilo['nombreProfesor'] ?? 'P', 0, 2));
+                    $senderLabel = Security::escapeHtml($mensajeHilo['nombreProfesor'] ?? 'Profesor');
                 } else {
                     $avaClass    = 'ava-alumno';
-                    $avaInit     = mb_strtoupper(mb_substr($item['nombreEstudiante'] ?? 'A', 0, 2));
-                    $senderLabel = Security::escapeHtml($item['nombreEstudiante'] ?? 'Alumno');
+                    $avaInit     = mb_strtoupper(mb_substr($mensajeHilo['nombreEstudiante'] ?? 'A', 0, 2));
+                    $senderLabel = Security::escapeHtml($mensajeHilo['nombreEstudiante'] ?? 'Alumno');
                 }
-                $timeStr   = date('d/m/Y H:i', strtotime($item['fecha']));
-                $contenido = $item['descripcion'] ?? '';
+                $timeStr   = date('d/m/Y H:i', strtotime($mensajeHilo['fecha']));
+                $contenido = $mensajeHilo['descripcion'] ?? '';
             ?>
             <div class="msg-thread-row <?= $isMine ? 'mine' : '' ?>">
                 <div class="msg-thread-ava <?= $avaClass ?>"><?= $isMine ? 'YO' : Security::escapeHtml($avaInit) ?></div>

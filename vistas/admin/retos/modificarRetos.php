@@ -10,16 +10,16 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/retos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$id_reto = (int)($_GET['idReto'] ?? 0);
-$reto = obtenerRetoPorId($id_reto);
+$idReto = (int)($_GET['idReto'] ?? 0);
+$reto = obtenerRetoPorId($idReto);
 
 if (!$reto) {
     header("Location: verRetos.php");
     exit;
 }
 
-$modulos_del_reto = listarModulosDeReto($id_reto);
-$idModuloActual = !empty($modulos_del_reto) ? $modulos_del_reto[0]['idModulo'] : '';
+$modulosDelReto = listarModulosDeReto($idReto);
+$idModuloActual = !empty($modulosDelReto) ? $modulosDelReto[0]['idModulo'] : '';
 
 if (isset($_SESSION['datos_reto'])) {
     $reto = $_SESSION['datos_reto'];
@@ -27,7 +27,7 @@ if (isset($_SESSION['datos_reto'])) {
 }
 unset($_SESSION['datos_reto']);
 
-$todos_los_modulos = listarModulos();
+$todosLosModulos = listarModulos();
 
 $titulo_pagina = "AULAPRO | MODIFICAR RETO";
 $seccion = 'retos';
@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/retos/actualizar.php" class="formulario" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idReto" value="<?= $id_reto ?>">
+        <input type="hidden" name="idReto" value="<?= $idReto ?>">
 
         <div class="campo<?= fieldClass($errores, 'nombreReto') ?>">
                 <label for="nombreReto">Nombre del Reto</label>
@@ -75,7 +75,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="modulosReto">Módulo Asociado</label>
             <select name="modulosReto" id="modulosReto">
                 <option value="">-- Selecciona un módulo --</option>
-                <?php foreach ($todos_los_modulos as $modulo) { ?>
+                <?php foreach ($todosLosModulos as $modulo) { ?>
                     <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= $idModuloActual == $modulo['idModulo'] ? 'selected' : '' ?>>
                         <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo']) ?>)
                     </option>
@@ -102,25 +102,25 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </div>
 
                 <?php
-                $archivosExistentes = obtenerArchivosReto($id_reto);
+                $archivosExistentes = obtenerArchivosReto($idReto);
                 if (!empty($archivosExistentes)):
                 ?>
                 <div class="archivos-cargados-wrap">
                     <p class="archivos-cargados-titulo"><i class="fas fa-paperclip"></i> Archivos actuales</p>
                     <div class="file-list-premium">
-                    <?php foreach ($archivosExistentes as $ae):
-                        $isPdf = ($ae['tipoArchivo'] === 'pdf');
+                    <?php foreach ($archivosExistentes as $archivo):
+                        $isPdf = ($archivo['tipoArchivo'] === 'pdf');
                         $icon  = $isPdf ? 'fa-file-pdf' : 'fa-image';
                         $color = $isPdf ? '#e53e3e' : 'var(--accent)';
                     ?>
-                        <div class="file-item-premium" id="file-<?= (int)$ae['idArchivo'] ?>">
+                        <div class="file-item-premium" id="file-<?= (int)$archivo['idArchivo'] ?>">
                             <i class="fas <?= $icon ?>" style="color:<?= $color ?>;font-size:1.3rem;flex-shrink:0;"></i>
                             <div class="file-info-premium">
-                                <span class="file-name-premium" title="<?= Security::escapeHtml($ae['nombreArchivo']) ?>"><?= Security::escapeHtml($ae['nombreArchivo']) ?></span>
+                                <span class="file-name-premium" title="<?= Security::escapeHtml($archivo['nombreArchivo']) ?>"><?= Security::escapeHtml($archivo['nombreArchivo']) ?></span>
                                 <span class="file-type-premium"><?= $isPdf ? 'PDF' : 'Imagen' ?></span>
                             </div>
                             <button type="button" class="file-delete-btn"
-                                    onclick="borrarArchivoSmooth(<?= (int)$ae['idArchivo'] ?>, <?= $id_reto ?>)"
+                                    onclick="borrarArchivoSmooth(<?= (int)$archivo['idArchivo'] ?>, <?= $idReto ?>)"
                                     title="Eliminar archivo">
                                 <i class="fas fa-times-circle"></i>
                             </button>

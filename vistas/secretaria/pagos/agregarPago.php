@@ -13,12 +13,12 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 $idCicloElegido      = (int)($_GET['idCiclo']      ?? 0);
 $idEstudianteElegido = (int)($_GET['idEstudiante'] ?? 0);
 
-$todos_los_ciclos = listarTodosLosCiclos();
+$todosLosCiclos = listarTodosLosCiclos();
 
 if (!empty($idCicloElegido)) {
-    $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloElegido);
+    $todosLosEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
 } else {
-    $todos_los_estudiantes = listarEstudiantes();
+    $todosLosEstudiantes = listarEstudiantes();
 }
 
 $infoFinanciera = null;
@@ -48,8 +48,6 @@ include __DIR__ . '/../comunes/nav.php';
 </div>
 <?php endif; ?>
 
-
-
 <!-- ── Paso 1 y 2: elegir ciclo + estudiante ── -->
 <div class="panel margen-abajo">
     <form method="GET" action="" class="caja al-final caja-libre espacio-medio">
@@ -57,7 +55,7 @@ include __DIR__ . '/../comunes/nav.php';
             <label for="idCiclo">1. Filtrar por Ciclo</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">— Todos los ciclos —</option>
-                <?php foreach ($todos_los_ciclos as $ciclo): ?>
+                <?php foreach ($todosLosCiclos as $ciclo): ?>
                 <option value="<?= (int)$ciclo['idCiclo'] ?>"
                     <?= $idCicloElegido == $ciclo['idCiclo'] ? 'selected' : '' ?>>
                     <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
@@ -69,10 +67,10 @@ include __DIR__ . '/../comunes/nav.php';
             <label for="idEstudiante">2. Seleccionar Estudiante</label>
             <select name="idEstudiante" id="idEstudiante" onchange="this.form.submit()">
                 <option value="">— Seleccionar estudiante —</option>
-                <?php foreach ($todos_los_estudiantes as $est): ?>
-                <option value="<?= (int)$est['idEstudiante'] ?>"
-                    <?= $idEstudianteElegido == $est['idEstudiante'] ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($est['nombreEstudiante']) ?>
+                <?php foreach ($todosLosEstudiantes as $estudiante): ?>
+                <option value="<?= (int)$estudiante['idEstudiante'] ?>"
+                    <?= $idEstudianteElegido == $estudiante['idEstudiante'] ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>

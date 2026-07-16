@@ -18,12 +18,12 @@ $folder = $_GET['folder'] ?? 'todo';
 $allowed = ['todo', 'nuevos', 'alumnos', 'profesores', 'enviados'];
 if (!in_array($folder, $allowed)) $folder = 'todo';
 
-$listaDeMensajes = array_filter($todosMensajes, function($m) use ($folder) {
+$listaDeMensajes = array_filter($todosMensajes, function($mensaje) use ($folder) {
     switch ($folder) {
-        case 'nuevos':     return $m['unread_count'] > 0;
-        case 'alumnos':    return $m['emisor_rol'] === 'estudiante';
-        case 'profesores': return $m['emisor_rol'] === 'profesor';
-        case 'enviados':   return $m['emisor_rol'] === 'admin';
+        case 'nuevos':     return $mensaje['unread_count'] > 0;
+        case 'alumnos':    return $mensaje['emisor_rol'] === 'estudiante';
+        case 'profesores': return $mensaje['emisor_rol'] === 'profesor';
+        case 'enviados':   return $mensaje['emisor_rol'] === 'admin';
         default:           return true;
     }
 });
@@ -32,9 +32,9 @@ $listaDeMensajes = array_values($listaDeMensajes);
 // Count per folder
 $cTodo     = $totalMensajes;
 $cNuevos   = (int)$totalSinLeer;
-$cAlumnos  = count(array_filter($todosMensajes, fn($m) => $m['emisor_rol'] === 'estudiante'));
-$cProfes   = count(array_filter($todosMensajes, fn($m) => $m['emisor_rol'] === 'profesor'));
-$cEnviados = count(array_filter($todosMensajes, fn($m) => $m['emisor_rol'] === 'admin'));
+$cAlumnos  = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'estudiante'));
+$cProfes   = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'profesor'));
+$cEnviados = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'admin'));
 
 $titulo_pagina = "AULAPRO | Mensajería";
 $seccion = 'reclamaciones';
@@ -180,7 +180,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <form method="POST" action="../../../controladores/admin/mensajes/marcar_visto.php">
                         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
                         <input type="hidden" name="idReclamacion" value="<?= (int)$msg['idReclamacion'] ?>">
-                        <input type="hidden" name="folder" value="<?= htmlspecialchars($folder) ?>">
+                        <input type="hidden" name="folder" value="<?= Security::escapeHtml($folder) ?>">
                         <button type="submit" name="marcarVisto" class="inbox-visto-btn">
                             <i class="fas fa-check"></i> Visto
                         </button>

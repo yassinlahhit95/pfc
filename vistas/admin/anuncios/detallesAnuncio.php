@@ -38,7 +38,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
     <div class="fila-datos">
         <div class="nombre-detalle">Dirigido a</div>
-        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= ucfirst($anuncio['dirigidoA']) ?></span></div>
+        <div class="valor-detalle"><span class="indicador-estado activo-verde"><?= Security::escapeHtml(ucfirst($anuncio['dirigidoA'])) ?></span></div>
     </div>
 
     <div class="margen-arriba">

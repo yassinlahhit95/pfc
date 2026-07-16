@@ -22,10 +22,10 @@ if (!$estudiante) {
 }
 
 $ciclos = listarTodosLosCiclos();
-$todos_los_cursos = listarTodosLosCursosAcademicos();
+$todosLosCursos = listarTodosLosCursosAcademicos();
 
 // Repopulate: prefer session datos (after validation failure), fall back to DB
-$v = fn($field) => Security::escapeHtml($datos[$field] ?? $estudiante[$field] ?? '');
+$valorCampo = fn($field) => Security::escapeHtml($datos[$field] ?? $estudiante[$field] ?? '');
 
 $titulo_pagina = 'AULAPRO | EDITAR ESTUDIANTE';
 $seccion = 'estudiantes';
@@ -51,35 +51,35 @@ include __DIR__ . '/../comunes/nav.php';
         <!-- Nombre -->
         <div class="campo<?= fieldClass($errores, 'nombre') ?>">
             <label for="nombre">Nombre completo</label>
-            <input type="text" name="nombre" id="nombre" value="<?= $v('nombreEstudiante') ?>">
+            <input type="text" name="nombre" id="nombre" value="<?= $valorCampo('nombreEstudiante') ?>">
             <?= fieldError($errores, 'nombre') ?>
         </div>
 
         <!-- Email -->
         <div class="campo<?= fieldClass($errores, 'email') ?>">
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="<?= $v('emailEstudiante') ?>">
+            <input type="text" name="email" id="email" value="<?= $valorCampo('emailEstudiante') ?>">
             <?= fieldError($errores, 'email') ?>
         </div>
 
         <!-- DNI -->
         <div class="campo<?= fieldClass($errores, 'dni') ?>">
             <label for="dni">DNI</label>
-            <input type="text" name="dni" id="dni" value="<?= $v('dniEstudiante') ?>">
+            <input type="text" name="dni" id="dni" value="<?= $valorCampo('dniEstudiante') ?>">
             <?= fieldError($errores, 'dni') ?>
         </div>
 
         <!-- Teléfono -->
         <div class="campo<?= fieldClass($errores, 'telefono') ?>">
             <label for="telefono">Teléfono</label>
-            <input type="text" name="telefono" id="telefono" value="<?= $v('telefonoEstudiante') ?>">
+            <input type="text" name="telefono" id="telefono" value="<?= $valorCampo('telefonoEstudiante') ?>">
             <?= fieldError($errores, 'telefono') ?>
         </div>
 
         <!-- Fecha Nacimiento -->
         <div class="campo<?= fieldClass($errores, 'fechaNacimiento') ?>">
             <label for="fechaNacimiento">Fecha de nacimiento</label>
-            <input type="date" name="fechaNacimiento" id="fechaNacimiento" value="<?= $v('fechaNacimientoEstudiante') ?>">
+            <input type="date" name="fechaNacimiento" id="fechaNacimiento" value="<?= $valorCampo('fechaNacimientoEstudiante') ?>">
             <?= fieldError($errores, 'fechaNacimiento') ?>
         </div>
 
@@ -113,21 +113,21 @@ include __DIR__ . '/../comunes/nav.php';
         <!-- Dirección -->
         <div class="campo ancho-total<?= fieldClass($errores, 'direccion') ?>">
             <label for="direccion">Dirección</label>
-            <input type="text" name="direccion" id="direccion" value="<?= $v('direccionEstudiante') ?>">
+            <input type="text" name="direccion" id="direccion" value="<?= $valorCampo('direccionEstudiante') ?>">
             <?= fieldError($errores, 'direccion') ?>
         </div>
 
         <!-- Ciudad -->
         <div class="campo<?= fieldClass($errores, 'ciudad') ?>">
             <label for="ciudad">Ciudad</label>
-            <input type="text" name="ciudad" id="ciudad" value="<?= $v('ciudadEstudiante') ?>">
+            <input type="text" name="ciudad" id="ciudad" value="<?= $valorCampo('ciudadEstudiante') ?>">
             <?= fieldError($errores, 'ciudad') ?>
         </div>
 
         <!-- Código Postal -->
         <div class="campo<?= fieldClass($errores, 'codigoPostal') ?>">
             <label for="codigoPostal">Código Postal</label>
-            <input type="text" name="codigoPostal" id="codigoPostal" value="<?= $v('codigoPostalEstudiante') ?>">
+            <input type="text" name="codigoPostal" id="codigoPostal" value="<?= $valorCampo('codigoPostalEstudiante') ?>">
             <?= fieldError($errores, 'codigoPostal') ?>
         </div>
 
@@ -148,7 +148,7 @@ include __DIR__ . '/../comunes/nav.php';
 <script>
 var listaDeCiclos = <?= json_encode($ciclos) ?>;
 var idCicloActual = <?= (int)($datos['idCiclo'] ?? $estudiante['idCiclo'] ?? 0) ?>;
-var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? $estudiante['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {

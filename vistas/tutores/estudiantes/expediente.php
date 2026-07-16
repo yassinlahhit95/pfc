@@ -3,10 +3,7 @@ require_once __DIR__ . '/../../../include/TutorGuard.php';
 require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/asistencias.php";
-$titulo_pagina = 'AulaPro Familias — Expediente Académico';
-$seccion       = 'inicio';
-include __DIR__ . '/../comunes/nav.php';
-
+require_once __DIR__ . "/../../../modelos/tutores.php";
 $idEstudiante = (int)($_GET['id'] ?? 0);
 
 if (empty($idEstudiante)) {
@@ -17,10 +14,10 @@ if (empty($idEstudiante)) {
 $hijos = listarEstudiantesPorTutor($_SESSION['idTutor']);
 $esHijo    = false;
 $estudiante = null;
-foreach ($hijos as $h) {
-    if ((int)$h['idEstudiante'] === $idEstudiante) {
+foreach ($hijos as $hijo) {
+    if ((int)$hijo['idEstudiante'] === $idEstudiante) {
         $esHijo    = true;
-        $estudiante = $h;
+        $estudiante = $hijo;
         break;
     }
 }
@@ -29,6 +26,10 @@ if (!$esHijo) {
     header('Location: ../inicio/dashboard.php');
     exit;
 }
+
+$titulo_pagina = 'AulaPro Familias — Expediente Académico';
+$seccion       = 'inicio';
+include __DIR__ . '/../comunes/nav.php';
 
 $resultados = obtenerResultadosFinalesEstudiante($idEstudiante);
 $asist      = contarResumenAsistencia($idEstudiante);
@@ -92,21 +93,21 @@ $estadoColor = match($resultados['estado_global']) {
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($resultados['detalles_modulos'] as $det): ?>
+        <?php foreach ($resultados['detalles_modulos'] as $detalle): ?>
           <tr>
-            <td><strong><?= Security::escapeHtml($det['nombreModulo']) ?></strong></td>
-            <td style="text-align:center"><?= Security::escapeHtml((string)$det['media_retos']) ?></td>
-            <td style="text-align:center"><?= Security::escapeHtml((string)$det['media_notas']) ?></td>
-            <td style="text-align:center"><strong><?= Security::escapeHtml((string)$det['nota_final']) ?></strong></td>
+            <td><strong><?= Security::escapeHtml($detalle['nombreModulo']) ?></strong></td>
+            <td style="text-align:center"><?= Security::escapeHtml((string)$detalle['media_retos']) ?></td>
+            <td style="text-align:center"><?= Security::escapeHtml((string)$detalle['media_notas']) ?></td>
+            <td style="text-align:center"><strong><?= Security::escapeHtml((string)$detalle['nota_final']) ?></strong></td>
             <td style="text-align:right">
               <?php
-              $chip = match($det['estado']) {
+              $chip = match($detalle['estado']) {
                   'Aprobado' => 'verde',
                   'Suspenso' => 'rojo',
                   default    => 'gris',
               };
               ?>
-              <span class="texto-estado <?= $chip ?>"><?= Security::escapeHtml($det['estado']) ?></span>
+              <span class="texto-estado <?= $chip ?>"><?= Security::escapeHtml($detalle['estado']) ?></span>
             </td>
           </tr>
         <?php endforeach; ?>

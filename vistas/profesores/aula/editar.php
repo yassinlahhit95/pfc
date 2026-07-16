@@ -33,7 +33,6 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <form method="POST" action="../../../controladores/aula/actualizar_sesion.php" class="formulario-principal">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
     <input type="hidden" name="csrf_token" value="<?= Security::escapeHtml($csrfToken) ?>">
     <input type="hidden" name="id" value="<?= Security::escapeHtml($sesion['idSesion']) ?>">
 
@@ -41,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <label for="idModulo">MÓDULO *</label>
         <select id="idModulo" name="idModulo" required>
             <?php foreach ($modulos as $modulo) { ?>
-                <option value="<?= Security::escapeHtml($modulo['idModulo'] ) ?>" <?= Security::escapeHtml(($modulo['idModulo'] == $sesion['idModulo']) ? 'selected' : '') ?>>
+                <option value="<?= Security::escapeHtml($modulo['idModulo']) ?>" <?= Security::escapeHtml(($modulo['idModulo'] == $sesion['idModulo']) ? 'selected' : '') ?>>
                     <?= Security::escapeHtml($modulo['nombreModulo']) ?>
                 </option>
             <?php } ?>
@@ -94,5 +93,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </form>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

@@ -47,7 +47,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaPagos as $pago) { ?>
                     <tr>
                         <td><?= date('d/m/Y', strtotime($pago['fechaPago'])) ?></td>
-                        <td><span class="texto-pago"><?= ucfirst($pago['tipoPago']) ?></span></td>
+                        <td><span class="texto-pago"><?= Security::escapeHtml(ucfirst($pago['tipoPago'])) ?></span></td>
                         <td><?= number_format($pago['monto'], 2) ?> €</td>
                         <td><?= !empty($pago['fechaProximoPago']) ? date('d/m/Y', strtotime($pago['fechaProximoPago'])) : '—' ?></td>
                     </tr>

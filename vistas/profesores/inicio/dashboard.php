@@ -220,27 +220,27 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
       </tr>
     </thead>
     <tbody>
-      <?php foreach($alumnosRiesgo as $r): ?>
+      <?php foreach($alumnosRiesgo as $alumno): ?>
         <tr>
           <td>
-            <b><?= Security::escapeHtml($r['nombreEstudiante'] . ' ' . ($r['apellidosEstudiante'] ?? '')) ?></b>
+            <b><?= Security::escapeHtml($alumno['nombreEstudiante'] . ' ' . ($alumno['apellidosEstudiante'] ?? '')) ?></b>
           </td>
-          <td><?= Security::escapeHtml($r['nombreModulo']) ?></td>
+          <td><?= Security::escapeHtml($alumno['nombreModulo']) ?></td>
           <td>
-            <?= (int)$r['tareasEntregadas'] ?> / <?= (int)$r['totalTareas'] ?>
-            <?php if ($r['totalTareas'] - $r['tareasEntregadas'] > 0): ?>
-              <span style="color:var(--rojo); font-size:0.8rem; margin-left:8px;"><i class="fas fa-clock"></i> Faltan <?= $r['totalTareas'] - $r['tareasEntregadas'] ?></span>
+            <?= (int)$alumno['tareasEntregadas'] ?> / <?= (int)$alumno['totalTareas'] ?>
+            <?php if ($alumno['totalTareas'] - $alumno['tareasEntregadas'] > 0): ?>
+              <span style="color:var(--rojo); font-size:0.8rem; margin-left:8px;"><i class="fas fa-clock"></i> Faltan <?= $alumno['totalTareas'] - $alumno['tareasEntregadas'] ?></span>
             <?php endif; ?>
           </td>
           <td>
-            <?php if ($r['notaMedia'] !== null): ?>
-              <span style="font-weight:600; color:<?= $r['notaMedia'] < 5 ? 'var(--rojo)' : 'var(--verde)' ?>"><?= number_format($r['notaMedia'], 1) ?></span>
+            <?php if ($alumno['notaMedia'] !== null): ?>
+              <span style="font-weight:600; color:<?= $alumno['notaMedia'] < 5 ? 'var(--rojo)' : 'var(--verde)' ?>"><?= number_format($alumno['notaMedia'], 1) ?></span>
             <?php else: ?>
               <span class="texto-suave">Sin calificar</span>
             <?php endif; ?>
           </td>
           <td>
-            <?php if ($r['nivelRiesgo'] === 'rojo'): ?>
+            <?php if ($alumno['nivelRiesgo'] === 'rojo'): ?>
               <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--rojo-suave); color:var(--rojo-ink); border-radius:999px; font-size:0.85rem; font-weight:600;"><i class="fas fa-circle" style="font-size:0.5rem"></i> Alto Riesgo</span>
             <?php else: ?>
               <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--naranja-suave); color:var(--naranja-ink); border-radius:999px; font-size:0.85rem; font-weight:600;"><i class="fas fa-circle" style="font-size:0.5rem"></i> Precaución</span>
@@ -261,9 +261,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
     <div class="dash-panel-body">
       <?php if (!empty($listaAnuncios)) {
-        $cnt = 0;
+        $contador = 0;
         foreach ($listaAnuncios as $anuncio) {
-          if ($cnt >= 4) break; ?>
+          if ($contador >= 4) break; ?>
           <div class="ann-item">
             <div class="ann-item-head">
               <span class="ann-item-title"><?= Security::escapeHtml($anuncio['titulo']) ?></span>
@@ -272,7 +272,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
             <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['mensaje']), 0, 120)) ?>…</p>
             <span class="ann-item-tag">PARA: <?= Security::escapeHtml(strtoupper($anuncio['dirigidoA'])) ?></span>
           </div>
-      <?php $cnt++; } } else { ?>
+      <?php $contador++; } } else { ?>
         <p class="empty-state">No hay anuncios activos.</p>
       <?php } ?>
     </div>
@@ -285,9 +285,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
     <div class="dash-panel-body">
       <?php if (!empty($listaEventos)) {
-        $cnt = 0;
+        $contador = 0;
         foreach ($listaEventos as $evento) {
-          if ($cnt >= 4) break;
+          if ($contador >= 4) break;
           $dia = date('d', strtotime($evento['fechaEvento']));
           $mes = strtoupper(date('M', strtotime($evento['fechaEvento']))); ?>
           <div class="evt-item">
@@ -300,7 +300,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
               <span class="evt-meta"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h · <?= Security::escapeHtml($evento['ubicacionEvento']) ?></span>
             </div>
           </div>
-      <?php $cnt++; } } else { ?>
+      <?php $contador++; } } else { ?>
         <p class="empty-state">No hay eventos próximos.</p>
       <?php } ?>
     </div>

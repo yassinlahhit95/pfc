@@ -9,8 +9,8 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
-$id_profesor = (int)($_GET['idProfesor'] ?? 0);
-$profesor = obtenerProfesorPorId($id_profesor);
+$idProfesor = (int)($_GET['idProfesor'] ?? 0);
+$profesor = obtenerProfesorPorId($idProfesor);
 
 if (!$profesor) {
     header("Location: verProfesores.php");
@@ -20,18 +20,18 @@ if (!$profesor) {
 $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();
 
-$datos_sesion = $_SESSION['datos_profesor'] ?? null;
-if ($datos_sesion) {
-    $profesor = $datos_sesion + $profesor;
-    $ciclos_marcados = $datos_sesion['ciclos'] ?? [];
-    $modulos_marcados = $datos_sesion['modulos'] ?? [];
+$datosSesion = $_SESSION['datos_profesor'] ?? null;
+if ($datosSesion) {
+    $profesor = $datosSesion + $profesor;
+    $ciclosMarcados = $datosSesion['ciclos'] ?? [];
+    $modulosMarcados = $datosSesion['modulos'] ?? [];
 } else {
-    $ciclos_marcados = [];
-    $ciclosBD = listarCiclosTutorizadosProfesor($id_profesor);
+    $ciclosMarcados = [];
+    $ciclosBD = listarCiclosTutorizadosProfesor($idProfesor);
     foreach ($ciclosBD as $cicloItem) {
-        $ciclos_marcados[] = $cicloItem['idCiclo'];
+        $ciclosMarcados[] = $cicloItem['idCiclo'];
     }
-    $modulos_marcados = listarIdsModulosDeProfesor($id_profesor);
+    $modulosMarcados = listarIdsModulosDeProfesor($idProfesor);
 }
 
 $titulo_pagina = "AULAPRO | MODIFICAR PROFESOR";
@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/admin/profesores/actualizar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($id_profesor) ?>">
+        <input type="hidden" name="idProfesor" value="<?= Security::escapeHtml($idProfesor) ?>">
         
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'nombreProfesor') ?>">
@@ -158,7 +158,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="check-item">
                             <input type="checkbox" name="ciclos[]" value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="check-ciclo"
-                                <?php if (in_array($ciclo['idCiclo'], $ciclos_marcados)) { echo 'checked'; } ?>>
+                                <?php if (in_array($ciclo['idCiclo'], $ciclosMarcados)) { echo 'checked'; } ?>>
                             <span><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></span>
                         </label>
                     <?php } ?>
@@ -182,7 +182,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { ?>
                                     <label class="check-item" style="padding-left: 10px;">
                                         <input type="checkbox" name="modulos[]" value="<?= Security::escapeHtml($modulo['idModulo']) ?>"
-                                            <?php if (in_array($modulo['idModulo'], $modulos_marcados)) { echo 'checked'; } ?>>
+                                            <?php if (in_array($modulo['idModulo'], $modulosMarcados)) { echo 'checked'; } ?>>
                                         <span><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
                                     </label>
                                 <?php } ?>
@@ -222,13 +222,13 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script src="../../../public/js/features/profesores-form.js"></script>
 <script>
 function cambiarPassProf() {
-    var pass    = document.getElementById('nueva-pass-prof').value.trim();
-    var confirm = document.getElementById('nueva-pass-prof-confirm').value.trim();
+    var pass = document.getElementById('nueva-pass-prof').value.trim();
+    var confirmPass = document.getElementById('nueva-pass-prof-confirm').value.trim();
     if (pass.length < 8) {
         if (window.Toast) Toast.show('La contraseña debe tener al menos 8 caracteres.', 'error');
         return;
     }
-    if (pass !== confirm) {
+    if (pass !== confirmPass) {
         if (window.Toast) Toast.show('Las contraseñas no coinciden.', 'error');
         return;
     }
@@ -236,7 +236,7 @@ function cambiarPassProf() {
     fetch('../../../controladores/admin/usuarios/cambiarPassword.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest'},
-        body: 'tipo=profesor&id=<?= $id_profesor ?>&nuevaPassword=' + encodeURIComponent(pass) + '&csrf_token=' + encodeURIComponent(token)
+        body: 'tipo=profesor&id=<?= $idProfesor ?>&nuevaPassword=' + encodeURIComponent(pass) + '&csrf_token=' + encodeURIComponent(token)
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {

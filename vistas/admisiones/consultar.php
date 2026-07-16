@@ -97,25 +97,25 @@ $(document).ready(function() {
             $btn.prop('disabled', false).html('<i class="fas fa-search me-2"></i> Consultar Estado');
             
             if (res.status === 'success') {
-                const d = res.data;
-                $('#resNombre').text(d.nombre);
-                $('#resCiclo').text(d.ciclo);
-                $('#resFecha').text(d.fecha);
-                
+                const data = res.data;
+                $('#resNombre').text(data.nombre);
+                $('#resCiclo').text(data.ciclo);
+                $('#resFecha').text(data.fecha);
+
                 // Badge de estado
                 let icon = 'fa-clock';
-                if (d.estado === 'ADMITIDO') icon = 'fa-check-circle';
-                if (d.estado === 'RECHAZADO') icon = 'fa-times-circle';
-                if (d.estado === 'SUBSANACION') icon = 'fa-exclamation-triangle';
-                
+                if (data.estado === 'ADMITIDO') icon = 'fa-check-circle';
+                if (data.estado === 'RECHAZADO') icon = 'fa-times-circle';
+                if (data.estado === 'SUBSANACION') icon = 'fa-exclamation-triangle';
+
                 $('#statusBadge')
-                    .attr('class', 'status-badge status-' + d.estado)
-                    .html(`<i class="fas ${icon}"></i> ${d.estado}`);
+                    .attr('class', 'status-badge status-' + data.estado)
+                    .html(`<i class="fas ${icon}"></i> ${data.estado}`);
 
                 // Observaciones
-                if (d.observaciones) {
+                if (data.observaciones) {
                     $('#divObservaciones').removeClass('d-none');
-                    $('#resObservaciones').text(d.observaciones);
+                    $('#resObservaciones').text(data.observaciones);
                 } else {
                     $('#divObservaciones').addClass('d-none');
                 }

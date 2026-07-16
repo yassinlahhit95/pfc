@@ -32,17 +32,17 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div style="margin-top: 5px;">
                 <?php if (!empty($tfg['archivoTFG'])) { ?>
                     <div class="caja alinear-centro espacio-grande">
-                        <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($tfg['idEstudiante'] ) ?>&modo=descarga" target="_blank" class="boton-secundario">
+                        <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($tfg['idEstudiante']) ?>&modo=descarga" target="_blank" class="boton-secundario">
                             <i class="fas fa-download"></i> Descargar TFG (PDF)
                         </a>
                         <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                            <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
+                            <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                            <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
                             <input type="submit" name="borrarTFG" class="boton-icono rojo" value="Borrar entrega">
                         </form>
                     </div>
                     <p class="texto-pequeno texto-suave" style="margin-top: 10px;">
-                        <b>Archivo:</b> <?= Security::escapeHtml($tfg['archivoTFG'] ) ?><br>
+                        <b>Archivo:</b> <?= Security::escapeHtml($tfg['archivoTFG']) ?><br>
                         <b>Subido el:</b> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($tfg['fechaSubidaTFG']))) ?>
                     </p>
                 <?php } else { ?>
@@ -54,8 +54,8 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label class="texto-suave texto-pequeno"><?= Security::escapeHtml(empty($tfg['archivoTFG']) ? 'Subir TFG (Solo PDF)' : 'Actualizar TFG (Reemplaza el anterior)') ?></label>
             <form action="../../../controladores/estudiantes/pfc/subir.php" method="POST" enctype="multipart/form-data" class="caja alinear-centro espacio-pequeno" style="margin-top: 5px;">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
+                <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
                 <input type="file" name="archivoTFG" accept=".pdf">
                 <input type="submit" name="subirTFG" class="boton-primario" value="<?= Security::escapeHtml(empty($tfg['archivoTFG']) ? 'ENVIAR' : 'ACTUALIZAR') ?>">
             </form>
@@ -64,7 +64,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-
-

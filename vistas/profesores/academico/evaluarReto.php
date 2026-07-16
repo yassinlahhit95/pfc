@@ -5,8 +5,6 @@ $exito   = $_SESSION['exito']   ?? '';
 $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 
-$idProfesor = $_SESSION['idProfesor'] ?? '';
-
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
@@ -31,7 +29,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>EVALUAR RETO</h1>
-    <a href="calificacionesRetos.php?idReto=<?= Security::escapeHtml($idReto ) ?>&idCiclo=<?= Security::escapeHtml($idCiclo ) ?>" class="boton-secundario">VOLVER</a>
+    <a href="calificacionesRetos.php?idReto=<?= Security::escapeHtml($idReto) ?>&idCiclo=<?= Security::escapeHtml($idCiclo) ?>" class="boton-secundario">VOLVER</a>
 </div>
 
 
@@ -202,7 +200,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <input type="number" step="0.01" min="0" max="10" id="nota" name="nota" value="<?= Security::escapeHtml($notaActual) ?>" placeholder="Ej: 7.5" class="modern-input <?= !empty($errores['nota']) ? 'input-error' : '' ?>" style="font-size:1.6rem; font-weight:bold; color:var(--accent); width:100%; text-align:center; letter-spacing:1px;">
                     <i class="fas fa-star" style="position:absolute; right:20px; top:22px; color:var(--accent); font-size:1.2rem; opacity:0.5;"></i>
                 </div>
-                <?php if (!empty($errores['nota'])) { ?><span class="error-campo"><?= Security::escapeHtml($errores['nota'] ) ?></span><?php } ?>
+                <?php if (!empty($errores['nota'])) { ?><span class="error-campo"><?= Security::escapeHtml($errores['nota']) ?></span><?php } ?>
                 <div class="texto-suave" style="font-size:0.8rem; margin-top:8px; display:flex; align-items:center; gap:5px;"><i class="fas fa-info-circle" style="color:var(--accent)"></i> Dejar en blanco para retirar la calificación.</div>
             </div>
 
@@ -216,5 +214,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

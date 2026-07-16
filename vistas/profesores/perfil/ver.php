@@ -52,7 +52,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="nombre-detalle">Direccion</div>
         <div class="valor-detalle"><?= Security::escapeHtml($profesor['direccionProfesor'] ) ?></div>
     </div>
-    
+
     <?php if(!empty($profesor['observacionesProfesor'])) { ?>
         <div class="fila-datos">
             <div class="nombre-detalle">Observaciones</div>
@@ -62,6 +62,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

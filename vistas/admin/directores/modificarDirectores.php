@@ -7,8 +7,8 @@ $errores = $_SESSION['errores'] ?? null;
 unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-$id_director = (int)($_GET['idDirector'] ?? 0);
-$director = obtenerDirectorPorId($id_director);
+$idDirector = (int)($_GET['idDirector'] ?? 0);
+$director = obtenerDirectorPorId($idDirector);
 
 if (!$director) {
     header("Location: verDirectores.php");
@@ -18,6 +18,7 @@ if (!$director) {
 if (isset($_SESSION['datos_director'])) {
     $director = $_SESSION['datos_director'] + $director;
 }
+unset($_SESSION['datos_director']);
 
 $titulo_pagina = "AULAPRO | MODIFICAR DIRECTOR";
 $seccion = 'directores';
@@ -33,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form action="../../../controladores/admin/directores/actualizar.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idDirector" value="<?= (int)$id_director ?>">
+        <input type="hidden" name="idDirector" value="<?= (int)$idDirector ?>">
 
         <div class="formulario">
             <div class="campo<?= fieldClass($errores, 'nombreDirector') ?>">

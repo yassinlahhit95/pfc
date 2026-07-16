@@ -29,7 +29,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="aula-breadcrumb">
   <a href="recursos.php"><i class="fas fa-chalkboard"></i> Aula</a>
   <span class="sep">/</span>
-  <a href="modulo.php?id=<?= Security::escapeHtml($tarea['idModulo'] ) ?>"><?= Security::escapeHtml($tarea['nombreModulo']) ?></a>
+  <a href="modulo.php?id=<?= Security::escapeHtml($tarea['idModulo']) ?>"><?= Security::escapeHtml($tarea['nombreModulo']) ?></a>
   <span class="sep">/</span>
   <span class="actual"><?= Security::escapeHtml($tarea['titulo']) ?></span>
 </div>
@@ -66,7 +66,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div style="margin-top:8px;">
     <button class="boton-secundario btn-pequeno"
             data-ver-archivo="../../../public/uploads/aula/tareas/<?= Security::escapeHtml($tarea['archivoAdjunto']) ?>"
-            data-ext="<?= Security::escapeHtml($extAdj ) ?>"
+            data-ext="<?= Security::escapeHtml($extAdj) ?>"
             data-nombre="Adjunto tarea">
       <i class="fas fa-paperclip"></i> Ver archivo adjunto
     </button>
@@ -80,7 +80,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <div class="titulo-tarjeta"><h3>Calificación</h3></div>
   <div class="caja alinear-centro espacio-grande">
     <div style="text-align:center;">
-      <div style="font-size:2.5rem;font-weight:700;color:<?= Security::escapeHtml($entrega['nota']>=5?'#15803d':'#dc2626') ?>;"><?= Security::escapeHtml($entrega['nota'] ) ?></div>
+      <div style="font-size:2.5rem;font-weight:700;color:<?= Security::escapeHtml($entrega['nota']>=5?'#15803d':'#dc2626') ?>;"><?= Security::escapeHtml($entrega['nota']) ?></div>
       <div style="font-size:0.75rem;color:var(--mut);font-weight:600;">SOBRE 10</div>
     </div>
   </div>
@@ -92,19 +92,19 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel margen-arriba">
   <div class="titulo-tarjeta"><h3><i class="fas fa-comments" style="color:var(--azul);margin-right:6px;"></i>Feedback</h3></div>
   <div class="aula-feedback-thread">
-    <?php foreach ($comentarios as $com):
-      $esProfesor = $com['tipoUsuario'] === 'profesor';
+    <?php foreach ($comentarios as $comentario):
+      $esProfesor = $comentario['tipoUsuario'] === 'profesor';
       $avatarHash = $esProfesor ? md5($tarea['nombreProfesor']) : $gravEstHash;
     ?>
     <div class="aula-feedback-msg <?= Security::escapeHtml(!$esProfesor ? 'propio' : '') ?>">
-      <img src="https://www.gravatar.com/avatar/<?= Security::escapeHtml($avatarHash ) ?>?d=identicon&s=64"
+      <img src="https://www.gravatar.com/avatar/<?= Security::escapeHtml($avatarHash) ?>?d=identicon&s=64"
            alt="avatar" class="aula-feedback-avatar">
       <div>
         <div class="aula-feedback-burbuja">
-          <?= Security::escapeHtml($com['mensaje']) ?>
-          <?php if ($com['archivoCorreccion']): ?>
+          <?= Security::escapeHtml($comentario['mensaje']) ?>
+          <?php if ($comentario['archivoCorreccion']): ?>
           <div style="margin-top:8px;">
-            <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml($com['archivoCorreccion']) ?>"
+            <a href="../../../public/uploads/aula/correcciones/<?= Security::escapeHtml($comentario['archivoCorreccion']) ?>"
                target="_blank" style="font-size:0.78rem;color:var(--azul);display:flex;align-items:center;gap:4px;">
               <i class="fas fa-paperclip"></i> Archivo adjunto
             </a>
@@ -113,7 +113,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="aula-feedback-fecha">
           <?= Security::escapeHtml($esProfesor ? $tarea['nombreProfesor'] : 'Tú') ?> ·
-          <?= Security::escapeHtml(date('d/m H:i', strtotime($com['fechaComentario']))) ?>
+          <?= Security::escapeHtml(date('d/m H:i', strtotime($comentario['fechaComentario']))) ?>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h3>Mi Entrega</h3>
     <?php if ($entrega): ?>
     <span style="font-size:0.75rem;color:var(--mut);">
-      Versión <?= Security::escapeHtml($entrega['version'] ) ?> · <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?>
+      Versión <?= Security::escapeHtml($entrega['version']) ?> · <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($entrega['fechaEntrega']))) ?>
     </span>
     <?php endif; ?>
   </div>
@@ -152,18 +152,18 @@ include_once __DIR__ . "/../comunes/nav.php";
   <details style="margin-bottom:16px;">
     <summary style="cursor:pointer;font-size:0.8rem;color:var(--dim);font-weight:600;">Historial de versiones (<?= Security::escapeHtml(count($versiones)) ?>)</summary>
     <div class="aula-historial" style="margin-top:8px;">
-      <?php foreach ($versiones as $v): ?>
+      <?php foreach ($versiones as $version): ?>
       <div class="aula-historial-item">
-        <div class="aula-historial-version">v<?= Security::escapeHtml($v['version'] ) ?></div>
+        <div class="aula-historial-version">v<?= Security::escapeHtml($version['version']) ?></div>
         <div style="flex:1;">
-          <p style="font-size:0.78rem;color:var(--dim);"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($v['fechaVersion']))) ?></p>
-          <?php if ($v['respuesta']): ?>
-          <p style="font-size:0.8rem;color:var(--text);margin-top:2px;"><?= Security::escapeHtml(substr($v['respuesta'],0,100)) . (strlen($v['respuesta'])>100?'…':'') ?></p>
+          <p style="font-size:0.78rem;color:var(--dim);"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($version['fechaVersion']))) ?></p>
+          <?php if ($version['respuesta']): ?>
+          <p style="font-size:0.8rem;color:var(--text);margin-top:2px;"><?= Security::escapeHtml(substr($version['respuesta'],0,100)) . (strlen($version['respuesta'])>100?'…':'') ?></p>
           <?php endif; ?>
         </div>
-        <?php if ($v['archivoEntrega']): ?>
-        <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($v['archivoEntrega']) ?>"
-           target="_blank" class="btn-accion btn-ver" title="Ver v<?= Security::escapeHtml($v['version'] ) ?>"><i class="fas fa-eye"></i></a>
+        <?php if ($version['archivoEntrega']): ?>
+        <a href="../../../public/uploads/aula/entregas/<?= Security::escapeHtml($version['archivoEntrega']) ?>"
+           target="_blank" class="btn-accion btn-ver" title="Ver v<?= Security::escapeHtml($version['version']) ?>"><i class="fas fa-eye"></i></a>
         <?php endif; ?>
       </div>
       <?php endforeach; ?>
@@ -175,7 +175,7 @@ include_once __DIR__ . "/../comunes/nav.php";
   <!-- FORMULARIO ENVÍO -->
   <form action="../../../controladores/estudiantes/aula/enviarEntrega.php" method="POST" enctype="multipart/form-data" class="formulario">
     <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-    <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea ) ?>">
+    <input type="hidden" name="idTarea" value="<?= Security::escapeHtml($idTarea) ?>">
     <div class="campo">
       <label><?= Security::escapeHtml($entrega ? 'Actualizar respuesta' : 'Tu respuesta') ?></label>
       <textarea name="respuesta" rows="5" placeholder="Escribe tu respuesta, explicación o código..."><?= Security::escapeHtml($entrega ? ($entrega['respuesta'] ?? '') : '') ?></textarea>
@@ -206,5 +206,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
 

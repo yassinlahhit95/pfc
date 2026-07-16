@@ -16,9 +16,6 @@ $csrf  = Security::generateCSRFToken();
 function avaClass($rol) {
     return $rol === 'admin' ? 'ava-admin' : ($rol === 'profesor' ? 'ava-profesor' : 'ava-alumno');
 }
-function roleLabel($rol) {
-    return $rol === 'admin' ? 'Admin' : ($rol === 'profesor' ? 'Profesor' : 'Estudiante');
-}
 
 require_once __DIR__ . '/../comunes/nav.php';
 ?>
@@ -40,21 +37,21 @@ require_once __DIR__ . '/../comunes/nav.php';
     <div class="chat-conv-list">
       <?php if (empty($convs)): ?>
         <div class="chat-empty-sidebar">No tienes conversaciones aún.<br>Pulsa + para iniciar una.</div>
-      <?php else: foreach ($convs as $c):
-        $initials = strtoupper(substr($c['other_nombre'], 0, 1) . (strpos($c['other_nombre'], ' ') !== false ? substr(strstr($c['other_nombre'], ' '), 1, 1) : ''));
-        $preview  = mb_strimwidth($c['last_preview'] ?? '', 0, 40, '…');
-        $time     = $c['last_message_at'] ? (new DateTime($c['last_message_at']))->format('H:i') : '';
+      <?php else: foreach ($convs as $conversacion):
+        $initials = strtoupper(substr($conversacion['other_nombre'], 0, 1) . (strpos($conversacion['other_nombre'], ' ') !== false ? substr(strstr($conversacion['other_nombre'], ' '), 1, 1) : ''));
+        $preview  = mb_strimwidth($conversacion['last_preview'] ?? '', 0, 40, '…');
+        $time     = $conversacion['last_message_at'] ? (new DateTime($conversacion['last_message_at']))->format('H:i') : '';
       ?>
-        <a href="conversacion.php?id=<?= $c['id'] ?>" class="chat-conv-row">
-          <div class="chat-ava <?= avaClass($c['other_rol']) ?>"><?= Security::escapeHtml($initials) ?></div>
+        <a href="conversacion.php?id=<?= $conversacion['id'] ?>" class="chat-conv-row">
+          <div class="chat-ava <?= avaClass($conversacion['other_rol']) ?>"><?= Security::escapeHtml($initials) ?></div>
           <div class="chat-conv-info">
-            <div class="chat-conv-name"><?= Security::escapeHtml($c['other_nombre']) ?></div>
+            <div class="chat-conv-name"><?= Security::escapeHtml($conversacion['other_nombre']) ?></div>
             <div class="chat-conv-preview"><?= Security::escapeHtml($preview) ?></div>
           </div>
           <div class="chat-conv-meta">
             <span class="chat-conv-time"><?= $time ?></span>
-            <?php if ($c['unread_count'] > 0): ?>
-              <span class="chat-unread-badge"><?= $c['unread_count'] ?></span>
+            <?php if ($conversacion['unread_count'] > 0): ?>
+              <span class="chat-unread-badge"><?= $conversacion['unread_count'] ?></span>
             <?php endif; ?>
           </div>
         </a>

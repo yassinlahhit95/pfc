@@ -17,11 +17,11 @@ $titulo_pagina = "AULAPRO | INFORMES";
 $seccion = 'informes';
 include_once __DIR__ . "/../comunes/nav.php";
 
-$ciclosJson = json_encode(array_map(fn($c) => [
-    'id'      => (int)$c['idCiclo'],
-    'nombre'  => $c['nombreCiclo'],
-    'abrev'   => $c['abreviaturaCiclo'],
-    'idNivel' => (int)$c['idNivel'],
+$ciclosJson = json_encode(array_map(fn($ciclo) => [
+    'id'      => (int)$ciclo['idCiclo'],
+    'nombre'  => $ciclo['nombreCiclo'],
+    'abrev'   => $ciclo['abreviaturaCiclo'],
+    'idNivel' => (int)$ciclo['idNivel'],
 ], $ciclos), JSON_UNESCAPED_UNICODE);
 ?>
 <link rel="stylesheet" href="../../../public/css/features/informes.css?v=<?= @filemtime(__DIR__.'/../../../public/css/features/informes.css') ?>">
@@ -46,14 +46,14 @@ $ciclosJson = json_encode(array_map(fn($c) => [
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-boletin" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
-                <?php foreach ($niveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($niveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="idCiclo" id="ciclo-boletin" class="informe-select" required onchange="fetchEstudiantes(this)">
                 <option value="">— Seleccionar ciclo —</option>
-                <?php foreach ($ciclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">[<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
             <div id="wrapper-boletin" class="estudiantes-selector-wrapper" style="display:none;">
@@ -78,14 +78,14 @@ $ciclosJson = json_encode(array_map(fn($c) => [
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-listado" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
-                <?php foreach ($niveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($niveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="idCiclo" id="ciclo-listado" class="informe-select" onchange="fetchEstudiantes(this)">
                 <option value="">— Todos los ciclos —</option>
-                <?php foreach ($ciclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">[<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
             <div id="wrapper-listado" class="estudiantes-selector-wrapper" style="display:none;">
@@ -110,14 +110,14 @@ $ciclosJson = json_encode(array_map(fn($c) => [
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-horario" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
-                <?php foreach ($niveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($niveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="idCiclo" id="ciclo-horario" class="informe-select" required>
                 <option value="">— Seleccionar ciclo —</option>
-                <?php foreach ($ciclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">[<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
             <button type="submit" class="informe-btn"><i class="fas fa-file-pdf"></i> Generar PDF</button>
@@ -166,7 +166,17 @@ function fetchEstudiantes(selectCiclo) {
         data.forEach(est => {
             var div = document.createElement('div');
             div.className = 'estudiante-check-item';
-            div.innerHTML = '<label><input type="checkbox" name="estudiantes[]" value="' + est.idEstudiante + '" checked><span>' + est.nombreEstudiante + '</span></label>';
+            var label = document.createElement('label');
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = 'estudiantes[]';
+            checkbox.value = est.idEstudiante;
+            checkbox.checked = true;
+            var span = document.createElement('span');
+            span.textContent = est.nombreEstudiante;
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            div.appendChild(label);
             $list.appendChild(div);
         });
     }).catch(() => {

@@ -8,7 +8,6 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 $datosTutor_menu        = obtenerTutorPorId($_SESSION['idTutor']);
 $nombreUsuario_menu     = $datosTutor_menu['nombreTutor'] ?? 'Tutor';
 $estudiantes_menu       = listarEstudiantesPorTutor($_SESSION['idTutor']);
-$totalEstudiantes_menu  = count($estudiantes_menu);
 
 // Active-state helper
 function _nav_active_tutor($check) {
@@ -69,10 +68,10 @@ function _nav_active_tutor($check) {
       </a>
 
       <span class="nav-section-title">MIS HIJOS</span>
-      <?php foreach ($estudiantes_menu as $est_m): ?>
-        <a href="../estudiantes/expediente.php?id=<?= $est_m['idEstudiante'] ?>" class="nav-item">
+      <?php foreach ($estudiantes_menu as $estudianteMenu): ?>
+        <a href="../estudiantes/expediente.php?id=<?= $estudianteMenu['idEstudiante'] ?>" class="nav-item">
           <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-          <span class="nav-label"><?= Security::escapeHtml(explode(' ', $est_m['nombreEstudiante'])[0]) ?></span>
+          <span class="nav-label"><?= Security::escapeHtml(explode(' ', $estudianteMenu['nombreEstudiante'])[0]) ?></span>
         </a>
       <?php endforeach; ?>
 
@@ -132,7 +131,7 @@ function _nav_active_tutor($check) {
         <span class="role-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--verde);">FAMILIA</span>
         <span class="topbar-user-name"><?= Security::escapeHtml($nombreUsuario_menu) ?></span>
       </div>
-      
+
       <div class="topbar-actions" style="margin-left: auto">
         <button class="icon-btn theme-btn" id="theme">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
@@ -151,12 +150,12 @@ function _nav_active_tutor($check) {
     endif; ?>
 
     <div class="content">
-      <?php 
+      <?php
           $configFB = Config::getInstance();
       ?>
-        <div id="firebase-user-data" 
+        <div id="firebase-user-data"
              data-user-id="<?= (int)$_SESSION['idTutor'] ?>"
-             data-user-role="tutor" 
+             data-user-role="tutor"
              data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
              data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"
              data-project-id="<?= $configFB->get('FIREBASE_PROJECT_ID') ?>"

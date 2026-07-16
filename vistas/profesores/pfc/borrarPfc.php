@@ -2,11 +2,11 @@
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . '/../../../modelos/tfg.php';
 require_once __DIR__ . '/../../../modelos/estudiantes.php';
-$id = (int)($_GET['id'] ?? 0);
-if (!estudiantePerteneceAProfesor($id, $_SESSION['idProfesor'])) {
+$idEstudiante = (int)($_GET['id'] ?? 0);
+if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {
     header("Location: lista.php"); exit;
 }
-$registro = obtenerTFGporEstudiante($id);
+$registro = obtenerTFGporEstudiante($idEstudiante);
 if (!$registro) { header("Location: lista.php"); exit; }
 $tituloDelPagina = 'AULAPRO | CONFIRMAR ELIMINACIÓN';
 $seccionActual = '';
@@ -41,7 +41,7 @@ include __DIR__ . '/../comunes/nav.php';
         <a href="lista.php" class="boton-secundario"><i class="fas fa-times"></i> Cancelar</a>
         <form method="POST" action="../../../controladores/profesores/pfc/borrar.php">
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-            <input type="hidden" name="idEstudiante" value="<?= (int)$id ?>">
+            <input type="hidden" name="idEstudiante" value="<?= (int)$idEstudiante ?>">
             <button type="submit" class="boton-peligro"><i class="fas fa-trash"></i> Sí, eliminar</button>
         </form>
     </div>

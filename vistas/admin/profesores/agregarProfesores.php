@@ -12,9 +12,10 @@ $listaCiclos = listarTodosLosCiclos();
 $todosLosModulos = listarModulos();
 
 $datos = $_SESSION['datos_profesor'] ?? [];
+unset($_SESSION['datos_profesor']);
 
-$ciclos_marcados = $datos['ciclos'] ?? [];
-$modulos_marcados = $datos['modulos'] ?? [];
+$ciclosMarcados = $datos['ciclos'] ?? [];
+$modulosMarcados = $datos['modulos'] ?? [];
 
 $titulo_pagina = "AULAPRO | AGREGAR PROFESOR";
 $seccion = 'profesores';
@@ -123,7 +124,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <?php foreach ($listaCiclos as $ciclo) { ?>
                         <label class="check-item">
                             <input type="checkbox" name="ciclos[]" value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" class="check-ciclo"
-                                <?php if (in_array($ciclo['idCiclo'], $ciclos_marcados)) { echo 'checked'; } ?>>
+                                <?php if (in_array($ciclo['idCiclo'], $ciclosMarcados)) { echo 'checked'; } ?>>
                             <span><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></span>
                         </label>
                     <?php } ?>
@@ -147,7 +148,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <?php if ($modulo['idCiclo'] == $ciclo['idCiclo']) { ?>
                                     <label class="check-item" style="padding-left: 10px;">
                                         <input type="checkbox" name="modulos[]" value="<?= Security::escapeHtml($modulo['idModulo']) ?>"
-                                            <?php if (in_array($modulo['idModulo'], $modulos_marcados)) { echo 'checked'; } ?>>
+                                            <?php if (in_array($modulo['idModulo'], $modulosMarcados)) { echo 'checked'; } ?>>
                                         <span><?= Security::escapeHtml($modulo['nombreModulo']) ?></span>
                                     </label>
                                 <?php } ?>

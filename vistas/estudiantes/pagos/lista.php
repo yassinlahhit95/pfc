@@ -9,13 +9,13 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
-$idDeEsteEstudiante = $_SESSION['idEstudiante'];
-$listaMisPagos = listarPagosPorEstudiante($idDeEsteEstudiante);
+$idEstudiante = $_SESSION['idEstudiante'];
+$listaMisPagos = listarPagosPorEstudiante($idEstudiante);
 // Extraer cursos escolares distintos
 $cursosDisponibles = [];
 foreach ($listaMisPagos as $pago) {
-    $c = $pago['cursoEscolar'] ?? 'Desconocido';
-    if (!in_array($c, $cursosDisponibles)) $cursosDisponibles[] = $c;
+    $curso = $pago['cursoEscolar'] ?? 'Desconocido';
+    if (!in_array($curso, $cursosDisponibles)) $cursosDisponibles[] = $curso;
 }
 if (empty($cursosDisponibles)) {
     require_once __DIR__ . '/../../../modelos/configuracion.php';
@@ -25,10 +25,10 @@ if (empty($cursosDisponibles)) {
 $cursoSeleccionado = $_GET['cursoEscolar'] ?? $cursosDisponibles[0];
 
 // Filtrar pagos por curso seleccionado
-$pagosFiltrados = array_filter($listaMisPagos, function($p) use ($cursoSeleccionado) {
-    return ($p['cursoEscolar'] ?? 'Desconocido') === $cursoSeleccionado;
+$pagosFiltrados = array_filter($listaMisPagos, function($pago) use ($cursoSeleccionado) {
+    return ($pago['cursoEscolar'] ?? 'Desconocido') === $cursoSeleccionado;
 });
-$datosEstadoFinanciero = obtenerEstadoFinancieroEstudiante($idDeEsteEstudiante);
+$datosEstadoFinanciero = obtenerEstadoFinancieroEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | MIS PAGOS";
 $seccionActual = 'pagos';
@@ -121,6 +121,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 
 <?php include '../comunes/footer.php'; ?>
-
-
-

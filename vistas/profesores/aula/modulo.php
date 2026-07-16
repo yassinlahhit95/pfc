@@ -43,7 +43,7 @@ foreach ($archivosPaginados as $arch) {
 
 $ciclo = null;
 $todosCiclos = listarCiclosDeProfesor($idProfesor);
-foreach ($todosCiclos as $c) { if ($c['idCiclo'] == $modulo['idCiclo']) { $ciclo = $c; break; } }
+foreach ($todosCiclos as $cicloItem) { if ($cicloItem['idCiclo'] == $modulo['idCiclo']) { $ciclo = $cicloItem; break; } }
 
 $colores = ['#0ea5e9','#8b5cf6','#10b981','#f59e0b','#ef4444','#ec4899','#0ea5e9','#14b8a6'];
 
@@ -403,8 +403,8 @@ include_once __DIR__ . "/../comunes/nav.php";
           <label class="modal-label">Seleccionar Carpeta (Opcional)</label>
           <select name="idCarpeta" class="modal-select">
             <option value="0">Sin carpeta</option>
-            <?php foreach ($carpetas as $c): ?>
-            <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml($c['nombre']) ?></option>
+            <?php foreach ($carpetas as $carpetaOpcion): ?>
+            <option value="<?= Security::escapeHtml($carpetaOpcion['idCarpeta'] ) ?>"><?= Security::escapeHtml($carpetaOpcion['nombre']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -443,8 +443,8 @@ include_once __DIR__ . "/../comunes/nav.php";
           <label class="modal-label">Mover a:</label>
           <select name="carpeta" class="modal-select" required>
             <option value="0">Sin carpeta</option>
-            <?php foreach ($carpetas as $c): ?>
-            <option value="<?= Security::escapeHtml($c['idCarpeta'] ) ?>"><?= Security::escapeHtml($c['nombre']) ?></option>
+            <?php foreach ($carpetas as $carpetaOpcion): ?>
+            <option value="<?= Security::escapeHtml($carpetaOpcion['idCarpeta'] ) ?>"><?= Security::escapeHtml($carpetaOpcion['nombre']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -596,8 +596,8 @@ function cerrarModal(id) {
 
 function cerrarModalAlEsc(event) {
   if (event.key === 'Escape') {
-    document.querySelectorAll('.modal-backdrop.active').forEach(m => {
-      m.classList.remove('active');
+    document.querySelectorAll('.modal-backdrop.active').forEach(modal => {
+      modal.classList.remove('active');
     });
   }
 }
@@ -647,9 +647,9 @@ function eliminarRecursoAula(tipo, id, modulo, mensaje) {
     f.action = '../../../controladores/profesores/aula/' + (tipo === 'carpeta' ? 'borrarCarpeta.php' : 'borrarArchivo.php');
     f.style.display = 'none';
     var campos = { csrf_token: CSRF_AULA, id: id, modulo: modulo };
-    for (var k in campos) {
+    for (var campoNombre in campos) {
       var inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = k; inp.value = campos[k];
+      inp.type = 'hidden'; inp.name = campoNombre; inp.value = campos[campoNombre];
       f.appendChild(inp);
     }
     document.body.appendChild(f);
@@ -677,9 +677,9 @@ function abrirViewerAula(url, ext, nombre) {
   abrirModal('modalViewer');
 
   if (ext === 'txt') {
-    fetch(url).then(r => r.text()).then(t => {
+    fetch(url).then(response => response.text()).then(texto => {
       document.getElementById('viewerContenedor').innerHTML = '<div style="padding:20px;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;color:var(--color-neutral-700);">' +
-        t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+        texto.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
     }).catch(() => {
       document.getElementById('viewerContenedor').innerHTML = '<p style="padding:20px;color:var(--color-danger);">No se pudo cargar el archivo.</p>';
     });
@@ -807,8 +807,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (primera) primera.classList.add('abierta');
 
   // Toggle carpetas
-  document.querySelectorAll('.carpeta-header-modern').forEach(function(h) {
-    h.addEventListener('click', function(e) {
+  document.querySelectorAll('.carpeta-header-modern').forEach(function(header) {
+    header.addEventListener('click', function(e) {
       if (!e.target.closest('button') && !e.target.closest('a')) {
         this.closest('.carpeta').classList.toggle('abierta');
       }

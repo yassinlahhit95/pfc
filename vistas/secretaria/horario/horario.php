@@ -18,7 +18,7 @@ $niveles = listarNiveles();
 $idNivelFiltro = isset($_GET['nivel']) ? (int)$_GET['nivel'] : 0;
 
 $ciclosFiltrados = $idNivelFiltro
-    ? array_values(array_filter($ciclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    ? array_values(array_filter($ciclos, fn($ciclo) => (int)$ciclo['idNivel'] === $idNivelFiltro))
     : $ciclos;
 
 $idCicloHorario = isset($_GET['ciclo']) ? (int)$_GET['ciclo'] : (int)($ciclosFiltrados[0]['idCiclo'] ?? 0);
@@ -48,7 +48,7 @@ $endSlots   = array_values(array_filter($todosSlots, fn($s) => $s >= '08:15'));
 $usedStarts = array_column($franjasActuales, 'inicio');
 $freeStarts = array_values(array_filter($todosSlots, fn($s) => $s < '21:00' && !in_array($s, $usedStarts)));
 
-$aulasParaJs = array_map(fn($au) => ['id' => (int)$au['idAula'], 'codigo' => $au['codigoAula']], $aulasDisponibles);
+$aulasParaJs = array_map(fn($aula) => ['id' => (int)$aula['idAula'], 'codigo' => $aula['codigoAula']], $aulasDisponibles);
 
 $titulo_pagina = "AULAPRO | CUADRO HORARIO";
 $seccion = 'horario';
@@ -61,17 +61,17 @@ include_once __DIR__ . "/../comunes/nav.php";
         <label for="nivel">Nivel:</label>
         <select name="nivel" id="nivel" onchange="this.form.submit()">
             <option value="">Todos</option>
-            <?php foreach ($niveles as $n) { ?>
-                <option value="<?= Security::escapeHtml($n['idNivel']) ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($n['nombreNivel']) ?>
+            <?php foreach ($niveles as $nivel) { ?>
+                <option value="<?= Security::escapeHtml($nivel['idNivel']) ?>" <?= ((int)$nivel['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                 </option>
             <?php } ?>
         </select>
         <label for="ciclo">Ciclo:</label>
         <select name="ciclo" id="ciclo" onchange="this.form.submit()">
-            <?php foreach ($ciclosFiltrados as $c) { ?>
-                <option value="<?= Security::escapeHtml($c['idCiclo']) ?>" <?= ($c['idCiclo'] == $idCicloHorario) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($c['nombreCiclo']) ?> (<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>)
+            <?php foreach ($ciclosFiltrados as $ciclo) { ?>
+                <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($ciclo['idCiclo'] == $idCicloHorario) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($ciclo['nombreCiclo']) ?> (<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>)
                 </option>
             <?php } ?>
         </select>
@@ -111,23 +111,23 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (empty($asignaciones)) { ?>
                 <p class="horario-panel-vacio">Este ciclo no tiene módulos con profesor asignado.</p>
             <?php } else { ?>
-                <?php foreach ($asignaciones as $a) {
-                    $color = horarioColorModulo($a['idModulo']);
+                <?php foreach ($asignaciones as $asignacion) {
+                    $color = horarioColorModulo($asignacion['idModulo']);
                 ?>
                     <div class="horario-tarjeta"
                          draggable="true"
-                         data-modulo="<?= Security::escapeHtml($a['idModulo']) ?>"
-                         data-profesor="<?= Security::escapeHtml($a['idProfesor']) ?>"
-                         data-modulo-nombre="<?= Security::escapeHtml($a['nombreModulo']) ?>"
-                         data-profesor-nombre="<?= Security::escapeHtml($a['nombreProfesor']) ?>"
+                         data-modulo="<?= Security::escapeHtml($asignacion['idModulo']) ?>"
+                         data-profesor="<?= Security::escapeHtml($asignacion['idProfesor']) ?>"
+                         data-modulo-nombre="<?= Security::escapeHtml($asignacion['nombreModulo']) ?>"
+                         data-profesor-nombre="<?= Security::escapeHtml($asignacion['nombreProfesor']) ?>"
                          data-color="<?= Security::escapeHtml($color) ?>">
                         <div class="horario-tarjeta-info">
                             <span class="horario-avatar" style="color:<?= Security::escapeHtml($color) ?>; border-color:<?= Security::escapeHtml($color) ?>;">
-                                <?= Security::escapeHtml(horarioIniciales($a['nombreModulo'])) ?>
+                                <?= Security::escapeHtml(horarioIniciales($asignacion['nombreModulo'])) ?>
                             </span>
-                            <span class="horario-tarjeta-modulo"><?= Security::escapeHtml($a['nombreModulo']) ?></span>
+                            <span class="horario-tarjeta-modulo"><?= Security::escapeHtml($asignacion['nombreModulo']) ?></span>
                         </div>
-                        <span class="horario-tarjeta-prof"><?= Security::escapeHtml($a['nombreProfesor']) ?></span>
+                        <span class="horario-tarjeta-prof"><?= Security::escapeHtml($asignacion['nombreProfesor']) ?></span>
                     </div>
                 <?php } ?>
             <?php } ?>

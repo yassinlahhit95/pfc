@@ -8,14 +8,15 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
 
-$todos_los_ciclos = listarTodosLosCiclos();
-$todos_los_cursos = listarTodosLosCursosAcademicos();
+$todosLosCiclos = listarTodosLosCiclos();
+$todosLosCursos = listarTodosLosCursosAcademicos();
 
 $datos = $_SESSION['datos_modulo'] ?? [];
+unset($_SESSION['datos_modulo']);
 
 $nivelActual = '';
 if (!empty($datos['idCiclo'])) {
-    foreach ($todos_los_ciclos as $cicloItem) {
+    foreach ($todosLosCiclos as $cicloItem) {
         if ($cicloItem['idCiclo'] == $datos['idCiclo']) {
             $nivelActual = $cicloItem['nombreNivel'];
             break;
@@ -103,8 +104,8 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <script>
-var todosCiclos = <?= json_encode($todos_los_ciclos) ?>;
-var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var todosCiclos = <?= json_encode($todosLosCiclos) ?>;
+var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var cursoAnioActual = <?= json_encode($datos['cursoAnio'] ?? '') ?>;
 
 function filtrarCiclos() {

@@ -50,20 +50,20 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($categorias as $cat):
-                    $numGastos = $gastosPorCategoria[$cat['idCategoria']] ?? 0;
+                <?php foreach ($categorias as $categoria):
+                    $numGastos = $gastosPorCategoria[$categoria['idCategoria']] ?? 0;
                 ?>
                 <tr>
                     <td>
                         <span style="display:inline-block;width:20px;height:20px;border-radius:50%;
-                                     background:<?= Security::escapeHtml($cat['color']) ?>;
+                                     background:<?= Security::escapeHtml($categoria['color']) ?>;
                                      border:2px solid rgba(0,0,0,.08);vertical-align:middle;"></span>
                     </td>
-                    <td><b><?= Security::escapeHtml($cat['nombre']) ?></b></td>
-                    <td><b><?= number_format($cat['presupuestoAnual'], 2, ',', '.') ?> €</b></td>
+                    <td><b><?= Security::escapeHtml($categoria['nombre']) ?></b></td>
+                    <td><b><?= number_format($categoria['presupuestoAnual'], 2, ',', '.') ?> €</b></td>
                     <td>
                         <?php if ($numGastos > 0): ?>
-                            <a href="verGastos.php?idCategoria=<?= (int)$cat['idCategoria'] ?>"
+                            <a href="verGastos.php?idCategoria=<?= (int)$categoria['idCategoria'] ?>"
                                class="texto-estado azul"><?= $numGastos ?> gasto(s)</a>
                         <?php else: ?>
                             <span class="texto-suave">Sin gastos</span>
@@ -75,18 +75,18 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <div class="recurso-menu">
                                 <a class="recurso-menu-item" href="#"
                                    data-editar-categoria
-                                   data-id="<?= (int)$cat['idCategoria'] ?>"
-                                   data-nombre="<?= Security::escapeHtml($cat['nombre']) ?>"
-                                   data-presupuesto="<?= Security::escapeHtml($cat['presupuestoAnual']) ?>"
-                                   data-color="<?= Security::escapeHtml($cat['color']) ?>">
+                                   data-id="<?= (int)$categoria['idCategoria'] ?>"
+                                   data-nombre="<?= Security::escapeHtml($categoria['nombre']) ?>"
+                                   data-presupuesto="<?= Security::escapeHtml($categoria['presupuestoAnual']) ?>"
+                                   data-color="<?= Security::escapeHtml($categoria['color']) ?>">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
                                 <div class="recurso-menu-sep"></div>
                                 <a class="recurso-menu-item peligro" href="#"
                                    data-modal-borrar
-                                   data-id="<?= (int)$cat['idCategoria'] ?>"
+                                   data-id="<?= (int)$categoria['idCategoria'] ?>"
                                    data-tipo="Categoría"
-                                   data-nombre="<?= Security::escapeHtml($cat['nombre']) ?>"
+                                   data-nombre="<?= Security::escapeHtml($categoria['nombre']) ?>"
                                    data-url="/controladores/admin/categorias_gasto/borrar.php"
                                    data-campo="idCategoria"
                                    data-aviso="Solo puedes eliminarla si no tiene gastos asociados.">

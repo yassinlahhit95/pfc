@@ -5,7 +5,6 @@ require_once __DIR__ . "/../../../modelos/horarios.php";
 
 $aulas = listarAulas();
 $idAula = isset($_GET['aula']) ? (int)$_GET['aula'] : (int)($aulas[0]['idAula'] ?? 0);
-$aulaActual = $idAula ? obtenerAulaPorId($idAula) : null;
 
 $ocupacion = $idAula ? listarOcupacionAula($idAula) : [];
 $franjas = obtenerFranjasHorario();
@@ -21,9 +20,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="GET" class="horario-selector-form">
         <label for="aula">Aula:</label>
         <select name="aula" id="aula" onchange="this.form.submit()">
-            <?php foreach ($aulas as $a) { ?>
-                <option value="<?= Security::escapeHtml($a['idAula']) ?>" <?= ($a['idAula'] == $idAula) ? 'selected' : '' ?>>
-                    Aula <?= Security::escapeHtml($a['codigoAula']) ?><?= $a['nombreAula'] ? ' — ' . Security::escapeHtml($a['nombreAula']) : '' ?>
+            <?php foreach ($aulas as $aula) { ?>
+                <option value="<?= Security::escapeHtml($aula['idAula']) ?>" <?= ($aula['idAula'] == $idAula) ? 'selected' : '' ?>>
+                    Aula <?= Security::escapeHtml($aula['codigoAula']) ?><?= $aula['nombreAula'] ? ' — ' . Security::escapeHtml($aula['nombreAula']) : '' ?>
                 </option>
             <?php } ?>
         </select>

@@ -14,26 +14,26 @@ require_once __DIR__ . "/../../../modelos/ciclos.php";
 
 if ($esTutor && $idCicloTutor) {
     $cicloTutor       = obtenerCicloPorId($idCicloTutor);
-    $todos_los_ciclos = $cicloTutor ? [$cicloTutor] : [];
+    $todosLosCiclos = $cicloTutor ? [$cicloTutor] : [];
 } else {
-    $todos_los_ciclos = listarCiclosDeProfesor($idProfesor);
+    $todosLosCiclos = listarCiclosDeProfesor($idProfesor);
 }
 
-$id_ciclo_elegido = (int)($_GET['idCiclo'] ?? 0);
-if ($esTutor && $idCicloTutor && !$id_ciclo_elegido) {
-    $id_ciclo_elegido = $idCicloTutor;
+$idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
+if ($esTutor && $idCicloTutor && !$idCicloElegido) {
+    $idCicloElegido = $idCicloTutor;
 }
-if ($id_ciclo_elegido) {
+if ($idCicloElegido) {
     $tieneAcceso = false;
-    foreach ($todos_los_ciclos as $c) {
-        if ($c['idCiclo'] == $id_ciclo_elegido) { $tieneAcceso = true; break; }
+    foreach ($todosLosCiclos as $ciclo) {
+        if ($ciclo['idCiclo'] == $idCicloElegido) { $tieneAcceso = true; break; }
     }
-    if (!$tieneAcceso) $id_ciclo_elegido = 0;
+    if (!$tieneAcceso) $idCicloElegido = 0;
 }
 
-$datos_finales = [];
-if ($id_ciclo_elegido) {
-    $datos_finales = listarResultadosFinalesCiclo($id_ciclo_elegido);
+$datosFinales = [];
+if ($idCicloElegido) {
+    $datosFinales = listarResultadosFinalesCiclo($idCicloElegido);
 }
 
 $tituloDelPagina = strtoupper("Resultados Finales - Portal Profesores");
@@ -53,15 +53,15 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label for="idCiclo">Seleccione Ciclo:</label>
                 <select id="idCiclo" name="idCiclo" onchange="this.form.submit()">
                     <option value="">-- Seleccionar Ciclo --</option>
-                    <?php foreach ($todos_los_ciclos as $cicloItem) { ?>
+                    <?php foreach ($todosLosCiclos as $cicloItem) { ?>
                         <option value="<?= Security::escapeHtml($cicloItem['idCiclo']) ?>"
-                            <?= ($id_ciclo_elegido == $cicloItem['idCiclo']) ? 'selected' : '' ?>>
+                            <?= ($idCicloElegido == $cicloItem['idCiclo']) ? 'selected' : '' ?>>
                             <?= Security::escapeHtml(mb_strtoupper($cicloItem['nombreCiclo'], 'UTF-8')) ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
-            <?php if ($id_ciclo_elegido) { ?>
+            <?php if ($idCicloElegido) { ?>
             <div class="campo relleno">
                 <label for="filtroCursoEstudiante">Filtrar por Curso:</label>
                 <select id="filtroCursoEstudiante" onchange="filtrarResultadosPorCurso()">
@@ -73,17 +73,17 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php } ?>
         </form>
 
-        <?php if (!empty($id_ciclo_elegido) && !empty($datos_finales)) { ?>
+        <?php if (!empty($idCicloElegido) && !empty($datosFinales)) { ?>
             <form action="../../../controladores/profesores/academico/enviarNotasMasivo.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($id_ciclo_elegido) ?>">
+                <input type="hidden" name="idCiclo" value="<?= Security::escapeHtml($idCicloElegido) ?>">
                 <input type="submit" class="boton-primario" value="NOTIFICAR A TODOS">
             </form>
         <?php } ?>
     </div>
 </div>
 
-<?php if ($id_ciclo_elegido) { ?>
+<?php if ($idCicloElegido) { ?>
 <div class="panel margen-arriba">
     <div class="contenedor-tabla">
         <table class="tabla-datos" id="tablaResultados">
@@ -98,10 +98,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($datos_finales)) { ?>
+                <?php if (empty($datosFinales)) { ?>
                     <tr><td colspan="6" class="vacio">No hay estudiantes en este ciclo.</td></tr>
                 <?php } else {
-                    foreach ($datos_finales as $fila) {
+                    foreach ($datosFinales as $fila) {
                         $estado = $fila['estado_global'];
                         $claseEstado = match($estado) {
                             'APROBADO'  => 'verde',
@@ -142,7 +142,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <!-- Desglose por módulo (colapsable por alumno) -->
-<?php foreach ($datos_finales as $fila) {
+<?php foreach ($datosFinales as $fila) {
     if (empty($fila['detalles_modulos'])) continue;
 ?>
 <div class="panel margen-arriba fila-curso-detalle" data-curso="<?= Security::escapeHtml($fila['anioEstudio'] ?? '') ?>" style="font-size:.875rem;">
@@ -164,19 +164,19 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($fila['detalles_modulos'] as $mod) {
-                    $clsMod = match($mod['estado']) {
+                <?php foreach ($fila['detalles_modulos'] as $modulo) {
+                    $claseModulo = match($modulo['estado']) {
                         'Aprobado' => 'verde',
                         'Suspenso' => 'rojo',
                         default    => 'gris',
                     };
                 ?>
                     <tr>
-                        <td><?= Security::escapeHtml($mod['nombreModulo']) ?></td>
-                        <td><?= Security::escapeHtml($mod['media_notas']) ?></td>
-                        <td><?= Security::escapeHtml($mod['media_retos']) ?></td>
-                        <td class="texto-negrita"><?= Security::escapeHtml($mod['nota_final']) ?></td>
-                        <td><span class="texto-estado <?= $clsMod ?>"><?= Security::escapeHtml($mod['estado']) ?></span></td>
+                        <td><?= Security::escapeHtml($modulo['nombreModulo']) ?></td>
+                        <td><?= Security::escapeHtml($modulo['media_notas']) ?></td>
+                        <td><?= Security::escapeHtml($modulo['media_retos']) ?></td>
+                        <td class="texto-negrita"><?= Security::escapeHtml($modulo['nota_final']) ?></td>
+                        <td><span class="texto-estado <?= $claseModulo ?>"><?= Security::escapeHtml($modulo['estado']) ?></span></td>
                     </tr>
                 <?php } ?>
                 </tbody>

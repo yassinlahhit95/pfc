@@ -9,7 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/eventos.php";
 
-$todos_los_eventos = listarEventosProximos();
+$todosLosEventos = listarEventosProximos();
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE EVENTOS";
 $seccion = 'eventos';
@@ -40,10 +40,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_eventos)) { ?>
+                <?php if (empty($todosLosEventos)) { ?>
                     <tr><td colspan="4" class="vacio">No hay eventos próximos programados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_eventos as $evento) { ?>
+                    <?php foreach ($todosLosEventos as $evento) { ?>
                     <tr>
                         <td>
                             <b><?= date('d/m/Y', strtotime($evento['fechaEvento'])) ?></b><br>
@@ -51,7 +51,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                         </td>
                         <td>
                             <span class="texto-negrita"><?= Security::escapeHtml($evento['tituloEvento']) ?></span><br>
-                            <span><?= substr($evento['descripcionEvento'], 0, 80) ?>...</span>
+                            <span><?= Security::escapeHtml(substr($evento['descripcionEvento'], 0, 80)) ?>...</span>
                         </td>
                         <td><?= Security::escapeHtml($evento['ubicacionEvento']) ?></td>
                         <td>

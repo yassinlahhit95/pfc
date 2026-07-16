@@ -68,10 +68,10 @@ $seccion = 'calificaciones';
             <label for="idCiclo">Ciclo</label>
             <select name="idCiclo" id="idCiclo" onchange="this.form.submit()">
                 <option value="">— Selecciona ciclo —</option>
-                <?php foreach ($listaCiclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>"
-                    <?= ($c['idCiclo'] == $idCicloElegido) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($c['nombreCiclo']) ?> (<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>)
+                <?php foreach ($listaCiclos as $ciclo): ?>
+                <option value="<?= (int)$ciclo['idCiclo'] ?>"
+                    <?= ($ciclo['idCiclo'] == $idCicloElegido) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($ciclo['nombreCiclo']) ?> (<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>)
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -81,10 +81,10 @@ $seccion = 'calificaciones';
             <label for="idModulo">Módulo</label>
             <select name="idModulo" id="idModulo" onchange="this.form.submit()">
                 <option value="">— Selecciona módulo —</option>
-                <?php foreach ($listaModulos as $m): ?>
-                <option value="<?= (int)$m['idModulo'] ?>"
-                    <?= ($m['idModulo'] == $idModuloElegido) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($m['nombreModulo']) ?>
+                <?php foreach ($listaModulos as $modulo): ?>
+                <option value="<?= (int)$modulo['idModulo'] ?>"
+                    <?= ($modulo['idModulo'] == $idModuloElegido) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($modulo['nombreModulo']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -126,21 +126,17 @@ $seccion = 'calificaciones';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($listaEstudiantes as $est):
-                    $notas = [
-                        $est['calificacion'] ?? null,
-                        null, null, null
-                    ];
-                    $nota1ev    = $est['nota_1ev']    ?? null;
-                    $nota1final = $est['nota_1final'] ?? null;
-                    $nota2ev    = $est['nota_2ev']    ?? null;
-                    $nota2final = $est['nota_2final'] ?? null;
+                <?php foreach ($listaEstudiantes as $estudiante):
+                    $nota1ev    = $estudiante['nota_1ev']    ?? null;
+                    $nota1final = $estudiante['nota_1final'] ?? null;
+                    $nota2ev    = $estudiante['nota_2ev']    ?? null;
+                    $nota2final = $estudiante['nota_2final'] ?? null;
                     $vals = array_filter([$nota1ev, $nota1final, $nota2ev, $nota2final], fn($v) => $v !== null && $v !== '');
                     $media = count($vals) ? round(array_sum($vals) / count($vals), 2) : null;
                     $fmt = fn($v) => ($v !== null && $v !== '') ? number_format((float)$v, 2) : '—';
                 ?>
                 <tr>
-                    <td><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
+                    <td><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></td>
                     <td><?= $fmt($nota1ev) ?></td>
                     <td><?= $fmt($nota1final) ?></td>
                     <td><?= $fmt($nota2ev) ?></td>

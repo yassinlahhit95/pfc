@@ -42,12 +42,12 @@ if ($idModulo < 1) {
       ];
     ?>
     <div class="aula-recursos-grid">
-      <?php foreach ($modulos as $i => $m): $p = $paleta[$i % count($paleta)]; ?>
-      <a href="recursos.php?id=<?= Security::escapeHtml($m['idModulo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($p['clase'] ) ?>">
-        <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($p['icono'] ) ?>"></i></div>
+      <?php foreach ($modulos as $i => $moduloItem): $paletaItem = $paleta[$i % count($paleta)]; ?>
+      <a href="recursos.php?id=<?= Security::escapeHtml($moduloItem['idModulo']) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($paletaItem['clase']) ?>">
+        <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($paletaItem['icono']) ?>"></i></div>
         <div class="recurso-ciclo-body">
-          <h3><?= Security::escapeHtml($m['nombreModulo']) ?></h3>
-          <div class="recurso-ciclo-meta"><span><i class="fas fa-file"></i> <?= Security::escapeHtml(contarArchivosPorModuloAula($m['idModulo'])) ?> archivos</span></div>
+          <h3><?= Security::escapeHtml($moduloItem['nombreModulo']) ?></h3>
+          <div class="recurso-ciclo-meta"><span><i class="fas fa-file"></i> <?= Security::escapeHtml(contarArchivosPorModuloAula($moduloItem['idModulo'])) ?> archivos</span></div>
         </div>
         <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
       </a>
@@ -76,8 +76,8 @@ $carpetas = listarCarpetasPorPadreAula($idModulo, $carpetaActual);
 if ($carpetaActual) {
     $archivos = listarArchivosPorCarpetaAula($carpetaActual);
 } else {
-    $archivos = array_values(array_filter(listarArchivosPorModuloAula($idModulo), function($a) {
-        return empty($a['idCarpeta']);
+    $archivos = array_values(array_filter(listarArchivosPorModuloAula($idModulo), function($archivo) {
+        return empty($archivo['idCarpeta']);
     }));
 }
 
@@ -113,11 +113,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <?php if (!empty($carpetas)): ?>
 <div class="recurso-carpetas-grid">
-  <?php foreach ($carpetas as $c): ?>
-  <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>&carpeta=<?= Security::escapeHtml($c['idCarpeta'] ) ?>" class="recurso-carpeta">
-    <div class="recurso-carpeta-icono" style="background:<?= Security::escapeHtml($c['color']) ?>"><i class="fas <?= Security::escapeHtml($c['icono']) ?>"></i></div>
-    <span class="recurso-carpeta-nombre"><?= Security::escapeHtml($c['nombre']) ?></span>
-    <span class="recurso-carpeta-meta"><?= Security::escapeHtml($c['totalSubcarpetas'] ) ?> carpetas · <?= Security::escapeHtml($c['totalArchivos'] ) ?> archivos</span>
+  <?php foreach ($carpetas as $carpeta): ?>
+  <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>&carpeta=<?= Security::escapeHtml($carpeta['idCarpeta']) ?>" class="recurso-carpeta">
+    <div class="recurso-carpeta-icono" style="background:<?= Security::escapeHtml($carpeta['color']) ?>"><i class="fas <?= Security::escapeHtml($carpeta['icono']) ?>"></i></div>
+    <span class="recurso-carpeta-nombre"><?= Security::escapeHtml($carpeta['nombre']) ?></span>
+    <span class="recurso-carpeta-meta"><?= Security::escapeHtml($carpeta['totalSubcarpetas']) ?> carpetas · <?= Security::escapeHtml($carpeta['totalArchivos']) ?> archivos</span>
   </a>
   <?php endforeach; ?>
 </div>
@@ -129,27 +129,27 @@ include_once __DIR__ . "/../comunes/nav.php";
 <table class="recurso-lista">
   <thead><tr><th>Nombre</th><th>Fecha</th><th>Profesor</th><th>Tamaño</th><th style="text-align:right;">Acciones</th></tr></thead>
   <tbody>
-    <?php foreach ($archivos as $a):
-      [$cls, $ico] = iconoArchivoAula($a['extension']);
-      $previa = archivoPrevisualizableAula($a['extension']);
-      $fav    = esFavoritoAula($idEstudiante, $a['idArchivo']);
-      $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $a['idArchivo'];
+    <?php foreach ($archivos as $archivo):
+      [$cls, $ico] = iconoArchivoAula($archivo['extension']);
+      $previa = archivoPrevisualizableAula($archivo['extension']);
+      $fav    = esFavoritoAula($idEstudiante, $archivo['idArchivo']);
+      $verUrl = "../../../controladores/aula/verArchivo.php?id=" . $archivo['idArchivo'];
     ?>
     <tr>
-      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span><?= Security::escapeHtml($a['nombreOriginal']) ?></div></td>
-      <td><?= Security::escapeHtml(date('d/m/Y', strtotime($a['fechaSubida']))) ?></td>
-      <td><?= Security::escapeHtml($a['nombreProfesor']) ?></td>
-      <td><?= Security::escapeHtml(formatearTamanioAula($a['tamanio'])) ?></td>
+      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls) ?>"><i class="fas <?= Security::escapeHtml($ico) ?>"></i></span><?= Security::escapeHtml($archivo['nombreOriginal']) ?></div></td>
+      <td><?= Security::escapeHtml(date('d/m/Y', strtotime($archivo['fechaSubida']))) ?></td>
+      <td><?= Security::escapeHtml($archivo['nombreProfesor']) ?></td>
+      <td><?= Security::escapeHtml(formatearTamanioAula($archivo['tamanio'])) ?></td>
       <td style="text-align:right;">
         <div class="recurso-menu-wrap">
           <button type="button" class="recurso-menu-btn" title="Opciones" onclick="AulaRecursos.menu(this)"><i class="fas fa-ellipsis-vertical"></i></button>
           <div class="recurso-menu">
             <?php if ($previa): ?>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl ) ?>&modo=ver', <?= Security::escapeHtml(json_encode($a['nombreOriginal'])) ?>, '<?= Security::escapeHtml($a['extension'] ) ?>')"><i class="fas fa-eye"></i> Ver</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.verDocumento('<?= Security::escapeHtml($verUrl) ?>&modo=ver', <?= Security::escapeHtml(json_encode($archivo['nombreOriginal'])) ?>, '<?= Security::escapeHtml($archivo['extension']) ?>')"><i class="fas fa-eye"></i> Ver</button>
             <?php endif; ?>
-            <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl ) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl ) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
-            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($a['idArchivo'] ) ?>, this, 'recursos')"><i class="fas fa-star" style="color:<?= Security::escapeHtml($fav ? '#f59e0b' : '') ?>"></i> <?= Security::escapeHtml($fav ? 'Quitar de favoritos' : 'Añadir a favoritos') ?></button>
+            <a class="recurso-menu-item" href="<?= Security::escapeHtml($verUrl) ?>&modo=descarga"><i class="fas fa-download"></i> Descargar</a>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.copiarEnlace('<?= Security::escapeHtml($verUrl) ?>&modo=ver')"><i class="fas fa-link"></i> Copiar enlace</button>
+            <button type="button" class="recurso-menu-item" onclick="AulaRecursos.favorito(<?= Security::escapeHtml($archivo['idArchivo']) ?>, this, 'recursos')"><i class="fas fa-star" style="color:<?= Security::escapeHtml($fav ? '#f59e0b' : '') ?>"></i> <?= Security::escapeHtml($fav ? 'Quitar de favoritos' : 'Añadir a favoritos') ?></button>
           </div>
         </div>
       </td>
@@ -178,5 +178,4 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script src="../../../public/js/features/aula-recursos.js?v=<?= Security::escapeHtml(@filemtime(__DIR__."/../../../public/js/features/aula-recursos.js")) ?>"></script>
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
 

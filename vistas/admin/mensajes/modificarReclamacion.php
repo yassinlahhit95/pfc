@@ -10,8 +10,8 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 
-$id_reclamacion = (int)($_GET['idReclamacion'] ?? 0);
-$reclamacion = obtenerMensajePorId($id_reclamacion);
+$idReclamacion = (int)($_GET['idReclamacion'] ?? 0);
+$reclamacion = obtenerMensajePorId($idReclamacion);
 
 if (!$reclamacion) {
     header("Location: lista.php");
@@ -39,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="panel">
     <form method="POST" action="../../../controladores/admin/mensajes/actualizar.php">
         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-        <input type="hidden" name="idReclamacion" value="<?= $id_reclamacion ?>">
+        <input type="hidden" name="idReclamacion" value="<?= $idReclamacion ?>">
 
         <div class="fila-datos">
             <div class="nombre-detalle">Asunto</div>

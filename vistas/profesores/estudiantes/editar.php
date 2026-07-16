@@ -23,7 +23,7 @@ $tituloDelPagina = "AULAPRO | EDITAR ESTUDIANTE";
 $seccionActual = 'estudiantes';
 include_once __DIR__ . "/../comunes/nav.php";
 
-$mis_ciclos = listarCiclosDeProfesor($idProfesor);
+$misCiclos = listarCiclosDeProfesor($idProfesor);
 
 $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
 
@@ -43,62 +43,62 @@ $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
             <div class="campo">
                 <label for="nombreEstudiante">Nombre Completo</label>
                 <input type="text" name="nombreEstudiante" id="nombreEstudiante" value="<?= Security::escapeHtml($datos['nombreEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="emailEstudiante">Email</label>
                 <input type="text" name="emailEstudiante" id="emailEstudiante" value="<?= Security::escapeHtml($datos['emailEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="dniEstudiante">DNI</label>
                 <input type="text" name="dniEstudiante" id="dniEstudiante" value="<?= Security::escapeHtml($datos['dniEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="telefonoEstudiante">Teléfono</label>
                 <input type="text" name="telefonoEstudiante" id="telefonoEstudiante" value="<?= Security::escapeHtml($datos['telefonoEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="fechaNacimientoEstudiante">Fecha Nacimiento</label>
                 <input type="date" name="fechaNacimientoEstudiante" id="fechaNacimientoEstudiante" value="<?= Security::escapeHtml($datos['fechaNacimientoEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="direccionEstudiante">Dirección</label>
                 <input type="text" name="direccionEstudiante" id="direccionEstudiante" value="<?= Security::escapeHtml($datos['direccionEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="ciudadEstudiante">Ciudad</label>
                 <input type="text" name="ciudadEstudiante" id="ciudadEstudiante" value="<?= Security::escapeHtml($datos['ciudadEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="codigoPostalEstudiante">Código Postal</label>
                 <input type="text" name="codigoPostalEstudiante" id="codigoPostalEstudiante" value="<?= Security::escapeHtml($datos['codigoPostalEstudiante'] ?? '') ?>">
-                
+
             </div>
 
             <div class="campo">
                 <label for="idCiclo">Ciclo</label>
                 <select name="idCiclo" id="idCiclo">
                     <option value="">-- Selecciona un ciclo --</option>
-                    <?php foreach ($mis_ciclos as $ciclo) { ?>
+                    <?php foreach ($misCiclos as $ciclo) { ?>
                         <option value="<?= Security::escapeHtml($ciclo['idCiclo'] ) ?>" <?php if ($datos['idCiclo'] == $ciclo['idCiclo']) { echo 'selected'; } ?>>
                             [<?= Security::escapeHtml($ciclo['nombreNivel'] ) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo'] ) ?>
                         </option>
                     <?php } ?>
                 </select>
-                
+
             </div>
         </div>
 
@@ -112,5 +112,3 @@ $datos = $_SESSION['datos_estudiante'] ?? $estudiante;
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

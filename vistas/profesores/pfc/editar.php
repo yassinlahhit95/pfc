@@ -14,7 +14,7 @@ if (!estudiantePerteneceAProfesor($idEstudiante, $_SESSION['idProfesor'])) {
 }
 $datosTFG = obtenerTFGporEstudiante($idEstudiante);
 
-$tituloPagina = "Editar TFG - Portal Profesores";
+$tituloDelPagina = "Editar TFG - Portal Profesores";
 $seccionActual = 'tfg';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
@@ -49,6 +49,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-
-

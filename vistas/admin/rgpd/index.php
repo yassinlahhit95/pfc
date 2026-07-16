@@ -42,10 +42,10 @@ require_once __DIR__ . "/../comunes/nav.php";
         <label for="exportar-select">Estudiante</label>
         <select id="exportar-select" name="idEstudiante" required onchange="filtrarRGPD('exportar')">
           <option value="">— Seleccionar estudiante —</option>
-          <?php foreach ($todosEstudiantes as $e): ?>
-          <option value="<?= (int)$e['idEstudiante'] ?>">
-            <?= Security::escapeHtml($e['nombreEstudiante']) ?>
-            <?= !empty($e['dniEstudiante']) ? '(' . Security::escapeHtml($e['dniEstudiante']) . ')' : '' ?>
+          <?php foreach ($todosEstudiantes as $estudiante): ?>
+          <option value="<?= (int)$estudiante['idEstudiante'] ?>">
+            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
+            <?= !empty($estudiante['dniEstudiante']) ? '(' . Security::escapeHtml($estudiante['dniEstudiante']) . ')' : '' ?>
           </option>
           <?php endforeach; ?>
         </select>
@@ -75,10 +75,10 @@ require_once __DIR__ . "/../comunes/nav.php";
         <label for="borrar-select">Estudiante</label>
         <select id="borrar-select" name="idEstudiante" required onchange="filtrarRGPD('borrar')">
           <option value="">— Seleccionar estudiante —</option>
-          <?php foreach ($todosEstudiantes as $e): ?>
-          <option value="<?= (int)$e['idEstudiante'] ?>">
-            <?= Security::escapeHtml($e['nombreEstudiante']) ?>
-            <?= !empty($e['dniEstudiante']) ? '(' . Security::escapeHtml($e['dniEstudiante']) . ')' : '' ?>
+          <?php foreach ($todosEstudiantes as $estudiante): ?>
+          <option value="<?= (int)$estudiante['idEstudiante'] ?>">
+            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
+            <?= !empty($estudiante['dniEstudiante']) ? '(' . Security::escapeHtml($estudiante['dniEstudiante']) . ')' : '' ?>
           </option>
           <?php endforeach; ?>
         </select>
@@ -153,15 +153,15 @@ require_once __DIR__ . "/../comunes/nav.php";
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($eliminaciones as $e): ?>
+        <?php foreach ($eliminaciones as $eliminacion): ?>
         <tr>
-          <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($e['fecha']))) ?></td>
-          <td><?= Security::escapeHtml($e['nombreDirector'] ?? 'Admin #'.$e['idAdmin']) ?></td>
-          <td><span class="texto-estado azul"><?= Security::escapeHtml($e['entidad']) ?></span></td>
-          <td><?= (int)$e['idRegistro'] ?></td>
-          <td><?= Security::escapeHtml($e['descripcion']) ?></td>
-          <td style="max-width:300px;white-space:normal;"><?= Security::escapeHtml($e['motivo']) ?></td>
-          <td><?= Security::escapeHtml($e['ip'] ?? '-') ?></td>
+          <td><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($eliminacion['fecha']))) ?></td>
+          <td><?= Security::escapeHtml($eliminacion['nombreDirector'] ?? 'Admin #'.$eliminacion['idAdmin']) ?></td>
+          <td><span class="texto-estado azul"><?= Security::escapeHtml($eliminacion['entidad']) ?></span></td>
+          <td><?= (int)$eliminacion['idRegistro'] ?></td>
+          <td><?= Security::escapeHtml($eliminacion['descripcion']) ?></td>
+          <td style="max-width:300px;white-space:normal;"><?= Security::escapeHtml($eliminacion['motivo']) ?></td>
+          <td><?= Security::escapeHtml($eliminacion['ip'] ?? '-') ?></td>
         </tr>
         <?php endforeach; ?>
       </tbody>

@@ -29,8 +29,8 @@ if ($esTutor && $idCicloTutor) {
 // Authorization: verify the selected reto belongs to the accessible list
 $idRetoValido = false;
 if ($idRetoElegido && $idCicloElegido) {
-    foreach ($listaRetos as $r) {
-        if ((int)$r['idReto'] === $idRetoElegido) { $idRetoValido = true; break; }
+    foreach ($listaRetos as $reto) {
+        if ((int)$reto['idReto'] === $idRetoElegido) { $idRetoValido = true; break; }
     }
     if (!$idRetoValido) $idRetoElegido = 0;
 }
@@ -85,9 +85,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Mis Ciclos:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Seleccionar Ciclo --</option>
-                <?php foreach ($listaCiclos as $c) { ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>" <?= ($idCicloElegido === (int)$c['idCiclo']) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                <?php foreach ($listaCiclos as $ciclo) { ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= ($idCicloElegido === (int)$ciclo['idCiclo']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -96,11 +96,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Reto:</label>
             <select name="idReto" onchange="this.form.submit()" <?= empty($listaRetos) ? 'disabled' : '' ?>>
                 <option value="">-- Seleccionar Reto --</option>
-                <?php foreach ($listaRetos as $r) { ?>
-                    <option value="<?= (int)$r['idReto'] ?>" <?= ($idRetoElegido === (int)$r['idReto']) ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($r['nombreReto']) ?>
-                        <?php if (!empty($r['fechaFin'])) { ?>
-                            (hasta <?= Security::escapeHtml(date('d/m/Y', strtotime($r['fechaFin']))) ?>)
+                <?php foreach ($listaRetos as $reto) { ?>
+                    <option value="<?= (int)$reto['idReto'] ?>" <?= ($idRetoElegido === (int)$reto['idReto']) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($reto['nombreReto']) ?>
+                        <?php if (!empty($reto['fechaFin'])) { ?>
+                            (hasta <?= Security::escapeHtml(date('d/m/Y', strtotime($reto['fechaFin']))) ?>)
                         <?php } ?>
                     </option>
                 <?php } ?>
@@ -180,17 +180,17 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <script>
 function actualizarRetoInput(inp) {
-    var v = inp.value.trim().replace(',', '.');
-    var n = parseFloat(v);
+    var valor = inp.value.trim().replace(',', '.');
+    var numero = parseFloat(valor);
     inp.classList.remove('is-ok', 'is-error');
-    if (v === '') return;
-    if (!isNaN(n) && n >= 0 && n <= 10) {
-        inp.classList.add(n >= 5 ? 'is-ok' : 'is-error');
+    if (valor === '') return;
+    if (!isNaN(numero) && numero >= 0 && numero <= 10) {
+        inp.classList.add(numero >= 5 ? 'is-ok' : 'is-error');
         // update badge in same row
         var badge = inp.closest('tr').querySelector('.nota-badge');
         if (badge) {
-            badge.textContent = n >= 5 ? 'APTO' : 'NO APTO';
-            badge.className = 'nota-badge ' + (n >= 5 ? 'nota-badge-ap' : 'nota-badge-su');
+            badge.textContent = numero >= 5 ? 'APTO' : 'NO APTO';
+            badge.className = 'nota-badge ' + (numero >= 5 ? 'nota-badge-ap' : 'nota-badge-su');
         }
     } else {
         inp.classList.add('is-error');
@@ -198,10 +198,10 @@ function actualizarRetoInput(inp) {
 }
 
 function validarRetoInput(inp) {
-    var v = inp.value.trim().replace(',', '.');
-    if (v === '') { inp.classList.remove('is-ok', 'is-error'); return; }
-    var n = parseFloat(v);
-    if (isNaN(n) || n < 0 || n > 10) {
+    var valor = inp.value.trim().replace(',', '.');
+    if (valor === '') { inp.classList.remove('is-ok', 'is-error'); return; }
+    var numero = parseFloat(valor);
+    if (isNaN(numero) || numero < 0 || numero > 10) {
         inp.classList.add('is-error');
         inp.classList.remove('is-ok');
     }
@@ -212,10 +212,10 @@ if (form) {
     form.addEventListener('submit', function(e) {
         var invalid = false;
         form.querySelectorAll('.nota-reto-input').forEach(function(inp) {
-            var v = inp.value.trim().replace(',', '.');
-            if (v === '') return;
-            var n = parseFloat(v);
-            if (isNaN(n) || n < 0 || n > 10) {
+            var valor = inp.value.trim().replace(',', '.');
+            if (valor === '') return;
+            var numero = parseFloat(valor);
+            if (isNaN(numero) || numero < 0 || numero > 10) {
                 inp.classList.add('is-error');
                 invalid = true;
             }

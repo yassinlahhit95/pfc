@@ -4,10 +4,6 @@ require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/landing.php";
 
 $landingCfg = obtenerLandingConfig();
-//if (empty($landingCfg['plantilla'])) {
-//    header("Location: ../landing/onboarding.php");
-//    exit;
-//}
 
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
 require_once __DIR__ . "/../../../modelos/anuncios.php";
@@ -438,9 +434,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
     <div class="dash-panel-body">
       <?php if (!empty($listaAnuncios)) {
-        $cnt = 0;
+        $contador = 0;
         foreach ($listaAnuncios as $anuncio) {
-          if ($cnt >= 4) break; ?>
+          if ($contador >= 4) break; ?>
           <div class="ann-item">
             <div class="ann-item-head">
               <span class="ann-item-title"><?= Security::escapeHtml($anuncio['titulo']) ?></span>
@@ -449,7 +445,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
             <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['mensaje']), 0, 120)) ?>…</p>
             <span class="ann-item-tag"><?= Security::escapeHtml(strtoupper($anuncio['dirigidoA'])) ?></span>
           </div>
-      <?php $cnt++; } } else { ?>
+      <?php $contador++; } } else { ?>
         <p class="empty-state">No hay anuncios activos por ahora.</p>
       <?php } ?>
     </div>
@@ -462,9 +458,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
     <div class="dash-panel-body">
       <?php if (!empty($eventos)) {
-        $cnt = 0;
+        $contador = 0;
         foreach ($eventos as $evento) {
-          if ($cnt >= 4) break;
+          if ($contador >= 4) break;
           $dia = date('d', strtotime($evento['fechaEvento']));
           $mes = strtoupper(date('M', strtotime($evento['fechaEvento']))); ?>
           <div class="evt-item">
@@ -477,7 +473,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
               <span class="evt-meta"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h · <?= Security::escapeHtml($evento['ubicacionEvento']) ?></span>
             </div>
           </div>
-      <?php $cnt++; } } else { ?>
+      <?php $contador++; } } else { ?>
         <p class="empty-state">No hay eventos próximos programados.</p>
       <?php } ?>
     </div>
@@ -503,21 +499,21 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
           </thead>
           <tbody>
             <?php
-            $cntP = 0;
-            foreach ($estudiantesPendientes as $ep) {
-              if ($cntP >= 8) break;
+            $contadorPagos = 0;
+            foreach ($estudiantesPendientes as $estudiantePendiente) {
+              if ($contadorPagos >= 8) break;
             ?>
               <tr style="border-bottom:1px solid var(--border, #e2e8f0);">
-                <td style="padding:10px 14px; font-weight:500;"><?= Security::escapeHtml($ep['nombreEstudiante'] . ' ' . ($ep['apellidosEstudiante'] ?? '')) ?></td>
-                <td style="padding:10px 14px;"><span class="ann-item-tag"><?= Security::escapeHtml($ep['nombreCiclo']) ?></span></td>
-                <td style="padding:10px 14px; color:var(--verde, #16a34a);"><?= number_format($ep['totalPagado'], 2) ?> €</td>
-                <td style="padding:10px 14px; color:var(--rojo, #dc2626); font-weight:600;"><?= number_format($ep['deuda'], 2) ?> €</td>
+                <td style="padding:10px 14px; font-weight:500;"><?= Security::escapeHtml($estudiantePendiente['nombreEstudiante'] . ' ' . ($estudiantePendiente['apellidosEstudiante'] ?? '')) ?></td>
+                <td style="padding:10px 14px;"><span class="ann-item-tag"><?= Security::escapeHtml($estudiantePendiente['nombreCiclo']) ?></span></td>
+                <td style="padding:10px 14px; color:var(--verde, #16a34a);"><?= number_format($estudiantePendiente['totalPagado'], 2) ?> €</td>
+                <td style="padding:10px 14px; color:var(--rojo, #dc2626); font-weight:600;"><?= number_format($estudiantePendiente['deuda'], 2) ?> €</td>
                 <td style="padding:10px 14px;">
-                  <a href="../pagos/agregarPagos.php?idEstudiante=<?= $ep['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
+                  <a href="../pagos/agregarPagos.php?idEstudiante=<?= $estudiantePendiente['idEstudiante'] ?>" style="display:inline-block; padding:4px 12px; background:var(--accent); color:var(--accent-ink); border-radius:6px; font-size:0.82rem; text-decoration:none;">Cobrar</a>
                 </td>
               </tr>
             <?php
-            $cntP++;
+            $contadorPagos++;
             } ?>
           </tbody>
         </table>

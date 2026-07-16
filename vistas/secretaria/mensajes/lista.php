@@ -14,20 +14,20 @@ $folder  = $_GET['folder'] ?? 'todo';
 $allowed = ['todo', 'nuevos', 'alumnos', 'profesores', 'enviados'];
 if (!in_array($folder, $allowed)) $folder = 'todo';
 
-$listaDeMensajes = array_values(array_filter($todosMensajes, function ($m) use ($folder) {
+$listaDeMensajes = array_values(array_filter($todosMensajes, function ($mensaje) use ($folder) {
     switch ($folder) {
-        case 'nuevos':     return !$m['leido'] && $m['emisor_rol'] !== 'admin';
-        case 'alumnos':    return $m['emisor_rol'] === 'estudiante';
-        case 'profesores': return $m['emisor_rol'] === 'profesor';
-        case 'enviados':   return $m['emisor_rol'] === 'admin';
+        case 'nuevos':     return !$mensaje['leido'] && $mensaje['emisor_rol'] !== 'admin';
+        case 'alumnos':    return $mensaje['emisor_rol'] === 'estudiante';
+        case 'profesores': return $mensaje['emisor_rol'] === 'profesor';
+        case 'enviados':   return $mensaje['emisor_rol'] === 'admin';
         default:           return true;
     }
 }));
 
 $cNuevos   = (int)$totalSinLeer;
-$cAlumnos  = count(array_filter($todosMensajes, fn($m) => $m['emisor_rol'] === 'estudiante'));
-$cProfes   = count(array_filter($todosMensajes, fn($m) => $m['emisor_rol'] === 'profesor'));
-$cEnviados = count(array_filter($todosMensajes, fn($m) => $m['emisor_rol'] === 'admin'));
+$cAlumnos  = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'estudiante'));
+$cProfes   = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'profesor'));
+$cEnviados = count(array_filter($todosMensajes, fn($mensaje) => $mensaje['emisor_rol'] === 'admin'));
 
 $titulo_pagina = "AULAPRO | MENSAJERÍA";
 $seccion = 'mensajes';
@@ -102,33 +102,33 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <p>No hay mensajes en esta carpeta.</p>
             </div>
         <?php else: ?>
-            <?php foreach ($listaDeMensajes as $msg):
-                $esNuevo   = !$msg['leido'] && $msg['emisor_rol'] !== 'admin';
-                $rowClass  = $esNuevo ? 'inbox-unread' : ($msg['emisor_rol'] === 'admin' ? 'inbox-sent' : '');
-                $ts        = strtotime($msg['fecha']);
+            <?php foreach ($listaDeMensajes as $mensaje):
+                $esNuevo   = !$mensaje['leido'] && $mensaje['emisor_rol'] !== 'admin';
+                $rowClass  = $esNuevo ? 'inbox-unread' : ($mensaje['emisor_rol'] === 'admin' ? 'inbox-sent' : '');
+                $ts        = strtotime($mensaje['fecha']);
                 $timeStr   = (date('Y-m-d', $ts) === date('Y-m-d')) ? date('H:i', $ts) : date('d/m/Y', $ts);
 
-                if ($msg['emisor_rol'] === 'admin') {
+                if ($mensaje['emisor_rol'] === 'admin') {
                     $senderName = 'Secretaría'; $avaClass = 'inbox-ava-admin'; $avaInit = 'SC';
                     $rtagClass = 'rtag-admin'; $rtagLabel = 'Secretaría';
                     $receiver = '';
-                    if (!empty($msg['idEstudiante']))   $receiver = '→ ' . Security::escapeHtml($msg['nombreEstudiante'] ?? '');
-                    elseif (!empty($msg['idProfesor'])) $receiver = '→ ' . Security::escapeHtml($msg['nombreProfesor'] ?? '');
+                    if (!empty($mensaje['idEstudiante']))   $receiver = '→ ' . Security::escapeHtml($mensaje['nombreEstudiante'] ?? '');
+                    elseif (!empty($mensaje['idProfesor'])) $receiver = '→ ' . Security::escapeHtml($mensaje['nombreProfesor'] ?? '');
                     else                                $receiver = '→ General';
-                } elseif ($msg['emisor_rol'] === 'estudiante') {
-                    $senderName = Security::escapeHtml($msg['nombreEstudiante'] ?? 'Alumno');
+                } elseif ($mensaje['emisor_rol'] === 'estudiante') {
+                    $senderName = Security::escapeHtml($mensaje['nombreEstudiante'] ?? 'Alumno');
                     $avaClass   = 'inbox-ava-alumno';
-                    $avaInit    = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2)));
+                    $avaInit    = Security::escapeHtml(mb_strtoupper(mb_substr($mensaje['nombreEstudiante'] ?? 'A', 0, 2)));
                     $rtagClass  = 'rtag-alumno'; $rtagLabel = 'Alumno'; $receiver = '→ Secretaría';
                 } else {
-                    $senderName = Security::escapeHtml($msg['nombreProfesor'] ?? 'Profesor');
+                    $senderName = Security::escapeHtml($mensaje['nombreProfesor'] ?? 'Profesor');
                     $avaClass   = 'inbox-ava-profe';
-                    $avaInit    = Security::escapeHtml(mb_strtoupper(mb_substr($msg['nombreProfesor'] ?? 'P', 0, 2)));
+                    $avaInit    = Security::escapeHtml(mb_strtoupper(mb_substr($mensaje['nombreProfesor'] ?? 'P', 0, 2)));
                     $rtagClass  = 'rtag-profe'; $rtagLabel = 'Profe'; $receiver = '→ Secretaría';
                 }
             ?>
             <div class="inbox-row-outer">
-                <a href="ver.php?id=<?= (int)$msg['idReclamacion'] ?>" class="inbox-row <?= $rowClass ?>">
+                <a href="ver.php?id=<?= (int)$mensaje['idReclamacion'] ?>" class="inbox-row <?= $rowClass ?>">
                     <div class="inbox-ava <?= $avaClass ?>"><?= $avaInit ?></div>
                     <div class="inbox-row-content">
                         <div class="inbox-row-top">
@@ -139,8 +139,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </span>
                             <span class="inbox-row-time"><?= $timeStr ?></span>
                         </div>
-                        <div class="inbox-row-subject"><?= Security::escapeHtml($msg['asunto'] ?? '(sin asunto)') ?></div>
-                        <div class="inbox-row-preview"><?= Security::escapeHtml(mb_substr($msg['descripcion'] ?? '', 0, 80)) ?>…</div>
+                        <div class="inbox-row-subject"><?= Security::escapeHtml($mensaje['asunto'] ?? '(sin asunto)') ?></div>
+                        <div class="inbox-row-preview"><?= Security::escapeHtml(mb_substr($mensaje['descripcion'] ?? '', 0, 80)) ?>…</div>
                     </div>
                     <?php if ($esNuevo): ?><div class="inbox-new-dot"></div><?php endif; ?>
                 </a>
@@ -148,7 +148,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="inbox-visto-form">
                     <form method="POST" action="../../../controladores/secretaria/mensajes/marcar_visto.php">
                         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                        <input type="hidden" name="idReclamacion" value="<?= (int)$msg['idReclamacion'] ?>">
+                        <input type="hidden" name="idReclamacion" value="<?= (int)$mensaje['idReclamacion'] ?>">
                         <button type="submit" name="marcarVisto" class="inbox-visto-btn">
                             <i class="fas fa-check"></i> Visto
                         </button>

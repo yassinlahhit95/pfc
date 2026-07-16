@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             </thead>
             <tbody>
                 <?php if ($retos) { ?>
-                    <?php foreach ($retos as $reto) { 
+                    <?php foreach ($retos as $reto) {
                         $archivos = obtenerArchivosReto($reto['idReto']);
                     ?>
                         <tr>
@@ -57,13 +57,13 @@ include_once __DIR__ . "/../comunes/nav.php";
                                         </a>
                                         <div class="materiales-dropdown">
                                             <div class="small fw-bold mb-2 px-2 text-muted text-uppercase" style="font-size: 9px;">Archivos:</div>
-                                            <?php foreach ($archivos as $arch): 
-                                                $isPdf = ($arch['tipoArchivo'] === 'pdf');
+                                            <?php foreach ($archivos as $archivo):
+                                                $isPdf = ($archivo['tipoArchivo'] === 'pdf');
                                                 $icon = $isPdf ? 'fa-file-pdf text-danger' : 'fa-image text-primary';
                                             ?>
-                                                <a href="../../../<?= $arch['rutaArchivo'] ?>" target="_blank" class="dropdown-file-item">
+                                                <a href="../../../<?= $archivo['rutaArchivo'] ?>" target="_blank" class="dropdown-file-item">
                                                     <i class="fas <?= $icon ?>"></i>
-                                                    <span class="text-truncate"><?= Security::escapeHtml($arch['nombreArchivo']) ?></span>
+                                                    <span class="text-truncate"><?= Security::escapeHtml($archivo['nombreArchivo']) ?></span>
                                                 </a>
                                             <?php endforeach; ?>
                                             <hr class="my-2 opacity-10">

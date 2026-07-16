@@ -60,10 +60,10 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
             <select name="idCategoria" id="idCategoria" required>
                 <option value="">— Selecciona —</option>
-                <?php foreach ($categorias as $cat): ?>
-                <option value="<?= (int)$cat['idCategoria'] ?>"
-                    <?= $gasto['idCategoria'] == $cat['idCategoria'] ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($cat['nombre']) ?>
+                <?php foreach ($categorias as $categoria): ?>
+                <option value="<?= (int)$categoria['idCategoria'] ?>"
+                    <?= $gasto['idCategoria'] == $categoria['idCategoria'] ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($categoria['nombre']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -72,9 +72,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label for="tipoJustificante">Tipo de justificante</label>
             <select name="tipoJustificante" id="tipoJustificante">
-                <?php foreach (['factura'=>'Factura','ticket'=>'Ticket','recibo'=>'Recibo','otro'=>'Otro'] as $val => $label): ?>
-                <option value="<?= $val ?>" <?= $gasto['tipoJustificante'] === $val ? 'selected' : '' ?>>
-                    <?= $label ?>
+                <?php foreach (['factura'=>'Factura','ticket'=>'Ticket','recibo'=>'Recibo','otro'=>'Otro'] as $valorTipo => $nombreTipo): ?>
+                <option value="<?= $valorTipo ?>" <?= $gasto['tipoJustificante'] === $valorTipo ? 'selected' : '' ?>>
+                    <?= $nombreTipo ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -90,25 +90,27 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCiclo">Ciclo asociado</label>
             <select name="idCiclo" id="idCiclo">
                 <option value="">— Sin ciclo específico —</option>
-                <?php foreach ($ciclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>"
-                    <?= $gasto['idCiclo'] == $c['idCiclo'] ? 'selected' : '' ?>>
-                    [<?= Security::escapeHtml($c['abreviaturaCiclo'] ?: $c['idCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                <?php foreach ($ciclos as $ciclo): ?>
+                <option value="<?= (int)$ciclo['idCiclo'] ?>"
+                    <?= $gasto['idCiclo'] == $ciclo['idCiclo'] ? 'selected' : '' ?>>
+                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
-           <div class="campo">
+        </div>
+
+        <div class="campo">
             <label>Justificante</label>
             <?php if (!empty($gasto['archivoJustificante'])): 
                 $archivos = json_decode($gasto['archivoJustificante'], true);
                 if (is_array($archivos)):
-                    foreach ($archivos as $i => $arch): ?>
+                    foreach ($archivos as $indice => $archivo): ?>
                     <div class="file-item-premium" style="margin-bottom:10px;max-width:360px;">
                         <i class="fas fa-file-alt" style="color:var(--accent);font-size:1.2rem;flex-shrink:0;"></i>
                         <div class="file-info-premium">
-                            <span class="file-name-premium">Archivo actual <?= count($archivos)>1 ? ($i+1) : '' ?></span>
+                            <span class="file-name-premium">Archivo actual <?= count($archivos)>1 ? ($indice+1) : '' ?></span>
                             <span class="file-type-premium">
-                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($arch) ?>"
+                                <a href="../../../public/uploads/justificantes/<?= Security::escapeHtml($archivo) ?>"
                                    target="_blank" rel="noopener">Ver archivo adjunto</a>
                             </span>
                         </div>

@@ -46,50 +46,50 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td colspan="6" class="vacio">No hay tutores registrados en el sistema.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaTutores as $t):
-                        $hijos = $hijosPorTutor[$t['idTutor']] ?? [];
+                    <?php foreach ($listaTutores as $tutor):
+                        $hijos = $hijosPorTutor[$tutor['idTutor']] ?? [];
                     ?>
                     <tr>
-                        <td><?= Security::escapeHtml($t['idTutor']) ?></td>
+                        <td><?= Security::escapeHtml($tutor['idTutor']) ?></td>
                         <td>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:1px solid var(--border);flex-shrink:0;">
-                                    <?= mb_strtoupper(mb_substr($t['nombreTutor'], 0, 1), 'UTF-8') ?>
+                                    <?= mb_strtoupper(mb_substr($tutor['nombreTutor'], 0, 1), 'UTF-8') ?>
                                 </div>
-                                <b><?= mb_strtoupper(Security::escapeHtml($t['nombreTutor']), 'UTF-8') ?></b>
+                                <b><?= mb_strtoupper(Security::escapeHtml($tutor['nombreTutor']), 'UTF-8') ?></b>
                             </div>
                         </td>
-                        <td><?= Security::escapeHtml($t['dniTutor']) ?></td>
+                        <td><?= Security::escapeHtml($tutor['dniTutor']) ?></td>
                         <td>
                             <?php if (empty($hijos)): ?>
                                 <span class="texto-estado gris">Sin vinculación</span>
                             <?php else: ?>
                                 <div style="display:flex;flex-direction:column;gap:4px;">
-                                    <?php foreach ($hijos as $h): ?>
-                                        <a href="../estudiantes/verDetallesEstudiantes.php?idEstudiante=<?= (int)$h['idEstudiante'] ?>" style="font-size:.83rem;color:var(--text);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text)'"><i class="fas fa-user-graduate" style="opacity:.5;margin-right:4px;"></i><?= Security::escapeHtml($h['nombreEstudiante']) ?></a>
+                                    <?php foreach ($hijos as $hijo): ?>
+                                        <a href="../estudiantes/verDetallesEstudiantes.php?idEstudiante=<?= (int)$hijo['idEstudiante'] ?>" style="font-size:.83rem;color:var(--text);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text)'"><i class="fas fa-user-graduate" style="opacity:.5;margin-right:4px;"></i><?= Security::escapeHtml($hijo['nombreEstudiante']) ?></a>
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
                         </td>
-                        <td><?= Security::escapeHtml($t['emailTutor']) ?></td>
+                        <td><?= Security::escapeHtml($tutor['emailTutor']) ?></td>
                         <td>
                             <div class="recurso-menu-wrap">
                                 <button type="button" class="recurso-menu-btn" title="Opciones"><i class="fas fa-ellipsis-vertical"></i></button>
                                 <div class="recurso-menu">
-                                    <a class="recurso-menu-item" href="modificarTutor.php?idTutor=<?= (int)$t['idTutor'] ?>">
+                                    <a class="recurso-menu-item" href="modificarTutor.php?idTutor=<?= (int)$tutor['idTutor'] ?>">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
                                     <a class="recurso-menu-item" href="#"
-                                       onclick="restablecerPasswordTutor(<?= (int)$t['idTutor'] ?>, '<?= Security::escapeHtml(addslashes($t['nombreTutor'])) ?>'); return false;">
+                                       onclick="restablecerPasswordTutor(<?= (int)$tutor['idTutor'] ?>, '<?= Security::escapeHtml(addslashes($tutor['nombreTutor'])) ?>'); return false;">
                                         <i class="fas fa-key"></i> Restablecer contraseña
                                     </a>
                                     <div class="recurso-menu-sep"></div>
                                     <a class="recurso-menu-item peligro" href="#"
                                        data-modal-borrar
-                                       data-id="<?= (int)$t['idTutor'] ?>"
+                                       data-id="<?= (int)$tutor['idTutor'] ?>"
                                        data-tipo="Tutor"
-                                       data-nombre="<?= Security::escapeHtml($t['nombreTutor']) ?>"
-                                       data-extra="<?= Security::escapeHtml($t['dniTutor']) ?>"
+                                       data-nombre="<?= Security::escapeHtml($tutor['nombreTutor']) ?>"
+                                       data-extra="<?= Security::escapeHtml($tutor['dniTutor']) ?>"
                                        data-url="/controladores/admin/tutores/borrar.php"
                                        data-campo="idTutor"><i class="fas fa-trash"></i> Eliminar</a>
                                 </div>

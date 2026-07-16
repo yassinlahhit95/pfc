@@ -50,9 +50,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCategoria">Categoría <span style="color:var(--rojo)">*</span></label>
             <select name="idCategoria" id="idCategoria" required>
                 <option value="">— Selecciona —</option>
-                <?php foreach ($categorias as $cat): ?>
-                <option value="<?= (int)$cat['idCategoria'] ?>">
-                    <?= Security::escapeHtml($cat['nombre']) ?>
+                <?php foreach ($categorias as $categoria): ?>
+                <option value="<?= (int)$categoria['idCategoria'] ?>">
+                    <?= Security::escapeHtml($categoria['nombre']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -79,9 +79,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label for="idCiclo">Ciclo asociado <span class="texto-suave">(opcional)</span></label>
             <select name="idCiclo" id="idCiclo">
                 <option value="">— Sin ciclo específico —</option>
-                <?php foreach ($ciclos as $c): ?>
-                <option value="<?= (int)$c['idCiclo'] ?>">
-                    [<?= Security::escapeHtml($c['abreviaturaCiclo'] ?: $c['idCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?>
+                <?php foreach ($ciclos as $ciclo): ?>
+                <option value="<?= (int)$ciclo['idCiclo'] ?>">
+                    [<?= Security::escapeHtml($ciclo['abreviaturaCiclo'] ?: $ciclo['idCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>

@@ -9,7 +9,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/anuncios.php";
 
-$todos_los_anuncios = listarTodosLosAnuncios();
+$todosLosAnuncios = listarTodosLosAnuncios();
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE ANUNCIOS";
 $seccion = 'anuncios';
@@ -78,12 +78,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_anuncios)) { ?>
+                <?php if (empty($todosLosAnuncios)) { ?>
                     <tr>
                         <td colspan="4" class="vacio">No hay anuncios publicados</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_anuncios as $anuncio) { ?>
+                    <?php foreach ($todosLosAnuncios as $anuncio) { ?>
                         <tr>
                             <td><b><?= Security::escapeHtml($anuncio['tituloAnuncio']) ?></b></td>
                             <td><span><?= Security::escapeHtml(substr($anuncio['contenidoAnuncio'], 0, 100)) ?>...</span></td>

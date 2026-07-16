@@ -17,11 +17,11 @@ $folder  = $_GET['folder'] ?? 'todo';
 $allowed = ['todo', 'nuevos', 'alumnos', 'enviados'];
 if (!in_array($folder, $allowed)) $folder = 'todo';
 
-$lista = array_filter($todos, function($m) use ($folder) {
+$lista = array_filter($todos, function($mensaje) use ($folder) {
     switch ($folder) {
-        case 'nuevos':  return !$m['leido'] && $m['emisor_rol'] !== 'profesor';
-        case 'alumnos': return $m['emisor_rol'] === 'estudiante';
-        case 'enviados': return $m['emisor_rol'] === 'profesor';
+        case 'nuevos':  return !$mensaje['leido'] && $mensaje['emisor_rol'] !== 'profesor';
+        case 'alumnos': return $mensaje['emisor_rol'] === 'estudiante';
+        case 'enviados': return $mensaje['emisor_rol'] === 'profesor';
         default:        return true;
     }
 });
@@ -29,8 +29,8 @@ $lista = array_values($lista);
 
 $cTodo    = count($todos);
 $cNuevos  = (int)$totalSinLeer;
-$cAlumnos = count(array_filter($todos, fn($m) => $m['emisor_rol'] === 'estudiante'));
-$cEnv     = count(array_filter($todos, fn($m) => $m['emisor_rol'] === 'profesor'));
+$cAlumnos = count(array_filter($todos, fn($mensaje) => $mensaje['emisor_rol'] === 'estudiante'));
+$cEnv     = count(array_filter($todos, fn($mensaje) => $mensaje['emisor_rol'] === 'profesor'));
 
 $tituloDelPagina = "AULAPRO | Buzón de Mensajes";
 $seccionActual   = 'reclamaciones';
@@ -100,34 +100,34 @@ include_once __DIR__ . "/../comunes/nav.php";
             <p>No hay mensajes en esta carpeta.</p>
         </div>
         <?php else: ?>
-        <?php foreach ($lista as $msg):
-            $esMio  = $msg['emisor_rol'] === 'profesor';
-            $esNuevo = !$msg['leido'] && !$esMio;
+        <?php foreach ($lista as $mensaje):
+            $esMio  = $mensaje['emisor_rol'] === 'profesor';
+            $esNuevo = !$mensaje['leido'] && !$esMio;
             $rowClass = $esNuevo ? 'inbox-unread' : ($esMio ? 'inbox-sent' : '');
 
             if ($esMio) {
                 $senderName = 'Tú';
                 $avaClass   = 'inbox-ava-yo';
                 $avaInit    = 'YO';
-                $toStr = !empty($msg['nombreEstudiante'])
-                    ? '→ <span class="rtag rtag-alumno">Alumno</span> '.Security::escapeHtml($msg['nombreEstudiante'])
+                $toStr = !empty($mensaje['nombreEstudiante'])
+                    ? '→ <span class="rtag rtag-alumno">Alumno</span> '.Security::escapeHtml($mensaje['nombreEstudiante'])
                     : '→ <span class="rtag rtag-admin">Admin</span> Dirección';
-            } elseif ($msg['emisor_rol'] === 'admin') {
+            } elseif ($mensaje['emisor_rol'] === 'admin') {
                 $senderName = 'Dirección';
                 $avaClass   = 'inbox-ava-admin';
                 $avaInit    = 'AD';
                 $toStr      = '';
             } else {
-                $senderName = Security::escapeHtml($msg['nombreEstudiante'] ?? 'Alumno');
+                $senderName = Security::escapeHtml($mensaje['nombreEstudiante'] ?? 'Alumno');
                 $avaClass   = 'inbox-ava-alumno';
-                $avaInit    = mb_strtoupper(mb_substr($msg['nombreEstudiante'] ?? 'A', 0, 2));
+                $avaInit    = mb_strtoupper(mb_substr($mensaje['nombreEstudiante'] ?? 'A', 0, 2));
                 $toStr      = '';
             }
 
-            $ts      = strtotime($msg['fecha']);
+            $ts      = strtotime($mensaje['fecha']);
             $timeStr = (date('Y-m-d', $ts) === date('Y-m-d')) ? date('H:i', $ts) : date('d/m/Y', $ts);
         ?>
-        <a href="detalles.php?id=<?= (int)$msg['idReclamacion'] ?>" class="inbox-row <?= $rowClass ?>">
+        <a href="detalles.php?id=<?= (int)$mensaje['idReclamacion'] ?>" class="inbox-row <?= $rowClass ?>">
             <div class="inbox-ava <?= $avaClass ?>"><?= $avaInit ?></div>
             <div class="inbox-row-content">
                 <div class="inbox-row-top">
@@ -137,8 +137,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     </span>
                     <span class="inbox-row-time"><?= $timeStr ?></span>
                 </div>
-                <div class="inbox-row-subject"><?= Security::escapeHtml($msg['asunto']) ?></div>
-                <div class="inbox-row-preview"><?= Security::escapeHtml(mb_substr($msg['descripcion'], 0, 80)) ?>…</div>
+                <div class="inbox-row-subject"><?= Security::escapeHtml($mensaje['asunto']) ?></div>
+                <div class="inbox-row-preview"><?= Security::escapeHtml(mb_substr($mensaje['descripcion'], 0, 80)) ?>…</div>
             </div>
             <?php if ($esNuevo): ?><div class="inbox-new-dot"></div><?php endif; ?>
         </a>

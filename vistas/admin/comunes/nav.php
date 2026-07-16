@@ -12,24 +12,24 @@ require_once __DIR__ . "/../../../modelos/tutores.php";
 $datosAdmin_menu    = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreUsuario_menu = $datosAdmin_menu['nombreDirector'] ?? 'Administrador';
 
-$_nav_counts = obtenerContadoresNavAdmin((int)($_SESSION['idAdmin'] ?? 0));
-$totalSinLeer_menu              = $_nav_counts['total_sin_leer']              ?? 0;
-$totalAdmisionesPendientes_menu = $_nav_counts['total_admisiones_pendientes'] ?? 0;
-$totalChatNoLeidos_menu         = $_nav_counts['total_chat_no_leidos']        ?? 0;
+$navCounts = obtenerContadoresNavAdmin((int)($_SESSION['idAdmin'] ?? 0));
+$totalSinLeer_menu              = $navCounts['total_sin_leer']              ?? 0;
+$totalAdmisionesPendientes_menu = $navCounts['total_admisiones_pendientes'] ?? 0;
+$totalChatNoLeidos_menu         = $navCounts['total_chat_no_leidos']        ?? 0;
 
 // Notification panel: recent unread messages for admin (max 3)
-$_notif_msgs_admin = [];
+$mensajesNotifAdmin = [];
 if ($totalSinLeer_menu > 0) {
-    $_con_notif_a = obtenerConexion();
-    $_stmt_notif_a = mysqli_prepare($_con_notif_a,
+    $conexionNotif = obtenerConexion();
+    $stmtNotif = mysqli_prepare($conexionNotif,
         "SELECT idReclamacion, asunto, fecha FROM reclamaciones
          WHERE leido = 0
            AND ((emisor_rol = 'estudiante' AND idProfesor IS NULL)
              OR (emisor_rol = 'profesor' AND idEstudiante IS NULL))
          ORDER BY idReclamacion DESC LIMIT 3");
-    mysqli_stmt_execute($_stmt_notif_a);
-    $_r_a = mysqli_stmt_get_result($_stmt_notif_a);
-    while ($_row_a = mysqli_fetch_assoc($_r_a)) { $_notif_msgs_admin[] = $_row_a; }
+    mysqli_stmt_execute($stmtNotif);
+    $resultNotif = mysqli_stmt_get_result($stmtNotif);
+    while ($filaNotif = mysqli_fetch_assoc($resultNotif)) { $mensajesNotifAdmin[] = $filaNotif; }
 }
 
 // Active-state helper
@@ -73,10 +73,10 @@ function _nav_active_admin($check) {
     <script>
       try {
         if (JSON.parse(localStorage.getItem("aulapro_tweaks_v1")).sidebarCollapsed) {
-          var s = document.getElementById("main-sidebar");
-          s.classList.add("collapsed");
-          s.style.setProperty("transition", "none", "important");
-          setTimeout(function() { s.style.removeProperty("transition"); }, 150);
+          var sidebarEl = document.getElementById("main-sidebar");
+          sidebarEl.classList.add("collapsed");
+          sidebarEl.style.setProperty("transition", "none", "important");
+          setTimeout(function() { sidebarEl.style.removeProperty("transition"); }, 150);
         }
       } catch (e) {}
     </script>
@@ -407,14 +407,14 @@ function _nav_active_admin($check) {
           </button>
           <div class="notif-panel" id="notif-panel" hidden>
             <div class="notif-panel-head">Notificaciones</div>
-            <?php if (!empty($_notif_msgs_admin)): ?>
+            <?php if (!empty($mensajesNotifAdmin)): ?>
             <div class="notif-group-title">Mensajes sin leer</div>
-            <?php foreach ($_notif_msgs_admin as $_m_a): ?>
+            <?php foreach ($mensajesNotifAdmin as $msgNotif): ?>
             <a href="../mensajes/lista.php" class="notif-item">
               <span class="notif-ico"><i class="fas fa-envelope"></i></span>
               <div class="notif-body">
-                <span class="notif-label"><?= Security::escapeHtml($_m_a['asunto']) ?></span>
-                <span class="notif-time"><?= date('d/m H:i', strtotime($_m_a['fecha'])) ?></span>
+                <span class="notif-label"><?= Security::escapeHtml($msgNotif['asunto']) ?></span>
+                <span class="notif-time"><?= date('d/m H:i', strtotime($msgNotif['fecha'])) ?></span>
               </div>
               <span class="notif-badge-new">Nuevo</span>
             </a>
@@ -458,30 +458,30 @@ function _nav_active_admin($check) {
       }
       if (class_exists('FeatureGuard')) {
           if (FeatureGuard::isSuspended()) {
-              $__suspMsg = FeatureGuard::getSuspensionMessage() ?: 'Esta instancia ha sido suspendida por la plataforma SaaS. Contacta con el proveedor.';
+              $mensajeSuspension = FeatureGuard::getSuspensionMessage() ?: 'Esta instancia ha sido suspendida por la plataforma SaaS. Contacta con el proveedor.';
               echo '<div style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.92);display:flex;align-items:center;justify-content:center;padding:24px;">';
               echo '<div style="max-width:520px;width:100%;background:var(--surface);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">';
               echo '<div style="font-size:3rem;margin-bottom:12px;">🔒</div>';
               echo '<h2 style="margin:0 0 12px;color:var(--rojo);font-size:1.4rem;">Acceso Suspendido</h2>';
-              echo '<p style="color:var(--text);font-size:.95rem;line-height:1.6;margin:0 0 24px;">' . htmlspecialchars($__suspMsg, ENT_QUOTES) . '</p>';
+              echo '<p style="color:var(--text);font-size:.95rem;line-height:1.6;margin:0 0 24px;">' . htmlspecialchars($mensajeSuspension, ENT_QUOTES) . '</p>';
               echo '<a href="/vistas/admin/saas/estado.php" style="display:inline-block;padding:10px 22px;background:var(--accent);color:var(--accent-ink);text-decoration:none;border-radius:8px;font-weight:600;font-size:.9rem;">Ver estado de la plataforma</a>';
               echo '</div></div>';
           }
-          $_saas_nav_msg  = FeatureGuard::getMessage();
-          $_saas_nav_type = FeatureGuard::getMessageType();
-          if ($_saas_nav_msg) {
-              $__colors = [
+          $saasMensaje = FeatureGuard::getMessage();
+          $saasTipo    = FeatureGuard::getMessageType();
+          if ($saasMensaje) {
+              $coloresSaas = [
                   'info'         => ['#3b82f6','#eff6ff','#dbeafe','ℹ️'],
                   'warning'      => ['#d97706','#fffbeb','#fde68a','⚠️'],
                   'error'        => ['#dc2626','#fef2f2','#fecaca','🚨'],
                   'subscription' => ['#7c3aed','#f5f3ff','#ddd6fe','💳'],
                   'activation'   => ['#0369a1','#f0f9ff','#bae6fd','🔑'],
               ];
-              [$__c,$__bg,$__bd,$__icon] = $__colors[$_saas_nav_type] ?? $__colors['info'];
-              echo '<div style="margin-bottom:16px;padding:12px 18px;border-radius:10px;background:'.$__bg.';border:1px solid '.$__bd.';display:flex;align-items:center;gap:12px;">';
-              echo '<span style="font-size:1.25rem;line-height:1;">'.$__icon.'</span>';
-              echo '<div style="flex:1;"><span style="font-weight:700;color:'.$__c.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:var(--text);">'.htmlspecialchars($_saas_nav_msg, ENT_QUOTES).'</span></div>';
-              echo '<a href="../saas/estado.php" style="font-size:.8rem;color:'.$__c.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
+              [$colorSaas,$bgSaas,$bordeSaas,$iconoSaas] = $coloresSaas[$saasTipo] ?? $coloresSaas['info'];
+              echo '<div style="margin-bottom:16px;padding:12px 18px;border-radius:10px;background:'.$bgSaas.';border:1px solid '.$bordeSaas.';display:flex;align-items:center;gap:12px;">';
+              echo '<span style="font-size:1.25rem;line-height:1;">'.$iconoSaas.'</span>';
+              echo '<div style="flex:1;"><span style="font-weight:700;color:'.$colorSaas.';">Mensaje de la plataforma: </span><span style="font-size:.9rem;color:var(--text);">'.htmlspecialchars($saasMensaje, ENT_QUOTES).'</span></div>';
+              echo '<a href="../saas/estado.php" style="font-size:.8rem;color:'.$colorSaas.';font-weight:600;white-space:nowrap;">Ver detalles →</a>';
               echo '</div>';
           }
       }

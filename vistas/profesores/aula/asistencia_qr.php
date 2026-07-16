@@ -9,9 +9,9 @@ $modulos = listarModulosDeProfesor($idProfesor);
 $idModuloSeleccionado = intval($_GET['idModulo'] ?? ($modulos[0]['idModulo'] ?? 0));
 $moduloSeleccionado = null;
 
-foreach ($modulos as $m) {
-    if ($m['idModulo'] == $idModuloSeleccionado) {
-        $moduloSeleccionado = $m;
+foreach ($modulos as $modulo) {
+    if ($modulo['idModulo'] == $idModuloSeleccionado) {
+        $moduloSeleccionado = $modulo;
         break;
     }
 }
@@ -51,9 +51,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         <h3 style="margin-top:0;">Seleccionar Módulo</h3>
         <form method="GET">
             <select name="idModulo" class="input-form" onchange="this.form.submit()" style="margin-bottom:16px;">
-                <?php foreach($modulos as $m): ?>
-                    <option value="<?= $m['idModulo'] ?>" <?= $m['idModulo'] == $idModuloSeleccionado ? 'selected' : '' ?>>
-                        <?= Security::escapeHtml($m['nombreModulo']) ?> (<?= Security::escapeHtml($m['nombreCiclo']) ?>)
+                <?php foreach($modulos as $modulo): ?>
+                    <option value="<?= $modulo['idModulo'] ?>" <?= $modulo['idModulo'] == $idModuloSeleccionado ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($modulo['nombreModulo']) ?> (<?= Security::escapeHtml($modulo['nombreCiclo']) ?>)
                     </option>
                 <?php endforeach; ?>
             </select>

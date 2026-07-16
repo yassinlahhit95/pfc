@@ -41,18 +41,18 @@ $colProgreso = [];
 $colEntregadas = [];
 $colCalificadas = [];
 
-foreach ($tareas as $t) {
-    if ($t['idEntrega']) {
-        if ($t['nota'] !== null) {
-            $colCalificadas[] = $t;
+foreach ($tareas as $tarea) {
+    if ($tarea['idEntrega']) {
+        if ($tarea['nota'] !== null) {
+            $colCalificadas[] = $tarea;
         } else {
-            $colEntregadas[] = $t;
+            $colEntregadas[] = $tarea;
         }
     } else {
-        if ($t['kanban_estado'] === 'progress') {
-            $colProgreso[] = $t;
+        if ($tarea['kanban_estado'] === 'progress') {
+            $colProgreso[] = $tarea;
         } else {
-            $colDisponibles[] = $t;
+            $colDisponibles[] = $tarea;
         }
     }
 }
@@ -157,12 +157,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- COLUMNA: PENDIENTES -->
     <div class="kanban-col" id="col-todo" data-status="todo">
         <h3>Pendientes <span class="badge badge-azul"><?= count($colDisponibles) ?></span></h3>
-        <?php foreach($colDisponibles as $t): ?>
-            <div class="kanban-card" draggable="true" data-id="<?= $t['idTarea'] ?>">
-                <span class="mod"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
-                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
-                <p><?= Security::escapeHtml(substr(strip_tags($t['descripcion']), 0, 80)) ?>...</p>
-                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Ver detalles</a>
+        <?php foreach($colDisponibles as $tarea): ?>
+            <div class="kanban-card" draggable="true" data-id="<?= $tarea['idTarea'] ?>">
+                <span class="mod"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
+                <p><?= Security::escapeHtml(substr(strip_tags($tarea['descripcion']), 0, 80)) ?>...</p>
+                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver detalles</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -170,12 +170,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- COLUMNA: EN PROGRESO (Gestionada en BD) -->
     <div class="kanban-col" id="col-progress" data-status="progress">
         <h3>En Progreso <span class="badge badge-ambar" id="count-progress"><?= count($colProgreso) ?></span></h3>
-        <?php foreach($colProgreso as $t): ?>
-            <div class="kanban-card" draggable="true" data-id="<?= $t['idTarea'] ?>">
-                <span class="mod"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
-                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
-                <p><?= Security::escapeHtml(substr(strip_tags($t['descripcion']), 0, 80)) ?>...</p>
-                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Ver detalles</a>
+        <?php foreach($colProgreso as $tarea): ?>
+            <div class="kanban-card" draggable="true" data-id="<?= $tarea['idTarea'] ?>">
+                <span class="mod"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
+                <p><?= Security::escapeHtml(substr(strip_tags($tarea['descripcion']), 0, 80)) ?>...</p>
+                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver detalles</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -183,12 +183,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- COLUMNA: ENTREGADAS -->
     <div class="kanban-col" id="col-submitted" data-status="submitted">
         <h3>Entregadas <span class="badge badge-indigo"><?= count($colEntregadas) ?></span></h3>
-        <?php foreach($colEntregadas as $t): ?>
+        <?php foreach($colEntregadas as $tarea): ?>
             <div class="kanban-card" style="cursor:default;">
-                <span class="mod" style="background:color-mix(in oklab, var(--accent) 12%, var(--surface)); color:var(--accent);"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
-                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
+                <span class="mod" style="background:color-mix(in oklab, var(--accent) 12%, var(--surface)); color:var(--accent);"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
                 <p style="color:var(--verde); font-weight:600; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Esperando corrección</p>
-                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Revisar entrega</a>
+                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Revisar entrega</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -196,12 +196,12 @@ include_once __DIR__ . "/../comunes/nav.php";
     <!-- COLUMNA: CALIFICADAS -->
     <div class="kanban-col" id="col-graded" data-status="graded">
         <h3>Calificadas <span class="badge badge-verde"><?= count($colCalificadas) ?></span></h3>
-        <?php foreach($colCalificadas as $t): ?>
+        <?php foreach($colCalificadas as $tarea): ?>
             <div class="kanban-card" style="cursor:default; opacity:0.9;">
-                <span class="mod" style="background:var(--verde-suave); color:var(--verde-ink);"><?= Security::escapeHtml($t['nombreModulo']) ?></span>
-                <h4><?= Security::escapeHtml(substr($t['titulo'], 0, 40)) ?></h4>
-                <p style="color:var(--text); font-weight:700; font-size:1.1rem; margin-bottom:8px;">Nota: <?= number_format($t['nota'], 1) ?></p>
-                <a href="tarea_detalle.php?id=<?= $t['idTarea'] ?>" class="btn">Ver feedback</a>
+                <span class="mod" style="background:var(--verde-suave); color:var(--verde-ink);"><?= Security::escapeHtml($tarea['nombreModulo']) ?></span>
+                <h4><?= Security::escapeHtml(substr($tarea['titulo'], 0, 40)) ?></h4>
+                <p style="color:var(--text); font-weight:700; font-size:1.1rem; margin-bottom:8px;">Nota: <?= number_format($tarea['nota'], 1) ?></p>
+                <a href="tarea_detalle.php?id=<?= $tarea['idTarea'] ?>" class="btn">Ver feedback</a>
             </div>
         <?php endforeach; ?>
     </div>

@@ -41,13 +41,13 @@ export async function setupFirebase(id, rol) {
     if (sessionStorage.getItem(sessionKey)) return;
 
     try {
-        var p = await Notification.requestPermission();
-        if (p !== 'granted') return;
+        var permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
 
         // Reuse existing SW if already registered
         var regs = await navigator.serviceWorker.getRegistrations();
-        var sw = regs.find(function(r) {
-            var scriptUrl = (r.active || r.installing || r.waiting || {}).scriptURL || '';
+        var sw = regs.find(function(reg) {
+            var scriptUrl = (reg.active || reg.installing || reg.waiting || {}).scriptURL || '';
             return scriptUrl.includes('firebase-messaging-sw.js');
         });
 
@@ -81,42 +81,36 @@ export async function setupFirebase(id, rol) {
             serviceWorkerRegistration: sw
         };
 
-        var t;
+        var token;
         try {
-            t = await getToken(fcm, tokenOpts);
+            token = await getToken(fcm, tokenOpts);
         } catch (e) {
             if (e.name === 'AbortError') {
                 // Stale push subscription — clear and retry once
                 var sub = await sw.pushManager.getSubscription();
                 if (sub) await sub.unsubscribe();
-                try { t = await getToken(fcm, tokenOpts); } catch (_) { return; }
+                try { token = await getToken(fcm, tokenOpts); } catch (_) { return; }
             } else {
                 throw e;
             }
         }
 
-        if (t) {
+        if (token) {
             sessionStorage.setItem(sessionKey, '1');
 
             var fd = new FormData();
-            fd.append('token', t);
+            fd.append('token', token);
             fd.append('userId', id);
             fd.append('userRole', rol);
 
             // Use appRoot for the fetch path
-            var res = await fetch(appRoot + 'controladores/firebase/guardar_token.php', {
+            await fetch(appRoot + 'controladores/firebase/guardar_token.php', {
                 method: 'POST',
                 body: fd
             });
-            var json = await res.json();
-            if (json.success) {
-
-            }
         }
     } catch (e) {
         // Silently ignore push-service errors (transient browser/network issues)
-        if (e.name !== 'AbortError' && !String(e.message).includes('push service')) {
-        }
     }
 }
 
@@ -138,15 +132,15 @@ function bumpNotifDot() {
 }
 
 if (fcm) {
-    onMessage(fcm, function(p) {
-        const t = (p.data && p.data.title) ? p.data.title : (p.notification ? p.notification.title : "Aviso");
-        const m = (p.data && p.data.body)  ? p.data.body  : (p.notification ? p.notification.body  : "Tienes un mensaje nuevo");
+    onMessage(fcm, function(payload) {
+        const title = (payload.data && payload.data.title) ? payload.data.title : (payload.notification ? payload.notification.title : "Aviso");
+        const body  = (payload.data && payload.data.body)  ? payload.data.body  : (payload.notification ? payload.notification.body  : "Tienes un mensaje nuevo");
 
-        avisoPush(t, m);
+        avisoPush(title, body);
         bumpNotifDot();
-        
+
         // Disparar evento para que otras partes de la UI (ej. lista de chats) puedan actualizarse
-        document.dispatchEvent(new CustomEvent('firebaseMessageReceived', { detail: p }));
+        document.dispatchEvent(new CustomEvent('firebaseMessageReceived', { detail: payload }));
     });
 }
 

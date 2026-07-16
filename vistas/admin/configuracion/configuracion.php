@@ -29,7 +29,7 @@ include_once __DIR__ . '/../comunes/nav.php';
         <p class="subtitulo-encabezado">Ajusta los datos, logotipos y módulos de tu instancia</p>
     </div>
     <div class="acciones-pagina">
-        <button type="button" class="boton-primario" onclick="var f=document.getElementById('form-configuracion');f.requestSubmit?f.requestSubmit():f.submit()">
+        <button type="button" class="boton-primario" onclick="var formEl=document.getElementById('form-configuracion');formEl.requestSubmit?formEl.requestSubmit():formEl.submit()">
             <i class="fas fa-save"></i> Guardar cambios
         </button>
     </div>
@@ -73,7 +73,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             ['key' => 'feature_landing',      'icon' => 'fa-globe',         'color' => '#0ea5e9', 'label' => 'Página Web Pública','desc' => 'Landing personalizable del centro con plantillas'],
         ];
         foreach ($features as $feat):
-            $val = $cfg[$feat['key']] ?? 1;
+            $featureActivo = $cfg[$feat['key']] ?? 1;
         ?>
         <div class="feature-card<?= $saasLocked ? ' feature-card-locked' : '' ?>">
             <div class="feature-info">
@@ -84,10 +84,10 @@ include_once __DIR__ . '/../comunes/nav.php';
                 </div>
             </div>
             <?php if ($saasLocked): ?>
-                <span class="lock-badge"><i class="fas fa-lock"></i> <?= $val ? 'Activo' : 'Inactivo' ?></span>
+                <span class="lock-badge"><i class="fas fa-lock"></i> <?= $featureActivo ? 'Activo' : 'Inactivo' ?></span>
             <?php else: ?>
             <label class="feature-switch">
-                <input type="checkbox" class="toggle-feature" data-feature="<?= $feat['key'] ?>" <?= $val ? 'checked' : '' ?>>
+                <input type="checkbox" class="toggle-feature" data-feature="<?= $feat['key'] ?>" <?= $featureActivo ? 'checked' : '' ?>>
                 <span class="feature-track"></span>
             </label>
             <?php endif; ?>
@@ -481,9 +481,9 @@ function previewLogoSelect(input, field) {
 
 // ── Restore logo delete pending state after failed validation ──────────
 document.addEventListener('DOMContentLoaded', function () {
-    <?php foreach (['logoCentro','logoGobierno1','logoGobierno2'] as $f): ?>
-    <?php if (!empty($datos['borrar_' . $f])): ?>
-    marcarBorrarLogo('<?= $f ?>');
+    <?php foreach (['logoCentro','logoGobierno1','logoGobierno2'] as $campoLogo): ?>
+    <?php if (!empty($datos['borrar_' . $campoLogo])): ?>
+    marcarBorrarLogo('<?= $campoLogo ?>');
     <?php endif; ?>
     <?php endforeach; ?>
 });

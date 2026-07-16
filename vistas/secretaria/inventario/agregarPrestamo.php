@@ -11,15 +11,15 @@ require_once __DIR__ . "/../../../modelos/inventario.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 
-$articulos_disponibles = listarArticulos();
-$todos_los_ciclos = listarTodosLosCiclos();
+$articulosDisponibles = listarArticulos();
+$todosLosCiclos = listarTodosLosCiclos();
 
 $idCicloFiltro = (int)($_GET['idCiclo'] ?? 0);
 
 if (!empty($idCicloFiltro)) {
-    $todos_los_estudiantes = listarEstudiantesPorCiclo($idCicloFiltro);
+    $todosLosEstudiantes = listarEstudiantesPorCiclo($idCicloFiltro);
 } else {
-    $todos_los_estudiantes = listarEstudiantes();
+    $todosLosEstudiantes = listarEstudiantes();
 }
 
 $datos = $_SESSION['datos_prestamo'] ?? [];
@@ -42,7 +42,7 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Filtrar Estudiantes por Ciclo:</label>
             <select name="idCiclo" onchange="this.form.submit()">
                 <option value="">-- Todos los ciclos --</option>
-                <?php foreach ($todos_los_ciclos as $ciclo) { ?>
+                <?php foreach ($todosLosCiclos as $ciclo) { ?>
                     <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($idCicloFiltro == $ciclo['idCiclo']) ? 'selected' : '' ?>>
                         <?= Security::escapeHtml($ciclo['nombreCiclo']) ?>
                     </option>
@@ -59,10 +59,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Recurso (Solo disponibles)</label>
                 <select name="idArticulo">
                     <option value="">-- Seleccione un equipo --</option>
-                    <?php foreach ($articulos_disponibles as $art) { ?>
-                        <?php if ($art['estado'] == 'disponible') { ?>
-                            <option value="<?= (int)$art['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $art['idArticulo']) ? 'selected' : '' ?>>
-                                <?= Security::escapeHtml($art['nombreArticulo']) ?> (<?= Security::escapeHtml($art['numeroSerie']) ?>)
+                    <?php foreach ($articulosDisponibles as $articulo) { ?>
+                        <?php if ($articulo['estado'] == 'disponible') { ?>
+                            <option value="<?= (int)$articulo['idArticulo'] ?>" <?= (isset($datos['idArticulo']) && $datos['idArticulo'] == $articulo['idArticulo']) ? 'selected' : '' ?>>
+                                <?= Security::escapeHtml($articulo['nombreArticulo']) ?> (<?= Security::escapeHtml($articulo['numeroSerie']) ?>)
                             </option>
                         <?php } ?>
                     <?php } ?>
@@ -74,9 +74,9 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <label>Estudiante</label>
                 <select name="idEstudiante">
                     <option value="">-- Seleccione un estudiante --</option>
-                    <?php foreach ($todos_los_estudiantes as $est) { ?>
-                        <option value="<?= (int)$est['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $est['idEstudiante']) ? 'selected' : '' ?>>
-                            <?= Security::escapeHtml($est['nombreEstudiante']) ?>
+                    <?php foreach ($todosLosEstudiantes as $estudiante) { ?>
+                        <option value="<?= (int)$estudiante['idEstudiante'] ?>" <?= (isset($datos['idEstudiante']) && $datos['idEstudiante'] == $estudiante['idEstudiante']) ? 'selected' : '' ?>>
+                            <?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>
                         </option>
                     <?php } ?>
                 </select>

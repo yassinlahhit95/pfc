@@ -20,16 +20,16 @@ if ($esTutor && $idCicloTutor) {
     $ocupacionEscuela  = listarOcupacionAulasEscuela();
     $franjasActuales   = $idCicloHorario ? obtenerFranjasHorario($idCicloHorario) : [];
     $todosSlots = [];
-    for ($h = 8; $h <= 21; $h++) {
-        for ($m = 0; $m < 60; $m += 15) {
-            if ($h === 21 && $m > 0) break;
-            $todosSlots[] = sprintf('%02d:%02d', $h, $m);
+    for ($hora = 8; $hora <= 21; $hora++) {
+        for ($minuto = 0; $minuto < 60; $minuto += 15) {
+            if ($hora === 21 && $minuto > 0) break;
+            $todosSlots[] = sprintf('%02d:%02d', $hora, $minuto);
         }
     }
-    $endSlots   = array_values(array_filter($todosSlots, fn($s) => $s >= '08:15'));
+    $endSlots   = array_values(array_filter($todosSlots, fn($slot) => $slot >= '08:15'));
     $usedStarts = array_column($franjasActuales, 'inicio');
-    $freeStarts = array_values(array_filter($todosSlots, fn($s) => $s < '21:00' && !in_array($s, $usedStarts)));
-    $aulasParaJs = array_map(fn($au) => ['id' => (int)$au['idAula'], 'codigo' => $au['codigoAula']], $aulasDisponibles);
+    $freeStarts = array_values(array_filter($todosSlots, fn($slot) => $slot < '21:00' && !in_array($slot, $usedStarts)));
+    $aulasParaJs = array_map(fn($aula) => ['id' => (int)$aula['idAula'], 'codigo' => $aula['codigoAula']], $aulasDisponibles);
 } else {
     // Normal professor: read-only view of their own cycles
     $ciclos = listarCiclosDeProfesor($idProfesor);
@@ -59,9 +59,9 @@ include_once __DIR__ . "/../comunes/nav.php";
     <form method="GET" class="horario-selector-form">
         <label for="ciclo">Ciclo:</label>
         <select name="ciclo" id="ciclo" onchange="this.form.submit()">
-            <?php foreach ($ciclos as $c) { ?>
-                <option value="<?= Security::escapeHtml($c['idCiclo']) ?>" <?= ($c['idCiclo'] == $idCicloHorario) ? 'selected' : '' ?>>
-                    <?= Security::escapeHtml($c['nombreCiclo']) ?> (<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>)
+            <?php foreach ($ciclos as $ciclo) { ?>
+                <option value="<?= Security::escapeHtml($ciclo['idCiclo']) ?>" <?= ($ciclo['idCiclo'] == $idCicloHorario) ? 'selected' : '' ?>>
+                    <?= Security::escapeHtml($ciclo['nombreCiclo']) ?> (<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>)
                 </option>
             <?php } ?>
         </select>
@@ -95,23 +95,23 @@ include_once __DIR__ . "/../comunes/nav.php";
             <?php if (empty($asignaciones)) { ?>
                 <p class="horario-panel-vacio">Este ciclo no tiene módulos con profesor asignado.</p>
             <?php } else { ?>
-                <?php foreach ($asignaciones as $a) {
-                    $color = horarioColorModulo($a['idModulo']);
+                <?php foreach ($asignaciones as $asignacion) {
+                    $color = horarioColorModulo($asignacion['idModulo']);
                 ?>
                     <div class="horario-tarjeta"
                          draggable="true"
-                         data-modulo="<?= Security::escapeHtml($a['idModulo']) ?>"
-                         data-profesor="<?= Security::escapeHtml($a['idProfesor']) ?>"
-                         data-modulo-nombre="<?= Security::escapeHtml($a['nombreModulo']) ?>"
-                         data-profesor-nombre="<?= Security::escapeHtml($a['nombreProfesor']) ?>"
+                         data-modulo="<?= Security::escapeHtml($asignacion['idModulo']) ?>"
+                         data-profesor="<?= Security::escapeHtml($asignacion['idProfesor']) ?>"
+                         data-modulo-nombre="<?= Security::escapeHtml($asignacion['nombreModulo']) ?>"
+                         data-profesor-nombre="<?= Security::escapeHtml($asignacion['nombreProfesor']) ?>"
                          data-color="<?= Security::escapeHtml($color) ?>">
                         <div class="horario-tarjeta-info">
                             <span class="horario-avatar" style="color:<?= Security::escapeHtml($color) ?>; border-color:<?= Security::escapeHtml($color) ?>;">
-                                <?= Security::escapeHtml(horarioIniciales($a['nombreModulo'])) ?>
+                                <?= Security::escapeHtml(horarioIniciales($asignacion['nombreModulo'])) ?>
                             </span>
-                            <span class="horario-tarjeta-modulo"><?= Security::escapeHtml($a['nombreModulo']) ?></span>
+                            <span class="horario-tarjeta-modulo"><?= Security::escapeHtml($asignacion['nombreModulo']) ?></span>
                         </div>
-                        <span class="horario-tarjeta-prof"><?= Security::escapeHtml($a['nombreProfesor']) ?></span>
+                        <span class="horario-tarjeta-prof"><?= Security::escapeHtml($asignacion['nombreProfesor']) ?></span>
                     </div>
                 <?php } ?>
             <?php } ?>
@@ -137,8 +137,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <label for="franjaInicio">Inicio</label>
                         <select id="franjaInicio" class="hf-sel">
                             <option value="">— hora —</option>
-                            <?php foreach ($freeStarts as $s): ?>
-                                <option value="<?= $s ?>"><?= $s ?></option>
+                            <?php foreach ($freeStarts as $slot): ?>
+                                <option value="<?= $slot ?>"><?= $slot ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -178,8 +178,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <thead>
                             <tr>
                                 <th>Aula</th>
-                                <?php foreach ($dias as $d): ?>
-                                    <th style="text-align:center;"><?= Security::escapeHtml($d) ?></th>
+                                <?php foreach ($dias as $dia): ?>
+                                    <th style="text-align:center;"><?= Security::escapeHtml($dia) ?></th>
                                 <?php endforeach; ?>
                             </tr>
                         </thead>
@@ -191,12 +191,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                                 <td><strong><?= Security::escapeHtml($aula['codigoAula']) ?></strong><br><span class="texto-suave" style="font-size:.72rem;"><?= Security::escapeHtml($aula['nombreAula']) ?></span></td>
                                 <?php foreach ($dias as $dia):
                                     $ocupadas = [];
-                                    foreach ($franjas as $f) {
-                                        if ($f['recreo']) continue;
-                                        $clave = $dia . '|' . $f['inicio'];
+                                    foreach ($franjas as $franja) {
+                                        if ($franja['recreo']) continue;
+                                        $clave = $dia . '|' . $franja['inicio'];
                                         if (isset($ocupacionEscuela[$clave][$idAula])) {
                                             $ocu = $ocupacionEscuela[$clave][$idAula];
-                                            $ocupadas[] = Security::escapeHtml($f['inicio']) . ' ' . Security::escapeHtml($ocu['abreviaturaCiclo']);
+                                            $ocupadas[] = Security::escapeHtml($franja['inicio']) . ' ' . Security::escapeHtml($ocu['abreviaturaCiclo']);
                                         }
                                     }
                                 ?>
@@ -204,8 +204,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                                     <?php if (empty($ocupadas)): ?>
                                         <span class="texto-estado verde" style="font-size:.7rem;">Libre</span>
                                     <?php else: ?>
-                                        <?php foreach ($ocupadas as $o): ?>
-                                            <span class="texto-estado rojo" style="font-size:.68rem;display:block;"><?= $o ?></span>
+                                        <?php foreach ($ocupadas as $ocupada): ?>
+                                            <span class="texto-estado rojo" style="font-size:.68rem;display:block;"><?= $ocupada ?></span>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </td>

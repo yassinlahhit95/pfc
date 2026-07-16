@@ -32,11 +32,11 @@ include_once __DIR__ . '/../comunes/nav.php';
 
 <?php
 // JSON for nivel-cascade JS
-$ciclosJson = json_encode(array_map(fn($c) => [
-    'id'       => (int)$c['idCiclo'],
-    'nombre'   => $c['nombreCiclo'],
-    'abrev'    => $c['abreviaturaCiclo'],
-    'idNivel'  => (int)$c['idNivel'],
+$ciclosJson = json_encode(array_map(fn($ciclo) => [
+    'id'       => (int)$ciclo['idCiclo'],
+    'nombre'   => $ciclo['nombreCiclo'],
+    'abrev'    => $ciclo['abreviaturaCiclo'],
+    'idNivel'  => (int)$ciclo['idNivel'],
 ], $ciclos), JSON_UNESCAPED_UNICODE);
 ?>
 
@@ -53,14 +53,14 @@ $ciclosJson = json_encode(array_map(fn($c) => [
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-boletin" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
-                <?php foreach ($niveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($niveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="idCiclo" id="ciclo-boletin" class="informe-select" required onchange="fetchEstudiantes(this)">
                 <option value="">— Seleccionar ciclo —</option>
-                <?php foreach ($ciclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">[<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -95,14 +95,14 @@ $ciclosJson = json_encode(array_map(fn($c) => [
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-listado" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
-                <?php foreach ($niveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($niveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="idCiclo" id="ciclo-listado" class="informe-select" onchange="fetchEstudiantes(this)">
                 <option value="">— Todos los ciclos —</option>
-                <?php foreach ($ciclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">[<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -136,14 +136,14 @@ $ciclosJson = json_encode(array_map(fn($c) => [
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
             <select name="_nivel" class="informe-select nivel-select" data-target="ciclo-horario" onchange="cascadeInforme(this)">
                 <option value="">Todos los niveles</option>
-                <?php foreach ($niveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($niveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="idCiclo" id="ciclo-horario" class="informe-select" required>
                 <option value="">— Seleccionar ciclo —</option>
-                <?php foreach ($ciclos as $c): ?>
-                    <option value="<?= (int)$c['idCiclo'] ?>">[<?= Security::escapeHtml($c['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+                <?php foreach ($ciclos as $ciclo): ?>
+                    <option value="<?= (int)$ciclo['idCiclo'] ?>">[<?= Security::escapeHtml($ciclo['abreviaturaCiclo']) ?>] <?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
                 <?php endforeach; ?>
             </select>
             <button type="submit" class="informe-btn">
@@ -170,11 +170,11 @@ function cascadeInforme(selectNivel) {
 
     while ($ciclo.options.length > 1) $ciclo.remove(1);
 
-    _ciclosInformes.forEach(function(c) {
-        if (!idNivel || c.idNivel === idNivel) {
+    _ciclosInformes.forEach(function(cicloItem) {
+        if (!idNivel || cicloItem.idNivel === idNivel) {
             var opt = document.createElement('option');
-            opt.value = c.id;
-            opt.textContent = '[' + c.abrev + '] ' + c.nombre;
+            opt.value = cicloItem.id;
+            opt.textContent = '[' + cicloItem.abrev + '] ' + cicloItem.nombre;
             $ciclo.appendChild(opt);
         }
     });
@@ -242,8 +242,8 @@ function filtrarEstudiantesLista(type) {
 function toggleAllCheckboxes(master, wrapperId) {
     var $wrapper = document.getElementById(wrapperId);
     var checks   = $wrapper.querySelectorAll('input[type="checkbox"]');
-    checks.forEach(c => {
-        if (c !== master) c.checked = master.checked;
+    checks.forEach(checkbox => {
+        if (checkbox !== master) checkbox.checked = master.checked;
     });
 }
 </script>

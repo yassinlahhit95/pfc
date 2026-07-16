@@ -174,7 +174,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="glass-card" style="display:flex; align-items:center; justify-content:space-between; background: linear-gradient(135deg, rgba(var(--accent-rgb),0.05), transparent);">
             <div style="font-size:0.85rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; font-weight:600;">Nota Actual</div>
             <div class="texto-negrita <?= $notaActual >= 5 ? 'texto-verde' : 'texto-rojo' ?>" style="font-size:2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <?= $notaActual ?>
+                <?= Security::escapeHtml($notaActual) ?>
             </div>
         </div>
         <?php } ?>

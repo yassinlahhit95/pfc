@@ -7,7 +7,7 @@ unset($_SESSION['exito'], $_SESSION['errores']);
 
 require_once __DIR__ . "/../../../modelos/directores.php";
 
-$todos_los_directores = listarDirectores();
+$todosLosDirectores = listarDirectores();
 
 $titulo_pagina = "AULAPRO | GESTIÓN DE DIRECTORES";
 $seccion = 'directores';
@@ -35,10 +35,10 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todos_los_directores)) { ?>
+                <?php if (empty($todosLosDirectores)) { ?>
                     <tr><td colspan="5" class="vacio">No hay directores registrados</td></tr>
                 <?php } else { ?>
-                    <?php foreach ($todos_los_directores as $director) { ?>
+                    <?php foreach ($todosLosDirectores as $director) { ?>
                     <tr>
                         <td><?= (int)$director['idDirector'] ?></td>
                         <td><b><?= Security::escapeHtml($director['nombreDirector']) ?></b></td>

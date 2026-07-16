@@ -27,26 +27,26 @@ $tipos     = landing_tipos();
 $menuAnclas = [];
 $contactoData = [];
 
-foreach ($secciones as $s) {
-    if (!isset($tipos[$s['tipo']])) continue;
-    $contenido = json_decode($s['contenido'] ?? '{}', true) ?: [];
-    
+foreach ($secciones as $seccion) {
+    if (!isset($tipos[$seccion['tipo']])) continue;
+    $contenido = json_decode($seccion['contenido'] ?? '{}', true) ?: [];
+
     // Si es la sección de contacto, guardamos sus datos
-    if ($s['tipo'] === 'contacto') {
+    if ($seccion['tipo'] === 'contacto') {
         $contactoData = $contenido;
     }
 
-    $navVisible = $contenido['navVisible'] ?? (!empty($tipos[$s['tipo']]['menu']) ? 'si' : 'no');
-    $navTexto   = $contenido['navTexto'] ?? ($tipos[$s['tipo']]['menu'] ?? '');
+    $navVisible = $contenido['navVisible'] ?? (!empty($tipos[$seccion['tipo']]['menu']) ? 'si' : 'no');
+    $navTexto   = $contenido['navTexto'] ?? ($tipos[$seccion['tipo']]['menu'] ?? '');
 
-    if ($navVisible === 'si' && !empty($navTexto) && !isset($menuAnclas[$s['tipo']])) {
-        $esSeparado = ($s['tipo'] === 'contacto' && ($contenido['modoVisualizacion'] ?? 'integrado') === 'separado');
-        $menuAnclas[$s['tipo']] = [
+    if ($navVisible === 'si' && !empty($navTexto) && !isset($menuAnclas[$seccion['tipo']])) {
+        $esSeparado = ($seccion['tipo'] === 'contacto' && ($contenido['modoVisualizacion'] ?? 'integrado') === 'separado');
+        $menuAnclas[$seccion['tipo']] = [
             'texto' => $navTexto,
             'separado' => $esSeparado
         ];
         // La sección de noticias enlaza al blog completo, no a un ancla
-        if ($s['tipo'] === 'noticias') $menuAnclas[$s['tipo']]['url'] = '/vistas/blog.php';
+        if ($seccion['tipo'] === 'noticias') $menuAnclas[$seccion['tipo']]['url'] = '/vistas/blog.php';
     }
 }
 

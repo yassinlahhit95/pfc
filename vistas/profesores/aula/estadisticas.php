@@ -36,7 +36,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <h1><i class="fas fa-chart-bar"></i> ESTADÍSTICAS DE USO</h1>
     <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;"><?= Security::escapeHtml($modulo['nombreModulo']) ?></p>
   </div>
-  <a href="recursos.php?id=<?= Security::escapeHtml($idModulo ) ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
+  <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
 <h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);"><i class="fas fa-fire"></i> Recursos más consultados</h3>
@@ -50,14 +50,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <table class="recurso-lista">
   <thead><tr><th>Recurso</th><th>Vistas</th><th>Descargas</th><th>Última consulta</th><th style="text-align:right;">Control de lectura</th></tr></thead>
   <tbody>
-    <?php foreach ($topRecursos as $r):
-      [$cls, $ico] = iconoArchivoAula($r['extension']); ?>
+    <?php foreach ($topRecursos as $recurso):
+      [$cls, $ico] = iconoArchivoAula($recurso['extension']); ?>
     <tr>
-      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls ) ?>"><i class="fas <?= Security::escapeHtml($ico ) ?>"></i></span><?= Security::escapeHtml($r['nombreOriginal']) ?></div></td>
-      <td><?= Security::escapeHtml(intval($r['vistas'])) ?></td>
-      <td><?= Security::escapeHtml(intval($r['descargas'])) ?></td>
-      <td><?= Security::escapeHtml($r['ultimoAcceso'] ? date('d/m/Y H:i', strtotime($r['ultimoAcceso'])) : '—') ?></td>
-      <td style="text-align:right;"><a href="estadisticas.php?id=<?= Security::escapeHtml($idModulo ) ?>&archivo=<?= Security::escapeHtml($r['idArchivo'] ) ?>" class="recurso-btn"><i class="fas fa-users"></i> Ver detalle</a></td>
+      <td><div class="recurso-archivo-nombre"><span class="recurso-archivo-icono <?= Security::escapeHtml($cls) ?>"><i class="fas <?= Security::escapeHtml($ico) ?>"></i></span><?= Security::escapeHtml($recurso['nombreOriginal']) ?></div></td>
+      <td><?= Security::escapeHtml(intval($recurso['vistas'])) ?></td>
+      <td><?= Security::escapeHtml(intval($recurso['descargas'])) ?></td>
+      <td><?= Security::escapeHtml($recurso['ultimoAcceso'] ? date('d/m/Y H:i', strtotime($recurso['ultimoAcceso'])) : '—') ?></td>
+      <td style="text-align:right;"><a href="estadisticas.php?id=<?= Security::escapeHtml($idModulo) ?>&archivo=<?= Security::escapeHtml($recurso['idArchivo']) ?>" class="recurso-btn"><i class="fas fa-users"></i> Ver detalle</a></td>
     </tr>
     <?php endforeach; ?>
   </tbody>
@@ -69,11 +69,11 @@ include_once __DIR__ . "/../comunes/nav.php";
 <table class="recurso-lista">
   <thead><tr><th>Estudiante</th><th>¿Lo ha visto?</th><th>¿Lo ha descargado?</th></tr></thead>
   <tbody>
-    <?php foreach ($lectura as $e): ?>
+    <?php foreach ($lectura as $estudiante): ?>
     <tr>
-      <td><?= Security::escapeHtml($e['nombreEstudiante']) ?></td>
-      <td><?php if (!empty($e['fechaVista'])): ?><span class="badge badge-verde"><i class="fas fa-eye"></i> Visto</span> <small class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($e['fechaVista']))) ?></small><?php else: ?><span class="badge badge-gris">Sin abrir</span><?php endif; ?></td>
-      <td><?php if (!empty($e['fechaDescarga'])): ?><span class="badge badge-azul"><i class="fas fa-download"></i> Descargado</span> <small class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($e['fechaDescarga']))) ?></small><?php else: ?><span class="badge badge-gris">No</span><?php endif; ?></td>
+      <td><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></td>
+      <td><?php if (!empty($estudiante['fechaVista'])): ?><span class="badge badge-verde"><i class="fas fa-eye"></i> Visto</span> <small class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($estudiante['fechaVista']))) ?></small><?php else: ?><span class="badge badge-gris">Sin abrir</span><?php endif; ?></td>
+      <td><?php if (!empty($estudiante['fechaDescarga'])): ?><span class="badge badge-azul"><i class="fas fa-download"></i> Descargado</span> <small class="texto-suave"><?= Security::escapeHtml(date('d/m/Y H:i', strtotime($estudiante['fechaDescarga']))) ?></small><?php else: ?><span class="badge badge-gris">No</span><?php endif; ?></td>
     </tr>
     <?php endforeach; ?>
     <?php if (empty($lectura)): ?><tr><td colspan="3" style="text-align:center; padding:40px 20px; color:var(--mut);"><i class="fas fa-user-graduate" style="font-size:2rem; margin-bottom:12px; display:block; opacity:0.5;"></i>No hay estudiantes matriculados en este ciclo o no hay datos registrados.</td></tr><?php endif; ?>
@@ -82,5 +82,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

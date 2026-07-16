@@ -13,7 +13,6 @@ require_once __DIR__ . "/../../../modelos/configuracion.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
 $tfg = obtenerTFGporEstudiante($idEstudiante);
-$estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $notaTFG = obtenerCalificacionTFG($idEstudiante);
 $cfg = obtenerConfiguracionCentro();
 $entregaAbierta = (bool)($cfg['feature_subida_tfg'] ?? 1);
@@ -61,8 +60,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <div class="caja espacio-medio">
                     <a href="../../../controladores/comunes/verTFG.php?id=<?= Security::escapeHtml($idEstudiante) ?>&modo=descarga" target="_blank" class="boton-secundario">DESCARGAR</a>
                     <form action="../../../controladores/estudiantes/pfc/eliminar.php" method="POST">
-    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante ) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                        <input type="hidden" name="idEstudiante" value="<?= Security::escapeHtml($idEstudiante) ?>">
                         <input type="submit" name="borrarTFG" class="boton-secundario color-error" value="ELIMINAR" data-reload="true" data-ajax-confirm="¿Estás seguro de que deseas eliminar tu TFG? Esta acción no se puede deshacer.">
                     </form>
                 </div>
@@ -75,11 +74,11 @@ include_once __DIR__ . "/../comunes/nav.php";
             <div class="nombre-detalle">Nota Final</div>
             <div class="valor-detalle">
                 <?php if ($notaTFG['nota'] >= 5) { ?>
-                    <span class="texto-verde texto-negrita" style="font-size: 1.3em;"><?= Security::escapeHtml($notaTFG['nota'] ) ?> / 10 — APROBADO</span>
+                    <span class="texto-verde texto-negrita" style="font-size: 1.3em;"><?= Security::escapeHtml($notaTFG['nota']) ?> / 10 — APROBADO</span>
                 <?php } else { ?>
-                    <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= Security::escapeHtml($notaTFG['nota'] ) ?> / 10 — SUSPENSO</span>
+                    <span class="texto-rojo texto-negrita" style="font-size: 1.3em;"><?= Security::escapeHtml($notaTFG['nota']) ?> / 10 — SUSPENSO</span>
                 <?php } ?>
-                <p class="texto-suave" style="margin-top: 5px;"><em>Observaciones: <?= Security::escapeHtml($notaTFG['observaciones'] ) ?></em></p>
+                <p class="texto-suave" style="margin-top: 5px;"><em>Observaciones: <?= Security::escapeHtml($notaTFG['observaciones']) ?></em></p>
             </div>
         </div>
     <?php } ?>
@@ -110,5 +109,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

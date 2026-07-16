@@ -15,7 +15,7 @@ $listaNiveles = listarNiveles();
 
 $idNivelFiltro = (int)($_GET['idNivel'] ?? 0);
 $ciclosFiltrados = $idNivelFiltro
-    ? array_values(array_filter($listaCiclos, fn($c) => (int)$c['idNivel'] === $idNivelFiltro))
+    ? array_values(array_filter($listaCiclos, fn($ciclo) => (int)$ciclo['idNivel'] === $idNivelFiltro))
     : $listaCiclos;
 
 $idCicloElegido = (int)($_GET['idCiclo'] ?? 0);
@@ -33,8 +33,8 @@ $cursoAnioReto = '';
 if ($idCicloElegido && $idRetoElegido) {
     $listaEstudiantes = listarEstudiantesPorCiclo($idCicloElegido);
     $notasPorEstudiante = listarCalificacionesRetoPorEstudiantes(array_column($listaEstudiantes, 'idEstudiante'), $idRetoElegido);
-    foreach (listarModulosDeReto($idRetoElegido) as $_mr) {
-        if (!empty($_mr['cursoAnio'])) { $cursoAnioReto = $_mr['cursoAnio']; break; }
+    foreach (listarModulosDeReto($idRetoElegido) as $modulo) {
+        if (!empty($modulo['cursoAnio'])) { $cursoAnioReto = $modulo['cursoAnio']; break; }
     }
 }
 
@@ -53,9 +53,9 @@ include_once __DIR__ . "/../comunes/nav.php";
             <label>Filtrar por Nivel:</label>
             <select name="idNivel" onchange="this.form.submit()">
                 <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $n) { ?>
-                    <option value="<?= (int)$n['idNivel'] ?>" <?= ((int)$n['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($n['nombreNivel']) ?>
+                <?php foreach ($listaNiveles as $nivel) { ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>" <?= ((int)$nivel['idNivel'] === $idNivelFiltro) ? 'selected' : '' ?>>
+                        <?= Security::escapeHtml($nivel['nombreNivel']) ?>
                     </option>
                 <?php } ?>
             </select>
@@ -113,12 +113,12 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <td colspan="4" class="vacio">No hay estudiantes registrados en este ciclo.</td>
                     </tr>
                 <?php } else { ?>
-                    <?php foreach ($listaEstudiantes as $est) {
-                        $notaActual = $notasPorEstudiante[$est['idEstudiante']] ?? '';
+                    <?php foreach ($listaEstudiantes as $estudiante) {
+                        $notaActual = $notasPorEstudiante[$estudiante['idEstudiante']] ?? '';
                     ?>
                     <tr>
-                        <td><?= Security::escapeHtml($est['nombreEstudiante']) ?></td>
-                        <td><?= Security::escapeHtml($est['nombreCiclo']) ?></td>
+                        <td><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></td>
+                        <td><?= Security::escapeHtml($estudiante['nombreCiclo']) ?></td>
                         <td>
                             <?php if ($notaActual !== '') { ?>
                                 <span class="texto-negrita <?= $notaActual >= 5 ? 'texto-verde' : 'texto-rojo' ?>">
@@ -129,7 +129,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                             <?php } ?>
                         </td>
                         <td>
-                            <a href="evaluarReto.php?idEstudiante=<?= (int)$est['idEstudiante'] ?>&idReto=<?= (int)$idRetoElegido ?>&idCiclo=<?= (int)$idCicloElegido ?>" class="btn-accion btn-editar">
+                            <a href="evaluarReto.php?idEstudiante=<?= (int)$estudiante['idEstudiante'] ?>&idReto=<?= (int)$idRetoElegido ?>&idCiclo=<?= (int)$idCicloElegido ?>" class="btn-accion btn-editar">
                                 <i class="fas fa-edit"></i> Evaluar
                             </a>
                         </td>

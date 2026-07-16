@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../include/FeatureGuard.php';
 $cfg = obtenerConfiguracionCentro();
 $nombreCentro = $cfg['nombreCentro'] ?? 'AulaPro';
 $emailCentro  = $cfg['emailCentro']  ?? '';
-$is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
+$prematriculaHabilitada = FeatureGuard::check('feature_prematricula');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -61,7 +61,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
         <!-- Desktop CTAs + Burger Button -->
         <div class="legal-nav-cta">
             <a class="legal-access" href="/vistas/login.php">Acceso</a>
-            <?php if ($is_prematricula_enabled): ?>
+            <?php if ($prematriculaHabilitada): ?>
             <a class="legal-btn-primary" href="/vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
             <?php endif; ?>
             
@@ -96,7 +96,7 @@ $is_prematricula_enabled = FeatureGuard::check('feature_prematricula');
     
     <div class="legal-nav-movil-ctas">
         <a href="/vistas/login.php" class="legal-access-btn"><i class="fas fa-sign-in-alt"></i> Acceso Plataforma</a>
-        <?php if ($is_prematricula_enabled): ?>
+        <?php if ($prematriculaHabilitada): ?>
         <a href="/vistas/admisiones/pre-matricula.php" class="legal-btn-primary"><i class="fas fa-file-signature"></i> Pre-matrícula online</a>
         <?php endif; ?>
     </div>

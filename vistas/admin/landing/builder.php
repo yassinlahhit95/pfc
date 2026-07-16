@@ -23,7 +23,7 @@ $ajustes    = json_decode($landingCfg['ajustes'] ?? '', true) ?: [];
 
 // Estado del borrador respecto a lo publicado
 $normalizar = function (array $filas): array {
-    return array_map(fn($f) => [$f['tipo'], (int)$f['orden'], (int)$f['visible'], $f['contenido']], $filas);
+    return array_map(fn($fila) => [$fila['tipo'], (int)$fila['orden'], (int)$fila['visible'], $fila['contenido']], $filas);
 };
 $hayCambios = $normalizar($borrador) != $normalizar($publicadas)
     || ($landingCfg['ajustes'] ?? '') != ($landingCfg['ajustes_pub'] ?? '')
@@ -41,11 +41,11 @@ if (empty($landingCfg['publicadoEn'])) {
 }
 
 // Secciones del borrador con el contenido decodificado (para el editor JS)
-$seccionesJs = array_map(fn($f) => [
-    'idSeccion' => (int)$f['idSeccion'],
-    'tipo'      => $f['tipo'],
-    'visible'   => (int)$f['visible'],
-    'contenido' => json_decode($f['contenido'] ?? '{}', true) ?: [],
+$seccionesJs = array_map(fn($fila) => [
+    'idSeccion' => (int)$fila['idSeccion'],
+    'tipo'      => $fila['tipo'],
+    'visible'   => (int)$fila['visible'],
+    'contenido' => json_decode($fila['contenido'] ?? '{}', true) ?: [],
 ], $borrador);
 
 $titulo_pagina = "AULAPRO | CONSTRUCTOR DE LA WEB";
@@ -94,21 +94,21 @@ include_once __DIR__ . '/../comunes/nav.php';
             <?php endif; ?>
 
             <ul class="lb-lista" id="lb-lista">
-                <?php foreach ($borrador as $f):
-                    $t = $tipos[$f['tipo']] ?? null;
-                    if (!$t) continue; ?>
-                <li class="lb-item<?= (int)$f['visible'] ? '' : ' lb-item-oculto' ?>" draggable="true" data-id="<?= (int)$f['idSeccion'] ?>" data-tipo="<?= Security::escapeHtml($f['tipo']) ?>">
+                <?php foreach ($borrador as $fila):
+                    $tipoInfo = $tipos[$fila['tipo']] ?? null;
+                    if (!$tipoInfo) continue; ?>
+                <li class="lb-item<?= (int)$fila['visible'] ? '' : ' lb-item-oculto' ?>" draggable="true" data-id="<?= (int)$fila['idSeccion'] ?>" data-tipo="<?= Security::escapeHtml($fila['tipo']) ?>">
                     <span class="lb-item-grip" title="Arrastra para reordenar"><i class="fas fa-grip-vertical"></i></span>
-                    <span class="lb-item-icono"><i class="fas <?= Security::escapeHtml($t['icono']) ?>"></i></span>
-                    <span class="lb-item-nombre"><?= Security::escapeHtml($t['nombre']) ?></span>
+                    <span class="lb-item-icono"><i class="fas <?= Security::escapeHtml($tipoInfo['icono']) ?>"></i></span>
+                    <span class="lb-item-nombre"><?= Security::escapeHtml($tipoInfo['nombre']) ?></span>
                     <span class="lb-item-acciones">
-                        <button type="button" class="lb-item-btn lb-toggle-visible" title="<?= (int)$f['visible'] ? 'Ocultar' : 'Mostrar' ?>">
-                            <i class="fas <?= (int)$f['visible'] ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                        <button type="button" class="lb-item-btn lb-toggle-visible" title="<?= (int)$fila['visible'] ? 'Ocultar' : 'Mostrar' ?>">
+                            <i class="fas <?= (int)$fila['visible'] ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
                         </button>
                         <button type="button" class="lb-item-btn lb-editar" title="Editar contenido">
                             <i class="fas fa-pen"></i>
                         </button>
-                        <button type="button" class="lb-item-btn lb-item-btn-peligro lb-borrar-seccion" title="Eliminar" data-nombre="<?= Security::escapeHtml($t['nombre']) ?>">
+                        <button type="button" class="lb-item-btn lb-item-btn-peligro lb-borrar-seccion" title="Eliminar" data-nombre="<?= Security::escapeHtml($tipoInfo['nombre']) ?>">
                             <i class="fas fa-trash"></i>
                         </button>
                     </span>
@@ -198,13 +198,13 @@ include_once __DIR__ . '/../comunes/nav.php';
             <button type="button" class="lb-item-btn" id="lb-agregar-cerrar" title="Cerrar"><i class="fas fa-xmark"></i></button>
         </div>
         <div class="lb-catalogo">
-            <?php foreach ($tipos as $tipoClave => $t): ?>
+            <?php foreach ($tipos as $tipoClave => $tipoInfo): ?>
             <button type="button" class="lb-catalogo-item" data-tipo="<?= Security::escapeHtml($tipoClave) ?>"
-                    title="<?= Security::escapeHtml($t['descripcion'] ?? '') ?>">
-                <i class="fas <?= Security::escapeHtml($t['icono']) ?>"></i>
-                <span class="lb-catalogo-nombre"><?= Security::escapeHtml($t['nombre']) ?></span>
-                <?php if (!empty($t['descripcion'])): ?>
-                <span class="lb-catalogo-desc"><?= Security::escapeHtml($t['descripcion']) ?></span>
+                    title="<?= Security::escapeHtml($tipoInfo['descripcion'] ?? '') ?>">
+                <i class="fas <?= Security::escapeHtml($tipoInfo['icono']) ?>"></i>
+                <span class="lb-catalogo-nombre"><?= Security::escapeHtml($tipoInfo['nombre']) ?></span>
+                <?php if (!empty($tipoInfo['descripcion'])): ?>
+                <span class="lb-catalogo-desc"><?= Security::escapeHtml($tipoInfo['descripcion']) ?></span>
                 <?php endif; ?>
             </button>
             <?php endforeach; ?>

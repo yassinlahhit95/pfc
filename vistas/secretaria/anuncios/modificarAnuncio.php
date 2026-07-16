@@ -15,7 +15,7 @@ if (!$anuncio) {
 $datos = $_SESSION['datos_anuncio'] ?? null;
 unset($_SESSION['datos_anuncio']);
 
-$v = fn($k) => Security::escapeHtml($datos[$k] ?? $anuncio[$k] ?? '');
+$valorCampo = fn($k) => Security::escapeHtml($datos[$k] ?? $anuncio[$k] ?? '');
 
 $titulo_pagina = "AULAPRO | EDITAR ANUNCIO";
 $seccion = 'anuncios';
@@ -35,7 +35,7 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo<?= fieldClass($errores, 'titulo') ?>">
             <label for="titulo">Título <span style="color:var(--rojo)">*</span></label>
             <input type="text" name="titulo" id="titulo" maxlength="255"
-                   value="<?= $v('titulo') ?>">
+                   value="<?= $valorCampo('titulo') ?>">
             <?= fieldError($errores, 'titulo') ?>
         </div>
 
@@ -53,12 +53,12 @@ include_once __DIR__ . "/../comunes/nav.php";
         <div class="campo">
             <label for="fechaExpiracion">Fecha de expiración</label>
             <input type="date" name="fechaExpiracion" id="fechaExpiracion"
-                   value="<?= $v('fechaExpiracion') ?>">
+                   value="<?= $valorCampo('fechaExpiracion') ?>">
         </div>
 
         <div class="campo campo-ancho-total<?= fieldClass($errores, 'mensaje') ?>">
             <label for="mensaje">Mensaje <span style="color:var(--rojo)">*</span></label>
-            <textarea name="mensaje" id="mensaje" rows="5"><?= $v('mensaje') ?></textarea>
+            <textarea name="mensaje" id="mensaje" rows="5"><?= $valorCampo('mensaje') ?></textarea>
             <?= fieldError($errores, 'mensaje') ?>
         </div>
 

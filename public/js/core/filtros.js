@@ -6,8 +6,8 @@ function filtrarTabla(inputId, tablaId) {
     var q = $('#' + inputId).val().toLowerCase();
 
     $('#' + tablaId + ' tbody tr').each(function() {
-        let s = $(this).text().toLowerCase();
-        if (s.indexOf(q) !== -1) {
+        let texto = $(this).text().toLowerCase();
+        if (texto.indexOf(q) !== -1) {
             $(this).removeClass('fila-filtro-oculta');
         } else {
             $(this).addClass('fila-filtro-oculta');

@@ -9,8 +9,9 @@ class AulaAnalytics {
         this.idModulo = idModulo;
         this.sessionStart = Date.now();
         
-        // Determine the root path relative to this script (3 levels up from public/js/analytics.js)
-        const scriptUrl = new URL(document.currentScript ? document.currentScript.src : window.location.origin + '/public/js/analytics.js');
+        // Determine the root path relative to this script (public/js/core/analytics.js is
+        // 3 directories below the project root; see CLAUDE.md's note on path-depth-sensitive files).
+        const scriptUrl = new URL(document.currentScript ? document.currentScript.src : window.location.origin + '/public/js/core/analytics.js');
         this.appRoot = new URL('../../../', scriptUrl).pathname;
         
         this.init();
@@ -124,9 +125,6 @@ class AulaAnalytics {
         }).catch(() => {
             // Silenciar errores de red
         });
-
-        // Log local para debugging
-
     }
 
     /**

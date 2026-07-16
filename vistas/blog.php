@@ -28,15 +28,15 @@ $preview = false;
 $secciones = listarSeccionesLanding('live', true);
 $tipos     = landing_tipos();
 $menuAnclas = [];
-foreach ($secciones as $s) {
-    if (!isset($tipos[$s['tipo']])) continue;
-    $contenido = json_decode($s['contenido'] ?? '{}', true) ?: [];
-    $navVisible = $contenido['navVisible'] ?? (!empty($tipos[$s['tipo']]['menu']) ? 'si' : 'no');
-    $navTexto   = $contenido['navTexto'] ?? ($tipos[$s['tipo']]['menu'] ?? '');
-    if ($navVisible === 'si' && !empty($navTexto) && !isset($menuAnclas[$s['tipo']])) {
-        $esSeparado = ($s['tipo'] === 'contacto' && ($contenido['modoVisualizacion'] ?? 'integrado') === 'separado');
-        $menuAnclas[$s['tipo']] = ['texto' => $navTexto, 'separado' => $esSeparado];
-        if ($s['tipo'] === 'noticias') $menuAnclas[$s['tipo']]['url'] = '/vistas/blog.php';
+foreach ($secciones as $seccion) {
+    if (!isset($tipos[$seccion['tipo']])) continue;
+    $contenido = json_decode($seccion['contenido'] ?? '{}', true) ?: [];
+    $navVisible = $contenido['navVisible'] ?? (!empty($tipos[$seccion['tipo']]['menu']) ? 'si' : 'no');
+    $navTexto   = $contenido['navTexto'] ?? ($tipos[$seccion['tipo']]['menu'] ?? '');
+    if ($navVisible === 'si' && !empty($navTexto) && !isset($menuAnclas[$seccion['tipo']])) {
+        $esSeparado = ($seccion['tipo'] === 'contacto' && ($contenido['modoVisualizacion'] ?? 'integrado') === 'separado');
+        $menuAnclas[$seccion['tipo']] = ['texto' => $navTexto, 'separado' => $esSeparado];
+        if ($seccion['tipo'] === 'noticias') $menuAnclas[$seccion['tipo']]['url'] = '/vistas/blog.php';
     }
 }
 
@@ -98,8 +98,8 @@ if ($post) {
         <?php if ($contenidoEsHtml): ?>
         <?= $post['contenido'] /* ya saneado con HtmlSanitizer al guardar */ ?>
         <?php else: ?>
-        <?php foreach ($parrafos as $p): if (trim($p) === '') continue; ?>
-        <p><?= nl2br(Security::escapeHtml(trim($p))) ?></p>
+        <?php foreach ($parrafos as $parrafo): if (trim($parrafo) === '') continue; ?>
+        <p><?= nl2br(Security::escapeHtml(trim($parrafo))) ?></p>
         <?php endforeach; ?>
         <?php endif; ?>
       </div>
@@ -192,10 +192,10 @@ include __DIR__ . '/landing/_nav.php';
       <?php if (!empty($categorias)): ?>
       <nav class="lp-blog-cats" aria-label="Categorías">
         <a href="<?= blogUrl() ?>" class="lp-blog-cat<?= $categoria === '' ? ' activa' : '' ?>">Todas</a>
-        <?php foreach ($categorias as $cat): ?>
-        <a href="<?= Security::escapeHtml(blogUrl(1, $cat['categoria'])) ?>"
-           class="lp-blog-cat<?= $categoria === $cat['categoria'] ? ' activa' : '' ?>">
-          <?= Security::escapeHtml($cat['categoria']) ?> <span><?= (int)$cat['total'] ?></span>
+        <?php foreach ($categorias as $categoriaItem): ?>
+        <a href="<?= Security::escapeHtml(blogUrl(1, $categoriaItem['categoria'])) ?>"
+           class="lp-blog-cat<?= $categoria === $categoriaItem['categoria'] ? ' activa' : '' ?>">
+          <?= Security::escapeHtml($categoriaItem['categoria']) ?> <span><?= (int)$categoriaItem['total'] ?></span>
         </a>
         <?php endforeach; ?>
       </nav>
@@ -209,30 +209,30 @@ include __DIR__ . '/landing/_nav.php';
       </div>
       <?php else: ?>
       <div class="lp-blog-grid">
-        <?php foreach ($posts as $i => $p):
-            $img = $p['imagen'] !== '' ? '/public/uploads/blog/' . basename($p['imagen']) : '';
+        <?php foreach ($posts as $i => $postItem):
+            $img = $postItem['imagen'] !== '' ? '/public/uploads/blog/' . basename($postItem['imagen']) : '';
             $destacada = $pagina === 1 && $i === 0 && $categoria === ''; ?>
         <article class="lp-blog-card<?= $destacada ? ' lp-blog-card-destacada' : '' ?>">
-          <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($p['slug']) ?>">
+          <a class="lp-blog-card-media" href="/vistas/blog.php?post=<?= Security::escapeHtml($postItem['slug']) ?>">
             <?php if ($img): ?>
             <img loading="lazy" src="<?= Security::escapeHtml($img) ?>" alt="">
             <?php else: ?>
             <span class="lp-blog-card-placeholder"><i class="far fa-newspaper"></i></span>
             <?php endif; ?>
-            <?php if ($p['categoria'] !== ''): ?>
-            <span class="lp-blog-chip"><?= Security::escapeHtml($p['categoria']) ?></span>
+            <?php if ($postItem['categoria'] !== ''): ?>
+            <span class="lp-blog-chip"><?= Security::escapeHtml($postItem['categoria']) ?></span>
             <?php endif; ?>
           </a>
           <div class="lp-blog-card-body">
             <div class="lp-blog-meta">
-              <span><i class="far fa-calendar"></i> <?= date('d/m/Y', strtotime($p['fechaPublicacion'])) ?></span>
-              <?php if ($p['autor'] !== ''): ?>
-              <span><i class="far fa-user"></i> <?= Security::escapeHtml($p['autor']) ?></span>
+              <span><i class="far fa-calendar"></i> <?= date('d/m/Y', strtotime($postItem['fechaPublicacion'])) ?></span>
+              <?php if ($postItem['autor'] !== ''): ?>
+              <span><i class="far fa-user"></i> <?= Security::escapeHtml($postItem['autor']) ?></span>
               <?php endif; ?>
             </div>
-            <h2><a href="/vistas/blog.php?post=<?= Security::escapeHtml($p['slug']) ?>"><?= Security::escapeHtml($p['titulo']) ?></a></h2>
-            <?php if ($p['resumen'] !== ''): ?>
-            <p><?= Security::escapeHtml(mb_substr($p['resumen'], 0, $destacada ? 260 : 140)) ?><?= mb_strlen($p['resumen']) > ($destacada ? 260 : 140) ? '…' : '' ?></p>
+            <h2><a href="/vistas/blog.php?post=<?= Security::escapeHtml($postItem['slug']) ?>"><?= Security::escapeHtml($postItem['titulo']) ?></a></h2>
+            <?php if ($postItem['resumen'] !== ''): ?>
+            <p><?= Security::escapeHtml(mb_substr($postItem['resumen'], 0, $destacada ? 260 : 140)) ?><?= mb_strlen($postItem['resumen']) > ($destacada ? 260 : 140) ? '…' : '' ?></p>
             <?php endif; ?>
             <span class="lp-blog-leer">Leer entrada <i class="fas fa-arrow-right"></i></span>
           </div>

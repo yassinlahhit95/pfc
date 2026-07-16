@@ -68,13 +68,13 @@ $hijos = listarEstudiantesPorTutor($_SESSION['idTutor']);
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($pagos as $p): ?>
+          <?php foreach ($pagos as $pago): ?>
             <tr>
-              <td><?= date('d/m/Y', strtotime($p['fechaPago'])) ?></td>
-              <td><?= Security::escapeHtml($p['tipoPago']) ?></td>
-              <td style="text-align:right;font-weight:600"><?= number_format((float)$p['monto'], 2) ?> €</td>
+              <td><?= date('d/m/Y', strtotime($pago['fechaPago'])) ?></td>
+              <td><?= Security::escapeHtml($pago['tipoPago']) ?></td>
+              <td style="text-align:right;font-weight:600"><?= number_format((float)$pago['monto'], 2) ?> €</td>
               <td style="text-align:right;color:var(--dim)">
-                <?= !empty($p['fechaProximoPago']) ? date('d/m/Y', strtotime($p['fechaProximoPago'])) : '—' ?>
+                <?= !empty($pago['fechaProximoPago']) ? date('d/m/Y', strtotime($pago['fechaProximoPago'])) : '—' ?>
               </td>
             </tr>
           <?php endforeach; ?>

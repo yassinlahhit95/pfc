@@ -120,19 +120,19 @@ include_once __DIR__ . '/../comunes/nav.php';
       <div class="campo">
         <label>Ciclo</label>
         <select id="aw-curso-ciclo">
-          <?php foreach ($ciclos as $c): ?>
-          <option value="<?= (int)$c['idCiclo'] ?>" <?= (int)$c['idCiclo'] === $idCicloSeleccionado ? 'selected' : '' ?>><?= Security::escapeHtml($c['nombreCiclo']) ?></option>
+          <?php foreach ($ciclos as $ciclo): ?>
+          <option value="<?= (int)$ciclo['idCiclo'] ?>" <?= (int)$ciclo['idCiclo'] === $idCicloSeleccionado ? 'selected' : '' ?>><?= Security::escapeHtml($ciclo['nombreCiclo']) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
       <table class="tabla-datos" id="tabla-cursos">
         <thead><tr><th>Nombre</th><th>Orden</th><th></th></tr></thead>
         <tbody>
-          <?php foreach ($cursosDelCiclo as $c): ?>
-          <tr data-id="<?= (int)$c['idCurso'] ?>">
-            <td><?= Security::escapeHtml($c['nombre']) ?></td>
-            <td><?= (int)$c['orden'] ?></td>
-            <td><button type="button" class="boton-peligro aw-eliminar-curso" data-id="<?= (int)$c['idCurso'] ?>">Eliminar</button></td>
+          <?php foreach ($cursosDelCiclo as $curso): ?>
+          <tr data-id="<?= (int)$curso['idCurso'] ?>">
+            <td><?= Security::escapeHtml($curso['nombre']) ?></td>
+            <td><?= (int)$curso['orden'] ?></td>
+            <td><button type="button" class="boton-peligro aw-eliminar-curso" data-id="<?= (int)$curso['idCurso'] ?>">Eliminar</button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
@@ -162,14 +162,14 @@ include_once __DIR__ . '/../comunes/nav.php';
       <table class="tabla-datos" id="tabla-periodos">
         <thead><tr><th>Nombre</th><th>Tipo</th><th>Orden</th><th>Recupera a</th><th>Visible</th><th></th></tr></thead>
         <tbody>
-          <?php foreach ($periodos as $p): ?>
-          <tr data-id="<?= (int)$p['idPeriodo'] ?>">
-            <td><?= Security::escapeHtml($p['nombre']) ?></td>
-            <td><?= Security::escapeHtml($p['tipo']) ?></td>
-            <td><?= (int)$p['orden'] ?></td>
-            <td><?= $p['idPeriodoRecuperaDe'] ? '#'.(int)$p['idPeriodoRecuperaDe'] : '—' ?></td>
-            <td><?= $p['visible'] ? 'Sí' : 'No' ?></td>
-            <td><button type="button" class="boton-peligro aw-eliminar-periodo" data-id="<?= (int)$p['idPeriodo'] ?>">Eliminar</button></td>
+          <?php foreach ($periodos as $periodo): ?>
+          <tr data-id="<?= (int)$periodo['idPeriodo'] ?>">
+            <td><?= Security::escapeHtml($periodo['nombre']) ?></td>
+            <td><?= Security::escapeHtml($periodo['tipo']) ?></td>
+            <td><?= (int)$periodo['orden'] ?></td>
+            <td><?= $periodo['idPeriodoRecuperaDe'] ? '#'.(int)$periodo['idPeriodoRecuperaDe'] : '—' ?></td>
+            <td><?= $periodo['visible'] ? 'Sí' : 'No' ?></td>
+            <td><button type="button" class="boton-peligro aw-eliminar-periodo" data-id="<?= (int)$periodo['idPeriodo'] ?>">Eliminar</button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
@@ -195,8 +195,8 @@ include_once __DIR__ . '/../comunes/nav.php';
           <label>Recupera al período (opcional)</label>
           <select name="idPeriodoRecuperaDe">
             <option value="">— Ninguno —</option>
-            <?php foreach ($periodos as $p): if ($p['tipo'] === 'recuperacion') continue; ?>
-            <option value="<?= (int)$p['idPeriodo'] ?>">#<?= (int)$p['idPeriodo'] ?> — <?= Security::escapeHtml($p['nombre']) ?></option>
+            <?php foreach ($periodos as $periodo): if ($periodo['tipo'] === 'recuperacion') continue; ?>
+            <option value="<?= (int)$periodo['idPeriodo'] ?>">#<?= (int)$periodo['idPeriodo'] ?> — <?= Security::escapeHtml($periodo['nombre']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -212,14 +212,14 @@ include_once __DIR__ . '/../comunes/nav.php';
       <table class="tabla-datos" id="tabla-tipos">
         <thead><tr><th>Nombre</th><th>Peso</th><th>Origen</th><th>Obligatorio</th><th>En media</th><th></th></tr></thead>
         <tbody>
-          <?php foreach ($tipos as $t): ?>
-          <tr data-id="<?= (int)$t['idTipo'] ?>">
-            <td><?= Security::escapeHtml($t['nombre']) ?></td>
-            <td><?= Security::escapeHtml($t['peso']) ?></td>
-            <td><?= Security::escapeHtml($t['origen']) ?></td>
-            <td><?= $t['obligatorio'] ? 'Sí' : 'No' ?></td>
-            <td><?= $t['incluirEnMedia'] ? 'Sí' : 'No' ?></td>
-            <td><button type="button" class="boton-peligro aw-eliminar-tipo" data-id="<?= (int)$t['idTipo'] ?>">Eliminar</button></td>
+          <?php foreach ($tipos as $tipo): ?>
+          <tr data-id="<?= (int)$tipo['idTipo'] ?>">
+            <td><?= Security::escapeHtml($tipo['nombre']) ?></td>
+            <td><?= Security::escapeHtml($tipo['peso']) ?></td>
+            <td><?= Security::escapeHtml($tipo['origen']) ?></td>
+            <td><?= $tipo['obligatorio'] ? 'Sí' : 'No' ?></td>
+            <td><?= $tipo['incluirEnMedia'] ? 'Sí' : 'No' ?></td>
+            <td><button type="button" class="boton-peligro aw-eliminar-tipo" data-id="<?= (int)$tipo['idTipo'] ?>">Eliminar</button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
@@ -317,11 +317,11 @@ include_once __DIR__ . '/../comunes/nav.php';
       <table class="tabla-datos">
         <thead><tr><th>Nombre</th><th>Descripción</th><th></th></tr></thead>
         <tbody>
-          <?php foreach ($plantillas as $p): ?>
+          <?php foreach ($plantillas as $plantilla): ?>
           <tr>
-            <td><?= Security::escapeHtml($p['nombre']) ?></td>
-            <td><?= Security::escapeHtml($p['descripcion'] ?? '') ?></td>
-            <td><button type="button" class="boton-secundario aw-aplicar-plantilla" data-id="<?= (int)$p['idPlantilla'] ?>">Aplicar</button></td>
+            <td><?= Security::escapeHtml($plantilla['nombre']) ?></td>
+            <td><?= Security::escapeHtml($plantilla['descripcion'] ?? '') ?></td>
+            <td><button type="button" class="boton-secundario aw-aplicar-plantilla" data-id="<?= (int)$plantilla['idPlantilla'] ?>">Aplicar</button></td>
           </tr>
           <?php endforeach; ?>
         </tbody>

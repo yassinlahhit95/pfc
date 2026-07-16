@@ -31,8 +31,8 @@ include __DIR__ . '/../comunes/nav.php';
             <label for="selectFiltroNivel">FILTRAR POR NIVEL:</label>
             <select id="selectFiltroNivel" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Niveles --</option>
-                <?php foreach ($listaNiveles as $n): ?>
-                    <option value="<?= (int)$n['idNivel'] ?>"><?= Security::escapeHtml($n['nombreNivel']) ?></option>
+                <?php foreach ($listaNiveles as $nivel): ?>
+                    <option value="<?= (int)$nivel['idNivel'] ?>"><?= Security::escapeHtml($nivel['nombreNivel']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -40,9 +40,9 @@ include __DIR__ . '/../comunes/nav.php';
             <label for="selectFiltroCiclo">FILTRAR POR CICLO:</label>
             <select id="selectFiltroCiclo" onchange="aplicarFiltrosEstudiantes()">
                 <option value="">-- Todos los Ciclos --</option>
-                <?php foreach ($listaDeCiclosParaFiltro as $c): ?>
-                    <option value="<?= strtoupper(Security::escapeHtml($c['nombreCiclo'])) ?>">
-                        <?= strtoupper(Security::escapeHtml($c['nombreCiclo'])) ?>
+                <?php foreach ($listaDeCiclosParaFiltro as $ciclo): ?>
+                    <option value="<?= strtoupper(Security::escapeHtml($ciclo['nombreCiclo'])) ?>">
+                        <?= strtoupper(Security::escapeHtml($ciclo['nombreCiclo'])) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -76,24 +76,24 @@ include __DIR__ . '/../comunes/nav.php';
                 <?php if (empty($listaDeEstudiantesActuales)): ?>
                     <tr><td colspan="6" class="vacio">No hay estudiantes registrados en el sistema.</td></tr>
                 <?php else: ?>
-                    <?php foreach ($listaDeEstudiantesActuales as $e): ?>
-                    <tr class="fila-nivel-<?= (int)($e['idNivel'] ?? 0) ?>">
-                        <td><?= (int)$e['idEstudiante'] ?></td>
+                    <?php foreach ($listaDeEstudiantesActuales as $estudiante): ?>
+                    <tr class="fila-nivel-<?= (int)($estudiante['idNivel'] ?? 0) ?>">
+                        <td><?= (int)$estudiante['idEstudiante'] ?></td>
                         <td>
-                            <span class="texto-estado <?= ($e['idNivel'] ?? 0) == 1 ? 'azul' : 'verde' ?>">
-                                <?= ($e['idNivel'] ?? 0) == 1 ? 'Grado Medio' : 'Grado Superior' ?>
+                            <span class="texto-estado <?= ($estudiante['idNivel'] ?? 0) == 1 ? 'azul' : 'verde' ?>">
+                                <?= ($estudiante['idNivel'] ?? 0) == 1 ? 'Grado Medio' : 'Grado Superior' ?>
                             </span>
                         </td>
-                        <td><b><?= mb_strtoupper(Security::escapeHtml($e['nombreEstudiante']), 'UTF-8') ?></b></td>
-                        <td><?= Security::escapeHtml($e['emailEstudiante']) ?></td>
-                        <td><?= Security::escapeHtml($e['anioEstudio'] ?? '') ?></td>
-                        <td><?= mb_strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—'), 'UTF-8') ?></td>
+                        <td><b><?= mb_strtoupper(Security::escapeHtml($estudiante['nombreEstudiante']), 'UTF-8') ?></b></td>
+                        <td><?= Security::escapeHtml($estudiante['emailEstudiante']) ?></td>
+                        <td><?= Security::escapeHtml($estudiante['anioEstudio'] ?? '') ?></td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($estudiante['nombreCiclo'] ?? '—'), 'UTF-8') ?></td>
                         <td>
                             <div style="display:flex;gap:6px;">
-                                <a href="verDetallesEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>" class="boton-secundario boton-pequeno" title="Ver detalles">
+                                <a href="verDetallesEstudiantes.php?id=<?= (int)$estudiante['idEstudiante'] ?>" class="boton-secundario boton-pequeno" title="Ver detalles">
                                     <i class="fas fa-id-card"></i>
                                 </a>
-                                <a href="modificarEstudiantes.php?id=<?= (int)$e['idEstudiante'] ?>" class="boton-primario boton-pequeno" title="Editar">
+                                <a href="modificarEstudiantes.php?id=<?= (int)$estudiante['idEstudiante'] ?>" class="boton-primario boton-pequeno" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </div>

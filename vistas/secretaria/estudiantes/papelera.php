@@ -47,27 +47,27 @@ include __DIR__ . '/../comunes/nav.php';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($estudiantesEliminados as $e): ?>
+                    <?php foreach ($estudiantesEliminados as $estudiante): ?>
                     <tr>
-                        <td><?= (int)$e['idEstudiante'] ?></td>
-                        <td><b><?= mb_strtoupper(Security::escapeHtml($e['nombreEstudiante']), 'UTF-8') ?></b></td>
-                        <td><?= Security::escapeHtml($e['emailEstudiante']) ?></td>
-                        <td><?= mb_strtoupper(Security::escapeHtml($e['nombreCiclo'] ?? '—'), 'UTF-8') ?></td>
+                        <td><?= (int)$estudiante['idEstudiante'] ?></td>
+                        <td><b><?= mb_strtoupper(Security::escapeHtml($estudiante['nombreEstudiante']), 'UTF-8') ?></b></td>
+                        <td><?= Security::escapeHtml($estudiante['emailEstudiante']) ?></td>
+                        <td><?= mb_strtoupper(Security::escapeHtml($estudiante['nombreCiclo'] ?? '—'), 'UTF-8') ?></td>
                         <td>
-                            <span class="texto-estado <?= ($e['idNivel'] ?? 0) == 2 ? 'verde' : 'azul' ?>">
-                                <?= ($e['idNivel'] ?? 0) == 2 ? 'Grado Superior' : 'Grado Medio' ?>
+                            <span class="texto-estado <?= ($estudiante['idNivel'] ?? 0) == 2 ? 'verde' : 'azul' ?>">
+                                <?= ($estudiante['idNivel'] ?? 0) == 2 ? 'Grado Superior' : 'Grado Medio' ?>
                             </span>
                         </td>
                         <td>
-                            <?= !empty($e['fecha_eliminacion'])
-                                ? date('d/m/Y H:i', strtotime($e['fecha_eliminacion']))
+                            <?= !empty($estudiante['fecha_eliminacion'])
+                                ? date('d/m/Y H:i', strtotime($estudiante['fecha_eliminacion']))
                                 : '<span class="texto-suave">—</span>' ?>
                         </td>
                         <td>
                             <form method="POST" action="../../../controladores/secretaria/estudiantes/restaurar.php"
-                                  data-ajax-confirm="¿Restaurar a «<?= Security::escapeHtml($e['nombreEstudiante']) ?>»? Todos sus datos y notas quedarán intactos.">
+                                  data-ajax-confirm="¿Restaurar a «<?= Security::escapeHtml($estudiante['nombreEstudiante']) ?>»? Todos sus datos y notas quedarán intactos.">
                                 <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-                                <input type="hidden" name="idEstudiante" value="<?= (int)$e['idEstudiante'] ?>">
+                                <input type="hidden" name="idEstudiante" value="<?= (int)$estudiante['idEstudiante'] ?>">
                                 <button type="submit" class="boton-primario boton-pequeno" title="Restaurar estudiante">
                                     <i class="fas fa-undo"></i> Restaurar
                                 </button>

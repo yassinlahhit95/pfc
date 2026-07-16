@@ -12,7 +12,7 @@ unset($_SESSION['datos_estudiante']);
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/academico_config.php";
 $ciclos = listarTodosLosCiclos();
-$todos_los_cursos = listarTodosLosCursosAcademicos();
+$todosLosCursos = listarTodosLosCursosAcademicos();
 
 $titulo_pagina = 'AULAPRO | NUEVO ESTUDIANTE';
 $seccion = 'estudiantes';
@@ -102,7 +102,7 @@ include __DIR__ . '/../comunes/nav.php';
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
 <script>
 var todosCiclos = <?= json_encode($ciclos) ?>;
-var todosCursos = <?= json_encode($todos_los_cursos) ?>;
+var todosCursos = <?= json_encode($todosLosCursos) ?>;
 var anioEstudioActual = <?= json_encode($datos['anioEstudio'] ?? '') ?>;
 
 function filtrarCiclos() {

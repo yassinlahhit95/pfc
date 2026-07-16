@@ -16,12 +16,11 @@ $ciclo = null;
 if ($esTutor && $idCicloTutor) {
     if ($idCiclo !== $idCicloTutor) { header("Location: index.php"); exit; }
     require_once __DIR__ . "/../../../modelos/modulos.php";
-    $cicloObj = obtenerCicloPorId($idCicloTutor);
-    $ciclo    = $cicloObj ?: null;
+    $ciclo    = obtenerCicloPorId($idCicloTutor) ?: null;
     $modulos  = $ciclo ? listarModulosDeCicloConNombre($idCicloTutor) : [];
 } else {
     $ciclos = listarCiclosDeProfesor($idProfesor);
-    foreach ($ciclos as $c) { if ($c['idCiclo'] == $idCiclo) { $ciclo = $c; break; } }
+    foreach ($ciclos as $cicloItem) { if ($cicloItem['idCiclo'] == $idCiclo) { $ciclo = $cicloItem; break; } }
     if (!$ciclo) { header("Location: index.php"); exit; }
     $modulos = listarModulosDeProfesorPorCiclo($idProfesor, $idCiclo);
 }
@@ -66,14 +65,14 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="aula-recursos-grid">
   <?php foreach ($modulos as $i => $modulo):
     $nArchivos = contarArchivosPorModuloAula($modulo['idModulo']);
-    $p = $paleta[$i % count($paleta)];
+    $paletaItem = $paleta[$i % count($paleta)];
   ?>
-  <a href="recursos.php?id=<?= Security::escapeHtml($modulo['idModulo'] ) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($p['clase'] ) ?>">
-    <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($p['icono'] ) ?>"></i></div>
+  <a href="recursos.php?id=<?= Security::escapeHtml($modulo['idModulo']) ?>" class="recurso-ciclo-card <?= Security::escapeHtml($paletaItem['clase']) ?>">
+    <div class="recurso-ciclo-icon"><i class="fas <?= Security::escapeHtml($paletaItem['icono']) ?>"></i></div>
     <div class="recurso-ciclo-body">
       <h3><?= Security::escapeHtml($modulo['nombreModulo']) ?></h3>
       <div class="recurso-ciclo-meta">
-        <span><i class="fas fa-file"></i> <?= Security::escapeHtml($nArchivos ) ?> archivos</span>
+        <span><i class="fas fa-file"></i> <?= Security::escapeHtml($nArchivos) ?> archivos</span>
       </div>
     </div>
     <i class="fas fa-chevron-right recurso-ciclo-arrow"></i>
@@ -83,5 +82,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 <?php endif; ?>
 
 <?php include __DIR__ . '/../comunes/footer.php'; ?>
-
-

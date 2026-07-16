@@ -22,7 +22,7 @@ if (!$idCalificacion || !is_numeric($idCalificacion)) {
 $nota = obtenerCalificacionPorId($idCalificacion);
 
 if (!$nota) {
-    $_SESSION['errores'] = strtoupper("NO SE ENCONTRÁ LA CALIFICACIÓN SOLICITADA.");
+    $_SESSION['errores'] = strtoupper("NO SE ENCONTRÓ LA CALIFICACIÓN SOLICITADA.");
     header("Location: lista.php");
     exit;
 }
@@ -93,7 +93,7 @@ include_once __DIR__ . "/../comunes/nav.php";
                 <i class="fas fa-eraser"></i> LIMPIAR
             </button>
             <label class="texto-aviso ml-auto">
-                <input type="checkbox" name="notificarEstudiante" value="1"> 
+                <input type="checkbox" name="notificarEstudiante" value="1">
                 <i class="fas fa-envelope"></i> Notificar por Email
             </label>
         </div>
@@ -101,5 +101,3 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 <?php include '../comunes/footer.php'; ?>
-
-

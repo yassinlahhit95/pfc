@@ -503,6 +503,10 @@
                 var lista = [];
                 $form.find('[data-campo-lista="' + clave + '"] > .lb-elista-items > .lb-elista-item').each(function () {
                     var item = {};
+                    // .bind(this) fija `this` a la tarjeta .lb-elista-item de esta
+                    // iteración externa; sin él, $.each reasignaría `this` a subDef
+                    // en cada vuelta del bucle interno y $(this).find(...) buscaría
+                    // dentro del valor equivocado.
                     $.each(def.subcampos || {}, function (subClave) {
                         item[subClave] = $(this).find('[name="' + subClave + '"]').first().val() || '';
                     }.bind(this));
@@ -544,8 +548,10 @@
         post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
             .done(function (res) {
                 if (!res.ok) { toast(res.msg, 'error'); return; }
-                var seccion = seccionPorId(id);
-                if (seccion) seccion.contenido = datos;
+                // Actualiza la copia local en memoria (SECCIONES) para que el
+                // siguiente abrirEditor()/serializarEditor() vea los datos guardados.
+                var seccionActualizada = seccionPorId(id);
+                if (seccionActualizada) seccionActualizada.contenido = datos;
                 toast(res.msg, 'success');
                 cerrarEditor();
                 marcarCambios();
@@ -571,8 +577,8 @@
             post('guardar_seccion.php', { idSeccion: id, contenido: JSON.stringify(datos) })
                 .done(function (res) {
                     if (res.ok) {
-                        var seccion = seccionPorId(id);
-                        if (seccion) seccion.contenido = datos;
+                        var seccionActualizada = seccionPorId(id);
+                        if (seccionActualizada) seccionActualizada.contenido = datos;
                         marcarCambios();
                         recargarPreview();
                     } else {

@@ -65,12 +65,12 @@ for ($i = 29; $i >= 0; $i--) {
 
 // Prioridad del "peor" estado cuando hay varios módulos el mismo día
 $prioridadEstado = ['ninguno' => 0, 'presente' => 1, 'justificado' => 2, 'retraso' => 3, 'ausente' => 4];
-foreach ($asistenciasRaw as $a) {
-    if (isset($heatmap[$a['fecha']])) {
-        $actual = $prioridadEstado[$heatmap[$a['fecha']]] ?? 0;
-        $nuevo  = $prioridadEstado[$a['estado']] ?? 0;
+foreach ($asistenciasRaw as $registro) {
+    if (isset($heatmap[$registro['fecha']])) {
+        $actual = $prioridadEstado[$heatmap[$registro['fecha']]] ?? 0;
+        $nuevo  = $prioridadEstado[$registro['estado']] ?? 0;
         if ($nuevo > $actual) {
-            $heatmap[$a['fecha']] = $a['estado'];
+            $heatmap[$registro['fecha']] = $registro['estado'];
         }
     }
 }
@@ -312,9 +312,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
     <div class="dash-panel-body">
       <?php if (!empty($listaAnuncios)) {
-        $cnt = 0;
+        $contador = 0;
         foreach ($listaAnuncios as $anuncio) {
-          if ($cnt >= 4) break; ?>
+          if ($contador >= 4) break; ?>
           <div class="ann-item">
             <div class="ann-item-head">
               <span class="ann-item-title"><?= Security::escapeHtml(strtoupper($anuncio['titulo'])) ?></span>
@@ -323,7 +323,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
             <p class="ann-item-body"><?= Security::escapeHtml(substr(strip_tags($anuncio['mensaje']), 0, 120)) ?>…</p>
             <a href="../anuncios/lista.php" class="ann-item-tag">Ver detalles</a>
           </div>
-      <?php $cnt++; } } else { ?>
+      <?php $contador++; } } else { ?>
         <p class="empty-state">No hay anuncios activos actualmente.</p>
       <?php } ?>
     </div>
@@ -336,9 +336,9 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     </div>
     <div class="dash-panel-body">
       <?php if (!empty($listaEventosProximos)) {
-        $cnt = 0;
+        $contador = 0;
         foreach ($listaEventosProximos as $evento) {
-          if ($cnt >= 4) break;
+          if ($contador >= 4) break;
           $dia = date('d', strtotime($evento['fechaEvento']));
           $mes = strtoupper(date('M', strtotime($evento['fechaEvento']))); ?>
           <div class="evt-item">
@@ -351,7 +351,7 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
               <span class="evt-meta"><?= date('H:i', strtotime($evento['horaEvento'])) ?>h · <?= Security::escapeHtml($evento['ubicacionEvento']) ?></span>
             </div>
           </div>
-      <?php $cnt++; } } else { ?>
+      <?php $contador++; } } else { ?>
         <p class="empty-state">No hay eventos próximos.</p>
       <?php } ?>
     </div>
@@ -363,11 +363,11 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
 $chartLabels   = [];
 $chartNotas    = [];
 $chartColores  = [];
-foreach ($califModulos as $cm) {
-    $nota = $cm['nota_2final'] ?? $cm['nota_1final'] ?? null;
+foreach ($califModulos as $califModulo) {
+    $nota = $califModulo['nota_2final'] ?? $califModulo['nota_1final'] ?? null;
     if ($nota === null) continue;
     $nota            = (float)$nota;
-    $chartLabels[]   = $cm['nombreModulo'];
+    $chartLabels[]   = $califModulo['nombreModulo'];
     $chartNotas[]    = $nota;
     $chartColores[]  = $nota >= 5 ? 'rgba(22,163,74,0.75)' : 'rgba(239,68,68,0.75)';
 }
@@ -375,9 +375,9 @@ foreach ($califModulos as $cm) {
 $chartRetosLabels   = [];
 $chartRetosNotas    = [];
 $chartRetosColores  = [];
-foreach ($califRetos as $cr) {
-    $nota                = (float)$cr['nota'];
-    $chartRetosLabels[]  = $cr['nombreReto'];
+foreach ($califRetos as $califReto) {
+    $nota                = (float)$califReto['nota'];
+    $chartRetosLabels[]  = $califReto['nombreReto'];
     $chartRetosNotas[]   = $nota;
     $chartRetosColores[] = $nota >= 5 ? 'rgba(14,165,233,0.75)' : 'rgba(239,68,68,0.75)';
 }

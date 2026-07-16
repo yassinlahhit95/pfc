@@ -192,10 +192,10 @@ window.AulaChat = (function () {
             .then(data => {
                 if (data.ok && data.messages.length) {
                     let gotIncoming = false;
-                    data.messages.forEach(m => {
-                        const isMe = (m.emisor_rol === cfg.myRol && parseInt(m.emisor_id) === cfg.myId);
+                    data.messages.forEach(msg => {
+                        const isMe = (msg.emisor_rol === cfg.myRol && parseInt(msg.emisor_id) === cfg.myId);
                         if (!isMe) gotIncoming = true;
-                        appendMsg(m);
+                        appendMsg(msg);
                     });
                     if (gotIncoming) playSound('in');
                     // Activity: reset to minimum interval
@@ -215,7 +215,6 @@ window.AulaChat = (function () {
     }
 
     function sendMessage() {
-        console.log('sendMessage invoked');
         const input = el.input();
         const text = (input?.value || '').trim();
         if (!text) return;
@@ -319,35 +318,35 @@ window.ChatModal = (function () {
         if (!list) return;
         list.innerHTML = '';
         if (!contacts.length) {
-            const p = document.createElement('p');
-            p.style.cssText = 'color:var(--mut);font-size:.82rem;padding:10px 6px';
-            p.textContent = 'Sin resultados';
-            list.appendChild(p);
+            const emptyMsg = document.createElement('p');
+            emptyMsg.style.cssText = 'color:var(--mut);font-size:.82rem;padding:10px 6px';
+            emptyMsg.textContent = 'Sin resultados';
+            list.appendChild(emptyMsg);
             return;
         }
-        contacts.forEach(c => {
+        contacts.forEach(contact => {
             const div = document.createElement('div');
             div.className = 'chat-contact-item';
 
             const ava = document.createElement('div');
-            ava.className = 'chat-ava ' + avaClass(c.rol);
-            ava.textContent = avaInit(c.nombre);
+            ava.className = 'chat-ava ' + avaClass(contact.rol);
+            ava.textContent = avaInit(contact.nombre);
 
             const info = document.createElement('div');
 
             const nameEl = document.createElement('div');
             nameEl.className = 'chat-contact-name';
-            nameEl.textContent = c.nombre;
+            nameEl.textContent = contact.nombre;
 
             const roleEl = document.createElement('div');
             roleEl.className = 'chat-contact-role';
-            roleEl.textContent = roleLabel(c.rol);
+            roleEl.textContent = roleLabel(contact.rol);
 
             info.appendChild(nameEl);
             info.appendChild(roleEl);
             div.appendChild(ava);
             div.appendChild(info);
-            div.addEventListener('click', () => startChat(c));
+            div.addEventListener('click', () => startChat(contact));
             list.appendChild(div);
         });
     }

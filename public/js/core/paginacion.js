@@ -4,9 +4,9 @@
 var _paginaciones = {};
 
 (function() {
-    var s = document.createElement('style');
-    s.textContent = 'tr.pag-oculta{display:none}';
-    document.head.appendChild(s);
+    var styleEl = document.createElement('style');
+    styleEl.textContent = 'tr.pag-oculta{display:none}';
+    document.head.appendChild(styleEl);
 })();
 
 function iniciarPaginacion(tablaId, filasPorPagina) {
@@ -61,11 +61,11 @@ function _renderControles(tablaId, pagina, total, totalFilas, inicio, fin) {
     pg += '<button class="pag-btn pag-nav" onclick="irAPagina(\'' + tablaId + '\',' + (pagina - 1) + ')"' + (pagina === 1 ? ' disabled' : '') + '><i class="fas fa-chevron-left"></i></button>';
 
     var nums = _buildPageNumbers(pagina, total);
-    $.each(nums, function(_, p) {
-        if (p === '...') {
+    $.each(nums, function(_, pageNum) {
+        if (pageNum === '...') {
             pg += '<span class="pag-ellipsis">…</span>';
         } else {
-            pg += '<button class="pag-btn' + (p === pagina ? ' activo' : '') + '" onclick="irAPagina(\'' + tablaId + '\',' + p + ')">' + p + '</button>';
+            pg += '<button class="pag-btn' + (pageNum === pagina ? ' activo' : '') + '" onclick="irAPagina(\'' + tablaId + '\',' + pageNum + ')">' + pageNum + '</button>';
         }
     });
 
