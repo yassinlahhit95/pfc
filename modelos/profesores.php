@@ -100,13 +100,13 @@ function obtenerTokenFCMProfesor($id) {
 // INSERCIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function insertarProfesor($nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+function insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones) {
     $con = obtenerConexion();
     require_once __DIR__ . '/../include/credenciales.php';
     [$pass] = generarCredencialesTemporales($email, $nombre, 'Profesor');
     $sql = "INSERT INTO profesores (nombreProfesor, emailProfesor, password, telefonoProfesor, dniProfesor, direccionProfesor, fechaNacimientoProfesor, fechaAltaProfesor, ciudadProfesor, codigoPostalProfesor, observacionesProfesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs);
+    mysqli_stmt_bind_param($stmt, "sssssssssss", $nombre, $email, $pass, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
     mysqli_stmt_execute($stmt);
     return mysqli_insert_id($con);
 }
@@ -131,11 +131,11 @@ function asociarModuloProfesor($idMod, $idProf) {
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function actualizarProfesor($id, $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs) {
+function actualizarProfesor($id, $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones) {
     $con = obtenerConexion();
     $sql = "UPDATE profesores SET nombreProfesor=?, emailProfesor=?, telefonoProfesor=?, dniProfesor=?, direccionProfesor=?, fechaNacimientoProfesor=?, fechaAltaProfesor=?, ciudadProfesor=?, codigoPostalProfesor=?, observacionesProfesor=? WHERE idProfesor=?";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $tel, $dni, $dir, $f_nac, $f_alta, $ciudad, $cp, $obs, $id);
+    mysqli_stmt_bind_param($stmt, "ssssssssssi", $nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones, $id);
     return mysqli_stmt_execute($stmt);
 }
 

@@ -13,6 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+    exit;
+}
+
 $slug = $_POST['plantilla'] ?? '';
 $plantilla = landing_obtener_plantilla($slug);
 if ($plantilla === null) {
@@ -66,7 +71,7 @@ if (isset($_FILES['logoCentro']) && $_FILES['logoCentro']['error'] === UPLOAD_ER
         $filename = 'logoCentro_' . bin2hex(random_bytes(6)) . '.' . $ext;
         
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
         
         if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {

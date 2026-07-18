@@ -62,10 +62,10 @@ $ok = actualizarEstudiante(
 
 if ($ok) {
     registrarAccionSecretaria('actualizar', 'estudiantes', $idEstudiante, $nombre);
-    $_SESSION['exito'] = "Estudiante actualizado correctamente.";
+    $_SESSION['exito'] = "La información del estudiante ha sido actualizada correctamente.";
     header("Location: ../../../vistas/secretaria/estudiantes/verDetallesEstudiantes.php?id=$idEstudiante");
 } else {
-    $_SESSION['errores'] = ["general" => "Error al actualizar el estudiante."];
+    $_SESSION['errores'] = ["general" => "Ocurrió un error al intentar actualizar la información del estudiante."];
     header("Location: ../../../vistas/secretaria/estudiantes/modificarEstudiantes.php?id=$idEstudiante");
 }
 exit;

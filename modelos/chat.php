@@ -393,6 +393,24 @@ function chatContactosPosibles(string $rol, int $id, string $busqueda = ''): arr
         $res = mysqli_stmt_get_result($st);
         while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
 
+        // profesor-secretaria y profesor-tutor están permitidos en chatParEsPermitido()
+        // pero faltaban aquí, dejando esos contactos inalcanzables desde la lista.
+        $st = mysqli_prepare($con,
+            "SELECT idSecretaria AS uid, nombreSecretaria AS nombre, 'secretaria' AS rol
+             FROM secretarias WHERE nombreSecretaria LIKE ? ORDER BY nombreSecretaria LIMIT 20");
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
+
+        $st = mysqli_prepare($con,
+            "SELECT idTutor AS uid, nombreTutor AS nombre, 'tutor' AS rol
+             FROM tutores WHERE nombreTutor LIKE ? ORDER BY nombreTutor LIMIT 200");
+        mysqli_stmt_bind_param($st, 's', $like);
+        mysqli_stmt_execute($st);
+        $res = mysqli_stmt_get_result($st);
+        while ($row = mysqli_fetch_assoc($res)) $results[] = $row;
+
     } elseif ($rol === 'tutor') {
         // Tutors can contact any professor at the school + directors
         $st = mysqli_prepare($con,

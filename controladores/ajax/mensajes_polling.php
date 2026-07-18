@@ -9,7 +9,9 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('X-Content-Type-Options: nosniff');
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+// Security::initSession() (not a bare session_start()) so the cookie-hardening
+// flags (Secure/HttpOnly/SameSite/strict_mode) actually get applied.
+Security::initSession();
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN

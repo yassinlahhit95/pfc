@@ -42,7 +42,7 @@
         post('crear_config', datos).done(function (res) {
             if (res.ok) { toast('Configuración creada. Recargando…', 'success'); location.reload(); }
             else toast(res.msg || 'Error al crear la configuración', 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     $('#aw-form-general').on('submit', function (e) {
@@ -51,7 +51,7 @@
         $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_general', datos).done(function (res) {
             toast(res.ok ? 'Guardado' : (res.msg || 'Error al guardar'), res.ok ? 'success' : 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     $('#aw-activar').on('click', function () {
@@ -59,7 +59,7 @@
         post('activar', {}).done(function (res) {
             if (res.ok) { toast('Motor académico activado', 'success'); setTimeout(function () { location.reload(); }, 800); }
             else toast(res.msg || 'No se pudo activar', 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     // ── PASO 2: cursos (la tabla se sirve ya rellena desde el servidor para
@@ -91,7 +91,7 @@
                 toast('Curso añadido. Recargando…', 'success');
                 setTimeout(function () { window.location.href = window.location.pathname + '?idCiclo=' + encodeURIComponent(datos.idCiclo) + '#cursos'; }, 500);
             } else toast(res.msg || 'Error', 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     $(document).on('click', '.aw-eliminar-curso', function () {
@@ -110,7 +110,7 @@
         post('guardar_periodo', datos).done(function (res) {
             if (res.ok) { toast('Período guardado. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
             else toast(res.msg || 'Error', 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     $(document).on('click', '.aw-eliminar-periodo', function () {
@@ -129,7 +129,7 @@
         post('guardar_tipo', datos).done(function (res) {
             if (res.ok) { toast('Tipo guardado. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
             else toast(res.msg || 'Error', 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     $(document).on('click', '.aw-eliminar-tipo', function () {
@@ -149,7 +149,7 @@
             $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
             post(accion, datos).done(function (res) {
                 toast(res.ok ? 'Guardado' : (res.msg || 'Error al guardar'), res.ok ? 'success' : 'error');
-            }).fail(function () { toast('Error de conexión', 'error'); });
+            }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
         });
     }
     enviarFormularioSimple('#aw-form-calificacion', 'guardar_calificacion', ['requiereTodosModulos']);
@@ -164,7 +164,7 @@
         post('aplicar_plantilla', { idPlantilla: $(this).data('id'), nombre: nombre }).done(function (res) {
             if (res.ok) { toast('Plantilla aplicada. Recargando…', 'success'); setTimeout(function () { location.reload(); }, 600); }
             else toast(res.msg || 'Error', 'error');
-        }).fail(function () { toast('Error de conexión', 'error'); });
+        }).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     $('#aw-form-guardar-plantilla').on('submit', function (e) {
@@ -173,7 +173,7 @@
         $(this).serializeArray().forEach(function (campo) { datos[campo.name] = campo.value; });
         post('guardar_como_plantilla', datos).done(function (res) {
             if (res.ok) { toast('Plantilla guardada', 'success'); this.reset(); } else toast(res.msg || 'Error', 'error');
-        }.bind(this)).fail(function () { toast('Error de conexión', 'error'); });
+        }.bind(this)).fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
 })(jQuery);

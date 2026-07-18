@@ -194,16 +194,16 @@ function calcularNotaModuloConfigurable(int $idEstudiante, int $idModulo, int $i
         $peso = (float)$tipo['peso'];
 
         if ($tipo['origen'] === 'examen') {
-            $r = _motorMediaPorPeriodos($idEstudiante, $idModulo, (int)$tipo['idTipo'], $idConfig);
-            $media = $r['media'];
-            $huboNota = $r['huboNota'];
+            $mediaTipo = _motorMediaPorPeriodos($idEstudiante, $idModulo, (int)$tipo['idTipo'], $idConfig);
+            $media = $mediaTipo['media'];
+            $huboNota = $mediaTipo['huboNota'];
         } elseif ($tipo['origen'] === 'reto') {
             $media = _motorMediaRetos($idEstudiante, $idModulo);
             $huboNota = true; // un reto sin nota no bloquea el estado del módulo (igual que hoy)
         } elseif ($tipo['origen'] === 'ra_ce') {
-            $r = _motorMediaRACE($idEstudiante, $idModulo, (int)$tipo['idTipo']);
-            $media = $r['media'];
-            $huboNota = $r['huboNota'];
+            $mediaTipo = _motorMediaRACE($idEstudiante, $idModulo, (int)$tipo['idTipo']);
+            $media = $mediaTipo['media'];
+            $huboNota = $mediaTipo['huboNota'];
         } else {
             // fct/tfg/otro: se integran en M7/M8. Hasta entonces no aportan.
             $media = 0.0;

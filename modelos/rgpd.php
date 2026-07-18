@@ -105,21 +105,22 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
 
     mysqli_begin_transaction($con);
     try {
-        $tables = [
+        $tablasRelacionadas = [
             ['calificaciones_retos',   'idEstudiante'],
             ['calificaciones_modulos', 'idEstudiante'],
             ['pagos',                  'idEstudiante'],
             ['reclamaciones',          'idEstudiante'],
             ['consentimientos',        'idEstudiante'],
             ['estudiante_tutor',       'idEstudiante'],
-            ['log_acciones',           null], // handled specially
+            // log_acciones no tiene columna idEstudiante (solo idAdmin) — se conserva como registro de auditoría.
+            ['log_acciones',           null],
         ];
 
-        foreach ($tables as [$table, $col]) {
-            if ($col === null) continue;
-            $stmt = mysqli_prepare($con, "DELETE FROM $table WHERE $col = ?");
+        foreach ($tablasRelacionadas as [$tabla, $columna]) {
+            if ($columna === null) continue;
+            $stmt = mysqli_prepare($con, "DELETE FROM $tabla WHERE $columna = ?");
             mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-            if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException("delete $table");
+            if (!mysqli_stmt_execute($stmt)) throw new \RuntimeException("delete $tabla");
         }
 
         // Delete physical TFG file if present
@@ -151,10 +152,6 @@ function eliminarEstudianteRGPD(int $idEstudiante, string $motivo, int $idAdmin,
         return ['ok' => false, 'msg' => 'Error interno al procesar la eliminación. Inténtalo de nuevo.'];
     }
 }
-
-/**
- * Records a consent event (terms acceptance, cookie consent, etc.)
- */
 
 /**
  * Purges log_acciones entries older than $years years (LOPDGDD minimum: 3 years).

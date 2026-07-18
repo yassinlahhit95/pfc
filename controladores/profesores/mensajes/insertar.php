@@ -18,7 +18,7 @@ if (!isset($_POST['enviarMensaje'])) {
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
 if (!Security::validateCSRFToken()) {
-    $_SESSION['errores'] = "Solicitud no válida o expirada. Recarga la página e inténtalo de nuevo.";
+    $_SESSION['errores'] = "Solicitud inválida. Inténtelo de nuevo.";
     header("Location: ../../../vistas/profesores/mensajes/agregar.php"); exit;
 }
 

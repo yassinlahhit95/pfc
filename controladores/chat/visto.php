@@ -7,7 +7,9 @@ require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../modelos/conectar.php';
 require_once __DIR__ . '/../../modelos/chat.php';
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+// Security::initSession() (not a bare session_start()) so the cookie-hardening
+// flags (Secure/HttpOnly/SameSite/strict_mode) actually get applied.
+Security::initSession();
 header('Content-Type: application/json; charset=utf-8');
 
 // ══════════════════════════════════════════════════════════════════════
@@ -50,8 +52,8 @@ $st = mysqli_prepare($con,
      WHERE conversacion_id = ? AND emisor_rol = ? AND emisor_id = ? AND leido = 1 AND id > ?');
 mysqli_stmt_bind_param($st, 'isii', $convId, $myRol, $myId, $afterId);
 mysqli_stmt_execute($st);
-$r   = mysqli_stmt_get_result($st);
-$row = mysqli_fetch_assoc($r);
+$resultado = mysqli_stmt_get_result($st);
+$row       = mysqli_fetch_assoc($resultado);
 
 // ══════════════════════════════════════════════════════════════════════
 // RESPUESTA

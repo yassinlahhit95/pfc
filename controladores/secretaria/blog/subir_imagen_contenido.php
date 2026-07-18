@@ -12,7 +12,7 @@ if (!Security::validateCSRFToken(null, false)) {
 }
 
 $msgError = '';
-$nombre = blogSubirImagenPortada($msgError);
+$nombre = blogSubirImagen($msgError);
 if ($nombre === null) {
     echo json_encode(['ok' => false, 'msg' => $msgError]);
     exit;

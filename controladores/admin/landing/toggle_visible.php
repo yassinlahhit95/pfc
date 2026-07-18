@@ -11,6 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    ob_clean();
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+    exit;
+}
+
 $idSeccion = (int)($_POST['idSeccion'] ?? 0);
 $visible   = (int)($_POST['visible'] ?? 0) === 1 ? 1 : 0;
 if ($idSeccion <= 0 || !obtenerSeccionPorId($idSeccion)) {

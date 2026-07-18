@@ -30,21 +30,12 @@ function obtenerActualizacionesRecientes(int $limit = 5): array {
         COALESCE(updated_at, fechaAltaProfesor) AS fecha,
         CONCAT('Nuevo profesor: ', nombreProfesor) AS mensaje
         FROM profesores WHERE COALESCE(updated_at, fechaAltaProfesor) >= CURDATE()";
-    // Secretarias
-    $queries[] = "SELECT 'secretaria' AS tipo, idSecretaria AS id, nombreSecretaria AS nombre, 
-        COALESCE(updated_at, fechaAltaSecretaria) AS fecha, 
-        CONCAT('Nueva secretaria: ', nombreSecretaria) AS mensaje 
-        FROM secretarias";
-    // Profesores
-    $queries[] = "SELECT 'profesor' AS tipo, idProfesor AS id, nombreProfesor AS nombre, 
-        COALESCE(updated_at, fechaAltaProfesor) AS fecha, 
-        CONCAT('Nuevo profesor: ', nombreProfesor) AS mensaje 
-        FROM profesores";
 
     $union = implode(' UNION ALL ', $queries);
-    $sql = "SELECT * FROM ($union) AS u ORDER BY fecha DESC LIMIT $limit";
+    $sql = "SELECT * FROM ($union) AS u ORDER BY fecha DESC LIMIT ?";
     $stmt = mysqli_prepare($con, $sql);
     if (!$stmt) return [];
+    mysqli_stmt_bind_param($stmt, 'i', $limit);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $lista = [];
@@ -53,4 +44,3 @@ function obtenerActualizacionesRecientes(int $limit = 5): array {
     }
     return $lista;
 }
-?>

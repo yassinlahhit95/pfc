@@ -22,11 +22,11 @@ if ($idReclamacion <= 0) {
 }
 
 if (eliminarMensaje($idReclamacion)) {
-    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => true, 'msg' => 'Mensaje eliminado.']); exit; }
-    $_SESSION['exito'] = "Mensaje eliminado.";
+    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => true, 'msg' => 'El mensaje ha sido eliminado correctamente.']); exit; }
+    $_SESSION['exito'] = "El mensaje ha sido eliminado correctamente.";
 } else {
-    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Error al eliminar.']); exit; }
-    $_SESSION['errores'] = "No se pudo eliminar el mensaje.";
+    if ($isAjax) { header('Content-Type: application/json'); echo json_encode(['ok' => false, 'msg' => 'Ocurrió un error al intentar eliminar el mensaje.']); exit; }
+    $_SESSION['errores'] = "Ocurrió un error al intentar eliminar el mensaje.";
 }
 
 header("Location: ../../../vistas/secretaria/mensajes/lista.php");

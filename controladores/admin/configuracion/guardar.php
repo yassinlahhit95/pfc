@@ -54,9 +54,9 @@ $logoFields = ['logoCentro', 'logoGobierno1', 'logoGobierno2'];
 $uploadDir  = __DIR__ . '/../../../public/uploads/configuracion/';
 $mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
 
+$cfgActual = obtenerConfiguracionCentro();
 foreach ($logoFields as $field) {
     if (!empty($_POST['borrar_' . $field])) {
-        $cfgActual = obtenerConfiguracionCentro();
         if (!empty($cfgActual[$field])) {
             $ruta = $uploadDir . basename($cfgActual[$field]);
             if (is_file($ruta)) unlink($ruta);
@@ -71,13 +71,18 @@ foreach ($logoFields as $field) {
     if (!isset($mimeExtMap[$mime])) continue;
     $ext      = $mimeExtMap[$mime];
     $filename = $field . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
-    
+
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
-    
+
     if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
         ImageOptimizer::optimize($uploadDir . $filename, $mime);
+        // El logo anterior deja de usarse: se elimina del disco
+        if (!empty($cfgActual[$field])) {
+            $rutaAnterior = $uploadDir . basename($cfgActual[$field]);
+            if (is_file($rutaAnterior)) unlink($rutaAnterior);
+        }
         actualizarLogoCentro($field, $filename);
     }
 }

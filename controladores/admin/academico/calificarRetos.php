@@ -9,7 +9,8 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-$hayError = false;
+$hayErrorValidacion = false;
+$hayErrorGuardado = false;
 
 if (isset($_POST['guardarNotasReto'])) {
     if (!Security::validateCSRFToken(null, false)) {
@@ -30,25 +31,27 @@ if (isset($_POST['guardarNotasReto'])) {
 
         if (!empty($nota)) {
             if (!is_numeric($nota) || $nota < 0 || $nota > 10) {
-                $hayError = true;
+                $hayErrorValidacion = true;
             }
         }
 
-        if (!$hayError) {
+        if (!$hayErrorValidacion) {
             if (empty($nota)) {
                 eliminarCalificacionReto($idEstudiante, $idReto);
             } else {
                 if (!calificarReto($idEstudiante, $idReto, $nota)) {
-                    $hayError = true;
+                    $hayErrorGuardado = true;
                 }
             }
         }
 
-        if ($hayError) break;
+        if ($hayErrorValidacion || $hayErrorGuardado) break;
     }
 
-    if ($hayError) {
+    if ($hayErrorValidacion) {
         $_SESSION['errores'] = "Ocurrió un error al procesar las notas. Todas las notas deben ser valores numéricos comprendidos entre 0 y 10.";
+    } elseif ($hayErrorGuardado) {
+        $_SESSION['errores'] = "Ocurrió un error al guardar las notas. Inténtalo de nuevo.";
     } else {
         registrarAccion('calificar_retos', 'calificaciones_retos', $idReto, "Ciclo $idCiclo");
         $_SESSION['exito'] = "Las notas del reto han sido guardadas correctamente.";

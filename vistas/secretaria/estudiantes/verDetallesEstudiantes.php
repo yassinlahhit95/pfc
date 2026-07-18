@@ -262,7 +262,7 @@ function confirmarEliminar(id, nombre) {
 function cambiarPassSec() {
     var pass = document.getElementById('nueva-pass-sec').value;
     var confirmPass = document.getElementById('nueva-pass-sec-confirm').value;
-    if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
+    if (pass.length < 8) { if (window.Toast) Toast.show('La contraseña debe tener al menos 8 caracteres.', 'error'); return; }
     if (pass !== confirmPass) { if (window.Toast) Toast.show('Las contraseñas no coinciden.', 'error'); return; }
     fetch('../../../controladores/secretaria/estudiantes/cambiarPassword.php', {
         method: 'POST',
@@ -274,6 +274,8 @@ function cambiarPassSec() {
             document.getElementById('nueva-pass-sec').value = '';
             document.getElementById('nueva-pass-sec-confirm').value = '';
         }
+    }).catch(function() {
+        if (window.Toast) Toast.show('Error de conexión.', 'error');
     });
 }
 </script>

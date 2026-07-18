@@ -36,8 +36,8 @@ $archivo   = null;
 if ($idArchivo > 0) {
     $archivo = obtenerArchivoPorId($idArchivo);
     if ($archivo && $archivo['idProfesor'] == $_SESSION['idProfesor']) {
-        eliminarDefinitivoArchivoAula($idArchivo);
-        if (!$esAjax) $_SESSION['exito'] = "Archivo eliminado definitivamente.";
+        borrarArchivoAula($idArchivo);
+        if (!$esAjax) $_SESSION['exito'] = "Archivo movido a la papelera.";
         $regresar = $regresar ?: $archivo['idModulo'];
         $ok = true;
     }

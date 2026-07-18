@@ -57,16 +57,16 @@ while (($row = fgetcsv($handle)) !== false) {
     if (count($row) < 2) continue;
     $data = array_combine($header, array_pad($row, count($header), ''));
 
-    $nombre   = trim($data['nombreprofesor'] ?? $data['nombre'] ?? '');
-    $email    = trim($data['emailprofesor'] ?? $data['email'] ?? '');
-    $dni      = trim($data['dniprofesor'] ?? $data['dni'] ?? '');
-    $tel      = trim($data['telefonoprofesor'] ?? $data['telefono'] ?? '');
-    $dir      = trim($data['direccionprofesor'] ?? $data['direccion'] ?? '');
-    $ciudad   = trim($data['ciudadprofesor'] ?? $data['ciudad'] ?? '');
-    $cp       = trim($data['codigopostalprofesor'] ?? $data['cp'] ?? '');
-    $fNac     = trim($data['fechanacimientoprofesor'] ?? $data['fechanacimiento'] ?? '');
-    $fAlta    = trim($data['fechaaltaprofesor'] ?? $data['fechaalta'] ?? date('Y-m-d'));
-    $obs      = trim($data['observacionesprofesor'] ?? $data['observaciones'] ?? '');
+    $nombre          = trim($data['nombreprofesor'] ?? $data['nombre'] ?? '');
+    $email           = trim($data['emailprofesor'] ?? $data['email'] ?? '');
+    $dni             = trim($data['dniprofesor'] ?? $data['dni'] ?? '');
+    $telefono        = trim($data['telefonoprofesor'] ?? $data['telefono'] ?? '');
+    $direccion       = trim($data['direccionprofesor'] ?? $data['direccion'] ?? '');
+    $ciudad          = trim($data['ciudadprofesor'] ?? $data['ciudad'] ?? '');
+    $codigoPostal    = trim($data['codigopostalprofesor'] ?? $data['cp'] ?? '');
+    $fechaNacimiento = trim($data['fechanacimientoprofesor'] ?? $data['fechanacimiento'] ?? '');
+    $fechaAlta       = trim($data['fechaaltaprofesor'] ?? $data['fechaalta'] ?? date('Y-m-d'));
+    $observaciones   = trim($data['observacionesprofesor'] ?? $data['observaciones'] ?? '');
 
     if (empty($nombre) || empty($email)) {
         $errLineas[] = "Línea $lineaNum: nombre o email vacío.";
@@ -79,10 +79,10 @@ while (($row = fgetcsv($handle)) !== false) {
         continue;
     }
 
-    $fNac  = $fNac  ?: null;
-    $fAlta = $fAlta ?: date('Y-m-d');
+    $fechaNacimiento = $fechaNacimiento ?: null;
+    $fechaAlta       = $fechaAlta ?: date('Y-m-d');
 
-    $id = insertarProfesor($nombre, $email, $tel, $dni, $dir, $fNac, $fAlta, $ciudad, $cp, $obs);
+    $id = insertarProfesor($nombre, $email, $telefono, $dni, $direccion, $fechaNacimiento, $fechaAlta, $ciudad, $codigoPostal, $observaciones);
     if ($id) {
         $insertados++;
     } else {

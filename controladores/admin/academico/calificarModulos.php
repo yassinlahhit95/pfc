@@ -9,11 +9,12 @@ require_once __DIR__ . "/../../../modelos/log.php";
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
-$hayError = false;
+$hayErrorValidacion = false;
+$hayErrorGuardado = false;
 
 if (isset($_POST['guardarNotas'])) {
     if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "La sesión ha expirado o la solicitud no es válida. Por favor, vuelva a intentarlo.";
+        $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
         header("Location: ../../../vistas/admin/academico/calificacionesModulos.php");
         exit;
     }
@@ -42,7 +43,7 @@ if (isset($_POST['guardarNotas'])) {
         $obs     = trim($listaObs[$i]    ?? '');
 
         if (!$validarVal($v1ev) || !$validarVal($v1final) || !$validarVal($v2ev) || !$validarVal($v2final)) {
-            $hayError = true;
+            $hayErrorValidacion = true;
             break;
         }
 
@@ -50,14 +51,16 @@ if (isset($_POST['guardarNotas'])) {
             (int)$listaIds[$i], (int)$idModulo,
             $v1ev, $v1final, $v2ev, $v2final, $obs
         );
-        if (!$resultado) { $hayError = true; break; }
+        if (!$resultado) { $hayErrorGuardado = true; break; }
     }
 
-    if (!$hayError) {
+    if (!$hayErrorValidacion && !$hayErrorGuardado) {
         registrarAccion('calificar_modulos', 'calificaciones_modulos', $idModulo, "Ciclo $idCiclo");
         $_SESSION['exito'] = "Las notas han sido guardadas correctamente.";
-    } else {
+    } elseif ($hayErrorValidacion) {
         $_SESSION['errores'] = "Error: las notas deben ser valores numéricos entre 0 y 10, o bien los códigos especiales NP, EX o CO.";
+    } else {
+        $_SESSION['errores'] = "Ocurrió un error al guardar las notas. Inténtalo de nuevo.";
     }
 
     header("Location: ../../../vistas/admin/academico/calificacionesModulos.php?idCiclo={$idCiclo}&idModulo={$idModulo}");

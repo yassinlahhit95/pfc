@@ -68,12 +68,12 @@ function eliminarRubrica(int $idRubrica): bool {
 function calcularNotaPorRubrica(array $criterios, array $puntuaciones): ?float {
     $sumaPonderada = 0.0;
     $sumaPesos = 0.0;
-    foreach ($criterios as $c) {
-        $idCriterio = $c['idCriterio'];
+    foreach ($criterios as $criterio) {
+        $idCriterio = $criterio['idCriterio'];
         if (!isset($puntuaciones[$idCriterio]) || $puntuaciones[$idCriterio] === null) continue;
-        $notaMaxima = (float)($c['notaMaxima'] ?: 10);
+        $notaMaxima = (float)($criterio['notaMaxima'] ?: 10);
         $normalizada = ((float)$puntuaciones[$idCriterio] / $notaMaxima) * 10; // a escala 0-10
-        $peso = (float)($c['pesoCriterio'] ?: 1);
+        $peso = (float)($criterio['pesoCriterio'] ?: 1);
         $sumaPonderada += $normalizada * $peso;
         $sumaPesos += $peso;
     }

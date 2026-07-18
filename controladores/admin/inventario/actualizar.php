@@ -35,7 +35,7 @@ if (isset($_POST['actualizarArticulo'])) {
 
     if (empty($errores)) {
         $datosArticuloActual = obtenerArticuloPorId($idArticulo);
-        $estadoActual = $datosArticuloActual['estado'] ?? 'Disponible';
+        $estadoActual = $datosArticuloActual['estado'] ?? 'disponible';
 
         if (actualizarArticulo($idArticulo, $nombreArticulo, $numeroSerie, $estadoActual)) {
             registrarAccion('actualizar', 'inventario', $idArticulo, $nombreArticulo);

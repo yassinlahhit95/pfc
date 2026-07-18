@@ -32,6 +32,11 @@ if (isset($_POST['actualizarAnuncio'])) {
 
     if (empty($listaErrores)) {
         $anuncioActual = obtenerAnuncioPorId($idAnuncio);
+        if (!$anuncioActual) {
+            $_SESSION['errores'] = "El anuncio indicado no existe.";
+            header("Location: ../../../vistas/admin/anuncios/gestionAnuncios.php");
+            exit;
+        }
         $fechaExpiracion = $anuncioActual['fechaExpiracion'];
         $dirigidoA = $anuncioActual['dirigidoA'];
 

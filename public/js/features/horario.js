@@ -81,8 +81,10 @@ var Horario = (function () {
             } else {
                 notificar(resp && resp.msg ? resp.msg : 'No se pudo guardar.', 'error');
             }
-        }).fail(function () {
+        }).fail(function (jqXHR) {
             ocultarOverlay();
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
             notificar('Error de conexión al guardar.', 'error');
         });
     }
@@ -107,8 +109,11 @@ var Horario = (function () {
                 notificar(resp && resp.msg ? resp.msg : 'No se pudo asignar el aula.', 'error');
                 $sel.val(previo);
             }
-        }).fail(function () {
-            notificar('Error de conexión al asignar el aula.', 'error');
+        }).fail(function (jqXHR) {
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
+                notificar('Error de conexión al asignar el aula.', 'error');
+            }
             $sel.val(previo);
         });
     }
@@ -127,8 +132,10 @@ var Horario = (function () {
             } else {
                 notificar(resp && resp.msg ? resp.msg : 'No se pudo eliminar.', 'error');
             }
-        }).fail(function () {
+        }).fail(function (jqXHR) {
             ocultarOverlay();
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
             notificar('Error de conexión al eliminar.', 'error');
         });
     }
@@ -207,8 +214,10 @@ var Horario = (function () {
                 $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
                 notificar(resp && resp.msg ? resp.msg : 'No se pudo eliminar la franja.', 'error');
             }
-        }).fail(function () {
+        }).fail(function (jqXHR) {
             $btn.prop('disabled', false).html('<i class="fas fa-xmark"></i>');
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
             notificar('Error de conexión.', 'error');
         });
     }
@@ -306,9 +315,11 @@ var Horario = (function () {
                     $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
                     notificar(resp && resp.msg ? resp.msg : 'No se pudo agregar la franja.', 'error');
                 }
-            }).fail(function () {
+            }).fail(function (jqXHR) {
                 ocultarOverlay();
                 $btn.prop('disabled', false).html('<i class="fas fa-plus"></i> Añadir');
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
                 notificar('Error de conexión.', 'error');
             });
         });

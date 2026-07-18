@@ -12,6 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    ob_clean();
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+    exit;
+}
+
 $tipo  = $_POST['tipo'] ?? '';
 $tipos = landing_tipos();
 if (!isset($tipos[$tipo])) {

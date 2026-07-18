@@ -79,7 +79,8 @@ function listarProfesoresDeUnCiclo($idCiclo) {
     return $lista;
 }
 
-function listarNombresTutoresCiclo($idCiclo) {
+// Nombres de los profesores asignados al ciclo (no confundir con el rol "Tutores" de padres/tutores legales).
+function listarNombresProfesoresCiclo($idCiclo) {
     $con = obtenerConexion();
     $sql = "SELECT p.nombreProfesor
             FROM profesores p
@@ -97,7 +98,7 @@ function listarNombresTutoresCiclo($idCiclo) {
 }
 
 // Profesores de varios ciclos a la vez, agrupados por idCiclo => [['idProfesor','nombreProfesor'], ...].
-// Evita el patrón N+1 de llamar listarProfesoresDeUnCiclo()/listarNombresTutoresCiclo()
+// Evita el patrón N+1 de llamar listarProfesoresDeUnCiclo()/listarNombresProfesoresCiclo()
 // una vez por ciclo en las vistas de listado (verCiclos.php).
 function listarProfesoresPorCiclos(array $idsCiclos): array {
     if (!$idsCiclos) return [];

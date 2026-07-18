@@ -2,10 +2,11 @@
 // Helpers compartidos de los controladores del blog.
 require_once __DIR__ . '/../../../include/ImageOptimizer.php';
 
-// Sube la imagen de portada a public/uploads/blog/. Devuelve el nombre de
+// Sube una imagen a public/uploads/blog/ (usada tanto para la portada del
+// post como para imágenes insertadas en el contenido). Devuelve el nombre de
 // archivo, '' si no se envió nada, o null si el archivo no es válido
 // (en ese caso deja el motivo en $msgError).
-function blogSubirImagenPortada(&$msgError) {
+function blogSubirImagen(&$msgError) {
     if (empty($_FILES['imagen']) || $_FILES['imagen']['error'] === UPLOAD_ERR_NO_FILE) return '';
     $file = $_FILES['imagen'];
     if ($file['error'] !== UPLOAD_ERR_OK) { $msgError = 'Error al subir la imagen.'; return null; }

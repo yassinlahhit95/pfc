@@ -11,6 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    ob_clean();
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+    exit;
+}
+
 $ids = json_decode($_POST['orden'] ?? '', true);
 if (!is_array($ids) || !$ids) {
     ob_clean();

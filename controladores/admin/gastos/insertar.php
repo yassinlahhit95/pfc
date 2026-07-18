@@ -110,8 +110,8 @@ if ($resultado) {
     $_SESSION['exito'] = "Gasto registrado correctamente.";
 } else {
     if (!empty($nombresArchivos)) {
-        foreach ($nombresArchivos as $na) {
-            @unlink(__DIR__ . "/../../../public/uploads/justificantes/" . $na);
+        foreach ($nombresArchivos as $nombreArchivo) {
+            @unlink(__DIR__ . "/../../../public/uploads/justificantes/" . $nombreArchivo);
         }
     }
     if ($isAjax) {

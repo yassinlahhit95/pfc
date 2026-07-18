@@ -19,6 +19,7 @@ if (isset($_POST['idCiclo'])) {
 
     if ($numEstudiantes > 0) {
         $msg = "No se puede archivar: el ciclo tiene {$numEstudiantes} estudiante(s) matriculado(s). Reasígnalos primero.";
+        $_SESSION['errores'] = $msg;
     } elseif (archivarCiclo($idCiclo)) {
         registrarAccion('archivar', 'ciclos', $idCiclo);
         $ok  = true;

@@ -28,21 +28,21 @@ fputcsv($out, [
     'observacionesEstudiante',
 ]);
 
-foreach ($estudiantes as $e) {
+foreach ($estudiantes as $estudiante) {
     fputcsv($out, [
-        $e['idEstudiante'],
-        $e['nombreEstudiante'],
-        $e['emailEstudiante'],
-        $e['dniEstudiante'],
-        $e['telefonoEstudiante'],
-        $e['direccionEstudiante'],
-        $e['ciudadEstudiante'],
-        $e['codigoPostalEstudiante'],
-        $e['fechaNacimientoEstudiante'],
-        $e['fechaAltaEstudiante'],
-        $e['curso'],
-        $e['nombreCiclo'],
-        $e['observacionesEstudiante'],
+        $estudiante['idEstudiante'],
+        $estudiante['nombreEstudiante'],
+        $estudiante['emailEstudiante'],
+        $estudiante['dniEstudiante'],
+        $estudiante['telefonoEstudiante'],
+        $estudiante['direccionEstudiante'],
+        $estudiante['ciudadEstudiante'],
+        $estudiante['codigoPostalEstudiante'],
+        $estudiante['fechaNacimientoEstudiante'],
+        $estudiante['fechaAltaEstudiante'],
+        $estudiante['curso'],
+        $estudiante['nombreCiclo'],
+        $estudiante['observacionesEstudiante'],
     ]);
 }
 

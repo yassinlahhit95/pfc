@@ -38,11 +38,14 @@ if ($toMin($fin) - $toMin($inicio) > 60) {
     echo json_encode(['ok' => false, 'msg' => 'Una franja no puede durar más de 1 hora']); exit;
 }
 
-// Conflicto: la hora de inicio ya está en uso para este ciclo
+// Conflicto: la nueva franja se solapa con otra ya existente para este ciclo
+// (no basta con comparar solo la hora de inicio: una franja 09:30-10:30 se
+// solaparía con una 09:00-10:00 existente sin coincidir en el inicio).
 $franjasCiclo = obtenerFranjasHorario($idCiclo);
-$usedStarts   = array_column($franjasCiclo, 'inicio');
-if (in_array($inicio, $usedStarts)) {
-    echo json_encode(['ok' => false, 'msg' => 'Esa hora de inicio ya está en uso para este ciclo']); exit;
+foreach ($franjasCiclo as $franja) {
+    if ($inicio < $franja['fin'] && $franja['inicio'] < $fin) {
+        echo json_encode(['ok' => false, 'msg' => 'Esa franja horaria se solapa con otra ya existente para este ciclo']); exit;
+    }
 }
 
 // ══════════════════════════════════════════════════════════════════════

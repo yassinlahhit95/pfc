@@ -10,6 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/profesores/aula/tareas.php");
+    exit;
+}
+
 $idTarea = (int)($_POST['idTarea'] ?? 0);
 $tarea = $idTarea > 0 ? obtenerTareaPorIdAula($idTarea) : null;
 

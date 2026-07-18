@@ -16,6 +16,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    if (isset($_POST['onboarding'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+        exit;
+    }
+    $_SESSION['errores'] = 'Solicitud inválida. Inténtelo de nuevo.';
+    header("Location: ../../../vistas/admin/landing/plantillas.php");
+    exit;
+}
+
 $slug      = $_POST['plantilla'] ?? '';
 $plantilla = landing_obtener_plantilla($slug);
 if ($plantilla === null) {

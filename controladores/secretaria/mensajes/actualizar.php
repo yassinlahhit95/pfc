@@ -36,9 +36,9 @@ $ok = insertarRespuestaMensaje(
 
 if ($ok) {
     marcarMensajeComoLeido($idReclamacion);
-    $_SESSION['exito'] = "Respuesta enviada.";
+    $_SESSION['exito'] = "La respuesta ha sido enviada correctamente.";
 } else {
-    $_SESSION['errores'] = "No se pudo guardar la respuesta.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar enviar la respuesta.";
 }
 
 header("Location: ../../../vistas/secretaria/mensajes/ver.php?id=$idReclamacion");

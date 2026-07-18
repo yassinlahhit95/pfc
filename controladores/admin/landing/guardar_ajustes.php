@@ -11,6 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    ob_clean();
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+    exit;
+}
+
 $color = trim($_POST['colorAcento'] ?? '');
 if ($color !== '' && !preg_match('/^#[0-9a-f]{6}$/i', $color)) $color = '';
 

@@ -24,19 +24,19 @@ require_once __DIR__ . "/fct.php";
 // para el promedio global — no se exponen en el detalle público final.
 function _detalleModulo($idModulo, $nombreModulo, $cursoAnio, ?array $notas, $mediaRetosBruta, bool $motorActivo, ?int $idConfigActivo, int $idEstudiante): array {
     if ($motorActivo && $idConfigActivo) {
-        $r = calcularNotaModuloConfigurable($idEstudiante, (int)$idModulo, $idConfigActivo);
-        $tieneNota = $r['nota_final'] !== '-';
+        $notaConfigurable = calcularNotaModuloConfigurable($idEstudiante, (int)$idModulo, $idConfigActivo);
+        $tieneNota = $notaConfigurable['nota_final'] !== '-';
         return [
             'idModulo' => $idModulo,
             'nombreModulo' => $nombreModulo,
             'cursoAnio' => $cursoAnio,
-            'media_retos' => round((float)$r['media_retos'], 2),
-            'estado' => $r['estado'],
-            'media_notas' => $tieneNota ? round((float)$r['media_notas'], 2) : '-',
-            'nota_final' => $tieneNota ? round((float)$r['nota_final'], 2) : '-',
-            '_mediaExamenes' => $tieneNota ? (float)$r['media_notas'] : 0.0,
-            '_mediaRetos' => (float)$r['media_retos'],
-            '_notaFinalNum' => $tieneNota ? (float)$r['nota_final'] : 0.0,
+            'media_retos' => round((float)$notaConfigurable['media_retos'], 2),
+            'estado' => $notaConfigurable['estado'],
+            'media_notas' => $tieneNota ? round((float)$notaConfigurable['media_notas'], 2) : '-',
+            'nota_final' => $tieneNota ? round((float)$notaConfigurable['nota_final'], 2) : '-',
+            '_mediaExamenes' => $tieneNota ? (float)$notaConfigurable['media_notas'] : 0.0,
+            '_mediaRetos' => (float)$notaConfigurable['media_retos'],
+            '_notaFinalNum' => $tieneNota ? (float)$notaConfigurable['nota_final'] : 0.0,
             '_tieneNota' => $tieneNota,
         ];
     }
@@ -88,12 +88,12 @@ function _resumenGlobalEstudiante(array $detallesModulos, $notaTfgBruta, bool $m
     $sumaModulos = 0.0; $sumaRetos = 0.0; $sumaNotaFinal = 0.0; $modulosConNotas = 0; $tieneSuspensos = false;
     $totalModulos = count($detallesModulos);
 
-    foreach ($detallesModulos as $d) {
-        if ($d['estado'] === 'Suspenso') $tieneSuspensos = true;
-        if ($d['_tieneNota']) {
-            $sumaModulos += $d['_mediaExamenes'];
-            $sumaRetos += $d['_mediaRetos'];
-            $sumaNotaFinal += $d['_notaFinalNum'];
+    foreach ($detallesModulos as $detalle) {
+        if ($detalle['estado'] === 'Suspenso') $tieneSuspensos = true;
+        if ($detalle['_tieneNota']) {
+            $sumaModulos += $detalle['_mediaExamenes'];
+            $sumaRetos += $detalle['_mediaRetos'];
+            $sumaNotaFinal += $detalle['_notaFinalNum'];
             $modulosConNotas++;
         }
     }
@@ -427,9 +427,9 @@ function listarResultadosFinalesCiclo($idCiclo, $cursoEscolar = null)
         $resumen = array_merge($resumen, $global);
 
         // El detalle público no expone las claves internas (_mediaExamenes/_mediaRetos/_tieneNota)
-        $resumen['detalles_modulos'] = array_map(function ($d) {
-            unset($d['_mediaExamenes'], $d['_mediaRetos'], $d['_tieneNota']);
-            return $d;
+        $resumen['detalles_modulos'] = array_map(function ($detalle) {
+            unset($detalle['_mediaExamenes'], $detalle['_mediaRetos'], $detalle['_tieneNota']);
+            return $detalle;
         }, $detallesInternos);
 
         $resultados[] = $resumen;
@@ -505,9 +505,9 @@ function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null,
     $global = _resumenGlobalEstudiante($detallesInternos, $notaTfgBruta, $motorActivo, $idConfigActivo, (int)$idEstudiante, (int)($datosEstudiante['idCiclo'] ?? 0));
     $resumen = array_merge($resumen, $global);
 
-    $resumen['detalles_modulos'] = array_map(function ($d) {
-        unset($d['_mediaExamenes'], $d['_mediaRetos'], $d['_tieneNota']);
-        return $d;
+    $resumen['detalles_modulos'] = array_map(function ($detalle) {
+        unset($detalle['_mediaExamenes'], $detalle['_mediaRetos'], $detalle['_tieneNota']);
+        return $detalle;
     }, $detallesInternos);
 
     return $resumen;
@@ -619,8 +619,8 @@ function generarDatosBoletinCiclo($idCiclo) {
     // que podía divergir: usaba "última evaluación no nula" en vez de
     // calcularNotaDefinitiva(), y una media simple sin el peso de retos).
     $resultadosPorEstudiante = [];
-    foreach (listarResultadosFinalesCiclo($idCiclo) as $r) {
-        $resultadosPorEstudiante[$r['idEstudiante']] = $r;
+    foreach (listarResultadosFinalesCiclo($idCiclo) as $resultadoEstudiante) {
+        $resultadosPorEstudiante[$resultadoEstudiante['idEstudiante']] = $resultadoEstudiante;
     }
 
     foreach ($estudiantes as &$est) {
@@ -629,8 +629,8 @@ function generarDatosBoletinCiclo($idCiclo) {
         $est['promedio_global'] = $resultado['promedio_global'] ?? '-';
         $est['estado_global']   = $resultado['estado_global'] ?? 'PENDIENTE';
         $detallesPorModulo = [];
-        foreach ($resultado['detalles_modulos'] ?? [] as $d) {
-            $detallesPorModulo[$d['idModulo']] = $d;
+        foreach ($resultado['detalles_modulos'] ?? [] as $detalleModulo) {
+            $detallesPorModulo[$detalleModulo['idModulo']] = $detalleModulo;
         }
 
         $est['modulos'] = [];

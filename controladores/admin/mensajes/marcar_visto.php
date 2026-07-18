@@ -6,21 +6,21 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 require_once __DIR__ . "/../../../include/Logger.php";
 
+$folder      = $_POST['folder'] ?? '';
+$queryString = ($folder && $folder !== 'todo') ? '?folder=' . urlencode($folder) : '';
+$urlLista    = "../../../vistas/admin/mensajes/lista.php" . $queryString;
+
 // ══════════════════════════════════════════════════════════════════════
 // PROCESAMIENTO
 // ══════════════════════════════════════════════════════════════════════
 if (!isset($_POST['marcarVisto'])) {
-    $f = $_POST['folder'] ?? '';
-    $q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
-    header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
+    header("Location: $urlLista");
     exit;
 }
 
 if (!Security::validateCSRFToken()) {
     $_SESSION['errores'] = "Solicitud no válida o expirada.";
-    $f = $_POST['folder'] ?? '';
-    $q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
-    header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
+    header("Location: $urlLista");
     exit;
 }
 
@@ -31,20 +31,16 @@ $idReclamacion = (int)($_POST['idReclamacion'] ?? 0);
 // ══════════════════════════════════════════════════════════════════════
 if ($idReclamacion <= 0 || !obtenerMensajePorId($idReclamacion)) {
     $_SESSION['errores'] = "El mensaje no existe o ya fue eliminado.";
-    $f = $_POST['folder'] ?? '';
-    $q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
-    header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
+    header("Location: $urlLista");
     exit;
 }
 
 if (marcarMensajeComoLeido($idReclamacion)) {
-    $_SESSION['exito'] = "El mensaje ha sido marcado como visto.";
+    $_SESSION['exito'] = "El mensaje ha sido marcado como leído.";
     Logger::activity('MENSAJE_MARCADO_VISTO', $_SESSION['idAdmin'], ['idReclamacion' => $idReclamacion]);
 } else {
     $_SESSION['errores'] = "No se pudo marcar el mensaje como visto.";
 }
 
-$f = $_POST['folder'] ?? '';
-$q = $f && $f !== 'todo' ? '?folder=' . urlencode($f) : '';
-header("Location: ../../../vistas/admin/mensajes/lista.php" . $q);
+header("Location: $urlLista");
 exit;

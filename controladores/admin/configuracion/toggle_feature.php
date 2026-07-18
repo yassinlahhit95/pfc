@@ -52,6 +52,9 @@ $etiquetas = [
     'feature_informes'     => 'Informes PDF',
     'feature_horario'      => 'Cuadro Horario',
     'feature_landing'      => 'Página Web Pública',
+    'feature_geoblock_admin' => 'Geo-Block (España)',
+    'feature_ra_ce'        => 'Eval. LOMLOE (RA/CE)',
+    'feature_fp_dual'      => 'FP Dual / Empresas',
     'prematricula_filtrar_niveles' => 'Filtrado de niveles en Pre-Matrícula',
 ];
 $etiqueta = $etiquetas[$feature] ?? $feature;

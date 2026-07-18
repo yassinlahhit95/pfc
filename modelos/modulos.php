@@ -123,23 +123,6 @@ function listarProfesoresDeModulo($idModulo) {
     return $lista;
 }
 
-function listarNombresProfesoresDeModulo($idModulo) {
-    $con = obtenerConexion();
-    $sql = "SELECT p.nombreProfesor
-            FROM profesores p
-            JOIN modulo_profesor pm ON p.idProfesor = pm.idProfesor
-            WHERE pm.idModulo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $idModulo);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $lista = [];
-    while ($fila = mysqli_fetch_assoc($res)) {
-        $lista[] = $fila['nombreProfesor'];
-    }
-    return $lista;
-}
-
 // Profesores de varios módulos a la vez, agrupados por idModulo => [['idProfesor','nombreProfesor'], ...].
 // Evita el patrón N+1 de llamar listarProfesoresDeModulo()/listarNombresProfesoresDeModulo()
 // una vez por módulo en las vistas de listado (verModulos.php).

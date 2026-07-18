@@ -137,7 +137,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 function cambiarPassTutor() {
     var pass = document.getElementById('nueva-pass-tutor').value;
-    if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
+    if (pass.length < 8) { if (window.Toast) Toast.show('La contraseña debe tener al menos 8 caracteres.', 'error'); return; }
     fetch('../../../controladores/profesores/tutor/cambiarPassword.php', {
         method: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
@@ -145,6 +145,8 @@ function cambiarPassTutor() {
     }).then(r => r.json()).then(d => {
         if (window.Toast) Toast.show(d.msg, d.ok ? 'success' : 'error');
         if (d.ok) document.getElementById('nueva-pass-tutor').value = '';
+    }).catch(function() {
+        if (window.Toast) Toast.show('Error de conexión.', 'error');
     });
 }
 </script>

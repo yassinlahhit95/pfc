@@ -443,10 +443,9 @@ $(document).ready(function () {
             error: function (xhr) {
                 $card.css({ opacity: '1', pointerEvents: 'all' });
                 $toggle.prop('checked', !$toggle.prop('checked'));
-                var msg = xhr.status === 500
-                    ? 'Error del servidor (500). Es posible que falte una columna en la BD.'
-                    : 'Error de conexión (' + xhr.status + ').';
-                if (window.Toast) Toast.show(msg, 'error');
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (xhr.status === 401 || xhr.status === 403 || xhr.status === 0 || xhr.status >= 500) return;
+                if (window.Toast) Toast.show('Error de conexión (' + xhr.status + ').', 'error');
             }
         });
     });

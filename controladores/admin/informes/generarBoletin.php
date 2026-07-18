@@ -81,15 +81,6 @@ foreach ($estudiantesAFiltro as &$est) {
         strtoupper(substr($serialRaw, 8, 4)) . '-' .
         strtoupper(substr($serialRaw, 12, 4));
     $est['_serial'] = $serial;
-
-    guardarBoletinLog(
-        $serial,
-        (int)$est['idEstudiante'],
-        $idCiclo,
-        $est['nombreEstudiante'] ?? '',
-        $ciclo['nombreCiclo']    ?? '',
-        $cfg['cursoEscolar']     ?? date('Y')
-    );
 }
 unset($est);
 
@@ -99,6 +90,21 @@ unset($est);
 try {
     $reportService = new ReportService();
     $reportService->generateBoletines($cfg, $ciclo, $estudiantesAFiltro, $_base);
+
+    // El registro de verificación solo se guarda una vez confirmada la generación:
+    // si generateBoletines() lanzara una excepción, no queremos dejar en el log
+    // series "BLT-..." de boletines que en realidad nunca llegaron a expedirse.
+    foreach ($estudiantesAFiltro as $est) {
+        guardarBoletinLog(
+            $est['_serial'],
+            (int)$est['idEstudiante'],
+            $idCiclo,
+            $est['nombreEstudiante'] ?? '',
+            $ciclo['nombreCiclo']    ?? '',
+            $cfg['cursoEscolar']     ?? date('Y')
+        );
+    }
+
     $filename = 'boletines_' . preg_replace('/\W+/', '_', $ciclo['abreviaturaCiclo'] ?? 'ciclo') . '_' . date('Ymd') . '.pdf';
     $reportService->stream($filename);
 } catch (\Throwable $e) {

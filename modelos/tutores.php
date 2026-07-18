@@ -134,6 +134,27 @@ function actualizarTutor(int $idTutor, string $nombre, string $email, string $dn
     return mysqli_stmt_execute($stmt);
 }
 
+function eliminarTutor(int $idTutor): bool {
+    $con = obtenerConexion();
+    mysqli_begin_transaction($con);
+    try {
+        $delVinc = mysqli_prepare($con, "DELETE FROM estudiante_tutor WHERE idTutor = ?");
+        mysqli_stmt_bind_param($delVinc, "i", $idTutor);
+        if (!mysqli_stmt_execute($delVinc)) throw new \RuntimeException('delete estudiante_tutor');
+
+        $delTutor = mysqli_prepare($con, "DELETE FROM tutores WHERE idTutor = ?");
+        mysqli_stmt_bind_param($delTutor, "i", $idTutor);
+        if (!mysqli_stmt_execute($delTutor)) throw new \RuntimeException('delete tutores');
+        $borrado = mysqli_stmt_affected_rows($delTutor) > 0;
+
+        mysqli_commit($con);
+        return $borrado;
+    } catch (\Throwable $e) {
+        mysqli_rollback($con);
+        return false;
+    }
+}
+
 function actualizarVinculacionesTutor(int $idTutor, array $idsEstudiantes, string $parentesco): void {
     $con = obtenerConexion();
     mysqli_begin_transaction($con);
@@ -198,4 +219,3 @@ function listarTodosLosTutores() {
     }
     return $lista;
 }
-?>

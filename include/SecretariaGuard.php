@@ -1,7 +1,10 @@
 <?php
 ob_start();
-if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/Security.php';
+// Security::initSession() (not a bare session_start()) so the cookie-hardening
+// flags (Secure/HttpOnly/SameSite/strict_mode) actually get applied — calling
+// session_start() before Security.php loaded used to skip them silently.
+Security::initSession();
 
 $_isAjaxGuardSec = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
                && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';

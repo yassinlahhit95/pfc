@@ -30,14 +30,14 @@ $estados = [
     'justificado' => 'Justificado',
 ];
 
-foreach ($asistencias as $a) {
+foreach ($asistencias as $asistencia) {
     fputcsv($fh, [
-        date('d/m/Y', strtotime($a['fecha'])),
-        $a['nombreEstudiante'],
-        $a['nombreModulo'],
-        $a['nombreCiclo'],
-        $estados[$a['estado']] ?? $a['estado'],
-        $a['observacion'] ?? '',
+        date('d/m/Y', strtotime($asistencia['fecha'])),
+        $asistencia['nombreEstudiante'],
+        $asistencia['nombreModulo'],
+        $asistencia['nombreCiclo'],
+        $estados[$asistencia['estado']] ?? $asistencia['estado'],
+        $asistencia['observacion'] ?? '',
     ]);
 }
 

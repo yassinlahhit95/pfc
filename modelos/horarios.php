@@ -23,9 +23,9 @@ function _seedDefaultFranjas($idCiclo) {
     $sql  = "INSERT IGNORE INTO horario_franjas (idCiclo, horaInicio, horaFin, esReceso) VALUES (?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
     if (!$stmt) return;
-    foreach (_defaultFranjas() as $f) {
-        $rec = $f['recreo'] ? 1 : 0;
-        mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $f['inicio'], $f['fin'], $rec);
+    foreach (_defaultFranjas() as $franja) {
+        $esReceso = $franja['recreo'] ? 1 : 0;
+        mysqli_stmt_bind_param($stmt, "issi", $idCiclo, $franja['inicio'], $franja['fin'], $esReceso);
         mysqli_stmt_execute($stmt);
     }
     mysqli_stmt_close($stmt);
@@ -170,10 +170,10 @@ function listarClasesDeModuloPorDia(int $idModulo, string $diaSemana): array {
     $res  = mysqli_stmt_get_result($stmt);
     if (!$res) return [];
     $rows = [];
-    while ($r = mysqli_fetch_assoc($res)) {
-        $r['horaInicio'] = substr($r['horaInicio'], 0, 5);
-        $r['horaFin']    = substr($r['horaFin'],    0, 5);
-        $rows[] = $r;
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $fila['horaInicio'] = substr($fila['horaInicio'], 0, 5);
+        $fila['horaFin']    = substr($fila['horaFin'],    0, 5);
+        $rows[] = $fila;
     }
     mysqli_stmt_close($stmt);
     return $rows;

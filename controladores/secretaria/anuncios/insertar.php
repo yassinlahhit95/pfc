@@ -52,13 +52,14 @@ if ($ok) {
         require_once __DIR__ . "/../../../modelos/tutores.php";
         $tokens = array_merge($tokens, obtenerTokensTutores());
     }
-    foreach (array_unique($tokens) as $token) {
+    $tokensUnicos = array_unique($tokens);
+    foreach ($tokensUnicos as $token) {
         enviarNotificacionFirebase($token, "NUEVO ANUNCIO: " . $titulo, substr(strip_tags($mensaje), 0, 100) . "...");
     }
 
-    $_SESSION['exito'] = "Aviso publicado correctamente.";
+    $_SESSION['exito'] = "El anuncio ha sido publicado y notificado correctamente a " . count($tokensUnicos) . " dispositivos.";
 } else {
-    $_SESSION['errores'] = "Error al publicar el aviso.";
+    $_SESSION['errores'] = "No se pudo publicar el anuncio debido a un error del sistema.";
 }
 header("Location: ../../../vistas/secretaria/anuncios/gestionAnuncios.php");
 exit;

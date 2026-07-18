@@ -14,10 +14,10 @@ function guardarAsistenciasMasivo(int $idModulo, int $idProfesor, string $fecha,
     if (!$stmt) return false;
 
     $ok = true;
-    foreach ($registros as $r) {
-        $idEst  = (int)($r['idEstudiante'] ?? 0);
-        $estado = $r['estado'] ?? 'presente';
-        $obs    = $r['observacion'] ?? null;
+    foreach ($registros as $registro) {
+        $idEst  = (int)($registro['idEstudiante'] ?? 0);
+        $estado = $registro['estado'] ?? 'presente';
+        $obs    = $registro['observacion'] ?? null;
         if (!in_array($estado, ['presente','ausente','retraso','justificado'], true)) {
             $estado = 'presente';
         }

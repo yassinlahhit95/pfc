@@ -49,10 +49,11 @@ if (isset($_POST['actualizarPost'])) {
         else $fechaPublicacion = date('Y-m-d H:i:s', $ts);
     }
 
+    $imagenAnterior = $post['imagen'];
     $imagen = $post['imagen'];
     if (empty($listaErrores)) {
         $msgImg = '';
-        $nueva = blogSubirImagenPortada($msgImg);
+        $nueva = blogSubirImagen($msgImg);
         if ($nueva === null) {
             $listaErrores['imagen'] = $msgImg;
         } elseif ($nueva !== '') {
@@ -68,6 +69,11 @@ if (isset($_POST['actualizarPost'])) {
                              $imagen, mb_substr($categoria, 0, 80), mb_substr($autor, 0, 120),
                              $publicado, $destacado, $fechaPublicacion);
         if ($ok) {
+            // La imagen anterior deja de usarse: se elimina del disco
+            if ($imagenAnterior && $imagenAnterior !== $imagen) {
+                $ruta = __DIR__ . '/../../../public/uploads/blog/' . basename($imagenAnterior);
+                if (is_file($ruta)) @unlink($ruta);
+            }
             registrarAccion('actualizar', 'blog', $idPost, $titulo);
             $_SESSION['exito'] = "La entrada «" . $titulo . "» se ha actualizado correctamente.";
             header("Location: ../../../vistas/admin/blog/gestionBlog.php");

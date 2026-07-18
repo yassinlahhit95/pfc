@@ -25,10 +25,13 @@ function contarCiclos(): int {
 }
 
 function contarEstudiantesDeProfesor(int $idProfesor): int {
+    // Los paréntesis son necesarios: sin ellos, "AND ... OR ..." aplicaría el filtro
+    // eliminado=0 solo a la primera mitad y contaría estudiantes dados de baja
+    // llegados por la vía "profesor de módulo".
     $row = dbFetchOne(
         "SELECT COUNT(DISTINCT e.idEstudiante) as total FROM estudiantes e
-         WHERE e.eliminado = 0 AND e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
-            OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?)",
+         WHERE e.eliminado = 0 AND (e.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+            OR e.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))",
         "ii", $idProfesor, $idProfesor
     );
     return (int)($row['total'] ?? 0);

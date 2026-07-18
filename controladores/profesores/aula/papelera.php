@@ -44,7 +44,7 @@ if ($id > 0 && in_array($accion, ['restaurar','eliminar']) && in_array($tipo, ['
                 restaurarCarpetaAula($id);
                 $msgExito = "La carpeta ha sido restaurada.";
             } else {
-                eliminarDefinitivoCarpetaAula($id);
+                eliminarDefinitivoCarpetaRecursivoAula($id);
                 $msgExito = "La carpeta ha sido eliminada definitivamente.";
             }
         }

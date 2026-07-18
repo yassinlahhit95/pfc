@@ -21,49 +21,43 @@ if (isset($_POST['idModulo'])) {
     $idModulo = (int)$_POST['idModulo'];
     $con = obtenerConexion();
 
+    // Cascada completa en una única transacción: si cualquier paso falla, se revierte
+    // todo (antes cada DELETE se ejecutaba de forma independiente sin comprobar su
+    // resultado, igual que el mismo patrón ya corregido en ciclos/borrar.php).
+    mysqli_begin_transaction($con);
+    $cascadaOk = true;
+
+    $ejecutar = function(string $sql, string $tipos, ...$parametros) use ($con, &$cascadaOk) {
+        if (!$cascadaOk) return;
+        $stmt = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($stmt, $tipos, ...$parametros);
+        if (!mysqli_stmt_execute($stmt)) $cascadaOk = false;
+    };
+
     // Obtener los retos vinculados al módulo antes de borrarlo
-    $sql1 = "SELECT idReto FROM modulo_reto WHERE idModulo = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $stmtRetos = mysqli_prepare($con, "SELECT idReto FROM modulo_reto WHERE idModulo = ?");
+    mysqli_stmt_bind_param($stmtRetos, "i", $idModulo);
+    mysqli_stmt_execute($stmtRetos);
+    $resRetos = mysqli_stmt_get_result($stmtRetos);
     $idRetos = [];
-    while ($r = mysqli_fetch_assoc($res)) { $idRetos[] = (int)$r['idReto']; }
+    while ($filaReto = mysqli_fetch_assoc($resRetos)) { $idRetos[] = (int)$filaReto['idReto']; }
 
     foreach ($idRetos as $idReto) {
-        $sql2 = "DELETE FROM calificaciones_retos WHERE idReto = ?";
-        $resultado = mysqli_prepare($con, $sql2);
-        mysqli_stmt_bind_param($resultado, "i", $idReto);
-        mysqli_stmt_execute($resultado);
-
-        $sql3 = "DELETE FROM modulo_reto WHERE idReto = ?";
-        $resultado = mysqli_prepare($con, $sql3);
-        mysqli_stmt_bind_param($resultado, "i", $idReto);
-        mysqli_stmt_execute($resultado);
-
-        $sql4 = "DELETE FROM retos WHERE idReto = ?";
-        $resultado = mysqli_prepare($con, $sql4);
-        mysqli_stmt_bind_param($resultado, "i", $idReto);
-        mysqli_stmt_execute($resultado);
+        $ejecutar("DELETE FROM calificaciones_retos WHERE idReto = ?", "i", $idReto);
+        $ejecutar("DELETE FROM modulo_reto WHERE idReto = ?", "i", $idReto);
+        $ejecutar("DELETE FROM retos WHERE idReto = ?", "i", $idReto);
     }
 
-    $sql5 = "DELETE FROM calificaciones_modulos WHERE idModulo = ?";
-    $resultado = mysqli_prepare($con, $sql5);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    mysqli_stmt_execute($resultado);
+    $ejecutar("DELETE FROM calificaciones_modulos WHERE idModulo = ?", "i", $idModulo);
+    $ejecutar("DELETE FROM modulo_profesor WHERE idModulo = ?", "i", $idModulo);
+    $ejecutar("DELETE FROM modulos WHERE idModulo = ?", "i", $idModulo);
 
-    $sql6 = "DELETE FROM modulo_profesor WHERE idModulo = ?";
-    $resultado = mysqli_prepare($con, $sql6);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    mysqli_stmt_execute($resultado);
-
-    $sql7 = "DELETE FROM modulos WHERE idModulo = ?";
-    $resultado = mysqli_prepare($con, $sql7);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    if (mysqli_stmt_execute($resultado)) {
+    if ($cascadaOk) {
+        mysqli_commit($con);
         registrarAccion('borrar', 'modulos', $idModulo);
         $_SESSION['exito'] = "El módulo ha sido eliminado correctamente.";
     } else {
+        mysqli_rollback($con);
         $_SESSION['errores'] = "Ocurrió un error al intentar eliminar el módulo.";
     }
 }

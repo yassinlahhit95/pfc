@@ -150,8 +150,8 @@ function borrarArchivoSmooth(idArchivo, idReto) {
         $btn.removeClass('confirming');
         $.ajax({
             url: '../../../controladores/comunes/borrar_archivo_reto.php',
-            type: 'GET',
-            data: { id: idArchivo, idReto: idReto, ajax: 1 },
+            type: 'POST',
+            data: { id: idArchivo, idReto: idReto, ajax: 1, csrf_token: $('[name="csrf_token"]').val() },
             success: function(res) {
                 const data = typeof res === 'string' ? JSON.parse(res) : res;
                 if (data.status === 'success') {
@@ -162,7 +162,9 @@ function borrarArchivoSmooth(idArchivo, idReto) {
                     if (window.Toast) Toast.show('Error: ' + data.message, 'error');
                 }
             },
-            error: function() {
+            error: function(jqXHR) {
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
                 if (window.Toast) Toast.show('Error de conexión al borrar el archivo', 'error');
             }
         });
@@ -203,8 +205,11 @@ $(document).ready(function() {
             success: function() {
                 window.location.reload();
             },
-            error: function() {
-                if (window.Toast) Toast.show('Error al subir archivos', 'error');
+            error: function(jqXHR) {
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
+                    if (window.Toast) Toast.show('Error al subir archivos', 'error');
+                }
                 $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-save"></i> GUARDAR CAMBIOS');
             }
         });

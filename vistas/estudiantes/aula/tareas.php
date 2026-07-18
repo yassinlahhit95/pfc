@@ -258,7 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: data
-        }).catch(err => console.error(err));
+        }).catch(err => {
+            console.error(err);
+            if (window.Toast) Toast.show('No se pudo guardar el cambio. Recarga la página.', 'error');
+        });
     }
 
     function actualizarContadores() {

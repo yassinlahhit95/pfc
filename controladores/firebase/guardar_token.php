@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════
 ob_start();
 session_start();
+require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../modelos/directores.php";
 require_once __DIR__ . "/../../modelos/profesores.php";
 require_once __DIR__ . "/../../modelos/estudiantes.php";
@@ -15,6 +16,11 @@ header('Content-Type: application/json');
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN
 // ══════════════════════════════════════════════════════════════════════
+if (!Security::validateCSRFToken()) {
+    echo json_encode(['success' => false, 'error' => 'Solicitud inválida.']);
+    exit;
+}
+
 $tokenFCM   = $_REQUEST['token']    ?? '';
 $idUsuario  = (int)($_REQUEST['userId']   ?? 0);
 $rolUsuario = $_REQUEST['userRole'] ?? '';

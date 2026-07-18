@@ -5,6 +5,7 @@
 require_once __DIR__ . "/../../../include/AdminGuard.php";
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . "/../../../modelos/horarios.php";
+require_once __DIR__ . "/../../../modelos/log.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['ok' => false, 'msg' => 'Solicitud no válida.']);

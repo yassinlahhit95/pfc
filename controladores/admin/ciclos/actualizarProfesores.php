@@ -25,7 +25,7 @@ $ok = actualizarProfesoresDeCiclo($idCiclo, $idsProfesores);
 if ($ok) registrarAccion('actualizar_profesores', 'ciclos', $idCiclo);
 
 if ($isAjax) {
-    $nombres = listarNombresTutoresCiclo($idCiclo);
+    $nombres = listarNombresProfesoresCiclo($idCiclo);
     header('Content-Type: application/json');
     echo json_encode([
         'ok'      => $ok,

@@ -84,14 +84,14 @@ function crearPreMatricula($dni, $nombre, $apellidos, $email, $telefono, $idCicl
     $sql = "INSERT INTO pre_matriculas (dni, nombre, apellidos, email, telefono, idCiclo, curso, nombreTutor, dniTutor, emailTutor, telefonoTutor, parentescoTutor)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
-    $nT = $tutor['nombre']    ?? null;
-    $dT = $tutor['dni']       ?? null;
-    $eT = $tutor['email']     ?? null;
-    $tT = $tutor['telefono']  ?? null;
-    $pT = $tutor['parentesco'] ?? null;
+    $tutorNombre = $tutor['nombre']      ?? null;
+    $tutorDni = $tutor['dni']            ?? null;
+    $tutorEmail = $tutor['email']        ?? null;
+    $tutorTelefono = $tutor['telefono']  ?? null;
+    $tutorParentesco = $tutor['parentesco'] ?? null;
     mysqli_stmt_bind_param($stmt, "sssssissssss",
         $dni, $nombre, $apellidos, $email, $telefono, $idCiclo, $curso,
-        $nT, $dT, $eT, $tT, $pT
+        $tutorNombre, $tutorDni, $tutorEmail, $tutorTelefono, $tutorParentesco
     );
     if (mysqli_stmt_execute($stmt)) {
         return mysqli_insert_id($con);

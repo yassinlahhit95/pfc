@@ -110,9 +110,11 @@ function listarMensajesDeEstudiante($idEstudiante) {
 
 function listarMensajesParaProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.id_parent IS NULL AND (r.idProfesor = ? OR (r.emisor_rol = 'profesor' AND r.idProfesor = ?)) ORDER BY r.idReclamacion DESC";
+    // Incluye tanto reclamaciones dirigidas a este profesor (emitidas por un estudiante)
+    // como las que el propio profesor envió a admin — ambas quedan con idProfesor = $idProfesor.
+    $sql = "SELECT r.*, e.nombreEstudiante, c.nombreCiclo, c.abreviaturaCiclo FROM reclamaciones r LEFT JOIN estudiantes e ON r.idEstudiante = e.idEstudiante LEFT JOIN ciclos c ON e.idCiclo = c.idCiclo WHERE r.id_parent IS NULL AND r.idProfesor = ? ORDER BY r.idReclamacion DESC";
     $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
     mysqli_stmt_execute($stmt);
     $resultado = mysqli_stmt_get_result($stmt);
     $listaMensajes = [];

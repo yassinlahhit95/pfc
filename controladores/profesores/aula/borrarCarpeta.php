@@ -36,8 +36,8 @@ $ok        = false;
 if ($idCarpeta > 0) {
     $c = obtenerCarpetaAulaPorId($idCarpeta);
     if ($c && $c['idProfesor'] == $_SESSION['idProfesor']) {
-        eliminarDefinitivoCarpetaRecursivoAula($idCarpeta);
-        if (!$esAjax) $_SESSION['exito'] = "Carpeta eliminada definitivamente.";
+        borrarCarpetaRecursivoAula($idCarpeta);
+        if (!$esAjax) $_SESSION['exito'] = "Carpeta movida a la papelera.";
         $idModulo = $idModulo ?: $c['idModulo'];
         $ok = true;
     }

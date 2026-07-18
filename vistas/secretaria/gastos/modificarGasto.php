@@ -228,10 +228,12 @@ document.getElementById('archivoJustificante').addEventListener('change', functi
                 progressContainer.style.display = 'none';
             }
         })
-        .fail(function () {
+        .fail(function (jqXHR) {
             btn.disabled = false;
             btn.classList.remove('cargando');
             progressContainer.style.display = 'none';
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
             if (window.Toast) Toast.show('Error de conexión', 'error');
         });
     });

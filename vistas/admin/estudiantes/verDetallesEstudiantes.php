@@ -249,7 +249,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <script>
 function cambiarPassUsuario(tipo, id) {
     var pass = document.getElementById('nueva-pass-est').value;
-    if (pass.length < 8) { if (window.Toast) Toast.show('Mínimo 8 caracteres.', 'error'); return; }
+    if (pass.length < 8) { if (window.Toast) Toast.show('La contraseña debe tener al menos 8 caracteres.', 'error'); return; }
     fetch('../../../controladores/admin/usuarios/cambiarPassword.php', {
         method: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'},
@@ -257,6 +257,8 @@ function cambiarPassUsuario(tipo, id) {
     }).then(r => r.json()).then(data => {
         if (window.Toast) Toast.show(data.msg, data.ok ? 'success' : 'error');
         if (data.ok) document.getElementById('nueva-pass-est').value = '';
+    }).catch(function() {
+        if (window.Toast) Toast.show('Error de conexión.', 'error');
     });
 }
 </script>

@@ -3,6 +3,12 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/rgpd.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 
+if (!Security::validateCSRFToken()) {
+    $_SESSION['errores'] = "Solicitud inválida. Inténtelo de nuevo.";
+    header("Location: ../../../vistas/admin/rgpd/index.php");
+    exit;
+}
+
 $idEstudiante = (int)($_GET['idEstudiante'] ?? $_POST['idEstudiante'] ?? 0);
 
 if ($idEstudiante <= 0) {

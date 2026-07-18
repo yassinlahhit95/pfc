@@ -21,8 +21,8 @@ function calcularMaxHorasLaborables(string $fechaInicio, string $fechaFin): int 
 
 function listarRetos() {
     $con = obtenerConexion();
-    $sql1 = "SELECT * FROM retos ORDER BY idReto ASC";
-    $resultado = mysqli_query($con, $sql1);
+    $sql = "SELECT * FROM retos ORDER BY idReto ASC";
+    $resultado = mysqli_query($con, $sql);
 
     $listaRetos = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
@@ -54,11 +54,11 @@ function retoPerteneceACiclo($idReto, $idCiclo) {
 
 function listarRetosDeProfesor($idProfesor) {
     $con = obtenerConexion();
-    $sql1 = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulo_profesor pm ON mr.idModulo = pm.idModulo WHERE pm.idProfesor = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idProfesor);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulo_profesor pm ON mr.idModulo = pm.idModulo WHERE pm.idProfesor = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $listaProfesor = [];
     while ($fila = mysqli_fetch_assoc($res)) {
         $listaProfesor[] = $fila;
@@ -93,18 +93,18 @@ function insertarReto($nombreReto, $fechaInicio, $fechaFin, $horasReto, $listaId
 function obtenerDetalleHorasModulo($idModulo, $idRetoAExcluir = 0) {
     $con = obtenerConexion();
     $idRetoAExcluir = intval($idRetoAExcluir);
-    $sql1 = "SELECT m.nombreModulo, m.horasMaximas, SUM(r.horasReto) AS horasOcupadas
+    $sql = "SELECT m.nombreModulo, m.horasMaximas, SUM(r.horasReto) AS horasOcupadas
             FROM modulos m
             LEFT JOIN modulo_reto mr ON m.idModulo = mr.idModulo
             LEFT JOIN retos r ON mr.idReto = r.idReto AND r.idReto != ?
             WHERE m.idModulo = ?
             GROUP BY m.idModulo, m.nombreModulo, m.horasMaximas";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "ii", $idRetoAExcluir, $idModulo);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idRetoAExcluir, $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
-    
+
 
     $detalle = [
         'nombreModulo' => '',
@@ -151,25 +151,37 @@ function actualizarReto($idReto, $nombreReto, $fechaInicio, $fechaFin, $horasRet
     }
 }
 
+// reto_archivos no tiene FOREIGN KEY (solo un índice sobre idReto), así que sin
+// esta limpieza previa cada borrado de reto dejaba filas huérfanas y archivos
+// físicos abandonados en public/uploads/retos/ para siempre.
 function eliminarReto($idReto) {
     $con = obtenerConexion();
-    $sql1 = "DELETE FROM retos WHERE idReto = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idReto);
-    $ok = mysqli_stmt_execute($resultado);
-    
+
+    foreach (obtenerArchivosReto($idReto) as $archivo) {
+        $rutaFisica = __DIR__ . '/../' . ltrim($archivo['rutaArchivo'], '/');
+        if (is_file($rutaFisica)) @unlink($rutaFisica);
+    }
+    $stmtArchivos = mysqli_prepare($con, "DELETE FROM reto_archivos WHERE idReto = ?");
+    mysqli_stmt_bind_param($stmtArchivos, "i", $idReto);
+    mysqli_stmt_execute($stmtArchivos);
+
+    $sql = "DELETE FROM retos WHERE idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idReto);
+    $ok = mysqli_stmt_execute($stmt);
+
     return $ok;
 }
 
 function obtenerRetoPorId($idReto) {
     $con = obtenerConexion();
-    $sql1 = "SELECT * FROM retos WHERE idReto = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idReto);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sql = "SELECT * FROM retos WHERE idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idReto);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $reto = mysqli_fetch_assoc($res);
-    
+
     return $reto;
 }
 
@@ -225,11 +237,11 @@ function eliminarArchivoReto($idArchivo) {
 
 function listarModulosDeReto($idReto) {
     $con = obtenerConexion();
-    $sql1 = "SELECT m.*, c.nombreCiclo FROM modulos m JOIN ciclos c ON m.idCiclo = c.idCiclo JOIN modulo_reto mr ON m.idModulo = mr.idModulo WHERE mr.idReto = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idReto);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sql = "SELECT m.*, c.nombreCiclo FROM modulos m JOIN ciclos c ON m.idCiclo = c.idCiclo JOIN modulo_reto mr ON m.idModulo = mr.idModulo WHERE mr.idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idReto);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $listaModulos = [];
     while ($fila = mysqli_fetch_assoc($res)) {
         $listaModulos[] = $fila;
@@ -242,44 +254,44 @@ function listarModulosDeReto($idReto) {
 function calificarReto($idEstudiante, $idReto, $notaObtenida) {
     $con = obtenerConexion();
 
-    $sql1 = "SELECT idCalificacion FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "ii", $idEstudiante, $idReto);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sqlComprobar = "SELECT idCalificacion FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
+    $stmt = mysqli_prepare($con, $sqlComprobar);
+    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idReto);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($res) > 0) {
-        $sql2 = "UPDATE calificaciones_retos SET nota = ? WHERE idEstudiante = ? AND idReto = ?";
-        $resultado = mysqli_prepare($con, $sql2);
-        mysqli_stmt_bind_param($resultado, "dii", $notaObtenida, $idEstudiante, $idReto);
+        $sqlGuardar = "UPDATE calificaciones_retos SET nota = ? WHERE idEstudiante = ? AND idReto = ?";
+        $stmt = mysqli_prepare($con, $sqlGuardar);
+        mysqli_stmt_bind_param($stmt, "dii", $notaObtenida, $idEstudiante, $idReto);
     } else {
-        $sql2 = "INSERT INTO calificaciones_retos (idEstudiante, idReto, nota) VALUES (?, ?, ?)";
-        $resultado = mysqli_prepare($con, $sql2);
-        mysqli_stmt_bind_param($resultado, "iid", $idEstudiante, $idReto, $notaObtenida);
+        $sqlGuardar = "INSERT INTO calificaciones_retos (idEstudiante, idReto, nota) VALUES (?, ?, ?)";
+        $stmt = mysqli_prepare($con, $sqlGuardar);
+        mysqli_stmt_bind_param($stmt, "iid", $idEstudiante, $idReto, $notaObtenida);
     }
 
-    $ok = mysqli_stmt_execute($resultado);
-    
+    $ok = mysqli_stmt_execute($stmt);
+
     return $ok;
 }
 
 function eliminarCalificacionReto($idEstudiante, $idReto) {
     $con = obtenerConexion();
-    $sql1 = "DELETE FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "ii", $idEstudiante, $idReto);
-    $ok = mysqli_stmt_execute($resultado);
-    
+    $sql = "DELETE FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idReto);
+    $ok = mysqli_stmt_execute($stmt);
+
     return $ok;
 }
 
 function obtenerCalificacionReto($idEstudiante, $idReto) {
     $con = obtenerConexion();
-    $sql1 = "SELECT nota FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "ii", $idEstudiante, $idReto);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sql = "SELECT nota FROM calificaciones_retos WHERE idEstudiante = ? AND idReto = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idEstudiante, $idReto);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $fila = mysqli_fetch_assoc($res);
 
     $nota = "";
@@ -314,15 +326,15 @@ function listarCalificacionesRetoPorEstudiantes(array $idsEstudiantes, $idReto):
 
 function listarCalificacionesRetoPorModulo($idModulo) {
     $con = obtenerConexion();
-    $sql1 = "SELECT cr.idEstudiante, AVG(cr.nota) AS promedio
+    $sql = "SELECT cr.idEstudiante, AVG(cr.nota) AS promedio
             FROM calificaciones_retos cr
             JOIN modulo_reto mr ON cr.idReto = mr.idReto
             WHERE mr.idModulo = ?
             GROUP BY cr.idEstudiante";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idModulo);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idModulo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $medias = [];
     while ($fila = mysqli_fetch_assoc($res)) {
         $medias[$fila['idEstudiante']] = $fila['promedio'];
@@ -333,11 +345,11 @@ function listarCalificacionesRetoPorModulo($idModulo) {
 
 function listarCalificacionesRetoPorEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql1 = "SELECT r.nombreReto, cr.nota, r.fechaInicio, r.fechaFin FROM calificaciones_retos cr JOIN retos r ON cr.idReto = r.idReto WHERE cr.idEstudiante = ? ORDER BY r.fechaInicio DESC";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sql = "SELECT r.nombreReto, cr.nota, r.fechaInicio, r.fechaFin FROM calificaciones_retos cr JOIN retos r ON cr.idReto = r.idReto WHERE cr.idEstudiante = ? ORDER BY r.fechaInicio DESC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $listaHistorial = [];
     while($fila = mysqli_fetch_assoc($res)) {
         $listaHistorial[] = $fila;
@@ -348,11 +360,11 @@ function listarCalificacionesRetoPorEstudiante($idEstudiante) {
 
 function listarRetosPorCiclo($idCiclo) {
     $con = obtenerConexion();
-    $sql1 = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulos m ON mr.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY r.idReto ASC";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idCiclo);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $sql = "SELECT DISTINCT r.* FROM retos r JOIN modulo_reto mr ON r.idReto = mr.idReto JOIN modulos m ON mr.idModulo = m.idModulo WHERE m.idCiclo = ? ORDER BY r.idReto ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $listaRetos = [];
     while ($fila = mysqli_fetch_assoc($res)) {
         $listaRetos[] = $fila;
@@ -363,16 +375,16 @@ function listarRetosPorCiclo($idCiclo) {
 
 function listarRetosPorCicloDeProfesor($idCiclo, $idProfesor) {
     $con = obtenerConexion();
-    $sql1 = "SELECT DISTINCT r.* FROM retos r
+    $sql = "SELECT DISTINCT r.* FROM retos r
             JOIN modulo_reto mr ON r.idReto = mr.idReto
             JOIN modulos m ON mr.idModulo = m.idModulo
             JOIN modulo_profesor pm ON m.idModulo = pm.idModulo
             WHERE m.idCiclo = ? AND pm.idProfesor = ?
             ORDER BY r.idReto ASC";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "ii", $idCiclo, $idProfesor);
-    mysqli_stmt_execute($resultado);
-    $res = mysqli_stmt_get_result($resultado);
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idCiclo, $idProfesor);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
     $lista = [];
     while ($fila = mysqli_fetch_assoc($res)) {
         $lista[] = $fila;
@@ -383,11 +395,12 @@ function listarRetosPorCicloDeProfesor($idCiclo, $idProfesor) {
 
 function obtenerPromedioRetosEstudiante($idEstudiante) {
     $con = obtenerConexion();
-    $sql1 = "SELECT AVG(nota) as promedio FROM calificaciones_retos WHERE idEstudiante = ?";
-    $resultado = mysqli_prepare($con, $sql1);
-    mysqli_stmt_bind_param($resultado, "i", $idEstudiante);
-    mysqli_stmt_execute($resultado);
-    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($resultado));
-    
+    $sql = "SELECT AVG(nota) as promedio FROM calificaciones_retos WHERE idEstudiante = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
+    mysqli_stmt_execute($stmt);
+    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+
     return $row['promedio'] ? floatval($row['promedio']) : 0;
 }

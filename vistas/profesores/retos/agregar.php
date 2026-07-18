@@ -185,8 +185,11 @@ $(document).ready(function() {
             success: function() {
                 window.location.href = 'lista.php';
             },
-            error: function() {
-                if (window.Toast) Toast.show('Error al registrar el reto. Inténtalo de nuevo.', 'error');
+            error: function(jqXHR) {
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
+                    if (window.Toast) Toast.show('Error al registrar el reto. Inténtalo de nuevo.', 'error');
+                }
                 $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-plus"></i> REGISTRAR RETO');
             }
         });

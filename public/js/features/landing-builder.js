@@ -121,7 +121,7 @@
                     toast(res.msg || 'Error al reordenar', 'error');
                 }
             })
-            .fail(function () { toast('Error de conexión', 'error'); });
+            .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     /* ══════════ Mostrar / ocultar sección ══════════ */
@@ -141,7 +141,7 @@
                 marcarCambios();
                 recargarPreview();
             })
-            .fail(function () { toast('Error de conexión', 'error'); });
+            .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     /* ══════════ Eliminar sección ══════════ */
@@ -161,7 +161,7 @@
                     marcarCambios();
                     recargarPreview();
                 })
-                .fail(function () { toast('Error de conexión', 'error'); });
+                .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
         });
     });
 
@@ -179,7 +179,7 @@
                 // Recarga completa: la lista y el estado se regeneran en servidor
                 setTimeout(function () { window.location.reload(); }, 500);
             })
-            .fail(function () { toast('Error de conexión', 'error'); });
+            .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
     });
 
     /* ══════════ Editor de sección (formulario desde el schema) ══════════ */
@@ -389,8 +389,11 @@
             }
             toast(res.msg, 'success');
         })
-        .fail(function () { 
-            toast('Error al subir la imagen', 'error'); 
+        .fail(function (jqXHR) {
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
+                toast('Error al subir la imagen', 'error');
+            }
             $preview.html(oldHtml);
         })
         .always(function () { $wrap.removeClass('lb-subiendo'); });
@@ -557,7 +560,7 @@
                 marcarCambios();
                 recargarPreview();
             })
-            .fail(function () { toast('Error de conexión', 'error'); })
+            .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); })
             .always(function () { $boton.prop('disabled', false); });
     });
 
@@ -613,7 +616,10 @@
             marcarCambios();
             recargarPreview();
         })
-        .fail(function () { if (!silencioso) toast('Error de conexión', 'error'); });
+        .fail(function (jqXHR) {
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
+            if (!silencioso) toast('Error de conexión', 'error');
+        });
     });
 
     /* ══════════ Publicar / descartar ══════════ */
@@ -636,7 +642,7 @@
                     $('#lb-estado').attr('class', 'texto-estado verde').text('Publicado el ' + fecha);
                     $('#lb-descartar').prop('disabled', false);
                 })
-                .fail(function () { toast('Error de conexión', 'error'); })
+                .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); })
                 .always(function () { $boton.prop('disabled', false); });
         });
     });
@@ -651,7 +657,7 @@
                     toast(res.msg, 'success');
                     setTimeout(function () { window.location.reload(); }, 500);
                 })
-                .fail(function () { toast('Error de conexión', 'error'); });
+                .fail(function (jqXHR) { if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return; toast('Error de conexión', 'error'); });
         });
     });
 

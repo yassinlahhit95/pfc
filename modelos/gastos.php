@@ -10,7 +10,7 @@ function listarCategorias() {
     $sql = "SELECT * FROM categorias_gasto WHERE activo = 1 ORDER BY nombre ASC";
     $res = mysqli_query($con, $sql);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) { $lista[] = $f; }
+    while ($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
     return $lista;
 }
 
@@ -107,7 +107,7 @@ function listarGastos($anyo = null, $idCategoria = null, $idCiclo = null) {
     mysqli_stmt_execute($stmt);
     $res   = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) { $lista[] = $f; }
+    while ($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
     return $lista;
 }
 
@@ -172,8 +172,8 @@ function borrarGasto($idGasto) {
         if ($archivo) {
             $archivos = json_decode($archivo, true);
             if (is_array($archivos)) {
-                foreach ($archivos as $a) {
-                    $ruta = __DIR__ . "/../public/uploads/justificantes/" . $a;
+                foreach ($archivos as $nombreArchivo) {
+                    $ruta = __DIR__ . "/../public/uploads/justificantes/" . $nombreArchivo;
                     if (file_exists($ruta)) { @unlink($ruta); }
                 }
             } else {
@@ -205,7 +205,7 @@ function resumenPresupuestoPorCategoria($anyo) {
     mysqli_stmt_execute($stmt);
     $res   = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) { $lista[] = $f; }
+    while ($fila = mysqli_fetch_assoc($res)) { $lista[] = $fila; }
     return $lista;
 }
 
@@ -229,9 +229,3 @@ function totalGastadoEnMes($anyo, $mes) {
     return (float)($row['total'] ?? 0);
 }
 
-function contarGastos() {
-    $con = obtenerConexion();
-    $res = mysqli_query($con, "SELECT COUNT(*) AS total FROM gastos");
-    $row = mysqli_fetch_assoc($res);
-    return (int)($row['total'] ?? 0);
-}

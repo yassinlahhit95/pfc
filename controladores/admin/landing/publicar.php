@@ -11,6 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!Security::validateCSRFToken()) {
+    ob_clean();
+    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
+    exit;
+}
+
 if (!listarSeccionesLanding('draft')) {
     ob_clean();
     echo json_encode(['ok' => false, 'msg' => 'El borrador está vacío. Aplica una plantilla o añade secciones antes de publicar.']);

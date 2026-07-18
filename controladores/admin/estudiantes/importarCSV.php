@@ -31,8 +31,8 @@ if (!in_array($ext, ['csv'])) {
 // Build ciclo name→id map for lookups
 $ciclos = listarTodosLosCiclos();
 $mapaCiclos = [];
-foreach ($ciclos as $c) {
-    $mapaCiclos[strtolower(trim($c['nombreCiclo']))] = $c['idCiclo'];
+foreach ($ciclos as $ciclo) {
+    $mapaCiclos[strtolower(trim($ciclo['nombreCiclo']))] = $ciclo['idCiclo'];
 }
 
 $handle = fopen($file['tmp_name'], 'r');
@@ -60,18 +60,18 @@ while (($row = fgetcsv($handle)) !== false) {
     if (count($row) < 2) continue;
     $data = array_combine($header, array_pad($row, count($header), ''));
 
-    $nombre   = trim($data['nombreestudiante'] ?? $data['nombre'] ?? '');
-    $email    = trim($data['emailestudiante'] ?? $data['email'] ?? '');
-    $dni      = trim($data['dniestudiante'] ?? $data['dni'] ?? '');
-    $tel      = trim($data['telefonoestudiante'] ?? $data['telefono'] ?? '');
-    $dir      = trim($data['direccionestudiante'] ?? $data['direccion'] ?? '');
-    $ciudad   = trim($data['ciudadestudiante'] ?? $data['ciudad'] ?? '');
-    $cp       = trim($data['codigopostalestudiante'] ?? $data['cp'] ?? '');
-    $fNac     = trim($data['fechanacimientoestudiante'] ?? $data['fechanacimiento'] ?? '');
-    $fAlta    = trim($data['fechaaltaestudiante'] ?? $data['fechaalta'] ?? date('Y-m-d'));
-    $curso    = trim($data['curso'] ?? 'Grado Medio');
-    $cicloNom = trim($data['nombreciclo'] ?? $data['ciclo'] ?? '');
-    $obs      = trim($data['observacionesestudiante'] ?? $data['observaciones'] ?? '');
+    $nombre          = trim($data['nombreestudiante'] ?? $data['nombre'] ?? '');
+    $email           = trim($data['emailestudiante'] ?? $data['email'] ?? '');
+    $dni             = trim($data['dniestudiante'] ?? $data['dni'] ?? '');
+    $telefono        = trim($data['telefonoestudiante'] ?? $data['telefono'] ?? '');
+    $direccion       = trim($data['direccionestudiante'] ?? $data['direccion'] ?? '');
+    $ciudad          = trim($data['ciudadestudiante'] ?? $data['ciudad'] ?? '');
+    $codigoPostal    = trim($data['codigopostalestudiante'] ?? $data['cp'] ?? '');
+    $fechaNacimiento = trim($data['fechanacimientoestudiante'] ?? $data['fechanacimiento'] ?? '');
+    $fechaAlta       = trim($data['fechaaltaestudiante'] ?? $data['fechaalta'] ?? date('Y-m-d'));
+    $curso           = trim($data['curso'] ?? 'Grado Medio');
+    $cicloNom        = trim($data['nombreciclo'] ?? $data['ciclo'] ?? '');
+    $observaciones   = trim($data['observacionesestudiante'] ?? $data['observaciones'] ?? '');
 
     if (empty($nombre) || empty($email)) {
         $errLineas[] = "Línea $lineaNum: nombre o email vacío.";
@@ -97,10 +97,10 @@ while (($row = fgetcsv($handle)) !== false) {
         continue;
     }
 
-    $fNac  = $fNac  ?: null;
-    $fAlta = $fAlta ?: date('Y-m-d');
+    $fechaNacimiento = $fechaNacimiento ?: null;
+    $fechaAlta       = $fechaAlta       ?: date('Y-m-d');
 
-    $id = insertarEstudiante($nombre, $email, $tel, $fNac, $dni, $fAlta, $dir, $ciudad, $cp, $obs, $idCiclo, $curso);
+    $id = insertarEstudiante($nombre, $email, $telefono, $fechaNacimiento, $dni, $fechaAlta, $direccion, $ciudad, $codigoPostal, $observaciones, $idCiclo, $curso);
     if ($id) {
         $insertados++;
     } else {

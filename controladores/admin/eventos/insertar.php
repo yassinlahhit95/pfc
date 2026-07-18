@@ -38,7 +38,7 @@ if (isset($_POST['guardarEvento'])) {
 
     if (insertarEvento($titulo, $descripcion, $fechaEvento, $horaEvento, $ubicacionEvento)) {
         registrarAccion('insertar', 'eventos', null, $titulo);
-        $_SESSION['exito'] = "El evento ha sido publicado correctamente.";
+        $_SESSION['exito'] = "El evento ha sido creado correctamente.";
         header("Location: ../../../vistas/admin/eventos/gestionEventos.php");
         exit;
     }

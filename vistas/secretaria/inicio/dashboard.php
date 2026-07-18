@@ -290,7 +290,8 @@ function otorgarProrroga(idPago) {
     
     const formData = new FormData();
     formData.append('idPago', idPago);
-    
+    formData.append('csrf_token', $('[name="modal_csrf"]').val());
+
     fetch('../../../controladores/secretaria/ajax_prorroga.php', {
         method: 'POST',
         body: formData

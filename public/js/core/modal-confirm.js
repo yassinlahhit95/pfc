@@ -109,8 +109,10 @@
                     var errMsg = (res && res.msg) ? res.msg : 'Error al procesar la solicitud';
                     if (window.Toast) Toast.show(errMsg, 'error');
                 }
-            }).fail(function() {
+            }).fail(function(jqXHR) {
                 close();
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
                 if (window.Toast) Toast.show('Error de red al procesar la solicitud', 'error');
             });
         });

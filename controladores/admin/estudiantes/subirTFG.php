@@ -50,11 +50,18 @@ if (isset($_POST['subirTFG'])) {
             mkdir(dirname($rutaDestino), 0755, true);
         }
 
-        // Eliminar el archivo anterior antes de guardar el nuevo
-        eliminarArchivoTFG($idEstudiante);
+        // El archivo anterior (si existe) solo se borra tras confirmar que el
+        // nuevo se ha subido y guardado correctamente: borrarlo antes arriesga
+        // dejar al estudiante sin TFG si la subida o la BD fallan a continuación.
+        $tfgAnterior = obtenerTFGporEstudiante($idEstudiante);
+        $archivoAnterior = $tfgAnterior['archivoTFG'] ?? '';
 
         if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
             if (actualizarTFG($idEstudiante, $nombreAleatorio)) {
+                if ($archivoAnterior) {
+                    $rutaAnterior = __DIR__ . "/../../../public/uploads/pfc/" . $archivoAnterior;
+                    if (file_exists($rutaAnterior)) unlink($rutaAnterior);
+                }
                 registrarAccion('subir_tfg', 'estudiantes', $idEstudiante);
                 $_SESSION['exito'] = "El TFG ha sido subido correctamente.";
                 header("Location: ../../../vistas/admin/estudiantes/verDetallesEstudiantes.php?idEstudiante=$idEstudiante");

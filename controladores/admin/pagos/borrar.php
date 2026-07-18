@@ -15,7 +15,13 @@ if (!Security::validateCSRFToken(null, false)) {
 
 if (isset($_POST['idPago'])) {
     $idPago = (int)($_POST['idPago'] ?? 0);
-    if (eliminarPago($idPago)) {
+    $pago = obtenerPagoPorId($idPago);
+    if ($pago && eliminarPago($idPago)) {
+        // El comprobante deja de usarse: se elimina del disco
+        if (!empty($pago['comprobante'])) {
+            $ruta = __DIR__ . '/../../../public/uploads/comprobantes/' . basename($pago['comprobante']);
+            if (is_file($ruta)) @unlink($ruta);
+        }
         registrarAccion('borrar', 'pagos', $idPago);
         $ok = true; $msg = "Pago eliminado.";
         $_SESSION['exito'] = $msg;

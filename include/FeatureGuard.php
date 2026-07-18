@@ -26,6 +26,7 @@ class FeatureGuard
         // When admin saves config, clearCache() deletes this key so the very
         // next request from any user re-reads from DB and repopulates APCu.
         if (function_exists('apcu_fetch')) {
+            $found = false;
             $cached = apcu_fetch(self::APCU_KEY, $found);
             if ($found && is_array($cached)) return $cached;
         }
@@ -103,6 +104,7 @@ class FeatureGuard
                     'feature_ra_ce'        => $feat('feature_ra_ce',        $payload, $row),
                     'feature_landing'      => $feat('feature_landing',      $payload, $row),
                     'feature_academico_config' => $feat('feature_academico_config', $payload, $row),
+                    'feature_geoblock_admin' => $feat('feature_geoblock_admin', $payload, $row),
                     'saas_lock_features'   => (int)(bool)($payload['lock']     ?? false),
                     'saas_message'         => $payload['msg']      ?? '',
                     'saas_message_type'    => $payload['msg_type'] ?? 'info',
@@ -145,6 +147,7 @@ class FeatureGuard
             'feature_ra_ce'        => (int)($row['feature_ra_ce']        ?? 1),
             'feature_landing'      => (int)($row['feature_landing']      ?? 1),
             'feature_academico_config' => (int)($row['feature_academico_config'] ?? 0),
+            'feature_geoblock_admin' => (int)($row['feature_geoblock_admin'] ?? 1),
             'saas_lock_features'   => (int)($row['saas_lock_features']   ?? 0),
             'saas_message'         => $row['saas_message']      ?? '',
             'saas_message_type'    => $row['saas_message_type'] ?? 'info',

@@ -83,9 +83,9 @@ $diasHorario    = obtenerDiasHorario();
                                         <?php if ($puedeEditar) { ?>
                                             <select class="horario-aula-select" aria-label="Aula">
                                                 <option value="">— Aula —</option>
-                                                <?php foreach ($aulasDisponibles as $au) { ?>
-                                                    <option value="<?= Security::escapeHtml($au['idAula']) ?>" <?= ($au['idAula'] == ($celda['idAula'] ?? 0)) ? 'selected' : '' ?>>
-                                                        Aula <?= Security::escapeHtml($au['codigoAula']) ?>
+                                                <?php foreach ($aulasDisponibles as $aula) { ?>
+                                                    <option value="<?= Security::escapeHtml($aula['idAula']) ?>" <?= ($aula['idAula'] == ($celda['idAula'] ?? 0)) ? 'selected' : '' ?>>
+                                                        Aula <?= Security::escapeHtml($aula['codigoAula']) ?>
                                                     </option>
                                                 <?php } ?>
                                             </select>

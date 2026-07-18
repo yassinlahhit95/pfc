@@ -43,7 +43,7 @@ if (isset($_POST['guardarPost'])) {
     $imagen = '';
     if (empty($listaErrores)) {
         $msgImg = '';
-        $imagen = blogSubirImagenPortada($msgImg);
+        $imagen = blogSubirImagen($msgImg);
         if ($imagen === null) $listaErrores['imagen'] = $msgImg;
     }
 

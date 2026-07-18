@@ -24,7 +24,7 @@ $opcValidas = ['todos', 'estudiantes', 'profesores', 'tutores'];
 if (!in_array($dirigidoA, $opcValidas)) $dirigidoA = 'todos';
 
 $errores = [];
-if ($idAnuncio <= 0) $errores[] = "Aviso no válido.";
+if ($idAnuncio <= 0) $errores[] = "Anuncio no válido.";
 if (empty($titulo))  $errores[] = "El título es obligatorio.";
 if (empty($mensaje)) $errores[] = "El contenido es obligatorio.";
 
@@ -41,9 +41,9 @@ if (empty($fechaExpiracion)) {
 $ok = actualizarAnuncio($idAnuncio, $titulo, $mensaje, $fechaExpiracion, $dirigidoA);
 
 if ($ok) {
-    $_SESSION['exito'] = "Aviso actualizado correctamente.";
+    $_SESSION['exito'] = "El anuncio ha sido actualizado correctamente.";
 } else {
-    $_SESSION['errores'] = "Error al actualizar el aviso.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar actualizar el anuncio.";
 }
 header("Location: ../../../vistas/secretaria/anuncios/gestionAnuncios.php");
 exit;

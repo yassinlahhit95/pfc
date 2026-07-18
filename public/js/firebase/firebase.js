@@ -102,6 +102,7 @@ export async function setupFirebase(id, rol) {
             fd.append('token', token);
             fd.append('userId', id);
             fd.append('userRole', rol);
+            fd.append('csrf_token', document.querySelector('[name="modal_csrf"]')?.value || '');
 
             // Use appRoot for the fetch path
             await fetch(appRoot + 'controladores/firebase/guardar_token.php', {

@@ -234,7 +234,7 @@ $('#admGuardar').on('click', function() {
         csrf_token: csrf_token
     }, function(res) {
         if (res.status === 'success') {
-            if (window.Toast) Toast.show('Expediente actualizado', 'success');
+            if (window.Toast) Toast.show('Expediente actualizado correctamente.', 'success');
             cerrarModal();
             setTimeout(() => window.location.reload(), 1200);
         } else {

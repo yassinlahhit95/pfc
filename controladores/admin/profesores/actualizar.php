@@ -23,7 +23,7 @@ if (isset($_POST['actualizarProfesor'])) {
     $telefono        = trim($_POST['telefonoProfesor']);
     $direccion       = trim($_POST['direccionProfesor']);
     $fechaNacimiento = trim($_POST['fechaNacimientoProfesor'] ?? '');
-    $fechaAlta       = trim($_POST['fechaAltaProfesor'] ?? '2026-01-01');
+    $fechaAlta       = trim($_POST['fechaAltaProfesor'] ?? '') ?: date('Y-m-d');
     $ciudad          = trim($_POST['ciudadProfesor']);
     $codigoPostal    = trim($_POST['codigoPostalProfesor']);
     $observaciones   = trim($_POST['observacionesProfesor']);
@@ -71,13 +71,15 @@ if (isset($_POST['actualizarProfesor'])) {
         limpiarCiclosProfesor($idProfesor);
         if (isset($_POST['ciclos']) && is_array($_POST['ciclos'])) {
             foreach ($_POST['ciclos'] as $idCic) {
-                asociarCicloProfesor($idCic, $idProfesor);
+                $idCic = (int)$idCic;
+                if ($idCic > 0) asociarCicloProfesor($idCic, $idProfesor);
             }
         }
         limpiarModulosProfesor($idProfesor);
         if (isset($_POST['modulos']) && is_array($_POST['modulos'])) {
             foreach ($_POST['modulos'] as $idMod) {
-                asociarModuloProfesor($idMod, $idProfesor);
+                $idMod = (int)$idMod;
+                if ($idMod > 0) asociarModuloProfesor($idMod, $idProfesor);
             }
         }
         $_SESSION['exito'] = "El profesor ha sido actualizado correctamente.";

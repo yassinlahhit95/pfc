@@ -217,8 +217,10 @@ iniciarPaginacion('tablaCategorias', 15);
                 if (window.Toast) Toast.show((res && res.msg) ? res.msg : 'Error al guardar', 'error');
             }
         })
-        .fail(function () {
+        .fail(function (jqXHR) {
             $btn.prop('disabled', false).removeClass('cargando');
+            // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+            if (jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500) return;
             if (window.Toast) Toast.show('Error de conexión', 'error');
         });
     });

@@ -55,14 +55,6 @@ function crearTokenReset(string $email, string $tipo): string {
 // ACTUALIZACIONES
 // ══════════════════════════════════════════════════════════════════════
 
-function marcarTokenUsado(string $token): void {
-    $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con, "UPDATE password_resets SET usado = 1 WHERE token = ?");
-    $hash = hash('sha256', $token);
-    mysqli_stmt_bind_param($stmt, "s", $hash);
-    mysqli_stmt_execute($stmt);
-}
-
 function cambiarPasswordPorEmail(string $email, string $tipo, string $nuevaPassword): bool {
     $con  = obtenerConexion();
     $hash = Security::hashPassword($nuevaPassword);

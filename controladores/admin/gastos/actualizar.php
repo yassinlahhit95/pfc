@@ -31,6 +31,9 @@ $fecha       = $_POST['fecha'] ?? '';
 $tipoJust    = $_POST['tipoJustificante'] ?? 'otro';
 $numRef      = trim($_POST['numeroReferencia'] ?? '');
 $observ      = trim($_POST['observaciones'] ?? '');
+// Path for justificantes (ensure defined for later cleanup)
+$directorio  = __DIR__ . "/../../../public/uploads/justificantes/";
+$archivosAntiguos = null;
 
 // ── Validation ─────────────────────────────────────────────────────
 $tiposValidos = ['factura', 'ticket', 'recibo', 'otro'];
@@ -111,18 +114,11 @@ if (!empty($_FILES['archivoJustificante']['name'][0])) {
         }
     }
     
-    // If we successfully uploaded new files, replace the old ones
+    // Si se subieron archivos nuevos, se sustituyen los anteriores — pero el
+    // borrado físico se difiere hasta después de confirmar el UPDATE en BD
+    // (ver más abajo), para no perder los antiguos si el guardado falla.
     if (!empty($nombresArchivos) && empty($errores)) {
-        if ($nombreArchivo) {
-            $viejos = json_decode($nombreArchivo, true);
-            if (is_array($viejos)) {
-                foreach ($viejos as $v) {
-                    if (file_exists($directorio . $v)) { @unlink($directorio . $v); }
-                }
-            } else {
-                if (file_exists($directorio . $nombreArchivo)) { @unlink($directorio . $nombreArchivo); }
-            }
-        }
+        $archivosAntiguos = $nombreArchivo;
         $nombreArchivo = json_encode($nombresArchivos);
     }
 }
@@ -140,6 +136,16 @@ if (!empty($errores)) {
 
 if (actualizarGasto($idGasto, $idCategoria, $idCiclo, $concepto, $importe, $fecha,
                     $tipoJust, $numRef ?: null, $nombreArchivo, $observ ?: null)) {
+    if (!empty($archivosAntiguos)) {
+        $viejos = json_decode($archivosAntiguos, true);
+        if (is_array($viejos)) {
+            foreach ($viejos as $nombreViejo) {
+                if (file_exists($directorio . $nombreViejo)) { @unlink($directorio . $nombreViejo); }
+            }
+        } elseif (file_exists($directorio . $archivosAntiguos)) {
+            @unlink($directorio . $archivosAntiguos);
+        }
+    }
     registrarAccion('actualizar', 'gastos', $idGasto, $concepto);
     if ($isAjax) {
         header('Content-Type: application/json');

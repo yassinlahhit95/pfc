@@ -25,8 +25,11 @@ class Config {
         $candidates = [
             __DIR__ . '/../.env',
             dirname(__DIR__) . '/.env',
-            $_SERVER['DOCUMENT_ROOT'] . '/.env',
         ];
+        // DOCUMENT_ROOT no está definido en CLI (cron, scripts de mantenimiento).
+        if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+            $candidates[] = $_SERVER['DOCUMENT_ROOT'] . '/.env';
+        }
         foreach ($candidates as $path) {
             if (file_exists($path)) {
                 $this->loadEnvFile($path);

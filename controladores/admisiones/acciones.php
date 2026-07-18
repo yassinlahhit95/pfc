@@ -172,6 +172,13 @@ switch ($action) {
             echo json_encode(['status' => 'error', 'message' => 'La solicitud de preinscripción no fue encontrada.']);
             break;
         }
+        // Verificar que el solicitante es el propietario de esta solicitud (asignado en el paso 1):
+        // sin esta comprobación, cualquiera podría adjuntar archivos a un idPreMatricula ajeno.
+        if (empty($_SESSION['admisiones_id']) || (int)$_SESSION['admisiones_id'] !== $idPreMatricula) {
+            http_response_code(403);
+            echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No dispone de los permisos necesarios para realizar esta acción.']);
+            break;
+        }
 
         $file = $_FILES['archivo'];
 

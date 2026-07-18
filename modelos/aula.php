@@ -18,7 +18,7 @@ function listarCarpetasPorModuloAula($idModulo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -59,9 +59,12 @@ function actualizarCarpetaAula($idCarpeta, $nombre, $color, $icono = 'fa-folder'
 
 // Devuelve el idCarpeta indicado + TODAS sus subcarpetas (recursivo, cualquier nivel)
 // Optimizado para evitar el problema N+1 mediante una única consulta al módulo.
-function obtenerArbolCarpetaAula($idCarpeta) {
+// $incluirEliminadas = true también recorre subcarpetas ya en la papelera (necesario
+// para restaurar o purgar un árbol completo, que de otro modo quedaría cortado en el
+// primer nivel ya marcado eliminado=1).
+function obtenerArbolCarpetaAula($idCarpeta, $incluirEliminadas = false) {
     $con = obtenerConexion();
-    
+
     // Primero obtenemos el idModulo de la carpeta inicial
     $sqlModulo = "SELECT idModulo FROM aula_carpetas WHERE idCarpeta = ?";
     $stmtM = mysqli_prepare($con, $sqlModulo);
@@ -69,22 +72,23 @@ function obtenerArbolCarpetaAula($idCarpeta) {
     mysqli_stmt_execute($stmtM);
     $resM = mysqli_stmt_get_result($stmtM);
     $filaM = mysqli_fetch_assoc($resM);
-    
+
     if (!$filaM) return [intval($idCarpeta)];
-    
+
     $idModulo = $filaM['idModulo'];
 
     // Obtenemos todas las carpetas del módulo de una sola vez
-    $sqlTodas = "SELECT idCarpeta, idPadre FROM aula_carpetas WHERE idModulo = ? AND eliminado = 0";
+    $sqlTodas = "SELECT idCarpeta, idPadre FROM aula_carpetas WHERE idModulo = ?"
+              . ($incluirEliminadas ? "" : " AND eliminado = 0");
     $stmtT = mysqli_prepare($con, $sqlTodas);
     mysqli_stmt_bind_param($stmtT, "i", $idModulo);
     mysqli_stmt_execute($stmtT);
     $resT = mysqli_stmt_get_result($stmtT);
     
     $adj = []; // Lista de adyacencia: idPadre => [idHijo1, idHijo2, ...]
-    while ($f = mysqli_fetch_assoc($resT)) {
-        $p = $f['idPadre'] ? intval($f['idPadre']) : 0;
-        $adj[$p][] = intval($f['idCarpeta']);
+    while ($fila = mysqli_fetch_assoc($resT)) {
+        $p = $fila['idPadre'] ? intval($fila['idPadre']) : 0;
+        $adj[$p][] = intval($fila['idCarpeta']);
     }
 
     // Recorrido BFS/DFS en memoria sobre la lista de adyacencia
@@ -167,7 +171,7 @@ function listarArchivosPorModuloAula($idModulo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -184,7 +188,7 @@ function listarArchivosPorCarpetaAula($idCarpeta) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -219,8 +223,8 @@ function existeArchivoNombreAula($idModulo, $idCarpeta, $nombreOriginal) {
         mysqli_stmt_bind_param($stmt, "is", $idModulo, $nombreOriginal);
     }
     mysqli_stmt_execute($stmt);
-    $f = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-    return intval($f['c']) > 0;
+    $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    return intval($fila['c']) > 0;
 }
 
 // Devuelve un nombre visible único en la ubicación, añadiendo " (2)", " (3)"... si hace falta
@@ -257,9 +261,9 @@ function contarArchivosPorModuloAula($idModulo) {
     mysqli_stmt_bind_param($stmt, "i", $idModulo);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $f = mysqli_fetch_assoc($res);
+    $fila = mysqli_fetch_assoc($res);
     
-    return intval($f['total']);
+    return intval($fila['total']);
 }
 
 // ═══════════════════════════════════════
@@ -280,7 +284,7 @@ function listarTareasPorModuloAula($idModulo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -320,7 +324,7 @@ function listarTareasPorModuloProfesorAula($idModulo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
 
     return $lista;
 }
@@ -374,8 +378,8 @@ function eliminarTareaAula($idTarea) {
     mysqli_stmt_bind_param($stmt, "i", $idTarea);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    while ($f = mysqli_fetch_assoc($res)) {
-        $ruta = __DIR__ . "/../public/uploads/aula/entregas/" . $f['archivoEntrega'];
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $ruta = __DIR__ . "/../public/uploads/aula/entregas/" . $fila['archivoEntrega'];
         if (is_file($ruta)) unlink($ruta);
     }
 
@@ -402,7 +406,7 @@ function listarEntregasPorTareaAula($idTarea) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
 
     return $lista;
 }
@@ -506,7 +510,7 @@ function listarVersionesPorEntregaAula($idTarea, $idEstudiante) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -523,7 +527,7 @@ function listarComentariosPorEntregaAula($idEntrega) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -543,15 +547,6 @@ function insertarNotificacionAula($idUsuario, $tipoUsuario, $tipo, $titulo, $men
     return $ok;
 }
 
-function marcarTodasLeidasAula($idUsuario, $tipoUsuario) {
-    $con = obtenerConexion();
-    $sql = "UPDATE aula_notificaciones SET leida=1 WHERE idUsuario=? AND tipoUsuario=?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "is", $idUsuario, $tipoUsuario);
-    mysqli_stmt_execute($stmt);
-    
-}
-
 // Tokens FCM de los estudiantes de un ciclo (para push en tiempo real)
 function obtenerTokensFCMPorCicloAula($idCiclo) {
     $con = obtenerConexion();
@@ -562,7 +557,7 @@ function obtenerTokensFCMPorCicloAula($idCiclo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $tokens = [];
-    while ($f = mysqli_fetch_assoc($res)) $tokens[] = $f['fcm_token'];
+    while ($fila = mysqli_fetch_assoc($res)) $tokens[] = $fila['fcm_token'];
     
     return $tokens;
 }
@@ -574,8 +569,8 @@ function notificarEstudiantesCicloAula($idCiclo, $tipo, $titulo, $mensaje, $idRe
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    while ($f = mysqli_fetch_assoc($res)) {
-        insertarNotificacionAula($f['idEstudiante'], 'estudiante', $tipo, $titulo, $mensaje, $idRef, $tipoRef);
+    while ($fila = mysqli_fetch_assoc($res)) {
+        insertarNotificacionAula($fila['idEstudiante'], 'estudiante', $tipo, $titulo, $mensaje, $idRef, $tipoRef);
     }
     
 }
@@ -597,33 +592,6 @@ function registrarAnalytics($idUsuario, $tipoUsuario, $accion, $idModulo = null,
     $ok = mysqli_stmt_execute($stmt);
     
     return $ok;
-}
-
-function obtenerAnalyticsPorModulo($idModulo, $fechaInicio = null, $fechaFin = null) {
-    $con = obtenerConexion();
-    $fechaInicio = $fechaInicio ?? date('Y-m-d', strtotime('-30 days'));
-    $fechaFin = $fechaFin ?? date('Y-m-d');
-
-    $sql = "SELECT
-                accion,
-                COUNT(*) as total,
-                COUNT(DISTINCT idUsuario) as usuarios,
-                DATE(fechaCreacion) as fecha
-            FROM aula_analytics
-            WHERE idModulo=? AND DATE(fechaCreacion) BETWEEN ? AND ?
-            GROUP BY accion, DATE(fechaCreacion)
-            ORDER BY fecha DESC, total DESC";
-
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "iss", $idModulo, $fechaInicio, $fechaFin);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $analytics = [];
-    while ($f = mysqli_fetch_assoc($res)) {
-        $analytics[] = $f;
-    }
-    
-    return $analytics;
 }
 
 function obtenerResumenAnalytics($idModulo, $dias = 30) {
@@ -667,8 +635,8 @@ function obtenerTopArchivosPorDescargas($idModulo, $limite = 10) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $top = [];
-    while ($f = mysqli_fetch_assoc($res)) {
-        $top[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $top[] = $fila;
     }
     
     return $top;
@@ -692,8 +660,8 @@ function obtenerTopTareasPorEntregas($idModulo, $limite = 10) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $top = [];
-    while ($f = mysqli_fetch_assoc($res)) {
-        $top[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) {
+        $top[] = $fila;
     }
     
     return $top;
@@ -731,7 +699,7 @@ function listarSesionesPorModulo($idModulo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -750,7 +718,7 @@ function listarSesionesPorCiclo($idCiclo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     return $lista;
 }
 
@@ -767,7 +735,7 @@ function listarSesionesPorProfesor($idProfesor) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -824,7 +792,7 @@ function listarAsistenciasPorSesion($idSesion) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -836,9 +804,9 @@ function contarAsistenciaPorSesion($idSesion) {
     mysqli_stmt_bind_param($stmt, "i", $idSesion);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $f = mysqli_fetch_assoc($res);
+    $fila = mysqli_fetch_assoc($res);
     
-    return intval($f['total']);
+    return intval($fila['total']);
 }
 
 // ═══════════════════════════════════════
@@ -857,7 +825,7 @@ function obtenerEstudiantesPorModulo($idModulo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -962,7 +930,7 @@ function listarCarpetasPorPadreAula($idModulo, $idPadre = null) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -1039,7 +1007,7 @@ function listarVersionesArchivoAula($idArchivo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -1094,7 +1062,7 @@ function listarFavoritosEstudianteAula($idEstudiante) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -1136,7 +1104,7 @@ function obtenerRecursosMasConsultadosAula($idModulo, $limite = 10) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -1159,7 +1127,7 @@ function obtenerControlLecturaArchivoAula($idArchivo, $idCiclo) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $lista = [];
-    while ($f = mysqli_fetch_assoc($res)) $lista[] = $f;
+    while ($fila = mysqli_fetch_assoc($res)) $lista[] = $fila;
     
     return $lista;
 }
@@ -1181,7 +1149,7 @@ function listarPapeleraModuloAula($idModulo) {
     mysqli_stmt_bind_param($sa, "i", $idModulo);
     mysqli_stmt_execute($sa);
     $ra = mysqli_stmt_get_result($sa);
-    while ($f = mysqli_fetch_assoc($ra)) $archivos[] = $f;
+    while ($fila = mysqli_fetch_assoc($ra)) $archivos[] = $fila;
 
     $carpetas = [];
     $sqlC = "SELECT * FROM aula_carpetas WHERE idModulo = ? AND eliminado = 1 ORDER BY fechaEliminacion DESC";
@@ -1189,10 +1157,33 @@ function listarPapeleraModuloAula($idModulo) {
     mysqli_stmt_bind_param($sc, "i", $idModulo);
     mysqli_stmt_execute($sc);
     $rc = mysqli_stmt_get_result($sc);
-    while ($f = mysqli_fetch_assoc($rc)) $carpetas[] = $f;
+    while ($fila = mysqli_fetch_assoc($rc)) $carpetas[] = $fila;
 
     
     return ['archivos' => $archivos, 'carpetas' => $carpetas];
+}
+
+// Mueve un archivo a la papelera (soft-delete): no toca el fichero físico.
+function borrarArchivoAula($idArchivo) {
+    $con = obtenerConexion();
+    $sql = "UPDATE aula_archivos SET eliminado=1, fechaEliminacion=NOW() WHERE idArchivo=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $idArchivo);
+    $ok = mysqli_stmt_execute($stmt);
+
+    return $ok;
+}
+
+// Mueve la carpeta y todo su árbol (subcarpetas + archivos) a la papelera (soft-delete).
+function borrarCarpetaRecursivoAula($idCarpeta) {
+    $ids = obtenerArbolCarpetaAula($idCarpeta);
+    if (empty($ids)) $ids = [intval($idCarpeta)];
+    $con = obtenerConexion();
+    $in  = implode(',', array_map('intval', $ids));
+    $ok  = mysqli_query($con, "UPDATE aula_carpetas SET eliminado=1, fechaEliminacion=NOW() WHERE idCarpeta IN ($in)");
+    mysqli_query($con, "UPDATE aula_archivos SET eliminado=1, fechaEliminacion=NOW() WHERE idCarpeta IN ($in)");
+
+    return $ok;
 }
 
 function restaurarArchivoAula($idArchivo) {
@@ -1205,9 +1196,10 @@ function restaurarArchivoAula($idArchivo) {
     return $ok;
 }
 
-// Restaura la carpeta y todo su árbol (subcarpetas + archivos)
+// Restaura la carpeta y todo su árbol (subcarpetas + archivos), incluidas las
+// subcarpetas que ya estuvieran en la papelera junto con su padre.
 function restaurarCarpetaAula($idCarpeta) {
-    $ids = obtenerArbolCarpetaAula($idCarpeta);
+    $ids = obtenerArbolCarpetaAula($idCarpeta, true);
     if (empty($ids)) return false;
     $con = obtenerConexion();
     $in = implode(',', array_map('intval', $ids));
@@ -1252,31 +1244,43 @@ function eliminarDefinitivoCarpetaAula($idCarpeta) {
 // (y versiones) de todos los archivos del árbol y luego las carpetas (las
 // subcarpetas caen por ON DELETE CASCADE sobre idPadre).
 function eliminarDefinitivoCarpetaRecursivoAula($idCarpeta) {
-    $ids = obtenerArbolCarpetaAula($idCarpeta);
+    $ids = obtenerArbolCarpetaAula($idCarpeta, true);
     if (empty($ids)) $ids = [intval($idCarpeta)];
     $con = obtenerConexion();
     $in  = implode(',', array_map('intval', $ids));
     $res = mysqli_query($con, "SELECT idArchivo FROM aula_archivos WHERE idCarpeta IN ($in)");
     if ($res) {
-        while ($f = mysqli_fetch_assoc($res)) eliminarDefinitivoArchivoAula($f['idArchivo']);
+        while ($fila = mysqli_fetch_assoc($res)) eliminarDefinitivoArchivoAula($fila['idArchivo']);
     }
     return eliminarDefinitivoCarpetaAula($idCarpeta);
 }
 
-// Vacía de la papelera los elementos eliminados hace más de $dias días
+// Vacía de la papelera los elementos eliminados hace más de $dias días.
+// Purga archivos y carpetas por separado: una carpeta vieja en la papelera no
+// se borra sola solo porque sus archivos ya se purgaron (fechas independientes).
 function purgarPapeleraAntiguaAula($dias = 30) {
     $limite = date('Y-m-d H:i:s', strtotime("-$dias days"));
     $con = obtenerConexion();
-    $sql = "SELECT idArchivo FROM aula_archivos WHERE eliminado=1 AND fechaEliminacion < ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $limite);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $ids = [];
-    while ($f = mysqli_fetch_assoc($res)) $ids[] = $f['idArchivo'];
-    
-    foreach ($ids as $id) eliminarDefinitivoArchivoAula($id);
-    return count($ids);
+
+    $sqlArchivos = "SELECT idArchivo FROM aula_archivos WHERE eliminado=1 AND fechaEliminacion < ?";
+    $stmtArchivos = mysqli_prepare($con, $sqlArchivos);
+    mysqli_stmt_bind_param($stmtArchivos, "s", $limite);
+    mysqli_stmt_execute($stmtArchivos);
+    $resArchivos = mysqli_stmt_get_result($stmtArchivos);
+    $idsArchivos = [];
+    while ($fila = mysqli_fetch_assoc($resArchivos)) $idsArchivos[] = $fila['idArchivo'];
+    foreach ($idsArchivos as $idArchivo) eliminarDefinitivoArchivoAula($idArchivo);
+
+    $sqlCarpetas = "SELECT idCarpeta FROM aula_carpetas WHERE eliminado=1 AND fechaEliminacion < ?";
+    $stmtCarpetas = mysqli_prepare($con, $sqlCarpetas);
+    mysqli_stmt_bind_param($stmtCarpetas, "s", $limite);
+    mysqli_stmt_execute($stmtCarpetas);
+    $resCarpetas = mysqli_stmt_get_result($stmtCarpetas);
+    $idsCarpetas = [];
+    while ($fila = mysqli_fetch_assoc($resCarpetas)) $idsCarpetas[] = $fila['idCarpeta'];
+    foreach ($idsCarpetas as $idCarpeta) eliminarDefinitivoCarpetaAula($idCarpeta);
+
+    return count($idsArchivos) + count($idsCarpetas);
 }
 
 // ═══════════════════════════════════════
@@ -1294,9 +1298,9 @@ function obtenerUsoAlmacenamientoCicloAula($idCiclo) {
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $f = mysqli_fetch_assoc($res);
+    $fila = mysqli_fetch_assoc($res);
     
-    return floatval($f['usado']);
+    return floatval($fila['usado']);
 }
 
 function obtenerLimiteAlmacenamientoCicloAula($idCiclo) {
@@ -1306,9 +1310,9 @@ function obtenerLimiteAlmacenamientoCicloAula($idCiclo) {
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $f = mysqli_fetch_assoc($res);
+    $fila = mysqli_fetch_assoc($res);
     
-    return $f ? floatval($f['limiteBytes']) : 5368709120; // 5 GB por defecto
+    return $fila ? floatval($fila['limiteBytes']) : 5368709120; // 5 GB por defecto
 }
 
 

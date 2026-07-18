@@ -268,8 +268,11 @@ $('#admGuardar').on('click', function() {
             if (window.Toast) Toast.show(res.message || 'Error al guardar', 'error');
             $btn.prop('disabled', false).html('<i class="fas fa-save"></i> Actualizar expediente');
         }
-    }).fail(function() {
-        if (window.Toast) Toast.show('Error de conexión.', 'error');
+    }).fail(function(jqXHR) {
+        // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+        if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
+            if (window.Toast) Toast.show('Error de conexión.', 'error');
+        }
         $btn.prop('disabled', false).html('<i class="fas fa-save"></i> Actualizar expediente');
     });
 });

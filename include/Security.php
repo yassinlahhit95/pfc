@@ -52,8 +52,8 @@ class Security {
     public static function enforceSessionSecurity() {
         $authKeys = ['idAdmin', 'idProfesor', 'idEstudiante', 'idTutor', 'idSecretaria'];
         $isAuth = false;
-        foreach ($authKeys as $k) {
-            if (!empty($_SESSION[$k])) { $isAuth = true; break; }
+        foreach ($authKeys as $authKey) {
+            if (!empty($_SESSION[$authKey])) { $isAuth = true; break; }
         }
         if (!$isAuth) return;
 
@@ -95,19 +95,19 @@ class Security {
             // Security.php suele incluirse antes que conectar.php → cargarlo bajo demanda
             $conectar = __DIR__ . '/../modelos/conectar.php';
             if (is_file($conectar)) require_once $conectar;
-            foreach (($roleMap ?? []) as $sk => $info) {
+            foreach (($roleMap ?? []) as $sessionKey => $info) {
                 if (!function_exists('obtenerConexion')) break;
                 [$tabla, $idCol] = $info;
-                if (empty($_SESSION[$sk])) continue;
+                if (empty($_SESSION[$sessionKey])) continue;
                 try {
                     $con = obtenerConexion();
                     $stmt = mysqli_prepare($con, "SELECT pwd_changed_at FROM `$tabla` WHERE `$idCol` = ?");
                     if ($stmt) {
-                        $idv = (int)$_SESSION[$sk];
-                        mysqli_stmt_bind_param($stmt, "i", $idv);
+                        $idValor = (int)$_SESSION[$sessionKey];
+                        mysqli_stmt_bind_param($stmt, "i", $idValor);
                         mysqli_stmt_execute($stmt);
-                        $r = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-                        $dbAt = (!empty($r['pwd_changed_at'])) ? strtotime($r['pwd_changed_at']) : 0;
+                        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                        $dbAt = (!empty($fila['pwd_changed_at'])) ? strtotime($fila['pwd_changed_at']) : 0;
                         if ($dbAt > 0 && $dbAt > (int)($_SESSION['_pwd_at'] ?? 0)) {
                             self::destroySession();
                             return;

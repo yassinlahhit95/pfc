@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../include/AdminGuard.php";
-require_once __DIR__ . "/../../../modelos/conectar.php";
+require_once __DIR__ . "/../../../modelos/tutores.php";
 require_once __DIR__ . "/../../../modelos/log.php";
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
@@ -18,15 +18,8 @@ if (!Security::validateCSRFToken(null, false)) {
 
 if (!empty($_POST['idTutor'])) {
     $idTutor = (int)$_POST['idTutor'];
-    $con = obtenerConexion();
 
-    $s1 = mysqli_prepare($con, "DELETE FROM estudiante_tutor WHERE idTutor = ?");
-    mysqli_stmt_bind_param($s1, "i", $idTutor);
-    mysqli_stmt_execute($s1);
-
-    $s2 = mysqli_prepare($con, "DELETE FROM tutores WHERE idTutor = ?");
-    mysqli_stmt_bind_param($s2, "i", $idTutor);
-    if (mysqli_stmt_execute($s2) && mysqli_stmt_affected_rows($s2) > 0) {
+    if (eliminarTutor($idTutor)) {
         registrarAccion('borrar', 'tutores', $idTutor);
         $ok = true; $msg = "Tutor eliminado correctamente.";
         $_SESSION['exito'] = $msg;

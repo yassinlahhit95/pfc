@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../../modelos/reclamaciones.php";
 // ══════════════════════════════════════════════════════════════════════
 if (isset($_POST['marcarVisto'])) {
     if (!Security::validateCSRFToken()) {
-        $_SESSION['errores'] = "Solicitud no válida o expirada.";
+        $_SESSION['errores'] = "Solicitud inválida. Inténtelo de nuevo.";
         header("Location: ../../../vistas/profesores/mensajes/lista.php"); exit;
     }
     $idReclamacion = intval($_POST['idReclamacion'] ?? 0);

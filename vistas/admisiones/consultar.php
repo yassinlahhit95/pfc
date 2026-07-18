@@ -124,6 +124,9 @@ $(document).ready(function() {
             } else {
                 Swal.fire('Atención', res.message || 'Error al consultar', 'warning');
             }
+        }).fail(function() {
+            $btn.prop('disabled', false).html('<i class="fas fa-search me-2"></i> Consultar Estado');
+            Swal.fire('Error', 'Error de conexión. Inténtalo de nuevo.', 'error');
         });
     });
 });

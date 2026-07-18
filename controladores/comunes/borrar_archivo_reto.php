@@ -10,20 +10,29 @@ require_once __DIR__ . "/../../modelos/retos.php";
 // ══════════════════════════════════════════════════════════════════════
 if ((empty($_SESSION['idAdmin']) && empty($_SESSION['idProfesor'])) || !empty($_SESSION['must_change_password']) || !empty($_SESSION['mfa_setup_required'])) {
     header("Content-Type: application/json");
-    echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No dispone de los permisos necesarios para realizar esta acción.']);
+    echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No tienes permiso para realizar esta acción.']);
     exit;
 }
 
 // ══════════════════════════════════════════════════════════════════════
 // VALIDACIÓN
 // ══════════════════════════════════════════════════════════════════════
-$idArchivo = (int)($_GET['id'] ?? 0);
+$idArchivo = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 // Prevenir open redirect: rechazar cualquier URL con protocolo o relativa de protocolo
-$redirect = $_GET['redirect'] ?? '';
+$redirect = $_POST['redirect'] ?? $_GET['redirect'] ?? '';
 if (empty($redirect) || preg_match('#^(https?:)?//#i', $redirect)) {
     $redirect = '../../vistas/admin/inicio/dashboard.php';
 }
-$isAjax = (isset($_GET['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
+$isAjax = (isset($_POST['ajax']) || isset($_GET['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
+
+if (!Security::validateCSRFToken()) {
+    if ($isAjax) {
+        echo json_encode(['status' => 'error', 'message' => 'Solicitud inválida. Inténtelo de nuevo.']);
+        exit;
+    }
+    header("Location: " . $redirect);
+    exit;
+}
 
 if ($idArchivo <= 0) {
     if ($isAjax) {
@@ -41,10 +50,10 @@ $archivo = obtenerArchivoRetoPorId($idArchivo);
 if ($archivo && !empty($_SESSION['idProfesor']) && empty($_SESSION['idAdmin'])) {
     if (!retoPerteneceAProfesor($archivo['idReto'], $_SESSION['idProfesor'])) {
         if ($isAjax) {
-            echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No dispone de los permisos necesarios sobre este archivo.']);
+            echo json_encode(['status' => 'error', 'message' => 'Acceso denegado. No tienes permiso sobre este archivo.']);
             exit;
         }
-        $_SESSION['errores'] = "Acceso denegado. No dispone de los privilegios necesarios sobre el archivo seleccionado.";
+        $_SESSION['errores'] = "Acceso denegado. No tienes permiso sobre este archivo.";
         header("Location: " . $redirect);
         exit;
     }
@@ -63,10 +72,10 @@ if ($archivo) {
         $_SESSION['exito'] = "El archivo ha sido eliminado correctamente.";
     } else {
         if ($isAjax) {
-            echo json_encode(['status' => 'error', 'message' => 'Ocurrió un error en el sistema al intentar eliminar el archivo de la base de datos.']);
+            echo json_encode(['status' => 'error', 'message' => 'No se pudo eliminar el archivo de la base de datos.']);
             exit;
         }
-        $_SESSION['errores'] = "No se pudo eliminar el registro del archivo de la base de datos.";
+        $_SESSION['errores'] = "No se pudo eliminar el archivo de la base de datos.";
     }
 }
 

@@ -200,9 +200,12 @@ $(function() {
             processData: false,
             contentType: false,
             success: function() { window.location.href = 'verRetos.php'; },
-            error: function() {
-                if (window.Toast) Toast.show('Error al crear el reto', 'error');
-                else alert('Error al crear el reto');
+            error: function(jqXHR) {
+                // 401/403/0/5xx ya muestran su propio toast en el manejador global de footer.php
+                if (!(jqXHR.status === 401 || jqXHR.status === 403 || jqXHR.status === 0 || jqXHR.status >= 500)) {
+                    if (window.Toast) Toast.show('Error al crear el reto', 'error');
+                    else alert('Error al crear el reto');
+                }
                 $('#btnGuardar').prop('disabled', false).html('<i class="fas fa-plus"></i> CREAR RETO');
             }
         });

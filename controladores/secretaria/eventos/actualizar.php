@@ -35,9 +35,9 @@ if ($errores) {
 $ok = actualizarEvento($idEvento, $titulo, $descripcion, $fecha, $hora, $ubicacion);
 
 if ($ok) {
-    $_SESSION['exito'] = "Evento actualizado correctamente.";
+    $_SESSION['exito'] = "El evento ha sido actualizado correctamente.";
 } else {
-    $_SESSION['errores'] = "Error al actualizar el evento.";
+    $_SESSION['errores'] = "Ocurrió un error al intentar actualizar el evento.";
 }
 header("Location: ../../../vistas/secretaria/eventos/gestionEventos.php");
 exit;
