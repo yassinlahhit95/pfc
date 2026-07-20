@@ -42,10 +42,6 @@
 }
 .aw-activar-caja p { margin: 0 0 10px; font-size: 13px; color: var(--dim); }
 
-.campo-checkbox { display: flex; align-items: center; }
-.campo-checkbox label { display: flex; align-items: center; gap: 8px; font-weight: 500; }
-.campo-checkbox input[type="checkbox"] { width: 16px; height: 16px; }
-
 #tabla-cursos, #tabla-periodos, #tabla-tipos { margin-bottom: 18px; }
 
 @media (max-width: 860px) {

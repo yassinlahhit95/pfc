@@ -93,7 +93,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 <!-- BÚSQUEDA DINÁMICA -->
 <div id="searchContainer" style="margin-bottom:var(--space-4);display:none;">
   <div class="search-modern">
-    <input type="text" id="searchInput" placeholder="Buscar..." style="width:100%;" autocomplete="off">
+    <input type="text" id="searchInput" placeholder="Buscar..." style="width:100%;"
+    autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+    data-lpignore="true" data-1p-ignore="true" data-form-type="other">
   </div>
 </div>
 

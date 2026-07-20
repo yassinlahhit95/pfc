@@ -350,13 +350,13 @@ function _nav_active_est($check) {
         <div id="firebase-user-data" 
              data-user-id="<?= Security::escapeHtml($_SESSION['idEstudiante']) ?>" 
              data-user-role="estudiante" 
-             data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
-             data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"
-             data-project-id="<?= $configFB->get('FIREBASE_PROJECT_ID') ?>"
-             data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
-             data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
-             data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
-             data-vapid-key="<?= $configFB->get('FIREBASE_VAPID_KEY') ?>"
+             data-api-key="<?= Security::escapeHtml($configFB->get('FIREBASE_API_KEY')) ?>"
+             data-auth-domain="<?= Security::escapeHtml($configFB->get('FIREBASE_AUTH_DOMAIN')) ?>"
+             data-project-id="<?= Security::escapeHtml($configFB->get('FIREBASE_PROJECT_ID')) ?>"
+             data-messaging-sender-id="<?= Security::escapeHtml($configFB->get('FIREBASE_MESSAGING_SENDER_ID')) ?>"
+             data-app-id="<?= Security::escapeHtml($configFB->get('FIREBASE_APP_ID')) ?>"
+             data-database-url="<?= Security::escapeHtml($configFB->get('FIREBASE_DATABASE_URL')) ?>"
+             data-vapid-key="<?= Security::escapeHtml($configFB->get('FIREBASE_VAPID_KEY')) ?>"
              class="oculto"></div>
         <script type="module">
             import { setupFirebase } from '../../../public/js/firebase/firebase.js';

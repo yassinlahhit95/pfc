@@ -6,8 +6,9 @@
 // Luego añade el slug a landing_plantillas_slugs() en engine/plantillas.php.
 //
 // SECCIONES DISPONIBLES (tipos válidos):
-//   hero, cifras, porque_elegirnos, oferta_formativa, empresas,
-//   instalaciones, fp_dual, testimonios, prematricula_cta, faq, contacto
+//   hero, hero_slider, cta_secundario, galeria, noticias, video_presentacion,
+//   cifras, porque_elegirnos, oferta_formativa, empresas, instalaciones,
+//   fp_dual, testimonios, prematricula_cta, faq, contacto
 //
 // Los campos de 'contenido' son OPCIONALES — si no se especifican, se
 // usan los valores por defecto definidos en engine/secciones.php.

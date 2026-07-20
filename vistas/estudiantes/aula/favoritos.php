@@ -17,7 +17,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
   <div>
     <h1><i class="fas fa-star"></i> MIS FAVORITOS</h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">Acceso rápido a los recursos que has marcado</p>
+    <p class="subtitulo-encabezado">Acceso rápido a los recursos que has marcado</p>
   </div>
   <a href="recursos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Recursos</a>
 </div>

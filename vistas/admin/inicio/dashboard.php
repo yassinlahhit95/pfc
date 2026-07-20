@@ -3,6 +3,10 @@ require_once __DIR__ . "/../../../include/AdminGuard.php";
 require_once __DIR__ . "/../../../modelos/conectar.php";
 require_once __DIR__ . "/../../../modelos/landing.php";
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $landingCfg = obtenerLandingConfig();
 
 require_once __DIR__ . "/../../../modelos/panelDeControl.php";
@@ -17,42 +21,34 @@ require_once __DIR__ . "/../../../modelos/secretarias.php";
 require_once __DIR__ . "/../../../modelos/chat.php";
 require_once __DIR__ . "/../../../modelos/pagos.php";
 
-$cacheKeyDash = 'admin_dashboard_stats_' . $_SESSION['idAdmin'];
-if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time']) && (time() - $_SESSION[$cacheKeyDash . '_time'] < 60)) {
-    $stats = $_SESSION[$cacheKeyDash];
-    $totalEstudiantes = $stats['totalEstudiantes'];
-    $totalProfesores  = $stats['totalProfesores'];
-    $totalTutores     = $stats['totalTutores'];
-    $totalSecretarias = $stats['totalSecretarias'];
-    $totalRetos       = $stats['totalRetos'];
-    $totalModulos     = $stats['totalModulos'];
-    $totalCiclos      = $stats['totalCiclos'];
-    $recaudado        = $stats['recaudado'];
-    $totalCobros      = $stats['totalCobros'];
-    $totalTFGs        = $stats['totalTFGs'];
-    $nuevosEstudiantes = $stats['nuevosEstudiantes'];
-    $nuevosProfesores  = $stats['nuevosProfesores'];
-} else {
-    $totalEstudiantes = contarEstudiantes();
-    $totalProfesores  = contarProfesores();
-    $totalTutores     = contarTutores();
-    $totalSecretarias = contarSecretarias();
-    $totalRetos       = contarRetos();
-    $totalModulos     = contarModulos();
-    $totalCiclos      = contarCiclos();
-    $recaudado        = obtenerTotalRecaudado();
-    $totalCobros      = contarPagosRealizados();
-    $totalTFGs        = contarTFGsEntregados();
-    $nuevosEstudiantes = contarEstudiantesNuevos(7);
-    $nuevosProfesores  = contarProfesoresNuevos(7);
-    
-    $_SESSION[$cacheKeyDash] = compact(
-        'totalEstudiantes', 'totalProfesores', 'totalTutores', 'totalSecretarias', 
-        'totalRetos', 'totalModulos', 'totalCiclos', 'recaudado', 'totalCobros', 
-        'totalTFGs', 'nuevosEstudiantes', 'nuevosProfesores'
-    );
-    $_SESSION[$cacheKeyDash . '_time'] = time();
-}
+require_once __DIR__ . "/../../../include/Cache.php";
+
+$stats = Cache::remember('admin_dashboard_stats_' . $_SESSION['idAdmin'], 60, function () {
+    return [
+        'totalEstudiantes'  => contarEstudiantes(),
+        'totalProfesores'   => contarProfesores(),
+        'totalTutores'      => contarTutores(),
+        'totalSecretarias'  => contarSecretarias(),
+        'totalRetos'        => contarRetos(),
+        'totalModulos'      => contarModulos(),
+        'totalCiclos'       => contarCiclos(),
+        'recaudado'         => obtenerTotalRecaudado(),
+        'totalTFGs'         => contarTFGsEntregados(),
+        'nuevosEstudiantes' => contarEstudiantesNuevos(7),
+        'nuevosProfesores'  => contarProfesoresNuevos(7),
+    ];
+});
+$totalEstudiantes  = $stats['totalEstudiantes'];
+$totalProfesores   = $stats['totalProfesores'];
+$totalTutores      = $stats['totalTutores'];
+$totalSecretarias  = $stats['totalSecretarias'];
+$totalRetos        = $stats['totalRetos'];
+$totalModulos      = $stats['totalModulos'];
+$totalCiclos       = $stats['totalCiclos'];
+$recaudado         = $stats['recaudado'];
+$totalTFGs         = $stats['totalTFGs'];
+$nuevosEstudiantes = $stats['nuevosEstudiantes'];
+$nuevosProfesores  = $stats['nuevosProfesores'];
 
 $adminInfo   = obtenerDirectorPorId($_SESSION['idAdmin']);
 $nombreAdmin = $adminInfo['nombreDirector'] ?? 'ADMINISTRADOR';
@@ -87,14 +83,9 @@ try {
     $convs = [];
 }
 
-// Spanish date
-$dias   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-$meses  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-$eyebrow = $dias[date('w')] . ', ' . date('j') . ' de ' . $meses[date('n')-1];
-
-// Time-aware greeting
-$hora   = (int)date('H');
-$saludo = $hora < 12 ? 'Buenos días' : ($hora < 19 ? 'Buenas tardes' : 'Buenas noches');
+require_once __DIR__ . "/../../../include/dashboard_helpers.php";
+$eyebrow = fechaLegibleHoy();
+$saludo  = saludoHorario();
 
 // Arrow SVG helper
 $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -146,14 +137,14 @@ $arrowSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke=
     <span class="tile-sheen"></span>
     <span class="tile-ico">
       <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 5.9L11.8 16.1l-4.2-4.2"/></svg>
-      <?php if ($totalAdmisionesPendientes_menu > 0) { ?><span class="tile-badge"><?= $totalAdmisionesPendientes_menu ?></span><?php } ?>
+      <?php if (($totalAdmisionesPendientes_menu ?? 0) > 0) { ?><span class="tile-badge"><?= $totalAdmisionesPendientes_menu ?></span><?php } ?>
     </span>
     <span class="tile-body">
       <span class="tile-label">Admisiones</span>
       <span class="tile-desc">Gestión de pre-matrículas</span>
     </span>
     <span class="tile-foot">
-      <span class="tile-stat"><?= $totalAdmisionesPendientes_menu ?> pendientes</span>
+      <span class="tile-stat"><?= $totalAdmisionesPendientes_menu ?? 0 ?> pendientes</span>
       <span class="tile-go"><?= $arrowSvg ?></span>
     </span>
   </a>

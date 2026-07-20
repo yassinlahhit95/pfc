@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../include/Security.php';
+Security::initSession();
 
 // Debe haber una sesión iniciada (cualquier rol)
 $autenticado = !empty($_SESSION['idAdmin']) || !empty($_SESSION['idProfesor'])

@@ -8,6 +8,11 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 // Serial is always pre-computed and signed by the controller
 $_serial = $estudiante['_serial'] ?? '';
 
+// Grado Superior es el único nivel con Módulo de Proyecto — Grado Medio no
+// lo tiene. La comparación es por texto porque nombreNivel es libre (lo
+// escribe el centro en Niveles), no un enum fijo.
+$_esGradoSuperior = stripos($ciclo['nombreNivel'] ?? '', 'superior') !== false;
+
 // Verification URL encoded in the QR
 // Prefer real HTTP_HOST to avoid localhost when APP_URL is not updated for production
 if (!empty($_SERVER['HTTP_HOST'])) {
@@ -36,9 +41,18 @@ try {
     ))->build();
     $_qrSrc = 'data:image/png;base64,' . base64_encode($_qrResult->getString());
 } catch (\Throwable $e) {
-    error_log('[AulaPro] Boletin QR generation failed: ' . $e->getMessage());
+    error_log('[' . ($cfg['nombreCentro'] ?? 'AulaPro') . '] Boletin QR generation failed: ' . $e->getMessage());
     $_qrSrc = null;
 }
+
+// Estado global -> color/etiqueta del badge de resumen
+$_estadoGlobal = strtoupper($estudiante['estado_global'] ?? 'PENDIENTE');
+$_estadoColores = [
+    'APROBADO' => ['bg' => '#dcfce7', 'fg' => '#166534'],
+    'SUSPENSO' => ['bg' => '#fee2e2', 'fg' => '#991b1b'],
+    'PENDIENTE' => ['bg' => '#f1f5f9', 'fg' => '#475569'],
+];
+$_estadoColor = $_estadoColores[$_estadoGlobal] ?? $_estadoColores['PENDIENTE'];
 ?>
 <style>
     @page {
@@ -46,24 +60,36 @@ try {
         footer: html_page-footer;
     }
     body { font-family: 'Roboto', sans-serif; color: #334155; }
-    
-    .card { background: #ffffff; padding: 0; }
-    
-    .student-info { margin-bottom: 25px; width: 100%; border-collapse: collapse; }
-    .student-info td { padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; }
-    .label { font-size: 8pt; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
-    .value { font-size: 11pt; color: #1e293b; font-weight: bold; }
 
-    .table-notas { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    .table-notas th { background: #1e3a6e; color: #ffffff; padding: 12px 8px; font-size: 9pt; text-align: center; }
-    .table-notas th:first-child { text-align: left; border-top-left-radius: 8px; }
-    .table-notas th:last-child { border-top-right-radius: 8px; }
-    
-    .table-notas td { padding: 10px 8px; border-bottom: 1px solid #e2e8f0; font-size: 9pt; text-align: center; }
+    .card { background: #ffffff; padding: 0; }
+
+    .summary-bar { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    .summary-bar td { padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0; vertical-align: middle; }
+    .label { font-size: 8pt; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; letter-spacing: .04em; }
+    .value { font-size: 11pt; color: #1e293b; font-weight: bold; }
+    .value-sm { font-size: 9.5pt; color: #1e293b; font-weight: 600; }
+
+    .estado-badge {
+        display: inline-block; padding: 6px 16px; border-radius: 20px;
+        font-size: 10pt; font-weight: bold; letter-spacing: .03em;
+    }
+
+    .curso-header td {
+        background: #1e3a6e; color: #ffffff; font-size: 9pt; font-weight: bold;
+        padding: 6px 10px; text-transform: uppercase; letter-spacing: .04em;
+    }
+
+    .table-notas { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .table-notas th { background: #eef2ff; color: #1e3a6e; padding: 10px 8px; font-size: 8.5pt; text-align: center; border-bottom: 2px solid #1e3a6e; }
+    .table-notas th:first-child { text-align: left; }
+
+    .table-notas td { padding: 9px 8px; border-bottom: 1px solid #e2e8f0; font-size: 9pt; text-align: center; }
     .table-notas td:first-child { text-align: left; font-weight: 500; }
-    
+
     .row-even { background: #fdfdfd; }
     .row-odd { background: #ffffff; }
+
+    .fila-especial td { background: #f8fafc; }
 
     .nota-circle {
         display: inline-block;
@@ -80,7 +106,7 @@ try {
     .nota-vacia { color: #cbd5e1; }
     .nota-especial { background-color: #64748b; font-size: 7pt; width: 34px; }
 
-    .signature-area { margin-top: 50px; width: 100%; }
+    .signature-area { margin-top: 40px; width: 100%; }
     .signature-box { border-top: 1px solid #94a3b8; padding-top: 10px; text-align: center; font-size: 9pt; }
 </style>
 
@@ -90,38 +116,77 @@ try {
 
 <htmlpagefooter name="page-footer">
     <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 8pt; color: #94a3b8; text-align: center;">
-        <?= htmlspecialchars($cfg['nombreCentro']) ?> — Documento oficial generado por AulaPro — Página {PAGENO} de {nb}
+        <?= htmlspecialchars($cfg['nombreCentro']) ?> — Documento oficial — Página {PAGENO} de {nb}
     </div>
 </htmlpagefooter>
 
 <div class="card">
-    <div style="text-align: center; margin-bottom: 20px;">
+    <div style="text-align: center; margin-bottom: 18px;">
         <h1 style="font-size: 18pt; color: #1e293b; margin: 0;">BOLETÍN DE CALIFICACIONES</h1>
         <div style="color: #64748b; font-size: 10pt; margin-top: 5px;">Curso Académico <?= htmlspecialchars($cfg['cursoEscolar']) ?></div>
     </div>
 
-    <table class="student-info">
+    <table class="summary-bar">
         <tr>
-            <td width="60%">
+            <td width="45%">
                 <div class="label">Alumno/a</div>
                 <div class="value"><?= mb_strtoupper(htmlspecialchars($estudiante['nombreEstudiante'])) ?></div>
             </td>
-            <td width="40%">
-                <div class="label">Especialidad</div>
-                <div class="value"><?= htmlspecialchars($ciclo['abreviaturaCiclo']) ?></div>
+            <td width="30%">
+                <div class="label">Ciclo Formativo</div>
+                <div class="value-sm"><?= htmlspecialchars($ciclo['nombreCiclo']) ?> (<?= htmlspecialchars($ciclo['abreviaturaCiclo']) ?>)</div>
+            </td>
+            <td width="25%" style="text-align:center;">
+                <div class="label">Estado</div>
+                <span class="estado-badge" style="background:<?= $_estadoColor['bg'] ?>; color:<?= $_estadoColor['fg'] ?>;"><?= htmlspecialchars($_estadoGlobal) ?></span>
             </td>
         </tr>
         <tr>
             <td>
                 <div class="label">Nivel</div>
-                <div class="value"><?= htmlspecialchars($ciclo['nombreNivel'] ?? '—') ?></div>
+                <div class="value-sm"><?= htmlspecialchars($ciclo['nombreNivel'] ?? '—') ?></div>
             </td>
             <td>
                 <div class="label">Expediente / DNI</div>
-                <div class="value"><?= htmlspecialchars($estudiante['dniEstudiante'] ?: '—') ?></div>
+                <div class="value-sm"><?= htmlspecialchars($estudiante['dniEstudiante'] ?: '—') ?></div>
+            </td>
+            <td style="text-align:center;">
+                <div class="label">Nota media</div>
+                <div class="value-sm"><?= is_numeric($estudiante['promedio_global'] ?? null) ? number_format((float)$estudiante['promedio_global'], 2) : '—' ?></div>
             </td>
         </tr>
     </table>
+
+    <?php
+    $especiales = ['NP', 'EX', 'CO'];
+    $etiquetaEst = ['NP'=>'No Presentado','EX'=>'Exento','CO'=>'Convalidado'];
+    // Returns display string for one eval cell
+    $fmtCell = function($nota, $estado) use ($especiales) {
+        if ($estado && in_array($estado, $especiales, true)) return $estado;
+        return ($nota !== null) ? number_format((float)$nota, 1) : '—';
+    };
+    // Solo detecta un código especial (NP/EX/CO) para saber si mostrar la
+    // fila de "Convalidado"/etc — la NOTA numérica ya no se recalcula aquí,
+    // viene resuelta por listarResultadosFinalesCiclo() (mismo motor que
+    // el resto de la app: motor configurable / RA-CE / calcularNotaDefinitiva
+    // + peso examen-reto), para que el boletín nunca pueda mostrar un número
+    // distinto al que ve el alumno en su panel.
+    $codigoEspecial = function($n) use ($especiales) {
+        foreach ([$n['estado_2final'] ?? null, $n['estado_2ev'] ?? null, $n['estado_1final'] ?? null, $n['estado_1ev'] ?? null] as $est) {
+            if ($est && in_array($est, $especiales, true)) return $est;
+        }
+        return null;
+    };
+
+    // Agrupados por curso (1º, 2º...) — un ciclo de FP dura varios años y
+    // mezclar sus módulos en una sola lista sin distinguir el curso confundía
+    // el expediente.
+    $modulosPorAnio = [];
+    foreach ($notas as $mod) {
+        $modulosPorAnio[(int)($mod['cursoAnio'] ?? 1)][] = $mod;
+    }
+    ksort($modulosPorAnio);
+    ?>
 
     <table class="table-notas">
         <thead>
@@ -136,28 +201,9 @@ try {
             </tr>
         </thead>
         <tbody>
-            <?php
-            $i = 0;
-            $especiales = ['NP', 'EX', 'CO'];
-            $etiquetaEst = ['NP'=>'No Presentado','EX'=>'Exento','CO'=>'Convalidado'];
-            // Returns display string for one eval cell
-            $fmtCell = function($nota, $estado) use ($especiales) {
-                if ($estado && in_array($estado, $especiales, true)) return $estado;
-                return ($nota !== null) ? number_format((float)$nota, 1) : '—';
-            };
-            // Solo detecta un código especial (NP/EX/CO) para saber si mostrar la
-            // fila de "Convalidado"/etc — la NOTA numérica ya no se recalcula aquí,
-            // viene resuelta por listarResultadosFinalesCiclo() (mismo motor que
-            // el resto de la app: calcularNotaDefinitiva + peso examen/reto
-            // configurable), para que el boletín nunca pueda mostrar un número
-            // distinto al que ve el alumno en su panel.
-            $codigoEspecial = function($n) use ($especiales) {
-                foreach ([$n['estado_2final'] ?? null, $n['estado_2ev'] ?? null, $n['estado_1final'] ?? null, $n['estado_1ev'] ?? null] as $est) {
-                    if ($est && in_array($est, $especiales, true)) return $est;
-                }
-                return null;
-            };
-            foreach ($notas as $mod):
+            <?php $i = 0; foreach ($modulosPorAnio as $_anio => $_modulosAnio): ?>
+            <tr class="curso-header"><td colspan="7"><?= $_anio ?>º Curso</td></tr>
+            <?php foreach ($_modulosAnio as $mod):
                 $n   = $mod['notas'] ?? [];
                 $codigo = $codigoEspecial($n);
                 $notaFinalModulo = $mod['nota_final'] ?? '-';
@@ -189,12 +235,29 @@ try {
                     </div>
                 </td>
             </tr>
-            <?php endforeach;
+            <?php endforeach; endforeach; ?>
 
-            $notaTFG = isset($estudiante['nota_tfg']) && $estudiante['nota_tfg'] !== null
-                ? (float)$estudiante['nota_tfg'] : null;
-            // notaAprobado: 5 salvo que el motor configurable esté activo con otro valor.
-            // El TFG usa su propio mínimo (tfg_config.notaMinima) si existe.
+            <?php
+            // FCT: obligatoria en ambos grados para poder titular. Se muestra
+            // siempre (aunque todavía no tenga nota) para que su ausencia sea
+            // visible en el expediente, no invisible como pasaba antes.
+            $notaFCT = $estudiante['nota_fct'] ?? null;
+            $claseFCT = ($notaFCT !== null) ? ($notaFCT >= 5 ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
+            ?>
+            <tr class="fila-especial" style="border-top: 2px solid #1e3a6e;">
+                <td>—</td>
+                <td style="font-weight:bold; color:#1e3a6e;">Formación en Centros de Trabajo (FCT)</td>
+                <td>—</td><td>—</td><td>—</td><td>—</td>
+                <td>
+                    <div class="nota-circle <?= $claseFCT ?>">
+                        <?= ($notaFCT !== null) ? number_format($notaFCT, 0) : '—' ?>
+                    </div>
+                </td>
+            </tr>
+
+            <?php
+            // notaAprobado: 5 salvo que el motor configurable esté activo con otro
+            // valor — se usa tanto para el Proyecto como para la media global.
             $notaAprobado = 5.0;
             $notaMinimaTfgPdf = 5.0;
             if (motorAcademicoActivo()) {
@@ -202,26 +265,32 @@ try {
                 if ($configActiva) {
                     $politica = obtenerPoliticaCalificacion((int)$configActiva['idConfig']);
                     if ($politica) $notaAprobado = (float)$politica['notaAprobado'];
+                    // El Proyecto usa su propio mínimo (tfg_config.notaMinima) si existe.
                     $configTFGPdf = obtenerConfigTFG((int)$configActiva['idConfig']);
                     if ($configTFGPdf) $notaMinimaTfgPdf = (float)$configTFGPdf['notaMinima'];
                 }
             }
-            $claseTFG = ($notaTFG !== null) ? ($notaTFG >= $notaMinimaTfgPdf ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
+
+            // Módulo de Proyecto: SOLO existe en Grado Superior — Grado Medio
+            // no lo tiene, así que antes no debía aparecer en su boletín
+            // (aunque el centro tuviera la entrega de TFG activada).
+            if ($_esGradoSuperior):
+                $notaTFG = isset($estudiante['nota_tfg']) && $estudiante['nota_tfg'] !== null
+                    ? (float)$estudiante['nota_tfg'] : null;
+                $claseTFG = ($notaTFG !== null) ? ($notaTFG >= $notaMinimaTfgPdf ? 'nota-aprobada' : 'nota-suspensa') : 'nota-vacia';
             ?>
-            <tr style="background:#eef2ff; border-top: 2px solid #1e3a6e;">
+            <tr class="fila-especial">
                 <td>—</td>
-                <td style="font-weight:bold; color:#1e3a6e;">Trabajo de Fin de Grado (TFG)</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
+                <td style="font-weight:bold; color:#1e3a6e;">Módulo de Proyecto</td>
+                <td>—</td><td>—</td><td>—</td><td>—</td>
                 <td>
                     <div class="nota-circle <?= $claseTFG ?>">
                         <?= ($notaTFG !== null) ? number_format($notaTFG, 0) : '—' ?>
                     </div>
                 </td>
             </tr>
-            <?php
+            <?php endif;
+
             // Media global: ya resuelta por listarResultadosFinalesCiclo() (peso
             // examen/reto configurable + peso de TFG), no una media simple
             // recalculada aquí — antes esta plantilla ignoraba los retos por

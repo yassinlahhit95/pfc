@@ -7,6 +7,7 @@ require_once __DIR__ . "/tfg.php";
 require_once __DIR__ . "/academico_config.php";
 require_once __DIR__ . "/motor_calificaciones.php";
 require_once __DIR__ . "/fct.php";
+require_once __DIR__ . "/ra_ce.php";
 
 // ══════════════════════════════════════════════════════════════════════
 // MOTOR DE NOTAS — reglas compartidas entre listarResultadosFinalesCiclo()
@@ -41,6 +42,35 @@ function _detalleModulo($idModulo, $nombreModulo, $cursoAnio, ?array $notas, $me
         ];
     }
 
+    // RA/CE "simple": si el módulo tiene Resultados de Aprendizaje definidos
+    // y feature_ra_ce está activo, esa es la forma de calificar que exige la
+    // normativa española (LOMLOE) — cuenta para la nota final SIN necesitar
+    // configurar el asistente académico completo. Si no hay ninguna nota de
+    // RA/CE todavía para este alumno, cae al camino heredado de abajo (para
+    // no mostrar "Pendiente" en un módulo que sí tiene notas de examen).
+    if (FeatureGuard::check('feature_ra_ce')) {
+        $ras = listarRAPorModulo($idModulo);
+        if (!empty($ras)) {
+            $race = calcularMediaPonderadaRA($idEstudiante, $idModulo, $ras);
+            if ($race['huboNota']) {
+                $notaFinalRedondeada = round($race['media']);
+                return [
+                    'idModulo' => $idModulo,
+                    'nombreModulo' => $nombreModulo,
+                    'cursoAnio' => $cursoAnio,
+                    'media_retos' => 0.0,
+                    'estado' => $notaFinalRedondeada >= 5 ? 'Aprobado' : 'Suspenso',
+                    'media_notas' => round($race['media'], 2),
+                    'nota_final' => $notaFinalRedondeada,
+                    '_mediaExamenes' => 0.0,
+                    '_mediaRetos' => 0.0,
+                    '_notaFinalNum' => $race['media'],
+                    '_tieneNota' => true,
+                ];
+            }
+        }
+    }
+
     $nota1ev    = isset($notas['nota_1ev'])    ? floatval($notas['nota_1ev'])    : null;
     $nota1final = isset($notas['nota_1final']) ? floatval($notas['nota_1final']) : null;
     $nota2ev    = isset($notas['nota_2ev'])    ? floatval($notas['nota_2ev'])    : null;
@@ -57,10 +87,17 @@ function _detalleModulo($idModulo, $nombreModulo, $cursoAnio, ?array $notas, $me
     $mediaExamenes = $evaluacionesConNota > 0 ? $sumaEvaluaciones / $evaluacionesConNota : 0;
     $mediaRetos = floatval($mediaRetosBruta ?? 0);
     $notaFinal = ($mediaExamenes * 0.75) + ($mediaRetos * 0.25);
+    // La nota final de un módulo se expresa en un número entero de 1 a 10
+    // (normativa de evaluación de FP de las comunidades autónomas) — se
+    // redondea aquí, antes de decidir el estado, para que "Aprobado" siempre
+    // coincida con la nota que se muestra (p.ej. una media de 4.6 redondea a
+    // 5 y aprueba; comparar el estado contra el valor sin redondear daría
+    // "Suspenso" con un 5 en pantalla).
+    $notaFinalRedondeada = round($notaFinal);
 
     if ($evaluacionesConNota == 0) {
         $estado = "Pendiente";
-    } elseif ($notaFinal >= 5) {
+    } elseif ($notaFinalRedondeada >= 5) {
         $estado = "Aprobado";
     } else {
         $estado = "Suspenso";
@@ -73,7 +110,7 @@ function _detalleModulo($idModulo, $nombreModulo, $cursoAnio, ?array $notas, $me
         'media_retos' => round($mediaRetos, 2),
         'estado' => $estado,
         'media_notas' => $evaluacionesConNota > 0 ? round($mediaExamenes, 2) : "-",
-        'nota_final' => $evaluacionesConNota > 0 ? round($notaFinal, 2) : "-",
+        'nota_final' => $evaluacionesConNota > 0 ? $notaFinalRedondeada : "-",
         '_mediaExamenes' => $mediaExamenes,
         '_mediaRetos' => $mediaRetos,
         '_notaFinalNum' => $evaluacionesConNota > 0 ? $notaFinal : 0.0,
@@ -108,14 +145,14 @@ function _resumenGlobalEstudiante(array $detallesModulos, $notaTfgBruta, bool $m
     $mediaModulos = $sumaModulos / $modulosConNotas;
     $mediaRetosGlobal = $sumaRetos / $modulosConNotas;
 
-    // Motor activo: se promedia nota_final de cada módulo directamente (ya
-    // viene ponderada con TODOS los tipos configurados — Examen, Reto, RA/CE,
-    // los que haya). Reconstruir a partir de mediaExamenes/mediaRetos (como
-    // hace el camino heredado) solo cubriría 2 de N tipos posibles y dejaría
-    // fuera, por ejemplo, la aportación de RA/CE a la media global.
-    $promedioGlobal = $motorActivo
-        ? $sumaNotaFinal / $modulosConNotas
-        : ($mediaModulos * 0.75) + ($mediaRetosGlobal * 0.25);
+    // Se promedia nota_final de cada módulo directamente (ya viene resuelta
+    // con lo que corresponda a cada módulo: motor configurable, RA/CE simple,
+    // o la fórmula heredada 75/25). Reconstruir a partir de mediaExamenes/
+    // mediaRetos daría el mismo resultado SOLO si todos los módulos usan la
+    // fórmula heredada — en cuanto uno se calcula por RA/CE (mediaExamenes y
+    // mediaRetos van a 0 ahí) la reconstrucción lo dejaría fuera de la media
+    // global por completo.
+    $promedioGlobal = $sumaNotaFinal / $modulosConNotas;
 
     $notaAprobado = 5.0;
     $notaMinimaTfg = 5.0;
@@ -178,7 +215,7 @@ function _resumenGlobalEstudiante(array $detallesModulos, $notaTfgBruta, bool $m
 // CONSULTAS
 // ══════════════════════════════════════════════════════════════════════
 
-function obtenerNotasModulo($idEstudiante, $idModulo, $cursoEscolar = null)
+function obtenerNotasModulo($idEstudiante, $idModulo)
 {
     $con = obtenerConexion();
     $sql = "SELECT * FROM calificaciones_modulos WHERE idEstudiante = ? AND idModulo = ?";
@@ -202,7 +239,7 @@ function obtenerCalificacionPorId($idCalificacion)
     return $datos;
 }
 
-function listarCalificacionesPorEstudiante($idEstudiante, $cursoEscolar = null)
+function listarCalificacionesPorEstudiante($idEstudiante)
 {
     $con = obtenerConexion();
     $sql = "SELECT cm.*, m.nombreModulo
@@ -322,7 +359,7 @@ function eliminarCalificacion($idCalificacion)
 // RESULTADOS FINALES
 // ══════════════════════════════════════════════════════════════════════
 
-function listarResultadosFinalesCiclo($idCiclo, $cursoEscolar = null)
+function listarResultadosFinalesCiclo($idCiclo)
 {
     $con = obtenerConexion();
 
@@ -438,7 +475,7 @@ function listarResultadosFinalesCiclo($idCiclo, $cursoEscolar = null)
     return $resultados;
 }
 
-function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null, $cursoEscolar = null)
+function obtenerResultadosFinalesEstudiante($idEstudiante, $listaModulos = null)
 {
     $datosEstudiante = obtenerEstudiantePorId($idEstudiante);
 
@@ -623,6 +660,19 @@ function generarDatosBoletinCiclo($idCiclo) {
         $resultadosPorEstudiante[$resultadoEstudiante['idEstudiante']] = $resultadoEstudiante;
     }
 
+    // Método de evaluación de FCT: el del motor configurable si está activo,
+    // 'ambos' (nota si existe, si no apto/no apto) por defecto — igual que
+    // en cualquier otro sitio que consulta obtenerNotaFCTEscala10() sin
+    // depender de que el centro haya configurado el asistente académico.
+    $metodoFCT = 'ambos';
+    if (motorAcademicoActivo()) {
+        $configActivaFCT = obtenerConfigAcademicaActiva();
+        if ($configActivaFCT) {
+            $internshipCfg = obtenerConfigFCT((int)$configActivaFCT['idConfig']);
+            if ($internshipCfg) $metodoFCT = $internshipCfg['metodoEvaluacion'] ?? 'ambos';
+        }
+    }
+
     foreach ($estudiantes as &$est) {
         $est['nota_tfg'] = $tfgMap[$est['idEstudiante']] ?? null;
         $resultado = $resultadosPorEstudiante[$est['idEstudiante']] ?? null;
@@ -633,12 +683,16 @@ function generarDatosBoletinCiclo($idCiclo) {
             $detallesPorModulo[$detalleModulo['idModulo']] = $detalleModulo;
         }
 
+        $fct = obtenerNotaFCTEscala10((int)$est['idEstudiante'], (int)$idCiclo, $metodoFCT);
+        $est['nota_fct'] = $fct['huboNota'] ? $fct['media'] : null;
+
         $est['modulos'] = [];
         foreach ($modulos as $mod) {
             $est['modulos'][] = [
                 'idModulo'     => $mod['idModulo'],
                 'nombreModulo' => $mod['nombreModulo'],
                 'codigoModulo' => $mod['codigoModulo'] ?? null,
+                'cursoAnio'    => $mod['cursoAnio'] ?? 1,
                 'notas'        => $gradeMap[$est['idEstudiante']][$mod['idModulo']] ?? null,
                 'nota_final'   => $detallesPorModulo[$mod['idModulo']]['nota_final'] ?? '-',
                 'estado'       => $detallesPorModulo[$mod['idModulo']]['estado'] ?? 'Pendiente',

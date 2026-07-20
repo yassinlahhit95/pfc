@@ -100,6 +100,20 @@
 .tema-universidad .lp-sec:nth-child(even) .lp-tarjeta p {
   color: #ffffff;
 }
+/* .lp-contacto y el párrafo intro de .lp-fpdual no van en tarjeta (fondo
+   propio) como el resto de secciones — su texto usa var(--lp-texto)/
+   var(--lp-texto-suave) directamente, así que si caen en una posición par
+   quedan casi ilegibles (texto oscuro sobre el azul de acento). */
+.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato strong,
+.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato span,
+.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato a,
+.tema-universidad .lp-sec:nth-child(even) .lp-contacto-form label,
+.tema-universidad .lp-sec:nth-child(even) .lp-fpdual-texto > p {
+  color: #ffffff;
+}
+.tema-universidad .lp-sec:nth-child(even) .lp-contacto-dato a:hover {
+  color: rgba(255, 255, 255, .8);
+}
 .tema-universidad .lp-sec:nth-child(even) .lp-tarjeta {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.4);

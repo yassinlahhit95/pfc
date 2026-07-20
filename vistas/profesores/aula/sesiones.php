@@ -26,7 +26,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>AULA DIGITAL</h1>
-    <p class="texto-suave">Gestiona tus sesiones en vivo y conecta con tus estudiantes</p>
+    <p class="subtitulo-encabezado">Gestiona tus sesiones en vivo y conecta con tus estudiantes</p>
 </div>
 
 <?php if (!empty($exito)) { ?>

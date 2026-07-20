@@ -32,7 +32,9 @@ require_once __DIR__ . '/../comunes/nav.php';
       </button>
     </div>
     <div class="chat-search">
-      <input type="text" placeholder="Buscar conversación..." id="sidebar-search" autocomplete="off">
+      <input type="text" placeholder="Buscar conversación..." id="sidebar-search"
+        autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+        data-lpignore="true" data-1p-ignore="true" data-form-type="other">
     </div>
     <div class="chat-conv-list">
       <?php if (empty($convs)): ?>
@@ -73,7 +75,9 @@ require_once __DIR__ . '/../comunes/nav.php';
   <div class="chat-modal">
     <button class="chat-modal-close" id="chat-modal-close">&times;</button>
     <h3>Nueva conversación</h3>
-    <input type="text" class="chat-modal-search" id="chat-modal-search" placeholder="Buscar profesor o estudiante…" autocomplete="off">
+    <input type="text" class="chat-modal-search" id="chat-modal-search" placeholder="Buscar profesor o estudiante…"
+    autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+    data-lpignore="true" data-1p-ignore="true" data-form-type="other">
     <div class="chat-contact-list" id="chat-contact-list"></div>
   </div>
 </div>

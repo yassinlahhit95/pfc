@@ -28,7 +28,3 @@ if (!$items) return;
     </div>
   </div>
 </section>
-
-
-
-

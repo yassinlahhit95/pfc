@@ -14,7 +14,6 @@ if (!$mostrarFormulario && !$mostrarMapa) {
 ?>
 <section class="lp-sec lp-contacto" id="contacto"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
-    
     <div class="lp-sec-cabecera lp-anim">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['texto'])): ?>
@@ -23,10 +22,8 @@ if (!$mostrarFormulario && !$mostrarMapa) {
     </div>
 
     <div class="<?= $gridClass ?> lp-anim">
-      
       <div class="lp-contacto-col-izquierda">
         <div class="lp-contacto-datos">
-          
           <div class="lp-contacto-dato">
             <i class="fas fa-location-dot"></i>
             <div>
@@ -92,8 +89,7 @@ if (!$mostrarFormulario && !$mostrarMapa) {
       <form class="lp-contacto-form" id="lp-form-contacto" method="POST" action="/controladores/contacto_centro.php" novalidate>
         <!-- Campo honeypot -->
         <input type="text" name="website" class="lp-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <input type="hidden" name="token" id="lp-csrf-token">
-        
+
         <div class="lp-form-fila">
           <label>Nombre *<input type="text" name="nombre" required maxlength="100"></label>
           <label>Email *<input type="email" name="email" required maxlength="150"></label>
@@ -108,7 +104,3 @@ if (!$mostrarFormulario && !$mostrarMapa) {
     </div>
   </div>
 </section>
-
-
-
-

@@ -214,7 +214,9 @@
       '.lp-sec .lp-tarjeta', '.lp-sec-cabecera', '.lp-galeria-item',
       '.lp-contacto-grid', '.lp-contacto-solo-datos', '.lp-cifra',
       '.lp-fpdual-lista li', '.lp-blog-card', '.lp-porque-item',
-      '.lp-footer-cta-inner'
+      '.lp-footer-cta-inner', '.lp-testimonio-card', '.lp-ciclo',
+      '.lp-empresa', '.lp-faq-item', '.lp-video-pres-content',
+      '.lp-video-pres-media', '.lp-cta-sec-inner'
     ].join(', ');
 
     var elementos = document.querySelectorAll(selector);

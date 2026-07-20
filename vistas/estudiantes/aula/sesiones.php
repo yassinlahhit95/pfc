@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>AULA DIGITAL</h1>
-    <p class="texto-suave">Accede a las clases en vivo y gestiona tu aprendizaje</p>
+    <p class="subtitulo-encabezado">Accede a las clases en vivo y gestiona tu aprendizaje</p>
 </div>
 
 <?php if (empty($todasLasSesiones)) { ?>

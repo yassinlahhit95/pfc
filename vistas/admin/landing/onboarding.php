@@ -7,7 +7,6 @@ require_once __DIR__ . "/../../../modelos/landing.php";
 require_once __DIR__ . "/../../../include/landing/plantillas.php";
 require_once __DIR__ . "/../../../modelos/configuracion.php";
 
-$landingCfg = obtenerLandingConfig();
 $plantillas = landing_plantillas();
 $cfgCentro = obtenerConfiguracionCentro();
 $csrfToken = Security::generateCSRFToken();

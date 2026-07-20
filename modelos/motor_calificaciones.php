@@ -88,32 +88,7 @@ function sincronizarCalificacionPeriodo(
 // documentación sin efecto en la nota, igual que antes de esta integración.
 function _motorMediaRACE(int $idEstudiante, int $idModulo, int $idTipo): array {
     $ras = array_filter(listarRAPorModulo($idModulo), fn($ra) => (int)($ra['idTipo'] ?? 0) === $idTipo);
-    if (empty($ras)) return ['media' => 0.0, 'huboNota' => false];
-
-    $notasCE = obtenerCalificacionesPorModuloYEstudiante($idModulo, $idEstudiante); // [idCE => nota]
-
-    $sumaPonderada = 0.0;
-    $sumaPesos = 0.0;
-    $huboNota = false;
-    foreach ($ras as $ra) {
-        $ces = listarCEPorRA((int)$ra['idRA']);
-        if (empty($ces)) continue;
-        $notasDeEsteRA = [];
-        foreach ($ces as $ce) {
-            if (isset($notasCE[$ce['idCE']]) && $notasCE[$ce['idCE']] !== null) {
-                $notasDeEsteRA[] = (float)$notasCE[$ce['idCE']];
-            }
-        }
-        if (empty($notasDeEsteRA)) continue;
-        $mediaRA = array_sum($notasDeEsteRA) / count($notasDeEsteRA);
-        $peso = (float)($ra['porcentaje'] ?? 0) ?: 1.0; // porcentaje=0 (sin configurar) -> peso igual entre RAs
-        $sumaPonderada += $mediaRA * $peso;
-        $sumaPesos += $peso;
-        $huboNota = true;
-    }
-
-    if (!$huboNota || $sumaPesos <= 0) return ['media' => 0.0, 'huboNota' => false];
-    return ['media' => $sumaPonderada / $sumaPesos, 'huboNota' => true];
+    return calcularMediaPonderadaRA($idEstudiante, $idModulo, $ras);
 }
 
 // Misma regla que calcularNotaDefinitiva() en calificaciones.php: una
@@ -188,6 +163,12 @@ function calcularNotaModuloConfigurable(int $idEstudiante, int $idModulo, int $i
     $sumaPesos = 0.0;
     $tieneNotaObligatoria = false;
     $detalle = [];
+    // Acumulados por origen (no por nombre): el nombre del tipo lo puede
+    // renombrar el centro desde el wizard (guardarTipoEvaluacion), así que
+    // buscar $detalle['Examen']/$detalle['Reto'] literal se rompía en
+    // silencio (volvía a 0.0) en cuanto alguien renombraba esos tipos.
+    $sumaExamen = 0.0; $pesosExamen = 0.0;
+    $sumaReto = 0.0; $pesosReto = 0.0;
 
     foreach ($tipos as $tipo) {
         if (!$tipo['incluirEnMedia']) continue;
@@ -197,9 +178,11 @@ function calcularNotaModuloConfigurable(int $idEstudiante, int $idModulo, int $i
             $mediaTipo = _motorMediaPorPeriodos($idEstudiante, $idModulo, (int)$tipo['idTipo'], $idConfig);
             $media = $mediaTipo['media'];
             $huboNota = $mediaTipo['huboNota'];
+            if ($huboNota) { $sumaExamen += $media * $peso; $pesosExamen += $peso; }
         } elseif ($tipo['origen'] === 'reto') {
             $media = _motorMediaRetos($idEstudiante, $idModulo);
             $huboNota = true; // un reto sin nota no bloquea el estado del módulo (igual que hoy)
+            $sumaReto += $media * $peso; $pesosReto += $peso;
         } elseif ($tipo['origen'] === 'ra_ce') {
             $mediaTipo = _motorMediaRACE($idEstudiante, $idModulo, (int)$tipo['idTipo']);
             $media = $mediaTipo['media'];
@@ -225,14 +208,14 @@ function calcularNotaModuloConfigurable(int $idEstudiante, int $idModulo, int $i
     return [
         'nota_final' => $tieneNotaObligatoria ? $notaFinal : '-',
         'estado'     => $estado,
-        'media_retos'=> $detalle['Reto'] ?? 0.0,
-        // OJO: media_notas es la media del tipo 'Examen' en solitario, NO
-        // nota_final (que ya lleva la ponderación de todos los tipos). Si se
-        // devolviera nota_final aquí, cualquier código que reconstruya una
-        // media a partir de media_notas/media_retos contaría el peso de los
-        // demás tipos dos veces (se detectó así: promedio_global salía mal
-        // en cuanto se combinaban varios módulos + FCT).
-        'media_notas'=> $tieneNotaObligatoria ? ($detalle['Examen'] ?? 0.0) : '-',
+        'media_retos'=> $pesosReto > 0 ? round($sumaReto / $pesosReto, 2) : 0.0,
+        // OJO: media_notas es la media de los tipos con origen='examen' en
+        // solitario, NO nota_final (que ya lleva la ponderación de todos los
+        // tipos). Si se devolviera nota_final aquí, cualquier código que
+        // reconstruya una media a partir de media_notas/media_retos contaría
+        // el peso de los demás tipos dos veces (se detectó así: promedio_global
+        // salía mal en cuanto se combinaban varios módulos + FCT).
+        'media_notas'=> $tieneNotaObligatoria && $pesosExamen > 0 ? round($sumaExamen / $pesosExamen, 2) : ($tieneNotaObligatoria ? 0.0 : '-'),
         'detalle'    => $detalle,
     ];
 }

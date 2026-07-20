@@ -2,6 +2,9 @@
 // Oferta formativa: tarjetas gestionadas manualmente desde el constructor
 // (título, texto, foto y precio libres por tarjeta) — no dependen de los
 // ciclos formativos académicos (tabla `ciclos`), que son una entidad aparte.
+// Cada tarjeta puede enlazar opcionalmente (campo cicloSlug) a una ficha del
+// catálogo público de ciclos (tabla landing_ciclos, /vistas/ciclos.php); si
+// no se rellena, el botón sigue usando botonUrl o el enlace general de siempre.
 $items          = $contenido['items'] ?? [];
 $prematriculaOn = FeatureGuard::check('feature_prematricula');
 $botonTexto     = $contenido['botonTexto'] ?: 'Solicitar plaza';
@@ -24,7 +27,10 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
     <div class="lp-oferta-grid">
       <?php foreach ($items as $item):
           $imgUrl = landing_img_url($item['imagen'] ?? '');
-          $enlace = landing_url_segura($item['botonUrl'] ?? '', $enlaceDefecto);
+          $cicloSlug = trim($item['cicloSlug'] ?? '');
+          $enlace = $cicloSlug !== ''
+              ? '/vistas/ciclos.php?ciclo=' . rawurlencode($cicloSlug)
+              : landing_url_segura($item['botonUrl'] ?? '', $enlaceDefecto);
       ?>
       <article class="lp-tarjeta lp-ciclo">
         <?php if ($imgUrl): ?>

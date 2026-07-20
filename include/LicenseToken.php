@@ -4,8 +4,6 @@
 // El secreto debe coincidir con SAAS_LICENSE_SECRET en .env (cliente) y en saas-admin (servidor).
 class LicenseToken
 {
-    private const GRACE_HOURS = 48; // horas que una instalación nueva puede operar sin token
-
     // ══════════════════════════════════════════════════════════════════════
     // CONFIGURACIÓN
     // ══════════════════════════════════════════════════════════════════════
@@ -79,16 +77,6 @@ class LicenseToken
     public static function isValid(string $token): bool
     {
         return self::verify($token) !== null;
-    }
-
-    // Devuelve true si aplica periodo de gracia (instalación nueva, nunca sincronizada).
-    public static function inGracePeriod(?string $lastSync, ?string $createdAt): bool
-    {
-        if ($lastSync !== null) return false; // ya sincronizó antes — sin gracia
-        if ($createdAt === null) return false;
-
-        $created = strtotime($createdAt);
-        return $created !== false && (time() - $created) < (self::GRACE_HOURS * 3600);
     }
 
     // Genera un token (usado únicamente por saas-admin).

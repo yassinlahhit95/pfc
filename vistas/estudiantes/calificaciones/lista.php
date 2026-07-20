@@ -10,32 +10,20 @@ require_once __DIR__ . "/../../../modelos/calificaciones.php";
 require_once __DIR__ . "/../../../modelos/retos.php";
 
 $idEstudiante = $_SESSION['idEstudiante'];
-$cursosDisponibles = obtenerCursosEscolaresEstudiante($idEstudiante);
-$cursoSeleccionado = $_GET['cursoEscolar'] ?? $cursosDisponibles[0];
 
-$resumen      = obtenerResultadosFinalesEstudiante($idEstudiante, null, $cursoSeleccionado);
-$retosNotas   = listarCalificacionesRetoPorEstudiante($idEstudiante); // We didn't change retos to have cursoEscolar, they just are there
+$resumen      = obtenerResultadosFinalesEstudiante($idEstudiante);
+$retosNotas   = listarCalificacionesRetoPorEstudiante($idEstudiante);
+$motorConfigurableActivo = motorAcademicoActivo();
 
 $tituloDelPagina = "AULAPRO | MIS CALIFICACIONES";
 $seccionActual   = 'calificaciones';
 include_once __DIR__ . "/../comunes/nav.php";
 ?>
 
-<div class="cabecera" style="margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end;">
+<div class="cabecera" style="margin-bottom:30px;">
     <div>
         <h1>MIS CALIFICACIONES</h1>
         <p class="subtitulo-encabezado" style="font-size:1.1rem; opacity:0.8;"><i class="fas fa-graduation-cap"></i> <?= Security::escapeHtml($resumen['nombreCiclo'] ?? '') ?></p>
-    </div>
-    
-    <div class="filtro-curso">
-        <form action="" method="GET" style="display:flex; align-items:center; gap:10px;">
-            <label for="cursoEscolar" style="font-weight:600; color:var(--text-color);">Curso Escolar:</label>
-            <select name="cursoEscolar" id="cursoEscolar" onchange="this.form.submit()" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border-2); background:var(--bg-card); color:var(--text-color); outline:none;">
-                <?php foreach ($cursosDisponibles as $curso) { ?>
-                    <option value="<?= Security::escapeHtml($curso) ?>" <?= $curso === $cursoSeleccionado ? 'selected' : '' ?>><?= Security::escapeHtml($curso) ?></option>
-                <?php } ?>
-            </select>
-        </form>
     </div>
 </div>
 
@@ -113,7 +101,7 @@ include_once __DIR__ . "/../comunes/nav.php";
     <div class="panel" style="display:flex; flex-direction:column; gap:30px;">
         <div class="titulo-tarjeta" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-2); padding-bottom:15px; margin-bottom:0px;">
             <h3 style="margin:0;"><i class="fas fa-book-open" style="color:var(--accent);"></i> Calificaciones por Módulo</h3>
-            <span class="badge badge-normal" style="font-size:0.75rem;"><i class="fas fa-info-circle"></i> 75% Exámenes + 25% Retos</span>
+            <span class="badge badge-normal" style="font-size:0.75rem;"><i class="fas fa-info-circle"></i> <?= $motorConfigurableActivo ? 'Motor de calificación configurado por el centro' : '75% Exámenes + 25% Retos' ?></span>
         </div>
         
         <?php

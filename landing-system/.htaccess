@@ -1,23 +1,22 @@
 # ── landing-system/.htaccess ────────────────────────────────────────────────
-# Permite acceso público SOLO a las carpetas temas/ y assets/ (CSS/JS/imágenes).
-# Bloquea acceso directo a todos los archivos PHP del motor, plantillas y vistas.
+# Bloquea el acceso web directo a los .php del motor/plantillas/secciones/vistas
+# (la landing pública se sirve siempre a través de /index.php, /vistas/blog.php,
+# etc. — nunca pidiendo un archivo de aquí dentro directamente).
+# temas/ y assets/ (CSS/JS/imágenes estáticas) quedan accesibles por defecto:
+# no necesitan una regla "Allow" explícita, y <Directory> no está permitido
+# dentro de un .htaccess (solo en la config principal de Apache) — usarlo aquí
+# provoca un error 500 en cualquier request bajo esta carpeta, con lo que la
+# versión anterior de este archivo podía romper temas/assets en vez de protegerlos.
 
-# Denegar acceso directo a PHP en engine/, plantillas/, secciones/, views/
 <FilesMatch "\.php$">
-    Order Allow,Deny
-    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
-
-# Permitir acceso a temas/ y assets/ (archivos estáticos)
-<Directory "temas">
-    Order Allow,Deny
-    Allow from all
-</Directory>
-
-<Directory "assets">
-    Order Allow,Deny
-    Allow from all
-</Directory>
 
 # Bloquear listados de directorios
 Options -Indexes

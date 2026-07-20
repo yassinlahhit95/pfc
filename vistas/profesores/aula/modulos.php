@@ -2,6 +2,10 @@
 require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 $idProfesor = $_SESSION['idProfesor'] ?? '';
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -40,7 +44,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
   <div>
     <h1><?= Security::escapeHtml(mb_strtoupper($ciclo['nombreCiclo'], 'UTF-8')) ?></h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;"><?= Security::escapeHtml($ciclo['nombreNivel'] ?? '') ?> · <?= Security::escapeHtml(count($modulos)) ?> módulos</p>
+    <p class="subtitulo-encabezado"><?= Security::escapeHtml($ciclo['nombreNivel'] ?? '') ?> · <?= Security::escapeHtml(count($modulos)) ?> módulos</p>
   </div>
   <a href="index.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Ciclos</a>
 </div>

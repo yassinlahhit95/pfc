@@ -9,14 +9,41 @@ config/service-account.json
 # Dependencies
 vendor/
 
-# Uploads — ignore content but track security .htaccess files
-public/uploads/
+# Uploads — ignore content but track security .htaccess files.
+# NOTE: git cannot re-include a file whose parent directory is excluded by an
+# earlier "dirname/" pattern (see `man gitignore`, "It is not possible to
+# re-include a file..."). A bare `public/uploads/` + `!public/uploads/x/.htaccess`
+# looks right but silently never tracks the negated file — that's exactly what
+# happened here: public/uploads/.htaccess (the root file that disables PHP
+# execution for every upload folder) plus admisiones/ and justificantes/ sat
+# untracked for an unknown period despite the negation lines "claiming" to
+# track them. Fix: un-ignore each directory itself first, then re-ignore its
+# contents except .htaccess.
+public/uploads/*
 !public/uploads/.htaccess
+
+!public/uploads/admisiones/
+public/uploads/admisiones/*
 !public/uploads/admisiones/.htaccess
+
+!public/uploads/justificantes/
+public/uploads/justificantes/*
 !public/uploads/justificantes/.htaccess
+
+!public/uploads/aula/
+public/uploads/aula/*
 !public/uploads/aula/.htaccess
+
+!public/uploads/pfc/
+public/uploads/pfc/*
 !public/uploads/pfc/.htaccess
+
+!public/uploads/retos/
+public/uploads/retos/*
 !public/uploads/retos/.htaccess
+
+!public/uploads/ejercicios/
+public/uploads/ejercicios/*
 !public/uploads/ejercicios/.htaccess
 
 # Logs

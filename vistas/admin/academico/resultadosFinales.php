@@ -29,6 +29,11 @@ if (!empty($idCicloElegidoParaVer)) {
     $listaDeDatosFinalesAMostrar = listarResultadosFinalesCiclo($idCicloElegidoParaVer);
 }
 
+// El "75% módulos / 25% retos" solo es cierto con la fórmula heredada; con
+// el motor configurable (feature_academico_config) los pesos los define
+// cada centro en Configuración Académica, así que el texto fijo sería falso.
+$motorConfigurableActivo = motorAcademicoActivo();
+
 $titulo_pagina = "AULAPRO | RESULTADOS FINALES";
 $seccion = 'resultados_modulos';
 include_once __DIR__ . "/../comunes/nav.php";
@@ -62,7 +67,9 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>RESULTADOS FINALES POR ESTUDIANTE</h1>
-    <p class="subtitulo">Promedio global del ciclo (75% Módulos / 25% Retos)</p>
+    <p class="subtitulo-encabezado"><?= $motorConfigurableActivo
+        ? 'Promedio global del ciclo según el motor de calificación configurado'
+        : 'Promedio global del ciclo (75% Módulos / 25% Retos)' ?></p>
 </div>
 
 
@@ -127,8 +134,8 @@ include_once __DIR__ . "/../comunes/nav.php";
                     <tr>
                         <th>Estudiante</th>
                         <th>Año</th>
-                        <th>Media Global Módulos (75%)</th>
-                        <th>Media Global Retos (25%)</th>
+                        <th>Media Global Módulos<?= $motorConfigurableActivo ? '' : ' (75%)' ?></th>
+                        <th>Media Global Retos<?= $motorConfigurableActivo ? '' : ' (25%)' ?></th>
                         <th>Nota TFG</th>
                         <th>Nota Final Ciclo</th>
                         <th>Estado Final</th>
@@ -164,7 +171,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         
         <div class="tarjeta-alerta-info">
-            <p><b>Cálculo Global:</b> Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).</p>
+            <p><b>Cálculo Global:</b> <?= $motorConfigurableActivo
+                ? 'Se aplica el motor de calificación configurado en Configuración Académica (tipos de evaluación y pesos propios del centro).'
+                : 'Se promedian todas las calificaciones de todos los módulos (75%) y todos los retos (25%).' ?></p>
             <p><b>Estados:</b> <span class="texto-verde">APROBADO (>= 5.0 y sin módulos pendientes)</span>, <span class="texto-rojo">SUSPENSO (< 5.0 o con pendientes)</span>, <span class="texto-gris">PENDIENTE</span>.</p>
         </div>
     </div>

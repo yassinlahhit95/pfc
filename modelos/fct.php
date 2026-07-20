@@ -1,14 +1,17 @@
 <?php
 // ══════════════════════════════════════════════════════════════════════
 // FCT (Formación en Centros de Trabajo) — capa de acceso a datos.
-// La tabla `fct` ya existía en el esquema pero sin código de aplicación
-// (tabla huérfana). Esto es la capa de datos + su integración en el motor
-// de notas configurable (ver modelos/motor_calificaciones.php); no incluye
-// vistas de gestión (formularios de alta/edición) — eso es una funcionalidad
-// de UI más amplia (a la altura de lo que ya existe para TFG/retos), fuera
-// del alcance de "hacer el motor de notas configurable".
+// Gestión (alta/seguimiento) en vistas/{admin,profesores}/fct/ — feature_fct.
+// Integrada en el motor de notas (ver modelos/calificaciones.php y
+// modelos/motor_calificaciones.php): con o sin el motor configurable activo,
+// aprobar la FCT es obligatorio por normativa para poder titular.
 // ══════════════════════════════════════════════════════════════════════
 require_once __DIR__ . "/conectar.php";
+
+function _sqlCiclosFCTDeProfesor(): string {
+    return "(f.idCiclo IN (SELECT idCiclo FROM ciclo_profesor WHERE idProfesor = ?)
+          OR f.idCiclo IN (SELECT m.idCiclo FROM modulos m JOIN modulo_profesor pm ON m.idModulo = pm.idModulo WHERE pm.idProfesor = ?))";
+}
 
 function listarFCTPorCiclo(int $idCiclo): array {
     $con = obtenerConexion();
@@ -17,6 +20,37 @@ function listarFCTPorCiclo(int $idCiclo): array {
          JOIN estudiantes e ON e.idEstudiante = f.idEstudiante
          WHERE f.idCiclo = ? ORDER BY e.nombreEstudiante ASC, f.fase ASC");
     mysqli_stmt_bind_param($stmt, "i", $idCiclo);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $out = [];
+    while ($fila = mysqli_fetch_assoc($res)) $out[] = $fila;
+    return $out;
+}
+
+function obtenerFCTPorId(int $idFCT): ?array {
+    $con = obtenerConexion();
+    $stmt = mysqli_prepare($con,
+        "SELECT f.*, e.nombreEstudiante, e.idCiclo AS idCicloEstudiante
+         FROM fct f JOIN estudiantes e ON e.idEstudiante = f.idEstudiante
+         WHERE f.idFCT = ?");
+    mysqli_stmt_bind_param($stmt, "i", $idFCT);
+    mysqli_stmt_execute($stmt);
+    return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
+}
+
+// FCT de los estudiantes de los ciclos que imparte este profesor (tutor de
+// aula, no necesariamente el tutor de empresa asignado en idProfesorTutor)
+// — mismo criterio que listarTFGsPorProfesor().
+function listarFCTPorProfesor(int $idProfesor): array {
+    $con = obtenerConexion();
+    $sql = "SELECT DISTINCT f.*, e.nombreEstudiante, c.nombreCiclo
+            FROM fct f
+            JOIN estudiantes e ON e.idEstudiante = f.idEstudiante
+            JOIN ciclos c ON c.idCiclo = f.idCiclo
+            WHERE " . _sqlCiclosFCTDeProfesor() . "
+            ORDER BY e.nombreEstudiante ASC, f.fase ASC";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $idProfesor, $idProfesor);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $out = [];
@@ -39,16 +73,41 @@ function insertarFCT(array $datos): int|false {
     $con = obtenerConexion();
     $stmt = mysqli_prepare($con,
         "INSERT INTO fct (idEstudiante, idCiclo, empresa, idEmpresa, tutorEmpresa, emailTutorEmpresa,
-                          telefonoEmpresa, ciudadEmpresa, fechaInicio, fechaFin, horasTotales, fase)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                          telefonoEmpresa, ciudadEmpresa, fechaInicio, fechaFin, horasTotales, fase, idProfesorTutor)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $idEmpresa = $datos['idEmpresa'] ?? null;
     $fase = $datos['fase'] ?? 1;
-    mysqli_stmt_bind_param($stmt, "iisisssssssi",
+    $idProfesorTutor = $datos['idProfesorTutor'] ?? null;
+    mysqli_stmt_bind_param($stmt, "iisisssssssii",
         $datos['idEstudiante'], $datos['idCiclo'], $datos['empresa'], $idEmpresa,
         $datos['tutorEmpresa'], $datos['emailTutorEmpresa'], $datos['telefonoEmpresa'], $datos['ciudadEmpresa'],
-        $datos['fechaInicio'], $datos['fechaFin'], $datos['horasTotales'], $fase);
+        $datos['fechaInicio'], $datos['fechaFin'], $datos['horasTotales'], $fase, $idProfesorTutor);
     if (!mysqli_stmt_execute($stmt)) return false;
     return mysqli_insert_id($con);
+}
+
+// Actualiza los datos de alta (empresa/tutor/fechas/horas requeridas) — la
+// parte que normalmente solo se toca una vez, al dar de alta la FCT.
+// Separada de actualizarSeguimientoFCT() (horas realizadas/nota/apto/obs,
+// que sí cambia con frecuencia) para no forzar a enviar todos los campos
+// juntos cuando el formulario de edición solo necesita tocar una parte.
+function actualizarFCT(int $idFCT, array $datos): bool {
+    $con = obtenerConexion();
+    $idEmpresa = $datos['idEmpresa'] ?? null;
+    // idProfesorTutor solo lo edita el admin (el formulario de profesor no
+    // lo incluye) — se mantiene el valor ya guardado si no llega en $datos.
+    $idProfesorTutor = array_key_exists('idProfesorTutor', $datos)
+        ? $datos['idProfesorTutor']
+        : (obtenerFCTPorId($idFCT)['idProfesorTutor'] ?? null);
+    $stmt = mysqli_prepare($con,
+        "UPDATE fct SET empresa=?, idEmpresa=?, tutorEmpresa=?, emailTutorEmpresa=?,
+                telefonoEmpresa=?, ciudadEmpresa=?, fechaInicio=?, fechaFin=?, horasTotales=?, idProfesorTutor=?
+         WHERE idFCT = ?");
+    mysqli_stmt_bind_param($stmt, "sisssssssii",
+        $datos['empresa'], $idEmpresa, $datos['tutorEmpresa'], $datos['emailTutorEmpresa'],
+        $datos['telefonoEmpresa'], $datos['ciudadEmpresa'], $datos['fechaInicio'], $datos['fechaFin'],
+        $datos['horasTotales'], $idProfesorTutor, $idFCT);
+    return mysqli_stmt_execute($stmt);
 }
 
 // Actualiza horas realizadas / nota / apto / observaciones (la parte de

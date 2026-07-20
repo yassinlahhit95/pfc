@@ -11,8 +11,6 @@ $sliderId = 'hero-slider-' . uniqid();
 ?>
 <section class="lp-sec lp-hero-slider" id="hero-slider"<?= $styleInline ?? '' ?>>
   <div class="lp-slider-container" id="<?= $sliderId ?>">
-    
-    <!-- Slides -->
     <div class="lp-slider-track">
       <?php foreach ($slides as $i => $slide): 
         $imgUrl = landing_img_url($slide['imagen'] ?? '');
@@ -47,8 +45,7 @@ $sliderId = 'hero-slider-' . uniqid();
       </div>
       <?php endforeach; ?>
     </div>
-    
-    <!-- Controles -->
+
     <?php if (count($slides) > 1): ?>
     <div class="lp-slider-nav">
       <button class="lp-slider-prev" aria-label="Anterior slide"><i class="fas fa-arrow-left"></i></button>
@@ -120,7 +117,3 @@ $sliderId = 'hero-slider-' . uniqid();
 })();
 </script>
 <?php endif; ?>
-
-
-
-

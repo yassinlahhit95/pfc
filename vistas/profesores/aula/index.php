@@ -4,6 +4,10 @@ $idProfesor   = $_SESSION['idProfesor'] ?? '';
 $esTutor      = !empty($_SESSION['esTutor']);
 $idCicloTutor = (int)($_SESSION['idCicloTutor'] ?? 0);
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/ciclos.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -23,7 +27,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
   <div>
     <h1><i class="fas fa-folder-open"></i> RECURSOS EDUCATIVOS</h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">Selecciona un ciclo formativo para gestionar sus materiales</p>
+    <p class="subtitulo-encabezado">Selecciona un ciclo formativo para gestionar sus materiales</p>
   </div>
 </div>
 

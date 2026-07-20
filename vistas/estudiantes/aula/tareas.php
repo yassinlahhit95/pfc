@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
@@ -9,7 +13,6 @@ $idEstudiante = $_SESSION['idEstudiante'];
 $estudianteActual = obtenerEstudiantePorId($idEstudiante);
 $idCiclo = $estudianteActual['idCiclo'] ?? 0;
 
-$listaModulos = listarModulosPorCiclo($idCiclo);
 $todasLasTareas = [];
 
 // Get all tasks and check entregas efficiently
@@ -150,10 +153,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera" style="margin-bottom:24px;">
     <h1><i class="fas fa-tasks"></i> TABLERO DE TAREAS</h1>
-    <p class="texto-suave" style="margin-top:4px;">Arrastra las tareas de "Pendientes" a "En Progreso" para organizarte mejor.</p>
+    <p class="subtitulo-encabezado">Arrastra las tareas de "Pendientes" a "En Progreso" para organizarte mejor.</p>
 </div>
 
-<div class="kanban-board">
+<div class="kanban-board" data-csrf="<?= Security::generateCSRFToken() ?>">
     <!-- COLUMNA: PENDIENTES -->
     <div class="kanban-col" id="col-todo" data-status="todo">
         <h3>Pendientes <span class="badge badge-azul"><?= count($colDisponibles) ?></span></h3>
@@ -253,10 +256,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = new URLSearchParams();
         data.append('idTarea', cardId);
         data.append('estado', newStatus);
-        
+        data.append('csrf_token', document.querySelector('.kanban-board').dataset.csrf);
+
         fetch('../../../controladores/estudiantes/aula/ajax_kanban_estado.php', {
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest'},
             body: data
         }).catch(err => {
             console.error(err);

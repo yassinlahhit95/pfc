@@ -103,7 +103,7 @@ function iniciarEditorBlog(config) {
 
             var $btnImagenUpload = document.querySelector('[data-editor-toolbar="' + config.textareaId + '"] button[data-accion="imagen"]');
             if ($btnImagenUpload) $btnImagenUpload.disabled = true;
-            if (window.Toast) Toast.show('Subiendo imagen...', 'info');
+            if (window.UploadOverlay) UploadOverlay.show('Subiendo imagen...');
 
             fetch(config.uploadUrl, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                 .then(function (r) { return r.json(); })
@@ -123,6 +123,7 @@ function iniciarEditorBlog(config) {
                 })
                 .finally(function () {
                     if ($btnImagenUpload) $btnImagenUpload.disabled = false;
+                    if (window.UploadOverlay) UploadOverlay.hide();
                 });
         });
     }
@@ -135,6 +136,15 @@ function iniciarEditorBlog(config) {
                 e.preventDefault();
                 if (window.Toast) Toast.show('El contenido de la entrada es obligatorio.', 'error');
                 $editor.focus();
+                return;
+            }
+            // El formulario va a enviarse de verdad (multipart, puede incluir una
+            // imagen de portada grande): bloquea la página hasta que la subida y
+            // el guardado terminen, para que no parezca que se ha quedado colgada.
+            if (window.UploadOverlay) {
+                var $portada = $form.querySelector('input[type="file"][name="imagen"]');
+                var hayPortada = $portada && $portada.files && $portada.files.length > 0;
+                UploadOverlay.show(hayPortada ? 'Subiendo imagen y guardando...' : 'Guardando...');
             }
         });
     }

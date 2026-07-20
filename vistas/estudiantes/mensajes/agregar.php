@@ -18,7 +18,7 @@ $listaProfesores = listarProfesoresConModulosParaEstudiante($idEstudiante);
 
 $tituloDelPagina = "AULAPRO | Nuevo Mensaje";
 $seccionActual   = 'reclamaciones';
-include_once "../comunes/nav.php";
+include_once __DIR__ . "/../comunes/nav.php";
 ?>
 <link rel="stylesheet" href="../../../public/css/features/mensajes.css">
 

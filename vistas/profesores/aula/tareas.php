@@ -37,7 +37,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1><i class="fas fa-clipboard-list"></i> Tareas del Aula Digital</h1>
-        <p class="texto-suave">Crea tareas, publícalas para tus estudiantes y corrige sus entregas.</p>
+        <p class="subtitulo-encabezado">Crea tareas, publícalas para tus estudiantes y corrige sus entregas.</p>
     </div>
     <?php if ($idModuloSeleccionado && !$mostrarForm): ?>
     <a href="tareas.php?idModulo=<?= $idModuloSeleccionado ?>&nueva=1" class="boton-primario">

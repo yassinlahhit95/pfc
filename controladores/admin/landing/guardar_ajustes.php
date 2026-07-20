@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!Security::validateCSRFToken()) {
+if (!Security::validateCSRFToken(null, false)) {
     ob_clean();
     echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
     exit;
@@ -33,6 +33,7 @@ $ajustes = [
     'colorAcento'    => strtolower($color),
     'tituloSeo'      => mb_substr(trim(strip_tags($_POST['tituloSeo'] ?? '')), 0, 150),
     'descripcionSeo' => mb_substr(trim(strip_tags($_POST['descripcionSeo'] ?? '')), 0, 300),
+    'mostrarTopbar'  => !empty($_POST['mostrarTopbar']) ? 'si' : 'no',
     'redes'          => $redes,
 ];
 

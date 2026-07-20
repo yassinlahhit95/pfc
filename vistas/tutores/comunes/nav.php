@@ -9,6 +9,12 @@ $datosTutor_menu        = obtenerTutorPorId($_SESSION['idTutor']);
 $nombreUsuario_menu     = $datosTutor_menu['nombreTutor'] ?? 'Tutor';
 $estudiantes_menu       = listarEstudiantesPorTutor($_SESSION['idTutor']);
 
+$totalChatNoLeidos_menu = 0;
+if (FeatureGuard::check('feature_chat')) {
+    require_once __DIR__ . "/../../../modelos/chat.php";
+    $totalChatNoLeidos_menu = (int)chatContarNoLeidos('tutor', (int)$_SESSION['idTutor']);
+}
+
 // Active-state helper
 function _nav_active_tutor($check) {
     global $seccion;
@@ -136,15 +142,38 @@ function _nav_active_tutor($check) {
         <button class="icon-btn theme-btn" id="theme">
           <span class="theme-knob"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
         </button>
+        <?php if (FeatureGuard::check('feature_chat')): ?>
+        <div class="notif-wrap">
+          <button class="icon-btn" id="notif-btn" aria-label="Notificaciones">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="dot" id="notif-dot" data-msgs="<?= $totalChatNoLeidos_menu ?>"<?= ($totalChatNoLeidos_menu > 0) ? '' : ' hidden' ?>></span>
+          </button>
+          <div class="notif-panel" id="notif-panel" hidden>
+            <div class="notif-panel-head">Notificaciones</div>
+            <?php if ($totalChatNoLeidos_menu > 0): ?>
+            <a href="../mensajes/chat.php" class="notif-item">
+              <span class="notif-ico"><i class="fas fa-comment-dots"></i></span>
+              <div class="notif-body">
+                <span class="notif-label">Tienes <?= $totalChatNoLeidos_menu ?> mensaje(s) sin leer</span>
+              </div>
+            </a>
+            <?php else: ?>
+            <div class="notif-empty">Sin mensajes nuevos</div>
+            <?php endif; ?>
+            <div class="notif-footer">
+              <a href="../mensajes/chat.php">Ver mensajería</a>
+            </div>
+          </div>
+        </div>
+        <?php endif; ?>
       </div>
     </header>
 
     <?php // Las vistas de tutores definen $seccion (no $seccionActual)
     if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
-        require_once __DIR__ . "/../../../modelos/chat.php";
         $cw_rol = 'tutor';
         $cw_id = (int)$_SESSION['idTutor'];
-        $cw_unreadCount = (int)chatContarNoLeidos('tutor', $cw_id);
+        $cw_unreadCount = $totalChatNoLeidos_menu;
         $cw_basePath = '../../../';
         include __DIR__ . '/../../comunes/chat_widget.php';
     endif; ?>
@@ -156,13 +185,13 @@ function _nav_active_tutor($check) {
         <div id="firebase-user-data"
              data-user-id="<?= (int)$_SESSION['idTutor'] ?>"
              data-user-role="tutor"
-             data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
-             data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"
-             data-project-id="<?= $configFB->get('FIREBASE_PROJECT_ID') ?>"
-             data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
-             data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
-             data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
-             data-vapid-key="<?= $configFB->get('FIREBASE_VAPID_KEY') ?>"
+             data-api-key="<?= Security::escapeHtml($configFB->get('FIREBASE_API_KEY')) ?>"
+             data-auth-domain="<?= Security::escapeHtml($configFB->get('FIREBASE_AUTH_DOMAIN')) ?>"
+             data-project-id="<?= Security::escapeHtml($configFB->get('FIREBASE_PROJECT_ID')) ?>"
+             data-messaging-sender-id="<?= Security::escapeHtml($configFB->get('FIREBASE_MESSAGING_SENDER_ID')) ?>"
+             data-app-id="<?= Security::escapeHtml($configFB->get('FIREBASE_APP_ID')) ?>"
+             data-database-url="<?= Security::escapeHtml($configFB->get('FIREBASE_DATABASE_URL')) ?>"
+             data-vapid-key="<?= Security::escapeHtml($configFB->get('FIREBASE_VAPID_KEY')) ?>"
              class="oculto"></div>
         <script type="module">
             import { setupFirebase } from '../../../public/js/firebase/firebase.js';

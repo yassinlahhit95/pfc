@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
 require_once __DIR__ . '/../../modelos/directores.php';
+Security::initSession();
 @include_once __DIR__ . '/../../include/Logger.php';
 if (!class_exists('Logger')) {
     class Logger { public static function security($e,$d=[]){} public static function activity($a,$u=null,$d=[]){} }

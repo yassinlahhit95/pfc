@@ -105,6 +105,7 @@ $menuFooter = is_array($menuAnclas ?? null) ? $menuAnclas : [];
       <a href="/vistas/legal/aviso-legal.php">Aviso legal</a>
       <a href="/vistas/legal/politica-de-privacidad.php">Política de privacidad</a>
       <a href="/vistas/legal/politica-de-cookies.php">Política de cookies</a>
+      <a href="#" id="cookie-prefs-link">Preferencias de cookies</a>
     </div>
 
   </div>
@@ -127,5 +128,16 @@ $menuFooter = is_array($menuAnclas ?? null) ? $menuAnclas : [];
 </button>
 
 <script src="/landing-system/assets/js/landing.js"></script>
+
+<link rel="stylesheet" href="/public/css/features/cookie-consent.css">
+<script src="/public/js/core/cookie-consent.js"></script>
+<script>
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('#cookie-prefs-link');
+    if (!link) return;
+    e.preventDefault();
+    if (window.CookieConsent) window.CookieConsent.reopen();
+  });
+</script>
 </body>
 </html>

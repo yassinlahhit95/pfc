@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1><i class="fas fa-qrcode"></i> Control de Asistencia</h1>
-        <p class="texto-suave">Genera un PIN de asistencia para que los estudiantes lo introduzcan en sus dispositivos.</p>
+        <p class="subtitulo-encabezado">Genera un PIN de asistencia para que los estudiantes lo introduzcan en sus dispositivos.</p>
     </div>
     <a href="../asistencias/registrar.php" class="boton-secundario"><i class="fas fa-clipboard-check"></i> Registro manual</a>
 </div>

@@ -22,7 +22,7 @@ include_once __DIR__ . '/../comunes/nav.php';
 <div class="cabecera">
     <div>
         <h1>INFORMES Y DOCUMENTOS</h1>
-        <p class="subtitulo">Genera documentos PDF automáticamente desde los datos del sistema</p>
+        <p class="subtitulo-encabezado">Genera documentos PDF automáticamente desde los datos del sistema</p>
     </div>
     <a href="../configuracion/configuracion.php" class="boton-secundario">
         <i class="fas fa-cog"></i> Configurar Cabecera

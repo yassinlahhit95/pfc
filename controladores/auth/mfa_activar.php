@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../include/Security.php';
 require_once __DIR__ . '/../../include/Totp.php';
 require_once __DIR__ . '/../../modelos/directores.php';
+Security::initSession();
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTENTICACIÓN Y VALIDACIÓN

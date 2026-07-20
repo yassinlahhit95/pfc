@@ -5,7 +5,6 @@ if (!$items) return;
 ?>
 <section class="lp-sec lp-galeria-masonry" id="galeria"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
-    
     <div class="lp-sec-cabecera">
       <h2><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h2>
       <?php if (!empty($contenido['subtitulo'])): ?>
@@ -28,10 +27,5 @@ if (!$items) return;
       </figure>
       <?php endforeach; ?>
     </div>
-
   </div>
 </section>
-
-
-
-

@@ -17,7 +17,7 @@ $variante = $contenido['variante'] ?? 'grid';
       <?php foreach ($items as $item):
           $icono = isset($iconosPermitidos[$item['icono'] ?? '']) ? $item['icono'] : 'fa-star'; ?>
       <article class="lp-tarjeta lp-porque-item">
-        <span class="lp-porque-icono"><i class="fas <?= $icono ?>"></i></span>
+        <span class="lp-porque-icono"><i class="fas <?= Security::escapeHtml($icono) ?>"></i></span>
         <h3><?= Security::escapeHtml($item['titulo'] ?? '') ?></h3>
         <?php if (!empty($item['texto'])): ?>
         <p><?= nl2br(Security::escapeHtml($item['texto'])) ?></p>
@@ -28,7 +28,3 @@ $variante = $contenido['variante'] ?? 'grid';
     <?php endif; ?>
   </div>
 </section>
-
-
-
-

@@ -23,7 +23,3 @@ $variante = $contenido['variante'] ?? 'centrado';
     </div>
   </div>
 </section>
-
-
-
-

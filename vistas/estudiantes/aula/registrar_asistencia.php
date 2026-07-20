@@ -57,7 +57,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1><i class="fas fa-qrcode"></i> Registrar Asistencia</h1>
-    <p class="texto-suave">Introduce el PIN mostrado por tu profesor en clase.</p>
+    <p class="subtitulo-encabezado">Introduce el PIN mostrado por tu profesor en clase.</p>
 </div>
 
 <div style="max-width:500px; margin:40px auto; background:var(--surface); padding:32px; border-radius:16px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); text-align:center;">

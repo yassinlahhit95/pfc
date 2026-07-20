@@ -1,7 +1,7 @@
 <?php
-session_start();
 require_once __DIR__ . '/../include/Security.php';
 require_once __DIR__ . '/../include/BotGuard.php';
+Security::initSession();
 
 if (isset($_SESSION['idAdmin']))      { header("Location: admin/inicio/dashboard.php");      exit; }
 if (isset($_SESSION['idProfesor']))   { header("Location: profesores/inicio/dashboard.php");  exit; }

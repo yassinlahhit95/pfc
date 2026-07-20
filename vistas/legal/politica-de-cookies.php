@@ -120,7 +120,11 @@ $hoy = date('d/m/Y');
 
     <section class="legal-section" id="gestion">
         <h2><i class="fas fa-sliders"></i> 5. Gestión y Desactivación de Cookies</h2>
-        <p>Puedes gestionar o eliminar las cookies desde la configuración de tu navegador. Ten en cuenta que deshabilitar las <strong>cookies necesarias</strong> impedirá el funcionamiento correcto de la plataforma y no podrás iniciar sesión.</p>
+        <div class="legal-info-box verde">
+            <i class="fas fa-check-circle"></i>
+            <span>En tu primera visita al sitio público te mostramos un aviso para <strong>aceptar o rechazar</strong> las cookies no esenciales. Tu elección se guarda en tu propio navegador (no se envía a nuestros servidores) y puedes cambiarla en cualquier momento desde el enlace <strong>«Preferencias de cookies»</strong> en el pie de página.</span>
+        </div>
+        <p>Puedes además gestionar o eliminar las cookies desde la configuración de tu navegador. Ten en cuenta que deshabilitar las <strong>cookies necesarias</strong> impedirá el funcionamiento correcto de la plataforma y no podrás iniciar sesión.</p>
 
         <h3>Instrucciones por navegador</h3>
         <ul>

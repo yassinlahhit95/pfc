@@ -38,7 +38,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera" style="display:flex; justify-content:space-between; align-items:flex-end;">
     <div>
         <h1>MIS PAGOS</h1>
-        <p class="subtitulo">Consulta tu historial de pagos y estado financiero</p>
+        <p class="subtitulo-encabezado">Consulta tu historial de pagos y estado financiero</p>
     </div>
     <div class="filtro-curso">
         <form action="" method="GET" style="display:flex; align-items:center; gap:10px;">

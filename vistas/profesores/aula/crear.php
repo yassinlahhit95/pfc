@@ -3,6 +3,10 @@ require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'];
 $modulos = listarModulosDeProfesor($idProfesor);
 $csrfToken = Security::generateCSRFToken();
@@ -14,7 +18,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>CREAR NUEVA SESIÓN VIVA</h1>
-    <p class="texto-suave">Programa una clase en vivo con tus estudiantes</p>
+    <p class="subtitulo-encabezado">Programa una clase en vivo con tus estudiantes</p>
 </div>
 
 <?php if (empty($modulos)) { ?>

@@ -173,16 +173,10 @@ function aplicarFiltrosEstudiantes() {
         var pasaCiclo = textoCiclo === '' || textoCelda.indexOf(textoCiclo) !== -1;
         var pasaAnio = textoAnio === '' || $fila.data('anio') === textoAnio;
 
-        if (pasaNivel && pasaCiclo && pasaAnio) {
-            $fila.removeClass('fila-filtro-oculta');
-        } else {
-            $fila.addClass('fila-filtro-oculta');
-        }
+        $fila.toggleClass('fila-filtro-oculta', !(pasaNivel && pasaCiclo && pasaAnio));
     });
 
-    if (typeof resetearPaginacion === 'function' && _paginaciones && _paginaciones['tablaEstudiantes']) {
-        resetearPaginacion('tablaEstudiantes');
-    }
+    if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaEstudiantes');
 }
 
 iniciarPaginacion('tablaEstudiantes', 15);

@@ -15,8 +15,6 @@ if ($variante === 'split') {
 <section class="<?= Security::escapeHtml($claseSeccion) ?>" id="video_presentacion"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
     <div class="lp-video-pres-inner">
-      
-      <!-- Bloque de contenido/texto -->
       <div class="lp-video-pres-content">
         <?php if (!empty($contenido['eyebrow'])): ?>
         <span class="lp-eyebrow"><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
@@ -43,7 +41,6 @@ if ($variante === 'split') {
         <?php endif; ?>
       </div>
 
-      <!-- Bloque de vídeo -->
       <div class="lp-video-pres-media">
         <div class="lp-video-pres-wrapper">
           <video class="lp-video-pres-player" controls preload="metadata" 
@@ -57,7 +54,3 @@ if ($variante === 'split') {
     </div>
   </div>
 </section>
-
-
-
-

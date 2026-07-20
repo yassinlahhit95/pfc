@@ -39,7 +39,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1><i class="fas fa-inbox"></i> Entregas — <?= Security::escapeHtml($tarea['titulo']) ?></h1>
-        <p class="texto-suave">
+        <p class="subtitulo-encabezado">
             <?= Security::escapeHtml($tarea['nombreModulo']) ?> ·
             <span class="texto-estado <?= $tarea['publicado'] ? 'verde' : 'gris' ?>"><?= $tarea['publicado'] ? 'Publicada' : 'Borrador' ?></span>
         </p>

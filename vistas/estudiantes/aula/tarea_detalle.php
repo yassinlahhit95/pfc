@@ -34,7 +34,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1><?= Security::escapeHtml($tarea['titulo']) ?></h1>
-    <p class="texto-suave"><?= Security::escapeHtml($tarea['nombreModulo']) ?> - Prof. <?= Security::escapeHtml($tarea['nombreProfesor']) ?></p>
+    <p class="subtitulo-encabezado"><?= Security::escapeHtml($tarea['nombreModulo']) ?> - Prof. <?= Security::escapeHtml($tarea['nombreProfesor']) ?></p>
 </div>
 
 <?php if ($exito): ?>

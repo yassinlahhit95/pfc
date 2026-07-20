@@ -28,11 +28,10 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1>GESTIONAR R.A. Y C.E.</h1>
-        <p class="texto-suave">Módulo: <b><?= Security::escapeHtml($modulo['nombreModulo']) ?></b></p>
+        <p class="subtitulo-encabezado">Módulo: <b><?= Security::escapeHtml($modulo['nombreModulo']) ?></b></p>
     </div>
     <div class="acciones-pagina">
         <a href="../modulos/verModulos.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>
-        <a href="agregarRA.php?idModulo=<?= $idModulo ?>" class="boton-primario"><i class="fas fa-plus"></i> NUEVO R.A.</a>
     </div>
 </div>
 
@@ -47,9 +46,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                         <b style="font-size:16px; color:var(--text-main);">RA <?= Security::escapeHtml($ra['codigo']) ?></b> 
                         <span class="texto-suave" style="margin-left:10px;">(<?= $ra['porcentaje'] ?>% de la nota final)</span>
                         <div class="texto-suave" style="font-size:13px; margin-top:4px;"><?= Security::escapeHtml($ra['descripcion']) ?></div>
-                    </div>
-                    <div>
-                        <a href="agregarCE.php?idRA=<?= $ra['idRA'] ?>&idModulo=<?= $idModulo ?>" class="boton-secundario" style="padding:6px 12px; font-size:12px;"><i class="fas fa-plus"></i> Añadir CE</a>
                     </div>
                 </div>
                 

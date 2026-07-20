@@ -40,8 +40,12 @@ class ReportService {
             'default_font'   => 'dejavusans',
         ]);
 
-        $this->mpdf->SetTitle('AulaPro Report');
-        $this->mpdf->SetAuthor('AulaPro System');
+        // Título/autor por defecto — cada generate*() los sobrescribe con el
+        // nombre real del centro en cuanto conoce $cfg (aquí en el constructor
+        // aún no ha llegado), así el visor de PDF nunca muestra "AulaPro Report"
+        // en vez del centro que lo emite.
+        $this->mpdf->SetTitle('Informe');
+        $this->mpdf->SetAuthor('AulaPro');
     }
 
     // ══════════════════════════════════════════════════════════════════════
@@ -49,6 +53,8 @@ class ReportService {
     // ══════════════════════════════════════════════════════════════════════
 
     public function generateBoletines($cfg, $ciclo, $estudiantes, $baseUrl = '') {
+        $this->mpdf->SetTitle('Boletín de calificaciones — ' . ($cfg['nombreCentro'] ?? ''));
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
         $first = true;
         foreach ($estudiantes as $estudiante) {
             if (!$first) $this->mpdf->AddPage();
@@ -64,6 +70,8 @@ class ReportService {
     }
 
     public function generateListado($cfg, $ciclo, $estudiantes) {
+        $this->mpdf->SetTitle('Listado de alumnado — ' . ($cfg['nombreCentro'] ?? ''));
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
         $this->mpdf->AddPage('L');
         ob_start();
         include __DIR__ . '/../templates/pdf/listado.php';
@@ -73,6 +81,8 @@ class ReportService {
     }
 
     public function generateHorario($cfg, $ciclo, $celdas, $franjas, $dias) {
+        $this->mpdf->SetTitle('Horario — ' . ($cfg['nombreCentro'] ?? ''));
+        $this->mpdf->SetAuthor($cfg['nombreCentro'] ?? 'AulaPro');
         // Landscape with extra top margin for the 3-row header (accent + logos + info band)
         $this->mpdf->AddPage('L', '', '', '', '', '', 56, 20, 4, 3);
         ob_start();

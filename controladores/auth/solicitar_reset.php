@@ -2,12 +2,12 @@
 // ══════════════════════════════════════════════════════════════════════
 // DEPENDENCIAS
 // ══════════════════════════════════════════════════════════════════════
-if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/BotGuard.php";
 require_once __DIR__ . "/../../include/Logger.php";
 require_once __DIR__ . "/../../modelos/password_reset.php";
 require_once __DIR__ . "/../../controladores/comunes/email_helper.php";
+Security::initSession();
 require_once __DIR__ . "/../../config/Config.php";
 
 // ══════════════════════════════════════════════════════════════════════

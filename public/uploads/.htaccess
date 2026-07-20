@@ -1,0 +1,45 @@
+# ──────────────────────────────────────────────────────────────
+#  PROTECCIÓN GLOBAL DE /public/uploads (todas las subcarpetas)
+#  Ningún fichero subido por usuarios debe poder ejecutarse jamás.
+# ──────────────────────────────────────────────────────────────
+
+Options -Indexes -ExecCGI
+
+# php_flag (no php_admin_flag: esa directiva no está permitida en .htaccess
+# y provoca un error 500 en Apache con mod_php)
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .phps .pht .cgi .pl .py .asp .aspx .jsp .sh
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .phps .pht
+
+<FilesMatch "(?i)\.(php|phtml|php[0-9]|phps|pht|cgi|pl|py|asp|aspx|jsp|sh|exe|bat|htaccess|svg|svgz|xml|xhtml|xsl|xslt|htc|shtml)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set Content-Security-Policy "default-src 'none'; sandbox"
+</IfModule>
+
+# Block hotlinking of static files from other domains
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_REFERER} !^https://aulapro.yassin.agency/.*$ [NC]
+    RewriteCond %{HTTP_REFERER} !^https?://pfc\.test/.*$ [NC]
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteRule \.(jpg|jpeg|png|gif|pdf|webp)$ - [F,NC]
+</IfModule>

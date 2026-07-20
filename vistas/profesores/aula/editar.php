@@ -4,6 +4,10 @@ require_once __DIR__ . "/../../../modelos/profesores.php";
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'];
 $idSesion = (int)($_GET['id'] ?? 0);
 
@@ -29,7 +33,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>EDITAR SESIÓN VIVA</h1>
-    <p class="texto-suave">Modifica los detalles de tu sesión</p>
+    <p class="subtitulo-encabezado">Modifica los detalles de tu sesión</p>
 </div>
 
 <form method="POST" action="../../../controladores/aula/actualizar_sesion.php" class="formulario-principal">

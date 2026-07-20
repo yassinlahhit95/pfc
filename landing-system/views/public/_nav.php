@@ -26,9 +26,10 @@ $lpEnlaceMenu = function ($info, $ancla) use ($homePrefix) {
     if (!empty($info['separado'])) return '/vistas/contacto.php';
     return $homePrefix . '#' . $ancla;
 };
+$mostrarTopbar = ($ajustes['mostrarTopbar'] ?? 'si') === 'si';
 ?>
 <!-- Barra superior de contacto -->
-<?php if (!empty($cfg['telefonoCentro']) || !empty($cfg['emailCentro']) || $redesValidas): ?>
+<?php if ($mostrarTopbar && (!empty($cfg['telefonoCentro']) || !empty($cfg['emailCentro']) || $redesValidas)): ?>
 <div class="lp-topbar">
   <div class="lp-contenedor lp-topbar-inner">
     <div class="lp-topbar-datos">

@@ -1,0 +1,6 @@
+# Block PHP execution inside uploads — files are static assets only
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes

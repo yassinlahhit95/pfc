@@ -51,6 +51,7 @@ $labels  = [
     'feature_pagos'        => 'Pagos',
     'feature_gastos'       => 'Gastos',
     'feature_informes'     => 'Informes PDF',
+    'feature_fct'          => 'FCT',
 ];
 $label = $labels[$feature] ?? $label;
 

@@ -246,9 +246,3 @@ function checkEstudianteExistente($dni, $email, $idExcluir = 0) {
     $resultado = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resultado) > 0;
 }
-
-function obtenerCursosEscolaresEstudiante($idEstudiante) {
-    require_once __DIR__ . '/configuracion.php';
-    $config = obtenerConfiguracionCentro();
-    return [$config['cursoEscolar'] ?? (date('Y') . '-' . (date('Y') + 1))];
-}

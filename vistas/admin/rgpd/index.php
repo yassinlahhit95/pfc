@@ -21,7 +21,7 @@ require_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
   <div>
     <h1><i class="fas fa-shield-alt"></i> Cumplimiento RGPD</h1>
-    <p class="subtitulo">Portabilidad (Art.&nbsp;20), Supresión (Art.&nbsp;17) y retención de logs</p>
+    <p class="subtitulo-encabezado">Portabilidad (Art.&nbsp;20), Supresión (Art.&nbsp;17) y retención de logs</p>
   </div>
 </div>
 
@@ -49,7 +49,9 @@ require_once __DIR__ . "/../comunes/nav.php";
           </option>
           <?php endforeach; ?>
         </select>
-        <input type="text" id="exportar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('exportar')" autocomplete="off"
+        <input type="text" id="exportar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('exportar')"
+               autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+               data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
       </div>
       <div class="campo" style="align-self:end;">
@@ -82,7 +84,9 @@ require_once __DIR__ . "/../comunes/nav.php";
           </option>
           <?php endforeach; ?>
         </select>
-        <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')" autocomplete="off"
+        <input type="text" id="borrar-buscar" placeholder="Buscar por nombre o DNI…" oninput="filtrarRGPD('borrar')"
+               autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+               data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                style="margin-top:6px;width:100%;padding:6px 10px;border:1px solid var(--border-2);border-radius:7px;font-size:.875rem;background:var(--surface);color:var(--text);">
       </div>
       <div class="campo ancho-total">

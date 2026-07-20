@@ -9,14 +9,9 @@ require_once __DIR__ . "/../../../modelos/pagos.php";
 $secretaria = obtenerSecretariaPorId($_SESSION['idSecretaria']);
 $nombre = $secretaria['nombreSecretaria'] ?? 'Secretaria';
 
-$cacheKeyDash = 'secretaria_dashboard_stats_' . $_SESSION['idSecretaria'];
-if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time']) && (time() - $_SESSION[$cacheKeyDash . '_time'] < 60)) {
-    $stats = $_SESSION[$cacheKeyDash];
-    $totalEstudiantes = $stats['totalEstudiantes'];
-    $admisionesPendientes = $stats['admisionesPendientes'];
-    $mensajesSinLeer = $stats['mensajesSinLeer'];
-    $anunciosActivos = $stats['anunciosActivos'];
-} else {
+require_once __DIR__ . "/../../../include/Cache.php";
+
+$stats = Cache::remember('secretaria_dashboard_stats_' . $_SESSION['idSecretaria'], 60, function () {
     $con = obtenerConexion();
 
     $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM estudiantes");
@@ -30,17 +25,22 @@ if (isset($_SESSION[$cacheKeyDash]) && isset($_SESSION[$cacheKeyDash . '_time'])
 
     $resultado = mysqli_query($con, "SELECT COUNT(*) AS n FROM anuncios WHERE fechaExpiracion >= CURDATE()");
     $anunciosActivos = $resultado ? (int)(mysqli_fetch_assoc($resultado)['n'] ?? 0) : 0;
-    
-    $_SESSION[$cacheKeyDash] = compact('totalEstudiantes', 'admisionesPendientes', 'mensajesSinLeer', 'anunciosActivos');
-    $_SESSION[$cacheKeyDash . '_time'] = time();
-}
+
+    return compact('totalEstudiantes', 'admisionesPendientes', 'mensajesSinLeer', 'anunciosActivos');
+});
+$totalEstudiantes     = $stats['totalEstudiantes'];
+$admisionesPendientes = $stats['admisionesPendientes'];
+$mensajesSinLeer      = $stats['mensajesSinLeer'];
+$anunciosActivos      = $stats['anunciosActivos'];
 
 $eventos = listarEventosProximos();
 $proximosEventos = array_slice($eventos, 0, 5);
 $estudiantesPendientes = listarEstudiantesConPagosPendientes();
 
-$hora = (int)date('H');
-$saludo = $hora < 12 ? 'Buenos días' : ($hora < 19 ? 'Buenas tardes' : 'Buenas noches');
+$con = obtenerConexion(); // reutilizado más abajo para las estadísticas financieras
+
+require_once __DIR__ . "/../../../include/dashboard_helpers.php";
+$saludo = saludoHorario();
 
 $titulo_pagina = 'AulaPro — Secretaría';
 $seccion = 'inicio';

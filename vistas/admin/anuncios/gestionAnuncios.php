@@ -63,12 +63,30 @@ include_once __DIR__ . "/../comunes/nav.php";
 </div>
 
 
+<div class="panel margen-abajo">
+    <div class="formulario">
+        <div class="campo">
+            <label for="filtroAnuncios">BUSCAR</label>
+            <input type="text" id="filtroAnuncios" placeholder="Buscar por título o contenido..."
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+        </div>
+    </div>
+</div>
+
 <div class="panel">
     <div class="titulo-tarjeta">
         <h3>Anuncios Recientes</h3>
     </div>
+    <?php if (empty($todosLosAnuncios)): ?>
+    <div class="panel-vacio">
+        <div class="panel-vacio-icono"><i class="fas fa-bullhorn"></i></div>
+        <div class="panel-vacio-titulo">No hay anuncios publicados</div>
+        <div class="panel-vacio-desc">Crea el primer anuncio para que aparezca aquí.</div>
+    </div>
+    <?php else: ?>
     <div class="contenedor-tabla">
-        <table class="tabla-datos">
+        <table class="tabla-datos" id="tablaAnuncios">
             <thead>
                 <tr>
                     <th>Título</th>
@@ -78,11 +96,6 @@ include_once __DIR__ . "/../comunes/nav.php";
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($todosLosAnuncios)) { ?>
-                    <tr>
-                        <td colspan="4" class="vacio">No hay anuncios publicados</td>
-                    </tr>
-                <?php } else { ?>
                     <?php foreach ($todosLosAnuncios as $anuncio) { ?>
                         <tr>
                             <td><b><?= Security::escapeHtml($anuncio['tituloAnuncio']) ?></b></td>
@@ -107,10 +120,16 @@ include_once __DIR__ . "/../comunes/nav.php";
                             </td>
                         </tr>
                     <?php } ?>
-                <?php } ?>
             </tbody>
         </table>
     </div>
+    <?php endif; ?>
 </div>
 
-<?php include '../comunes/footer.php'; ?>
+<?php include __DIR__ . '/../comunes/footer.php'; ?>
+<script>
+iniciarPaginacion('tablaAnuncios', 15);
+document.getElementById('filtroAnuncios').addEventListener('input', function () {
+    filtrarTabla('filtroAnuncios', 'tablaAnuncios');
+});
+</script>

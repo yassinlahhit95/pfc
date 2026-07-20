@@ -102,7 +102,7 @@
         });
     });
 
-    // ── PASO 4: períodos ──
+    // ── PASO 3: períodos ──
     $('#aw-form-periodo').on('submit', function (e) {
         e.preventDefault();
         var datos = { visible: 0, bloqueado: 0 };
@@ -121,7 +121,7 @@
         });
     });
 
-    // ── PASO 5: tipos de evaluación ──
+    // ── PASO 4: tipos de evaluación ──
     $('#aw-form-tipo').on('submit', function (e) {
         e.preventDefault();
         var datos = { obligatorio: 0, recuperable: 0, incluirEnMedia: 0 };
@@ -140,7 +140,7 @@
         });
     });
 
-    // ── PASOS 6-9: formularios de una sola fila (checkboxes -> 0/1 explícito) ──
+    // ── PASOS 5-8: formularios de una sola fila (checkboxes -> 0/1 explícito) ──
     function enviarFormularioSimple(selector, accion, camposCheckbox) {
         $(selector).on('submit', function (e) {
             e.preventDefault();
@@ -157,7 +157,7 @@
     enviarFormularioSimple('#aw-form-tfg', 'guardar_tfg', ['habilitado', 'requiereComite', 'requiereDefensa', 'permiteRecuperacion']);
     enviarFormularioSimple('#aw-form-retos', 'guardar_retos', ['permiteGrupal', 'permiteFases', 'requiereRubrica', 'evaluacionPares']);
 
-    // ── PASO 10: plantillas ──
+    // ── PASO 9: plantillas ──
     $(document).on('click', '.aw-aplicar-plantilla', function () {
         var nombre = prompt('Nombre para la nueva configuración creada a partir de esta plantilla:');
         if (!nombre) return;

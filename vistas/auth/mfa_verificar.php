@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../include/Security.php';
+Security::initSession();
 
 if (empty($_SESSION['mfa_pending']['id'])) {
     header('Location: ../login.php');

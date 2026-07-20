@@ -32,6 +32,7 @@ function obtenerConfiguracionCentro() {
         'feature_ra_ce'           => 0,
         'feature_fp_dual'         => 0,
         'feature_landing'         => 1,
+        'feature_fct'             => 1,
         'prematricula_filtrar_niveles' => 0,
     ];
 }
@@ -69,7 +70,7 @@ function actualizarFeatureToggle($feature, $estado) {
         'feature_anuncios', 'feature_eventos', 'feature_retos', 'feature_mensajes',
         'feature_pagos', 'feature_gastos', 'feature_informes', 'feature_horario',
         'feature_geoblock_admin', 'feature_ra_ce', 'feature_fp_dual', 'feature_landing',
-        'feature_academico_config',
+        'feature_academico_config', 'feature_fct',
         'prematricula_filtrar_niveles'
     ];
     if (!in_array($feature, $featuresValidas)) return 'Funcionalidad no reconocida.';

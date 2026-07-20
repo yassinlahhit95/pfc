@@ -124,11 +124,14 @@ Para un nuevo tema `moderna`, crea `temas/tema-moderna.css`.
 
 ```css
 :root {
-    --lp-acento:      /* Color de acento personalizado por el admin */
-    --lp-primario:    /* Color principal del tema */
-    --lp-texto:       /* Color de texto principal */
-    --lp-fondo:       /* Color de fondo */
-    --lp-superficie:  /* Fondo de tarjetas/paneles */
+    --lp-acento:        /* Color de acento personalizado por el admin */
+    --lp-acento-2:      /* Variante del acento (degradados) */
+    --lp-acento-suave:  /* Acento muy tenue, para fondos */
+    --lp-texto:         /* Color de texto principal */
+    --lp-texto-suave:   /* Color de texto secundario/atenuado */
+    --lp-fondo:         /* Color de fondo principal */
+    --lp-fondo-alt:     /* Fondo alterno (franjas pares) */
+    --lp-borde:         /* Color de bordes */
 }
 ```
 

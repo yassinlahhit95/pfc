@@ -52,7 +52,11 @@ $hoja = $ss->getActiveSheet();
 $hoja->setTitle('Resultados Finales');
 
 // ── Fila de cabeceras ──
-$cabeceras = ['Estudiante', 'Media Módulos (75%)', 'Media Retos (25%)', 'Nota TFG', 'Nota Final', 'Estado'];
+// El "(75%/25%)" solo es cierto con la fórmula heredada; con el motor
+// configurable (feature_academico_config) los pesos los define cada centro.
+$sufijoModulos = motorAcademicoActivo() ? '' : ' (75%)';
+$sufijoRetos   = motorAcademicoActivo() ? '' : ' (25%)';
+$cabeceras = ['Estudiante', 'Media Módulos' . $sufijoModulos, 'Media Retos' . $sufijoRetos, 'Nota TFG', 'Nota Final', 'Estado'];
 $col = 'A';
 foreach ($cabeceras as $cab) {
     $hoja->setCellValue($col . '1', $cab);

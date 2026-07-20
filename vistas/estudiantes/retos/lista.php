@@ -31,7 +31,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>MIS RETOS</h1>
-    <p class="subtitulo">Retos asignados a tu ciclo: <?= Security::escapeHtml($nombreCiclo) ?></p>
+    <p class="subtitulo-encabezado">Retos asignados a tu ciclo: <?= Security::escapeHtml($nombreCiclo) ?></p>
 </div>
 
 

@@ -22,7 +22,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1>MI PERFIL</h1>
-        <p class="subtitulo">Informacion de tu cuenta de estudiante</p>
+        <p class="subtitulo-encabezado">Informacion de tu cuenta de estudiante</p>
     </div>
     <div class="acciones-pagina">
         <a href="editar.php" class="boton-primario">

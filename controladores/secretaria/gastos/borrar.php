@@ -17,6 +17,7 @@ if (!Security::validateCSRFToken(null, false)) {
 
 if (isset($_POST['idGasto'])) {
     $idGasto = (int)$_POST['idGasto'];
+    if ($idGasto > 0 && borrarGasto($idGasto)) {
         require_once __DIR__ . '/../../../modelos/log.php';
         registrarAccionSecretaria('borrar', 'gastos', $idGasto, "");
         $ok  = true;

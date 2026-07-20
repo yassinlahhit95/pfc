@@ -1,7 +1,7 @@
 <?php
 // CTA / Banner secundario (ancho completo, fino)
 ?>
-<section class="lp-cta-secundario" id="cta_secundario_<?= $idSec ?? uniqid() ?>"<?= $styleInline ?? '' ?>>
+<section class="lp-cta-secundario" id="cta_secundario_<?= uniqid() ?>"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor lp-cta-sec-inner">
     <div class="lp-cta-sec-texto">
       <strong><i class="fas fa-bullhorn"></i> <?= Security::escapeHtml($contenido['titulo'] ?? '') ?></strong>
@@ -13,7 +13,3 @@
     <?php endif; ?>
   </div>
 </section>
-
-
-
-

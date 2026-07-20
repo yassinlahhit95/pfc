@@ -3,6 +3,10 @@ require_once __DIR__ . "/../../../include/ProfesorGuard.php";
 
 require_once __DIR__ . "/../../../modelos/profesores.php";
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 $idProfesor = $_SESSION['idProfesor'];
 $profesor = obtenerProfesorPorId($idProfesor);
 
@@ -14,7 +18,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1>MI PERFIL</h1>
-        <p class="subtitulo">Informacion de tu cuenta de profesor</p>
+        <p class="subtitulo-encabezado">Informacion de tu cuenta de profesor</p>
     </div>
     <div class="acciones-pagina">
         <a href="editar.php" class="boton-primario">

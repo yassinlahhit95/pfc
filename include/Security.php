@@ -477,13 +477,4 @@ class Security {
     }
 }
 
-if (!function_exists('jsonResponse')) {
-    function jsonResponse(array $data): void {
-        if (ob_get_level() > 0) ob_clean();
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
-    }
-}
-
 Security::initSession();

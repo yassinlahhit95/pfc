@@ -70,6 +70,7 @@ include_once __DIR__ . '/../comunes/nav.php';
             ['key' => 'feature_geoblock_admin','icon' => 'fa-globe-europe','color' => '#dc2626', 'label' => 'Geo-Block (España)','desc' => 'Bloquea el panel admin al extranjero'],
             ['key' => 'feature_ra_ce',        'icon' => 'fa-star-half-stroke','color' => '#f59e0b', 'label' => 'Eval. LOMLOE (RA/CE)','desc' => 'Sistema avanzado de calificación por Resultados de Aprendizaje'],
             ['key' => 'feature_fp_dual',      'icon' => 'fa-building',      'color' => '#10b981', 'label' => 'FP Dual / Empresas','desc' => 'Gestión de prácticas y estancias en centros de trabajo'],
+            ['key' => 'feature_fct',          'icon' => 'fa-briefcase',     'color' => '#0891b2', 'label' => 'FCT',               'desc' => 'Alta y seguimiento de la Formación en Centros de Trabajo'],
             ['key' => 'feature_landing',      'icon' => 'fa-globe',         'color' => '#0ea5e9', 'label' => 'Página Web Pública','desc' => 'Landing personalizable del centro con plantillas'],
         ];
         foreach ($features as $feat):

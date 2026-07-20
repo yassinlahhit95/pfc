@@ -77,6 +77,24 @@ agregarColumna($con, 'configuracion_centro', 'feature_ra_ce',   "TINYINT(1) DEFA
 agregarColumna($con, 'configuracion_centro', 'feature_fp_dual', "TINYINT(1) DEFAULT 0");
 agregarColumna($con, 'configuracion_centro', 'feature_landing', "TINYINT(1) NOT NULL DEFAULT 1 AFTER `feature_fp_dual`");
 
+// Estas columnas ya existen en instalaciones antiguas (venían en el dump base,
+// noDeploy/database.sql) pero nunca se registraron aquí — una instancia nueva
+// creada solo a partir de migrate_db.php se quedaría sin ellas y los toggles
+// del panel de configuración fallarían al hacer UPDATE sobre una columna inexistente.
+agregarColumna($con, 'configuracion_centro', 'feature_prematricula',   "TINYINT(1) NOT NULL DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_chat',           "TINYINT(1) NOT NULL DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_inventario',     "TINYINT(1) NOT NULL DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_subida_tfg',     "TINYINT(1) NOT NULL DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_horario',        "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_anuncios',       "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_eventos',        "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_retos',          "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_mensajes',       "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_pagos',          "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_gastos',         "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_informes',       "TINYINT(1) DEFAULT 1");
+agregarColumna($con, 'configuracion_centro', 'feature_geoblock_admin', "TINYINT(1) NOT NULL DEFAULT 1");
+
 // ══════════════════════════════════════════════════════════════════════
 // 2. Módulos transversales
 // ══════════════════════════════════════════════════════════════════════
@@ -407,7 +425,7 @@ crearTabla($con, 'grading_policies', "CREATE TABLE IF NOT EXISTS grading_policie
     escalaMin DECIMAL(4,2) NOT NULL DEFAULT 0.00,
     escalaMax DECIMAL(4,2) NOT NULL DEFAULT 10.00,
     notaAprobado DECIMAL(4,2) NOT NULL DEFAULT 5.00,
-    decimales TINYINT NOT NULL DEFAULT 2,
+    decimales TINYINT NOT NULL DEFAULT 0, -- normativa de FP española: nota final del módulo en entero (1-10)
     pesoTfgEnMedia DECIMAL(6,2) NOT NULL DEFAULT 1.00 COMMENT 'peso del TFG frente a 1 módulo en la media global',
     FOREIGN KEY (idConfig) REFERENCES academic_config(idConfig) ON DELETE CASCADE,
     UNIQUE KEY uk_gp_config (idConfig)
@@ -435,12 +453,50 @@ crearTabla($con, 'internship_config', "CREATE TABLE IF NOT EXISTS internship_con
     UNIQUE KEY uk_ic_config (idConfig)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
-// La tabla `fct` ya existe (creada fuera de este migrador) con nota/apto/fase,
-// pero enlaza la empresa solo por texto libre. Se añade idEmpresa como FK
-// opcional hacia fp_empresas sin tocar la columna `empresa` existente, para no
-// romper filas ya guardadas.
+// La tabla `fct` existía en instalaciones antiguas (creada fuera de este
+// migrador) pero nunca se registró aquí — una instancia nueva se quedaría
+// sin ella. crearTabla() con IF NOT EXISTS es un no-op en las que ya la
+// tienen; agregarColumna()/agregarIndice() de abajo cubren la que sí la
+// tenían pero sin idEmpresa todavía.
+crearTabla($con, 'fct', "CREATE TABLE IF NOT EXISTS fct (
+    idFCT INT AUTO_INCREMENT PRIMARY KEY,
+    idEstudiante INT NOT NULL,
+    idCiclo INT NOT NULL,
+    empresa VARCHAR(200) NOT NULL,
+    idEmpresa INT NULL,
+    tutorEmpresa VARCHAR(150) NULL,
+    emailTutorEmpresa VARCHAR(150) NULL,
+    telefonoEmpresa VARCHAR(20) NULL,
+    ciudadEmpresa VARCHAR(100) NULL,
+    fechaInicio DATE NULL,
+    fechaFin DATE NULL,
+    horasTotales INT NULL,
+    horasRealizadas INT NULL,
+    nota DECIMAL(4,2) NULL,
+    apto TINYINT(1) NULL,
+    observaciones TEXT NULL,
+    idProfesorTutor INT NULL,
+    fase INT NOT NULL DEFAULT 1,
+    creado_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_fct_est_ciclo_fase (idEstudiante, idCiclo, fase),
+    KEY idx_fct_ciclo (idCiclo),
+    KEY idx_fct_profesor (idProfesorTutor),
+    KEY idx_fct_empresa (idEmpresa),
+    FOREIGN KEY (idCiclo) REFERENCES ciclos(idCiclo) ON DELETE CASCADE,
+    FOREIGN KEY (idEstudiante) REFERENCES estudiantes(idEstudiante) ON DELETE CASCADE,
+    FOREIGN KEY (idProfesorTutor) REFERENCES profesores(idProfesor) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// La tabla `fct` de instalaciones antiguas enlazaba la empresa solo por texto
+// libre. Se añade idEmpresa como FK opcional hacia fp_empresas sin tocar la
+// columna `empresa` existente, para no romper filas ya guardadas.
 agregarColumna($con, 'fct', 'idEmpresa', "INT NULL AFTER `empresa`");
 agregarIndice($con, 'fct', 'idx_fct_empresa', '`idEmpresa`');
+
+// Feature flag: gestión de FCT (alta de prácticas + seguimiento). Activada
+// por defecto porque la FCT es obligatoria por normativa para poder titular
+// en ambos grados — no es un módulo "opcional" como chat/inventario.
+agregarColumna($con, 'configuracion_centro', 'feature_fct', "TINYINT(1) NOT NULL DEFAULT 1");
 
 crearTabla($con, 'tfg_config', "CREATE TABLE IF NOT EXISTS tfg_config (
     idConfigTFG INT AUTO_INCREMENT PRIMARY KEY,
@@ -618,6 +674,48 @@ if (!$yaHayPlantillas) {
 } else {
     echo "[ya aplicado] ya existen plantillas académicas\n";
 }
+
+// ══════════════════════════════════════════════════════════════════════
+// 13. Catálogo público de ciclos con ficha propia (landing). Independiente
+//     de la tabla académica `ciclos` (gestión de alumnos/notas/profesores):
+//     esta es contenido de marketing gestionado desde admin/secretaría,
+//     igual que blog_posts. La sección "Oferta formativa" del constructor
+//     sigue funcionando igual; sus tarjetas pueden enlazar opcionalmente
+//     a una ficha de este catálogo (campo cicloSlug).
+// ══════════════════════════════════════════════════════════════════════
+crearTabla($con, 'landing_ciclos', "CREATE TABLE IF NOT EXISTS landing_ciclos (
+    idLandingCiclo INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(150) NOT NULL,
+    slug VARCHAR(180) NOT NULL UNIQUE,
+    etiqueta VARCHAR(60) NOT NULL DEFAULT '',
+    resumen VARCHAR(300) NOT NULL DEFAULT '',
+    descripcion MEDIUMTEXT NULL,
+    imagen VARCHAR(255) NOT NULL DEFAULT '',
+    precio VARCHAR(60) NOT NULL DEFAULT '',
+    duracion VARCHAR(60) NOT NULL DEFAULT '',
+    modalidad VARCHAR(60) NOT NULL DEFAULT '',
+    publicado TINYINT(1) NOT NULL DEFAULT 0,
+    destacado TINYINT(1) NOT NULL DEFAULT 0,
+    orden INT NOT NULL DEFAULT 0,
+    creadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizadoEn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_publicado (publicado, orden)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// ══════════════════════════════════════════════════════════════════════
+// 14. grading_policies.decimales: la nota final de un módulo de FP se
+//     expresa en entero (1-10) en la normativa de evaluación española —
+//     ver sección 12. Las filas nuevas ya nacen con DEFAULT 0; esto
+//     corrige el DEFAULT de instalaciones ya creadas y las filas que
+//     nadie ha tocado todavía (siguen en el valor de fábrica antiguo, 2).
+// ══════════════════════════════════════════════════════════════════════
+if (mysqli_query($con, "ALTER TABLE grading_policies MODIFY decimales TINYINT NOT NULL DEFAULT 0")) {
+    echo "[OK]         grading_policies.decimales: DEFAULT -> 0\n";
+} else {
+    echo "[ERROR]      grading_policies.decimales: " . mysqli_error($con) . "\n";
+}
+mysqli_query($con, "UPDATE grading_policies SET decimales = 0 WHERE decimales = 2");
+echo "[OK]         grading_policies: " . mysqli_affected_rows($con) . " fila(s) sin personalizar reseteadas a 0 decimales\n";
 
 // ══════════════════════════════════════════════════════════════════════
 // FIN — invalidar caché de feature flags para ver los cambios al momento

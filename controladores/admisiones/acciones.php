@@ -7,6 +7,7 @@ require_once __DIR__ . "/../../include/Security.php";
 require_once __DIR__ . "/../../include/RateLimiter.php";
 require_once __DIR__ . "/../../modelos/admisiones.php";
 require_once __DIR__ . "/../../modelos/ciclos.php";
+require_once __DIR__ . "/../../modelos/configuracion.php";
 require_once __DIR__ . "/../../include/ImageOptimizer.php";
 
 // ══════════════════════════════════════════════════════════════════════
@@ -144,7 +145,7 @@ switch ($action) {
                 'parentescoTutor' => $tutorData['parentesco']
             ];
 
-            $pdfPath = generarPDFAceptacion($pdfData);
+            $pdfPath = generarPDFAceptacion($pdfData, obtenerConfiguracionCentro());
             if ($pdfPath) {
                 registrarArchivoPreMatricula($id, 'DOCUMENTO_ACEPTACION', 'Formulario_Aceptacion.pdf', $pdfPath);
             }

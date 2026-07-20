@@ -7,8 +7,14 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 // ══════════════════════════════════════════════════════════════════════
 // GENERACIÓN DE PDF
 // ══════════════════════════════════════════════════════════════════════
-function generarPDFAceptacion($datos) {
+// $cfg = fila de obtenerConfiguracionCentro() — el documento debe llevar el
+// nombre del centro, no el del software (antes decía literalmente "AulaPro"
+// en el título, la cabecera y el pie, sin recibir siquiera la configuración
+// del centro para poder mostrar el nombre real).
+function generarPDFAceptacion($datos, array $cfg) {
     try {
+        $nombreCentro = $cfg['nombreCentro'] ?? 'el centro';
+
         $mpdf = new \Mpdf\Mpdf([
             'margin_left'   => 20,
             'margin_right'  => 20,
@@ -18,16 +24,15 @@ function generarPDFAceptacion($datos) {
             'margin_footer' => 10,
         ]);
 
-        $mpdf->SetTitle("Formulario de Aceptación - AulaPro");
-        $mpdf->SetAuthor("AulaPro Sistema Académico");
+        $mpdf->SetTitle("Formulario de Aceptación - " . $nombreCentro);
+        $mpdf->SetAuthor($nombreCentro);
 
         // ── Cabecera y pie de página ──
         $header = '
         <table width="100%" style="border-bottom: 1px solid #000000; vertical-align: bottom; font-family: serif; font-size: 9pt; color: #000088;">
             <tr>
-                <td width="33%"><span style="font-weight: bold; font-size: 14pt;">AulaPro</span></td>
-                <td width="33%" align="center"></td>
-                <td width="33%" style="text-align: right;"><span style="font-weight: bold;">DOCUMENTO OFICIAL</span></td>
+                <td width="60%"><span style="font-weight: bold; font-size: 14pt;">' . htmlspecialchars($nombreCentro) . '</span></td>
+                <td width="40%" style="text-align: right;"><span style="font-weight: bold;">DOCUMENTO OFICIAL</span></td>
             </tr>
         </table>';
 
@@ -36,7 +41,7 @@ function generarPDFAceptacion($datos) {
             <tr>
                 <td width="33%"><span style="font-weight: bold; font-style: italic;">{DATE j-m-Y}</span></td>
                 <td width="33%" align="center" style="font-weight: bold; font-style: italic;">Página {PAGENO}/{nbpg}</td>
-                <td width="33%" style="text-align: right; ">AulaPro v2.0</td>
+                <td width="33%" style="text-align: right; ">' . htmlspecialchars($nombreCentro) . '</td>
             </tr>
         </table>';
 
@@ -83,7 +88,7 @@ function generarPDFAceptacion($datos) {
             <li>El solicitante (y su tutor legal en caso de minoría de edad) se compromete a respetar las normas de convivencia y el reglamento interno del centro.</li>
             <li>Se acepta que los datos facilitados sean tratados con fines exclusivamente educativos y administrativos, conforme al RGPD.</li>
             <li>El solicitante declara que toda la información aportada es veraz y se compromete a entregar la documentación física necesaria en el plazo establecido por el centro.</li>
-            <li>En caso de admisión, el solicitante recibirá las credenciales de acceso al portal AulaPro a través del correo electrónico facilitado.</li>
+            <li>En caso de admisión, el solicitante recibirá las credenciales de acceso al portal del centro a través del correo electrónico facilitado.</li>
         </ol>
 
         <div class="legal-text">
@@ -102,7 +107,7 @@ function generarPDFAceptacion($datos) {
         </table>
 
         <div style="margin-top: 30px; text-align: center; font-size: 9px; color: #999;">
-            Documento generado digitalmente por AulaPro. Identificador: ' . md5($datos['dni'] . time()) . '
+            Documento generado digitalmente por ' . htmlspecialchars($nombreCentro) . '. Identificador: ' . md5($datos['dni'] . time()) . '
         </div>
         ';
 

@@ -2,6 +2,10 @@
 require_once __DIR__ . "/../../../include/EstudianteGuard.php";
 $idEstudiante = $_SESSION['idEstudiante'] ?? '';
 
+$exito   = $_SESSION['exito']   ?? '';
+$errores = $_SESSION['errores'] ?? null;
+unset($_SESSION['exito'], $_SESSION['errores']);
+
 require_once __DIR__ . "/../../../modelos/aula.php";
 require_once __DIR__ . "/../../../modelos/modulos.php";
 require_once __DIR__ . "/../../../modelos/estudiantes.php";
@@ -23,7 +27,7 @@ if ($idModulo < 1) {
     <div class="cabecera">
       <div>
         <h1><i class="fas fa-folder-open"></i> RECURSOS EDUCATIVOS</h1>
-        <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">Consulta los materiales de tus módulos</p>
+        <p class="subtitulo-encabezado">Consulta los materiales de tus módulos</p>
       </div>
       <a href="favoritos.php" class="boton-secundario"><i class="fas fa-star"></i> Favoritos</a>
     </div>
@@ -87,7 +91,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
   <div>
     <h1><i class="fas fa-folder-open"></i> <?= Security::escapeHtml(mb_strtoupper($modulo['nombreModulo'], 'UTF-8')) ?></h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">Materiales del módulo</p>
+    <p class="subtitulo-encabezado">Materiales del módulo</p>
   </div>
   <a href="favoritos.php" class="boton-secundario"><i class="fas fa-star"></i> Favoritos</a>
 </div>

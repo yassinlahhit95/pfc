@@ -99,10 +99,12 @@ switch ($accion) {
 
     case 'guardar_calificacion':
         if (!$idConfig) { echo json_encode(['ok' => false, 'msg' => 'Falta la configuración.']); break; }
+        // Escala 0-10, aprobado=5 y nota final entera (0 decimales) no son
+        // configurables desde el formulario — los fija la normativa de FP
+        // española (ver vistas/admin/academico/configuracionAcademica.php).
         $ok = actualizarPoliticaCalificacion(
             $idConfig,
-            (float)($_POST['escalaMin'] ?? 0), (float)($_POST['escalaMax'] ?? 10),
-            (float)($_POST['notaAprobado'] ?? 5), (int)($_POST['decimales'] ?? 2),
+            0, 10, 5, 0,
             (float)($_POST['pesoTfgEnMedia'] ?? 1)
         ) && actualizarReglasPromocion(
             $idConfig,

@@ -207,6 +207,11 @@ function _nav_active_sec($check) {
         <span class="nav-label">Blog</span>
         <?php if (_nav_active_sec('blog') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <a href="../ofertaCiclos/gestion.php" class="nav-item<?= _nav_active_sec('ofertaCiclos') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+        <span class="nav-label">Catálogo de ciclos</span>
+        <?php if (_nav_active_sec('ofertaCiclos') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
       <?php endif; ?>
 
     </nav>
@@ -260,18 +265,6 @@ function _nav_active_sec($check) {
         </button>
       </div>
     </header>
-
-    <?php
-    $mesActual = date('m');
-    if ($mesActual === '06') {
-        $diasRestantes = 30 - (int)date('d');
-        if ($diasRestantes >= 0) {
-            echo '<div style="background-color: var(--rojo-suave, #fee2e2); color: var(--rojo); padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid var(--rojo-borde, #fecaca);">';
-            echo '<i class="fas fa-clock"></i> ¡Atención! Quedan ' . $diasRestantes . ' días para el fin del periodo de pagos (30 de junio).';
-            echo '</div>';
-        }
-    }
-    ?>
 
     <?php // Las vistas de secretaría definen $seccion (no $seccionActual)
     if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):

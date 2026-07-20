@@ -144,6 +144,10 @@ include_once __DIR__ . '/../comunes/nav.php';
                     <span>Descripción SEO</span>
                     <textarea name="descripcionSeo" rows="2" maxlength="300" placeholder="Descripción que aparece en Google"><?= Security::escapeHtml($ajustes['descripcionSeo'] ?? '') ?></textarea>
                 </label>
+                <label class="lb-campo lb-campo-check">
+                    <input type="checkbox" name="mostrarTopbar" value="si" <?= ($ajustes['mostrarTopbar'] ?? 'si') === 'si' ? 'checked' : '' ?>>
+                    <span>Mostrar barra superior de contacto (teléfono, email, redes)</span>
+                </label>
                 <details class="lb-redes">
                     <summary>Redes sociales</summary>
                     <?php foreach (['facebook' => 'Facebook', 'instagram' => 'Instagram', 'twitter' => 'X / Twitter', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube', 'tiktok' => 'TikTok'] as $red => $nombreRed): ?>

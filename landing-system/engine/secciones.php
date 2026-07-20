@@ -76,17 +76,19 @@ function landing_tipos(): array {
             'menu'   => null,
             'campos' => [
                 'variante'   => ['tipo' => 'select',   'etiqueta' => 'Estilo',
-                                 'opciones' => ['fondo' => 'Imagen de fondo', 'split' => 'Texto + imagen', 'minimal' => 'Minimalista']],
+                                 'opciones' => ['fondo' => 'Imagen de fondo', 'split' => 'Texto + imagen', 'minimal' => 'Minimalista', 'promo' => 'Campaña con cinta promocional']],
                 'eyebrow'    => ['tipo' => 'text',     'etiqueta' => 'Texto superior (pequeño)', 'max' => 80],
                 'titulo'     => ['tipo' => 'text',     'etiqueta' => 'Título', 'max' => 120, 'requerido' => true],
                 'subtitulo'  => ['tipo' => 'textarea', 'etiqueta' => 'Subtítulo', 'max' => 300],
-                'imagen'     => ['tipo' => 'imagen',   'etiqueta' => 'Imagen (lateral para split)'],
+                'imagen'     => ['tipo' => 'imagen',   'etiqueta' => 'Imagen (lateral para split/campaña)'],
                 'videoFondo' => ['tipo' => 'video',    'etiqueta' => 'Vídeo de fondo (MP4, opcional)'],
                 'fondoParallax'=>['tipo' => 'imagen',  'etiqueta' => 'Imagen de fondo Parallax (si no hay vídeo)'],
                 'botonTexto' => ['tipo' => 'text',     'etiqueta' => 'Texto del botón principal', 'max' => 40],
                 'botonUrl'   => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón principal', 'max' => 255],
                 'boton2Texto'=> ['tipo' => 'text',     'etiqueta' => 'Texto del botón secundario', 'max' => 40],
                 'boton2Url'  => ['tipo' => 'url',      'etiqueta' => 'Enlace del botón secundario', 'max' => 255],
+                'promoTexto' => ['tipo' => 'text',     'etiqueta' => 'Cinta promocional (solo estilo «Campaña»; ej: financiación, descuento)', 'max' => 140],
+                'promoUrl'   => ['tipo' => 'url',      'etiqueta' => 'Enlace de la cinta promocional (opcional)', 'max' => 255],
             ],
             'defecto' => [
                 'variante' => 'fondo', 'eyebrow' => 'Formación Profesional',
@@ -94,6 +96,7 @@ function landing_tipos(): array {
                 'subtitulo' => 'Formación Profesional oficial con prácticas en empresas líderes del sector.',
                 'imagen' => '', 'videoFondo' => '', 'fondoParallax' => '', 'botonTexto' => 'Ver ciclos', 'botonUrl' => '#oferta_formativa',
                 'boton2Texto' => 'Contacto', 'boton2Url' => '#contacto',
+                'promoTexto' => '', 'promoUrl' => '',
             ],
         ],
 
@@ -225,6 +228,7 @@ function landing_tipos(): array {
                     'texto'   => ['tipo' => 'textarea', 'etiqueta' => 'Descripción', 'max' => 300],
                     'precio'  => ['tipo' => 'text',     'etiqueta' => 'Precio (ej: 1.200 € /curso, o vacío para ocultarlo)', 'max' => 60],
                     'botonUrl'=> ['tipo' => 'url',      'etiqueta' => 'Enlace del botón (opcional, si no se rellena usa el general)', 'max' => 255],
+                    'cicloSlug'=>['tipo' => 'text',     'etiqueta' => 'Enlazar a ficha del catálogo de ciclos (slug, opcional — si se rellena, tiene prioridad sobre el enlace del botón)', 'max' => 180],
                 ]],
             ],
             'defecto' => [
@@ -288,7 +292,7 @@ function landing_tipos(): array {
             'menu'   => null,
             'campos' => [
                 'variante' => ['tipo' => 'select',   'etiqueta' => 'Estilo',
-                               'opciones' => ['horizontal' => 'Lista horizontal', 'tarjetas' => 'Tarjetas', 'minimalista' => 'Minimalista', 'circular' => 'Estilo circular']],
+                               'opciones' => ['horizontal' => 'Lista horizontal', 'tarjetas' => 'Tarjetas', 'minimalista' => 'Minimalista']],
                 'items' => ['tipo' => 'lista', 'etiqueta' => 'Cifras', 'max' => 4, 'subcampos' => [
                     'numero'   => ['tipo' => 'text', 'etiqueta' => 'Número', 'max' => 10, 'requerido' => true],
                     'sufijo'   => ['tipo' => 'text', 'etiqueta' => 'Sufijo (%, +, …)', 'max' => 5],

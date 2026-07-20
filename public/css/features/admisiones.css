@@ -263,11 +263,6 @@
 }
 input[type="file"].file-input { display: none; }
 
-/* File status texts */
-.status-loading { color: #0ea5e9; font-size: .82rem; font-weight: 500; }
-.status-ok      { color: #16a34a; font-size: .82rem; font-weight: 600; }
-.status-err     { color: #dc2626; font-size: .82rem; font-weight: 600; }
-
 /* Bootstrap compat aliases (used in admisiones.js) */
 .text-info    { color: #0ea5e9; font-size: .82rem; }
 .text-success { color: #16a34a; font-size: .82rem; font-weight: 600; }

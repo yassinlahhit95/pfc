@@ -34,7 +34,3 @@ $items  = $contenido['items'] ?? [];
     <?php endif; ?>
   </div>
 </section>
-
-
-
-

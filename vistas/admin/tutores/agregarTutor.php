@@ -96,7 +96,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
 
         <div class="campo" style="margin-bottom:10px;">
-            <input type="text" id="buscarEstudiante" placeholder="Buscar por nombre…" oninput="filtrarEstudiantes()" autocomplete="off"
+            <input type="text" id="buscarEstudiante" placeholder="Buscar por nombre…" oninput="filtrarEstudiantes()"
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other"
                    style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-1);color:var(--text-1);">
         </div>
 

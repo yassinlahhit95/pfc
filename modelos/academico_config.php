@@ -23,6 +23,15 @@ function obtenerConfigAcademicaActiva(): ?array {
     return dbFetchOne("SELECT * FROM academic_config WHERE activo = 1 ORDER BY idConfig DESC LIMIT 1");
 }
 
+// Una configuración concreta por id, sea o no la activa — necesaria en
+// cualquier sitio que opere sobre "la configuración que se está editando"
+// (p.ej. exportarConfigComoArray()), que puede no coincidir con la activa:
+// el asistente permite tener varias configuraciones guardadas y solo
+// activar una.
+function obtenerConfigAcademicaPorId(int $idConfig): ?array {
+    return dbFetchOne("SELECT * FROM academic_config WHERE idConfig = ?", "i", $idConfig);
+}
+
 function obtenerPoliticaCalificacion(int $idConfig): ?array {
     return dbFetchOne("SELECT * FROM grading_policies WHERE idConfig = ?", "i", $idConfig);
 }
@@ -216,7 +225,7 @@ function actualizarConfigRetos(int $idConfig, float $pesoDefecto, bool $permiteG
     return mysqli_stmt_execute($stmt);
 }
 
-// ── Períodos académicos: alta/edición/baja individual (STEP 4) ──
+// ── Períodos académicos: alta/edición/baja individual (STEP 3) ──
 function guardarPeriodoAcademico(int $idConfig, ?int $idPeriodo, string $nombre, string $tipo, ?string $fechaInicio, ?string $fechaFin, int $orden, bool $visible, bool $bloqueado, ?int $idPeriodoRecuperaDe): int|false {
     $con = obtenerConexion();
     $vis = (int)$visible; $bloq = (int)$bloqueado;
@@ -242,7 +251,7 @@ function eliminarPeriodoAcademico(int $idConfig, int $idPeriodo): bool {
     return mysqli_stmt_execute($stmt);
 }
 
-// ── Tipos de evaluación: alta/edición/baja individual (STEP 5) ──
+// ── Tipos de evaluación: alta/edición/baja individual (STEP 4) ──
 function guardarTipoEvaluacion(int $idConfig, ?int $idTipo, string $nombre, float $notaMaxima, float $peso, bool $obligatorio, bool $recuperable, bool $incluirEnMedia, string $origen, int $orden): int|false {
     $con = obtenerConexion();
     $obl = (int)$obligatorio; $rec = (int)$recuperable; $inc = (int)$incluirEnMedia;

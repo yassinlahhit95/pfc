@@ -46,7 +46,7 @@ $estadoColor = match($resultados['estado_global']) {
 <div class="cabecera">
   <div>
     <h1><?= Security::escapeHtml($estudiante['nombreEstudiante']) ?></h1>
-    <p style="color:var(--dim);margin:2px 0 0"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?><?php if (!empty($estudiante['curso'])): ?> &mdash; <?= Security::escapeHtml($estudiante['curso']) ?><?php endif; ?></p>
+    <p class="subtitulo-encabezado"><?= Security::escapeHtml($estudiante['nombreCiclo']) ?><?php if (!empty($estudiante['curso'])): ?> &mdash; <?= Security::escapeHtml($estudiante['curso']) ?><?php endif; ?></p>
   </div>
   <a href="../inicio/dashboard.php" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>

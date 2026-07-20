@@ -121,14 +121,6 @@ function _nav_active_admin($check) {
         <?php if (_nav_active_admin('modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
 
-      <?php if (FeatureGuard::check('feature_ra_ce')): ?>
-      <a href="../modulos/verModulos.php" class="nav-item<?= _nav_active_admin('ra_ce') ?>">
-        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
-        <span class="nav-label">Eval. RA/CE</span>
-        <?php if (_nav_active_admin('ra_ce') !== '') { ?><span class="nav-rail"></span><?php } ?>
-      </a>
-      <?php endif; ?>
-
       <?php if (FeatureGuard::check('feature_fp_dual')): ?>
       <a href="../fp_dual/verEmpresas.php" class="nav-item<?= _nav_active_admin('fp_dual') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span>
@@ -170,6 +162,14 @@ function _nav_active_admin($check) {
         <span class="nav-label">Resultados Finales</span>
         <?php if (_nav_active_admin('resultados_modulos') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+
+      <?php if (FeatureGuard::check('feature_fct')): ?>
+      <a href="../fct/lista.php" class="nav-item<?= _nav_active_admin('fct') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+        <span class="nav-label">FCT</span>
+        <?php if (_nav_active_admin('fct') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php endif; ?>
 
       <a href="../academico/configuracionAcademica.php" class="nav-item<?= _nav_active_admin('configuracion_academica') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
@@ -331,6 +331,11 @@ function _nav_active_admin($check) {
         <span class="nav-label">Blog</span>
         <?php if (_nav_active_admin('blog') !== '') { ?><span class="nav-rail"></span><?php } ?>
       </a>
+      <a href="../ofertaCiclos/gestion.php" class="nav-item<?= _nav_active_admin('ofertaCiclos') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+        <span class="nav-label">Catálogo de ciclos</span>
+        <?php if (_nav_active_admin('ofertaCiclos') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
       <?php endif; ?>
 
       <a href="../configuracion/configuracion.php" class="nav-item<?= _nav_active_admin('configuracion') ?>">
@@ -430,18 +435,6 @@ function _nav_active_admin($check) {
       </div>
     </header>
 
-    <?php
-    $mesActual = date('m');
-    if ($mesActual === '06') {
-        $diasRestantes = 30 - (int)date('d');
-        if ($diasRestantes >= 0) {
-            echo '<div style="background-color: var(--rojo-suave, #fee2e2); color: var(--rojo); padding: 12px 16px; text-align: center; font-weight: 600; border-bottom: 1px solid var(--rojo-borde, #fecaca);">';
-            echo '<i class="fas fa-clock"></i> ¡Atención! Quedan ' . $diasRestantes . ' días para el fin del periodo de pagos (30 de junio).';
-            echo '</div>';
-        }
-    }
-    ?>
-
     <?php if (FeatureGuard::check('feature_chat') && ($seccion ?? '') !== 'chat'):
         $cw_rol = 'admin';
         $cw_id = (int)$_SESSION['idAdmin'];
@@ -452,10 +445,6 @@ function _nav_active_admin($check) {
     <div class="content">
       <?php
       // SaaS platform message banner — shown on every admin page
-      if (!isset($FeatureGuardLoaded)) {
-          @include_once __DIR__ . '/../../../include/FeatureGuard.php';
-          $FeatureGuardLoaded = true;
-      }
       if (class_exists('FeatureGuard')) {
           if (FeatureGuard::isSuspended()) {
               $mensajeSuspension = FeatureGuard::getSuspensionMessage() ?: 'Esta instancia ha sido suspendida por la plataforma SaaS. Contacta con el proveedor.';

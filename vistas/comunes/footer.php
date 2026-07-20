@@ -51,6 +51,7 @@ $(document).ajaxError(function(event, xhr) {
 <script src="../../../public/js/core/modal-borrar.js"></script>
 <script src="../../../public/js/core/modal-confirm.js"></script>
 <script src="../../../public/js/core/toast.js"></script>
+<script src="../../../public/js/core/upload-overlay.js"></script>
 <?php
 $__err = $errores ?? null;
 $__ok  = $exito  ?? '';

@@ -32,7 +32,3 @@ $variante = $contenido['variante'] ?? 'grid';
     <?php endif; ?>
   </div>
 </section>
-
-
-
-

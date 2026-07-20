@@ -89,7 +89,9 @@ include_once __DIR__ . "/../comunes/nav.php";
         </div>
         <div class="horario-buscador">
             <i class="fas fa-magnifying-glass"></i>
-            <input type="search" id="horarioBuscar" class="horario-buscar-input" placeholder="Buscar módulo o profesor..." autocomplete="off">
+            <input type="search" id="horarioBuscar" class="horario-buscar-input" placeholder="Buscar módulo o profesor..."
+                   autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   data-lpignore="true" data-1p-ignore="true" data-form-type="other">
         </div>
         <div class="horario-lista-tarjetas" id="horarioTarjetas">
             <?php if (empty($asignaciones)) { ?>

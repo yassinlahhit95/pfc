@@ -7,6 +7,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\SvgWriter;
 
+Security::initSession();
+
 if (empty($_SESSION['idAdmin'])) {
     header('Location: ../login.php');
     exit;

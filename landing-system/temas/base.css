@@ -267,16 +267,17 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;
 }
 .lp-nav-movil-close {
-  width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid var(--lp-borde);
-  background: none; color: var(--lp-texto); cursor: pointer;
+  width: 36px; height: 36px; border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--lp-nav-texto) 22%, transparent);
+  background: none; color: var(--lp-nav-texto); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background .2s;
 }
-.lp-nav-movil-close:hover { background: var(--lp-acento-suave); border-color: var(--lp-acento); }
+.lp-nav-movil-close:hover { background: var(--lp-acento-suave); border-color: var(--lp-acento); color: var(--lp-acento); }
 
 .lp-nav-movil-links { flex: 1; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
 .lp-nav-movil-links a {
-  color: var(--lp-texto); text-decoration: none; font-weight: 600; font-size: 15.5px;
+  color: var(--lp-nav-texto); text-decoration: none; font-weight: 600; font-size: 15.5px;
   padding: 13px 16px; border-radius: 12px;
   display: flex; align-items: center; gap: 12px;
   transition: background .18s, color .18s;
@@ -293,7 +294,8 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 .lp-nav-movil-redes a {
   width: 40px; height: 40px; border-radius: 11px;
-  border: 1.5px solid var(--lp-borde); color: var(--lp-texto-suave);
+  border: 1.5px solid color-mix(in srgb, var(--lp-nav-texto) 20%, transparent);
+  color: color-mix(in srgb, var(--lp-nav-texto) 75%, transparent);
   display: inline-flex; align-items: center; justify-content: center;
   text-decoration: none; font-size: 15px;
   transition: border-color .18s ease, color .18s ease, background .18s ease;
@@ -407,6 +409,40 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   position: relative; border-radius: var(--lp-radio); width: 100%; object-fit: cover;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 1;
   border: 1px solid rgba(255, 255, 255, .8);
+}
+
+/* variante promo: cinta de campaña + foto real, layout limpio sin blobs
+   decorativos (inspirado en heroes tipo "centro de FP a distancia": ribbon de
+   urgencia/financiación arriba, texto+CTA único a la izquierda, foto a la derecha). */
+.lp-hero-ribbon {
+  position: relative; z-index: 2;
+  background: linear-gradient(90deg, var(--lp-acento), var(--lp-acento-2));
+  color: #fff; text-align: center;
+  padding: 12px 20px; font-size: 14px; font-weight: 700;
+}
+.lp-hero-ribbon a, .lp-hero-ribbon span {
+  display: inline-flex; align-items: center; gap: 8px; color: inherit; text-decoration: none;
+}
+.lp-hero-ribbon a:hover { text-decoration: underline; }
+.lp-hero-promo {
+  background: var(--lp-fondo);
+  padding: 0 0 100px !important;
+}
+.lp-hero-promo::before, .lp-hero-promo::after { display: none; }
+.lp-hero-promo .lp-hero-inner { grid-template-columns: 1.1fr 0.9fr; gap: 48px; padding-top: 88px; }
+.lp-hero-promo .lp-hero-texto h1 { color: var(--lp-texto); }
+.lp-hero-promo .lp-hero-texto .lp-eyebrow {
+  color: var(--lp-acento); background: var(--lp-acento-suave);
+  border-color: color-mix(in srgb, var(--lp-acento) 20%, transparent);
+}
+.lp-hero-promo .lp-hero-sub { color: var(--lp-texto-suave); }
+.lp-hero-promo .lp-boton-borde { border-color: var(--lp-borde); color: var(--lp-texto); background: var(--lp-fondo); }
+.lp-hero-promo .lp-boton-borde:hover { border-color: var(--lp-acento); color: var(--lp-acento); background: var(--lp-fondo); }
+.lp-hero-promo .lp-hero-visual::before,
+.lp-hero-promo .lp-hero-visual::after { display: none; }
+.lp-hero-promo .lp-hero-visual img { box-shadow: var(--lp-sombra-hover); border: none; }
+@media (max-width: 900px) {
+  .lp-hero-promo .lp-hero-inner { padding-top: 56px; }
 }
 
 /* variante minimal: centrado, sin imagen */
@@ -587,7 +623,7 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* ── Cifras ──────────────────────────────────────────────────────────── */
 .lp-cifras {
-  position: relative; overflow: hidden; padding: 72px 0;
+  position: relative; overflow: hidden; padding: clamp(56px, 8vw, 96px) 0;
   background: radial-gradient(900px 400px at 80% 120%, color-mix(in srgb, var(--lp-acento) 45%, #0b1220), #0b1220) !important;
 }
 .lp-cifras::after {
@@ -1056,8 +1092,16 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* ── Animación de aparición ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
-  .lp-anim { opacity: 0; transform: translateY(22px); transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1); }
-  .lp-anim.visto { opacity: 1; transform: none; }
+  .lp-anim {
+    opacity: 0; transform: translateY(22px);
+    transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1),
+                box-shadow .22s ease, border-color .22s ease;
+  }
+  /* :not(:hover) (via low-specificity match) keeps this rule from fighting a
+     card's own :hover transform once revealed — equal-specificity + later
+     source order would otherwise permanently cancel the hover lift. */
+  .lp-anim.visto { opacity: 1; }
+  .lp-anim.visto:not(:hover) { transform: none; }
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
@@ -1083,6 +1127,7 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   /* Sections that go single column */
   .lp-hero { padding: 80px 0 72px; }
   .lp-hero-split .lp-hero-inner,
+  .lp-hero-promo .lp-hero-inner,
   .lp-fpdual-inner,
   .lp-prematricula-caja,
   .lp-contacto-grid { grid-template-columns: 1fr; }
@@ -1131,7 +1176,7 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   .lp-nav-movil { padding-top: 16px; }
 }
 
-/* -- Variantes adicionales a�adidas ------------------------------ */
+/* -- Variantes adicionales añadidas ------------------------------ */
 /* FAQ Grid */
 .lp-faq-grid .lp-faq-lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
 .lp-faq-grid .lp-faq-inner { max-width: 1000px; }
@@ -1211,7 +1256,7 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   margin-right: 0.5rem;
 }
 
-/* -- Galer�a Masonry ------------------------------------------------------- */
+/* -- Galería Masonry ------------------------------------------------------- */
 .lp-galeria {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1319,6 +1364,21 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 .lp-blog-leer i { transition: transform .2s ease; font-size: 12px; }
 .lp-blog-card:hover .lp-blog-leer i { transform: translateX(4px); }
+
+/* ── Catálogo de ciclos (vistas/ciclos.php) — reutiliza .lp-blog-* ──────
+   Estructuralmente es la misma pareja lista+ficha que el blog; solo se
+   añaden estos modificadores para insignias de duración/modalidad/precio. */
+.lp-ciclo-badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
+.lp-ciclo-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13.5px; font-weight: 700; color: var(--lp-texto-suave);
+  background: var(--lp-fondo); border: 1.5px solid var(--lp-borde);
+  padding: 7px 14px; border-radius: 999px;
+}
+.lp-ciclo-badge i { color: var(--lp-acento); }
+.lp-ciclo-badge-precio { color: var(--lp-acento); border-color: color-mix(in srgb, var(--lp-acento) 30%, var(--lp-borde)); }
+.lp-ciclo-precio-tarjeta { font-size: 15px; font-weight: 800; color: var(--lp-acento); margin: 2px 0 6px; }
+.lp-ciclo-card .lp-blog-meta i { color: var(--lp-acento); }
 
 /* Entrada destacada (primera del listado): tarjeta horizontal a lo ancho */
 @media (min-width: 900px) {

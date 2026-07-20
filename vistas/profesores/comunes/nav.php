@@ -175,6 +175,14 @@ function _nav_active_prof($check) {
       </a>
       <?php } ?>
 
+      <?php if (FeatureGuard::check('feature_fct')) { ?>
+      <a href="../fct/lista.php" class="nav-item<?= _nav_active_prof('fct') ?>">
+        <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+        <span class="nav-label">FCT</span>
+        <?php if (_nav_active_prof('fct') !== '') { ?><span class="nav-rail"></span><?php } ?>
+      </a>
+      <?php } ?>
+
       <a href="../academico/resultadosFinales.php" class="nav-item<?= _nav_active_prof('resultados_finales') ?>">
         <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-11 11-2-2"/></svg></span>
         <span class="nav-label">Resultados Finales</span>
@@ -350,13 +358,13 @@ function _nav_active_prof($check) {
         <div id="firebase-user-data" 
              data-user-id="<?= Security::escapeHtml($_SESSION['idProfesor']) ?>" 
              data-user-role="profesor" 
-             data-api-key="<?= $configFB->get('FIREBASE_API_KEY') ?>"
-             data-auth-domain="<?= $configFB->get('FIREBASE_AUTH_DOMAIN') ?>"
-             data-project-id="<?= $configFB->get('FIREBASE_PROJECT_ID') ?>"
-             data-messaging-sender-id="<?= $configFB->get('FIREBASE_MESSAGING_SENDER_ID') ?>"
-             data-app-id="<?= $configFB->get('FIREBASE_APP_ID') ?>"
-             data-database-url="<?= $configFB->get('FIREBASE_DATABASE_URL') ?>"
-             data-vapid-key="<?= $configFB->get('FIREBASE_VAPID_KEY') ?>"
+             data-api-key="<?= Security::escapeHtml($configFB->get('FIREBASE_API_KEY')) ?>"
+             data-auth-domain="<?= Security::escapeHtml($configFB->get('FIREBASE_AUTH_DOMAIN')) ?>"
+             data-project-id="<?= Security::escapeHtml($configFB->get('FIREBASE_PROJECT_ID')) ?>"
+             data-messaging-sender-id="<?= Security::escapeHtml($configFB->get('FIREBASE_MESSAGING_SENDER_ID')) ?>"
+             data-app-id="<?= Security::escapeHtml($configFB->get('FIREBASE_APP_ID')) ?>"
+             data-database-url="<?= Security::escapeHtml($configFB->get('FIREBASE_DATABASE_URL')) ?>"
+             data-vapid-key="<?= Security::escapeHtml($configFB->get('FIREBASE_VAPID_KEY')) ?>"
              class="oculto"></div>
         <script type="module">
             import { setupFirebase } from '../../../public/js/firebase/firebase.js';

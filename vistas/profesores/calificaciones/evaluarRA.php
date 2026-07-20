@@ -28,7 +28,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="cabecera">
     <div>
         <h1>EVALUAR RESULTADOS DE APRENDIZAJE</h1>
-        <p class="texto-suave">Módulo: <b><?= Security::escapeHtml($modulo['nombreModulo']) ?></b></p>
+        <p class="subtitulo-encabezado">Módulo: <b><?= Security::escapeHtml($modulo['nombreModulo']) ?></b></p>
     </div>
     <div class="acciones-pagina">
         <a href="lista.php?idModulo=<?= $idModulo ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> VOLVER</a>

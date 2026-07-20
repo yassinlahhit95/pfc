@@ -118,32 +118,20 @@ include_once __DIR__ . "/../comunes/nav.php";
 iniciarPaginacion('tablaEstudiantesProf', 15);
 
 function aplicarFiltrosProf() {
-    let inputCiclo = document.getElementById("selectFiltroCicloProf").value.toUpperCase();
-    let inputAnio = document.getElementById("selectFiltroAnioProf").value.toUpperCase();
+    var inputCiclo = $('#selectFiltroCicloProf').val().toUpperCase();
+    var inputAnio = $('#selectFiltroAnioProf').val().toUpperCase();
 
-    let table = document.getElementById("tablaEstudiantesProf");
-    let tr = table.getElementsByTagName("tr");
+    $('#tablaEstudiantesProf tbody tr').each(function() {
+        var $fila = $(this);
+        if ($fila.find('.vacio').length > 0) return;
 
-    let rowsMostrados = 0;
+        var txtCiclo = $fila.find('td').eq(5).text().toUpperCase();
+        var txtAnio = $fila.find('td').eq(4).text().toUpperCase();
+        var matchCiclo = inputCiclo === '' || txtCiclo.indexOf(inputCiclo) !== -1;
+        var matchAnio = inputAnio === '' || txtAnio.indexOf(inputAnio) !== -1;
 
-    for (let i = 1; i < tr.length; i++) {
-        let tdCiclo = tr[i].getElementsByTagName("td")[5]; // Index 5 is Ciclo now
-        let tdAnio = tr[i].getElementsByTagName("td")[4];  // Index 4 is Año now
-        if (tdCiclo && tdAnio) {
-            let txtCiclo = tdCiclo.textContent || tdCiclo.innerText;
-            let txtAnio = tdAnio.textContent || tdAnio.innerText;
-
-            let matchCiclo = (inputCiclo === "" || txtCiclo.toUpperCase().indexOf(inputCiclo) > -1);
-            let matchAnio = (inputAnio === "" || txtAnio.toUpperCase().indexOf(inputAnio) > -1);
-
-            if (matchCiclo && matchAnio) {
-                tr[i].style.display = "";
-                rowsMostrados++;
-            } else {
-                tr[i].style.display = "none";
-            }
-        }
-    }
+        $fila.toggleClass('fila-filtro-oculta', !(matchCiclo && matchAnio));
+    });
 
     if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaEstudiantesProf');
 }

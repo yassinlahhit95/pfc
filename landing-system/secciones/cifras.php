@@ -16,7 +16,3 @@ if (!$items) return;
     <?php endforeach; ?>
   </div>
 </section>
-
-
-
-

@@ -1,0 +1,48 @@
+# ──────────────────────────────────────────────────────────────
+#  AISLAMIENTO DE LA CARPETA DE SUBIDAS (defensa en profundidad)
+#  Aunque la validación de subida ya bloquea ficheros peligrosos,
+#  aquí impedimos por completo que se EJECUTE cualquier script.
+# ──────────────────────────────────────────────────────────────
+
+# No listar el contenido
+Options -Indexes -ExecCGI
+
+# Apache + mod_php: apagar el motor PHP en esta carpeta
+<IfModule mod_php.c>
+    php_admin_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_admin_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_admin_flag engine off
+</IfModule>
+
+# Quitar cualquier handler/tipo que ejecute código (cubre PHP-FPM, CGI, etc.)
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .phps .pht .cgi .pl .py .asp .aspx .jsp .sh
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .phps .pht
+
+# Denegar el acceso directo a cualquier ejecutable conocido
+<FilesMatch "(?i)\.(php|phtml|php[0-9]|phps|pht|cgi|pl|py|asp|aspx|jsp|sh|exe|bat|htaccess|svg|svgz|xml|xhtml|xsl|xslt|htc|shtml)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Forzar descarga / impedir interpretación de los ficheros servidos
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set Content-Security-Policy "default-src 'none'; sandbox"
+</IfModule>
+
+# Bloquear hotlinking de las imágenes/PDF legítimos (referer)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_REFERER} !^https://aulapro.yassin.agency/.*$ [NC]
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteRule \.(jpg|jpeg|png|gif|pdf)$ - [F,NC]
+</IfModule>

@@ -79,14 +79,9 @@ $tituloDelPagina = 'AulaPro — Panel de Control';
 $seccionActual   = 'inicio';
 include_once __DIR__ . "/../comunes/nav.php";
 
-// Spanish date
-$dias   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-$meses  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-$eyebrow = $dias[date('w')] . ', ' . date('j') . ' de ' . $meses[date('n')-1];
-
-// Time-aware greeting
-$hora   = (int)date('H');
-$saludo = $hora < 12 ? 'Buenos días' : ($hora < 19 ? 'Buenas tardes' : 'Buenas noches');
+require_once __DIR__ . "/../../../include/dashboard_helpers.php";
+$eyebrow = fechaLegibleHoy();
+$saludo  = saludoHorario();
 $nombreEst = $estudianteActual['nombreEstudiante'] ?? '';
 $nombreCiclo = $estudianteActual['nombreCiclo'] ?? '';
 

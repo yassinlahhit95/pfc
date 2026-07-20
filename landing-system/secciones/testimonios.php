@@ -7,7 +7,6 @@ $sliderId = 'testimonials-' . uniqid();
 ?>
 <section class="lp-sec lp-testimonios lp-testimonios-<?= Security::escapeHtml($variante) ?>" id="testimonios"<?= $styleInline ?? '' ?>>
   <div class="lp-contenedor">
-    
     <div class="lp-sec-cabecera lp-testimonios-cabecera">
       <div>
         <span class="lp-eyebrow">Opiniones reales</span>
@@ -59,7 +58,6 @@ $sliderId = 'testimonials-' . uniqid();
         <?php endforeach; ?>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -98,7 +96,3 @@ $sliderId = 'testimonials-' . uniqid();
   updateButtons();
 })();
 </script>
-
-
-
-

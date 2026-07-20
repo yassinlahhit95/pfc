@@ -27,7 +27,7 @@ function exportarConfigComoArray(int $idConfig): array {
     $tipos = listarTiposEvaluacion($idConfig);
 
     return [
-        'config' => obtenerConfigAcademicaActiva(), // solo se usa nombre/tipoEducacion al aplicar
+        'config' => obtenerConfigAcademicaPorId($idConfig), // solo se usa tipoEducacion al aplicar
         'grading_policy' => obtenerPoliticaCalificacion($idConfig),
         'promotion_rule' => obtenerReglasPromocion($idConfig),
         'periods' => $periodos,

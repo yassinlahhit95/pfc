@@ -29,7 +29,7 @@ $ciclosJson = json_encode(array_map(fn($ciclo) => [
 <div class="cabecera">
     <div>
         <h1>INFORMES Y DOCUMENTOS</h1>
-        <p class="subtitulo">Genera documentos PDF automáticamente desde los datos del sistema</p>
+        <p class="subtitulo-encabezado">Genera documentos PDF automáticamente desde los datos del sistema</p>
     </div>
 </div>
 

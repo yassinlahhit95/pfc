@@ -125,6 +125,7 @@ $features = [
     'feature_ra_ce'        => ['Eval. LOMLOE',     'fa-star-half-stroke','#f59e0b'],
     'feature_fp_dual'      => ['FP Dual',          'fa-building',      '#10b981'],
     'feature_landing'      => ['Página Web Pública','fa-globe',         '#0ea5e9'],
+    'feature_fct'          => ['FCT',              'fa-briefcase',     '#0891b2'],
 ];
 
 // License expiry — use subscription expiry from token (sub_exp), fall back to token expiry
@@ -154,7 +155,7 @@ $expLabel = $subExpTs ? 'Suscripción válida hasta' : 'Token válido hasta';
 
 <div class="cabecera">
   <h1>Estado de la Plataforma SaaS</h1>
-  <p class="texto-suave">Vista de solo lectura — controlada por la plataforma central.</p>
+  <p class="subtitulo-encabezado">Vista de solo lectura — controlada por la plataforma central.</p>
 </div>
 
 <style>

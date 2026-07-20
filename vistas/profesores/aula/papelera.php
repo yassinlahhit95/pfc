@@ -47,7 +47,7 @@ function botonesPapelera($tipo, $id, $idModulo) {
 <div class="cabecera">
   <div>
     <h1><i class="fas fa-trash-can"></i> PAPELERA</h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;"><?= Security::escapeHtml($modulo['nombreModulo']) ?> · los elementos se borran automáticamente a los 30 días</p>
+    <p class="subtitulo-encabezado"><?= Security::escapeHtml($modulo['nombreModulo']) ?> · los elementos se borran automáticamente a los 30 días</p>
   </div>
   <a href="recursos.php?id=<?= Security::escapeHtml($idModulo) ?>" class="boton-secundario"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>

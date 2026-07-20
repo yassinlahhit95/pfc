@@ -95,7 +95,8 @@ if ($secciones && reemplazarBorradorLanding($slug, $secciones)) {
     // El color de acento de la plantilla pasa a los ajustes
     $cfg = obtenerLandingConfig();
     $ajustes = json_decode($cfg['ajustes'] ?? '', true) ?: [];
-    $ajustes['colorAcento'] = $plantilla['colorAcento'];
+    $ajustes['colorAcento']   = $plantilla['colorAcento'];
+    $ajustes['mostrarTopbar'] = 'no';
     guardarAjustesLanding($slug, json_encode($ajustes, JSON_UNESCAPED_UNICODE));
     
     // Publicar la landing

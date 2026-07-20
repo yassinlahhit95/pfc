@@ -15,7 +15,7 @@ if (empty($_SESSION['idProfesor'])) {
         echo json_encode(['ok' => false, 'msg' => 'Sesión expirada. Por favor recarga la página.']);
         exit;
     }
-    require __DIR__ . '/../vistas/error.php';
+    header('Location: /vistas/login.php');
     exit;
 }
 

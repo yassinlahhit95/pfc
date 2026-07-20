@@ -43,7 +43,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 
 <div class="cabecera">
     <h1>RESULTADOS FINALES DE MIS ALUMNOS</h1>
-    <p class="subtitulo">Nota definitiva por módulo (mejor de convocatoria ordinaria y extraordinaria)</p>
+    <p class="subtitulo-encabezado">Nota definitiva por módulo (mejor de convocatoria ordinaria y extraordinaria)</p>
 </div>
 
 <div class="panel">
@@ -194,23 +194,14 @@ $(function() { if (typeof iniciarPaginacion === 'function') iniciarPaginacion('t
 
 function filtrarResultadosPorCurso() {
     var curso = document.getElementById('filtroCursoEstudiante').value;
-    var filas = document.querySelectorAll('.fila-curso');
-    filas.forEach(function(fila) {
+    document.querySelectorAll('.fila-curso').forEach(function(fila) {
         var optCurso = fila.getAttribute('data-curso');
-        if (curso === '' || optCurso === curso) {
-            fila.style.display = '';
-        } else {
-            fila.style.display = 'none';
-        }
+        fila.classList.toggle('fila-filtro-oculta', !(curso === '' || optCurso === curso));
     });
-    var detalles = document.querySelectorAll('.fila-curso-detalle');
-    detalles.forEach(function(det) {
+    document.querySelectorAll('.fila-curso-detalle').forEach(function(det) {
         var optCurso = det.getAttribute('data-curso');
-        if (curso === '' || optCurso === curso) {
-            det.style.display = '';
-        } else {
-            det.style.display = 'none';
-        }
+        det.style.display = (curso === '' || optCurso === curso) ? '' : 'none';
     });
+    if (typeof resetearPaginacion === 'function') resetearPaginacion('tablaResultados');
 }
 </script>

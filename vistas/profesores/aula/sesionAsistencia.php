@@ -40,7 +40,7 @@ include_once __DIR__ . "/../comunes/nav.php";
 <div class="header-modern">
   <div>
     <h1 class="header-titulo"><?= Security::escapeHtml($sesion['titulo']) ?></h1>
-    <p class="texto-suave" style="margin-top:4px;font-size:0.85rem;">
+    <p class="subtitulo-encabezado">
       <i class="fas fa-calendar"></i> <?= Security::escapeHtml(date('d/m/Y H:i', strtotime($sesion['fechaSesion'] . ' ' . $sesion['horaSesion']))) ?>
       · <i class="fas fa-users"></i> <?= Security::escapeHtml(count($asistencias)) ?> asistentes
     </p>
