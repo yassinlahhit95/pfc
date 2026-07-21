@@ -85,3 +85,12 @@ html:not([data-theme="dark"]) .tema-institucional {
   background: radial-gradient(900px 400px at 80% 120%,
               color-mix(in srgb, var(--lp-acento) 55%, #091634), #091634) !important;
 }
+
+/* -- MODERNIZATION: Soft Shadows & Contrast -- */
+.tema-institucional {
+  --lp-sombra: 0 10px 40px -10px rgba(0,0,0,0.06);
+  --lp-sombra-hover: 0 20px 50px -15px rgba(0,0,0,0.1);
+}
+.tema-institucional h1, .tema-institucional h2, .tema-institucional h3 {
+  font-weight: 800;
+}

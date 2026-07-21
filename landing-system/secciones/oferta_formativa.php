@@ -38,7 +38,7 @@ $enlaceDefecto  = $prematriculaOn ? '/vistas/admisiones/pre-matricula.php' : '#c
         <?php endif; ?>
         <div class="lp-ciclo-cuerpo">
           <?php if (!empty($item['etiqueta'])): ?>
-          <span class="lp-ciclo-nivel"><?= Security::escapeHtml($item['etiqueta']) ?></span>
+          <span class="lp-badge lp-ciclo-nivel"><?= Security::escapeHtml($item['etiqueta']) ?></span>
           <?php endif; ?>
           <h3><?= Security::escapeHtml($item['titulo'] ?? '') ?></h3>
           <?php if (!empty($item['texto'])): ?>

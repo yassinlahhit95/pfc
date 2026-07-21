@@ -5,7 +5,7 @@ $logoUrl = '';
 if (!empty($cfg['logoCentro'])) {
     $logoFichero = basename($cfg['logoCentro']);
     if (file_exists(__DIR__ . '/../../public/uploads/configuracion/' . $logoFichero)) {
-        $logoUrl = '/public/uploads/configuracion/' . $logoFichero;
+        $logoUrl = 'public/uploads/configuracion/' . $logoFichero;
     }
 }
 $prematriculaOn = FeatureGuard::check('feature_prematricula');
@@ -17,7 +17,7 @@ $prematriculaOn = FeatureGuard::check('feature_prematricula');
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= Security::escapeHtml($cfg['nombreCentro']) ?></title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
+<link rel="icon" href="public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -59,9 +59,9 @@ $prematriculaOn = FeatureGuard::check('feature_prematricula');
       <?php endif; ?>
     </div>
     <div class="botones">
-      <a class="boton boton-primario" href="/vistas/login.php">Acceso a la plataforma</a>
+      <a class="boton boton-primario" href="vistas/login.php">Acceso a la plataforma</a>
       <?php if ($prematriculaOn): ?>
-      <a class="boton boton-borde" href="/vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
+      <a class="boton boton-borde" href="vistas/admisiones/pre-matricula.php">Pre-matrícula</a>
       <?php endif; ?>
     </div>
   </div>

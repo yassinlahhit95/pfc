@@ -52,14 +52,14 @@ $titulo_pagina = "AULAPRO | CONSTRUCTOR DE LA WEB";
 $seccion       = 'landing';
 include_once __DIR__ . '/../comunes/nav.php';
 ?>
-<link rel="stylesheet" href="/public/css/features/landing-builder.css">
+<link rel="stylesheet" href="../../../public/css/features/landing-builder.css">
 
 <div class="cabecera">
     <h1><i class="fas fa-globe"></i> Página web pública</h1>
     <div class="acciones-pagina">
         <span class="texto-estado <?= $estadoClase ?>" id="lb-estado"><?= Security::escapeHtml($estadoTexto) ?></span>
         <a href="plantillas.php" class="boton-secundario"><i class="fas fa-palette"></i> Plantillas</a>
-        <a href="/" target="_blank" rel="noopener" class="boton-secundario"><i class="fas fa-arrow-up-right-from-square"></i> Ver web</a>
+        <a href="../../../" target="_blank" rel="noopener" class="boton-secundario"><i class="fas fa-arrow-up-right-from-square"></i> Ver web</a>
         <button type="button" class="boton-secundario" id="lb-descartar" <?= empty($landingCfg['publicadoEn']) ? 'disabled' : '' ?>>
             <i class="fas fa-rotate-left"></i> Descartar cambios
         </button>
@@ -235,4 +235,4 @@ include_once __DIR__ . '/../comunes/nav.php';
 window.LANDING_TIPOS     = <?= json_encode($tipos, JSON_UNESCAPED_UNICODE) ?>;
 window.LANDING_SECCIONES = <?= json_encode($seccionesJs, JSON_UNESCAPED_UNICODE) ?>;
 </script>
-<script src="/public/js/features/landing-builder.js"></script>
+<script src="../../../public/js/features/landing-builder.js"></script>

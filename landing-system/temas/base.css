@@ -196,8 +196,8 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 /* Desktop links */
 .lp-nav-links { display: flex; gap: 2px; margin-left: auto; }
 .lp-nav-links a {
-  color: var(--lp-nav-texto); text-decoration: none; font-size: 14px; font-weight: 600;
-  padding: 9px 14px; border-radius: 10px; opacity: .75;
+    color: var(--lp-nav-texto); text-decoration: none; font-size: 14px; font-weight: 600; white-space: nowrap;
+    padding: 9px 14px; border-radius: 10px; opacity: .75;
   transition: opacity .18s, background .18s, color .18s;
   position: relative;
 }
@@ -975,6 +975,8 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 
 /* .lp-cifras */
 .lp-cifras.lp-variante-tarjetas .lp-cifra { background: var(--lp-fondo); padding: 32px 24px; border-radius: var(--lp-radio); box-shadow: var(--lp-sombra); }
+.lp-cifras.lp-variante-tarjetas .lp-cifra-numero { color: var(--lp-texto); }
+.lp-cifras.lp-variante-tarjetas .lp-cifra-etiqueta { color: var(--lp-texto-suave); }
 .lp-cifras.lp-variante-minimalista { background: transparent !important; color: var(--lp-texto); border: none; }
 .lp-cifras.lp-variante-minimalista .lp-cifra-numero { color: var(--lp-acento); font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 300; }
 
@@ -1164,8 +1166,8 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
 }
 
 /* Mobile nav breakpoint (≤ 900px) */
-@media (max-width: 900px) {
-  .lp-sec { padding: 60px 0; }
+@media (max-width: 1100px) {
+    .lp-sec { padding: 60px 0; }
   .lp-sec-cabecera { margin-bottom: 36px; }
 
   /* Nav: hide desktop links, show burger */
@@ -1663,3 +1665,221 @@ h1, h2, h3, h4 { font-family: var(--lp-fuente-titulos); line-height: 1.15; lette
   100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
 }
 
+
+
+/* -- MODERNIZATION EXTENSIONS -- */
+/* Animations */
+@keyframes lp-pulse-soft {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--lp-acento-rgb, 14, 165, 233), 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(var(--lp-acento-rgb, 14, 165, 233), 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--lp-acento-rgb, 14, 165, 233), 0); }
+}
+
+@keyframes lp-float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes lp-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Global utility classes */
+.lp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--lp-acento-suave);
+  color: var(--lp-acento);
+  border: 1px solid color-mix(in srgb, var(--lp-acento) 20%, transparent);
+}
+.lp-badge-float {
+  animation: lp-float 4s ease-in-out infinite;
+}
+.lp-btn-magnetic {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+.lp-btn-magnetic:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--lp-sombra-hover);
+}
+
+/* Dark mode enhancements */
+[data-theme='dark'] {
+  --lp-fondo: #0B0F19; /* Deep space gray instead of pure black */
+  --lp-fondo-alt: #131A2B;
+  --lp-texto: #F1F5F9;
+  --lp-texto-suave: #94A3B8;
+  --lp-borde: #1E293B;
+}
+
+
+/* -- SECTION LAYOUT ENHANCEMENTS -- */
+
+/* Oferta Formativa (Bento Box) */
+.lp-oferta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+@media (min-width: 1024px) {
+  .lp-oferta-grid > article:nth-child(4n+1) { grid-column: span 2; }
+}
+.lp-ciclo {
+  position: relative;
+  overflow: hidden;
+}
+.lp-ciclo-cuerpo {
+  position: relative;
+  z-index: 2;
+  background: color-mix(in srgb, var(--lp-fondo) 80%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Instalaciones (Masonry) */
+.lp-galeria {
+  columns: 3 300px;
+  gap: 20px;
+}
+.lp-galeria-item {
+  break-inside: avoid;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: var(--lp-radio);
+  box-shadow: var(--lp-sombra);
+}
+.lp-galeria-item img {
+  width: 100%;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.lp-galeria-item:hover img {
+  transform: scale(1.08);
+}
+
+/* Empresas (Marquee) */
+.lp-empresas-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 40px;
+  overflow: hidden;
+  width: max-content;
+  animation: lp-marquee 20s linear infinite;
+}
+.lp-empresas-grid:hover {
+  animation-play-state: paused;
+}
+
+/* Equipo Docente (Flip Card) */
+.lp-flip-card {
+  perspective: 1000px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.lp-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  min-height: 380px;
+}
+.lp-flip-card:hover .lp-flip-inner {
+  transform: rotateY(180deg);
+}
+.lp-flip-front, .lp-flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: var(--lp-radio);
+  background: var(--lp-fondo);
+  padding: 24px;
+  box-shadow: var(--lp-sombra);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.lp-flip-back {
+  transform: rotateY(180deg);
+  justify-content: center;
+  text-align: center;
+}
+.lp-equipo-back-scroll {
+  overflow-y: auto;
+  max-height: 200px;
+  margin: 16px 0;
+}
+
+/* Testimonios (Snap Carousel) */
+.lp-testimonios-grid {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 24px;
+  padding-bottom: 16px;
+}
+.lp-testimonios-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.lp-testimonios-grid::-webkit-scrollbar-thumb {
+  background: var(--lp-borde);
+  border-radius: 4px;
+}
+.lp-testimonio-card {
+  scroll-snap-align: start;
+  flex: 0 0 calc(33.333% - 16px);
+  min-width: 300px;
+  position: relative;
+}
+.lp-testimonio-card::before {
+  content: '"';
+  position: absolute;
+  top: -20px;
+  right: 20px;
+  font-size: 140px;
+  color: color-mix(in srgb, var(--lp-acento) 10%, transparent);
+  font-family: serif;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* FAQ (Accordion Morph) */
+.lp-faq-item details summary::-webkit-details-marker { display: none; }
+.lp-faq-item details summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lp-faq-item details summary::after {
+  content: '+';
+  font-size: 24px;
+  transition: transform 0.3s;
+}
+.lp-faq-item details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+/* Prematricula CTA */
+.lp-prematricula-accion .lp-boton-primario {
+  animation: lp-pulse-soft 2s infinite;
+}
+
+/* Force burger menu early on very crowded navbars */
+@media (max-width: 1200px) {
+  .lp-nav-links { display: none; }
+  .lp-nav-cta { margin-left: auto; }
+  .lp-nav-cta .lp-boton-fantasma { display: none; }
+  .lp-nav-burger { display: flex; }
+}

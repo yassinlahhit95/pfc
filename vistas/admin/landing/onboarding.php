@@ -48,9 +48,10 @@ $csrfToken = Security::generateCSRFToken();
             color: var(--text);
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             overflow-x: hidden;
+            overflow-y: auto !important;
             position: relative;
         }
 
@@ -72,6 +73,7 @@ $csrfToken = Security::generateCSRFToken();
             padding: 40px 24px;
             position: relative;
             z-index: 10;
+            margin: auto;
         }
 
         .ob-container {

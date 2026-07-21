@@ -14,7 +14,6 @@ if (!$items) return;
       <details class="lp-faq-item">
         <summary>
           <?= Security::escapeHtml($item['pregunta'] ?? '') ?>
-          <i class="fas fa-chevron-down"></i>
         </summary>
         <p><?= nl2br(Security::escapeHtml($item['respuesta'] ?? '')) ?></p>
       </details>

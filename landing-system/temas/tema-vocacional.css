@@ -100,3 +100,14 @@ html:not([data-theme="dark"]) .tema-vocacional .lp-faq-item {
 }
 .tema-vocacional .lp-cifra-numero { font-size: clamp(48px, 6vw, 72px); font-weight: 800; color: #fff; text-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 .tema-vocacional .lp-cifra-etiqueta { color: rgba(255,255,255,0.9); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* -- MODERNIZATION: Glassmorphism & Mesh -- */
+.tema-vocacional .lp-nav {
+  background: color-mix(in srgb, var(--lp-fondo) 60%, transparent) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+.tema-vocacional .lp-hero {
+  background: radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--lp-acento) 15%, var(--lp-fondo)), var(--lp-fondo) 60%),
+              radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--lp-acento-2) 15%, transparent), transparent 60%) !important;
+}

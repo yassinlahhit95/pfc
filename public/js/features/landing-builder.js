@@ -8,7 +8,7 @@
 
     var TIPOS     = window.LANDING_TIPOS || {};
     var SECCIONES = window.LANDING_SECCIONES || [];
-    var BASE      = '/controladores/admin/landing/';
+    var BASE      = '../../../controladores/admin/landing/';
     var $iframe   = $('#lb-iframe');
     var idAbierta = null;   // idSeccion abierta en el editor
 
@@ -46,7 +46,7 @@
         var iframe = $iframe.get(0);
         if (!iframe) return;
         
-        fetch('/index.php?preview=1')
+        fetch('../../../index.php?preview=1')
             .then(function(res) { return res.text(); })
             .then(function(html) {
                 // Inyectar HTML vía srcdoc para esquivar restricciones X-Frame-Options

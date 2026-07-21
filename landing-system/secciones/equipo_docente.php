@@ -11,21 +11,31 @@ $renderTarjetas = function () use ($items) {
     foreach ($items as $item):
         $fotoUrl = landing_img_url($item['foto'] ?? '');
         ?>
-      <article class="lp-tarjeta lp-equipo-card">
-        <?php if ($fotoUrl): ?>
-        <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-equipo-foto">
-        <?php else: ?>
-        <div class="lp-equipo-foto lp-equipo-foto-inicial" aria-hidden="true">
-          <?= Security::escapeHtml(mb_strtoupper(mb_substr(trim($item['nombre'] ?? ''), 0, 1))) ?>
+      <article class="lp-tarjeta lp-equipo-card lp-flip-card">
+        <div class="lp-flip-inner">
+          <div class="lp-flip-front">
+            <?php if ($fotoUrl): ?>
+            <img loading="lazy" src="<?= Security::escapeHtml($fotoUrl) ?>" alt="<?= Security::escapeHtml($item['nombre'] ?? '') ?>" class="lp-equipo-foto">
+            <?php else: ?>
+            <div class="lp-equipo-foto lp-equipo-foto-inicial" aria-hidden="true">
+              <?= Security::escapeHtml(mb_strtoupper(mb_substr(trim($item['nombre'] ?? ''), 0, 1))) ?>
+            </div>
+            <?php endif; ?>
+            <h3><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
+            <?php if (!empty($item['cargo'])): ?>
+            <span class="lp-equipo-cargo"><?= Security::escapeHtml($item['cargo']) ?></span>
+            <?php endif; ?>
+          </div>
+          <div class="lp-flip-back">
+            <h3><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
+            <div class="lp-equipo-back-scroll">
+              <?php if (!empty($item['bio'])): ?>
+              <p class="lp-equipo-bio"><?= nl2br(Security::escapeHtml($item['bio'])) ?></p>
+              <?php endif; ?>
+            </div>
+            <a href="#" class="lp-badge"><i class="fab fa-linkedin-in"></i></a>
+          </div>
         </div>
-        <?php endif; ?>
-        <h3><?= Security::escapeHtml($item['nombre'] ?? '') ?></h3>
-        <?php if (!empty($item['cargo'])): ?>
-        <span class="lp-equipo-cargo"><?= Security::escapeHtml($item['cargo']) ?></span>
-        <?php endif; ?>
-        <?php if (!empty($item['bio'])): ?>
-        <p class="lp-equipo-bio"><?= nl2br(Security::escapeHtml($item['bio'])) ?></p>
-        <?php endif; ?>
       </article>
     <?php
     endforeach;

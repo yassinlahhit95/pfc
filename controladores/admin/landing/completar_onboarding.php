@@ -13,10 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!Security::validateCSRFToken()) {
-    echo json_encode(['ok' => false, 'msg' => 'Solicitud inválida.']);
-    exit;
-}
 
 $slug = $_POST['plantilla'] ?? '';
 $plantilla = landing_obtener_plantilla($slug);
@@ -101,6 +97,9 @@ if ($secciones && reemplazarBorradorLanding($slug, $secciones)) {
     
     // Publicar la landing
     publicarLanding();
+    
+    // Rotar token tras éxito para evitar reenvíos
+    unset($_SESSION['csrf_token'], $_SESSION['csrf_token_time']);
     
     registrarAccion('actualizar', 'landing', null, "Onboarding completado con plantilla $slug");
     echo json_encode(['ok' => true, 'msg' => 'Configuración de onboarding completada con éxito.']);

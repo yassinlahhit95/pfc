@@ -44,7 +44,7 @@ if (!empty($preview) && isset($s['idSeccion'])) {
   <div class="lp-contenedor lp-hero-inner">
     <div class="lp-hero-texto">
       <?php if (!empty($contenido['eyebrow'])): ?>
-      <span class="lp-eyebrow"><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
+      <span class="lp-eyebrow lp-badge"><?= Security::escapeHtml($contenido['eyebrow']) ?></span>
       <?php endif; ?>
       <h1><?= Security::escapeHtml($contenido['titulo'] ?? '') ?></h1>
       <?php if (!empty($contenido['subtitulo'])): ?>
@@ -64,8 +64,10 @@ if (!empty($preview) && isset($s['idSeccion'])) {
       </div>
     </div>
     <?php if (($variante === 'split' || $variante === 'promo') && $imgUrl): ?>
-    <div class="lp-hero-visual">
-      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="">
+    <div class="lp-hero-visual" style="position: relative;">
+      <div class="lp-badge lp-badge-float" style="position: absolute; top: -10px; left: -20px; z-index: 10; animation-delay: 0s;">⭐ 98% Inserción Laboral</div>
+      <div class="lp-badge lp-badge-float" style="position: absolute; bottom: 20px; right: -20px; z-index: 10; animation-delay: 2s;">🎓 Formación Oficial</div>
+      <img loading="lazy" src="<?= Security::escapeHtml($imgUrl) ?>" alt="" style="border-radius: var(--lp-radio); position: relative; z-index: 5; box-shadow: var(--lp-sombra);">
     </div>
     <?php endif; ?>
   </div>

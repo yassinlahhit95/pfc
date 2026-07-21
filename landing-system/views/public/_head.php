@@ -12,7 +12,7 @@ $logoUrl = '';
 if (!empty($cfg['logoCentro'])) {
     $logoFichero = basename($cfg['logoCentro']);
     if (file_exists(__DIR__ . '/../../public/uploads/configuracion/' . $logoFichero)) {
-        $logoUrl = '/public/uploads/configuracion/' . $logoFichero;
+        $logoUrl = 'public/uploads/configuracion/' . $logoFichero;
     }
 }
 
@@ -76,14 +76,14 @@ if (!empty($cfg['direccionCentro']) || !empty($cfg['ciudadCentro'])) {
 <meta property="og:description" content="<?= Security::escapeHtml($descSeo) ?>">
 <meta property="og:locale" content="es_ES">
 <script type="application/ld+json"><?= json_encode($orgSchema, JSON_UNESCAPED_UNICODE) ?></script>
-<link rel="icon" href="/public/imagenes/favicon.ico" type="image/x-icon">
+<link rel="icon" href="public/imagenes/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="<?= Security::escapeHtml($googleFontsUrl) ?>" rel="stylesheet">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="/landing-system/temas/base.css">
-<link rel="stylesheet" href="/landing-system/temas/tema-<?= Security::escapeHtml($tema) ?>.css">
+<link rel="stylesheet" href="landing-system/temas/base.css">
+<link rel="stylesheet" href="landing-system/temas/tema-<?= Security::escapeHtml($tema) ?>.css">
 <style>:root{--lp-acento:<?= Security::escapeHtml($acento) ?>;}</style>
 <script>/* Tema oscuro sin parpadeo: se aplica antes del primer render */
 (function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
