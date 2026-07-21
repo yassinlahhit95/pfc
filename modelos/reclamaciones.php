@@ -126,10 +126,6 @@ function listarMensajesParaProfesor($idProfesor) {
 }
 
 // Comprobaciones de propiedad (evitan IDOR: actuar sobre mensajes ajenos)
-function mensajePerteneceAEstudiante($idReclamacion, $idEstudiante) {
-    $m = obtenerMensajePorId($idReclamacion);
-    return $m && (int)$m['idEstudiante'] === (int)$idEstudiante;
-}
 function mensajePerteneceAProfesor($idReclamacion, $idProfesor) {
     $m = obtenerMensajePorId($idReclamacion);
     return $m && (int)$m['idProfesor'] === (int)$idProfesor;

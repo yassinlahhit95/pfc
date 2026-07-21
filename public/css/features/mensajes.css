@@ -455,7 +455,6 @@
 
 @media (width <= 600px) {
   .inbox-row-preview { display: none; }
-  .msg-body { padding: 20px 18px; }
 
   .compose-body,
   .compose-actions,

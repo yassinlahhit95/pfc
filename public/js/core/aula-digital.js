@@ -1,12 +1,9 @@
 // Utilidades generales de formularios de panel: validación de required/email/
-// tamaño de archivo antes de enviar, búsqueda de tabla por data-search, y
-// helpers de mensaje/portapapeles expuestos en window.AulaDigital.
+// tamaño de archivo antes de enviar, y helpers de mensaje/portapapeles
+// expuestos en window.AulaDigital.
 document.addEventListener('DOMContentLoaded', function() {
     initFormValidation();
-    initTableSearch();
 });
-// El toggle del sidebar lo gestiona menu.js (toggleMenu); aqui se eliminó
-// el duplicado que provocaba un doble toggle de la clase .activo.
 
 // ── Validación de formularios ───────────────────────────────────────────────
 function initFormValidation() {
@@ -48,26 +45,9 @@ function initFormValidation() {
             });
             if (!isValid) {
                 e.preventDefault();
-                showError(errorMessages.join('<br>'));
+                showError(errorMessages.join(', '));
                 window.scrollTo(0, 0);
             }
-        });
-    });
-}
-
-// ── Búsqueda de tabla ────────────────────────────────────────────────────────
-function initTableSearch() {
-    const searchInputs = document.querySelectorAll('[data-search]');
-    searchInputs.forEach(input => {
-        input.addEventListener('keyup', function() {
-            const searchTerm = this.value.toLowerCase();
-            const tableId = this.getAttribute('data-search');
-            const table = document.getElementById(tableId);
-            if (!table) return;
-            table.querySelectorAll('tbody tr').forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
         });
     });
 }
@@ -85,24 +65,10 @@ function formatFileSize(bytes) {
     return Math.round(bytes / Math.pow(base, unitIndex) * 100) / 100 + ' ' + sizes[unitIndex];
 }
 function showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'mensaje-error';
-    errorDiv.innerHTML = message;
-    const mainContent = document.querySelector('.contenido-principal');
-    if (mainContent) {
-        mainContent.insertBefore(errorDiv, mainContent.firstChild);
-        setTimeout(() => errorDiv.remove(), 5000);
-    }
+    if (window.Toast) window.Toast.show(message, 'error');
 }
 function showSuccess(message) {
-    const successDiv = document.createElement('div');
-    successDiv.className = 'mensaje-exito';
-    successDiv.innerHTML = message;
-    const mainContent = document.querySelector('.contenido-principal');
-    if (mainContent) {
-        mainContent.insertBefore(successDiv, mainContent.firstChild);
-        setTimeout(() => successDiv.remove(), 5000);
-    }
+    if (window.Toast) window.Toast.show(message, 'success');
 }
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {

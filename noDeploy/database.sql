@@ -235,36 +235,6 @@ INSERT INTO `assessment_types` VALUES (1,1,'Examen',10.00,3.00,NULL,1,1,1,1,1,1,
 UNLOCK TABLES;
 
 --
--- Table structure for table `auditoria`
---
-
-DROP TABLE IF EXISTS `auditoria`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auditoria` (
-  `idAuditoria` int NOT NULL AUTO_INCREMENT,
-  `idUsuario` int NOT NULL,
-  `tipoUsuario` enum('admin','profesor','estudiante') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `accion` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tabla` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `detalles` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idAuditoria`),
-  KEY `idx_auditoria_fecha` (`fecha`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `auditoria`
---
-
-LOCK TABLES `auditoria` WRITE;
-/*!40000 ALTER TABLE `auditoria` DISABLE KEYS */;
-/*!40000 ALTER TABLE `auditoria` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula_almacenamiento_ciclo`
 --
 
@@ -1015,39 +985,6 @@ LOCK TABLES `calificaciones_tfg` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `carpetas_ejercicios`
---
-
-DROP TABLE IF EXISTS `carpetas_ejercicios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `carpetas_ejercicios` (
-  `idCarpeta` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `color` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#0ea5e9',
-  `icono` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'fa-folder',
-  `idProfesor` int NOT NULL,
-  `idCiclo` int NOT NULL,
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idCarpeta`),
-  KEY `fk_carp_prof_ej` (`idProfesor`),
-  KEY `fk_carp_ciclo_ej` (`idCiclo`),
-  CONSTRAINT `fk_carp_ciclo_ej` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_carp_prof_ej` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `carpetas_ejercicios`
---
-
-LOCK TABLES `carpetas_ejercicios` WRITE;
-/*!40000 ALTER TABLE `carpetas_ejercicios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `carpetas_ejercicios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `categorias_gasto`
 --
 
@@ -1438,77 +1375,6 @@ LOCK TABLES `dispositivos` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `ejercicios`
---
-
-DROP TABLE IF EXISTS `ejercicios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ejercicios` (
-  `idEjercicio` int NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_unicode_ci,
-  `idCarpeta` int DEFAULT NULL,
-  `idProfesor` int NOT NULL,
-  `idCiclo` int NOT NULL,
-  `fechaLimite` datetime DEFAULT NULL,
-  `archivoAdjunto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `publicado` tinyint(1) NOT NULL DEFAULT '1',
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idEjercicio`),
-  KEY `fk_ej_carp_ej` (`idCarpeta`),
-  KEY `fk_ej_prof_ej` (`idProfesor`),
-  KEY `fk_ej_ciclo_ej` (`idCiclo`),
-  CONSTRAINT `fk_ej_carp_ej` FOREIGN KEY (`idCarpeta`) REFERENCES `carpetas_ejercicios` (`idCarpeta`) ON DELETE SET NULL,
-  CONSTRAINT `fk_ej_ciclo_ej` FOREIGN KEY (`idCiclo`) REFERENCES `ciclos` (`idCiclo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_ej_prof_ej` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ejercicios`
---
-
-LOCK TABLES `ejercicios` WRITE;
-/*!40000 ALTER TABLE `ejercicios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ejercicios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `entregas_ejercicios`
---
-
-DROP TABLE IF EXISTS `entregas_ejercicios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `entregas_ejercicios` (
-  `idEntrega` int NOT NULL AUTO_INCREMENT,
-  `idEjercicio` int NOT NULL,
-  `idEstudiante` int NOT NULL,
-  `respuesta` text COLLATE utf8mb4_unicode_ci,
-  `archivoEntrega` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `fechaEntrega` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `nota` decimal(4,2) DEFAULT NULL,
-  `comentarioProfesor` text COLLATE utf8mb4_unicode_ci,
-  `estado` enum('entregado','calificado') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'entregado',
-  PRIMARY KEY (`idEntrega`),
-  UNIQUE KEY `uk_entrega_unica_ej` (`idEjercicio`,`idEstudiante`),
-  KEY `fk_entr_est_ej` (`idEstudiante`),
-  CONSTRAINT `fk_entr_ej_ej` FOREIGN KEY (`idEjercicio`) REFERENCES `ejercicios` (`idEjercicio`) ON DELETE CASCADE,
-  CONSTRAINT `fk_entr_est_ej` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `entregas_ejercicios`
---
-
-LOCK TABLES `entregas_ejercicios` WRITE;
-/*!40000 ALTER TABLE `entregas_ejercicios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `entregas_ejercicios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `estudiante_tutor`
 --
 
@@ -1659,38 +1525,6 @@ CREATE TABLE `fct` (
 LOCK TABLES `fct` WRITE;
 /*!40000 ALTER TABLE `fct` DISABLE KEYS */;
 /*!40000 ALTER TABLE `fct` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `fp_dual_asignaciones`
---
-
-DROP TABLE IF EXISTS `fp_dual_asignaciones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fp_dual_asignaciones` (
-  `idAsignacion` int NOT NULL AUTO_INCREMENT,
-  `idEstudiante` int NOT NULL,
-  `idEmpresa` int NOT NULL,
-  `fecha_inicio` date DEFAULT NULL,
-  `fecha_fin` date DEFAULT NULL,
-  `horas_asignadas` int DEFAULT '0',
-  `estado` enum('Pendiente','En curso','Finalizado','Cancelado') DEFAULT 'Pendiente',
-  PRIMARY KEY (`idAsignacion`),
-  KEY `idEstudiante` (`idEstudiante`),
-  KEY `idEmpresa` (`idEmpresa`),
-  CONSTRAINT `fp_dual_asignaciones_ibfk_1` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`) ON DELETE CASCADE,
-  CONSTRAINT `fp_dual_asignaciones_ibfk_2` FOREIGN KEY (`idEmpresa`) REFERENCES `fp_empresas` (`idEmpresa`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fp_dual_asignaciones`
---
-
-LOCK TABLES `fp_dual_asignaciones` WRITE;
-/*!40000 ALTER TABLE `fp_dual_asignaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fp_dual_asignaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2068,31 +1902,6 @@ CREATE TABLE `landing_secciones` (
 LOCK TABLES `landing_secciones` WRITE;
 /*!40000 ALTER TABLE `landing_secciones` DISABLE KEYS */;
 /*!40000 ALTER TABLE `landing_secciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `login_attempts`
---
-
-DROP TABLE IF EXISTS `login_attempts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `login_attempts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempt_time` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_ip_time` (`ip_address`,`attempt_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `login_attempts`
---
-
-LOCK TABLES `login_attempts` WRITE;
-/*!40000 ALTER TABLE `login_attempts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `login_attempts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2675,60 +2484,6 @@ CREATE TABLE `rgpd_solicitudes` (
 LOCK TABLES `rgpd_solicitudes` WRITE;
 /*!40000 ALTER TABLE `rgpd_solicitudes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rgpd_solicitudes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rubric_criteria`
---
-
-DROP TABLE IF EXISTS `rubric_criteria`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rubric_criteria` (
-  `idCriterio` int NOT NULL AUTO_INCREMENT,
-  `idRubrica` int NOT NULL,
-  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pesoCriterio` decimal(6,2) NOT NULL DEFAULT '1.00',
-  `notaMaxima` decimal(4,2) NOT NULL DEFAULT '10.00',
-  `orden` int NOT NULL DEFAULT '1',
-  PRIMARY KEY (`idCriterio`),
-  KEY `idRubrica` (`idRubrica`),
-  CONSTRAINT `rubric_criteria_ibfk_1` FOREIGN KEY (`idRubrica`) REFERENCES `rubrics` (`idRubrica`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rubric_criteria`
---
-
-LOCK TABLES `rubric_criteria` WRITE;
-/*!40000 ALTER TABLE `rubric_criteria` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rubric_criteria` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rubrics`
---
-
-DROP TABLE IF EXISTS `rubrics`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rubrics` (
-  `idRubrica` int NOT NULL AUTO_INCREMENT,
-  `ambito` enum('reto','tfg','fct') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `activo` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`idRubrica`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rubrics`
---
-
-LOCK TABLES `rubrics` WRITE;
-/*!40000 ALTER TABLE `rubrics` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rubrics` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

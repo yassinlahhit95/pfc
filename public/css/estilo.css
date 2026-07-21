@@ -24,13 +24,6 @@ ul { list-style-position: inside; }
 
 /* ── 2. LAYOUT ───────────────────────────────────────────────────────────────── */
 
-.contenido-derecha,
-.contenido-principal {
-  margin-left: 260px;
-  padding: 30px;
-  min-height: 100vh;
-}
-
 .cabecera {
   display: flex;
   justify-content: space-between;
@@ -1545,12 +1538,6 @@ a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
 
 /* Tablet — collapse sidebar offset */
 @media (width <= 992px) {
-  .contenido-derecha,
-  .contenido-principal {
-    margin-left: 0;
-    padding: 16px;
-  }
-
   .cabecera {
     flex-direction: column;
     align-items: flex-start;
@@ -1628,35 +1615,6 @@ a.aviso-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
   .modal-acciones .boton-peligro,
   .modal-acciones .boton-secundario { width: 100%; justify-content: center; }
 }
-
-/* ── iOS safe-area: iPhone home indicator / notch ─────────────────────────── */
-
-/* viewport-fit=cover is set in nav.php — enables env(safe-area-inset-*) */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  /* Default desktop: 30px base padding + home-indicator height */
-  .contenido-derecha,
-  .contenido-principal {
-    padding-bottom: calc(30px + env(safe-area-inset-bottom));
-  }
-
-  /* On tablets/mobile the base padding is 16px */
-  @media (width <= 992px) {
-    .contenido-derecha,
-    .contenido-principal {
-      padding-bottom: calc(16px + env(safe-area-inset-bottom));
-    }
-  }
-
-  /* Landscape iPhone: avoid notch side */
-  @media (width <= 992px) {
-    .contenido-derecha,
-    .contenido-principal {
-      padding-left: calc(16px + env(safe-area-inset-left));
-      padding-right: calc(16px + env(safe-area-inset-right));
-    }
-  }
-}
-
 
 /* ── 20. MODAL ───────────────────────────────────────────────────────────────── */
 

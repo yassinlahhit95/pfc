@@ -58,17 +58,6 @@ function listarFCTPorProfesor(int $idProfesor): array {
     return $out;
 }
 
-function listarFCTPorEstudiante(int $idEstudiante): array {
-    $con = obtenerConexion();
-    $stmt = mysqli_prepare($con, "SELECT * FROM fct WHERE idEstudiante = ? ORDER BY fase ASC");
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $out = [];
-    while ($fila = mysqli_fetch_assoc($res)) $out[] = $fila;
-    return $out;
-}
-
 function insertarFCT(array $datos): int|false {
     $con = obtenerConexion();
     $stmt = mysqli_prepare($con,

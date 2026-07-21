@@ -21,20 +21,6 @@ function obtenerJustificacionPorAsistencia(int $idAsistencia): ?array {
     return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
 }
 
-function listarJustificacionesPorEstudiante(int $idEstudiante): array {
-    $con  = obtenerConexion();
-    $stmt = mysqli_prepare($con,
-        "SELECT jf.*, a.fecha, a.estado AS estadoAsistencia, m.nombreModulo
-         FROM justificaciones_falta jf
-         JOIN asistencias a ON a.idAsistencia = jf.idAsistencia
-         JOIN modulos m ON m.idModulo = a.idModulo
-         WHERE jf.idEstudiante = ?
-         ORDER BY jf.fechaSolicitud DESC");
-    mysqli_stmt_bind_param($stmt, "i", $idEstudiante);
-    mysqli_stmt_execute($stmt);
-    return mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
-}
-
 // Ausencias/retrasos de un estudiante sin justificación pendiente ni aprobada — para avisos "necesita atención".
 function contarFaltasSinJustificarPorEstudiante(int $idEstudiante): int {
     $con  = obtenerConexion();

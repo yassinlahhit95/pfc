@@ -61,10 +61,6 @@ function obtenerTotalRecaudado(): float {
     return (float)(dbFetchOne("SELECT SUM(monto) as acumulado FROM pagos")['acumulado'] ?? 0);
 }
 
-function contarPagosRealizados(): int {
-    return (int)(dbFetchOne("SELECT COUNT(*) as total FROM pagos")['total'] ?? 0);
-}
-
 function contarEstudiantesNuevos(int $dias = 7): int {
     $row = dbFetchOne(
         "SELECT COUNT(*) as total FROM estudiantes WHERE eliminado = 0 AND fechaAltaEstudiante >= DATE_SUB(CURDATE(), INTERVAL ? DAY)",
